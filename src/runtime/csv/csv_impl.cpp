@@ -534,6 +534,18 @@ missing_error:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void CsvSerializeIteratorState::reset( PlanState &state ) {
+  PlanIteratorState::reset( state );
+  boolean_string_[0] = "false";
+  boolean_string_[1] = "true";
+  header_item_ = nullptr;
+  keys_.clear();
+  null_string_ = "null";
+  quote_ = '"';
+  quote_esc_ = "\"\"";
+  separator_ = ',';
+}
+
 bool CsvSerializeIterator::nextImpl( store::Item_t &result,
                                      PlanState &plan_state ) const {
   char char_opt;
@@ -589,7 +601,8 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
       while ( i->next( item ) )
         state->keys_.push_back( item );
       i->close();
-    }
+    } else
+      goto end;                         // empty sequence: we're done
   }
 
   if ( do_header ) {
@@ -601,9 +614,11 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
         separator = true;
       line += (*key)->getStringValue();
     }
-    line += "\r\n";
-    GENV_ITEMFACTORY->createString( result, line );
-    STACK_PUSH( true, state );
+    if ( !line.empty() ) {
+      line += "\r\n";
+      GENV_ITEMFACTORY->createString( result, line );
+      STACK_PUSH( true, state );
+    }
   }
 
   if ( !state->header_item_.isNull() ) {
@@ -655,6 +670,8 @@ skip_consumeNext:
     GENV_ITEMFACTORY->createString( result, line );
     STACK_PUSH( true, state );
   } // while
+
+end:
   STACK_END( state );
 }
 

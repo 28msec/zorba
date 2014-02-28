@@ -325,7 +325,7 @@ char const* get_help_msg() {
       "Trace the translator.\n\n"
 #endif /* NDEBUG */
 
-    HELP_OPT( "--trailing-nl" )
+    HELP_OPT( "--trailing-nl, -n" )
       "Print a trailing newline after the result of the query.\n\n"
 
     ////////// u //////////////////////////////////////////////////////////////
@@ -776,7 +776,7 @@ int parse_args( int argc, char const *argv[] ) {
     else if ( IS_LONG_OPT( "--trace-translator" ) )
       z_props.setTraceTranslator( true );
 #endif /* NDEBUG */
-    else if ( IS_LONG_OPT( "--trailing-nl" ) )
+    else if ( IS_OPT( "--trailing-nl", "-n" ) )
       zc_props.trailing_nl_ = true;
 
     ////////// u //////////////////////////////////////////////////////////////

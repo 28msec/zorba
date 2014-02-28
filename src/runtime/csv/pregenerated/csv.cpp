@@ -116,10 +116,6 @@ CsvSerializeIteratorState::CsvSerializeIteratorState() {}
 CsvSerializeIteratorState::~CsvSerializeIteratorState() {}
 
 
-void CsvSerializeIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
-
 zstring CsvSerializeIterator::getNameAsString() const {
   return "fn-zorba-csv:serialize";
 }
