@@ -68,7 +68,7 @@
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
   </zorba:function>
-  <zorba:state generateInit="use-default">
+  <zorba:state generateInit="use-default" generateReset="false">
     <zorba:member type="zstring" name="boolean_string_[2]"/>
     <zorba:member type="store::Item_t" name="header_item_"/>
     <zorba:member type="std::vector&lt;store::Item_t&gt;" name="keys_"/>

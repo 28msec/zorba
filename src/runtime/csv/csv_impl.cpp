@@ -534,6 +534,18 @@ missing_error:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void CsvSerializeIteratorState::reset( PlanState &state ) {
+  PlanIteratorState::reset( state );
+  boolean_string_[0] = "false";
+  boolean_string_[1] = "true";
+  header_item_ = nullptr;
+  keys_.clear();
+  null_string_ = "null";
+  quote_ = '"';
+  quote_esc_ = "\"\"";
+  separator_ = ',';
+}
+
 bool CsvSerializeIterator::nextImpl( store::Item_t &result,
                                      PlanState &plan_state ) const {
   char char_opt;
