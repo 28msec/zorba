@@ -111,10 +111,6 @@ CsvSerializeIteratorState::CsvSerializeIteratorState() {}
 
 CsvSerializeIteratorState::~CsvSerializeIteratorState() {}
 
-
-void CsvSerializeIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
 // </CsvSerializeIterator>
 
 
