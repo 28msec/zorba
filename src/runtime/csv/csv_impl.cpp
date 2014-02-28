@@ -589,7 +589,8 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
       while ( i->next( item ) )
         state->keys_.push_back( item );
       i->close();
-    }
+    } else
+      goto end;                         // empty sequence: we're done
   }
 
   if ( do_header ) {
@@ -601,9 +602,11 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
         separator = true;
       line += (*key)->getStringValue();
     }
-    line += "\r\n";
-    GENV_ITEMFACTORY->createString( result, line );
-    STACK_PUSH( true, state );
+    if ( !line.empty() ) {
+      line += "\r\n";
+      GENV_ITEMFACTORY->createString( result, line );
+      STACK_PUSH( true, state );
+    }
   }
 
   if ( !state->header_item_.isNull() ) {
@@ -655,6 +658,8 @@ skip_consumeNext:
     GENV_ITEMFACTORY->createString( result, line );
     STACK_PUSH( true, state );
   } // while
+
+end:
   STACK_END( state );
 }
 
