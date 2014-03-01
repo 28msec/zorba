@@ -170,7 +170,7 @@ static json::type parse_json( zstring const &s, json::token *ptoken ) {
     // The JSON lexer will stop lex'ing as soon as it finds a valid token.  For
     // strings that start with numbers, e.g., "870 Market St", the lexer will
     // return "870" as a number token but we need to know the type of the whole
-    // string 's'; hence we need to do an extra check for numer tokens.
+    // string 's'; hence we need to do an extra check for number tokens.
     //
     // If the length(t) < length(s), remove trailing whitespace from 's' and
     // check again.  If length(t) < length(s2), it means that that the token is
