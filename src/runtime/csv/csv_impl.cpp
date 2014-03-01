@@ -162,8 +162,31 @@ static json::type parse_json( zstring const &s, json::token *ptoken ) {
   istringstream iss;
   iss.ios::rdbuf( &buf );
   json::lexer lex( iss );
-  return lex.next( ptoken, false ) ?
-    json::map_type( ptoken->get_type() ) : json::none;
+  if ( !lex.next( ptoken, false ) )
+    return json::none;
+  json::token::type const tt = ptoken->get_type();
+  if ( tt == json::token::number ) {
+    //
+    // The JSON lexer will stop lex'ing as soon as it finds a valid token.  For
+    // strings that start with numbers, e.g., "870 Market St", the lexer will
+    // return "870" as a number token but we need to know the type of the whole
+    // string 's'; hence we need to do an extra check for numer tokens.
+    //
+    // If the length(t) < length(s), remove trailing whitespace from 's' and
+    // check again.  If length(t) < length(s2), it means that that the token is
+    // really a string; if length(t) == length(s2), then the length difference
+    // was caused only by whitespace that can be ignored and the token is still
+    // a number.
+    //
+    json::token::value_type const &value = ptoken->get_value();
+    if ( value.size() < s.size() ) {
+      zstring s2;
+      ascii::trim_end_space( s, &s2 );
+      if ( value.size() < s2.size() )
+        return json::string;
+    }
+  }
+  return json::map_type( tt );
 }
 
 static void set_keys( store::Item_t const &item, vector<store::Item_t> *keys,
