@@ -49,7 +49,7 @@ char const* get_help_msg() {
     ////////// c //////////////////////////////////////////////////////////////
 
     HELP_OPT( "--compile-only" )
-      "Only compile (don't execute)\n\n"
+      "Only compile (don't execute).\n\n"
 
     ////////// d //////////////////////////////////////////////////////////////
 
@@ -58,18 +58,18 @@ char const* get_help_msg() {
       "Launch the Zorba debugger server and connect to a DBGP-enabled debugger client.\n\n"
 #endif /* ZORBA_WITH_DEBUGGER */
 
-    HELP_OPT( "--debug-file" ) 
+    HELP_OPT( "--debug-file <file>" ) 
       "Sets the file to write developer debugging information to.\n\n"
 
-    HELP_OPT( "--debug-stream <stream>" )
+    HELP_OPT( "--debug-stream {1|cout|stdout|2|cerr|stderr}" )
       "Sets the stream to write developer debugging information to.\n\n"
 
 #ifdef ZORBA_WITH_DEBUGGER
-    HELP_OPT( "--debug-host, -h" )
-      "The host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1\n\n"
+    HELP_OPT( "--debug-host, -h <host>" )
+      "The host where the DBGP-enabled debugger client listens for connections; default: 127.0.0.1.\n\n"
 
-    HELP_OPT( "--debug-port, -p" )
-      "The port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028\n\n"
+    HELP_OPT( "--debug-port, -p <port>" )
+      "The port on which the DBGP-enabled debugger client listens for connections; default: 28028.\n\n"
 #endif /* ZORBA_WITH_DEBUGGER */
 
     ////////// e //////////////////////////////////////////////////////////////
@@ -77,8 +77,8 @@ char const* get_help_msg() {
     HELP_OPT( "--execute-plan" )
       "Do not compile the query; instead load the execution plan from the file specified by the -f -q options (or by any file specified without any other argument), and execute the loaded plan.\n\n"
 
-    HELP_OPT( "--external-var, -x" )
-      "Provide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
+    HELP_OPT( "--external-var, -x <name>{=<file>|:=<value>}" )
+      "Sets the value of an external variable.\n\n"
 
     ////////// i //////////////////////////////////////////////////////////////
 
@@ -98,7 +98,7 @@ char const* get_help_msg() {
     HELP_OPT( "--lib-module, -l" )
       "Query compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.\n\n"
 
-    HELP_OPT( "--lib-path" )
+    HELP_OPT( "--lib-path <path>" )
       "Library path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.\n\n"
 
     HELP_OPT( "--loop-hosting" )
@@ -106,10 +106,10 @@ char const* get_help_msg() {
 
     ////////// m //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--max-udf-call-depth" )
+    HELP_OPT( "--max-udf-call-depth <depth>" )
       "Maximum stack depth of user-defined function calls.\n\n"
 
-    HELP_OPT( "--module-path" )
+    HELP_OPT( "--module-path <path>" )
       "Path (list of directories) to add to both the URI and Library paths.\n\n"
 
     ////////// n //////////////////////////////////////////////////////////////
@@ -125,11 +125,11 @@ char const* get_help_msg() {
 
     ////////// o //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--optimization-level, -O" )
-      "Optimization level for the query compiler [0-2], default: 1\n\n"
+    HELP_OPT( "--optimization-level, -O {0|1|2}" )
+      "Optimization level for the query compiler; default: 1.\n\n"
 
 #ifdef ZORBA_WITH_FILE_ACCESS
-    HELP_OPT( "--output-file, -o" )
+    HELP_OPT( "--output-file, -o <file>" )
       "Write the result to the given file.\n\n"
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
@@ -170,13 +170,13 @@ char const* get_help_msg() {
 
     ////////// q //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--query, -q" )
-      "Query test or file URI (file://...)\n\n"
+    HELP_OPT( "--query, -q <query>" )
+      "Query test or file URI (file://...).\n\n"
 
     ////////// s //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--serialization-parameter, -z" )
-      "Set serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).\n\n"
+    HELP_OPT( "--serialization-parameter, -z <name>=<value>" )
+      "Set serialization parameter (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).\n\n"
 
     ////////// t //////////////////////////////////////////////////////////////
 
@@ -197,8 +197,8 @@ char const* get_help_msg() {
       "Trace the translator.\n\n"
 #endif /* NDEBUG */
 
-    HELP_OPT( "--tz" )
-      "Set implicit time zone (in minutes.\n\n"
+    HELP_OPT( "--tz <min>" )
+      "Set implicit time zone (in minutes).\n\n"
 
     ////////// u //////////////////////////////////////////////////////////////
 
@@ -374,7 +374,7 @@ int parse_args( int argc, char const *argv[] ) {
 
     ////////// h //////////////////////////////////////////////////////////////
 
-    else if ( IS_OPT( "--help", "-h" ) ) {
+    else if ( IS_LONG_OPT( "--help" ) ) {
       cout << "Zorba NoSQL Query Processor, Version: "
            << Zorba::version() << '\n'
            << "Available options:\n\n"
