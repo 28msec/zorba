@@ -246,7 +246,7 @@ declare function csv:parse( $csv as string )
  :        the field names are taken from the first JSON object
  :        and the order of the fields is implementation dependent.
  :        If this option is set,
- :        the fields are serielized in the order they are in the array.
+ :        the fields are serialized in the order they are in the array.
  :        In either case,
  :        every JSON object must have the same keys as the first object.
  :      </dd>
