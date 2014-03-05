@@ -197,7 +197,7 @@ char const* get_help_msg() {
       "Trace the translator.\n\n"
 #endif /* NDEBUG */
 
-    HELP_OPT( "--tz <min>" )
+    HELP_OPT( "--tz <minutes>" )
       "Set implicit time zone (in minutes).\n\n"
 
     ////////// u //////////////////////////////////////////////////////////////
