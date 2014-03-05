@@ -72,6 +72,8 @@ public:
 
   void openImpl(PlanState& planState, uint32_t& offset);
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -123,6 +125,8 @@ public:
 
   void openImpl(PlanState& planState, uint32_t& offset);
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -156,10 +160,13 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
-}
+} // namespace zorba
 
-#endif
+#endif /* ZORBA_RUNTIME_JSON_CONSTRUCTORS */
+/* vim:set et sw=2 ts=2: */

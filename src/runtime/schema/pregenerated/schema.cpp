@@ -52,6 +52,10 @@ void ValidateIterator::accept(PlanIterVisitor& v) const
 
 ValidateIterator::~ValidateIterator() {}
 
+
+zstring ValidateIterator::getNameAsString() const {
+  return "ValidateIterator";
+}
 // </ValidateIterator>
 
 #endif
@@ -76,6 +80,10 @@ void ZorbaValidateInPlaceIterator::accept(PlanIterVisitor& v) const
 
 ZorbaValidateInPlaceIterator::~ZorbaValidateInPlaceIterator() {}
 
+
+zstring ZorbaValidateInPlaceIterator::getNameAsString() const {
+  return "fn-zorba-schema:validate-in-place";
+}
 // </ZorbaValidateInPlaceIterator>
 
 
@@ -104,6 +112,10 @@ void ZorbaSchemaTypeIterator::accept(PlanIterVisitor& v) const
 
 ZorbaSchemaTypeIterator::~ZorbaSchemaTypeIterator() {}
 
+
+zstring ZorbaSchemaTypeIterator::getNameAsString() const {
+  return "fn-zorba-schema:schema-type";
+}
 // </ZorbaSchemaTypeIterator>
 
 
@@ -132,6 +144,10 @@ void ZorbaIsValidatedIterator::accept(PlanIterVisitor& v) const
 
 ZorbaIsValidatedIterator::~ZorbaIsValidatedIterator() {}
 
+
+zstring ZorbaIsValidatedIterator::getNameAsString() const {
+  return "fn-zorba-schema:is-validated";
+}
 // </ZorbaIsValidatedIterator>
 
 

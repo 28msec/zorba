@@ -54,6 +54,10 @@ void SqrtIterator::accept(PlanIterVisitor& v) const
 
 SqrtIterator::~SqrtIterator() {}
 
+
+zstring SqrtIterator::getNameAsString() const {
+  return "math:sqrt";
+}
 // </SqrtIterator>
 
 
@@ -78,6 +82,10 @@ void ExpIterator::accept(PlanIterVisitor& v) const
 
 ExpIterator::~ExpIterator() {}
 
+
+zstring ExpIterator::getNameAsString() const {
+  return "math:exp";
+}
 // </ExpIterator>
 
 
@@ -102,6 +110,10 @@ void Exp10Iterator::accept(PlanIterVisitor& v) const
 
 Exp10Iterator::~Exp10Iterator() {}
 
+
+zstring Exp10Iterator::getNameAsString() const {
+  return "math:exp10";
+}
 // </Exp10Iterator>
 
 
@@ -126,6 +138,10 @@ void LogIterator::accept(PlanIterVisitor& v) const
 
 LogIterator::~LogIterator() {}
 
+
+zstring LogIterator::getNameAsString() const {
+  return "math:log";
+}
 // </LogIterator>
 
 
@@ -150,6 +166,10 @@ void Log10Iterator::accept(PlanIterVisitor& v) const
 
 Log10Iterator::~Log10Iterator() {}
 
+
+zstring Log10Iterator::getNameAsString() const {
+  return "math:log10";
+}
 // </Log10Iterator>
 
 
@@ -174,6 +194,10 @@ void SinIterator::accept(PlanIterVisitor& v) const
 
 SinIterator::~SinIterator() {}
 
+
+zstring SinIterator::getNameAsString() const {
+  return "math:sin";
+}
 // </SinIterator>
 
 
@@ -198,6 +222,10 @@ void CosIterator::accept(PlanIterVisitor& v) const
 
 CosIterator::~CosIterator() {}
 
+
+zstring CosIterator::getNameAsString() const {
+  return "math:cos";
+}
 // </CosIterator>
 
 
@@ -222,6 +250,10 @@ void TanIterator::accept(PlanIterVisitor& v) const
 
 TanIterator::~TanIterator() {}
 
+
+zstring TanIterator::getNameAsString() const {
+  return "math:tan";
+}
 // </TanIterator>
 
 
@@ -246,6 +278,10 @@ void ArcSinIterator::accept(PlanIterVisitor& v) const
 
 ArcSinIterator::~ArcSinIterator() {}
 
+
+zstring ArcSinIterator::getNameAsString() const {
+  return "math:asin";
+}
 // </ArcSinIterator>
 
 
@@ -270,6 +306,10 @@ void ArcCosIterator::accept(PlanIterVisitor& v) const
 
 ArcCosIterator::~ArcCosIterator() {}
 
+
+zstring ArcCosIterator::getNameAsString() const {
+  return "math:acos";
+}
 // </ArcCosIterator>
 
 
@@ -294,6 +334,10 @@ void ArcTanIterator::accept(PlanIterVisitor& v) const
 
 ArcTanIterator::~ArcTanIterator() {}
 
+
+zstring ArcTanIterator::getNameAsString() const {
+  return "math:atan";
+}
 // </ArcTanIterator>
 
 
@@ -319,6 +363,10 @@ theChild1->accept(v);
 
 Atan2Iterator::~Atan2Iterator() {}
 
+
+zstring Atan2Iterator::getNameAsString() const {
+  return "math:atan2";
+}
 // </Atan2Iterator>
 
 
@@ -343,6 +391,10 @@ void CoshIterator::accept(PlanIterVisitor& v) const
 
 CoshIterator::~CoshIterator() {}
 
+
+zstring CoshIterator::getNameAsString() const {
+  return "fn-zorba-math:cosh";
+}
 // </CoshIterator>
 
 
@@ -367,6 +419,10 @@ void AcoshIterator::accept(PlanIterVisitor& v) const
 
 AcoshIterator::~AcoshIterator() {}
 
+
+zstring AcoshIterator::getNameAsString() const {
+  return "fn-zorba-math:acosh";
+}
 // </AcoshIterator>
 
 
@@ -392,6 +448,10 @@ theChild1->accept(v);
 
 FmodIterator::~FmodIterator() {}
 
+
+zstring FmodIterator::getNameAsString() const {
+  return "fn-zorba-math:fmod";
+}
 // </FmodIterator>
 
 
@@ -417,6 +477,10 @@ theChild1->accept(v);
 
 LdexpIterator::~LdexpIterator() {}
 
+
+zstring LdexpIterator::getNameAsString() const {
+  return "fn-zorba-math:ldexp";
+}
 // </LdexpIterator>
 
 
@@ -442,6 +506,10 @@ theChild1->accept(v);
 
 PowIterator::~PowIterator() {}
 
+
+zstring PowIterator::getNameAsString() const {
+  return "math:pow";
+}
 // </PowIterator>
 
 
@@ -466,6 +534,10 @@ void SinhIterator::accept(PlanIterVisitor& v) const
 
 SinhIterator::~SinhIterator() {}
 
+
+zstring SinhIterator::getNameAsString() const {
+  return "fn-zorba-math:sinh";
+}
 // </SinhIterator>
 
 
@@ -490,6 +562,10 @@ void AsinhIterator::accept(PlanIterVisitor& v) const
 
 AsinhIterator::~AsinhIterator() {}
 
+
+zstring AsinhIterator::getNameAsString() const {
+  return "fn-zorba-math:asinh";
+}
 // </AsinhIterator>
 
 
@@ -514,6 +590,10 @@ void TanhIterator::accept(PlanIterVisitor& v) const
 
 TanhIterator::~TanhIterator() {}
 
+
+zstring TanhIterator::getNameAsString() const {
+  return "fn-zorba-math:tanh";
+}
 // </TanhIterator>
 
 
@@ -538,6 +618,10 @@ void AtanhIterator::accept(PlanIterVisitor& v) const
 
 AtanhIterator::~AtanhIterator() {}
 
+
+zstring AtanhIterator::getNameAsString() const {
+  return "fn-zorba-math:atanh";
+}
 // </AtanhIterator>
 
 
@@ -562,6 +646,10 @@ void PiNumberIterator::accept(PlanIterVisitor& v) const
 
 PiNumberIterator::~PiNumberIterator() {}
 
+
+zstring PiNumberIterator::getNameAsString() const {
+  return "math:pi";
+}
 // </PiNumberIterator>
 
 
@@ -586,6 +674,10 @@ void IsInfIterator::accept(PlanIterVisitor& v) const
 
 IsInfIterator::~IsInfIterator() {}
 
+
+zstring IsInfIterator::getNameAsString() const {
+  return "fn-zorba-math:is_inf";
+}
 // </IsInfIterator>
 
 
@@ -610,6 +702,10 @@ void IsNaNIterator::accept(PlanIterVisitor& v) const
 
 IsNaNIterator::~IsNaNIterator() {}
 
+
+zstring IsNaNIterator::getNameAsString() const {
+  return "fn-zorba-math:is_nan";
+}
 // </IsNaNIterator>
 
 
@@ -648,6 +744,10 @@ void ModfIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theDoubInteger = numeric_consts<xs_double>::zero();
 }
+
+zstring ModfIterator::getNameAsString() const {
+  return "fn-zorba-math:modf";
+}
 // </ModfIterator>
 
 
@@ -685,6 +785,10 @@ void FrexpIteratorState::init(PlanState& planState) {
 void FrexpIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theIntExponent = numeric_consts<xs_integer>::zero();
+}
+
+zstring FrexpIterator::getNameAsString() const {
+  return "fn-zorba-math:frexp";
 }
 // </FrexpIterator>
 

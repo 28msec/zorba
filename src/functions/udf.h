@@ -202,6 +202,7 @@ public:
   void optimize();
 
   PlanIter_t getPlan(uint32_t& planStateSize, ulong nextVarId);
+  PlanIter_t const& getPlan() const { return thePlan; }
 
   void invalidatePlan();
 

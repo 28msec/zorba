@@ -79,6 +79,10 @@ void DebugIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   notEmptySequence = false;
 }
+
+zstring DebugIterator::getNameAsString() const {
+  return "DebugIterator";
+}
 // </DebugIterator>
 
 #endif

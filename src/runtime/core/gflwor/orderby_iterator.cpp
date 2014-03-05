@@ -220,6 +220,11 @@ void OrderByIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+zstring OrderByIterator::getNameAsString() const {
+  return "OrderByIterator";
+}
+
+
 uint32_t OrderByIterator::getStateSize() const 
 {
   return sizeof(OrderByState);

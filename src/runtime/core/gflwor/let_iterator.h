@@ -69,6 +69,8 @@ public:
 
   ~LetIterator();
 
+  zstring getNameAsString() const;
+
   store::Item* getVarName() const { return theVarName.getp(); }
 
   void setSingleItem() { theSingleItemLETVar = true; }

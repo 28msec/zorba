@@ -140,6 +140,12 @@ void TryCatchIterator::openImpl(PlanState& planState, uint32_t& offset)
 
 }
 
+
+zstring TryCatchIterator::getNameAsString() const {
+  return "TryCatchIterator";
+}
+
+
 uint32_t
 TryCatchIterator::getStateSizeOfSubtree() const
 {

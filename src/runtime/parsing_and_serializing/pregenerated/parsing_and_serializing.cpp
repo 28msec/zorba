@@ -58,6 +58,10 @@ void FnParseXmlIterator::accept(PlanIterVisitor& v) const
 
 FnParseXmlIterator::~FnParseXmlIterator() {}
 
+
+zstring FnParseXmlIterator::getNameAsString() const {
+  return "fn:parse-xml";
+}
 // </FnParseXmlIterator>
 
 
@@ -86,6 +90,10 @@ void FnSerializeIterator::accept(PlanIterVisitor& v) const
 
 FnSerializeIterator::~FnSerializeIterator() {}
 
+
+zstring FnSerializeIterator::getNameAsString() const {
+  return "fn:serialize";
+}
 // </FnSerializeIterator>
 
 

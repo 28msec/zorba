@@ -128,12 +128,12 @@ UnaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 }
 
 
-#define UNARY_ACCEPT(IterType)                      \
-void IterType::accept(PlanIterVisitor& v) const     \
-{                                                   \
-  v.beginVisit(*this);                              \
-  theChild->accept(v);                              \
-  v.endVisit(*this);                                \
+#define UNARY_ACCEPT(IterType)                  \
+void IterType::accept(PlanIterVisitor& v) const \
+{                                               \
+  v.beginVisit(*this);                          \
+  theChild->accept(v);                          \
+  v.endVisit(*this);                            \
 }
 
 
@@ -162,7 +162,7 @@ public:                                                                 \
   { }                                                                   \
                                                                         \
   void accept(PlanIterVisitor& v) const;                                \
-                                                                        \
+  zstring getNameAsString() const;                                      \
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
 };
 

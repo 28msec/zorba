@@ -61,6 +61,10 @@ AvailableDocumentsIterator::~AvailableDocumentsIterator() {}
 
 AvailableDocumentsIteratorState::AvailableDocumentsIteratorState() {}
 
+
+zstring AvailableDocumentsIterator::getNameAsString() const {
+  return "zorba-store-documents:available-documents";
+}
 // </AvailableDocumentsIterator>
 
 
@@ -89,6 +93,10 @@ void IsAvailableDocumentIterator::accept(PlanIterVisitor& v) const
 
 IsAvailableDocumentIterator::~IsAvailableDocumentIterator() {}
 
+
+zstring IsAvailableDocumentIterator::getNameAsString() const {
+  return "zorba-store-documents:is-available-document";
+}
 // </IsAvailableDocumentIterator>
 
 
@@ -117,6 +125,10 @@ void PutDocumentIterator::accept(PlanIterVisitor& v) const
 
 PutDocumentIterator::~PutDocumentIterator() {}
 
+
+zstring PutDocumentIterator::getNameAsString() const {
+  return "zorba-store-documents:put";
+}
 // </PutDocumentIterator>
 
 
@@ -145,6 +157,10 @@ void RemoveDocumentIterator::accept(PlanIterVisitor& v) const
 
 RemoveDocumentIterator::~RemoveDocumentIterator() {}
 
+
+zstring RemoveDocumentIterator::getNameAsString() const {
+  return "zorba-store-documents:remove";
+}
 // </RemoveDocumentIterator>
 
 
@@ -173,6 +189,10 @@ void RetrieveDocumentIterator::accept(PlanIterVisitor& v) const
 
 RetrieveDocumentIterator::~RetrieveDocumentIterator() {}
 
+
+zstring RetrieveDocumentIterator::getNameAsString() const {
+  return "zorba-store-documents:document";
+}
 // </RetrieveDocumentIterator>
 
 

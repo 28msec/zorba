@@ -35,6 +35,7 @@ namespace zorba
 namespace flwor 
 {
 SERIALIZABLE_CLASS_VERSIONS(TupleStreamIterator)
+DEF_GET_NAME_AS_STRING(TupleStreamIterator)
 
 
 TupleStreamIterator::TupleStreamIterator(

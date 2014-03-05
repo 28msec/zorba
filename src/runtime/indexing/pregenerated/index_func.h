@@ -78,6 +78,8 @@ public:
 
   virtual ~IndexKeysIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

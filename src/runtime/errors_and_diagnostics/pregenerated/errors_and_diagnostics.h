@@ -58,6 +58,8 @@ public:
 
   virtual ~ErrorIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -103,6 +105,8 @@ public:
   {}
 
   virtual ~TraceIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

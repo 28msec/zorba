@@ -50,6 +50,7 @@ namespace zorba {
 
 
 SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
+DEF_GET_NAME_AS_STRING(EvalIterator)
 
 
 /****************************************************************************//**

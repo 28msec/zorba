@@ -85,6 +85,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -146,6 +148,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -187,6 +191,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -225,6 +231,8 @@ public:
   virtual ~RefreshIndexIterator();
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
@@ -278,6 +286,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -306,6 +316,8 @@ public:
   virtual ~GeneralIndexEntryBuilderIterator();
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
@@ -369,6 +381,8 @@ public:
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
+  zstring getNameAsString() const;
+
   bool count(store::Item_t& result, PlanState& planState) const;
 
 protected:
@@ -425,6 +439,8 @@ public:
   ~ProbeIndexPointGeneralIterator();
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -509,6 +525,8 @@ public:
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
+  zstring getNameAsString() const;
+
   bool count(store::Item_t& result, PlanState& planState) const;
 
 protected:
@@ -586,6 +604,8 @@ public:
   ~ProbeIndexRangeGeneralIterator();
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 

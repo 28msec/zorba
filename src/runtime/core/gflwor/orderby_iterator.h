@@ -216,6 +216,8 @@ public:
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
   
+  zstring getNameAsString() const;
+
   virtual uint32_t getStateSize() const;
   virtual uint32_t getStateSizeOfSubtree() const;
 

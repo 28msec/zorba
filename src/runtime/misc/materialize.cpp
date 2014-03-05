@@ -30,6 +30,7 @@ namespace zorba
 
 
 SERIALIZABLE_CLASS_VERSIONS(MaterializeIterator)
+DEF_GET_NAME_AS_STRING(MaterializeIterator)
 
 
 MaterializeIteratorState::MaterializeIteratorState()

@@ -28,10 +28,13 @@
 namespace zorba
 {
 SERIALIZABLE_CLASS_VERSIONS(EmptyIterator)
+DEF_GET_NAME_AS_STRING(EmptyIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(SingletonIterator)
+DEF_GET_NAME_AS_STRING(SingletonIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(IfThenElseIterator)
+DEF_GET_NAME_AS_STRING(IfThenElseIterator)
 
 
 /*******************************************************************************

@@ -49,131 +49,185 @@ namespace zorba
 SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
                                NumArithIterator<AddOperation>,
                                1)
+template<>
+DEF_GET_NAME_AS_STRING(NumArithIterator<AddOperation>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
                                NumArithIterator<SubtractOperation>,
                                2)
+template<>
+DEF_GET_NAME_AS_STRING(NumArithIterator<SubtractOperation>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
                                NumArithIterator<MultiplyOperation>,
                                3)
+template<>
+DEF_GET_NAME_AS_STRING(NumArithIterator<MultiplyOperation>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
                                NumArithIterator<DivideOperation>,
                                4)
+template<>
+DEF_GET_NAME_AS_STRING(NumArithIterator<DivideOperation>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
                                NumArithIterator<IntegerDivideOperation>,
                                5)
+template<>
+DEF_GET_NAME_AS_STRING(NumArithIterator<IntegerDivideOperation>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(NumArithIterator,
                                NumArithIterator<ModOperation>,
                                6)
+template<>
+DEF_GET_NAME_AS_STRING(NumArithIterator<ModOperation>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<AddOperation, store::XS_DOUBLE>,
 1);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<AddOperation,store::XS_DOUBLE>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<AddOperation, store::XS_FLOAT>,
 2);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<AddOperation,store::XS_FLOAT>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<AddOperation, store::XS_DECIMAL>,
 3);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<AddOperation,store::XS_DECIMAL>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<AddOperation, store::XS_INTEGER>,
 4);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<AddOperation,store::XS_INTEGER>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<SubtractOperation, store::XS_DOUBLE>,
 5);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<SubtractOperation,store::XS_DOUBLE>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<SubtractOperation, store::XS_FLOAT>,
 6);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<SubtractOperation,store::XS_FLOAT>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<SubtractOperation, store::XS_DECIMAL>,
 7);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<SubtractOperation,store::XS_DECIMAL>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<SubtractOperation, store::XS_INTEGER>,
 8);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<SubtractOperation,store::XS_INTEGER>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<MultiplyOperation, store::XS_DOUBLE>,
 9);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<MultiplyOperation,store::XS_DOUBLE>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<MultiplyOperation, store::XS_FLOAT>,
 10);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<MultiplyOperation,store::XS_FLOAT>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<MultiplyOperation, store::XS_DECIMAL>,
 11);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<MultiplyOperation,store::XS_DECIMAL>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<MultiplyOperation, store::XS_INTEGER>,
 12);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<DivideOperation, store::XS_DOUBLE>,
 13);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<DivideOperation,store::XS_DOUBLE>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<DivideOperation, store::XS_FLOAT>,
 14);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<DivideOperation,store::XS_FLOAT>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<DivideOperation, store::XS_DECIMAL>,
 15);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<DivideOperation,store::XS_DECIMAL>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<DivideOperation, store::XS_INTEGER>,
 16);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<DivideOperation,store::XS_INTEGER>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<ModOperation, store::XS_DOUBLE>,
 17);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<ModOperation,store::XS_DOUBLE>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<ModOperation, store::XS_FLOAT>,
 18);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<ModOperation,store::XS_FLOAT>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<ModOperation, store::XS_DECIMAL>,
 19);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<ModOperation,store::XS_DECIMAL>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_2(
 SpecificNumArithIterator,
 SpecificNumArithIterator<ModOperation, store::XS_INTEGER>,
 20);
+template<>
+DEF_GET_NAME_AS_STRING(SpecificNumArithIterator<ModOperation,store::XS_INTEGER>)
 
 
 SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
+DEF_GET_NAME_AS_STRING(OpNumericUnaryIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(OpDoubleUnaryIterator)
+DEF_GET_NAME_AS_STRING(OpDoubleUnaryIterator)
 
 
 /*******************************************************************************

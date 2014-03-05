@@ -22,13 +22,12 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void print_iter_plan( IterPrinter &p, PlanIterator *pi ) {
-  PrinterVisitor v( p, pi );
+void print_iter_plan( IterPrinter &p, PlanIterator *i, PlanState *s ) {
+  PrinterVisitor v( p, i, s );
   v.print();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-
 /* vim:set et sw=2 ts=2: */

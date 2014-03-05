@@ -70,6 +70,10 @@ void JSONDecodeFromRoundtripIteratorState::init(PlanState& planState) {
 void JSONDecodeFromRoundtripIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring JSONDecodeFromRoundtripIterator::getNameAsString() const {
+  return "fn-jsoniq:decode-from-roundtrip";
+}
 // </JSONDecodeFromRoundtripIterator>
 
 
@@ -110,6 +114,10 @@ void JSONEncodeForRoundtripIteratorState::init(PlanState& planState) {
 void JSONEncodeForRoundtripIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring JSONEncodeForRoundtripIterator::getNameAsString() const {
+  return "fn-jsoniq:encode-for-roundtrip";
+}
 // </JSONEncodeForRoundtripIterator>
 
 
@@ -142,6 +150,10 @@ JSONParseIterator::~JSONParseIterator() {}
 
 JSONParseIteratorState::JSONParseIteratorState() {}
 
+
+zstring JSONParseIterator::getNameAsString() const {
+  return "fn-jsoniq:parse-json";
+}
 // </JSONParseIterator>
 
 
@@ -170,6 +182,10 @@ MultiObjectKeysIteratorState::MultiObjectKeysIteratorState() {}
 
 MultiObjectKeysIteratorState::~MultiObjectKeysIteratorState() {}
 
+
+zstring MultiObjectKeysIterator::getNameAsString() const {
+  return "fn-jsoniq:keys";
+}
 // </MultiObjectKeysIterator>
 
 
@@ -205,6 +221,10 @@ void SingleObjectKeysIteratorState::init(PlanState& planState) {
 
 void SingleObjectKeysIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
+}
+
+zstring SingleObjectKeysIterator::getNameAsString() const {
+  return "op-zorba:keys";
 }
 // </SingleObjectKeysIterator>
 
@@ -243,6 +263,10 @@ void MultiObjectLookupIteratorState::init(PlanState& planState) {
 void MultiObjectLookupIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring MultiObjectLookupIterator::getNameAsString() const {
+  return "op-zorba:multi-object-lookup";
+}
 // </MultiObjectLookupIterator>
 
 
@@ -268,6 +292,10 @@ theChild1->accept(v);
 
 SingleObjectLookupIterator::~SingleObjectLookupIterator() {}
 
+
+zstring SingleObjectLookupIterator::getNameAsString() const {
+  return "op-zorba:single-object-lookup";
+}
 // </SingleObjectLookupIterator>
 
 
@@ -304,6 +332,10 @@ void JSONObjectProjectIteratorState::init(PlanState& planState) {
 
 void JSONObjectProjectIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
+}
+
+zstring JSONObjectProjectIterator::getNameAsString() const {
+  return "fn-jsoniq:project";
 }
 // </JSONObjectProjectIterator>
 
@@ -342,6 +374,10 @@ void JSONObjectTrimIteratorState::init(PlanState& planState) {
 void JSONObjectTrimIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring JSONObjectTrimIterator::getNameAsString() const {
+  return "fn-jsoniq:trim";
+}
 // </JSONObjectTrimIterator>
 
 
@@ -378,6 +414,10 @@ void MultiArrayMembersIteratorState::init(PlanState& planState) {
 void MultiArrayMembersIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring MultiArrayMembersIterator::getNameAsString() const {
+  return "fn-jsoniq:members";
+}
 // </MultiArrayMembersIterator>
 
 
@@ -413,6 +453,10 @@ void SingleArrayMembersIteratorState::init(PlanState& planState) {
 
 void SingleArrayMembersIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
+}
+
+zstring SingleArrayMembersIterator::getNameAsString() const {
+  return "op-zorba:members";
 }
 // </SingleArrayMembersIterator>
 
@@ -451,6 +495,10 @@ void MultiArrayLookupIteratorState::init(PlanState& planState) {
 void MultiArrayLookupIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring MultiArrayLookupIterator::getNameAsString() const {
+  return "op-zorba:multi-array-lookup";
+}
 // </MultiArrayLookupIterator>
 
 
@@ -476,6 +524,10 @@ theChild1->accept(v);
 
 SingleArrayLookupIterator::~SingleArrayLookupIterator() {}
 
+
+zstring SingleArrayLookupIterator::getNameAsString() const {
+  return "op-zorba:single-array-lookup";
+}
 // </SingleArrayLookupIterator>
 
 
@@ -500,6 +552,10 @@ void JSONArraySizeIterator::accept(PlanIterVisitor& v) const
 
 JSONArraySizeIterator::~JSONArraySizeIterator() {}
 
+
+zstring JSONArraySizeIterator::getNameAsString() const {
+  return "fn-jsoniq:size";
+}
 // </JSONArraySizeIterator>
 
 
@@ -532,6 +588,10 @@ JSONArrayFlattenIteratorState::~JSONArrayFlattenIteratorState() {}
 void JSONArrayFlattenIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
+
+zstring JSONArrayFlattenIterator::getNameAsString() const {
+  return "fn-jsoniq:flatten";
+}
 // </JSONArrayFlattenIterator>
 
 
@@ -556,6 +616,10 @@ void JSONNullIterator::accept(PlanIterVisitor& v) const
 
 JSONNullIterator::~JSONNullIterator() {}
 
+
+zstring JSONNullIterator::getNameAsString() const {
+  return "fn-jsoniq:null";
+}
 // </JSONNullIterator>
 
 
@@ -584,6 +648,10 @@ void JSONObjectInsertIterator::accept(PlanIterVisitor& v) const
 
 JSONObjectInsertIterator::~JSONObjectInsertIterator() {}
 
+
+zstring JSONObjectInsertIterator::getNameAsString() const {
+  return "op-zorba:json-object-insert";
+}
 // </JSONObjectInsertIterator>
 
 
@@ -612,6 +680,10 @@ void JSONArrayInsertIterator::accept(PlanIterVisitor& v) const
 
 JSONArrayInsertIterator::~JSONArrayInsertIterator() {}
 
+
+zstring JSONArrayInsertIterator::getNameAsString() const {
+  return "op-zorba:json-array-insert";
+}
 // </JSONArrayInsertIterator>
 
 
@@ -637,6 +709,10 @@ theChild1->accept(v);
 
 JSONDeleteIterator::~JSONDeleteIterator() {}
 
+
+zstring JSONDeleteIterator::getNameAsString() const {
+  return "op-zorba:json-delete";
+}
 // </JSONDeleteIterator>
 
 
@@ -667,6 +743,10 @@ void JSONReplaceValueIterator::accept(PlanIterVisitor& v) const
 
 JSONReplaceValueIterator::~JSONReplaceValueIterator() {}
 
+
+zstring JSONReplaceValueIterator::getNameAsString() const {
+  return "op-zorba:json-replace-value";
+}
 // </JSONReplaceValueIterator>
 
 
@@ -695,6 +775,10 @@ void JSONRenameIterator::accept(PlanIterVisitor& v) const
 
 JSONRenameIterator::~JSONRenameIterator() {}
 
+
+zstring JSONRenameIterator::getNameAsString() const {
+  return "op-zorba:json-rename";
+}
 // </JSONRenameIterator>
 
 
@@ -723,6 +807,10 @@ void JSONArrayAppendIterator::accept(PlanIterVisitor& v) const
 
 JSONArrayAppendIterator::~JSONArrayAppendIterator() {}
 
+
+zstring JSONArrayAppendIterator::getNameAsString() const {
+  return "op-zorba:json-array-append";
+}
 // </JSONArrayAppendIterator>
 
 
@@ -747,6 +835,10 @@ void JSONBoxIterator::accept(PlanIterVisitor& v) const
 
 JSONBoxIterator::~JSONBoxIterator() {}
 
+
+zstring JSONBoxIterator::getNameAsString() const {
+  return "op-zorba:json-box";
+}
 // </JSONBoxIterator>
 
 

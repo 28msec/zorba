@@ -50,22 +50,31 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(DocumentIterator)
+DEF_GET_NAME_AS_STRING(DocumentIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ElementIterator)
+DEF_GET_NAME_AS_STRING(ElementIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(AttributeIterator)
+DEF_GET_NAME_AS_STRING(AttributeIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(NameCastIterator)
+DEF_GET_NAME_AS_STRING(NameCastIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CommentIterator)
+DEF_GET_NAME_AS_STRING(CommentIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(PiIterator)
+DEF_GET_NAME_AS_STRING(PiIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(TextIterator)
+DEF_GET_NAME_AS_STRING(TextIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(NamespaceIterator)
+DEF_GET_NAME_AS_STRING(NamespaceIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(EnclosedIterator)
+DEF_GET_NAME_AS_STRING(EnclosedIterator)
 
 /*******************************************************************************
 

@@ -58,6 +58,10 @@ void CurrentDate::accept(PlanIterVisitor& v) const
 
 CurrentDate::~CurrentDate() {}
 
+
+zstring CurrentDate::getNameAsString() const {
+  return "fn-zorba-dateTime:current-date";
+}
 // </CurrentDate>
 
 
@@ -86,6 +90,10 @@ void CurrentDateTime::accept(PlanIterVisitor& v) const
 
 CurrentDateTime::~CurrentDateTime() {}
 
+
+zstring CurrentDateTime::getNameAsString() const {
+  return "fn-zorba-dateTime:current-dateTime";
+}
 // </CurrentDateTime>
 
 
@@ -114,6 +122,10 @@ void CurrentTime::accept(PlanIterVisitor& v) const
 
 CurrentTime::~CurrentTime() {}
 
+
+zstring CurrentTime::getNameAsString() const {
+  return "fn-zorba-dateTime:current-time";
+}
 // </CurrentTime>
 
 
@@ -142,6 +154,10 @@ void MillisToDateTime::accept(PlanIterVisitor& v) const
 
 MillisToDateTime::~MillisToDateTime() {}
 
+
+zstring MillisToDateTime::getNameAsString() const {
+  return "fn-zorba-dateTime:millis-to-dateTime";
+}
 // </MillisToDateTime>
 
 
@@ -170,6 +186,10 @@ void ParseDate::accept(PlanIterVisitor& v) const
 
 ParseDate::~ParseDate() {}
 
+
+zstring ParseDate::getNameAsString() const {
+  return "fn-zorba-dateTime:parse-date";
+}
 // </ParseDate>
 
 
@@ -198,6 +218,10 @@ void ParseDateTime::accept(PlanIterVisitor& v) const
 
 ParseDateTime::~ParseDateTime() {}
 
+
+zstring ParseDateTime::getNameAsString() const {
+  return "fn-zorba-dateTime:parse-dateTime";
+}
 // </ParseDateTime>
 
 
@@ -226,6 +250,10 @@ void ParseTime::accept(PlanIterVisitor& v) const
 
 ParseTime::~ParseTime() {}
 
+
+zstring ParseTime::getNameAsString() const {
+  return "fn-zorba-dateTime:parse-time";
+}
 // </ParseTime>
 
 
@@ -254,6 +282,10 @@ void Timestamp::accept(PlanIterVisitor& v) const
 
 Timestamp::~Timestamp() {}
 
+
+zstring Timestamp::getNameAsString() const {
+  return "fn-zorba-dateTime:timestamp";
+}
 // </Timestamp>
 
 
@@ -282,6 +314,10 @@ void UTCOffset::accept(PlanIterVisitor& v) const
 
 UTCOffset::~UTCOffset() {}
 
+
+zstring UTCOffset::getNameAsString() const {
+  return "fn-zorba-dateTime:utc-offset";
+}
 // </UTCOffset>
 
 

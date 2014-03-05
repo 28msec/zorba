@@ -128,6 +128,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   uint32_t getStateSizeOfSubtree() const;
 
 protected:

@@ -59,6 +59,8 @@ public:
 
   virtual ~AbsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -88,6 +90,8 @@ public:
   {}
 
   virtual ~CeilingIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -119,6 +123,8 @@ public:
 
   virtual ~FloorIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -148,6 +154,8 @@ public:
   {}
 
   virtual ~RoundIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -179,6 +187,8 @@ public:
 
   virtual ~RoundHalfToEvenIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -209,6 +219,8 @@ public:
 
   virtual ~FormatNumberIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -238,6 +250,8 @@ public:
   {}
 
   virtual ~FormatIntegerIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

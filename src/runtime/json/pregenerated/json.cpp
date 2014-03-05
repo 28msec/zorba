@@ -58,6 +58,10 @@ void JSONtoXMLInternal::accept(PlanIterVisitor& v) const
 
 JSONtoXMLInternal::~JSONtoXMLInternal() {}
 
+
+zstring JSONtoXMLInternal::getNameAsString() const {
+  return "fn-zorba-json:json-to-xml-internal";
+}
 // </JSONtoXMLInternal>
 
 
@@ -86,6 +90,10 @@ void XMLtoJSONInternal::accept(PlanIterVisitor& v) const
 
 XMLtoJSONInternal::~XMLtoJSONInternal() {}
 
+
+zstring XMLtoJSONInternal::getNameAsString() const {
+  return "fn-zorba-json:xml-to-json-internal";
+}
 // </XMLtoJSONInternal>
 
 

@@ -58,6 +58,10 @@ void CodepointsToStringIterator::accept(PlanIterVisitor& v) const
 
 CodepointsToStringIterator::~CodepointsToStringIterator() {}
 
+
+zstring CodepointsToStringIterator::getNameAsString() const {
+  return "fn:codepoints-to-string";
+}
 // </CodepointsToStringIterator>
 
 
@@ -90,6 +94,10 @@ StringToCodepointsIteratorState::StringToCodepointsIteratorState() {}
 
 StringToCodepointsIteratorState::~StringToCodepointsIteratorState() {}
 
+
+zstring StringToCodepointsIterator::getNameAsString() const {
+  return "fn:string-to-codepoints";
+}
 // </StringToCodepointsIterator>
 
 
@@ -118,6 +126,10 @@ void CompareStrIterator::accept(PlanIterVisitor& v) const
 
 CompareStrIterator::~CompareStrIterator() {}
 
+
+zstring CompareStrIterator::getNameAsString() const {
+  return "fn:compare";
+}
 // </CompareStrIterator>
 
 
@@ -146,6 +158,10 @@ void CodepointEqualIterator::accept(PlanIterVisitor& v) const
 
 CodepointEqualIterator::~CodepointEqualIterator() {}
 
+
+zstring CodepointEqualIterator::getNameAsString() const {
+  return "fn:codepoint-equal";
+}
 // </CodepointEqualIterator>
 
 
@@ -174,6 +190,10 @@ void ConcatStrIterator::accept(PlanIterVisitor& v) const
 
 ConcatStrIterator::~ConcatStrIterator() {}
 
+
+zstring ConcatStrIterator::getNameAsString() const {
+  return "fn:concat";
+}
 // </ConcatStrIterator>
 
 
@@ -202,6 +222,10 @@ void StringJoinIterator::accept(PlanIterVisitor& v) const
 
 StringJoinIterator::~StringJoinIterator() {}
 
+
+zstring StringJoinIterator::getNameAsString() const {
+  return "fn:string-join";
+}
 // </StringJoinIterator>
 
 
@@ -230,6 +254,10 @@ void SubstringIterator::accept(PlanIterVisitor& v) const
 
 SubstringIterator::~SubstringIterator() {}
 
+
+zstring SubstringIterator::getNameAsString() const {
+  return "fn:substring";
+}
 // </SubstringIterator>
 
 
@@ -258,6 +286,10 @@ void SubstringIntOptIterator::accept(PlanIterVisitor& v) const
 
 SubstringIntOptIterator::~SubstringIntOptIterator() {}
 
+
+zstring SubstringIntOptIterator::getNameAsString() const {
+  return "op:substring_int";
+}
 // </SubstringIntOptIterator>
 
 
@@ -286,6 +318,10 @@ void StringLengthIterator::accept(PlanIterVisitor& v) const
 
 StringLengthIterator::~StringLengthIterator() {}
 
+
+zstring StringLengthIterator::getNameAsString() const {
+  return "fn:string-length";
+}
 // </StringLengthIterator>
 
 
@@ -314,6 +350,10 @@ void NormalizeSpaceIterator::accept(PlanIterVisitor& v) const
 
 NormalizeSpaceIterator::~NormalizeSpaceIterator() {}
 
+
+zstring NormalizeSpaceIterator::getNameAsString() const {
+  return "fn:normalize-space";
+}
 // </NormalizeSpaceIterator>
 
 
@@ -342,6 +382,10 @@ void NormalizeUnicodeIterator::accept(PlanIterVisitor& v) const
 
 NormalizeUnicodeIterator::~NormalizeUnicodeIterator() {}
 
+
+zstring NormalizeUnicodeIterator::getNameAsString() const {
+  return "fn:normalize-unicode";
+}
 // </NormalizeUnicodeIterator>
 
 
@@ -370,6 +414,10 @@ void UpperCaseIterator::accept(PlanIterVisitor& v) const
 
 UpperCaseIterator::~UpperCaseIterator() {}
 
+
+zstring UpperCaseIterator::getNameAsString() const {
+  return "fn:upper-case";
+}
 // </UpperCaseIterator>
 
 
@@ -398,6 +446,10 @@ void LowerCaseIterator::accept(PlanIterVisitor& v) const
 
 LowerCaseIterator::~LowerCaseIterator() {}
 
+
+zstring LowerCaseIterator::getNameAsString() const {
+  return "fn:lower-case";
+}
 // </LowerCaseIterator>
 
 
@@ -426,6 +478,10 @@ void TranslateIterator::accept(PlanIterVisitor& v) const
 
 TranslateIterator::~TranslateIterator() {}
 
+
+zstring TranslateIterator::getNameAsString() const {
+  return "fn:translate";
+}
 // </TranslateIterator>
 
 
@@ -454,6 +510,10 @@ void EncodeForUriIterator::accept(PlanIterVisitor& v) const
 
 EncodeForUriIterator::~EncodeForUriIterator() {}
 
+
+zstring EncodeForUriIterator::getNameAsString() const {
+  return "fn:encode-for-uri";
+}
 // </EncodeForUriIterator>
 
 
@@ -482,6 +542,10 @@ void IriToUriIterator::accept(PlanIterVisitor& v) const
 
 IriToUriIterator::~IriToUriIterator() {}
 
+
+zstring IriToUriIterator::getNameAsString() const {
+  return "fn:iri-to-uri";
+}
 // </IriToUriIterator>
 
 
@@ -510,6 +574,10 @@ void EscapeHtmlUriIterator::accept(PlanIterVisitor& v) const
 
 EscapeHtmlUriIterator::~EscapeHtmlUriIterator() {}
 
+
+zstring EscapeHtmlUriIterator::getNameAsString() const {
+  return "fn:escape-html-uri";
+}
 // </EscapeHtmlUriIterator>
 
 
@@ -538,6 +606,10 @@ void ContainsIterator::accept(PlanIterVisitor& v) const
 
 ContainsIterator::~ContainsIterator() {}
 
+
+zstring ContainsIterator::getNameAsString() const {
+  return "fn:contains";
+}
 // </ContainsIterator>
 
 
@@ -566,6 +638,10 @@ void StartsWithIterator::accept(PlanIterVisitor& v) const
 
 StartsWithIterator::~StartsWithIterator() {}
 
+
+zstring StartsWithIterator::getNameAsString() const {
+  return "fn:starts-with";
+}
 // </StartsWithIterator>
 
 
@@ -594,6 +670,10 @@ void EndsWithIterator::accept(PlanIterVisitor& v) const
 
 EndsWithIterator::~EndsWithIterator() {}
 
+
+zstring EndsWithIterator::getNameAsString() const {
+  return "fn:ends-with";
+}
 // </EndsWithIterator>
 
 
@@ -622,6 +702,10 @@ void SubstringBeforeIterator::accept(PlanIterVisitor& v) const
 
 SubstringBeforeIterator::~SubstringBeforeIterator() {}
 
+
+zstring SubstringBeforeIterator::getNameAsString() const {
+  return "fn:substring-before";
+}
 // </SubstringBeforeIterator>
 
 
@@ -650,6 +734,10 @@ void SubstringAfterIterator::accept(PlanIterVisitor& v) const
 
 SubstringAfterIterator::~SubstringAfterIterator() {}
 
+
+zstring SubstringAfterIterator::getNameAsString() const {
+  return "fn:substring-after";
+}
 // </SubstringAfterIterator>
 
 
@@ -678,6 +766,10 @@ void FnMatchesIterator::accept(PlanIterVisitor& v) const
 
 FnMatchesIterator::~FnMatchesIterator() {}
 
+
+zstring FnMatchesIterator::getNameAsString() const {
+  return "fn:matches";
+}
 // </FnMatchesIterator>
 
 
@@ -706,6 +798,10 @@ void FnReplaceIterator::accept(PlanIterVisitor& v) const
 
 FnReplaceIterator::~FnReplaceIterator() {}
 
+
+zstring FnReplaceIterator::getNameAsString() const {
+  return "fn:replace";
+}
 // </FnReplaceIterator>
 
 
@@ -744,6 +840,10 @@ void FnTokenizeIteratorState::init(PlanState& planState) {
   start_pos = 0;
   hasmatched = false;
 }
+
+zstring FnTokenizeIterator::getNameAsString() const {
+  return "fn:tokenize";
+}
 // </FnTokenizeIterator>
 
 
@@ -772,6 +872,10 @@ void FnAnalyzeStringIterator::accept(PlanIterVisitor& v) const
 
 FnAnalyzeStringIterator::~FnAnalyzeStringIterator() {}
 
+
+zstring FnAnalyzeStringIterator::getNameAsString() const {
+  return "fn:analyze-string";
+}
 // </FnAnalyzeStringIterator>
 
 
@@ -800,6 +904,10 @@ void StringAnalyzeStringIterator::accept(PlanIterVisitor& v) const
 
 StringAnalyzeStringIterator::~StringAnalyzeStringIterator() {}
 
+
+zstring StringAnalyzeStringIterator::getNameAsString() const {
+  return "fn-zorba-string:analyze-string";
+}
 // </StringAnalyzeStringIterator>
 
 
@@ -828,6 +936,10 @@ void StringMaterializeIterator::accept(PlanIterVisitor& v) const
 
 StringMaterializeIterator::~StringMaterializeIterator() {}
 
+
+zstring StringMaterializeIterator::getNameAsString() const {
+  return "fn-zorba-string:materialize";
+}
 // </StringMaterializeIterator>
 
 
@@ -856,6 +968,10 @@ void StringIsStreamableIterator::accept(PlanIterVisitor& v) const
 
 StringIsStreamableIterator::~StringIsStreamableIterator() {}
 
+
+zstring StringIsStreamableIterator::getNameAsString() const {
+  return "fn-zorba-string:is-streamable";
+}
 // </StringIsStreamableIterator>
 
 
@@ -884,6 +1000,10 @@ void StringIsSeekableIterator::accept(PlanIterVisitor& v) const
 
 StringIsSeekableIterator::~StringIsSeekableIterator() {}
 
+
+zstring StringIsSeekableIterator::getNameAsString() const {
+  return "fn-zorba-string:is-seekable";
+}
 // </StringIsSeekableIterator>
 
 
@@ -925,6 +1045,10 @@ void StringSplitIteratorState::init(PlanState& planState) {
 void StringSplitIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theNextStartPos = 0;
+}
+
+zstring StringSplitIterator::getNameAsString() const {
+  return "fn-zorba-string:split";
 }
 // </StringSplitIterator>
 

@@ -65,6 +65,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
 public:
@@ -105,6 +107,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -128,6 +132,8 @@ public:
       std::vector<PlanIter_t>& inChildren);
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -161,6 +167,8 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
@@ -288,6 +296,8 @@ public:
 
   void openImpl(PlanState& planState, uint32_t& offset);
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -320,6 +330,8 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 

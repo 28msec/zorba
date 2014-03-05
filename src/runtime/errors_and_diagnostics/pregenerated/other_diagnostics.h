@@ -58,6 +58,8 @@ public:
 
   virtual ~ReadLineIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -91,6 +93,8 @@ public:
   {}
 
   virtual ~PrintIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -135,6 +139,8 @@ public:
   {}
 
   virtual ~FunctionTraceIterator();
+
+  zstring getNameAsString() const;
 
 public:
   void setFunctionName(const store::Item_t& aFunctionName);

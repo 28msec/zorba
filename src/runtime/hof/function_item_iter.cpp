@@ -33,6 +33,7 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionItemIterator)
+DEF_GET_NAME_AS_STRING(FunctionItemIterator)
 
 /*******************************************************************************
 

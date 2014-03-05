@@ -16,6 +16,8 @@
 
 #include "stdafx.h"
 
+#include <sstream>
+
 #include <zorba/properties.h>
 
 #include "context/namespace_context.h"
@@ -65,6 +67,7 @@
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/visitors/printer_visitor.h"
 #include "types/typeops.h"
+#include "util/ascii_util.h"
 
 using namespace std;
 
@@ -78,15 +81,35 @@ void PrinterVisitor::print() {
   thePrinter.stop();
 }
 
-void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
-  if (! Properties::instance().getNoTreeIDs()) {
-    std::stringstream lStream;
-    if (Properties::instance().getStableIteratorIDs())
-      lStream << theId;
+void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
+  Properties const &props = Properties::instance();
+  if ( !props.getNoTreeIDs() ) {
+    ostringstream oss;
+    if ( props.getStableIteratorIDs() )
+      oss << id;
     else
-      lStream << aIter;
+      oss << pi;
+    thePrinter.addAttribute( "id", oss.str() );
+  }
 
-    thePrinter.addAttribute("id", lStream.str());
+  if ( props.getPrintLocations() ) {
+    QueryLoc const &loc = pi->getLocation();
+    ostringstream oss;
+    oss << loc.getFilename() << ':' << loc.getLineno();
+    thePrinter.addAttribute( "location", oss.str() );
+  }
+
+  if ( props.getProfile() && thePlanState ) {
+    PlanIteratorState const *const pi_state =
+      StateTraitsImpl<PlanIteratorState>::getState(
+        *thePlanState, pi->getStateOffset()
+      );
+    profile_data const &pd = pi_state->get_profile_data();
+    ascii::itoa_buf_type buf;
+    thePrinter.addAttribute( "prof-calls", ascii::itoa( pd.next_.call_count_, buf ) );
+    thePrinter.addAttribute( "prof-cpu", ascii::itoa( pd.next_.cpu_time_, buf ) );
+    thePrinter.addAttribute( "prof-wall", ascii::itoa( pd.next_.wall_time_, buf ) );
+    thePrinter.addAttribute( "prof-name", pi->getNameAsString().str() );
   }
 }
 
@@ -106,9 +129,9 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
   else
     thePrinter.addAttribute("typename","*");
 
-  std::stringstream lStream;
-  lStream << a->nilledAllowed();
-  thePrinter.addAttribute("nill-allowed", lStream.str());
+  ostringstream oss;
+  oss << a->nilledAllowed();
+  thePrinter.addAttribute("nill-allowed", oss.str());
 
   if (a->getTargetPos() >= 0)
     thePrinter.addAttribute("target_position", ztd::to_string(a->getTargetPos()));
@@ -546,11 +569,12 @@ void PrinterVisitor::beginVisit( UDFunctionCallIterator const &i ) {
   thePrinter.startBeginVisit( "UDFunctionCallIterator", ++theId );
   if ( i.isCached() )
     thePrinter.addAttribute( "cached", "true" );
-  if ( i.theUDF->getSignature().getName() )
-    thePrinter.addAttribute( "function", i.theUDF->getSignature().getName()->getStringValue().str() );
+  store::Item const *const name = i.theUDF->getSignature().getName();
+  if ( name )
+    thePrinter.addAttribute( "function", name->getStringValue().str() );
   else
     thePrinter.addAttribute( "function", "inline function" );
-  printCommons(  &i, theId );
+  printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
 }
 DEF_END_VISIT( UDFunctionCallIterator )

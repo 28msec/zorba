@@ -66,6 +66,8 @@ public:
 
   virtual ~CurrentCompareOptionsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -97,6 +99,8 @@ public:
   {}
 
   virtual ~CurrentLangIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -130,6 +134,8 @@ public:
 
   virtual ~HostLangIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -161,6 +167,8 @@ public:
   {}
 
   virtual ~IsStemLangSupportedIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -194,6 +202,8 @@ public:
 
   virtual ~IsStopWordIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -225,6 +235,8 @@ public:
   {}
 
   virtual ~IsStopWordLangSupportedIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -258,6 +270,8 @@ public:
 
   virtual ~IsThesaurusLangSupportedIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -289,6 +303,8 @@ public:
   {}
 
   virtual ~IsTokenizerLangSupportedIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -322,6 +338,8 @@ public:
 
   virtual ~StemIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -353,6 +371,8 @@ public:
   {}
 
   virtual ~StripDiacriticsIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -403,6 +423,8 @@ public:
 
   virtual ~ThesaurusLookupIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -449,6 +471,8 @@ public:
   {}
 
   virtual ~TokenizeNodeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -504,6 +528,8 @@ public:
 
   virtual ~TokenizeNodesIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -537,6 +563,8 @@ public:
   {}
 
   virtual ~TokenizerPropertiesIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -581,6 +609,8 @@ public:
   {}
 
   virtual ~TokenizeStringIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

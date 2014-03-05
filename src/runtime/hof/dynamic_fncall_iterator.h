@@ -121,6 +121,8 @@ public:
 
   void openImpl(PlanState& planState, uint32_t& offset);
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -185,6 +187,8 @@ public:
   void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  zstring getNameAsString() const;
 
   void resetImpl(PlanState& planState) const;
 };

@@ -288,6 +288,24 @@ public:
     print_translated_ = b;
   }
 
+  /**
+   * Gets whether profiling has been enabled.
+   *
+   * @return Returns whether profiling has been enabled.
+   */
+  bool getProfile() const {
+    return profile_;
+  }
+
+  /**
+   * Enables or disables profiling.
+   *
+   * @param profile If \c true, profiling is enabled.
+   */
+  void setProfile( bool profile ) {
+    profile_ = profile;
+  }
+
   bool getStableIteratorIDs() const {
     return stable_iterator_ids_;
   }
@@ -375,6 +393,7 @@ private:
   bool                print_optimized_;
   bool                print_static_types_;
   bool                print_translated_;
+  bool                profile_;
   bool                stable_iterator_ids_;
   bool                trace_codegen_;
 #ifndef ZORBA_NO_FULL_TEXT
