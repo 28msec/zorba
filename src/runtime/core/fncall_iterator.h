@@ -168,6 +168,8 @@ public:
 
   virtual ~UDFunctionCallIterator();
 
+  zstring getNameAsString() const;
+
   bool isUpdating() const;
 
   void setDynamic() { theIsDynamic = true; }
@@ -251,6 +253,8 @@ public:
         static_context* moduleSctx);
 
   virtual ~ExtFunctionCallIterator();
+
+  zstring getNameAsString() const;
 
   virtual bool isUpdating() const { return theIsUpdating; }
 

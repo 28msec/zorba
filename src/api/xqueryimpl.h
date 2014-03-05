@@ -370,6 +370,8 @@ protected:
         void* aHandlerData,
         const Zorba_SerializerOptions_t* = NULL);
 
+  void dispose( PlanWrapper_t const& );
+
   void removeResultIterator(const ResultIteratorImpl* iter);
 
   void checkNotClosed() const;

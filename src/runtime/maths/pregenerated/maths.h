@@ -60,6 +60,8 @@ public:
 
   virtual ~SqrtIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -89,6 +91,8 @@ public:
   {}
 
   virtual ~ExpIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -120,6 +124,8 @@ public:
 
   virtual ~Exp10Iterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -149,6 +155,8 @@ public:
   {}
 
   virtual ~LogIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -180,6 +188,8 @@ public:
 
   virtual ~Log10Iterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -209,6 +219,8 @@ public:
   {}
 
   virtual ~SinIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -240,6 +252,8 @@ public:
 
   virtual ~CosIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -269,6 +283,8 @@ public:
   {}
 
   virtual ~TanIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -300,6 +316,8 @@ public:
 
   virtual ~ArcSinIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -329,6 +347,8 @@ public:
   {}
 
   virtual ~ArcCosIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -360,6 +380,8 @@ public:
 
   virtual ~ArcTanIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -389,6 +411,8 @@ public:
   {}
 
   virtual ~Atan2Iterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -420,6 +444,8 @@ public:
 
   virtual ~CoshIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -449,6 +475,8 @@ public:
   {}
 
   virtual ~AcoshIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -480,6 +508,8 @@ public:
 
   virtual ~FmodIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -509,6 +539,8 @@ public:
   {}
 
   virtual ~LdexpIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -540,6 +572,8 @@ public:
 
   virtual ~PowIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -569,6 +603,8 @@ public:
   {}
 
   virtual ~SinhIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -600,6 +636,8 @@ public:
 
   virtual ~AsinhIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -629,6 +667,8 @@ public:
   {}
 
   virtual ~TanhIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -660,6 +700,8 @@ public:
 
   virtual ~AtanhIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -688,6 +730,8 @@ public:
   {}
 
   virtual ~PiNumberIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -719,6 +763,8 @@ public:
 
   virtual ~IsInfIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -748,6 +794,8 @@ public:
   {}
 
   virtual ~IsNaNIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -792,6 +840,8 @@ public:
 
   virtual ~ModfIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -834,6 +884,8 @@ public:
   {}
 
   virtual ~FrexpIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

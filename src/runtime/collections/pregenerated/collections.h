@@ -63,6 +63,8 @@ public:
 
   virtual ~ZorbaCreateCollectionIterator();
 
+  zstring getNameAsString() const;
+
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
@@ -99,6 +101,8 @@ public:
 
   virtual ~ZorbaDeleteCollectionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -132,6 +136,8 @@ public:
   {}
 
   virtual ~IsAvailableCollectionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -180,6 +186,8 @@ public:
 
   virtual ~AvailableCollectionsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -223,6 +231,8 @@ public:
   {}
 
   virtual ~FnCollectionIterator();
+
+  zstring getNameAsString() const;
 
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
@@ -277,6 +287,8 @@ public:
 
   bool isDynamic() const { return theIsDynamic; }
 
+  zstring getNameAsString() const;
+
 public:
   bool isCountOptimizable() const;
   bool count(store::Item_t& result, PlanState& planState) const;
@@ -312,6 +324,8 @@ public:
 
   virtual ~ZorbaCollectionNameIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -345,6 +359,8 @@ public:
   {}
 
   virtual ~ZorbaIndexOfIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -392,6 +408,8 @@ public:
 
   virtual ~ZorbaApplyInsertIterator();
 
+  zstring getNameAsString() const;
+
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
@@ -429,6 +447,8 @@ public:
 
   virtual ~ZorbaInsertAfterIterator();
 
+  zstring getNameAsString() const;
+
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
@@ -462,6 +482,8 @@ public:
   {}
 
   virtual ~ZorbaInsertBeforeIterator();
+
+  zstring getNameAsString() const;
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -497,6 +519,8 @@ public:
 
   virtual ~ZorbaInsertFirstIterator();
 
+  zstring getNameAsString() const;
+
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
@@ -530,6 +554,8 @@ public:
   {}
 
   virtual ~ZorbaInsertLastIterator();
+
+  zstring getNameAsString() const;
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -579,6 +605,8 @@ public:
 
   virtual ~ZorbaApplyInsertFirstIterator();
 
+  zstring getNameAsString() const;
+
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
@@ -626,6 +654,8 @@ public:
   {}
 
   virtual ~ZorbaApplyInsertLastIterator();
+
+  zstring getNameAsString() const;
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -675,6 +705,8 @@ public:
 
   virtual ~ZorbaApplyInsertBeforeIterator();
 
+  zstring getNameAsString() const;
+
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
@@ -723,6 +755,8 @@ public:
 
   virtual ~ZorbaApplyInsertAfterIterator();
 
+  zstring getNameAsString() const;
+
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
@@ -758,6 +792,8 @@ public:
   {}
 
   virtual ~ZorbaDeleteIterator();
+
+  zstring getNameAsString() const;
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -795,6 +831,8 @@ public:
 
   virtual ~ZorbaDeleteFirstIterator();
 
+  zstring getNameAsString() const;
+
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
@@ -830,6 +868,8 @@ public:
   {}
 
   virtual ~ZorbaDeleteLastIterator();
+
+  zstring getNameAsString() const;
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -870,6 +910,8 @@ public:
 
   virtual ~ZorbaEditIterator();
 
+  zstring getNameAsString() const;
+
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
@@ -903,6 +945,8 @@ public:
   {}
 
   virtual ~ZorbaInsertIterator();
+
+  zstring getNameAsString() const;
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -940,6 +984,8 @@ public:
 
   virtual ~ZorbaTruncateCollectionIterator();
 
+  zstring getNameAsString() const;
+
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
   void accept(PlanIterVisitor& v) const;
@@ -971,6 +1017,8 @@ public:
   {}
 
   virtual ~IsAvailableIndexIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -1015,6 +1063,8 @@ public:
 
   virtual ~AvailableIndexesIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -1044,6 +1094,8 @@ public:
   {}
 
   virtual ~IsActivatedICIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -1088,6 +1140,8 @@ public:
 
   virtual ~ActivatedICsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -1117,6 +1171,8 @@ public:
   {}
 
   virtual ~IsDeclaredCollectionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -1161,6 +1217,8 @@ public:
 
   virtual ~DeclaredCollectionsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -1190,6 +1248,8 @@ public:
   {}
 
   virtual ~IsDeclaredIndexIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -1234,6 +1294,8 @@ public:
 
   virtual ~DeclaredIndexesIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -1263,6 +1325,8 @@ public:
   {}
 
   virtual ~IsDeclaredICIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -1307,6 +1371,8 @@ public:
 
   virtual ~DeclaredICsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -1350,6 +1416,8 @@ public:
   {}
 
   virtual ~FnURICollectionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

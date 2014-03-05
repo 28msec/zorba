@@ -39,16 +39,22 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(InstanceOfIterator)
+DEF_GET_NAME_AS_STRING(InstanceOfIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CastIterator)
+DEF_GET_NAME_AS_STRING(CastIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CastableIterator)
+DEF_GET_NAME_AS_STRING(CastableIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(PromoteIterator)
+DEF_GET_NAME_AS_STRING(PromoteIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(TreatIterator)
+DEF_GET_NAME_AS_STRING(TreatIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(EitherNodesOrAtomicsIterator)
+DEF_GET_NAME_AS_STRING(EitherNodesOrAtomicsIterator)
 
 
 /*******************************************************************************
@@ -627,6 +633,7 @@ bool TreatIterator::skip( int64_t count, PlanState &planState ) const {
       return base_type::skip( count, planState );
   }
 }
+
 
 bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

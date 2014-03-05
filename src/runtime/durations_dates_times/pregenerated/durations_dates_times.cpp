@@ -58,6 +58,10 @@ void YearsFromDurationIterator::accept(PlanIterVisitor& v) const
 
 YearsFromDurationIterator::~YearsFromDurationIterator() {}
 
+
+zstring YearsFromDurationIterator::getNameAsString() const {
+  return "fn:years-from-duration";
+}
 // </YearsFromDurationIterator>
 
 
@@ -86,6 +90,10 @@ void MonthsFromDurationIterator::accept(PlanIterVisitor& v) const
 
 MonthsFromDurationIterator::~MonthsFromDurationIterator() {}
 
+
+zstring MonthsFromDurationIterator::getNameAsString() const {
+  return "fn:months-from-duration";
+}
 // </MonthsFromDurationIterator>
 
 
@@ -114,6 +122,10 @@ void DaysFromDurationIterator::accept(PlanIterVisitor& v) const
 
 DaysFromDurationIterator::~DaysFromDurationIterator() {}
 
+
+zstring DaysFromDurationIterator::getNameAsString() const {
+  return "fn:days-from-duration";
+}
 // </DaysFromDurationIterator>
 
 
@@ -142,6 +154,10 @@ void HoursFromDurationIterator::accept(PlanIterVisitor& v) const
 
 HoursFromDurationIterator::~HoursFromDurationIterator() {}
 
+
+zstring HoursFromDurationIterator::getNameAsString() const {
+  return "fn:hours-from-duration";
+}
 // </HoursFromDurationIterator>
 
 
@@ -170,6 +186,10 @@ void MinutesFromDurationIterator::accept(PlanIterVisitor& v) const
 
 MinutesFromDurationIterator::~MinutesFromDurationIterator() {}
 
+
+zstring MinutesFromDurationIterator::getNameAsString() const {
+  return "fn:minutes-from-duration";
+}
 // </MinutesFromDurationIterator>
 
 
@@ -198,6 +218,10 @@ void SecondsFromDurationIterator::accept(PlanIterVisitor& v) const
 
 SecondsFromDurationIterator::~SecondsFromDurationIterator() {}
 
+
+zstring SecondsFromDurationIterator::getNameAsString() const {
+  return "fn:seconds-from-duration";
+}
 // </SecondsFromDurationIterator>
 
 
@@ -226,6 +250,10 @@ void YearFromDatetimeIterator::accept(PlanIterVisitor& v) const
 
 YearFromDatetimeIterator::~YearFromDatetimeIterator() {}
 
+
+zstring YearFromDatetimeIterator::getNameAsString() const {
+  return "fn:year-from-dateTime";
+}
 // </YearFromDatetimeIterator>
 
 
@@ -254,6 +282,10 @@ void MonthFromDatetimeIterator::accept(PlanIterVisitor& v) const
 
 MonthFromDatetimeIterator::~MonthFromDatetimeIterator() {}
 
+
+zstring MonthFromDatetimeIterator::getNameAsString() const {
+  return "fn:month-from-dateTime";
+}
 // </MonthFromDatetimeIterator>
 
 
@@ -282,6 +314,10 @@ void DayFromDatetimeIterator::accept(PlanIterVisitor& v) const
 
 DayFromDatetimeIterator::~DayFromDatetimeIterator() {}
 
+
+zstring DayFromDatetimeIterator::getNameAsString() const {
+  return "fn:day-from-dateTime";
+}
 // </DayFromDatetimeIterator>
 
 
@@ -310,6 +346,10 @@ void HoursFromDatetimeIterator::accept(PlanIterVisitor& v) const
 
 HoursFromDatetimeIterator::~HoursFromDatetimeIterator() {}
 
+
+zstring HoursFromDatetimeIterator::getNameAsString() const {
+  return "fn:hours-from-dateTime";
+}
 // </HoursFromDatetimeIterator>
 
 
@@ -338,6 +378,10 @@ void MinutesFromDatetimeIterator::accept(PlanIterVisitor& v) const
 
 MinutesFromDatetimeIterator::~MinutesFromDatetimeIterator() {}
 
+
+zstring MinutesFromDatetimeIterator::getNameAsString() const {
+  return "fn:minutes-from-dateTime";
+}
 // </MinutesFromDatetimeIterator>
 
 
@@ -366,6 +410,10 @@ void SecondsFromDatetimeIterator::accept(PlanIterVisitor& v) const
 
 SecondsFromDatetimeIterator::~SecondsFromDatetimeIterator() {}
 
+
+zstring SecondsFromDatetimeIterator::getNameAsString() const {
+  return "fn:seconds-from-dateTime";
+}
 // </SecondsFromDatetimeIterator>
 
 
@@ -394,6 +442,10 @@ void TimezoneFromDatetimeIterator::accept(PlanIterVisitor& v) const
 
 TimezoneFromDatetimeIterator::~TimezoneFromDatetimeIterator() {}
 
+
+zstring TimezoneFromDatetimeIterator::getNameAsString() const {
+  return "fn:timezone-from-dateTime";
+}
 // </TimezoneFromDatetimeIterator>
 
 
@@ -422,6 +474,10 @@ void YearFromDateIterator::accept(PlanIterVisitor& v) const
 
 YearFromDateIterator::~YearFromDateIterator() {}
 
+
+zstring YearFromDateIterator::getNameAsString() const {
+  return "fn:year-from-date";
+}
 // </YearFromDateIterator>
 
 
@@ -450,6 +506,10 @@ void MonthFromDateIterator::accept(PlanIterVisitor& v) const
 
 MonthFromDateIterator::~MonthFromDateIterator() {}
 
+
+zstring MonthFromDateIterator::getNameAsString() const {
+  return "fn:month-from-date";
+}
 // </MonthFromDateIterator>
 
 
@@ -478,6 +538,10 @@ void DayFromDateIterator::accept(PlanIterVisitor& v) const
 
 DayFromDateIterator::~DayFromDateIterator() {}
 
+
+zstring DayFromDateIterator::getNameAsString() const {
+  return "fn:day-from-date";
+}
 // </DayFromDateIterator>
 
 
@@ -506,6 +570,10 @@ void TimezoneFromDateIterator::accept(PlanIterVisitor& v) const
 
 TimezoneFromDateIterator::~TimezoneFromDateIterator() {}
 
+
+zstring TimezoneFromDateIterator::getNameAsString() const {
+  return "fn:timezone-from-date";
+}
 // </TimezoneFromDateIterator>
 
 
@@ -534,6 +602,10 @@ void HoursFromTimeIterator::accept(PlanIterVisitor& v) const
 
 HoursFromTimeIterator::~HoursFromTimeIterator() {}
 
+
+zstring HoursFromTimeIterator::getNameAsString() const {
+  return "fn:hours-from-time";
+}
 // </HoursFromTimeIterator>
 
 
@@ -562,6 +634,10 @@ void MinutesFromTimeIterator::accept(PlanIterVisitor& v) const
 
 MinutesFromTimeIterator::~MinutesFromTimeIterator() {}
 
+
+zstring MinutesFromTimeIterator::getNameAsString() const {
+  return "fn:minutes-from-time";
+}
 // </MinutesFromTimeIterator>
 
 
@@ -590,6 +666,10 @@ void SecondsFromTimeIterator::accept(PlanIterVisitor& v) const
 
 SecondsFromTimeIterator::~SecondsFromTimeIterator() {}
 
+
+zstring SecondsFromTimeIterator::getNameAsString() const {
+  return "fn:seconds-from-time";
+}
 // </SecondsFromTimeIterator>
 
 
@@ -618,6 +698,10 @@ void TimezoneFromTimeIterator::accept(PlanIterVisitor& v) const
 
 TimezoneFromTimeIterator::~TimezoneFromTimeIterator() {}
 
+
+zstring TimezoneFromTimeIterator::getNameAsString() const {
+  return "fn:timezone-from-time";
+}
 // </TimezoneFromTimeIterator>
 
 

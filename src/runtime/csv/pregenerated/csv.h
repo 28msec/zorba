@@ -86,6 +86,8 @@ public:
 
   virtual ~CsvParseIterator();
 
+  zstring getNameAsString() const;
+
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
   bool skip(int64_t count, PlanState& planState) const;
@@ -139,6 +141,8 @@ public:
   {}
 
   virtual ~CsvSerializeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

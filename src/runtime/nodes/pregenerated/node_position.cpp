@@ -58,6 +58,10 @@ void NodePositionIterator::accept(PlanIterVisitor& v) const
 
 NodePositionIterator::~NodePositionIterator() {}
 
+
+zstring NodePositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:node-position";
+}
 // </NodePositionIterator>
 
 
@@ -86,6 +90,10 @@ void IsAncestorPositionIterator::accept(PlanIterVisitor& v) const
 
 IsAncestorPositionIterator::~IsAncestorPositionIterator() {}
 
+
+zstring IsAncestorPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:ancestor-of";
+}
 // </IsAncestorPositionIterator>
 
 
@@ -114,6 +122,10 @@ void IsFollowingSiblingPositionIterator::accept(PlanIterVisitor& v) const
 
 IsFollowingSiblingPositionIterator::~IsFollowingSiblingPositionIterator() {}
 
+
+zstring IsFollowingSiblingPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:following-sibling-of";
+}
 // </IsFollowingSiblingPositionIterator>
 
 
@@ -142,6 +154,10 @@ void IsFollowingPositionIterator::accept(PlanIterVisitor& v) const
 
 IsFollowingPositionIterator::~IsFollowingPositionIterator() {}
 
+
+zstring IsFollowingPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:following-of";
+}
 // </IsFollowingPositionIterator>
 
 
@@ -170,6 +186,10 @@ void IsInSubtreeOfPositionIterator::accept(PlanIterVisitor& v) const
 
 IsInSubtreeOfPositionIterator::~IsInSubtreeOfPositionIterator() {}
 
+
+zstring IsInSubtreeOfPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:in-subtree-of";
+}
 // </IsInSubtreeOfPositionIterator>
 
 
@@ -198,6 +218,10 @@ void IsDescendantPositionIterator::accept(PlanIterVisitor& v) const
 
 IsDescendantPositionIterator::~IsDescendantPositionIterator() {}
 
+
+zstring IsDescendantPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:descendant-of";
+}
 // </IsDescendantPositionIterator>
 
 
@@ -226,6 +250,10 @@ void IsPrecedingSiblingPositionIterator::accept(PlanIterVisitor& v) const
 
 IsPrecedingSiblingPositionIterator::~IsPrecedingSiblingPositionIterator() {}
 
+
+zstring IsPrecedingSiblingPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:preceding-sibling-of";
+}
 // </IsPrecedingSiblingPositionIterator>
 
 
@@ -254,6 +282,10 @@ void IsPrecedingPositionIterator::accept(PlanIterVisitor& v) const
 
 IsPrecedingPositionIterator::~IsPrecedingPositionIterator() {}
 
+
+zstring IsPrecedingPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:preceding-of";
+}
 // </IsPrecedingPositionIterator>
 
 
@@ -282,6 +314,10 @@ void IsChildPositionIterator::accept(PlanIterVisitor& v) const
 
 IsChildPositionIterator::~IsChildPositionIterator() {}
 
+
+zstring IsChildPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:child-of";
+}
 // </IsChildPositionIterator>
 
 
@@ -310,6 +346,10 @@ void IsAttributeOfPositionIterator::accept(PlanIterVisitor& v) const
 
 IsAttributeOfPositionIterator::~IsAttributeOfPositionIterator() {}
 
+
+zstring IsAttributeOfPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:attribute-of";
+}
 // </IsAttributeOfPositionIterator>
 
 
@@ -338,6 +378,10 @@ void IsParentPositionIterator::accept(PlanIterVisitor& v) const
 
 IsParentPositionIterator::~IsParentPositionIterator() {}
 
+
+zstring IsParentPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:parent-of";
+}
 // </IsParentPositionIterator>
 
 
@@ -366,6 +410,10 @@ void IsPrecedingInDocumentOrderPositionIterator::accept(PlanIterVisitor& v) cons
 
 IsPrecedingInDocumentOrderPositionIterator::~IsPrecedingInDocumentOrderPositionIterator() {}
 
+
+zstring IsPrecedingInDocumentOrderPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:preceding-in-document-order-of";
+}
 // </IsPrecedingInDocumentOrderPositionIterator>
 
 
@@ -394,6 +442,10 @@ void IsFollowingInDocumentOrderPositionIterator::accept(PlanIterVisitor& v) cons
 
 IsFollowingInDocumentOrderPositionIterator::~IsFollowingInDocumentOrderPositionIterator() {}
 
+
+zstring IsFollowingInDocumentOrderPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:following-in-document-order-of";
+}
 // </IsFollowingInDocumentOrderPositionIterator>
 
 
@@ -422,6 +474,10 @@ void LevelPositionIterator::accept(PlanIterVisitor& v) const
 
 LevelPositionIterator::~LevelPositionIterator() {}
 
+
+zstring LevelPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:level";
+}
 // </LevelPositionIterator>
 
 
@@ -450,6 +506,10 @@ void IsAttributePositionIterator::accept(PlanIterVisitor& v) const
 
 IsAttributePositionIterator::~IsAttributePositionIterator() {}
 
+
+zstring IsAttributePositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:is-attribute";
+}
 // </IsAttributePositionIterator>
 
 
@@ -478,6 +538,10 @@ void IsCommentPositionIterator::accept(PlanIterVisitor& v) const
 
 IsCommentPositionIterator::~IsCommentPositionIterator() {}
 
+
+zstring IsCommentPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:is-comment";
+}
 // </IsCommentPositionIterator>
 
 
@@ -506,6 +570,10 @@ void IsDocumentPositionIterator::accept(PlanIterVisitor& v) const
 
 IsDocumentPositionIterator::~IsDocumentPositionIterator() {}
 
+
+zstring IsDocumentPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:is-document";
+}
 // </IsDocumentPositionIterator>
 
 
@@ -534,6 +602,10 @@ void IsElementPositionIterator::accept(PlanIterVisitor& v) const
 
 IsElementPositionIterator::~IsElementPositionIterator() {}
 
+
+zstring IsElementPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:is-element";
+}
 // </IsElementPositionIterator>
 
 
@@ -562,6 +634,10 @@ void IsProcessingInstructionPositionIterator::accept(PlanIterVisitor& v) const
 
 IsProcessingInstructionPositionIterator::~IsProcessingInstructionPositionIterator() {}
 
+
+zstring IsProcessingInstructionPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:is-processing-instruction";
+}
 // </IsProcessingInstructionPositionIterator>
 
 
@@ -590,6 +666,10 @@ void IsTextPositionIterator::accept(PlanIterVisitor& v) const
 
 IsTextPositionIterator::~IsTextPositionIterator() {}
 
+
+zstring IsTextPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:is-text";
+}
 // </IsTextPositionIterator>
 
 
@@ -618,6 +698,10 @@ void IsSiblingPositionIterator::accept(PlanIterVisitor& v) const
 
 IsSiblingPositionIterator::~IsSiblingPositionIterator() {}
 
+
+zstring IsSiblingPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:sibling-of";
+}
 // </IsSiblingPositionIterator>
 
 
@@ -646,6 +730,10 @@ void InSameTreePositionIterator::accept(PlanIterVisitor& v) const
 
 InSameTreePositionIterator::~InSameTreePositionIterator() {}
 
+
+zstring InSameTreePositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:in-same-tree-of";
+}
 // </InSameTreePositionIterator>
 
 
@@ -674,6 +762,10 @@ void InCollectionPositionIterator::accept(PlanIterVisitor& v) const
 
 InCollectionPositionIterator::~InCollectionPositionIterator() {}
 
+
+zstring InCollectionPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:in-collection";
+}
 // </InCollectionPositionIterator>
 
 
@@ -702,6 +794,10 @@ void InSameCollectionPositionIterator::accept(PlanIterVisitor& v) const
 
 InSameCollectionPositionIterator::~InSameCollectionPositionIterator() {}
 
+
+zstring InSameCollectionPositionIterator::getNameAsString() const {
+  return "fn-zorba-pos:in-same-collection-of";
+}
 // </InSameCollectionPositionIterator>
 
 

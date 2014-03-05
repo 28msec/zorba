@@ -61,6 +61,8 @@ public:
 
   virtual ~CurrentDate();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -92,6 +94,8 @@ public:
   {}
 
   virtual ~CurrentDateTime();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -125,6 +129,8 @@ public:
 
   virtual ~CurrentTime();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -156,6 +162,8 @@ public:
   {}
 
   virtual ~MillisToDateTime();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -189,6 +197,8 @@ public:
 
   virtual ~ParseDate();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -220,6 +230,8 @@ public:
   {}
 
   virtual ~ParseDateTime();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -253,6 +265,8 @@ public:
 
   virtual ~ParseTime();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -285,6 +299,8 @@ public:
 
   virtual ~Timestamp();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -316,6 +332,8 @@ public:
   {}
 
   virtual ~UTCOffset();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

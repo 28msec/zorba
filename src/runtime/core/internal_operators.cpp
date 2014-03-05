@@ -30,8 +30,10 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(HoistIterator)
+DEF_GET_NAME_AS_STRING(HoistIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(UnhoistIterator)
+DEF_GET_NAME_AS_STRING(UnhoistIterator)
 
 
 

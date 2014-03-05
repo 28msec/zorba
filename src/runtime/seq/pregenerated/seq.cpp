@@ -71,6 +71,10 @@ void SeqValueIntersectIteratorState::init(PlanState& planState) {
 void SeqValueIntersectIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring SeqValueIntersectIterator::getNameAsString() const {
+  return "fn-zorba-seq:value-intersect";
+}
 // </SeqValueIntersectIterator>
 
 
@@ -111,6 +115,10 @@ void SeqValueUnionIteratorState::init(PlanState& planState) {
 void SeqValueUnionIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring SeqValueUnionIterator::getNameAsString() const {
+  return "fn-zorba-seq:value-union";
+}
 // </SeqValueUnionIterator>
 
 
@@ -150,6 +158,10 @@ void SeqValueExceptIteratorState::init(PlanState& planState) {
 
 void SeqValueExceptIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
+}
+
+zstring SeqValueExceptIterator::getNameAsString() const {
+  return "fn-zorba-seq:value-except";
 }
 // </SeqValueExceptIterator>
 

@@ -62,6 +62,8 @@ public:
 
   virtual ~CodepointsToStringIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -110,6 +112,8 @@ public:
 
   virtual ~StringToCodepointsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -141,6 +145,8 @@ public:
   {}
 
   virtual ~CompareStrIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -174,6 +180,8 @@ public:
 
   virtual ~CodepointEqualIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -205,6 +213,8 @@ public:
   {}
 
   virtual ~ConcatStrIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -238,6 +248,8 @@ public:
 
   virtual ~StringJoinIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -269,6 +281,8 @@ public:
   {}
 
   virtual ~SubstringIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -302,6 +316,8 @@ public:
 
   virtual ~SubstringIntOptIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -333,6 +349,8 @@ public:
   {}
 
   virtual ~StringLengthIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -366,6 +384,8 @@ public:
 
   virtual ~NormalizeSpaceIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -397,6 +417,8 @@ public:
   {}
 
   virtual ~NormalizeUnicodeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -430,6 +452,8 @@ public:
 
   virtual ~UpperCaseIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -461,6 +485,8 @@ public:
   {}
 
   virtual ~LowerCaseIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -494,6 +520,8 @@ public:
 
   virtual ~TranslateIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -525,6 +553,8 @@ public:
   {}
 
   virtual ~EncodeForUriIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -558,6 +588,8 @@ public:
 
   virtual ~IriToUriIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -589,6 +621,8 @@ public:
   {}
 
   virtual ~EscapeHtmlUriIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -622,6 +656,8 @@ public:
 
   virtual ~ContainsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -653,6 +689,8 @@ public:
   {}
 
   virtual ~StartsWithIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -686,6 +724,8 @@ public:
 
   virtual ~EndsWithIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -717,6 +757,8 @@ public:
   {}
 
   virtual ~SubstringBeforeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -750,6 +792,8 @@ public:
 
   virtual ~SubstringAfterIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -782,6 +826,8 @@ public:
 
   virtual ~FnMatchesIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -813,6 +859,8 @@ public:
   {}
 
   virtual ~FnReplaceIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -863,6 +911,8 @@ public:
 
   virtual ~FnTokenizeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -894,6 +944,8 @@ public:
   {}
 
   virtual ~FnAnalyzeStringIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -927,6 +979,8 @@ public:
 
   virtual ~StringAnalyzeStringIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -958,6 +1012,8 @@ public:
   {}
 
   virtual ~StringMaterializeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -991,6 +1047,8 @@ public:
 
   virtual ~StringIsStreamableIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -1022,6 +1080,8 @@ public:
   {}
 
   virtual ~StringIsSeekableIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -1070,6 +1130,8 @@ public:
   {}
 
   virtual ~StringSplitIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

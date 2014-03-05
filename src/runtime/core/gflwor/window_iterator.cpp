@@ -669,6 +669,11 @@ void WindowIterator::serialize(::zorba::serialization::Archiver& ar)
 /***************************************************************************//**
 
 ********************************************************************************/
+zstring WindowIterator::getNameAsString() const {
+  return "WindowIterator";
+}
+
+
 uint32_t WindowIterator::getStateSize() const
 {
   return StateTraitsImpl<WindowState>::getStateSize();

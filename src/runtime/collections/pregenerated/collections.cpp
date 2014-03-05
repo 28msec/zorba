@@ -61,6 +61,10 @@ void ZorbaCreateCollectionIterator::accept(PlanIterVisitor& v) const
 
 ZorbaCreateCollectionIterator::~ZorbaCreateCollectionIterator() {}
 
+
+zstring ZorbaCreateCollectionIterator::getNameAsString() const {
+  return "zorba-store-static-collections-ddl:create";
+}
 // </ZorbaCreateCollectionIterator>
 
 
@@ -91,6 +95,10 @@ void ZorbaDeleteCollectionIterator::accept(PlanIterVisitor& v) const
 
 ZorbaDeleteCollectionIterator::~ZorbaDeleteCollectionIterator() {}
 
+
+zstring ZorbaDeleteCollectionIterator::getNameAsString() const {
+  return "zorba-store-static-collections-ddl:delete";
+}
 // </ZorbaDeleteCollectionIterator>
 
 
@@ -121,6 +129,10 @@ void IsAvailableCollectionIterator::accept(PlanIterVisitor& v) const
 
 IsAvailableCollectionIterator::~IsAvailableCollectionIterator() {}
 
+
+zstring IsAvailableCollectionIterator::getNameAsString() const {
+  return "zorba-store-static-collections-ddl:is-available-collection";
+}
 // </IsAvailableCollectionIterator>
 
 
@@ -153,6 +165,10 @@ AvailableCollectionsIterator::~AvailableCollectionsIterator() {}
 
 AvailableCollectionsIteratorState::AvailableCollectionsIteratorState() {}
 
+
+zstring AvailableCollectionsIterator::getNameAsString() const {
+  return "zorba-store-static-collections-ddl:available-collections";
+}
 // </AvailableCollectionsIterator>
 
 
@@ -183,6 +199,10 @@ FnCollectionIterator::~FnCollectionIterator() {}
 
 FnCollectionIteratorState::FnCollectionIteratorState() {}
 
+
+zstring FnCollectionIterator::getNameAsString() const {
+  return "fn:collection";
+}
 // </FnCollectionIterator>
 
 
@@ -215,6 +235,10 @@ ZorbaCollectionIterator::~ZorbaCollectionIterator() {}
 
 ZorbaCollectionIteratorState::ZorbaCollectionIteratorState() {}
 
+
+zstring ZorbaCollectionIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:collection";
+}
 // </ZorbaCollectionIterator>
 
 
@@ -243,6 +267,10 @@ void ZorbaCollectionNameIterator::accept(PlanIterVisitor& v) const
 
 ZorbaCollectionNameIterator::~ZorbaCollectionNameIterator() {}
 
+
+zstring ZorbaCollectionNameIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:collection-name";
+}
 // </ZorbaCollectionNameIterator>
 
 
@@ -273,6 +301,10 @@ void ZorbaIndexOfIterator::accept(PlanIterVisitor& v) const
 
 ZorbaIndexOfIterator::~ZorbaIndexOfIterator() {}
 
+
+zstring ZorbaIndexOfIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:index-of";
+}
 // </ZorbaIndexOfIterator>
 
 
@@ -303,6 +335,10 @@ ZorbaApplyInsertIterator::~ZorbaApplyInsertIterator() {}
 
 ZorbaApplyInsertIteratorState::ZorbaApplyInsertIteratorState() {}
 
+
+zstring ZorbaApplyInsertIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:apply-insert";
+}
 // </ZorbaApplyInsertIterator>
 
 
@@ -333,6 +369,10 @@ void ZorbaInsertAfterIterator::accept(PlanIterVisitor& v) const
 
 ZorbaInsertAfterIterator::~ZorbaInsertAfterIterator() {}
 
+
+zstring ZorbaInsertAfterIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:insert-after";
+}
 // </ZorbaInsertAfterIterator>
 
 
@@ -361,6 +401,10 @@ void ZorbaInsertBeforeIterator::accept(PlanIterVisitor& v) const
 
 ZorbaInsertBeforeIterator::~ZorbaInsertBeforeIterator() {}
 
+
+zstring ZorbaInsertBeforeIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:insert-before";
+}
 // </ZorbaInsertBeforeIterator>
 
 
@@ -389,6 +433,10 @@ void ZorbaInsertFirstIterator::accept(PlanIterVisitor& v) const
 
 ZorbaInsertFirstIterator::~ZorbaInsertFirstIterator() {}
 
+
+zstring ZorbaInsertFirstIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:insert-first";
+}
 // </ZorbaInsertFirstIterator>
 
 
@@ -417,6 +465,10 @@ void ZorbaInsertLastIterator::accept(PlanIterVisitor& v) const
 
 ZorbaInsertLastIterator::~ZorbaInsertLastIterator() {}
 
+
+zstring ZorbaInsertLastIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:insert-last";
+}
 // </ZorbaInsertLastIterator>
 
 
@@ -447,6 +499,10 @@ ZorbaApplyInsertFirstIterator::~ZorbaApplyInsertFirstIterator() {}
 
 ZorbaApplyInsertFirstIteratorState::ZorbaApplyInsertFirstIteratorState() {}
 
+
+zstring ZorbaApplyInsertFirstIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:apply-insert-first";
+}
 // </ZorbaApplyInsertFirstIterator>
 
 
@@ -477,6 +533,10 @@ ZorbaApplyInsertLastIterator::~ZorbaApplyInsertLastIterator() {}
 
 ZorbaApplyInsertLastIteratorState::ZorbaApplyInsertLastIteratorState() {}
 
+
+zstring ZorbaApplyInsertLastIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:apply-insert-last";
+}
 // </ZorbaApplyInsertLastIterator>
 
 
@@ -507,6 +567,10 @@ ZorbaApplyInsertBeforeIterator::~ZorbaApplyInsertBeforeIterator() {}
 
 ZorbaApplyInsertBeforeIteratorState::ZorbaApplyInsertBeforeIteratorState() {}
 
+
+zstring ZorbaApplyInsertBeforeIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:apply-insert-before";
+}
 // </ZorbaApplyInsertBeforeIterator>
 
 
@@ -537,6 +601,10 @@ ZorbaApplyInsertAfterIterator::~ZorbaApplyInsertAfterIterator() {}
 
 ZorbaApplyInsertAfterIteratorState::ZorbaApplyInsertAfterIteratorState() {}
 
+
+zstring ZorbaApplyInsertAfterIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:apply-insert-after";
+}
 // </ZorbaApplyInsertAfterIterator>
 
 
@@ -567,6 +635,10 @@ void ZorbaDeleteIterator::accept(PlanIterVisitor& v) const
 
 ZorbaDeleteIterator::~ZorbaDeleteIterator() {}
 
+
+zstring ZorbaDeleteIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:delete";
+}
 // </ZorbaDeleteIterator>
 
 
@@ -597,6 +669,10 @@ void ZorbaDeleteFirstIterator::accept(PlanIterVisitor& v) const
 
 ZorbaDeleteFirstIterator::~ZorbaDeleteFirstIterator() {}
 
+
+zstring ZorbaDeleteFirstIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:delete-first";
+}
 // </ZorbaDeleteFirstIterator>
 
 
@@ -627,6 +703,10 @@ void ZorbaDeleteLastIterator::accept(PlanIterVisitor& v) const
 
 ZorbaDeleteLastIterator::~ZorbaDeleteLastIterator() {}
 
+
+zstring ZorbaDeleteLastIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:delete-last";
+}
 // </ZorbaDeleteLastIterator>
 
 
@@ -658,6 +738,10 @@ void ZorbaEditIterator::accept(PlanIterVisitor& v) const
 
 ZorbaEditIterator::~ZorbaEditIterator() {}
 
+
+zstring ZorbaEditIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:edit";
+}
 // </ZorbaEditIterator>
 
 
@@ -686,6 +770,10 @@ void ZorbaInsertIterator::accept(PlanIterVisitor& v) const
 
 ZorbaInsertIterator::~ZorbaInsertIterator() {}
 
+
+zstring ZorbaInsertIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:insert";
+}
 // </ZorbaInsertIterator>
 
 
@@ -716,6 +804,10 @@ void ZorbaTruncateCollectionIterator::accept(PlanIterVisitor& v) const
 
 ZorbaTruncateCollectionIterator::~ZorbaTruncateCollectionIterator() {}
 
+
+zstring ZorbaTruncateCollectionIterator::getNameAsString() const {
+  return "zorba-store-static-collections-dml:truncate";
+}
 // </ZorbaTruncateCollectionIterator>
 
 
@@ -744,6 +836,10 @@ void IsAvailableIndexIterator::accept(PlanIterVisitor& v) const
 
 IsAvailableIndexIterator::~IsAvailableIndexIterator() {}
 
+
+zstring IsAvailableIndexIterator::getNameAsString() const {
+  return "zorba-store-indexes-static-ddl:is-available-index";
+}
 // </IsAvailableIndexIterator>
 
 
@@ -774,6 +870,10 @@ AvailableIndexesIterator::~AvailableIndexesIterator() {}
 
 AvailableIndexesIteratorState::AvailableIndexesIteratorState() {}
 
+
+zstring AvailableIndexesIterator::getNameAsString() const {
+  return "zorba-store-indexes-static-ddl:available-indexes";
+}
 // </AvailableIndexesIterator>
 
 
@@ -802,6 +902,10 @@ void IsActivatedICIterator::accept(PlanIterVisitor& v) const
 
 IsActivatedICIterator::~IsActivatedICIterator() {}
 
+
+zstring IsActivatedICIterator::getNameAsString() const {
+  return "zorba-store-static-integrity-constraints-ddl:is-activated-integrity-constraint";
+}
 // </IsActivatedICIterator>
 
 
@@ -832,6 +936,10 @@ ActivatedICsIterator::~ActivatedICsIterator() {}
 
 ActivatedICsIteratorState::ActivatedICsIteratorState() {}
 
+
+zstring ActivatedICsIterator::getNameAsString() const {
+  return "zorba-store-static-integrity-constraints-ddl:activated-integrity-constraints";
+}
 // </ActivatedICsIterator>
 
 
@@ -860,6 +968,10 @@ void IsDeclaredCollectionIterator::accept(PlanIterVisitor& v) const
 
 IsDeclaredCollectionIterator::~IsDeclaredCollectionIterator() {}
 
+
+zstring IsDeclaredCollectionIterator::getNameAsString() const {
+  return "zorba-store-static-collections-ddl:is-declared-collection";
+}
 // </IsDeclaredCollectionIterator>
 
 
@@ -890,6 +1002,10 @@ DeclaredCollectionsIterator::~DeclaredCollectionsIterator() {}
 
 DeclaredCollectionsIteratorState::DeclaredCollectionsIteratorState() {}
 
+
+zstring DeclaredCollectionsIterator::getNameAsString() const {
+  return "zorba-store-static-collections-ddl:declared-collections";
+}
 // </DeclaredCollectionsIterator>
 
 
@@ -918,6 +1034,10 @@ void IsDeclaredIndexIterator::accept(PlanIterVisitor& v) const
 
 IsDeclaredIndexIterator::~IsDeclaredIndexIterator() {}
 
+
+zstring IsDeclaredIndexIterator::getNameAsString() const {
+  return "zorba-store-indexes-static-ddl:is-declared-index";
+}
 // </IsDeclaredIndexIterator>
 
 
@@ -953,6 +1073,10 @@ void DeclaredIndexesIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
   nameItState = NULL;
 }
+
+zstring DeclaredIndexesIterator::getNameAsString() const {
+  return "zorba-store-indexes-static-ddl:declared-indexes";
+}
 // </DeclaredIndexesIterator>
 
 
@@ -981,6 +1105,10 @@ void IsDeclaredICIterator::accept(PlanIterVisitor& v) const
 
 IsDeclaredICIterator::~IsDeclaredICIterator() {}
 
+
+zstring IsDeclaredICIterator::getNameAsString() const {
+  return "zorba-store-static-integrity-constraints-ddl:is-declared-integrity-constraint";
+}
 // </IsDeclaredICIterator>
 
 
@@ -1016,6 +1144,10 @@ void DeclaredICsIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
   nameItState = NULL;
 }
+
+zstring DeclaredICsIterator::getNameAsString() const {
+  return "zorba-store-static-integrity-constraints-ddl:declared-integrity-constraints";
+}
 // </DeclaredICsIterator>
 
 
@@ -1046,6 +1178,10 @@ FnURICollectionIterator::~FnURICollectionIterator() {}
 
 FnURICollectionIteratorState::FnURICollectionIteratorState() {}
 
+
+zstring FnURICollectionIterator::getNameAsString() const {
+  return "fn:uri-collection";
+}
 // </FnURICollectionIterator>
 
 

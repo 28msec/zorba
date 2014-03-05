@@ -55,6 +55,7 @@ Properties::Properties() {
   print_optimized_ = false;
   print_static_types_ = true;
   print_translated_ = false;
+  profile_ = false;
   stable_iterator_ids_ = false;
   trace_codegen_ = false;
 #ifndef ZORBA_NO_FULL_TEXT

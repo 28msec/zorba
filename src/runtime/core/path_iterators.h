@@ -205,6 +205,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -248,6 +250,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -279,6 +283,8 @@ public:
   ~ParentAxisIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -315,6 +321,8 @@ public:
   ~AncestorAxisIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -354,6 +362,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -382,6 +392,8 @@ public:
   ~AncestorSelfAxisIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -416,6 +428,8 @@ public:
   ~AncestorSelfReverseAxisIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -465,6 +479,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -496,6 +512,8 @@ public:
   ~LSiblingAxisIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -547,6 +565,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -589,6 +609,8 @@ public:
   ~ChildAxisIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -675,6 +697,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -708,6 +732,8 @@ public:
   ~DescendantSelfAxisIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -759,6 +785,8 @@ public:
   ~PrecedingAxisIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -849,6 +877,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -902,6 +932,8 @@ public:
   ~FollowingAxisIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };

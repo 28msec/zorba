@@ -64,6 +64,8 @@ public:
   ~InstanceOfIterator();
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
   
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -114,6 +116,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
   
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -151,6 +155,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -192,6 +198,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
 protected:
@@ -241,6 +249,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
   bool count(store::Item_t& result, PlanState& planState) const;

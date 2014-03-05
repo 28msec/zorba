@@ -58,6 +58,10 @@ void ReferenceIterator::accept(PlanIterVisitor& v) const
 
 ReferenceIterator::~ReferenceIterator() {}
 
+
+zstring ReferenceIterator::getNameAsString() const {
+  return "fn-reference:reference";
+}
 // </ReferenceIterator>
 
 
@@ -86,6 +90,10 @@ void HasReferenceIterator::accept(PlanIterVisitor& v) const
 
 HasReferenceIterator::~HasReferenceIterator() {}
 
+
+zstring HasReferenceIterator::getNameAsString() const {
+  return "fn-reference:has-reference";
+}
 // </HasReferenceIterator>
 
 
@@ -114,6 +122,10 @@ void AssignReferenceIterator::accept(PlanIterVisitor& v) const
 
 AssignReferenceIterator::~AssignReferenceIterator() {}
 
+
+zstring AssignReferenceIterator::getNameAsString() const {
+  return "fn-reference:assign-reference";
+}
 // </AssignReferenceIterator>
 
 
@@ -142,6 +154,10 @@ void DereferenceIterator::accept(PlanIterVisitor& v) const
 
 DereferenceIterator::~DereferenceIterator() {}
 
+
+zstring DereferenceIterator::getNameAsString() const {
+  return "fn-reference:dereference";
+}
 // </DereferenceIterator>
 
 

@@ -64,6 +64,8 @@ public:
 
   virtual ~FunctionLookupIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -96,6 +98,8 @@ public:
 
   virtual ~FunctionNameIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -127,6 +131,8 @@ public:
   {}
 
   virtual ~FunctionArityIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -176,6 +182,8 @@ public:
   {}
 
   virtual ~FnForEachPairIterator();
+
+  zstring getNameAsString() const;
 
   uint32_t getStateSizeOfSubtree() const;
 
@@ -233,6 +241,8 @@ public:
   {}
 
   virtual ~FnFoldLeftIterator();
+
+  zstring getNameAsString() const;
 
   uint32_t getStateSizeOfSubtree() const;
 

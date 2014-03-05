@@ -33,6 +33,7 @@ namespace zorba
 namespace flwor
 {
 SERIALIZABLE_CLASS_VERSIONS(OuterForIterator)
+DEF_GET_NAME_AS_STRING(OuterForIterator)
 
 
 /////////////////////////////////////////////////////////////////////////////////

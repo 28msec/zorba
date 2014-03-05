@@ -27,6 +27,7 @@
 
 #include "compiler/parser/query_loc.h"
 
+#include "util/time_util.h"
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -138,6 +139,8 @@ public:
 
   bool                      theHasToQuit;
 
+  bool const                profile_;   // cache Properties::getProfile()
+
 public:
   PlanState(
       dynamic_context* globalDctx,
@@ -153,6 +156,48 @@ public:
 
 
 /*******************************************************************************
+
+ ******************************************************************************/
+
+/**
+ * Contains all profiling data for an iterator.
+ *
+ * An init() member function is used rather than a constructor so
+ * initialization is done only when profileing is enabled.
+ */
+struct profile_data {
+  /**
+   * Contains per-member-function profiling data.
+   *
+   * An init() member function is used rather than a constructor so
+   * initialization is done only when profileing is enabled.
+   */
+  struct mbr_fn {
+    unsigned call_count_;
+    time::msec_type cpu_time_;
+    time::msec_type wall_time_;
+
+    void init() {
+      call_count_ = 0;
+      cpu_time_ = 0;
+      wall_time_ = 0;
+    }
+
+    void add( time::msec_type cpu, time::msec_type wall ) {
+      ++call_count_;
+      cpu_time_ += cpu;
+      wall_time_ += wall;
+    }
+  };
+
+  mbr_fn next_;                         // for nextImpl()
+
+  void init() {
+    next_.init();
+  }
+};
+
+/*******************************************************************************
   Base class for all iterator state objects.
 ********************************************************************************/
 class PlanIteratorState
@@ -162,6 +207,9 @@ public:
 
 private:
   uint32_t        theDuffsLine;
+
+  profile_data    profile_data_;
+  friend class PlanIterator;
 
 #ifndef NDEBUG
 public:
@@ -194,9 +242,11 @@ public:
    * Each subclass implementation of this method must call the init() method of
    * their parent class explicitly in order to guarantee proper initialization.
    */
-  void init(PlanState&)
+  void init(PlanState &planState)
   {
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
+    if ( planState.profile_ )
+      profile_data_.init();
   }
 
   /*
@@ -214,6 +264,10 @@ public:
   void reset(PlanState&)
   {
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
+  }
+
+  profile_data const& get_profile_data() const {
+    return profile_data_;
   }
 };
 
@@ -299,11 +353,13 @@ public:
 
   PlanIterator(const PlanIterator& it);
 
-  virtual ~PlanIterator() {}
+  ~PlanIterator();
 
   void setLocation(const QueryLoc& loc_) { loc = loc_; }
 
   const QueryLoc& getLocation() const { return loc; }
+
+  virtual zstring getNameAsString() const;
 
   uint32_t getStateOffset() const { return theStateOffset; }
 
@@ -420,12 +476,29 @@ public:
    */
   bool produceNext(store::Item_t& result, PlanState& planState) const
   {
+    PlanIteratorState *const state =
+      StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
 #ifndef NDEBUG
-    PlanIteratorState* state =
-    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
     ZORBA_ASSERT(state->theIsOpened);
 #endif
-    return nextImpl(result, planState);
+    time::cpu::timer c;
+    time::wall::timer w;
+    if ( planState.profile_ ) {
+      c.start();
+      w.start();
+    }
+    bool const ret_val = nextImpl(result, planState);
+    if ( planState.profile_ ) {
+      //
+      // Temporaries are used here to guarantee the order in which the timers
+      // are stopped.  (If the expressions were passed as functio arguments,
+      // the order is platform/compiler-dependent.)
+      //
+      time::msec_type const ce( c.elapsed() );
+      time::msec_type const we( w.elapsed() );
+      state->profile_data_.next_.add( ce, we );
+    }
+    return ret_val;
   }
 
   virtual bool nextImpl(store::Item_t& result, PlanState& planState) const = 0;
@@ -466,6 +539,9 @@ void reset_global_iterator_id_counter();
 
 
 } /* namespace zorba */
+
+#define DEF_GET_NAME_AS_STRING(...) \
+  zstring __VA_ARGS__::getNameAsString() const { return #__VA_ARGS__; }
 
 #endif  /* ZORBA_ITERATOR_H */
 

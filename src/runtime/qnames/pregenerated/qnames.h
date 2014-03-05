@@ -59,6 +59,8 @@ public:
 
   virtual ~ResolveQNameIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -88,6 +90,8 @@ public:
   {}
 
   virtual ~QNameIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -119,6 +123,8 @@ public:
 
   virtual ~QNameEqualIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -148,6 +154,8 @@ public:
   {}
 
   virtual ~PrefixFromQNameIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -179,6 +187,8 @@ public:
 
   virtual ~LocalNameFromQNameIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -209,6 +219,8 @@ public:
 
   virtual ~NamespaceUriFromQNameIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -238,6 +250,8 @@ public:
   {}
 
   virtual ~NamespaceUriForPrefixIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -282,6 +296,8 @@ public:
   {}
 
   virtual ~InScopePrefixesIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

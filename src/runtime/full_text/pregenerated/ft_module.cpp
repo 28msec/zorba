@@ -60,6 +60,10 @@ void CurrentCompareOptionsIterator::accept(PlanIterVisitor& v) const
 
 CurrentCompareOptionsIterator::~CurrentCompareOptionsIterator() {}
 
+
+zstring CurrentCompareOptionsIterator::getNameAsString() const {
+  return "full-text:current-compare-options";
+}
 // </CurrentCompareOptionsIterator>
 
 #endif
@@ -89,6 +93,10 @@ void CurrentLangIterator::accept(PlanIterVisitor& v) const
 
 CurrentLangIterator::~CurrentLangIterator() {}
 
+
+zstring CurrentLangIterator::getNameAsString() const {
+  return "full-text:current-lang";
+}
 // </CurrentLangIterator>
 
 #endif
@@ -118,6 +126,10 @@ void HostLangIterator::accept(PlanIterVisitor& v) const
 
 HostLangIterator::~HostLangIterator() {}
 
+
+zstring HostLangIterator::getNameAsString() const {
+  return "full-text:host-lang";
+}
 // </HostLangIterator>
 
 #endif
@@ -147,6 +159,10 @@ void IsStemLangSupportedIterator::accept(PlanIterVisitor& v) const
 
 IsStemLangSupportedIterator::~IsStemLangSupportedIterator() {}
 
+
+zstring IsStemLangSupportedIterator::getNameAsString() const {
+  return "full-text:is-stem-lang-supported";
+}
 // </IsStemLangSupportedIterator>
 
 #endif
@@ -176,6 +192,10 @@ void IsStopWordIterator::accept(PlanIterVisitor& v) const
 
 IsStopWordIterator::~IsStopWordIterator() {}
 
+
+zstring IsStopWordIterator::getNameAsString() const {
+  return "full-text:is-stop-word";
+}
 // </IsStopWordIterator>
 
 #endif
@@ -205,6 +225,10 @@ void IsStopWordLangSupportedIterator::accept(PlanIterVisitor& v) const
 
 IsStopWordLangSupportedIterator::~IsStopWordLangSupportedIterator() {}
 
+
+zstring IsStopWordLangSupportedIterator::getNameAsString() const {
+  return "full-text:is-stop-word-lang-supported";
+}
 // </IsStopWordLangSupportedIterator>
 
 #endif
@@ -234,6 +258,10 @@ void IsThesaurusLangSupportedIterator::accept(PlanIterVisitor& v) const
 
 IsThesaurusLangSupportedIterator::~IsThesaurusLangSupportedIterator() {}
 
+
+zstring IsThesaurusLangSupportedIterator::getNameAsString() const {
+  return "full-text:is-thesaurus-lang-supported";
+}
 // </IsThesaurusLangSupportedIterator>
 
 #endif
@@ -263,6 +291,10 @@ void IsTokenizerLangSupportedIterator::accept(PlanIterVisitor& v) const
 
 IsTokenizerLangSupportedIterator::~IsTokenizerLangSupportedIterator() {}
 
+
+zstring IsTokenizerLangSupportedIterator::getNameAsString() const {
+  return "full-text:is-tokenizer-lang-supported";
+}
 // </IsTokenizerLangSupportedIterator>
 
 #endif
@@ -292,6 +324,10 @@ void StemIterator::accept(PlanIterVisitor& v) const
 
 StemIterator::~StemIterator() {}
 
+
+zstring StemIterator::getNameAsString() const {
+  return "full-text:stem";
+}
 // </StemIterator>
 
 #endif
@@ -321,6 +357,10 @@ void StripDiacriticsIterator::accept(PlanIterVisitor& v) const
 
 StripDiacriticsIterator::~StripDiacriticsIterator() {}
 
+
+zstring StripDiacriticsIterator::getNameAsString() const {
+  return "full-text:strip-diacritics";
+}
 // </StripDiacriticsIterator>
 
 #endif
@@ -357,6 +397,10 @@ ThesaurusLookupIteratorState::~ThesaurusLookupIteratorState() {}
 
 void ThesaurusLookupIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
+}
+
+zstring ThesaurusLookupIterator::getNameAsString() const {
+  return "full-text:thesaurus-lookup";
 }
 // </ThesaurusLookupIterator>
 
@@ -395,6 +439,10 @@ TokenizeNodeIteratorState::~TokenizeNodeIteratorState() {}
 void TokenizeNodeIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring TokenizeNodeIterator::getNameAsString() const {
+  return "full-text:tokenize-node";
+}
 // </TokenizeNodeIterator>
 
 #endif
@@ -432,6 +480,10 @@ TokenizeNodesIteratorState::~TokenizeNodesIteratorState() {}
 void TokenizeNodesIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring TokenizeNodesIterator::getNameAsString() const {
+  return "full-text:tokenize-nodes";
+}
 // </TokenizeNodesIterator>
 
 #endif
@@ -461,6 +513,10 @@ void TokenizerPropertiesIterator::accept(PlanIterVisitor& v) const
 
 TokenizerPropertiesIterator::~TokenizerPropertiesIterator() {}
 
+
+zstring TokenizerPropertiesIterator::getNameAsString() const {
+  return "full-text:tokenizer-properties";
+}
 // </TokenizerPropertiesIterator>
 
 #endif
@@ -497,6 +553,10 @@ TokenizeStringIteratorState::~TokenizeStringIteratorState() {}
 
 void TokenizeStringIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
+}
+
+zstring TokenizeStringIterator::getNameAsString() const {
+  return "full-text:tokenize-string";
 }
 // </TokenizeStringIterator>
 

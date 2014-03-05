@@ -66,6 +66,8 @@ public:
 
   virtual ~ActivateICIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -104,6 +106,8 @@ public:
 
   virtual ~DeactivateICIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -140,6 +144,8 @@ public:
   {}
 
   virtual ~CheckICIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

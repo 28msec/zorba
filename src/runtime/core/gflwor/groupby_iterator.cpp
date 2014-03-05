@@ -161,6 +161,11 @@ void GroupByIterator::serialize(::zorba::serialization::Archiver& ar)
 /***************************************************************************//**
 
 ********************************************************************************/
+zstring GroupByIterator::getNameAsString() const {
+  return "GroupByIterator";
+}
+
+
 uint32_t GroupByIterator::getStateSize() const  
 {
   return StateTraitsImpl<GroupByState>::getStateSize();

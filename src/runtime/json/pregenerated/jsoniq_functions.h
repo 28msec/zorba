@@ -75,6 +75,8 @@ public:
 
   virtual ~JSONDecodeFromRoundtripIterator();
 
+  zstring getNameAsString() const;
+
 public:
   static void extractChildOfKind(const store::Item_t& aParent, const store::NodeKind& aKind, store::Item_t& aChild);
   bool decodeNode(const store::Item_t& aSerializedNode, const store::NodeKind& aKind, store::Item_t& aResult) const;
@@ -126,6 +128,8 @@ public:
   {}
 
   virtual ~JSONEncodeForRoundtripIterator();
+
+  zstring getNameAsString() const;
 
 public:
   bool encodeObject(const store::Item_t& anObj, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
@@ -184,6 +188,8 @@ public:
 
   virtual ~JSONParseIterator();
 
+  zstring getNameAsString() const;
+
 public:
   bool processBooleanOption(const store::Item_t& options, char const* option_name, bool* option_value) const;
   void accept(PlanIterVisitor& v) const;
@@ -231,6 +237,8 @@ public:
 
   virtual ~MultiObjectKeysIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -273,6 +281,8 @@ public:
   {}
 
   virtual ~SingleObjectKeysIterator();
+
+  zstring getNameAsString() const;
 
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
@@ -319,6 +329,8 @@ public:
 
   virtual ~MultiObjectLookupIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -348,6 +360,8 @@ public:
   {}
 
   virtual ~SingleObjectLookupIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -392,6 +406,8 @@ public:
 
   virtual ~JSONObjectProjectIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -435,6 +451,8 @@ public:
 
   virtual ~JSONObjectTrimIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -477,6 +495,8 @@ public:
   {}
 
   virtual ~MultiArrayMembersIterator();
+
+  zstring getNameAsString() const;
 
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
@@ -523,6 +543,8 @@ public:
 
   virtual ~SingleArrayMembersIterator();
 
+  zstring getNameAsString() const;
+
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
@@ -568,6 +590,8 @@ public:
 
   virtual ~MultiArrayLookupIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -598,6 +622,8 @@ public:
 
   virtual ~SingleArrayLookupIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -627,6 +653,8 @@ public:
   {}
 
   virtual ~JSONArraySizeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -673,6 +701,8 @@ public:
 
   virtual ~JSONArrayFlattenIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -701,6 +731,8 @@ public:
   {}
 
   virtual ~JSONNullIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -734,6 +766,8 @@ public:
 
   virtual ~JSONObjectInsertIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -766,6 +800,8 @@ public:
 
   virtual ~JSONArrayInsertIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -797,6 +833,8 @@ public:
   {}
 
   virtual ~JSONDeleteIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -831,6 +869,8 @@ public:
 
   virtual ~JSONReplaceValueIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -862,6 +902,8 @@ public:
   {}
 
   virtual ~JSONRenameIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -895,6 +937,8 @@ public:
 
   virtual ~JSONArrayAppendIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -926,6 +970,8 @@ public:
   {}
 
   virtual ~JSONBoxIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

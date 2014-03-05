@@ -59,6 +59,10 @@ void JSoundAnnotateIterator::accept(PlanIterVisitor& v) const
 
 JSoundAnnotateIterator::~JSoundAnnotateIterator() {}
 
+
+zstring JSoundAnnotateIterator::getNameAsString() const {
+  return "fn-zorba-jsound:annotate";
+}
 // </JSoundAnnotateIterator>
 
 
@@ -87,6 +91,10 @@ void JSoundValidateIterator::accept(PlanIterVisitor& v) const
 
 JSoundValidateIterator::~JSoundValidateIterator() {}
 
+
+zstring JSoundValidateIterator::getNameAsString() const {
+  return "fn-zorba-jsound:validate";
+}
 // </JSoundValidateIterator>
 
 

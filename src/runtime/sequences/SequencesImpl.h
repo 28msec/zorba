@@ -85,6 +85,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 

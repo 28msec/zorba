@@ -33,10 +33,13 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(JSONObjectIterator)
+DEF_GET_NAME_AS_STRING(JSONObjectIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(JSONArrayIterator)
+DEF_GET_NAME_AS_STRING(JSONArrayIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(JSONDirectObjectIterator)
+DEF_GET_NAME_AS_STRING(JSONDirectObjectIterator)
 
 
 /*********************************************************************************

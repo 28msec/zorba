@@ -58,6 +58,10 @@ void DecodeURIIterator::accept(PlanIterVisitor& v) const
 
 DecodeURIIterator::~DecodeURIIterator() {}
 
+
+zstring DecodeURIIterator::getNameAsString() const {
+  return "fn-zorba-uri:decode";
+}
 // </DecodeURIIterator>
 
 
@@ -86,6 +90,10 @@ void ParseURIIterator::accept(PlanIterVisitor& v) const
 
 ParseURIIterator::~ParseURIIterator() {}
 
+
+zstring ParseURIIterator::getNameAsString() const {
+  return "fn-zorba-uri:parse";
+}
 // </ParseURIIterator>
 
 
@@ -114,6 +122,10 @@ void SerializeURIIterator::accept(PlanIterVisitor& v) const
 
 SerializeURIIterator::~SerializeURIIterator() {}
 
+
+zstring SerializeURIIterator::getNameAsString() const {
+  return "fn-zorba-uri:serialize";
+}
 // </SerializeURIIterator>
 
 

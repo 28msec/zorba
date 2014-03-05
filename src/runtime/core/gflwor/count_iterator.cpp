@@ -31,6 +31,7 @@ namespace zorba
 namespace flwor 
 {
 SERIALIZABLE_CLASS_VERSIONS(CountIterator)
+DEF_GET_NAME_AS_STRING(CountIterator)
 
 
 /////////////////////////////////////////////////////////////////////////////////
