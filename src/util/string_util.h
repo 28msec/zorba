@@ -50,7 +50,81 @@ namespace ztd {
 
 using internal::ztd::c_str;
 
-////////// String building /////////////////////////////////////////////////////
+////////// String appending ///////////////////////////////////////////////////
+
+/**
+ * A %string_appender is used to optimize repeatedly appending characters to a
+ * string in a loop by gathering \em N characters and appending them in chunks
+ * so as to call the string's \c append() function less.
+ */
+template<class StringType,int BufCapacity>
+class string_appender {
+public:
+  typedef StringType value_type;
+  typedef typename value_type::value_type char_type;
+  typedef typename value_type::size_type size_type;
+
+  /**
+   * Constructs an appender.
+   *
+   * @param s A pointer to the string to append to.
+   */
+  string_appender( value_type *s ) : s_( s ), buf_size_( 0 ) { }
+
+  /**
+   * Destroys the appender and appends any unappended characters to the string.
+   */
+  ~string_appender() {
+    flush();
+  }
+
+  /**
+   * Appends a character.
+   *
+   * @param c The character to append.
+   * @return Returns \c *this.
+   */
+  string_appender& append( char_type c ) {
+    buf_[ buf_size_++ ] = c;
+    if ( buf_size_ == BufCapacity )
+      flush();
+    return *this;
+  }
+
+  /**
+   * Appends any unappended characters to the string.
+   */
+  void flush() {
+    s_->append( buf_, buf_size_ );
+    buf_size_ = 0;
+  }
+
+  /**
+   * Gets the string that is being appended to.
+   *
+   * @return Returns said string.
+   */
+  value_type& str() const {
+    return *s_;
+  }
+
+  /**
+   * Appends a character.
+   *
+   * @param c The character to append.
+   * @return Returns \c *this.
+   */
+  string_appender& operator+=( char_type c ) {
+    return append( c );
+  }
+
+private:
+  char_type buf_[ BufCapacity ];
+  size_type buf_size_;
+  value_type *s_;
+};
+
+////////// String building ////////////////////////////////////////////////////
 
 /**
  * A %string_builder is used to build (concatenate) strings on-the-fly and pass

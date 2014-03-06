@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+// Zorba
+#include "util/string_util.h"
+
+// local
 #include "csv_parser.h"
 
 namespace zorba {
@@ -21,10 +25,12 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool csv_parser::next_value( zstring *value, bool *eol, bool *quoted ) const {
-  value->clear();
+  ztd::string_appender<zstring,128> appender( value );
   char c;
   bool in_quote = false;
   bool is_quoted = false;
+
+  value->clear();
 
   while ( is_->get( c ) ) {
     if ( in_quote ) {
@@ -63,9 +69,10 @@ bool csv_parser::next_value( zstring *value, bool *eol, bool *quoted ) const {
           goto return_true;
       } // switch
     } // else
-    *value += c;
+    appender += c;
   } // while
 
+  appender.flush();
   if ( value->empty() )
     return false;
 

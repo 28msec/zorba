@@ -39,6 +39,7 @@
     <zorba:member type="missing::type" name="missing_" defaultValue="missing::null"/>
     <zorba:member type="bool" name="skip_called_" defaultValue="false"/>
     <zorba:member type="zstring" name="string_"/>
+    <zorba:member type="zstring" name="value_"/>
   </zorba:state>
   <zorba:method name="count" const="true" return="bool">
     <zorba:param name="result" type="store::Item_t&amp;"/>

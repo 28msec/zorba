@@ -365,7 +365,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
   store::Item_t item;
   vector<store::Item_t> keys_copy, values;
   set<unsigned> keys_omit;
-  zstring value;
+  zstring *value;
   bool eol, quoted, swap_keys = false;
 
   CsvParseIteratorState *state;
@@ -381,7 +381,8 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
     set_options( item, state );
   }
 
-  while ( state->csv_.next_value( &value, &eol, &quoted ) ) {
+  while ( state->csv_.next_value( &state->value_, &eol, &quoted ) ) {
+    value = &state->value_;
     if ( state->keys_.size() && values.size() == state->keys_.size() &&
          state->extra_name_.empty() ) {
       //
@@ -390,13 +391,13 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
       //
       throw XQUERY_EXCEPTION(
         csv::EXTRA_VALUE,
-        ERROR_PARAMS( value, state->line_no_ ),
+        ERROR_PARAMS( *value, state->line_no_ ),
         ERROR_LOC( loc )
       );
     }
 
     item = nullptr;
-    if ( value.empty() ) {
+    if ( value->empty() ) {
       if ( state->keys_.empty() ) {
         //
         // Header field names can never be empty.
@@ -408,7 +409,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
         );
       }
       if ( quoted )
-        GENV_ITEMFACTORY->createString( item, value );
+        GENV_ITEMFACTORY->createString( item, *value );
       else
         switch ( state->missing_ ) {
           case missing::error:
@@ -421,15 +422,15 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
             break;
         }
     } else if ( state->cast_unquoted_ && !quoted && !state->keys_.empty() ) {
-      if ( value == "T" || value == "Y" )
+      if ( *value == "T" || *value == "Y" )
         GENV_ITEMFACTORY->createBoolean( item, true );
-      else if ( value == "F" || value == "N" )
+      else if ( *value == "F" || *value == "N" )
         GENV_ITEMFACTORY->createBoolean( item, false );
       else {
         json::token t;
-        switch ( parse_json( value, &t ) ) {
+        switch ( parse_json( *value, &t ) ) {
           case json::boolean:
-            GENV_ITEMFACTORY->createBoolean( item, value[0] == 't' );
+            GENV_ITEMFACTORY->createBoolean( item, (*value)[0] == 't' );
             break;
           case json::null:
             GENV_ITEMFACTORY->createJSONNull( item );
@@ -437,24 +438,24 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
           case json::number:
             switch ( t.get_numeric_type() ) {
               case json::token::integer:
-                GENV_ITEMFACTORY->createInteger( item, xs_integer( value ) );
+                GENV_ITEMFACTORY->createInteger( item, xs_integer( *value ) );
                 break;
               case json::token::decimal:
-                GENV_ITEMFACTORY->createDecimal( item, xs_decimal( value ) );
+                GENV_ITEMFACTORY->createDecimal( item, xs_decimal( *value ) );
                 break;
               case json::token::floating_point:
-                GENV_ITEMFACTORY->createDouble( item, xs_double( value ) );
+                GENV_ITEMFACTORY->createDouble( item, xs_double( *value ) );
                 break;
               default:
                 ZORBA_ASSERT( false );
             }
             break;
           default:
-            GENV_ITEMFACTORY->createString( item, value );
+            GENV_ITEMFACTORY->createString( item, *value );
         } // switch
       } // else
     } else {
-      GENV_ITEMFACTORY->createString( item, value );
+      GENV_ITEMFACTORY->createString( item, *value );
     }
 
     if ( !item.isNull() )
