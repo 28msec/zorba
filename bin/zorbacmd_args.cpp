@@ -78,30 +78,30 @@ char const* get_help_msg() {
 
     ////////// b //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--base-uri" )
+    HELP_OPT( "--base-uri <uri>" )
       "Set the base URI property of the static context.\n\n"
 
-    HELP_OPT( "--boundary-space" )
-      "Set the boundary-space policy ('strip' or 'preserve') in the static context.\n\n"
+    HELP_OPT( "--boundary-space {strip|preserve}" )
+      "Set the boundary-space policy in the static context.\n\n"
 
     HELP_OPT( "--byte-order-mark" )
       "Set the byte-order-mark for the serializer.\n\n"
 
     ////////// c //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--classpath" )
-      "JVM classpath to be used by modules using Java implementations\n\n"
+    HELP_OPT( "--classpath <path>" )
+      "Set the JVM classpath to be used by modules using Java implementations.\n\n"
 
     HELP_OPT( "--compile-only" )
       "Only compile (don't execute).\n\n"
 
-    HELP_OPT( "--compile-plan," )
+    HELP_OPT( "--compile-plan" )
       "Do not execute the query; just compile it and save the execution plan in the file specified with the -o option.\n\n"
 
-    HELP_OPT( "--construction-mode" )
-      "Set the construction mode ('strip' or 'preserve') in the static context.\n\n"
+    HELP_OPT( "--construction-mode {strip|preserve}" )
+      "Set the construction mode in the static context.\n\n"
 
-    HELP_OPT( "--context-item" )
+    HELP_OPT( "--context-item <item>" )
       "Set the context item to the XML document in a given file.\n\n"
 
     ////////// d //////////////////////////////////////////////////////////////
@@ -111,21 +111,21 @@ char const* get_help_msg() {
       "Launch the Zorba debugger server and connect to a DBGP-enabled debugger client.\n\n"
 #endif /* ZORBA_WITH_DEBUGGER */
 
-    HELP_OPT( "--debug-file" )
+    HELP_OPT( "--debug-file <file>" )
       "Sets the file to write developer debugging information to.\n\n"
 
-    HELP_OPT( "--debug-stream <stream>" )
+    HELP_OPT( "--debug-stream {1|cout|stdout|2|cerr|stderr}" )
       "Sets the stream to write developer debugging information to.\n\n"
 
 #ifdef ZORBA_WITH_DEBUGGER
-    HELP_OPT( "--debug-host, -h" )
-      "The host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1\n\n"
+    HELP_OPT( "--debug-host, -h <host>" )
+      "The host where the DBGP-enabled debugger client listens for connections; default: 127.0.0.1.\n\n"
 
-    HELP_OPT( "--debug-port, -p" )
-      "The port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028\n\n"
+    HELP_OPT( "--debug-port, -p <port>" )
+      "The port on which the DBGP-enabled debugger client listens for connections; defaults: 28028.\n\n"
 #endif /* ZORBA_WITH_DEBUGGER */
 
-    HELP_OPT( "--default-collation" )
+    HELP_OPT( "--default-collation <collation>" )
       "Add the given collation and set the value of the default collation in the static context to the given collation.\n\n"
 
     HELP_OPT( "--disable-http-resolution" )
@@ -139,8 +139,8 @@ char const* get_help_msg() {
     HELP_OPT( "--execute-plan" )
       "Do not compile the query; instead load the execution plan from the file specified by the -f -q options (or by any file specified without any other argument), and execute the loaded plan.\n\n"
 
-    HELP_OPT( "--external-variable, -e" )
-      "Provide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
+    HELP_OPT( "--external-variable, -e <name>{=file|:=<value>}" )
+      "Set the value for an externsl variable.\n\n"
 
     ////////// f //////////////////////////////////////////////////////////////
 
@@ -149,7 +149,7 @@ char const* get_help_msg() {
 
     ////////// h //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--help, -h" )
+    HELP_OPT( "--help" )
       "Print this help message.\n\n"
 
     ////////// i //////////////////////////////////////////////////////////////
@@ -163,8 +163,8 @@ char const* get_help_msg() {
     HELP_OPT( "--inline-udf" )
       "Inline user-defined functions.\n\n"
 
-    HELP_OPT( "--iterator-tree <format>" )
-      "Print the iterator tree in in one of DOT, JSON, or XML formats.\n\n"
+    HELP_OPT( "--iterator-tree {dot|json|xml}>" )
+      "Print the iterator tree in the given format.\n\n"
 
     ////////// j //////////////////////////////////////////////////////////////
 
@@ -176,7 +176,7 @@ char const* get_help_msg() {
     HELP_OPT( "--lib-module, -l" )
       "Query compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.\n\n"
 
-    HELP_OPT( "--lib-path" )
+    HELP_OPT( "--lib-path <path>" )
       "Library path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.\n\n"
 
     HELP_OPT( "--loop-hosting" )
@@ -184,10 +184,10 @@ char const* get_help_msg() {
 
     ////////// m //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--max-udf-call-depth" )
+    HELP_OPT( "--max-udf-call-depth <depth>" )
       "Maximum stack depth of user-defined function calls.\n\n"
 
-    HELP_OPT( "--module-path" )
+    HELP_OPT( "--module-path <path>" )
       "Path (list of directories) to add to both the URI and Library paths.\n\n"
 
     HELP_OPT( "--multiple, -m" )
@@ -212,17 +212,17 @@ char const* get_help_msg() {
     HELP_OPT( "--omit-xml-declaration, -r" )
       "Omit the XML declaration from the result.\n\n"
 
-    HELP_OPT( "--optimization-level, -O" )
-      "Optimization level for the query compiler [0-2], default: 1\n\n"
+    HELP_OPT( "--optimization-level, -O {0|1|2}>" )
+      "Optimization level for the query compiler, default: 1.\n\n"
 
-    HELP_OPT( "--option" )
+    HELP_OPT( "--option <option>=<value>" )
       "Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://zorba.io/}option=value\n\n"
 
-    HELP_OPT( "--ordering-mode" )
-      "Set the ordering mode ('ordered' or 'unordered') in the static context.\n\n"
+    HELP_OPT( "--ordering-mode {ordered|unordered}" )
+      "Set the ordering mode in the static context.\n\n"
 
 #ifdef ZORBA_WITH_FILE_ACCESS
-    HELP_OPT( "--output-file, -o" )
+    HELP_OPT( "--output-file, -o <file>" )
       "Write the result to the given file.\n\n"
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
@@ -271,8 +271,8 @@ char const* get_help_msg() {
 
     ////////// s //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--serialization-parameter, -z" )
-      "Set serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).\n\n"
+    HELP_OPT( "--serialization-parameter, -z <name>=<value>" )
+      "Set serialization parameter (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).\n\n"
 
     HELP_OPT( "--serialize-html" )
       "Serialize the result as HTML.\n\n"
@@ -293,19 +293,19 @@ char const* get_help_msg() {
       "Print the iterator plan with stable IDs.\n\n"
 
 #ifndef ZORBA_NO_FULL_TEXT
-    HELP_OPT( "--stop-words" )
+    HELP_OPT( "--stop-words <uri>:=<value>" )
       "Mapping specifying a stop-words URI to another.\n\n"
 
     ////////// t //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--thesaurus" )
+    HELP_OPT( "--thesaurus <uri>:=<value>" )
       "Mapping specifying a thesaurus URI to another.\n\n"
 #endif /* ZORBA_NO_FULL_TEXT */
 
     HELP_OPT( "--timing, -t" )
       "Print timing information. In case of multiple queries, the timing information is provided per query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
 
-    HELP_OPT( "--timeout" )
+    HELP_OPT( "--timeout <seconds>" )
       "Specify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
 
     HELP_OPT( "--trace-parsing" )
@@ -330,7 +330,7 @@ char const* get_help_msg() {
 
     ////////// u //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--uri-path" )
+    HELP_OPT( "--uri-path <path>" )
       "URI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.\n\n"
 
     ////////// v //////////////////////////////////////////////////////////////
@@ -476,12 +476,12 @@ int parse_args( int argc, char const *argv[] ) {
       PARSE_ARG( "--debug-stream" );
       string val( ARG_VAL );
       to_lower( val );
-      if ( val == "1" || val == "stdout" || val == "cout" )
+      if ( val == "1" || val == "cout" || val == "stdout" )
         z_props.setDebugStream( cout );
-      else if ( val == "2" || val == "stderr" || val == "cerr" )
+      else if ( val == "2" || val == "cerr" || val == "stderr" )
         z_props.setDebugStream( cerr );
       else {
-        error = "--debug-stream argument must be one of: 1, stdout, cout, 2, stderr, or cerr.\n";
+        error = "--debug-stream argument must be one of: 1, cout, stdout, 2, cerr, or stderr.\n";
         break;
       }
     }
