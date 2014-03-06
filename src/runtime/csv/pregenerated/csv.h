@@ -57,6 +57,7 @@ public:
   missing::type missing_; //
   bool skip_called_; //
   zstring string_; //
+  zstring value_; //
 
   CsvParseIteratorState();
 

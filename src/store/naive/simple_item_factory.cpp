@@ -2366,19 +2366,20 @@ bool BasicItemFactory::createJSONObject(
     const std::vector<store::Item_t>& names,
     const std::vector<store::Item_t>& values)
 {
+  assert( names.size() == values.size() );
+
   result = new json::SimpleJSONObject();
+  json::JSONObject *const obj = static_cast<json::JSONObject*>( result.getp() );
 
-  json::JSONObject* obj = static_cast<json::JSONObject*>(result.getp());
+  std::vector<store::Item_t>::const_iterator n_i( names.begin() );
+  std::vector<store::Item_t>::const_iterator v_i( values.begin() );
+  std::vector<store::Item_t>::const_iterator const n_end( names.end() );
 
-  assert(names.size() == values.size());
-
-  csize numPairs = names.size();
-  for (csize i = 0; i < numPairs; ++i)
-  {
-    if (!obj->add(names[i], values[i], false))
-    {
-      RAISE_ERROR_NO_LOC(jerr::JNDY0003, ERROR_PARAMS(names[i]->getStringValue()));
-    }
+  for ( ; n_i != n_end; ++n_i, ++v_i ) {
+    if ( !obj->add( *n_i, *v_i, false ) )
+      throw XQUERY_EXCEPTION(
+        jerr::JNDY0003, ERROR_PARAMS( (*n_i)->getStringValue() )
+      );
   }
 
   return true;
