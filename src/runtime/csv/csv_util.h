@@ -17,9 +17,31 @@
 #ifndef ZORBA_CSV_UTIL_H
 #define ZORBA_CSV_UTIL_H
 
+// standard
+#include <sstream>
+
+// Zorba
+#include <zorba/util/mem_streambuf.h>
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+struct csv_parse_json_state {
+  std::istringstream iss_;
+
+  csv_parse_json_state() {
+    iss_.std::ios::rdbuf( &buf_ );
+  }
+
+  void set_data( char const *s, size_t size ) {
+    buf_.set( const_cast<char*>( s ), size );
+    iss_.seekg( 0 );
+  }
+
+private:
+  mem_streambuf buf_;
+};
 
 namespace missing {
   enum type {

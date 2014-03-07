@@ -50,11 +50,12 @@ public:
   bool cast_unquoted_; //
   csv_parser csv_; //
   zstring extra_name_; //
-  std::istringstream iss_; //
+  mem_streambuf input_buf_; //
+  std::istringstream input_iss_; //
   std::vector<store::Item_t> keys_; //
   unsigned line_no_; //
-  mem_streambuf mem_streambuf_; //
   missing::type missing_; //
+  csv_parse_json_state parse_json_state_; //
   bool skip_called_; //
   zstring string_; //
   zstring value_; //

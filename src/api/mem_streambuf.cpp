@@ -17,7 +17,6 @@
 #include "stdafx.h"
 #include <cstring>                      /* for memcpy(3) */
 
-#include <zorba/internal/cxx_util.h>
 #include <zorba/util/mem_streambuf.h>
 
 #include "diagnostics/assert.h"
