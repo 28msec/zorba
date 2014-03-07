@@ -157,11 +157,10 @@ static bool get_string_opt( store::Item_t const &object,
   return false;
 }
 
-static json::type parse_json( zstring const &s, json::token *ptoken ) {
-  mem_streambuf buf( (char*)s.data(), s.size() );
-  istringstream iss;
-  iss.ios::rdbuf( &buf );
-  json::lexer lex( iss );
+static json::type parse_json( zstring const &s, csv_parse_json_state &state,
+                              json::token *ptoken ) {
+  state.set_data( s.data(), s.size() );
+  json::lexer lex( state.iss_ );
   if ( !lex.next( ptoken, false ) )
     return json::none;
   json::token::type const tt = ptoken->get_type();
@@ -221,9 +220,9 @@ void CsvParseIterator::set_input( store::Item_t const &item,
     state->csv_.set_stream( item->getStream() );
   else {
     item->getStringValue2( state->string_ );
-    state->mem_streambuf_.set( state->string_.data(), state->string_.size() );
-    state->iss_.ios::rdbuf( &state->mem_streambuf_ );
-    state->csv_.set_stream( state->iss_ );
+    state->input_buf_.set( state->string_.data(), state->string_.size() );
+    state->input_iss_.ios::rdbuf( &state->input_buf_ );
+    state->csv_.set_stream( state->input_iss_ );
   }
 }
 
@@ -428,7 +427,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
         GENV_ITEMFACTORY->createBoolean( item, false );
       else {
         json::token t;
-        switch ( parse_json( *value, &t ) ) {
+        switch ( parse_json( *value, state->parse_json_state_, &t ) ) {
           case json::boolean:
             GENV_ITEMFACTORY->createBoolean( item, (*value)[0] == 't' );
             break;
