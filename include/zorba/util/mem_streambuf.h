@@ -22,6 +22,7 @@
 
 // Zorba
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 
 namespace zorba {
 
