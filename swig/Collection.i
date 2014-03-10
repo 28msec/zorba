@@ -51,9 +51,9 @@
     return Item( theCollection->getName() );
   }
 
-  TypeIdentifier Collection::getType()
+  SequenceType Collection::getType()
   {
-    return TypeIdentifier( theCollection->getType() );
+    return SequenceType( theCollection->getType() );
   }
 
   long long Collection::indexOf(const Item &aNode )

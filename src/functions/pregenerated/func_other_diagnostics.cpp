@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/errors_and_diagnostics/other_diagnostics.h"
 #include "functions/func_other_diagnostics.h"
@@ -57,7 +58,7 @@ void populate_context_other_diagnostics(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_read_line,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","read-line"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","read-line"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::OP_ZORBA_READ_LINE_0);
 
@@ -68,7 +69,7 @@ void populate_context_other_diagnostics(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_util_print,
-        (createQName("http://www.zorba-xquery.com/zorba/util-functions","","print"), 
+        (createQName("http://zorba.io/util-functions","","print"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::FN_ZORBA_UTIL_PRINT_1);

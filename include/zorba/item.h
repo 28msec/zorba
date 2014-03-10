@@ -84,6 +84,8 @@ public:
    */
   const Item& operator =(const store::Item* rhs);
 
+  bool operator ==(const Item& rhs) { return m_item == rhs.m_item; }
+
   /** \brief Destructor
    */
   ~Item();
@@ -416,7 +418,7 @@ public:
    * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Object).
    */
   Item
-  getObjectValue(String aName) const;
+  getObjectValue(String const &aName) const;
 
   /**
    * Checks whether the item's content is streamable.
@@ -483,6 +485,21 @@ public:
    */
   size_t
   mem_size() const;
+
+  /**
+   * Returns the value and size of the given hexBinary item
+   *
+   * The value is a string which is hexBinary encoded if isEncoded()
+   * returns true. Otherwise, it is the original unencoded binary
+   * data.
+   *
+   * If the given item is streamable (i.e. isStreamable() returns true),
+   * the stream returned by getStream() should to be used to retrieve
+   * the value. Otherwise, the contents of the stream will be materialized
+   * in main memory.
+   */
+  const char*
+  getHexBinaryValue(size_t& s) const;
 
 private:
   friend class Unmarshaller;

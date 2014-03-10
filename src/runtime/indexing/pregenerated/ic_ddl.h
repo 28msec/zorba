@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_INDEXING_IC_DDL_H
 #define ZORBA_RUNTIME_INDEXING_IC_DDL_H
 
@@ -65,6 +66,8 @@ public:
 
   virtual ~ActivateICIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -103,6 +106,8 @@ public:
 
   virtual ~DeactivateICIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -139,6 +144,8 @@ public:
   {}
 
   virtual ~CheckICIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

@@ -1,0 +1,72 @@
+<iterator-tree description="const-folded expr">
+  <SingletonIterator value="xs:boolean(true)"/>
+</iterator-tree>
+<iterator-tree description="main query">
+  <TupleStreamIterator>
+    <WindowIterator>
+      <WindowVariable name="w">
+        <FnConcatIterator>
+          <SingletonIterator value="xs:integer(2)"/>
+          <SingletonIterator value="xs:integer(4)"/>
+          <SingletonIterator value="xs:integer(6)"/>
+          <SingletonIterator value="xs:integer(8)"/>
+          <SingletonIterator value="xs:integer(10)"/>
+          <SingletonIterator value="xs:integer(12)"/>
+        </FnConcatIterator>
+      </WindowVariable>
+      <WinCondVariable name="start-PosIn"/>
+      <SingletonIterator value="xs:boolean(true)"/>
+      <WinCondVariable name="end-PosIn"/>
+      <FnBooleanIterator>
+        <TypedValueCompareIterator_INTEGER>
+          <SpecificNumArithIterator_SubtractOperation_INTEGER>
+            <ForVarIterator varname="e"/>
+            <ForVarIterator varname="s"/>
+          </SpecificNumArithIterator_SubtractOperation_INTEGER>
+          <UnhoistIterator>
+            <LetVarIterator varname="$$opt_temp_0"/>
+          </UnhoistIterator>
+        </TypedValueCompareIterator_INTEGER>
+      </FnBooleanIterator>
+      <LetIterator>
+        <LetVariable name="$$opt_temp_0" materialize="true"/>
+        <ForIterator>
+          <ForVariable name="x"/>
+          <TupleSourceIterator/>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,a)"/>
+            <FnConcatIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,b)"/>
+                <TextIterator>
+                  <SingletonIterator value="xs:string(1)"/>
+                </TextIterator>
+              </ElementIterator>
+              <ElementIterator copyInputNodes="false">
+                <SingletonIterator value="xs:QName(,,b)"/>
+                <TextIterator>
+                  <SingletonIterator value="xs:string(2)"/>
+                </TextIterator>
+              </ElementIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+        </ForIterator>
+        <HoistIterator>
+          <CastIterator type="xs:integer">
+            <FnDataIterator>
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="0" target_position="1">
+                <ForVarIterator varname="x"/>
+              </ChildAxisIterator>
+            </FnDataIterator>
+          </CastIterator>
+        </HoistIterator>
+      </LetIterator>
+    </WindowIterator>
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,window)"/>
+      <EnclosedIterator attr_cont="false">
+        <LetVarIterator varname="w"/>
+      </EnclosedIterator>
+    </ElementIterator>
+  </TupleStreamIterator>
+</iterator-tree>

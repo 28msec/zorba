@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_SCHEMA_SCHEMA_H
 #define ZORBA_RUNTIME_SCHEMA_SCHEMA_H
 
@@ -69,6 +70,8 @@ public:
 
   virtual ~ValidateIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -100,6 +103,8 @@ public:
 
   virtual ~ZorbaValidateInPlaceIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -130,6 +135,8 @@ public:
 
   virtual ~ZorbaSchemaTypeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -159,6 +166,8 @@ public:
   {}
 
   virtual ~ZorbaIsValidatedIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

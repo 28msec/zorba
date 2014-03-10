@@ -1,27 +1,26 @@
+import module namespace u = "http://zorba.io/unique-index" at "undo4.xqlib";
 
-import module namespace u = "http://www.zorba-xquery.com/unique-index" at "undo4.xqlib";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace idml = "http://zorba.io/modules/store/static/indexes/dml";
 
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
-
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 u:create-db();
 
 
-dml:insert-nodes($u:c1, 
+dml:insert($u:c1, 
 <person id="1">
 <car make="honda"/><car make="vw"/>
 </person>);
 
-dml:insert-nodes($u:c1,
+dml:insert($u:c1,
 <person id="2">
 <car make="vw"/>
 </person>);
 
 
-dml:insert-nodes($u:c2, 
+dml:insert($u:c2, 
 <person id="1">
 <car make="honda"/><car make="vw"/>
 </person>);
@@ -53,9 +52,9 @@ TEST 1:
 try
 {{
   (
-    dml:insert-nodes($u:c1, <person id="3"><car make="vw"/></person>),
+    dml:insert($u:c1, <person id="3"><car make="vw"/></person>),
 
-    dml:insert-nodes($u:c2, <person id="1"/>)
+    dml:insert($u:c2, <person id="1"/>)
   );
   ()
 }}
@@ -78,11 +77,11 @@ TEST 2:
 try
 {{
   (
-    dml:insert-nodes($u:c1, <person id="3"><car make="vw"/></person>),
+    dml:insert($u:c1, <person id="3"><car make="vw"/></person>),
 
-    dml:delete-node-first($u:c1),
+    dml:delete-first($u:c1),
 
-    dml:insert-nodes($u:c2, <person id="1"/>)
+    dml:insert($u:c2, <person id="1"/>)
   );
   ()
 }}
@@ -107,13 +106,13 @@ try
   (
     insert node <car make="BMW"/> into dml:collection($u:c1)[1],
 
-    dml:insert-nodes($u:c1, <person id="3"><car make="vw"/></person>),
+    dml:insert($u:c1, <person id="3"><car make="vw"/></person>),
 
-    dml:delete-node-first($u:c1),
+    dml:delete-first($u:c1),
 
     delete nodes dml:collection($u:c1)[2]/car,
 
-    dml:insert-nodes($u:c2, <person id="1"/>)
+    dml:insert($u:c2, <person id="1"/>)
   );
   ()
 }}

@@ -25,9 +25,9 @@
 
  : @version 1.0
  : @see     http://www.xqueryfunctions.com
- : @project FunctX
+ : @project FunctX/FunctX
  :) 
-module namespace  functx = "http://www.functx.com/" ;
+module namespace  functx = "http://www.functx.com" ;
 
 (:~
  : Adds attributes to XML elements 

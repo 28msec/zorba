@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -57,6 +58,10 @@ void FnPutIterator::accept(PlanIterVisitor& v) const
 
 FnPutIterator::~FnPutIterator() {}
 
+
+zstring FnPutIterator::getNameAsString() const {
+  return "fn:put";
+}
 // </FnPutIterator>
 
 

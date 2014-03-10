@@ -38,6 +38,7 @@
 #include <zorba/zorba_string.h>
 #include <context/get_current_lib_suffix.h>
 #include <zorba/util/error_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
 
@@ -83,12 +84,12 @@ static zstring computeLibraryName(
       lBranchPath = lPathNotation.substr(0, lIndexOfLastSlash + 1);
     }
 
-    // remove .xq from the end of the file if present
+    // remove .module from the end of the file if present
     // bugfix: find_last_of didn't do the right thing
-    size_t lIndexOfXQ = lFileName.find(".xq");
-    if (lIndexOfXQ != std::string::npos && lIndexOfXQ == lFileName.size() - 3)
+    size_t lIndexOfModule = lFileName.find(".module");
+    if (lIndexOfModule != std::string::npos && lIndexOfModule == lFileName.size() - 7)
     {
-      lFileName.erase(lIndexOfXQ);
+      lFileName.erase(lIndexOfModule);
     }
   }
 
@@ -221,8 +222,6 @@ DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
   std::vector<zstring> lLibPath;
   aSctx.get_full_lib_path(lLibPath);
 
-  std::auto_ptr<std::istream> modfile(0); // result file
-
   if (lLibPath.size() != 0)
   {
     URI lURI(aNsURI);
@@ -256,7 +255,7 @@ DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
       potentialModuleFile.append(lLibraryName);
       potentialModuleFileDebug.append(lLibraryNameDebug);
 
-      std::auto_ptr<std::istream> modfile
+      std::unique_ptr<std::istream> modfile
         (new std::ifstream(potentialModuleFile.c_str()));
 
       if (!modfile->good()) 

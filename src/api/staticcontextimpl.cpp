@@ -35,10 +35,11 @@
 #include "api/functionimpl.h"
 #include "api/annotationimpl.h"
 #include "api/xqueryimpl.h"
-#include "api/invoke_item_sequence.h"
+#include "api/item_seq_invoke.h"
 #include "api/staticcollectionmanagerimpl.h"
-#include "api/vectoriterator.h"
+#include "api/item_iter_vector.h"
 
+#include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #ifndef ZORBA_NO_FULL_TEXT
@@ -452,12 +453,19 @@ bool StaticContextImpl::setJSONiqVersion(jsoniq_version_t version)
 ********************************************************************************/
 xquery_version_t StaticContextImpl::getXQueryVersion() const
 {
-  try {
-    return theCtx->xquery_version()==StaticContextConsts::xquery_version_1_0?
-      xquery_version_1_0:xquery_version_3_0;
-  } catch (ZorbaException const& e) {
+  try
+  {
+    return
+    (theCtx->xquery_version() == StaticContextConsts::xquery_version_1_0 ?
+     xquery_version_1_0 :
+     xquery_version_3_0);
+  }
+  catch (ZorbaException const& e)
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  } catch (std::exception const& e) {
+  }
+  catch (std::exception const& e)
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
   }
   return xquery_version_1_0;
@@ -469,14 +477,19 @@ xquery_version_t StaticContextImpl::getXQueryVersion() const
 ********************************************************************************/
 jsoniq_version_t StaticContextImpl::getJSONiqVersion() const
 {
-  try {
+  try 
+  {
     if (theCtx->language_kind() != StaticContextConsts::language_kind_jsoniq)
       return jsoniq_version_undefined;
     return theCtx->jsoniq_version()==StaticContextConsts::jsoniq_version_1_0?
       jsoniq_version_1_0:jsoniq_version_undefined;
-  } catch (ZorbaException const& e) {
+  }
+  catch (ZorbaException const& e)
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  } catch (std::exception const& e) {
+  }
+  catch (std::exception const& e)
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
   }
   return jsoniq_version_undefined;
@@ -788,18 +801,17 @@ StaticContextImpl::registerModule(ExternalModule* aModule)
 /*******************************************************************************
  URI Mapper
 *******************************************************************************/
-void
-StaticContextImpl::registerURIMapper(URIMapper* aMapper)
+void StaticContextImpl::registerURIMapper(URIMapper* aMapper)
 {
   // QQQ memory management?
   theCtx->add_uri_mapper(new URIMapperWrapper(*aMapper));
 }
 
+
 /*******************************************************************************
  URL Resolver
 *******************************************************************************/
-void
-StaticContextImpl::registerURLResolver(URLResolver* aResolver)
+void StaticContextImpl::registerURLResolver(URLResolver* aResolver)
 {
   // QQQ memory management?
   theCtx->add_url_resolver(new URLResolverWrapper(*aResolver));
@@ -810,15 +822,13 @@ StaticContextImpl::registerURLResolver(URLResolver* aResolver)
 /*******************************************************************************
 
 ********************************************************************************/
-void
-StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
+void StaticContextImpl::setDocumentType(const String& aDocUri, const SequenceType& type)
 {
-  xqtref_t xqType = NULL;
-  if (type != NULL) {
-    xqType = theCtx->get_typemanager()->create_type(*type);
-  }
-
+  xqtref_t xqType = Unmarshaller::getInternalType(type);
   const zstring& uri = Unmarshaller::getInternalString(aDocUri);
+
+  ZORBA_ASSERT(xqType != NULL);
+
   theCtx->bind_document(uri, xqType);
 }
 
@@ -826,33 +836,27 @@ StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
 /*******************************************************************************
 
 ********************************************************************************/
-TypeIdentifier_t
-StaticContextImpl::getDocumentType(const String& aDocUri) const
+SequenceType StaticContextImpl::getDocumentType(const String& aDocUri) const
 {
   const zstring& uri = Unmarshaller::getInternalString(aDocUri);
   xqtref_t xqType = theCtx->lookup_document(uri);
-  TypeIdentifier_t type = NULL;
-  if (xqType == NULL)
-  {
-    return NULL;
-  }
 
-  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
+  return Unmarshaller::createSequenceType(xqType.getp());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void
-StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifier_t type)
+void StaticContextImpl::setCollectionType(
+    const String& aCollectionUri,
+    const SequenceType& type)
 {
-  xqtref_t xqType = NULL;
-  if (type != NULL)
-  {
-    xqType = theCtx->get_typemanager()->create_type(*type);
-  }
+  xqtref_t xqType = Unmarshaller::getInternalType(type);
   zstring& uri = Unmarshaller::getInternalString(aCollectionUri);
+
+  ZORBA_ASSERT(xqType != NULL);
+
   theCtx->bind_w3c_collection(uri, xqType);
 }
 
@@ -860,19 +864,16 @@ StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifie
 /*******************************************************************************
 
 ********************************************************************************/
-TypeIdentifier_t
-StaticContextImpl::getCollectionType(const String& aCollectionUri) const
+SequenceType StaticContextImpl::getCollectionType(const String& uri) const
 {
 
-  const zstring& uri = Unmarshaller::getInternalString(aCollectionUri);
-  const XQType* xqType = theCtx->lookup_w3c_collection(uri);
-  TypeIdentifier_t type = NULL;
-  if (xqType == NULL)
-  {
-    return NULL;
-  }
-  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
+  const zstring& uri2 = Unmarshaller::getInternalString(uri);
+
+  const XQType* xqType = theCtx->lookup_w3c_collection(uri2);
+
+  return Unmarshaller::createSequenceType(xqType);
 }
+
 
 /*******************************************************************************
 
@@ -962,6 +963,9 @@ StaticContextImpl::getFunctions(std::vector<Function_t>& aFunctions) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::getFunctions(
     const String& aFnNameUri,
@@ -992,6 +996,9 @@ StaticContextImpl::getFunctions(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::getFunctionAnnotations(
     const Item& aQName,
@@ -1020,30 +1027,33 @@ StaticContextImpl::getFunctionAnnotations(
 }
 
 
-void
-StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
+/*******************************************************************************
+
+********************************************************************************/
+void StaticContextImpl::setContextItemStaticType(const SequenceType& type)
 {
-  xqtref_t xqType = NULL;
-  if (type != NULL)
-  {
-    xqType = theCtx->get_typemanager()->create_type(*type);
-  }
+  xqtref_t xqType = Unmarshaller::getInternalType(type);
+
+  ZORBA_ASSERT(xqType != NULL);
+
   theCtx->set_context_item_type(xqType, QueryLoc::null);
 }
 
 
-TypeIdentifier_t
-StaticContextImpl::getContextItemStaticType() const
+/*******************************************************************************
+
+********************************************************************************/
+SequenceType StaticContextImpl::getContextItemStaticType() const
 {
   xqtref_t type = theCtx->get_context_item_type();
-  if (type == NULL)
-  {
-    return NULL;
-  }
-  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *type);
+
+  return Unmarshaller::createSequenceType(type.getp());
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::setTraceStream(std::ostream& os)
 {
@@ -1051,6 +1061,9 @@ StaticContextImpl::setTraceStream(std::ostream& os)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::resetTraceStream()
 {
@@ -1058,6 +1071,9 @@ StaticContextImpl::resetTraceStream()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool
 StaticContextImpl::getOption(const Item& aQName, String& aOptionValue) const
 {
@@ -1083,6 +1099,9 @@ StaticContextImpl::getOption(const Item& aQName, String& aOptionValue) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::declareOption(const Item& aQName, const String& aOptionValue)
 {
@@ -1099,6 +1118,9 @@ StaticContextImpl::declareOption(const Item& aQName, const String& aOptionValue)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void StaticContextImpl::loadProlog(
     const String& prolog,
     const Zorba_CompilerHints_t& hints)
@@ -1119,6 +1141,9 @@ void StaticContextImpl::loadProlog(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 static void
 toInternalPath(
     const std::vector<String>& aPublicStrings,
@@ -1140,6 +1165,9 @@ toInternalPath(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 static void
 toPublicPath(
     const std::vector<zstring>& aInternalStrings,
@@ -1153,6 +1181,9 @@ toPublicPath(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::setURIPath(const std::vector<String> &aURIPath)
 {
@@ -1168,6 +1199,10 @@ StaticContextImpl::setURIPath(const std::vector<String> &aURIPath)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::getURIPath(std::vector<String> &aURIPath) const
 {
@@ -1183,6 +1218,10 @@ StaticContextImpl::getURIPath(std::vector<String> &aURIPath) const
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::getFullURIPath(std::vector<String> &aURIPath) const
 {
@@ -1198,6 +1237,10 @@ StaticContextImpl::getFullURIPath(std::vector<String> &aURIPath) const
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::setLibPath(const std::vector<String> &aLibPath)
 {
@@ -1213,6 +1256,10 @@ StaticContextImpl::setLibPath(const std::vector<String> &aLibPath)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::getLibPath(std::vector<String> &aLibPath) const
 {
@@ -1228,6 +1275,10 @@ StaticContextImpl::getLibPath(std::vector<String> &aLibPath) const
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::getFullLibPath(std::vector<String> &aLibPath) const
 {
@@ -1243,6 +1294,10 @@ StaticContextImpl::getFullLibPath(std::vector<String> &aLibPath) const
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
 {
   try
@@ -1258,6 +1313,10 @@ void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void StaticContextImpl::getModulePaths(std::vector<String>& aModulePaths) const
 {
   try
@@ -1276,6 +1335,9 @@ void StaticContextImpl::getModulePaths(std::vector<String>& aModulePaths) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) const
 {
@@ -1295,6 +1357,9 @@ StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) c
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 String
 StaticContextImpl::resolve(const String& aRelativeUri) const
 {
@@ -1313,6 +1378,9 @@ StaticContextImpl::resolve(const String& aRelativeUri) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 String
 StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) const
 {
@@ -1332,10 +1400,13 @@ StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) c
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool
 StaticContextImpl::validate(
-    const Item& rootElement,
-    Item& validatedResult,
+    const Item& rootNode,
+    Item& validatedNode,
     validation_mode_t validationMode) const
 {
   try
@@ -1359,12 +1430,13 @@ StaticContextImpl::validate(
         break;
     }
 
-    store::Item_t lRes(Unmarshaller::getInternalItem(validatedResult));
-    bool lResBool = theCtx->validate(Unmarshaller::getInternalItem(rootElement),
-                            lRes,
-                            valMode);
-    validatedResult = lRes;
-    return lResBool;
+    store::Item_t resNode;
+
+    bool res = theCtx->validate(Unmarshaller::getInternalItem(rootNode),
+                                resNode,
+                                valMode);
+    validatedNode = resNode;
+    return res;
   }
   catch (ZorbaException const& e)
   {
@@ -1374,6 +1446,9 @@ StaticContextImpl::validate(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool
 StaticContextImpl::validate(
     const Item& rootElement,
@@ -1449,24 +1524,101 @@ StaticContextImpl::validateSimpleContent(
 }
 
 
-/**
- * construct the query to call invoke
- * for the QName of the function and for each argument,
- * the query declares an external variable ($qname, $arg_1, ..., $arg_n)
- * which needs to be bound before execution.
- */
-String
-StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) const
+/*******************************************************************************
+
+********************************************************************************/
+ItemSequence_t StaticContextImpl::invoke(
+    const Item& aItem,
+    const std::vector<ItemSequence_t>& aArgs) const
+{
+  store::Item_t item = Unmarshaller::getInternalItem(aItem);
+
+  if (item->isAtomic())
+    return invokeFunc(aItem, item, aArgs);
+  else
+    return invokeFuncItem(aItem, item, aArgs);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ItemSequence_t StaticContextImpl::invokeFunc(
+    const Item& aItem,
+    const store::Item_t& qname,
+    const std::vector<ItemSequence_t>& aArgs) const
+{
+  try
+  {
+    if (qname->getTypeCode() != store::XS_QNAME)
+    {
+      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS(ZED(BadType_23o), "xs:QName"));
+    }
+
+    csize numArgs = aArgs.size();
+
+    // test if function with given #args exists
+    function* func = theCtx->lookup_fn(qname.getp(), numArgs);
+
+    if (!func)
+    {
+      throw XQUERY_EXCEPTION(err::XPST0017,
+      ERROR_PARAMS(qname->getStringValue(), ZED(FunctionUndeclared_3), numArgs));
+    }
+
+    String queryStr = createInvokeQuery(func, numArgs);
+
+    XQuery_t query(new XQueryImpl());
+
+    // compile without any hints
+    Zorba_CompilerHints_t lHints;
+    StaticContext_t querySctx = new StaticContextImpl(*this);
+
+    query->compile(queryStr, querySctx, lHints);
+
+    // bind qname and params
+    DynamicContext* queryDctx = query->getDynamicContext();
+
+    queryDctx->setVariable("", "xxx-func-name", aItem);
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      std::ostringstream argName;
+      argName << "arg" << i;
+      queryDctx->setVariable("", argName.str(), aArgs[i]->getIterator());
+    }
+
+    // the XQueryImpl object needs to live as long as its iterator
+    // because the iterator returned as a result of the query
+    // contains a reference to the query in order to do cleanup work.
+    // The same is true for this sctx
+    return new InvokeItemSequence(query, const_cast<StaticContextImpl*>(this));
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+    return 0;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::string StaticContextImpl::createInvokeQuery(
+    const function* func,
+    csize arity)
 {
   std::ostringstream lOut;
 
   // prolog
   lOut
-    << "import module namespace ref = 'http://www.zorba-xquery.com/modules/reflection';"
-    << std::endl
-    << "declare variable $xxx-func-name as xs:QName" << " external;" << std::endl;
+    << "import module namespace ref = 'http://zorba.io/modules/reflection';"
+    << std::endl;
 
-  for (size_t i = 0; i < aArity; ++i)
+  lOut << "declare variable $xxx-func-name as xs:QName external;" << std::endl;
+
+  for (csize i = 0; i < arity; ++i)
   {
     lOut << "declare variable $arg" << i << " external;" << std::endl;
   }
@@ -1476,16 +1628,17 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) con
   // call updating, sequential, or simple invoke function
   lOut << "ref:invoke";
 
-  if (aFunc->isUpdating())
+  if (func->isUpdating())
     lOut << "-u";
-  else if (aFunc->isSequential())
+  else if (func->isSequential())
     lOut << "-s";
-  else if (!aFunc->isDeterministic())
+  else if (!func->isDeterministic())
     lOut << "-n";
 
   // args
   lOut << "($xxx-func-name";
-  for (size_t i = 0; i < aArity; ++i)
+
+  for (csize i = 0; i < arity; ++i)
   {
     lOut << ", $arg" << i;
   }
@@ -1494,86 +1647,51 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) con
 }
 
 
-Function_t
-StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
-{
-  store::Item* qname = Unmarshaller::getInternalItem(aQName);
+/*******************************************************************************
 
-  if (qname->getTypeCode() != store::XS_QNAME)
-  {
-    throw XQUERY_EXCEPTION(err::XPTY0004,
-    ERROR_PARAMS(ZED(BadType_23o), "xs:QName" ));
-  }
-
-  // test if function with given #args exists
-  Function_t lFunc;
-
-  std::vector<Function_t> lFunctions;
-  findFunctions(aQName, lFunctions);
-
-  if (lFunctions.empty())
-  {
-    throw XQUERY_EXCEPTION(err::XPST0017,
-    ERROR_PARAMS(aQName.getStringValue(), ZED(FunctionUndeclared_3), aNumArgs));
-  }
-
-  for (std::vector<Function_t>::const_iterator lIter = lFunctions.begin();
-       lIter != lFunctions.end(); ++lIter)
-  {
-    if ((*lIter)->isVariadic() || (*lIter)->getArity() == aNumArgs)
-    {
-      lFunc = (*lIter);
-      break;
-    }
-  }
-
-  if (!lFunc)
-  {
-    throw XQUERY_EXCEPTION(err::XPST0017,
-    ERROR_PARAMS(aQName.getStringValue(), ZED(FunctionUndeclared_3), aNumArgs));
-  }
-
-  return lFunc;
-}
-
-
-ItemSequence_t
-StaticContextImpl::invoke(
-    const Item& aQName,
+********************************************************************************/
+ItemSequence_t StaticContextImpl::invokeFuncItem(
+    const Item& aItem,
+    const store::Item_t& funcItem,
     const std::vector<ItemSequence_t>& aArgs) const
 {
   try
   {
-    Function_t lFunc = checkInvokable(aQName, aArgs.size());
+    if (!funcItem->isFunction())
+    {
+      throw XQUERY_EXCEPTION(err::XPTY0004,
+      ERROR_PARAMS(ZED(BadType_23o), "xs:function()"));
+    }
 
-    String lStr = createInvokeQuery(lFunc, aArgs.size());
+    csize numArgs = aArgs.size();
 
-    std::auto_ptr<XQueryImpl> impl(new XQueryImpl());
+    String queryStr = createHOFQuery(numArgs);
+
+    XQuery_t query(new XQueryImpl());
 
     // compile without any hints
     Zorba_CompilerHints_t lHints;
-    StaticContext_t lSctx = new StaticContextImpl(*this);
+    StaticContext_t querySctx = new StaticContextImpl(*this);
 
-    impl->compile(lStr, lSctx, lHints);
+    query->compile(queryStr, querySctx, lHints);
 
-    // bind qname and params
-    DynamicContext* lDCtx = impl->getDynamicContext();
-    lDCtx->setVariable("xxx-func-name", aQName);
-    for (size_t i = 0; i < aArgs.size(); ++i)
+    // bind func item and params
+    DynamicContext* queryDctx = query->getDynamicContext();
+
+    queryDctx->setVariable("", "xxx-func-item", aItem);
+
+    for (csize i = 0; i < numArgs; ++i)
     {
-      std::ostringstream lArgName;
-      lArgName << "arg" << i;
-      lDCtx->setVariable(lArgName.str(), aArgs[i]->getIterator());
+      std::ostringstream argName;
+      argName << "arg" << i;
+      queryDctx->setVariable("", argName.str(), aArgs[i]->getIterator());
     }
 
     // the XQueryImpl object needs to live as long as its iterator
     // because the iterator returned as a result of the query
     // contains a reference to the query in order to do cleanup work.
     // The same is true for this sctx
-    Iterator_t lIter = impl->iterator();
-    return new InvokeItemSequence(impl.release(),
-                                  lIter,
-                                  const_cast<StaticContextImpl*>(this));
+    return new InvokeItemSequence(query, const_cast<StaticContextImpl*>(this));
   }
   catch (ZorbaException const& e)
   {
@@ -1581,6 +1699,38 @@ StaticContextImpl::invoke(
     return 0;
   }
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::string StaticContextImpl::createHOFQuery(csize arity)
+{
+  std::ostringstream lOut;
+
+  // prolog
+  lOut << "declare variable $xxx-func-item external;" << std::endl;
+
+  for (csize i = 0; i < arity; ++i)
+  {
+    lOut << "declare variable $arg" << i << " external;" << std::endl;
+  }
+
+  // body
+  lOut << "$xxx-func-item(";
+
+  for (csize i = 0; i < arity; ++i)
+  {
+    lOut << "$arg" << i;
+
+    if (i < arity-1)
+      lOut << ",";
+  }
+  lOut << ")";
+
+  return lOut.str();
+}
+
 
 
 StaticCollectionManager*
@@ -1601,6 +1751,9 @@ StaticContextImpl::getStaticCollectionManager() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::setAuditEvent(audit::Event* anEvent)
 {
@@ -1608,6 +1761,9 @@ StaticContextImpl::setAuditEvent(audit::Event* anEvent)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 audit::Event*
 StaticContextImpl::getAuditEvent() const
 {
@@ -1615,6 +1771,9 @@ StaticContextImpl::getAuditEvent() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
 {
@@ -1659,6 +1818,7 @@ StaticContextImpl::fetch(
   return fetch(aURI, aEntityKind, "UTF-8");
 }
 
+
 Item
 StaticContextImpl::fetch(
     const String& aURI,
@@ -1701,11 +1861,13 @@ StaticContextImpl::fetch(
   return 0;
 }
 
+
 Item
 StaticContextImpl::fetchBinary(const String& aURI) const
 {
   return fetchBinary(aURI, "SOME_CONTENT");
 }
+
 
 Item
 StaticContextImpl::fetchBinary(

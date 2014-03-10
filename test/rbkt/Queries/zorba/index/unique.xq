@@ -1,19 +1,19 @@
-import module namespace u = "http://www.zorba-xquery.com/unique-index" at "unique.xqlib";
+import module namespace u = "http://zorba.io/unique-index" at "unique.xqlib";
 
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace idml = "http://zorba.io/modules/store/static/indexes/dml";
 
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 u:create-db();
 
-dml:insert-nodes($u:auctions1, <person id="5"/>);
+dml:insert($u:auctions1, <person id="5"/>);
 
 try
 {{
-  (dml:insert-nodes($u:auctions1, <person id="1"/>),
-   dml:insert-nodes($u:auctions1, <person id="1"/>));
+  (dml:insert($u:auctions1, <person id="1"/>),
+   dml:insert($u:auctions1, <person id="1"/>));
   ()
 }}
 catch * 
@@ -25,12 +25,12 @@ catch *
 try
 {{
   (
-   dml:insert-nodes($u:auctions1, <person id="1"/>),
-   dml:insert-nodes($u:auctions1, <person id="3"/>),
-   dml:delete-nodes-first($u:auctions1, 1),
+   dml:insert($u:auctions1, <person id="1"/>),
+   dml:insert($u:auctions1, <person id="3"/>),
+   dml:delete-first($u:auctions1, 1),
 
-   dml:insert-nodes($u:auctions2, <person id="1"/>),
-   dml:insert-nodes($u:auctions2, <person id="1"/>));
+   dml:insert($u:auctions2, <person id="1"/>),
+   dml:insert($u:auctions2, <person id="1"/>));
   ()
 }}
 catch * 

@@ -35,9 +35,11 @@ namespace internal {
  ******/
 
 void
-FileizeURIMapper::mapURI
-(zstring const& aUri, EntityData const* aEntityData,
-  static_context const& aSctx, std::vector<zstring>& oUris)
+FileizeURIMapper::mapURI(
+    zstring const& aUri,
+    EntityData const* aEntityData,
+    static_context const& aSctx,
+    std::vector<zstring>& oUris)
 {
   // File-izing isn't for collections. Also, Thesauri use fake URIs that can
   // choke our URI class, so skip them.
@@ -52,28 +54,34 @@ FileizeURIMapper::mapURI
 
   // Append extension / filename as necessary.
   zstring lExtension;
-  switch (lKind) {
+  switch (lKind)
+  {
     case EntityData::SCHEMA:
-      lExtension = ".xsd";
+      lExtension = ".schema";
       break;
     case EntityData::MODULE:
-      lExtension = ".xq";
+      lExtension = ".module";
       break;
     default:
-      lExtension = "";
       break;
   }
   URI lUri(aUri);
   zstring lPath = lUri.get_encoded_path();
   bool lChanged = false;
-  if (ascii::ends_with(lPath, "/")) {
-    // If URI ends with /, append "index.<extension>".
+  if (lPath.length() == 0 && lUri.get_host().length() > 0) {
+    // If URI has *no* path component (eg. "http://www.functx.com" with no
+    // trailing slash), provide a path of "/". Note: the check for a non-empty
+    // host is to work around a possibly bogus FOTS test module-URIs-19.
+    lPath.append("/");
+  }
+  if (ZA_ENDS_WITH(lPath, "/")) {
+    // If URI's path component ends with /, append "index.<extension>".
     lPath.append("index");
     lPath.append(lExtension);
     lChanged = true;
   }
   else {
-    // If not, append ".xsd" or ".xq" if it's not already there.
+    // If not, append ".schema" or ".module" if it's not already there.
     if (!ascii::ends_with(lPath, lExtension)) {
       lPath.append(lExtension);
       lChanged = true;
@@ -108,12 +116,12 @@ ModuleVersioningURIMapper::mapURI
     return;
   }
 
-  // Ensure that the namespace URI ends in ".xq", and then strip it.
+  // Ensure that the namespace URI ends in ".module", and then strip it.
   zstring const lBaseUri = lModVer.namespace_uri();
-  if ( ! ascii::ends_with(lBaseUri, ".xq")) {
+  if ( ! ZA_ENDS_WITH(lBaseUri, ".module")) {
     return;
   }
-  zstring const lRootUri = lBaseUri.substr(0, lBaseUri.size() -3);
+  zstring const lRootUri = lBaseUri.substr(0, lBaseUri.size() - 7);
 
   // Ok, we've successfully parsed a version-request fragment. Form up a set of
   // new URIs based on the original minus the fragment.
@@ -127,7 +135,7 @@ ModuleVersioningURIMapper::mapURI
       // it's OK to check here even though we're looping.
       lFormat << "." << lModVer.min_minor();
     }
-    lFormat << ".xq";
+    lFormat << ".module";
     oUris.push_back(zstring(lFormat.str()));
   }
 

@@ -40,10 +40,10 @@ Examples are:
 
 Zorba provides the following four modules for image processing:
 
-- <a href="/html/modules/zorba/image/basic">http://www.zorba-xquery.com/modules/image/basic</a> which is concerned with accessing basic image attributes, creating new images and converting their format.
-- <a href="/html/modules/zorba/image/manipulation">http://www.zorba-xquery.com/modules/image/manipulation</a> which is concerned with image manipulations like zooming, special effects etc.
-- <a href="/html/modules/zorba/image/paint">http://www.zorba-xquery.com/modules/image/paint</a> which is concerned with drawing different geometrical shapes and text to images.
-- <a href="/html/modules/zorba/image/manipulation">http://www.zorba-xquery.com/modules/image/animation</a> which is concerned with creating animated GIF images.
+- <a href="/modules/latest/www.zorba-xquery.com/modules/image/basic">http://www.zorba-xquery.com/modules/image/basic</a> which is concerned with accessing basic image attributes, creating new images and converting their format.
+- <a href="/modules/latest/www.zorba-xquery.com/modules/image/manipulation">http://www.zorba-xquery.com/modules/image/manipulation</a> which is concerned with image manipulations like zooming, special effects etc.
+- <a href="/modules/latest/www.zorba-xquery.com/modules/image/paint">http://www.zorba-xquery.com/modules/image/paint</a> which is concerned with drawing different geometrical shapes and text to images.
+- <a href="/modules/latest/www.zorba-xquery.com/modules/image/animation">http://www.zorba-xquery.com/modules/image/animation</a> which is concerned with creating animated GIF images.
 
 This tutorial contains a small example for each of the modules.
 
@@ -66,7 +66,7 @@ return ($width, $format)
 
 \subsection explanation Explanation
 
-In line 3 \c $new-image is assigned the result of the basic:create command, so \c $new-image contains 
+In line 3 <b>$new-image</b> is assigned the result of the basic:create command, so <b>$new-image</b> contains 
 the xs:base64Binary representation of a plain white GIF image.
 
 In line 4 we use the basic:width command with new-image as argument to get the width of the image 
@@ -90,7 +90,7 @@ declare namespace h = "http://expath.org/ns/http-client";
 
 (: Get image from web :)
 let $req := <h:request method="GET" 
-			   href="http://www.zorba-xquery.com/tutorials/tutorialimages/exif.jpg"
+          href="http://www.zorba-xquery.com/tutorials/tutorialimages/exif.jpg"
                auth-method="Basic"
                send-authorization="true"
                username="zorba"
@@ -103,7 +103,7 @@ return basic:exif($res, "DateTimeOriginal")
 \subsection explanation2 Explanation
 
 Lines 6 and 7 use the Zorba http library to get an image from the web.
-Then, in line 9 we pass the image to the \c basic:exif function requesting the value of the \c DateTimeOriginal tag, which we return.
+Then, in line 9 we pass the image to the <b>basic:exif</b> function requesting the value of the <b>DateTimeOriginal</b> tag, which we return.
 
 \subsection expected_output2 Expected Output
 \code
@@ -132,9 +132,9 @@ return $manipulated-image
 \subsection explanation3 Explanation
 
 Lines 6 and 7 use the Zorba http client to retrieve an image from the web.
-Then, in line 9, we assign \c $manipulated-image a manipulated version of the 
-image by passing the fetched image to the \c manipulation:charcoal function 
-that takes the image, performs the charcoal effect on it returns a charcoaled 
+Then, in line 9, we assign <b>$manipulated-image</b> a manipulated version of the
+image by passing the fetched image to the <b>manipulation:charcoal</b> function
+that takes the image, performs the charcoal effect on it returns a charcoaled
 version of the image.
 
 \subsection expected_output3 Expected Output
@@ -158,9 +158,9 @@ return $image-circle-and-rectangle
 \subsection explanation4 Explanation
 
 In line 4 a blank image with PNG format is created (like in the first example of this tutorial).
-Then in line 5 we pass the blank image to the \c paint:draw-circle method which returns a version 
+Then in line 5 we pass the blank image to the <b>paint:draw-circle</b> method which returns a version 
 of the blank image with a circle on it.
-In line 6 we pass the image which already has a circle on it to the \c paint:draw-rectangle function 
+In line 6 we pass the image which already has a circle on it to the <b>paint:draw-rectangle</b> function 
 which returns an additional rectangle painted on it.
 
 \subsection expected_output4 Expected Output
@@ -217,6 +217,4 @@ return anim:create-morphed-gif(($i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8), xs:unsi
 \subsection expected_output6 Expected Output
 
 \image html tutorialimages/extended.gif
-
-
 */

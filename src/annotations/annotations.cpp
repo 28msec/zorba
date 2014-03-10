@@ -257,8 +257,8 @@ AnnotationInternal::AnnotationInternal(const store::Item_t& qname)
 
 ********************************************************************************/
 AnnotationInternal::AnnotationInternal(
-  const store::Item_t& qname,
-  std::vector<store::Item_t>& literals)
+    const store::Item_t& qname,
+    std::vector<store::Item_t>& literals)
   :
   theId(zann_end),
   theQName(qname)
@@ -346,7 +346,7 @@ void AnnotationList::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-AnnotationInternal* AnnotationList::get(csize index) const
+AnnotationInternal* AnnotationList::get(size_type index) const
 {
   if (index < theAnnotationList.size())
     return theAnnotationList[index];

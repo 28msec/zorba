@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -57,6 +58,10 @@ void IsSameNodeIterator::accept(PlanIterVisitor& v) const
 
 IsSameNodeIterator::~IsSameNodeIterator() {}
 
+
+zstring IsSameNodeIterator::getNameAsString() const {
+  return "op:is-same-node";
+}
 // </IsSameNodeIterator>
 
 
@@ -85,6 +90,10 @@ void NodeBeforeIterator::accept(PlanIterVisitor& v) const
 
 NodeBeforeIterator::~NodeBeforeIterator() {}
 
+
+zstring NodeBeforeIterator::getNameAsString() const {
+  return "op:node-before";
+}
 // </NodeBeforeIterator>
 
 
@@ -113,6 +122,10 @@ void NodeAfterIterator::accept(PlanIterVisitor& v) const
 
 NodeAfterIterator::~NodeAfterIterator() {}
 
+
+zstring NodeAfterIterator::getNameAsString() const {
+  return "op:node-after";
+}
 // </NodeAfterIterator>
 
 

@@ -25,6 +25,7 @@
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 
@@ -80,7 +81,7 @@ class MySerializableExternalFunction : public NonContextualExternalFunction
             }
             iter->close();
         }
-        // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+        // transfer ownership of the IteratorBackedItemSequence to Zorba (using a unique_ptr)
         return ItemSequence_t(new IteratorBackedItemSequence(vec));
     }
 

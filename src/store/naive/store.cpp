@@ -17,11 +17,11 @@
 
 #include <iostream>
 #include <climits>
-#include <memory>
 
 #include <libxml/parser.h>
 
 #include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/fatal.h"
@@ -32,7 +32,6 @@
 
 #include "store/api/pul.h"
 
-#include "properties.h"
 #include "string_pool.h"
 #include "simple_store.h"
 #include "simple_temp_seq.h"
@@ -141,8 +140,7 @@ void Store::init()
     // Calling its init is done here because we also want to free it at the end,
     // i.e. when the store is shutdown
     LIBXML_TEST_VERSION
-
-    store::Properties::load(0, NULL);
+    xmlInitParser();
 
     theNamespacePool = new StringPool(NAMESPACE_POOL_SIZE);
 
@@ -164,8 +162,6 @@ void Store::init()
     thePULFactory = createPULFactory();
     
     theTreeIdGeneratorFactory = createTreeIdGeneratorFactory();
-
-    theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
     theCollections = createCollectionSet();
 
@@ -375,18 +371,18 @@ XmlLoader* Store::getXmlLoader(
     return new FragmentXmlLoader(theItemFactory,
                                  aXQueryDiagnostics,
                                  loadProperties,
-                                 store::Properties::instance()->buildDataguide());
+                                 false);
 
   else if (loadProperties.getDTDValidate())
     return new DtdXmlLoader(theItemFactory,
                             aXQueryDiagnostics,
                             loadProperties,
-                            store::Properties::instance()->buildDataguide());
+                            false);
   else
     return new FastXmlLoader(theItemFactory,
                              aXQueryDiagnostics,
                              loadProperties,
-                             store::Properties::instance()->buildDataguide());
+                             false);
 }
 
 
@@ -989,13 +985,13 @@ store::Item_t Store::loadDocument(
   XmlNode_t root;
   bool found = theDocuments.get(urib, root);
 
-  if (found)
+  if (found && loadProperties.getUseCachedDocument())
   {
     return root.getp();
   }
 
   XQueryDiagnostics lXQueryDiagnostics;
-  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lXQueryDiagnostics, loadProperties));
+  std::unique_ptr<XmlLoader> loader(getXmlLoader(&lXQueryDiagnostics, loadProperties));
 
   root = loader->loadXml(baseUri, docUri, stream);
 
@@ -1047,9 +1043,12 @@ void Store::addNode(const zstring& uri, const store::Item_t& node)
 {
   ZORBA_ASSERT(!uri.empty());
 
-  if (node == NULL || !node->isNode())
+  if (node == NULL ||
+      !node->isNode() ||
+      node->getNodeKind() != store::StoreConsts::documentNode)
   {
-    RAISE_ERROR_NO_LOC(zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS(uri));
+    RAISE_ERROR_NO_LOC(zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_XML_DOC,
+    ERROR_PARAMS(uri));
   }
 
   XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());

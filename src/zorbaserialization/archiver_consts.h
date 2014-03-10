@@ -36,7 +36,7 @@ namespace serialization
   serialized when a pointer to it was encountered. In this case, during
   deserialization, the archiver will allocate the obj on the heap and fill-in
   its data members. If the kind is NORMAL, then the obj was serialized when the
-  objitself was encountered (e.g., the object was an embedded data member of
+  object itself was encountered (e.g., the object was an embedded data member of
   another obj, or was residing on the program stack). In this case, during
   deserialization, the object exists already (in an uninitialized state) and a
   reference to it is given to the archiver, which will fill-in the obj's data.
@@ -250,7 +250,8 @@ enum TypeCode
 
   TYPE_FunctionItemIterator,
   TYPE_FunctionItemInfo,
-  TYPE_DynamicFnCallIterator,
+  TYPE_SingleDynamicFnCallIterator,
+  TYPE_MultiDynamicFnCallIterator,
   TYPE_ArgumentPlaceholderIterator,
 
   TYPE_CountCollectionIterator,

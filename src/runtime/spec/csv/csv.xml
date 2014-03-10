@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<zorba:header>
+  <zorba:include form="Angle-bracket">sstream</zorba:include>
+  <zorba:include form="Angle-bracket">vector</zorba:include>
+  <zorba:include form="Angle-bracket">zorba/util/mem_streambuf.h</zorba:include>
+  <zorba:include form="Quoted">runtime/csv/csv_util.h</zorba:include>
+  <zorba:include form="Quoted">util/csv_parser.h</zorba:include>
+  <zorba:include form="Quoted">zorbatypes/zstring.h</zorba:include>
+</zorba:header>
+
+<zorba:source>
+  <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+
+<!--========================================================================-->
+
+<zorba:iterator name="CsvParseIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="parse" prefix="fn-zorba-csv">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>object()</zorba:param>
+      <zorba:output>object()*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="bool" name="cast_unquoted_" defaultValue="true"/>
+    <zorba:member type="csv_parser" name="csv_"/>
+    <zorba:member type="zstring" name="extra_name_"/>
+    <zorba:member type="mem_streambuf" name="input_buf_"/>
+    <zorba:member type="std::istringstream" name="input_iss_"/>
+    <zorba:member type="std::vector&lt;store::Item_t&gt;" name="keys_"/>
+    <zorba:member type="unsigned" name="line_no_" defaultValue="1"/>
+    <zorba:member type="missing::type" name="missing_" defaultValue="missing::null"/>
+    <zorba:member type="csv_parse_json_state" name="parse_json_state_"/>
+    <zorba:member type="bool" name="skip_called_" defaultValue="false"/>
+    <zorba:member type="zstring" name="string_"/>
+    <zorba:member type="zstring" name="value_"/>
+  </zorba:state>
+  <zorba:method name="count" const="true" return="bool">
+    <zorba:param name="result" type="store::Item_t&amp;"/>
+    <zorba:param name="planState" type="PlanState&amp;"/>
+  </zorba:method>
+  <zorba:method name="skip" const="true" return="bool">
+    <zorba:param name="count" type="int64_t"/>
+    <zorba:param name="planState" type="PlanState&amp;"/>
+  </zorba:method>
+  <zorba:method name="set_input" return="void" const="true">
+    <zorba:param type="store::Item_t const&amp;" name="item"/>
+    <zorba:param type="CsvParseIteratorState*" name="state"/>
+  </zorba:method>
+  <zorba:method name="set_options" return="void" const="true">
+    <zorba:param type="store::Item_t const&amp;" name="item"/>
+    <zorba:param type="CsvParseIteratorState*" name="state"/>
+  </zorba:method>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="CsvSerializeIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="serialize" prefix="fn-zorba-csv">
+      <zorba:param>object()*</zorba:param>
+      <zorba:param>object()</zorba:param>
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state generateInit="use-default" generateReset="false">
+    <zorba:member type="zstring" name="boolean_string_[2]"/>
+    <zorba:member type="store::Item_t" name="header_item_"/>
+    <zorba:member type="std::vector&lt;store::Item_t&gt;" name="keys_"/>
+    <zorba:member type="zstring" name="must_quote_"/>
+    <zorba:member type="zstring" name="null_string_"/>
+    <zorba:member type="char" name="quote_"/>
+    <zorba:member type="zstring" name="quote_esc_"/>
+    <zorba:member type="char" name="separator_"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+</zorba:iterators>
+<!-- vim:set et sw=2 ts=2: -->

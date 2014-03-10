@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<notice xmlns="http://www.zorba-xquery.com/notice">
+<notice xmlns="http://zorba.io/notice">
   <master-license>
     <license>Apache 2</license>
     <text>
@@ -71,7 +71,7 @@
     </foreign-notice>
   </foreign-files>
   <foreign-files>
-    <file>src/zorbautils/stemmer/</file>
+    <file>src/runtime/full_text/stemmer/</file>
     <copyright>2001 Dr. Martin Porter</copyright>
     <foreign-notice>
       All the software given out on this Snowball site is covered by the BSD
@@ -93,36 +93,6 @@
   <foreign-files>
     <file>src/util/less.h</file>
     <copyright>1998 Paul J. Lucas</copyright>
-    <foreign-notice>
-      Redistribution and use in source and binary forms, with or without
-      modification, are permitted provided that the following conditions are met:
-
-      o  Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-
-      o  Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-
-      o  The name of the author may not be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-      AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-      IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-      ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-      LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-      CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-      SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-      INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-      CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-      ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-      POSSIBILITY OF SUCH DAMAGE.
-    </foreign-notice>
-  </foreign-files>
-  <foreign-files>
-    <file is-modified="true">src/util/auto_vector.h</file>
-    <copyright>2003 Reliable Software</copyright>
     <foreign-notice>
       Redistribution and use in source and binary forms, with or without
       modification, are permitted provided that the following conditions are met:
@@ -423,6 +393,61 @@
           without express or implied warranty.
     </foreign-notice>
   </foreign-files>
+  <foreign-files>
+    <file>test/fots_driver</file>
+    <copyright>2012 The FLWOR Foundation</copyright>
+    <foreign-notice>
+       The code in this directory was initially based on the structure
+       and some code of the fots-basex project by Leo Woerteler. At
+       this point no original fots-basex code remains. The fots-basex
+       project is released under the following license based on the
+       BSD license:
+
+====================================================== BASEX LICENSE ===
+
+Copyright (c) 2005-11 BaseX Team &lt;info@basex.org&gt;
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holders nor the names of its
+   contributors may be used to endorse or promote products derived
+   from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+========================================================================
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>modules/ftp-client/ftp-client.xq.src/ftpparse.h</file>
+    <file>modules/ftp-client/ftp-client.xq.src/ftpparse.c</file>
+    <copyright>2000 D. J. Bernstein</copyright>
+    <website>http://cr.yp.to/ftpparse.html</website>
+    <foreign-notice>
+      Commercial use is fine, if you let me know what programs you're
+      using this in.
+    </foreign-notice>
+  </foreign-files>
 
   <external-lib mandatory="true">
     <name>LIBXML2</name>
@@ -684,3 +709,4 @@
     </foreign-notice>
   </external-app>
 </notice>
+<!-- vim:set et sw=2 ts=2: -->

@@ -21,22 +21,22 @@ step (1) <b>external function resolution</b>. Steps (2) and (3) are part of
 In Zorba, the C++ API provides the "glue" between the XQuery processor and the
 hosting environment into which external functions are implemented. Related code 
 examples can be found 
-<a href="../../cxx/html/external_functions_8cpp-example.html" target="_blank">here</a>.
+<a href="/pages/latest/cxx/external_functions_8cpp-example">here</a>.
 
 
 \subsection Implementation
 
 In Zorba, external functions must be implemented as instances of the 
-<a href="../../cxx/html/classzorba_1_1ExternalFunction.html" target="_blank">
+<a href="/pages/latest/cxx/classzorba_1_1ExternalFunction" target="_blank">
 ExternalFunction</a> class. We refer to such instances as <b>external function
 objects</b>. During its evaluation, an external function may or may not need to 
 access the static or dynamic contexts of the invoking XQuery module. If the 
 function implementation does need to access either context, the function is 
 referred to as <b>contextual</b>; otherwise, it is <b>non-contextual</b>. 
 Zorba provides classes 
-<a href="../../cxx/html/classzorba_1_1ContextualExternalFunction.html" target="_blank">
+<a href="/pages/latest/cxx/classzorba_1_1ContextualExternalFunction">
 ContextualExternalFunction</a> and 
-<a href="../../cxx/html/classzorba_1_1NonContextualExternalFunction.html" target="_blank">
+<a href="/pages/latest/cxx/classzorba_1_1NonContextualExternalFunction">
 NonContextualExternalFunction</a> to differentiate between contextual and 
 non-contextual external functions, respectively. Both are abstract subclasses 
 of ExternalFunction and provide a (virtual) evaluate() method that serves as 
@@ -48,7 +48,7 @@ application must provide a concrete subclass of either of these classes.
 
 Invoking an external function boils down to invoking the evaluate() method on
 the associated function object. The first parameter of evaluate() is a vector
-of pointers to <a href="../../cxx/html/classzorba_1_1ItemSequence.html" target="_blank">
+of pointers to <a href="/pages/latest/cxx/classzorba_1_1ItemSequence" target="_blank">
 ItemSequence</a> objects. During invocation, the given vector will contain 
 one entry for each parameter listed in the external function declaration.
 The Zorba XQuery processor makes sure that the types of the item sequences 
@@ -67,7 +67,7 @@ object. For this, Zorba looks-up the function object in the static context,
 using the function QName as the key. However, it is the responsibility of
 the application to register the function objects to the static context.
 For this, Zorba provides the
-<a href="../../cxx/html/classzorba_1_1ExternalModule.html" target="_blank">
+<a href="/pages/latest/cxx/classzorba_1_1ExternalModule">
 ExternalModule</a> abstract class. ExternalModule represents a group of 
 external functions, all belonging to the same XQuery module (and thus
 having the same target namespace). It provides the interface for retrieving
@@ -79,7 +79,7 @@ ways.
 
 1. An ExternalModule object can be registered explicitly using the 
 registerModule() method of 
-<a href="../../cxx/html/classzorba_1_1StaticContext.html" target="_blank">
+<a href="/pages/latest/cxx/classzorba_1_1StaticContext" target="_blank">
 StaticContext</a>. In this case, the application retains memory ownership
 of the ExternalModul object, and must free it when it is no longer needed.
 

@@ -29,24 +29,32 @@
 #include <typeinfo>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "api/unmarshaller.h"
+
 #include "context/namespace_context.h"
 #include "context/static_context.h"
+
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+
 #include "store/api/index.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 #include "store/api/store.h"
+
 #include "system/globalenv.h"
+
 #include "types/casting.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
+
 #include "util/locale.h"
 #include "util/stl_util.h"
 #include "util/utf8_util.h"
+
 #include "zorbatypes/integer.h"
 #include "zorbatypes/URI.h"
 
@@ -67,7 +75,7 @@ namespace zorba {
 
 inline iso639_1::type get_lang_from( static_context const *sctx ) {
   iso639_1::type const lang = get_lang_from( sctx->get_match_options() );
-  return lang ? lang : get_host_lang();
+  return lang ? lang : GENV.get_host_lang();
 }
 
 static iso639_1::type get_lang_from( store::Item_t lang_item,
@@ -99,9 +107,7 @@ static Tokenizer::ptr get_tokenizer( iso639_1::type lang,
   if ( !provider->getTokenizer( lang, t_state, &tokenizer ) )
     throw XQUERY_EXCEPTION(
       err::FTST0009 /* lang not supported */,
-      ERROR_PARAMS(
-        iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
-      ),
+      ERROR_PARAMS( iso639_1::str( lang ), ZED( FTST0009_BadTokenizerLang ) ),
       ERROR_LOC( loc )
     );
   return std::move( tokenizer );
@@ -116,7 +122,7 @@ static void make_token_object( FTToken const &token, store::Item_t &result ) {
     s = "lang";
     GENV_ITEMFACTORY->createString( item, s );
     keys.push_back( item );
-    s = iso639_1::string_of[ token.lang() ];
+    s = iso639_1::str( token.lang() );
     GENV_ITEMFACTORY->createString( item, s );
     values.push_back( item );
   }
@@ -216,7 +222,7 @@ bool CurrentLangIterator::nextImpl( store::Item_t &result,
   static_context const *const sctx = getStaticContext();
   ZORBA_ASSERT( sctx );
   iso639_1::type const lang = get_lang_from( sctx );
-  zstring lang_string( iso639_1::string_of[ lang ] );
+  zstring lang_string( iso639_1::str( lang ) );
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -231,8 +237,8 @@ bool CurrentLangIterator::nextImpl( store::Item_t &result,
 
 bool HostLangIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
-  iso639_1::type const lang = get_host_lang();
-  zstring lang_string = iso639_1::string_of[ lang ];
+  iso639_1::type const lang = GENV.get_host_lang();
+  zstring lang_string = iso639_1::str( lang );
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -299,9 +305,7 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   if ( !stop_words )
     throw XQUERY_EXCEPTION(
       err::FTST0009 /* lang not supported */,
-      ERROR_PARAMS(
-        iso639_1::string_of[ lang ], ZED( FTST0009_BadStopWordsLang )
-      ),
+      ERROR_PARAMS( iso639_1::str( lang ), ZED( FTST0009_BadStopWordsLang ) ),
       ERROR_LOC( loc )
     );
   GENV_ITEMFACTORY->createBoolean( result, stop_words->contains( word ) );
@@ -361,7 +365,7 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
     static_context const *const sctx = getStaticContext();
     ZORBA_ASSERT( sctx );
     zstring error_msg;
-    auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
+    unique_ptr<internal::Resource> rsrc = sctx->resolve_uri(
       uri, internal::EntityData::THESAURUS, error_msg
     );
     if ( !rsrc.get() )
@@ -451,9 +455,7 @@ bool StemIterator::nextImpl( store::Item_t &result,
   } else {
     throw XQUERY_EXCEPTION(
       err::FTST0009 /* lang not supported */,
-      ERROR_PARAMS(
-        iso639_1::string_of[ lang ], ZED( FTST0009_BadStemmerLang )
-      ),
+      ERROR_PARAMS( iso639_1::str( lang ), ZED( FTST0009_BadStemmerLang ) ),
       ERROR_LOC( loc )
     );
   }
@@ -496,7 +498,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   zstring error_msg;
   store::Item_t item;
   iso639_1::type lang;
-  auto_ptr<internal::Resource> rsrc;
+  unique_ptr<internal::Resource> rsrc;
   zstring uri = "##default";
   static_context const *sctx;
   zstring synonym;
@@ -549,16 +551,12 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   if ( !provider->getThesaurus( lang, &state->thesaurus_ ) )
     throw XQUERY_EXCEPTION(
       err::FTST0009 /* lang not supported */,
-      ERROR_PARAMS(
-        iso639_1::string_of[ lang ], ZED( FTST0009_BadThesaurusLang )
-      ),
+      ERROR_PARAMS( iso639_1::str( lang ), ZED( FTST0009_BadThesaurusLang ) ),
       ERROR_LOC( loc )
     );
 
-  state->tresult_ = std::move(
-    state->thesaurus_->lookup(
-      state->phrase_, state->relationship_, state->at_least_, state->at_most_
-    )
+  state->tresult_ = state->thesaurus_->lookup(
+    state->phrase_, state->relationship_, state->at_least_, state->at_most_
   );
   if ( state->tresult_ )
     while ( state->tresult_->next( &synonym ) ) {
@@ -576,10 +574,8 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
     StateTraitsImpl<ThesaurusLookupIteratorState>::getState(
       plan_state, this->theStateOffset
     );
-  state->tresult_ = std::move(
-    state->thesaurus_->lookup(
-      state->phrase_, state->relationship_, state->at_least_, state->at_most_
-    )
+  state->tresult_ = state->thesaurus_->lookup(
+    state->phrase_, state->relationship_, state->at_least_, state->at_most_
   );
 }
 
@@ -678,7 +674,8 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
 
   state->callback_.set_tokens( state->tokens_ );
   state->langs_.push( lang );
-  state->tokenizers_.push( tokenizer.release() );
+  state->tokenizers_.push( tokenizer.get() );
+  tokenizer.release();
 
   while ( true ) {
     if ( state->tokens_.empty() ) {
@@ -712,7 +709,8 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
           if ( find_lang_attribute( *inc, &lang ) ) {
             state->langs_.push( lang );
             tokenizer = get_tokenizer( lang, &state->t_state_, loc );
-            state->tokenizers_.push( tokenizer.release() );
+            state->tokenizers_.push( tokenizer.get() );
+            tokenizer.release();
             add_sentinel = true;
           }
           // no break;
@@ -834,7 +832,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   { // local scope
     vector<store::Item_t> langs;
     FOR_EACH( Tokenizer::Properties::languages_type, i, props.languages ) {
-      s = iso639_1::string_of[ *i ];
+      s = iso639_1::str( *i );
       GENV_ITEMFACTORY->createString( item, s );
       langs.push_back( item );
     }

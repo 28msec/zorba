@@ -2,13 +2,13 @@ xquery version "3.0";
 
 module namespace n = "http://www.28msec.com/test";
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://zorba.io/modules/store/static/indexes/ddl";
 
 declare namespace d = "http://www.28msec.com/d/";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 
 declare collection n:foo as node();
@@ -26,6 +26,6 @@ declare %ann:sequential function n:foo()
   ddl:create(xs:QName("n:foo"));
   index_ddl:create(xs:QName("n:index"));
 
-  dml:insert-nodes(xs:QName("n:foo"), <a/>);
+  dml:insert(xs:QName("n:foo"), <a/>);
   1
 };

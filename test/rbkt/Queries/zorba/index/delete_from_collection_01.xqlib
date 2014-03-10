@@ -1,14 +1,14 @@
 module namespace seq = "http://www.foo.com/default";
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";     
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";     
 
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";     
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";     
 
-import module namespace iddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";        
+import module namespace iddl = "http://zorba.io/modules/store/static/indexes/ddl";        
 
-import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";        
+import module namespace idml = "http://zorba.io/modules/store/static/indexes/dml";        
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 
 declare collection seq:counters as node()*;
@@ -23,7 +23,7 @@ declare %an:sequential function seq:init()
 {
  ddl:create(xs:QName("seq:counters"));
  iddl:create(xs:QName("seq:counters-by-uri"));
- dml:insert-nodes(xs:QName("seq:counters"), <foo uri="1"/>);
+ dml:insert(xs:QName("seq:counters"), <foo uri="1"/>);
 };
 
 
@@ -35,8 +35,5 @@ declare function seq:index ()
 
 declare %an:sequential function seq:reset ()
 {
-  dml:delete-nodes(idml:probe-index-point-value(xs:QName("seq:counters-by-uri"), "1"));
+  dml:delete(idml:probe-index-point-value(xs:QName("seq:counters-by-uri"), "1"));
 };
-
-
-

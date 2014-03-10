@@ -1,10 +1,10 @@
 module namespace kml-data = "http://www.mykml/data";
 
-import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace cdml = "http://zorba.io/modules/store/static/collections/dml";
 
 import schema namespace kml = "http://earth.google.com/kml/2.1" at "kml21.xsd";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:unordered collection kml-data:placemarks
   as schema-element(kml:Placemark)*;

@@ -2,10 +2,11 @@ module namespace fct = "http://www.zorba-xquery.com/tests/file_copy_test";
 
 import module namespace file = "http://expath.org/ns/file";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
-declare %ann:nondeterministic %ann:sequential function fct:test-copy($rbktPath as xs:string, $file as xs:string) {
-
+declare %ann:nondeterministic %ann:sequential
+function fct:test-copy($rbktPath as xs:string, $file as xs:string)
+{
   variable $fileSrc := fn:concat($rbktPath, "/Queries/zorba/file/copy_files/", $file);
   variable $fileDest := fn:concat($rbktPath, "/Queries/zorba/file/copy_files/", $file, ".out");
 
@@ -21,7 +22,8 @@ declare %ann:nondeterministic %ann:sequential function fct:test-copy($rbktPath a
   (: read both files back and compare :)
   let $src := file:read-binary($fileSrc)
   let $dest := file:read-binary($fileDest)
-  return {
+  return
+  {
     variable $result := $src eq $dest;
 
     (: delete the file before we terminate :)

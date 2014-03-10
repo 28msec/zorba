@@ -250,6 +250,8 @@ public:
 
   virtual void addNode(const zstring& uri, const Item_t& node) = 0;
 
+  virtual void deleteDocument(const zstring& uri) = 0;
+
   virtual Iterator_t getDocumentNames() const = 0;
 
   /* ------------------------ Collection Management ---------------------------*/

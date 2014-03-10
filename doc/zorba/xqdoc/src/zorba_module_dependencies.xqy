@@ -20,17 +20,17 @@
 
 module namespace z = "http://www.zorba-xquery.com/module-dependencies";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace zm = "http://www.zorba-xquery.com/manifest";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace zm = "http://zorba.io/manifest";
 
 import module namespace file        = "http://expath.org/ns/file";
-import module namespace functx      = "http://www.functx.com/";
+import module namespace functx      = "http://www.functx.com";
 
 import module namespace dot   = "http://www.zorba-xquery.com/modules/image/graphviz";
-import module namespace xqd   = "http://www.zorba-xquery.com/modules/xqdoc";
-import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
-import module namespace dml   = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace ddl   = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace xqd   = "http://zorba.io/modules/xqdoc";
+import module namespace fetch = "http://zorba.io/modules/fetch";
+import module namespace dml   = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace ddl   = "http://zorba.io/modules/store/static/collections/ddl";
 import module namespace menu  = "http://www.zorba-xquery.com/modules/xqdoc/menu";
 import module namespace xqdoc-html  = "http://www.zorba-xquery.com/xqdoc-html" at "xqdoc-html.xqy";
 
@@ -116,7 +116,7 @@ declare %an:sequential function z:create-collections($ZorbaBuildFolder as xs:str
         insert node <module uri="{$moduleURI}"
                             isCore="{data($module/@isCore)}"/> as last into $z:ZorbaManifest;
         
-        dml:apply-insert-nodes($z:collection, $xqdoc);
+        dml:apply-insert($z:collection, $xqdoc);
         
       }
     }
@@ -136,7 +136,7 @@ declare %an:sequential function z:create-collections($ZorbaBuildFolder as xs:str
 
 declare %an:sequential function z:delete-collections()
 { 
-  dml:delete-nodes(dml:collection(xs:QName("z:collection")));
+  dml:delete(dml:collection(xs:QName("z:collection")));
   ddl:delete(xs:QName("z:collection"));
 };
 
@@ -283,6 +283,13 @@ declare function z:get_module_type($moduleUri as xs:string) as xs:integer
   else xs:integer(2)
 };
 
+declare %private function z:filename-from-uri($uri as xs:string) as xs:string
+{
+  let $tmp := substring-after($uri, "http://")
+  let $tmp := replace($tmp, "/", "_")
+  return concat($tmp, ".html")
+};
+
 (:~
  : Format the properties of a module dot shape (link to a file, tooltip, color of the text showing the module name).
  :)
@@ -290,7 +297,7 @@ declare function z:get_shape_properties(
   $ModuleUri as xs:string,
   $lLabel as xs:string) as xs:string
 {
-  let $file as xs:string := menu:item-uri($z:batchModules//module[@ns=$ModuleUri])
+  let $file as xs:string := z:filename-from-uri($ModuleUri)
   let $type := z:get_module_type($ModuleUri)
   return
     fn:concat('[URL="../',$file,'" tooltip="(',$z:moduleTypes[$type],') module uri=', $ModuleUri,'" label="',$lLabel,'" fontcolor="', $z:colors[$type] ,'"]')

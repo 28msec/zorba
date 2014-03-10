@@ -14,8 +14,8 @@
  : limitations under the License.
 :)
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+import module namespace ddl = "http://zorba.io/modules/store/dynamic/collections/ddl";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:sequential function local:foo() {
   ddl:create(xs:QName("hola"),(<a/>,<b/>));                  

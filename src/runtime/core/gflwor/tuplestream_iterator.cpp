@@ -26,6 +26,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 using namespace zorba;
 
 namespace zorba 
@@ -33,6 +35,7 @@ namespace zorba
 namespace flwor 
 {
 SERIALIZABLE_CLASS_VERSIONS(TupleStreamIterator)
+DEF_GET_NAME_AS_STRING(TupleStreamIterator)
 
 
 TupleStreamIterator::TupleStreamIterator(
@@ -60,7 +63,7 @@ TupleStreamIterator::~TupleStreamIterator()
 //theChild1 == ReturnClause
 bool TupleStreamIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
 {
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
   store::Item_t lTuple;
 
   PlanIteratorState* lState;

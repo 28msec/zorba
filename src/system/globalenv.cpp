@@ -61,6 +61,11 @@
 
 #include "diagnostics/assert.h"
 
+
+#include "types/schema/xercesIncludes.h"
+#include "types/schema/StrX.h"
+
+
 using namespace zorba;
 
 
@@ -72,7 +77,18 @@ GlobalEnvironment * GlobalEnvironment::m_globalEnv = 0;
 void GlobalEnvironment::init(store::Store* store)
 {
   // initialize Xerces-C lib
-  Schema::initialize();
+#ifndef ZORBA_NO_XMLSCHEMA
+  try
+  {
+    XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
+  }
+  catch (const XERCES_CPP_NAMESPACE::XMLException& toCatch)
+  {
+    std::cerr << "Error during Xerces-C initialization! Message:\n"
+              << StrX(toCatch.getMessage()) << std::endl;
+    abort();
+  }
+#endif
 
   m_globalEnv = new GlobalEnvironment();
 
@@ -80,7 +96,7 @@ void GlobalEnvironment::init(store::Store* store)
 
   ZORBA_FATAL(store != NULL, "Must provide store during zorba initialization");
 
-  m_globalEnv->m_store = store;
+  m_globalEnv->theStore = store;
 
   m_globalEnv->theRootTypeManager = new RootTypeManager;
   RCHelper::addReference(m_globalEnv->theRootTypeManager);
@@ -97,6 +113,7 @@ void GlobalEnvironment::init(store::Store* store)
 #ifdef ZORBA_XQUERYX
   //libxml2 and libxslt are needed
   xmlInitMemory();
+  xmlInitParser();
 
   LIBXML_TEST_VERSION
  
@@ -105,25 +122,28 @@ void GlobalEnvironment::init(store::Store* store)
   m_globalEnv->xqueryx_convertor = new XQueryXConvertor;
 #endif
 
-  std::auto_ptr<XQueryCompilerSubsystem> lSubSystem = 
+  std::unique_ptr<XQueryCompilerSubsystem> lSubSystem = 
   XQueryCompilerSubsystem::create();
 
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
   m_globalEnv->m_http_resolver = new internal::HTTPURLResolver();
 
-  m_globalEnv->m_dynamic_loader = 0;
+  m_globalEnv->theDynamicLoader = 0;
+
+  m_globalEnv->theHostCountry = locale::get_host_country();
+
+  m_globalEnv->theHostLang = locale::get_host_lang();
 }
 
 
 /*******************************************************************************
-
+  destroy all components that were initialized in init 
+  note: destruction must be done in reverse initialization order
 ********************************************************************************/
-// destroy all components that were initialized in init 
-// note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
-  delete m_globalEnv->m_dynamic_loader;
+  delete m_globalEnv->theDynamicLoader;
 
   delete m_globalEnv->m_http_resolver;
 
@@ -149,7 +169,7 @@ void GlobalEnvironment::destroy()
 
   AnnotationInternal::destroyBuiltIn();
 
-  m_globalEnv->m_store = NULL;
+  m_globalEnv->theStore = NULL;
 
   // we shutdown icu
   // again it is important to mention this in the documentation
@@ -163,8 +183,9 @@ void GlobalEnvironment::destroy()
 	m_globalEnv = NULL;
 
   // terminate Xerces-C lib
-  Schema::terminate();
-
+#ifndef ZORBA_NO_XMLSCHEMA
+  XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
+#endif
 }
 
 
@@ -185,7 +206,7 @@ void GlobalEnvironment::destroyStatics()
 ********************************************************************************/
 GlobalEnvironment::GlobalEnvironment()
   :
-  m_store(0), 
+  theStore(0), 
   theRootTypeManager(NULL),
   theRootStaticContext(0),
   m_compilerSubSys(0)
@@ -289,19 +310,19 @@ bool GlobalEnvironment::isRootStaticContextInitialized() const
 
 store::Store& GlobalEnvironment::getStore()
 {
-  return *m_store;
+  return *theStore;
 }
 
 
 store::ItemFactory* GlobalEnvironment::getItemFactory()
 {
-  return m_store->getItemFactory();
+  return theStore->getItemFactory();
 }
 
 
 store::IteratorFactory* GlobalEnvironment::getIteratorFactory()
 {
-  return m_store->getIteratorFactory();
+  return theStore->getIteratorFactory();
 }
 
 
@@ -312,11 +333,11 @@ XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()
 
 DynamicLoader* GlobalEnvironment::getDynamicLoader() const
 {
-  if (!m_dynamic_loader)
+  if (!theDynamicLoader)
   {
-    m_dynamic_loader = new DynamicLoader();
+    theDynamicLoader = new DynamicLoader();
   }
-  return m_dynamic_loader;
+  return theDynamicLoader;
 }
 
 #ifdef ZORBA_XQUERYX

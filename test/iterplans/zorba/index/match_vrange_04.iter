@@ -1,0 +1,52 @@
+<iterator-tree description="index">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <ZorbaCollectionIterator>
+        <SingletonIterator value="xs:QName(http://28.io/collections,db28,foo)"/>
+      </ZorbaCollectionIterator>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <PromoteIterator type="xs:string">
+          <FnDataIterator>
+            <SingleDynamicFnCallIterator>
+              <ForVarIterator varname="$$context-item"/>
+              <SingletonIterator value="xs:string(_id)"/>
+            </SingleDynamicFnCallIterator>
+          </FnDataIterator>
+        </PromoteIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <ApplyIterator>
+      <ZorbaCreateCollectionIterator>
+        <SingletonIterator value="xs:QName(http://28.io/collections,db28,foo)"/>
+      </ZorbaCreateCollectionIterator>
+    </ApplyIterator>
+    <ApplyIterator>
+      <CreateIndexIterator>
+        <SingletonIterator value="xs:QName(http://28.io/collections,db28,foo__id_)"/>
+      </CreateIndexIterator>
+    </ApplyIterator>
+    <FLWORIterator>
+      <ForVariable name="i">
+        <ProbeIndexRangeValueIterator>
+          <SingletonIterator value="xs:QName(http://28.io/collections,db28,foo__id_)"/>
+          <SingletonIterator value="xs:string(3)"/>
+          <SingletonIterator value="xs:string(3)"/>
+          <SingletonIterator value="xs:boolean(true)"/>
+          <SingletonIterator value="xs:boolean(true)"/>
+          <SingletonIterator value="xs:boolean(true)"/>
+          <SingletonIterator value="xs:boolean(true)"/>
+        </ProbeIndexRangeValueIterator>
+      </ForVariable>
+      <ReturnClause>
+        <ForVarIterator varname="i"/>
+      </ReturnClause>
+    </FLWORIterator>
+  </SequentialIterator>
+</iterator-tree>

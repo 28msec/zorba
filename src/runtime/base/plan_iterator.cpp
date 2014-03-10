@@ -15,6 +15,10 @@
  */
 #include "stdafx.h"
 
+#include <typeinfo>
+
+#include <zorba/properties.h>
+
 #include "compiler/api/compilercb.h"
 
 #include "context/static_context.h"
@@ -31,6 +35,7 @@
 
 #include "diagnostics/util_macros.h"
 
+
 namespace zorba
 {
 
@@ -38,12 +43,14 @@ namespace zorba
   Global iterator ID counter, used for debugging purposes. Not really thread safe.
 ********************************************************************************/
 #ifndef NDEBUG
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
 static int global_iterator_id_counter = 1000;
 
 void reset_global_iterator_id_counter()
 {
   global_iterator_id_counter = 1000;
 }
+#endif
 #endif
 
 
@@ -64,7 +71,8 @@ PlanState::PlanState(
   theQuery(0),
   theGlobalDynCtx(globalDctx),
   theLocalDynCtx(localDctx),
-  theHasToQuit(false)
+  theHasToQuit(false),
+  profile_( Properties::instance().getProfile() )
 {
   assert(globalDctx != NULL && localDctx != NULL);
   theBlock = new int8_t[theBlockSize];
@@ -105,7 +113,9 @@ PlanIterator::PlanIterator(static_context* sctx, const QueryLoc& aLoc)
 {
 // Used for debugging purposes
 #ifndef NDEBUG
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
   theId = global_iterator_id_counter++;
+#endif
 #endif
 }
 
@@ -117,14 +127,22 @@ PlanIterator::PlanIterator(const PlanIterator& it)
   loc(it.loc),
   theSctx(it.theSctx)
 #ifndef NDEBUG
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
   , theId(it.theId)
+#endif
 #endif
 {
 }
 
+PlanIterator::~PlanIterator() {
+  // out-of-line since it's virtual
+}
 
 SERIALIZE_INTERNAL_METHOD(PlanIterator)
 
+zstring PlanIterator::getNameAsString() const {
+  return typeid( *this ).name();        // default name (should be overridden)
+}
 
 void PlanIterator::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -134,14 +152,15 @@ void PlanIterator::serialize(::zorba::serialization::Archiver& ar)
     ar.dont_allow_delay();
 
   ar & theSctx;
-
 // Used for debugging purposes
 #ifndef NDEBUG
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
   ar & theId;
   // Set the global counter to the highest id +1.
   if (!ar.is_serializing_out())
     if (global_iterator_id_counter < theId + 1)
       global_iterator_id_counter = theId + 1;
+#endif
 #endif
 }
 
@@ -175,8 +194,20 @@ bool PlanIterator::count(store::Item_t& result, PlanState& planState) const
     ++count;
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(count)), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, xs_integer(count)), state);
   STACK_END(state);
+}
+
+
+bool PlanIterator::skip(int64_t count, PlanState& planState) const
+{
+  bool have_more_items = true;
+  store::Item_t item;
+
+  while (count-- > 0 && (have_more_items = consumeNext(item, this, planState)))
+    ;
+
+  return have_more_items;
 }
 
 
@@ -196,7 +227,12 @@ bool PlanIterator::consumeNext(
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    std::cout << "next (" << iter << " = " << typeid (*iter).name()
+    if (Properties::instance().getStableIteratorIDs())
+      std::cout << "next (" << iter->getId();
+    else
+      std::cout << "next (" << iter;
+
+    std::cout << " = " << typeid (*iter).name()
               << ") -> "
               << "status: " << status << " -> "
               << ((status && result != NULL) ? result->show().c_str() : "null")

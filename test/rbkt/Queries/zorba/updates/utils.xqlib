@@ -1,5 +1,5 @@
 module namespace u = "http://www.zorba-xquery.com/test/undo/utils";
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 declare function u:dump-types($nodes as node()*) as element()*
 {

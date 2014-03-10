@@ -1,4 +1,4 @@
-/** \page php_windows_tutorial Zorba XQuery in PHP 5 - Windows Installation
+/** \page php_windows_tutorial Zorba with PHP 5 - Windows Installation
 
 These steps were checked on Windows 7. It should work fine with any PHP 5.X version and any other W32 platform.
 
@@ -125,9 +125,13 @@ Point your browser to http://localhost/test.php and see the result.
 For more details on how to use Zorba API in PHP go to <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-#N1018E">Building XQuery-powered applications with PHP and Zorba</a> article by Vikram Vaswani.
 
 \section useful_links Useful links
-
-<a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-">Building XQuery-powered applications with PHP and Zorba</a>
-
-<a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/build.html"> Zorba build instructions</a>
+<ul>
+  <li>
+    <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-">Building XQuery-powered applications with PHP and Zorba</a>
+  </li>
+  <li>
+    \ref build
+  </li>
+</ul>
 
 */

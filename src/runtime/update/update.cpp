@@ -44,21 +44,27 @@
 
 #include "zorbautils/fatal.h"
 
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(InsertIterator)
+DEF_GET_NAME_AS_STRING(InsertIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(DeleteIterator)
+DEF_GET_NAME_AS_STRING(DeleteIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ReplaceIterator)
+DEF_GET_NAME_AS_STRING(ReplaceIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(RenameIterator)
+DEF_GET_NAME_AS_STRING(RenameIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CopyClause)
 
 SERIALIZABLE_CLASS_VERSIONS(TransformIterator)
+DEF_GET_NAME_AS_STRING(TransformIterator)
 
 
 void areNodeModifiersViolated(
@@ -123,7 +129,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
   std::vector<store::Item_t> nodes(16);
   ulong numAttrs = 0;
   ulong numNodes = 0;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
   store::Item_t temp;
 
   store::CopyMode lCopyMode;
@@ -316,7 +322,7 @@ bool
 DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 { 
   store::Item_t target;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -381,7 +387,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   store::Item_t temp;
   std::vector<store::Item_t> lNodes(16);
   ulong lNumNodes = 0;
-  std::auto_ptr<store::PUL> lPul;
+  std::unique_ptr<store::PUL> lPul;
 
   store::CopyMode lCopyMode;
   bool typePreserve;
@@ -583,7 +589,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     else
     {
       if (lTargetKind == store::StoreConsts::commentNode &&
-          (content.find("--") != zstring::npos || ascii::ends_with(content, "-", 1)))
+          (content.find("--") != zstring::npos || ZA_ENDS_WITH(content, "-")))
       {
         throw XQUERY_EXCEPTION(err::XQDY0072, ERROR_LOC(loc));
       }
@@ -649,7 +655,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   store::Item_t lNewname;
   store::Item_t qnameItem;
   store::Item_t temp;
-  std::auto_ptr<store::PUL> lPul;
+  std::unique_ptr<store::PUL> lPul;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);

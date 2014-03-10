@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_STORE_MAPS_H
 #define ZORBA_RUNTIME_STORE_MAPS_H
 
@@ -60,36 +61,7 @@ public:
 
   virtual ~MapCreateIterator();
 
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *    
- * Author: Matthias Brantner
- */
-class MapCreateTransientIterator : public NaryBaseIterator<MapCreateTransientIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(MapCreateTransientIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapCreateTransientIterator,
-    NaryBaseIterator<MapCreateTransientIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  MapCreateTransientIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<MapCreateTransientIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~MapCreateTransientIterator();
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -102,25 +74,27 @@ public:
  *    
  * Author: Matthias Brantner
  */
-class MapDestroyIterator : public NaryBaseIterator<MapDestroyIterator, PlanIteratorState>
+class MapDropIterator : public NaryBaseIterator<MapDropIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(MapDestroyIterator);
+  SERIALIZABLE_CLASS(MapDropIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapDestroyIterator,
-    NaryBaseIterator<MapDestroyIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapDropIterator,
+    NaryBaseIterator<MapDropIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  MapDestroyIterator(
+  MapDropIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<MapDestroyIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<MapDropIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~MapDestroyIterator();
+  virtual ~MapDropIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -167,6 +141,8 @@ public:
 
   virtual ~MapGetIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -198,6 +174,8 @@ public:
 
   virtual ~MapInsertIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -209,25 +187,27 @@ public:
  *    
  * Author: Matthias Brantner
  */
-class MapRemoveIterator : public NaryBaseIterator<MapRemoveIterator, PlanIteratorState>
+class MapDeleteIterator : public NaryBaseIterator<MapDeleteIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(MapRemoveIterator);
+  SERIALIZABLE_CLASS(MapDeleteIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapRemoveIterator,
-    NaryBaseIterator<MapRemoveIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapDeleteIterator,
+    NaryBaseIterator<MapDeleteIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  MapRemoveIterator(
+  MapDeleteIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<MapRemoveIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<MapDeleteIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~MapRemoveIterator();
+  virtual ~MapDeleteIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -255,8 +235,6 @@ public:
 
 class MapKeysIterator : public NaryBaseIterator<MapKeysIterator, MapKeysIteratorState>
 { 
-protected:
-  store::NsBindings theNSBindings; //
 public:
   SERIALIZABLE_CLASS(MapKeysIterator);
 
@@ -270,11 +248,12 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<MapKeysIterator, MapKeysIteratorState>(sctx, loc, children),
-    theNSBindings()
+    NaryBaseIterator<MapKeysIterator, MapKeysIteratorState>(sctx, loc, children)
   {}
 
   virtual ~MapKeysIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -306,6 +285,8 @@ public:
   {}
 
   virtual ~MapSizeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -353,6 +334,8 @@ public:
 
   virtual ~AvailableMapsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -364,25 +347,27 @@ public:
  *    
  * Author: Matthias Brantner
  */
-class MapIsTransientIterator : public NaryBaseIterator<MapIsTransientIterator, PlanIteratorState>
+class MapOptionsIterator : public NaryBaseIterator<MapOptionsIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(MapIsTransientIterator);
+  SERIALIZABLE_CLASS(MapOptionsIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapIsTransientIterator,
-    NaryBaseIterator<MapIsTransientIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MapOptionsIterator,
+    NaryBaseIterator<MapOptionsIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  MapIsTransientIterator(
+  MapOptionsIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<MapIsTransientIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<MapOptionsIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~MapIsTransientIterator();
+  virtual ~MapOptionsIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

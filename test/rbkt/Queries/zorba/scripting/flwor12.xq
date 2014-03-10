@@ -1,9 +1,7 @@
+import module namespace ddl = "http://zorba.io/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/dynamic/collections/dml";
 
-
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
-
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 
 declare variable $col := xs:QName("myCollection");
@@ -17,7 +15,7 @@ declare function local:test1()
 
 declare %ann:sequential function local:test2()
 {
-  dml:insert-nodes-last($col, (<c><cc1/></c>, <e/>));
+  dml:insert-last($col, (<c><cc1/></c>, <e/>));
 
   dml:collection($col)
 };

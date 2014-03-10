@@ -7,7 +7,7 @@ The following tools and libraries are utilized by Zorba.
 In order to build Zorba, you need the cross-platform build system
 CMake, version 2.6 or later (except CMake 2.6.3 that has a serious bug
 preventing Zorba from building).  CMake's homepage is
-http://www.cmake.org/, and this is the best source for the Windows
+http://www.cmake.org/ and this is the best source for the Windows
 CMake installer. It is also available packaged for most Linux
 distributions, as well as in Macports for MacOS builds.
 
@@ -45,7 +45,7 @@ explicitly disable them in order to build without these libraries.
     (http://xerces.apache.org/xerces-c/). This package is required to
     enable XML schema support. This feature is enabled by default. In
     order to disable XML schema support, you need to provide the CMake
-    configuration parameter \c ZORBA_NO_XMLSCHEMA=ON. Note that the Zorba
+    configuration parameter <b>ZORBA_NO_XMLSCHEMA=ON</b>. Note that the Zorba
     team tests with Xerces-C 3.1.1. Xerces-C 2.8.0 in particular is known
     to cause a few bugs with schema handling.
 
@@ -53,7 +53,7 @@ explicitly disable them in order to build without these libraries.
   required to enable Unicode support as well as some other
   internationalization features. This feature is enabled by
   default. To build without ICU, you need to provide the CMake
-  configuration parameter \c ZORBA_NO_ICU=ON.
+  configuration parameter <b>ZORBA_NO_ICU=ON</b>.
 
 \subsection optional_core_zorba Optional for Core Zorba
 
@@ -63,14 +63,13 @@ enabled by default) if the corresponding dependencies are not detected
 by CMake.
 
 - CURL (libcurl) 7.12 or later (http://curl.haxx.se/). This package is
-    required if <a
-    href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_http-client.html">Zorba's built-in
+    required if <a href="/modules/latest/zorba.io/modules/http-client">Zorba's built-in
     HTTP module</a> should be available.  Zorba will automatically be
     built with this module if the curl packages are installed.
     \note Please note that other modules depend on the http-client module
     (i.e., import it). Hence, those dependent modules will not work if
     the http module is not available. Please see our <a
-    href="../../zorba/xqdoc/xhtml/images/modules.svg">module
+    href="/images/doxygen/modules.svg">module
     dependency graph</a> for the module inter-dependencies.
     \note Also note that Zorba internally uses this module when resolving
     http: URIs in queries, module/schema imports, and so on. If this
@@ -78,12 +77,12 @@ by CMake.
     URIs from the web.
     \note If you happen to have libcurl installed but would like to build
     Zorba without HTTP support, you may set the CMake configuration
-    parameter \c ZORBA_SUPPRESS_CURL=ON.
+    parameter <b>ZORBA_SUPPRESS_CURL=ON</b>.
 
 - LibXslt version 1.1.24 or later (http://xmlsoft.org/XSLT/). The
     LibXslt package is required for XQueryX support. This feature is
     not enabled by default.  To enable XQueryX support, you need to
-    provide the CMake configuration parameter \c ZORBA_XQUERYX=ON.
+    provide the CMake configuration parameter <b>ZORBA_XQUERYX=ON</b>.
 
 - Flex 2.5.33 or later (http://flex.sourceforge.net/) and
     Bison 2.4 or later (http://www.gnu.org/software/bison/) are
@@ -98,13 +97,10 @@ at least Swig 1.3.40 or later (http://www.swig.org/download.html).
 All bindings are generated using Swig.
 
 \note There is a known bug in many versions of Swig
-  (http://sourceforge.net/tracker/index.php?func=detail&aid=3479190&group_id=1645&atid=101645)
   that affects a small number of platforms, including at least
   FreeBSD. If you get compilation errors that look similar to this:
 
-\code
-   build/swig/php/zorba_apiPHP5_wrap.cxx:953: error: invalid conversion from 'const char*' to 'char*'
-\endcode
+  <b>build/swig/php/zorba_apiPHP5_wrap.cxx:953: error: invalid conversion from 'const char*' to 'char*'</b>
 
   then you may have run into this bug. Our experience is that Swig
   version at least 2.0.7 has corrected this bug, so please try upgrading
@@ -124,14 +120,14 @@ For many of the non-core modules, you need additional libraries.
 All such modules are not built if the library (and development headers) they require are not available.
 Here is a list of the libraries required by the current non-core modules packages:
 
-- data-converters (CSV, HTML)
+- data-converters (HTML module)
   - Tidy (http://tidy.sourceforge.net)
 - data-formatting (XSL-FO)
   - Java (http://java.sun.com/javase/downloads/index.jsp)
   - Apache FOP (http://xmlgraphics.apache.org/fop/download.html)
-- email
+- email (SMTP module)
   - IMAP CClient (http://www.washington.edu/imap/)
-- geo
+- geo (GEO module)
   - GEOS version 3.2.2 or later (http://trac.osgeo.org/geos/)
 - EXPath http-client
   - CURL 7.12 or later (http://curl.haxx.se/)
@@ -139,6 +135,9 @@ Here is a list of the libraries required by the current non-core modules package
   - ImageMagick (http://www.imagemagick.org)
 - languages (XSLT)
   - LibXslt version 1.1.24 or later (http://xmlsoft.org/XSLT/)
+
+For a more up to date list please see section "External C++ Library dependencies"
+in the <a href="/images/doxygen/modules.svg">module dependency graph</a>.
 
 In many cases you can find binary packages for these dependencies, which 
 will be the quickest and easiest way to meet the requirements. We have

@@ -340,7 +340,7 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
 
     if (i < numArgs)
     {
-      if (func->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
+      if (func->getKind() == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1)
       {
         const store::Item* collName1 = ve->get_arg(0)->getQName();
         const store::Item* collName2 = qe->get_arg(0)->getQName();
@@ -394,7 +394,7 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
     const dynamic_function_invocation_expr* ve =
     static_cast<const dynamic_function_invocation_expr*>(view);
 
-    if (!match_exact(qe->get_function(), ve->get_function(), subst))
+    if (!match_exact(qe->get_input(), ve->get_input(), subst))
       return false;
 
     if (qe->get_args().size() != ve->get_args().size())

@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/booleans/booleans.h"
 #include "functions/func_booleans.h"
@@ -67,7 +68,7 @@ void populate_context_booleans(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_is_same_node,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","is-same-node"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","is-same-node"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION),
@@ -80,7 +81,7 @@ void populate_context_booleans(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_node_before,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","node-before"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","node-before"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION),
@@ -93,7 +94,7 @@ void populate_context_booleans(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_node_after,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","node-after"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","node-after"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION),

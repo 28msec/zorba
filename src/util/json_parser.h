@@ -484,10 +484,12 @@ public:
    * Gets the next token, if any.
    *
    * @param result A pointer to the token to get into.
+   * @param throw_exceptions If \c true and there is a lexical error, throws an
+   * exception; if \c false, returns \c false.
    * @return Returns \c true only if there was a next token.
-   * @throws exception upon error.
+   * @throws exception upon error unless \a throw_exceptions is \c false.
    */
-  bool next( token *result );
+  bool next( token *result, bool throw_exceptions = true );
 
   /**
    * Sets the file location.
@@ -501,10 +503,10 @@ public:
 private:
   bool get_char( char* );
   bool peek_char( char* );
-  unicode::code_point parse_codepoint();
-  token::type parse_literal( char, token::value_type* );
-  token::numeric_type parse_number( char, token::value_type* );
-  void parse_string( token::value_type* );
+  bool parse_codepoint( unicode::code_point *cp, bool throw_exceptions );
+  token::type parse_literal( char, bool throw_exceptions );
+  token::numeric_type parse_number( char, bool throw_exceptions );
+  bool parse_string( bool throw_exceptions );
   void set_cur_loc();
   location& set_cur_loc_end( bool prev = true );
   void set_loc_range( location* );
@@ -514,6 +516,8 @@ private:
   line_type line_, prev_line_;
   column_type col_, prev_col_;
   location cur_loc_;
+  bool throw_exceptions_;
+  token::value_type value_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

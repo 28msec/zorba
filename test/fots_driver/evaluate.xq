@@ -25,11 +25,11 @@ module namespace eval =
 import schema namespace output =
   "http://www.w3.org/2010/xslt-xquery-serialization";
 
-import module namespace xqxq =
-  "http://www.zorba-xquery.com/modules/xqxq";
+import module namespace zq =
+  "http://zorba.io/modules/zorba-query";
 
 import module namespace schema =
-  "http://www.zorba-xquery.com/modules/schema";
+  "http://zorba.io/modules/schema";
 
 import module namespace fots-err =
   "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";
@@ -38,7 +38,7 @@ import module namespace util =
   "http://www.zorba-xquery.com/fots-driver/util" at "util.xq";
 
 import module namespace zorba-xml =
-  "http://www.zorba-xquery.com/modules/xml#2.1";
+  "http://zorba.io/modules/xml";
 
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
@@ -47,7 +47,7 @@ declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 
 (:~
@@ -296,13 +296,13 @@ declare %private %ann:sequential function eval:assert(
              "declare variable $result external; ",
              xs:string($expResult));
 
-    variable $queryKey := xqxq:prepare-main-module($queryText);
+    variable $queryKey := zq:prepare-main-module($queryText);
 
-    variable $queryKeyResult := xqxq:bind-variable($queryKey,
+    variable $queryKeyResult := zq:bind-variable($queryKey,
                                                    xs:QName('result'),
                                                    $result);
 
-    variable $queryResult := xqxq:evaluate($queryKey);
+    variable $queryResult := zq:evaluate($queryKey);
  
    if ($queryResult)
    then ()
@@ -346,11 +346,11 @@ declare %private %ann:sequential function eval:assert-deep-eq(
       "declare variable $x external;",
       "let $y := (",string(data($expResult)),") return ",
       "every $i in 1 to max((count($x),count($y))) satisfies deep-equal($x[$i],$y[$i])");
-    variable $queryKey := xqxq:prepare-main-module($queryText),
-             $queryKeyResult := xqxq:bind-variable($queryKey,
+    variable $queryKey := zq:prepare-main-module($queryText),
+             $queryKeyResult := zq:bind-variable($queryKey,
                                                    xs:QName('x'),
                                                    $result),
-             $queryResult := xqxq:evaluate($queryKey);
+             $queryResult := zq:evaluate($queryKey);
     if ($queryResult)
     then ()
     else "'assert-deep-eq' returned: actual result is not deep-equal to expected result."
@@ -404,12 +404,12 @@ declare %private %ann:sequential function eval:assert-eq(
                   then concat("'",$expResult,"'")
                   else $expResult,
                   ")"));
-    variable  $queryKey := xqxq:prepare-main-module($queryText);
+    variable  $queryKey := zq:prepare-main-module($queryText);
   
-    xqxq:bind-variable($queryKey,
+    zq:bind-variable($queryKey,
                       xs:QName('x'),
                       $result);
-    variable $queryResult := xqxq:evaluate($queryKey);
+    variable $queryResult := zq:evaluate($queryKey);
     if ($queryResult)
     then ()
     else "'assert-eq' returned: result doesn't match expected result."
@@ -463,11 +463,11 @@ declare %private %ann:sequential function eval:assert-permutation(
       "let $y := (",string(data($expResult)),") return ",
       "deep-equal(local:order-string-values($x), local:order-string-values($y)) or
        deep-equal(reverse($x), $y)");
-    variable $queryKey := xqxq:prepare-main-module($queryText),
-             $queryKeyResult := xqxq:bind-variable($queryKey,
+    variable $queryKey := zq:prepare-main-module($queryText),
+             $queryKeyResult := zq:bind-variable($queryKey,
                                                   xs:QName('x'),
                                                   $result),
-             $queryResult := xqxq:evaluate($queryKey);
+             $queryResult := zq:evaluate($queryKey);
     if ($queryResult)
     then ()
     else "'assert-permutation' returned: result isn't a permutation of expected result."
@@ -609,11 +609,11 @@ declare %private %ann:sequential function eval:assert-type(
   {
     variable $queryText := concat( "declare variable $x external; $x instance of ",
                                   data($expResult));
-    variable $queryKey := xqxq:prepare-main-module($queryText),
-             $queryKeyResult := xqxq:bind-variable($queryKey,
+    variable $queryKey := zq:prepare-main-module($queryText),
+             $queryKeyResult := zq:bind-variable($queryKey,
                                                   xs:QName('x'),
                                                   $result),
-             $queryResult := xqxq:evaluate($queryKey);
+             $queryResult := zq:evaluate($queryKey);
     if ($queryResult)
     then ()
     else concat("'assert-type' returned: result doesn't have type '",

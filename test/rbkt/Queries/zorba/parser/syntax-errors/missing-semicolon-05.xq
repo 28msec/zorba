@@ -3,14 +3,14 @@
   the error message contains the "missing semicolon?" hint
 :)
 
-import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://zorba.io/modules/reflection";
 declare namespace err="http://www.w3.org/2005/xqt-errors";
 
 try 
 {
 
 refl:eval(
-'declare namespace an = "http://www.zorba-xquery.com/annotations";
+'declare namespace an = "http://zorba.io/annotations";
 
 declare %an:sequential function local:func($a, $b) {
   if ($a) then {

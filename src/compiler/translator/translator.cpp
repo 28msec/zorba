@@ -24,7 +24,8 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
-
+#include <zorba/internal/unique_ptr.h>
+#include <zorba/properties.h>
 
 #include "common/common.h"
 
@@ -66,7 +67,6 @@
 #include "compiler/xqddf/collection_decl.h"
 
 #include "system/globalenv.h"
-#include "system/properties.h"
 
 #include "functions/library.h"
 #include "functions/signature.h"
@@ -142,7 +142,7 @@ static expr* translate_aux(
 #define TRACE_VISIT()                                                   \
   const QueryLoc& loc = v.get_location(); (void)loc;                    \
                                                                         \
-  if (Properties::instance()->traceTranslator())                        \
+  if (Properties::instance().getTraceTranslator())                      \
     std::cout << std::string(++thePrintDepth, ' ') << TRACE << ", stk size "   \
               << theNodeStack.size() << ", tstk size: " << theTypeStack.size() \
               << ", scope depth " << theScopeDepth << std::endl;
@@ -151,7 +151,7 @@ static expr* translate_aux(
 #define TRACE_VISIT_OUT()                                               \
   const QueryLoc& loc = v.get_location(); (void)loc;                    \
                                                                         \
-  if (Properties::instance()->traceTranslator())                        \
+  if (Properties::instance().getTraceTranslator())                      \
     std::cout << std::string(thePrintDepth--, ' ') << TRACE << ", stk size: "  \
               << theNodeStack.size() << ", tstk size: " << theTypeStack.size() \
               << ", scope depth " << theScopeDepth << std::endl;
@@ -686,7 +686,7 @@ protected:
 
   std::stack<bool>                       theInWhileStack;
 
-  std::auto_ptr<AnnotationList>          theAnnotations;
+  std::unique_ptr<AnnotationList>          theAnnotations;
 
   IndexDecl_t                            theIndexDecl;
   bool                                   theIsInIndexDomain;
@@ -824,7 +824,7 @@ expr* pop_nodestack(int n = 1)
     theNodeStack.pop();
 
 #ifndef NDEBUG
-    if (Properties::instance()->traceTranslator())
+    if (Properties::instance().getTraceTranslator())
     {
       std::cout << "Popped from nodestack:\n";
       if (e_h != NULL)
@@ -846,7 +846,7 @@ inline void push_nodestack(expr* e)
   theNodeStack.push(e);
 
 #ifndef NDEBUG
-  if (Properties::instance()->traceTranslator())
+  if (Properties::instance().getTraceTranslator())
   {
     std::cout << "Pushed to nodestack: \n";
     if (e != NULL)
@@ -938,7 +938,7 @@ ftnode* pop_ftstack(int count = 1)
     theFTNodeStack.pop();
 
 #ifndef NDEBUG
-    if ( Properties::instance()->traceTranslator() )
+    if ( Properties::instance().getTraceTranslator() )
     {
       std::cout << "Popped from ftnode stack:\n";
       if ( n )
@@ -1507,8 +1507,99 @@ expr* normalize_fo_arg(
 
   TypeManager* tm = argExpr->get_type_manager();
 
+  paramType = sign[i];
+
   switch (func->getKind())
   {
+  case FunctionConsts::FN_ZORBA_XML_PARSE_2:
+  {
+    if (i == 1)
+    {
+      paramType = tm->
+      create_node_type(store::StoreConsts::elementNode,
+                       createQName(static_context::ZORBA_XML_FN_OPTIONS_NS,
+                                   "",
+                                   "options"),
+                       NULL,
+                       SequenceType::QUANT_QUESTION,
+                       false,
+                       false);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOR_EACH_2:
+  {
+    if (i == 1)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           SequenceType::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOR_EACH_PAIR_3:
+  {
+    if (i == 2)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           SequenceType::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOLD_LEFT_3:
+  {
+    if (i == 2)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_STAR);
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           SequenceType::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOLD_RIGHT_3:
+  {
+    if (i == 2)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+      args.push_back(theRTM.ITEM_TYPE_STAR);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           SequenceType::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FILTER_2:
+  {
+    if (i == 1)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.BOOLEAN_TYPE_ONE,
+                           SequenceType::QUANT_ONE);
+    }
+    break;
+  }
   case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N:
   {
     if (i == 0)
@@ -1563,7 +1654,7 @@ expr* normalize_fo_arg(
   }
   default:
   {
-    paramType = sign[i];
+    break;
   }
   }
 
@@ -1649,7 +1740,7 @@ expr* wrap_in_coercion(
   inlineFuncExpr->add_variable(fiVar, fiSubstVar);
 
   // Create the inline udf obj.
-  std::auto_ptr<user_function> inlineUDF( 
+  std::unique_ptr<user_function> inlineUDF( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               funcType->get_param_types(),
@@ -1698,7 +1789,8 @@ expr* wrap_in_coercion(
   inlineUDF->setArgVars(argVars);
   inlineUDF->setOptimized(true);
 
-  inlineFuncExpr->set_function(inlineUDF.release(), inlineUDF->numArgs());
+  inlineFuncExpr->set_function(inlineUDF.get(), inlineUDF->numArgs());
+  inlineUDF.release();
 
   // pop the scope.
   pop_scope();
@@ -2000,7 +2092,7 @@ void wrap_in_debugger_expr(
 #ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
-    std::auto_ptr<debugger_expr> lExpr(theExprManager->
+    std::unique_ptr<debugger_expr> lExpr(theExprManager->
     create_debugger_expr(theSctx,
                          theUDF,
                          aLoc,
@@ -2238,7 +2330,7 @@ void* import_schema(
 
   try
   {
-    std::auto_ptr<internal::Resource> lSchema;
+    std::unique_ptr<internal::Resource> lSchema;
     internal::StreamResource* lStream = NULL;
     zstring lErrorMessage;
 
@@ -2451,6 +2543,31 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
     stmts.push_back(treatExpr);
   }
 }
+
+
+/*******************************************************************************
+********************************************************************************/
+void
+recognizePragma(expr* e, const zstring& aLocalName)
+{
+  for (std::vector<pragma*>::const_iterator lIter = theScopedPragmas.begin();
+       lIter != theScopedPragmas.end();
+       ++lIter)
+  {
+    pragma* p = *lIter;
+    if (p->theQName->getNamespace() == ZORBA_EXTENSIONS_NS)
+    {
+      if (p->theQName->getLocalName() == aLocalName)
+      {
+        e->get_ccb()->add_pragma(e, p);
+        e->setContainsPragma(ANNOTATION_TRUE);
+        break;
+      }
+    }
+  }
+}
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -3343,6 +3460,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     bindModuleImportPrefix(targetNS, pfx, loc);
 
+  // All functions need to be serialized, so we mark the query as having eval
+  if (targetNS == static_context::ZORBA_SCTX_FN_NS)
+    theCCB->theHasEval = true;
+
   const URILiteralList* atlist = v.get_at_list();
 
   // If the imported module X is a "pure builtin" one (i.e., contains
@@ -3484,7 +3605,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
       zstring errorMsg;
-      std::auto_ptr<internal::Resource> resource;
+      std::unique_ptr<internal::Resource> resource;
       internal::StreamResource* streamResource = NULL;
 
       try
@@ -3953,7 +4074,7 @@ void preprocessVFOList(const VFO_DeclList& v)
          ++it)
     {
       const Param* param = (*it);
-      const SequenceType* paramType = param->get_typedecl();
+      const SequenceTypeAST* paramType = param->get_typedecl();
       if (paramType == NULL)
       {
         paramTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
@@ -4017,7 +4138,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         // We make sure that the types of the parameters and the return type
         // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
-        if (!s.subtype(tm, sig, loc))
+        if (!s.subtype(tm, f, sig, loc))
         {
           RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
           ERROR_PARAMS(BUILD_STRING('{',
@@ -4035,8 +4156,9 @@ void preprocessVFOList(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
-        f->setAnnotations(theAnnotations.get());
-        theAnnotations.release(); // important to reset
+        //f->setAnnotations(theAnnotations.get());
+        //theAnnotations.release();
+        theAnnotations.reset(NULL);
 
         // continue with the next declaration, because we don't add already
         // built-in functions to the static context
@@ -4958,12 +5080,12 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   // Get the static type of the root nodes
   xqtref_t lNodeType;
   xqtref_t lCollectionType;
-  TypeConstants::quantifier_t quant;
+  SequenceType::Quantifier quant;
   if (v.getType() == 0)
   {
     lNodeType = theRTM.ANY_NODE_UNTYPED_TYPE_ONE;
     lCollectionType = theRTM.ANY_NODE_UNTYPED_TYPE_STAR;
-    quant = TypeConstants::QUANT_STAR;
+    quant = SequenceType::QUANT_STAR;
   }
   else
   {
@@ -5075,7 +5197,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 
   // Create an IC to check that the cardinality of the collection matches its
   // declared type.
-  if (quant != TypeConstants::QUANT_STAR)
+  if (quant != SequenceType::QUANT_STAR)
   {
     // TODO
   }
@@ -5335,7 +5457,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     {
       type = pop_tstack();
       ptype = TypeOps::prime_type(tm, *type);
-      TypeConstants::quantifier_t quant = type->get_quantifier();
+      SequenceType::Quantifier quant = type->get_quantifier();
 
       if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR, kloc))
       {
@@ -5345,8 +5467,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       }
 
       if (!index->isGeneral() &&
-          quant != TypeConstants::QUANT_ONE &&
-          quant != TypeConstants::QUANT_QUESTION)
+          quant != SequenceType::QUANT_ONE &&
+          quant != SequenceType::QUANT_QUESTION)
       {
         RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
         ERROR_PARAMS(index->getName()->getStringValue(),
@@ -5555,7 +5677,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    qnameStrExpr);
 
     // dc:collection(xs:QName("example:coll1"))
-    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5635,7 +5757,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5724,7 +5846,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    qnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5801,7 +5923,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    toQnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* toFnCollection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* toFnCollection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(toFnCollection != NULL);
     std::vector<expr*> toArgColl;
     toArgColl.push_back(toQnameExpr);
@@ -5849,7 +5971,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    fromQnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fromFnCollection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fromFnCollection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fromFnCollection != NULL);
     std::vector<expr*> fromArgColl;
     fromArgColl.push_back(fromQnameExpr);
@@ -6581,23 +6703,19 @@ void end_visit(const AssignExpr& v, void* visit_state)
     ERROR_PARAMS(ve->get_name()->getStringValue()));
   }
 
+  ve->add_ref();
+
   xqtref_t varType = ve->get_type();
 
   expr* valueExpr = pop_nodestack();
 
   if (varType != NULL)
-    valueExpr = theExprManager->create_treat_expr(theRootSctx,
-                                                  theUDF,
-                                                  loc,
-                                                  valueExpr,
-                                                  varType,
-                                                  TREAT_TYPE_MATCH);
+    valueExpr = CREATE(treat)(theRootSctx, theUDF, loc,
+                              valueExpr,
+                              varType,
+                              TREAT_TYPE_MATCH);
 
-  push_nodestack(theExprManager->create_var_set_expr(theRootSctx,
-                                                     theUDF,
-                                                     loc,
-                                                     ve,
-                                                     valueExpr));
+  push_nodestack(CREATE(var_set)(theRootSctx, theUDF, loc, ve, valueExpr));
 
   theAssignedVars.back().push_back(ve);
 }
@@ -6939,6 +7057,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     flwor->add_clause(theFlworClausesStack[i]);
 
   theFlworClausesStack.resize(curClausePos);
+
+  recognizePragma(flwor, "no-materialization");
 
   push_nodestack(flwor);
 }
@@ -7653,8 +7773,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
     bind_var(ngVar, theSctx);
 
-    expr* inputExpr =
-    theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, inputVar);
+    expr* inputExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, inputVar);
 
     nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngVar));
   }
@@ -9355,12 +9474,12 @@ void end_visit(const SingleType& v, void* /*visit_state*/)
   {
     xqtref_t type = pop_tstack();
 
-    assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
-           type->get_quantifier() == TypeConstants::QUANT_STAR);
+    assert(type->get_quantifier() == SequenceType::QUANT_ONE ||
+           type->get_quantifier() == SequenceType::QUANT_STAR);
 
-    if (type->get_quantifier() == TypeConstants::QUANT_ONE)
+    if (type->get_quantifier() == SequenceType::QUANT_ONE)
     {
-      theTypeStack.push(CTX_TM->create_type(*type, TypeConstants::QUANT_QUESTION));
+      theTypeStack.push(CTX_TM->create_type(*type, SequenceType::QUANT_QUESTION));
     }
   }
   // else leave type as it is on tstack
@@ -10401,8 +10520,9 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   //
   // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
   const for_clause* fcOuterDot = static_cast<const for_clause*>(flworExpr->get_clause(0));
-  relpath_expr* predPathExpr = theExprManager->create_relpath_expr(theRootSctx, theUDF, loc);
-  predPathExpr->add_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, fcOuterDot->get_var()));
+  relpath_expr* predPathExpr = CREATE(relpath)(theRootSctx, theUDF, loc);
+  predPathExpr->add_back(CREATE(wrapper)(theRootSctx, theUDF, loc, fcOuterDot->get_var()));
+
   predPathExpr->add_back(axisExpr);
 
   expr* predInputExpr = predPathExpr;
@@ -10873,17 +10993,15 @@ void pre_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
   // for each predicate in the list, before calling accept() on the predicate
   // expression itself.
 
-  // get the predicate input seq
-  expr* inputSeqExpr = pop_nodestack();
-
   if (dynamic_cast<const JSONArrayConstructor*>(pred) != NULL)
   {
-    // for $$dot in predInputSeq
-    flwor_expr* flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
-    push_nodestack(flworExpr);
+    return;
   }
   else
   {
+    // get the predicate input seq
+    expr* inputSeqExpr = pop_nodestack();
+
     // let $$temp := predInputSeq
     // let $$last-idx := count($$temp)
     // for $$dot at $$pos in $$temp
@@ -10907,38 +11025,37 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
   const QueryLoc& loc = predExpr->get_loc();
   xqtref_t predType = predExpr->get_return_type();
 
-  expr* f = pop_nodestack();
-  ZORBA_ASSERT(f->get_expr_kind() == flwor_expr_kind);
-  flwor_expr* flworExpr = static_cast<flwor_expr*>(f);
-
   if (dynamic_cast<const JSONArrayConstructor*>(pred) != NULL)
   {
-    assert(flworExpr->num_clauses() == 1);
-    assert(flworExpr->get_clause(0)->get_kind() == flwor_clause::for_clause);
-
-    for_clause* sourceClause = static_cast<for_clause*>(flworExpr->get_clause(0));
-
-    expr* flworVarExpr = 
-    CREATE(wrapper)(theRootSctx, theUDF, loc, sourceClause->get_var());
-
+    expr* arrayExpr = pop_nodestack();
     expr* selectorExpr = static_cast<json_array_expr*>(predExpr)->get_expr();
+    expr* accessorExpr;
+
+    xqtref_t domainType = arrayExpr->get_return_type();
 
     std::vector<expr*> args(2);
-    args[0] = flworVarExpr;
+    args[0] = arrayExpr;
     args[1] = selectorExpr;
 
-    expr* accessorExpr =
-    generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_MEMBER_2), args, loc);
+    if (domainType->max_card() > 1)
+    {
+      accessorExpr =
+      generate_fn_body(BUILTIN_FUNC(OP_ZORBA_MULTI_ARRAY_LOOKUP_2), args, loc);
+    }
+    else
+    {
+      accessorExpr =
+      generate_fn_body(BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2), args, loc);
+    }
 
-    assert(accessorExpr->get_expr_kind() == fo_expr_kind);
-
-    flworExpr->set_return_expr(accessorExpr);
-
-    push_nodestack(flworExpr);
-    pop_scope();
+    push_nodestack(accessorExpr);
 
     return;
   }
+
+  expr* f = pop_nodestack();
+  ZORBA_ASSERT(f->get_expr_kind() == flwor_expr_kind);
+  flwor_expr* flworExpr = static_cast<flwor_expr*>(f);
 
   ZORBA_ASSERT(flworExpr->num_clauses() == 3);
 
@@ -10966,23 +11083,22 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
       {
         expr* sourceExpr = sourceClause->get_expr();
         
-        if (sourceExpr->get_function_kind() == FunctionConsts::FN_JSONIQ_MEMBERS_1)
+        FunctionConsts::FunctionKind fkind = sourceExpr->get_function_kind();
+
+        if (fkind == FunctionConsts::OP_ZORBA_MEMBERS_1)
         {
           expr* arrayExpr = static_cast<fo_expr*>(sourceExpr)->get_arg(0);
           
-          if (arrayExpr->get_return_type()->max_card() <= 1)
-          {
-            fo_expr* pointExpr = 
-            CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
-                       BUILTIN_FUNC(FN_JSONIQ_MEMBER_2),
-                       arrayExpr,
-                       predExpr);
+          fo_expr* pointExpr = 
+          CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
+                     BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2),
+                     arrayExpr,
+                     predExpr);
             
-            push_nodestack(pointExpr);
-            pop_scope();
+          push_nodestack(pointExpr);
+          pop_scope();
               
-            return;
-          }
+          return;
         }
           
         fo_expr* pointExpr = 
@@ -11154,30 +11270,20 @@ void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
 
   expr* selectExpr = pop_nodestack();
   expr* objectExpr = pop_nodestack();
+  expr* accessorExpr;
 
   assert(selectExpr && objectExpr);
 
-  flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
-
-  for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
-
-  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
-
-  expr* accessorExpr;
+  xqtref_t domainType = objectExpr->get_return_type();
 
   std::vector<expr*> args(2);
-  args[0] = flworVarExpr;
+  args[0] = objectExpr;
   args[1] = selectExpr;
 
-  accessorExpr = generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_VALUE_2), args, loc);
+  accessorExpr =
+  generate_fn_body(BUILTIN_FUNC(OP_ZORBA_MULTI_OBJECT_LOOKUP_2), args, loc);
 
-  assert(accessorExpr->get_expr_kind() == fo_expr_kind);
-
-  flworExpr->set_return_expr(accessorExpr);
-
-  pop_scope();
-
-  push_nodestack(flworExpr);
+  push_nodestack(accessorExpr);
 }
 
 
@@ -11508,17 +11614,7 @@ void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   
-  var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
-
-  if (ve->get_kind() == var_expr::prolog_var)
-  {
-    if (!theCurrentPrologVFDecl.isNull())
-    {
-      thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
-    }
-  }
-
-  push_nodestack(CREATE(wrapper)(theRootSctx, theUDF, loc, ve));
+  push_nodestack(dotRef(loc));
 }
 
 
@@ -11746,7 +11842,7 @@ expr* generate_fncall(
     expand_type_qname(qnameItem, qname, loc);
 
     xqtref_t type = 
-    tm->create_named_type(qnameItem, TypeConstants::QUANT_QUESTION, loc);
+    tm->create_named_type(qnameItem, SequenceType::QUANT_QUESTION, loc);
 
     if (type != NULL)
     {
@@ -12055,18 +12151,7 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_ZORBA_CONTEXT_ITEM_0:
   { 
-    // copy+pasted from the ContextItemExpr
-    var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
-      
-    if (ve->get_kind() == var_expr::prolog_var)
-    {
-      if (!theCurrentPrologVFDecl.isNull())
-      {
-        thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
-      }
-    }
-    
-    resultExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, ve);
+    resultExpr = dotRef(loc);
     break;        
   }
   case FunctionConsts::FN_STRING_LENGTH_0:
@@ -12276,23 +12361,31 @@ expr* generate_fn_body(
 
     break;
   }
-  case FunctionConsts::FN_JSONIQ_VALUE_2:
+  case FunctionConsts::OP_ZORBA_MULTI_OBJECT_LOOKUP_2:
+  {
+    if (arguments[0]->get_return_type()->max_card() <= 1)
+      f = BUILTIN_FUNC(OP_ZORBA_SINGLE_OBJECT_LOOKUP_2);
+
+    // fall through
+  }
+  case FunctionConsts::OP_ZORBA_SINGLE_OBJECT_LOOKUP_2:
   {
     arguments[1] = 
     create_cast_expr(loc, arguments[1], theRTM.STRING_TYPE_ONE, true, true);
 
     break;
   }
-  case FunctionConsts::FN_JSONIQ_MEMBER_2:
+  case FunctionConsts::OP_ZORBA_MULTI_ARRAY_LOOKUP_2:
+  {
+    if (arguments[0]->get_return_type()->max_card() <= 1)
+      f = BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2);
+
+    // fall through
+  }
+  case FunctionConsts::OP_ZORBA_SINGLE_ARRAY_LOOKUP_2:
   {
     arguments[1] =
     create_cast_expr(loc, arguments[1], theRTM.INTEGER_TYPE_ONE, true, true);
-
-    break;
-  }
-  case FunctionConsts::OP_ZORBA_JSON_ITEM_ACCESSOR_2:
-  {
-    arguments[1] = wrap_in_atomization(arguments[1]);
 
     break;
   }
@@ -12551,6 +12644,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   expr* sourceExpr = pop_nodestack();
   ZORBA_ASSERT(sourceExpr != 0);
 
+  xqtref_t srcType = sourceExpr->get_return_type();
+
   TypeManager* tm = sourceExpr->get_type_manager();
 
   // special case: partial function invocation
@@ -12566,74 +12661,74 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     }
   }
 
-   // Implementing implicit iteration over the sequence returned by the source expr
-  flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
-
-  for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
-
-  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
-
-  xqtref_t srcType = sourceExpr->get_return_type();
+  function* func;
+  expr* accessorExpr;
 
   // Note: if numArgs > 1 and the input contains a json item, DynamicFnCallIterator
   // will raise an error. However, no error will be raised if the input is empty.
-  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR) && numArgs <= 1)
+
+  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR) &&
+      numArgs <= 1)
   {
-    function* func;
-    expr* accessorExpr;
+    arguments.insert(arguments.begin(), sourceExpr);
 
     if (numArgs == 1)
     {
-      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(FN_JSONIQ_MEMBER_2);
-      }
-      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(FN_JSONIQ_VALUE_2);
-      }
-      else
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
-      }
+      func = BUILTIN_FUNC(OP_ZORBA_MULTI_ARRAY_LOOKUP_2);
+    }
+    else // numArgs == 0
+    {
+      func = BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1);
+    }
+
+    accessorExpr = generate_fn_body(func, arguments, loc);
+    
+    push_nodestack(accessorExpr);
+  }
+  else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR) &&
+           numArgs <= 1)
+  {
+    arguments.insert(arguments.begin(), sourceExpr);
+
+    if (numArgs == 1)
+    {
+      func = BUILTIN_FUNC(OP_ZORBA_MULTI_OBJECT_LOOKUP_2);
     }
     else
     {
-      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_MEMBERS_1);
-      }
-      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_KEYS_1);
-      }
-      else
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
-      }
+      func = BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
     }
-
-    arguments.insert(arguments.begin(), flworVarExpr);
-
+    
     accessorExpr = generate_fn_body(func, arguments, loc);
 
-    flworExpr->set_return_expr(accessorExpr);
+    push_nodestack(accessorExpr);
+  }
+  else if (numArgs > 0)
+  {
+    flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
+
+    for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
+
+    sourceExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
+
+    expr* dynFuncInvocation =
+    CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
+                                        sourceExpr,
+                                        arguments);
+
+    flworExpr->set_return_expr(dynFuncInvocation);
+    pop_scope();
+    push_nodestack(flworExpr);
   }
   else
   {
     expr* dynFuncInvocation =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
-                                        flworVarExpr,
+                                        sourceExpr,
                                         arguments);
-
-    flworExpr->set_return_expr(dynFuncInvocation);
+    push_nodestack(dynFuncInvocation);
   }
-
-  pop_scope();
-
-  push_nodestack(flworExpr);
 }
-
 
 /*******************************************************************************
   LiteralFunctionItem ::= QName "#" IntegerLiteral
@@ -12680,7 +12775,7 @@ expr* generate_literal_function(
     const QueryLoc& loc)
 {
   xqtref_t type;
-  std::auto_ptr<user_function> udf;
+  std::unique_ptr<user_function> udf;
   expr* body;
   
   function_item_expr* fiExpr =
@@ -12693,7 +12788,7 @@ expr* generate_literal_function(
   if (func == NULL)
   {
     type = CTX_TM->
-    create_named_type(qnameItem, TypeConstants::QUANT_QUESTION, loc);
+    create_named_type(qnameItem, SequenceType::QUANT_QUESTION, loc);
 
     if (type == NULL ||
         arity != 1 ||
@@ -12967,7 +13062,8 @@ expr* generate_literal_function(
   // because the function item expression may be a forward refereence to a real
   // UDF, in which case udf->numArgs() returns 0 since the UDF declaration has
   // not been fully processed yet.  
-  fiExpr->set_function(udf.release(), arity);
+  fiExpr->set_function(udf.get(), arity);
+  udf.release();
 
   return fiExpr;
 }
@@ -13077,7 +13173,7 @@ void end_visit(const InlineFunction& v, void* aState)
     for(; lIt != params->end(); ++lIt)
     {
       const Param* param = lIt->getp();
-      const SequenceType* paramType = param->get_typedecl().getp();
+      const SequenceTypeAST* paramType = param->get_typedecl().getp();
       if (paramType == NULL)
       {
         paramTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
@@ -13120,7 +13216,7 @@ void generate_inline_function(
   }
 
   // Create the udf obj.
-  std::auto_ptr<user_function> udf( 
+  std::unique_ptr<user_function> udf( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               paramTypes,
@@ -13425,7 +13521,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
   nameExpr = CREATE(const)(theRootSctx, theUDF, loc, qnameItem);
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
-                    !Properties::instance()->noCopyOptim());
+                    !Properties::instance().getNoCopyOptim());
 
   push_nodestack(CREATE(elem)(theRootSctx,
                               theUDF,
@@ -14120,7 +14216,7 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
   fo_expr* enclosed = wrap_in_enclosed_expr(content, loc);
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
-                    !Properties::instance()->noCopyOptim());
+                    !Properties::instance().getNoCopyOptim());
 
   push_nodestack(CREATE(doc)(theRootSctx, theUDF, loc, enclosed, copyNodes));
 }
@@ -14169,7 +14265,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
   }
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
-                    !Properties::instance()->noCopyOptim());
+                    !Properties::instance().getNoCopyOptim());
 
   push_nodestack(CREATE(elem)(theRootSctx,
                               theUDF,
@@ -14404,7 +14500,7 @@ void end_visit(const TypeName& v, void* /*visit_state*/)
 
 ********************************************************************************/
 
-void* begin_visit(const SequenceType& v)
+void* begin_visit(const SequenceTypeAST& v)
 {
   TRACE_VISIT();
 
@@ -14417,7 +14513,7 @@ void* begin_visit(const SequenceType& v)
   return no_state;
 }
 
-void end_visit(const SequenceType& v, void* /*visit_state*/)
+void end_visit(const SequenceTypeAST& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 }
@@ -14427,22 +14523,22 @@ void* begin_visit(const OccurrenceIndicator& v)
 {
   TRACE_VISIT();
 
-  TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
+  SequenceType::Quantifier q = SequenceType::QUANT_STAR;
   switch(v.get_type())
   {
   case ParseConstants::occurs_exactly_one:
-    q = TypeConstants::QUANT_ONE; break;
+    q = SequenceType::QUANT_ONE; break;
   case ParseConstants::occurs_one_or_more:
-    q = TypeConstants::QUANT_PLUS; break;
+    q = SequenceType::QUANT_PLUS; break;
   case ParseConstants::occurs_optionally:
-    q = TypeConstants::QUANT_QUESTION; break;
+    q = SequenceType::QUANT_QUESTION; break;
   case ParseConstants::occurs_zero_or_more:
-    q = TypeConstants::QUANT_STAR; break;
+    q = SequenceType::QUANT_STAR; break;
   case ParseConstants::occurs_never:
     ZORBA_ASSERT(false);
   }
 
-  if (q != TypeConstants::QUANT_ONE)
+  if (q != SequenceType::QUANT_ONE)
     theTypeStack.push(CTX_TM->create_type(*pop_tstack(), q));
 
   return no_state;
@@ -14471,7 +14567,7 @@ void end_visit(const GeneralizedAtomicType& v, void* /*visit_state*/)
   xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
 
   if (t == NULL ||
-      t->get_quantifier() != TypeConstants::QUANT_ONE)
+      t->get_quantifier() != SequenceType::QUANT_ONE)
   {
     RAISE_ERROR(err::XPST0051, loc,
     ERROR_PARAMS(ZED(XPST0051_GenAtomic_2), qname->get_qname()));
@@ -14654,7 +14750,7 @@ void end_visit(const DocumentTest& v, void* /*visit_state*/)
     xqtref_t docTest = CTX_TM->create_node_type(store::StoreConsts::documentNode,
                                                 NULL,
                                                 elementOrSchemaTest,
-                                                TypeConstants::QUANT_ONE,
+                                                SequenceType::QUANT_ONE,
                                                 false,
                                                 false);
     theTypeStack.push(docTest);
@@ -14702,7 +14798,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
   if (typeName != NULL)
   {
     contentType = CTX_TM->create_named_type(typeNameItem,
-                                            TypeConstants::QUANT_ONE,
+                                            SequenceType::QUANT_ONE,
                                             loc);
 
     if (contentType == NULL)
@@ -14729,7 +14825,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
     xqtref_t seqmatch = CTX_TM->create_node_type(store::StoreConsts::elementNode,
                                                  elemNameItem,
                                                  contentType,
-                                                 TypeConstants::QUANT_ONE,
+                                                 SequenceType::QUANT_ONE,
                                                  nillable,
                                                  false);
     theTypeStack.push(seqmatch);
@@ -14771,7 +14867,7 @@ void* begin_visit(const SchemaElementTest& v)
   else
   {
     xqtref_t seqmatch = CTX_TM->create_schema_element_type(elemQNameItem,
-                                                           TypeConstants::QUANT_ONE,
+                                                           SequenceType::QUANT_ONE,
                                                            loc);
     theTypeStack.push(seqmatch);
   }
@@ -14821,7 +14917,7 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
     expand_elem_qname(typeNameItem, typeName->get_name(), typeName->get_location());
 
     contentType = CTX_TM->create_named_type(typeNameItem,
-                                            TypeConstants::QUANT_ONE,
+                                            SequenceType::QUANT_ONE,
                                             loc);
 
     if (contentType == NULL)
@@ -14852,7 +14948,7 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
     xqtref_t seqmatch = CTX_TM->create_node_type(store::StoreConsts::attributeNode,
                                                  attrNameItem,
                                                  contentType,
-                                                 TypeConstants::QUANT_ONE,
+                                                 SequenceType::QUANT_ONE,
                                                  false,
                                                  false);
 
@@ -14894,7 +14990,7 @@ void* begin_visit(const SchemaAttributeTest& v)
   else
   {
     xqtref_t seqmatch = CTX_TM->
-    create_schema_attribute_type(attrQNameItem, TypeConstants::QUANT_ONE, loc);
+    create_schema_attribute_type(attrQNameItem, SequenceType::QUANT_ONE, loc);
 
     theTypeStack.push(seqmatch);
   }
@@ -15052,7 +15148,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
       xqtref_t t = GENV_TYPESYSTEM.create_node_type(store::StoreConsts::piNode,
                                                     qname,
                                                     NULL,
-                                                    TypeConstants::QUANT_ONE,
+                                                    SequenceType::QUANT_ONE,
                                                     false,
                                                     false);
       theTypeStack.push(t);
@@ -15098,7 +15194,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   const rchandle<TypeList>& lParamTypes = v.getArgumentTypes();
-  const rchandle<SequenceType>& lRetType = v.getReturnType();
+  const rchandle<SequenceTypeAST>& lRetType = v.getReturnType();
 
   std::vector<xqtref_t> lParamXQTypes;
   xqtref_t              lRetXQType;
@@ -15107,7 +15203,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
   {
     for (int i = 0; i < (int)lParamTypes->size(); ++i)
     {
-      const SequenceType* lParamType = (*lParamTypes)[i];
+      const SequenceTypeAST* lParamType = (*lParamTypes)[i];
 
       if (lParamType == 0)
       {
@@ -15127,7 +15223,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
     lRetXQType = pop_tstack();
   }
 
-  TypeConstants::quantifier_t lQuant = TypeConstants::QUANT_ONE;
+  SequenceType::Quantifier lQuant = SequenceType::QUANT_ONE;
   theTypeStack.push (GENV_TYPESYSTEM.create_function_type(
     lParamXQTypes, lRetXQType, lQuant));
 }
@@ -15279,7 +15375,7 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
 
   PostfixExpr := PostfixExpr ("(" ArgList ")")+
 
-  The parser also makes sure that each ArgList contains exactly one arg.
+  The parser also makes sure that the last ArgList contains exactly one arg.
 
   If there are N ArgLists, the last one is considered to be the selector expr
   and the PrimaryExpr together with the N-1 ArgLists constitute the target expr.
@@ -15295,26 +15391,18 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* selExpr = pop_nodestack();
+  expr* selectorExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
 
-  selExpr = wrap_in_type_promotion(selExpr,
-                                   theRTM.ANY_ATOMIC_TYPE_ONE,
-                                   PROMOTE_JSONIQ_SELECTOR, // JNUP0007
-                                   NULL);
+  selectorExpr = wrap_in_type_promotion(selectorExpr,
+                                        theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                        PROMOTE_TYPE_PROMOTION,
+                                        NULL);
 
-  targetExpr = wrap_in_type_match(targetExpr,
-                                  theRTM.JSON_ITEM_TYPE_ONE,
-                                  loc,
-                                  TREAT_JSONIQ_UPDATE_TARGET, // JNUP0008
-                                  NULL);
-
-  fo_expr* updExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF,
-                 loc,
-                 BUILTIN_FUNC(OP_ZORBA_JSON_DELETE_2),
-                 targetExpr,
-                 selExpr);
+  fo_expr* updExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                                BUILTIN_FUNC(OP_ZORBA_JSON_DELETE_2),
+                                targetExpr,
+                                selectorExpr);
 
   push_nodestack(updExpr);
 }
@@ -15335,32 +15423,25 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   expr* valueExpr = pop_nodestack();
-  expr* selExpr = pop_nodestack();
+  expr* selectorExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
 
   std::vector<expr*> args(3);
 
-  args[0] = wrap_in_type_match(targetExpr,
-                               theRTM.JSON_ITEM_TYPE_ONE,
-                               loc,
-                               TREAT_JSONIQ_UPDATE_TARGET, // JNUP0008
-                               NULL);
+  args[0] = targetExpr;
 
-  args[1] = wrap_in_type_promotion(selExpr,
-                                   theRTM.ANY_ATOMIC_TYPE_ONE,
-                                   PROMOTE_JSONIQ_SELECTOR, // JNUP0007
+  args[1] = wrap_in_type_promotion(selectorExpr,
+                                   theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                   PROMOTE_TYPE_PROMOTION,
                                    NULL);
 
-  args[2] = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                                           valueExpr->get_loc(),
-                                           BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
-                                           valueExpr);
+  args[2] = CREATE(fo)(theRootSctx, theUDF, valueExpr->get_loc(),
+                       BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
+                       valueExpr);
 
-  fo_expr* updExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF,
-                 loc,
-                 BUILTIN_FUNC(OP_ZORBA_JSON_REPLACE_VALUE_3),
-                 args);
+  fo_expr* updExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                                BUILTIN_FUNC(OP_ZORBA_JSON_REPLACE_VALUE_3),
+                                args);
 
   push_nodestack(updExpr);
 }
@@ -15386,19 +15467,19 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
 
   std::vector<expr*> args(3);
 
-  args[0] = wrap_in_type_match(targetExpr,
-                               theRTM.JSON_OBJECT_TYPE_ONE,
-                               loc,
-                               TREAT_JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
-                               NULL);
+  args[0] = targetExpr;
 
-  args[1] = wrap_in_type_promotion(nameExpr,
-                                   theRTM.STRING_TYPE_ONE,
-                                   PROMOTE_JSONIQ_OBJECT_SELECTOR); // JNUP0007
+  args[1] = create_cast_expr(nameExpr->get_loc(),
+                             nameExpr,
+                             theRTM.STRING_TYPE_ONE,
+                             true,
+                             true);
 
-  args[2] = wrap_in_type_promotion(newNameExpr,
-                                   theRTM.STRING_TYPE_ONE,
-                                   PROMOTE_JSONIQ_OBJECT_SELECTOR); // JNUP0007
+  args[2] = create_cast_expr(newNameExpr->get_loc(),
+                             newNameExpr,
+                             theRTM.STRING_TYPE_ONE,
+                             false,
+                             true);
 
   fo_expr* updExpr = CREATE(fo)(theRootSctx,
                                 theUDF,
@@ -16145,7 +16226,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
 #ifndef ZORBA_NO_FULL_TEXT
   zstring const &uri = v.get_uri();
   zstring error_msg;
-  std::auto_ptr<internal::Resource> rsrc(
+  std::unique_ptr<internal::Resource> rsrc(
     theSctx->resolve_uri( uri, internal::EntityData::THESAURUS, error_msg )
   );
   if ( !rsrc.get() )
@@ -16377,7 +16458,7 @@ expr* result()
 #ifndef NDEBUG
       expr* e_h = pop_nodestack();
 
-      if (! Properties::instance()->traceTranslator())
+      if (! Properties::instance().getTraceTranslator())
       {
         if (e_h != NULL)
           e_h->put(std::cout) << std::endl;
@@ -16418,7 +16499,7 @@ expr* translate_aux(
     bool isLibModule,
     StaticContextConsts::xquery_version_t maxLibModuleVersion)
 {
-  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
+  std::unique_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
                                                      rootSctx,
                                                      rootSctxId,
                                                      minfo,
@@ -16475,7 +16556,7 @@ expr* Translator::translate_literal_function(
   
   ModulesInfo minfo(ccb);
   
-  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
+  std::unique_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
                                                      sctx,
                                                      ccb->theSctxMap.size(),
                                                      &minfo,

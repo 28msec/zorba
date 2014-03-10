@@ -120,7 +120,7 @@ ENDIF (ZORBA_OLD_RQ_MACHINE)
 # However they all pass if one sets the following environment variables:
 #   QTTEST='42'
 #   QTTEST2='other'
-#   QTEMPTY=''
+#   QTTESTEMPTY=''
 # The remote queue machine does this.
 #EXPECTED_FOTS_FAILURE (SLOW fn-available-environment-variables fn-available-environment-variables-011 1187692)
 #EXPECTED_FOTS_FAILURE (SLOW fn-environment-variable environment-variable-005 1187692)
@@ -141,6 +141,9 @@ EXPECTED_FOTS_FAILURE (DISPUTED misc-XMLEdition XML10-4ed-Excluded-char-1 13869)
 
 EXPECTED_FOTS_FAILURE (fn-fold-left fold-left-009 1187685)
 EXPECTED_FOTS_FAILURE (fn-for-each-pair fn-for-each-pair-026 1187685)
+EXPECTED_FOTS_FAILURE (fn-for-each-pair fn-for-each-pair-034 000)
+EXPECTED_FOTS_FAILURE (fn-for-each-pair fn-for-each-pair-035 000)
+EXPECTED_FOTS_FAILURE (fn-format-number numberformat20 1167641)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat60a 1167609)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat60m 1167609)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat60o 1167609)
@@ -152,7 +155,6 @@ EXPECTED_FOTS_FAILURE (fn-format-number numberformat87 1167641)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat88 1167641)
 EXPECTED_FOTS_FAILURE (fn-format-number cbcl-fn-format-number-003 1200494)
 EXPECTED_FOTS_FAILURE (fn-function-lookup fn-function-lookup-062 1187685)
-EXPECTED_FOTS_FAILURE (fn-function-lookup fn-function-lookup-530 1188329)
 EXPECTED_FOTS_FAILURE (fn-in-scope-prefixes K2-InScopePrefixesFunc-25 1200498)
 EXPECTED_FOTS_FAILURE (fn-matches cbcl-matches-038 1131304)
 EXPECTED_FOTS_FAILURE (fn-normalize-space fn-normalize-space-23 1187802)
@@ -186,6 +188,7 @@ EXPECTED_FOTS_FAILURE (fn-unparsed-text-lines fn-unparsed-text-lines-053 1123835
 EXPECTED_FOTS_FAILURE (fn-unparsed-text-lines fn-unparsed-text-lines-054 1123835)
 EXPECTED_FOTS_FAILURE (math-acos math-acos-003 1188109)
 EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQST0093a 1188116)
+EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQST0085 1204471)
 EXPECTED_FOTS_FAILURE (misc-HigherOrderFunctions xqhof11 1188329)
 EXPECTED_FOTS_FAILURE (misc-HigherOrderFunctions xqhof12 1188299)
 EXPECTED_FOTS_FAILURE (misc-Serialization K2-Serialization-1 1188122)

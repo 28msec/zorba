@@ -37,6 +37,7 @@ class ItemSequence;
 class Iterator;
 class ModuleInfo;
 class QueryLocation;
+class SequenceType;
 class SerializationCallback;
 class Serializer;
 class StatelessExternalFunction;
@@ -46,7 +47,6 @@ class StaticContext;
 class StemmerProvider;
 class TokenizerProvider;
 #endif /* ZORBA_NO_FULL_TEXT */
-class TypeIdentifier;
 class XmlDataManager;
 class XQuery;
 class Zorba;
@@ -61,7 +61,7 @@ typedef SmartPtr<ModuleInfo>      ModuleInfo_t;
 typedef SmartPtr<QueryLocation>   QueryLocation_t;
 typedef SmartPtr<Serializer>      Serializer_t;
 typedef SmartPtr<StaticContext>   StaticContext_t;
-typedef SmartPtr<TypeIdentifier>  TypeIdentifier_t;
+typedef SmartPtr<XmlDataManager>  XmlDataManager_t;
 typedef SmartPtr<XQuery>          XQuery_t;
 
 // data handlers

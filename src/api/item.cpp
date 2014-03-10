@@ -28,8 +28,8 @@
 
 #include "api/zorbaimpl.h"
 #include "api/serialization/serializer.h"
-#include "api/storeiteratorimpl.h"
-#include "api/iterator_singleton.h"
+#include "api/item_iter_store.h"
+#include "api/item_iter_singleton.h"
 #include "api/unmarshaller.h"
 
 #include "store/api/item.h"
@@ -534,14 +534,15 @@ Item::getObjectKeys() const
 
 
 Item
-Item::getObjectValue(String aName) const
+Item::getObjectValue(String const &aName) const
 {
+  String lName( aName ); // copy needed because createString() is destructive
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-    zstring& lName = Unmarshaller::getInternalString(aName);
+    zstring& liName = Unmarshaller::getInternalString(lName);
     
     store::Item_t lStringItem;
-    GENV_ITEMFACTORY->createString(lStringItem, lName);
+    GENV_ITEMFACTORY->createString(lStringItem, liName);
   
     return m_item->getObjectValue(lStringItem).getp();
 
@@ -624,5 +625,17 @@ Item::getCollectionName() const
   ITEM_CATCH
   return 0;
 }
+
+const char*
+Item::getHexBinaryValue(size_t& s) const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getHexBinaryValue(s);
+  ITEM_CATCH
+  // TODO: throw exception
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

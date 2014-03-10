@@ -18,7 +18,7 @@
 
 module namespace extern = "urn:extern";
 
-import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://zorba.io/modules/reflection";
 
 declare function extern:test() as xs:string
 {

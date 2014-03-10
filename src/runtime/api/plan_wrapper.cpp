@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <zorba/properties.h>
+
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
@@ -23,8 +25,10 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/base/plan_iterator.h"
 #include "runtime/util/timeout.h"
-#include "system/properties.h"
+#include "runtime/visitors/iterprinter.h"
+#include "runtime/visitors/printer_visitor_api.h"
 
+using namespace std;
 
 namespace zorba {
 
@@ -62,7 +66,7 @@ PlanWrapper::PlanWrapper(
                                aDynamicContext,
                                lStateSize,
                                aStackDepth,
-                               Properties::instance()->maxUdfCallDepth());
+                               Properties::instance().getMaxUDFCallDepth());
 
   // set the compiler cb in the state
   thePlanState->theCompilerCB = aCompilerCB;
@@ -162,6 +166,17 @@ bool PlanWrapper::next(store::Item_t& result)
 /*******************************************************************************
 
 ********************************************************************************/
+bool PlanWrapper::skip(int64_t count)
+{
+  ZORBA_ASSERT(theIsOpen);
+
+  return theIterator->skip(count, *thePlanState);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void PlanWrapper::reset()
 {
   ZORBA_ASSERT(theIsOpen);
@@ -193,6 +208,15 @@ void PlanWrapper::checkDepth(const QueryLoc& loc)
   thePlanState->checkDepth(loc);
 }
 
+
+/******************************************************************************
+
+ ******************************************************************************/
+
+void PlanWrapper::profile() const {
+  XMLIterPrinter p( Properties::instance().getDebugStream() );
+  print_iter_plan( p, theIterator, thePlanState );
+}
 
 /*******************************************************************************
 

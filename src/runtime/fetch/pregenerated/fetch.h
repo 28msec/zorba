@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_FETCH_FETCH_H
 #define ZORBA_RUNTIME_FETCH_FETCH_H
 
@@ -57,6 +58,8 @@ public:
 
   virtual ~FetchContentIterator();
 
+  zstring getNameAsString() const;
+
 public:
   static void destroyStream(std::istream& aStream);
   void accept(PlanIterVisitor& v) const;
@@ -89,6 +92,8 @@ public:
 
   virtual ~FetchContentBinaryIterator();
 
+  zstring getNameAsString() const;
+
 public:
   static void destroyStream(std::istream& aStream);
   void accept(PlanIterVisitor& v) const;
@@ -120,6 +125,8 @@ public:
   {}
 
   virtual ~FetchContentTypeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

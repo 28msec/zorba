@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -58,6 +59,10 @@ void ReadLineIterator::accept(PlanIterVisitor& v) const
 
 ReadLineIterator::~ReadLineIterator() {}
 
+
+zstring ReadLineIterator::getNameAsString() const {
+  return "op-zorba:read-line";
+}
 // </ReadLineIterator>
 
 
@@ -88,6 +93,10 @@ void PrintIterator::accept(PlanIterVisitor& v) const
 
 PrintIterator::~PrintIterator() {}
 
+
+zstring PrintIterator::getNameAsString() const {
+  return "fn-zorba-util:print";
+}
 // </PrintIterator>
 
 
@@ -121,6 +130,10 @@ void FunctionTraceIterator::accept(PlanIterVisitor& v) const
 
 FunctionTraceIterator::~FunctionTraceIterator() {}
 
+
+zstring FunctionTraceIterator::getNameAsString() const {
+  return "FunctionTraceIterator";
+}
 // </FunctionTraceIterator>
 
 

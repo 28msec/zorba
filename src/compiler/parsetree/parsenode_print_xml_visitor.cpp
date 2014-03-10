@@ -814,7 +814,7 @@ BEGIN_END_TAG (SchemaAttributeTest)
 BEGIN_END_TAG (SchemaElementTest)
 END_TAG (SchemaImport)
 BEGIN_END_TAG (SchemaPrefix)
-BEGIN_END_TAG (SequenceType)
+BEGIN_END_TAG (SequenceTypeAST)
 BEGIN_END_TAG (SignList)
 BEGIN_END_TAG (SIND_DeclList)
 BEGIN_END_TAG (DecimalFormatNode)
@@ -1095,7 +1095,7 @@ BEGIN_END_TAG(JSONRenameExpr)
 void* begin_visit(const JSON_Test& n)
 {
   INDENT;
-  os << "<JSON_Test type=\"" << store::StoreConsts::toString(n.get_kind()) << "\"/>";
+  os << "<JSON_Test type=\"" << n.get_kind() << "\"/>";
   INDENT_INC; NL;
   return no_state;
 }

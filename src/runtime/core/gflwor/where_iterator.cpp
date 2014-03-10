@@ -28,6 +28,7 @@ namespace flwor
 {
 
 SERIALIZABLE_CLASS_VERSIONS(WhereIterator)
+DEF_GET_NAME_AS_STRING(WhereIterator)
 
 
 /////////////////////////////////////////////////////////////////////////////////

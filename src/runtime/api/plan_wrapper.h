@@ -97,6 +97,8 @@ public:
 
   bool next(store::Item_t& item);
 
+  bool skip(int64_t count);
+
   void reset();
 
   void close();
@@ -104,6 +106,8 @@ public:
   void checkDepth(const QueryLoc& loc);
 
   dynamic_context* dctx() { return theDynamicContext; }
+
+  void profile() const;
 
 #ifndef NDEBUG
   virtual std::string toString() const;

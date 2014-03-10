@@ -45,34 +45,49 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
+DEF_GET_NAME_AS_STRING(FnBooleanIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(OrIterator)
+DEF_GET_NAME_AS_STRING(OrIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(AndIterator)
+DEF_GET_NAME_AS_STRING(AndIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
+DEF_GET_NAME_AS_STRING(CompareIterator)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
                                TypedValueCompareIterator<store::XS_DOUBLE>,
                                1)
+template<>
+DEF_GET_NAME_AS_STRING(TypedValueCompareIterator<store::XS_DOUBLE>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
                                TypedValueCompareIterator<store::XS_FLOAT>,
                                2)
+template<>
+DEF_GET_NAME_AS_STRING(TypedValueCompareIterator<store::XS_FLOAT>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
                                TypedValueCompareIterator<store::XS_DECIMAL>,
                                3)
+template<>
+DEF_GET_NAME_AS_STRING(TypedValueCompareIterator<store::XS_DECIMAL>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
                                TypedValueCompareIterator<store::XS_INTEGER>,
                                4)
+template<>
+DEF_GET_NAME_AS_STRING(TypedValueCompareIterator<store::XS_INTEGER>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
                                TypedValueCompareIterator<store::XS_STRING>,
                                5)
+template<>
+DEF_GET_NAME_AS_STRING(TypedValueCompareIterator<store::XS_STRING>)
 
 SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
+DEF_GET_NAME_AS_STRING(AtomicValuesEquivalenceIterator)
 
 
 /*******************************************************************************
@@ -116,17 +131,10 @@ bool FnBooleanIterator::effectiveBooleanValue(
     // empty sequence => false
     result = negate ^ false;
   }
-  else if (item->isNode())
+  else if (item->isNode() || item->isJSONItem())
   {
     // node => true
     result = negate ^ true;
-  }
-  else if (item->isJSONItem())
-  {
-    xqtref_t type = tm->create_value_type(item);
-
-    RAISE_ERROR(err::FORG0006, loc,
-    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:boolean" ));
   }
   else
   {

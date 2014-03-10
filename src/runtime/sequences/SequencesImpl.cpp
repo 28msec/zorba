@@ -61,6 +61,7 @@ namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(FnMinMaxIterator)
 
 NARY_ACCEPT(FnMinMaxIterator);
+DEF_GET_NAME_AS_STRING(FnMinMaxIterator)
 
 
 /////////////////////////////////////////////////////////////////////////////////

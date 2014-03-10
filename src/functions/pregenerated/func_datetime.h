@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_DATETIME_H
 #define ZORBA_FUNCTIONS_DATETIME_H
 
@@ -46,6 +47,7 @@ public:
     : 
     function(sig, kind)
   {
+setDeterministic(false);
 
   }
 
@@ -61,6 +63,7 @@ public:
     : 
     function(sig, kind)
   {
+setDeterministic(false);
 
   }
 
@@ -76,6 +79,7 @@ public:
     : 
     function(sig, kind)
   {
+setDeterministic(false);
 
   }
 
@@ -151,6 +155,7 @@ public:
     : 
     function(sig, kind)
   {
+setDeterministic(false);
 
   }
 
@@ -166,6 +171,7 @@ public:
     : 
     function(sig, kind)
   {
+setDeterministic(false);
 
   }
 

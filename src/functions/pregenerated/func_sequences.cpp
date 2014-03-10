@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/sequences/sequences.h"
 #include "functions/func_sequences.h"
@@ -307,7 +308,7 @@ void populate_context_sequences(static_context* sctx)
       {
     std::vector<xqtref_t> lParamTypes;
     lParamTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);DECL_WITH_KIND(sctx, op_concatenate,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","concatenate"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","concatenate"), 
         lParamTypes, GENV_TYPESYSTEM.ITEM_TYPE_STAR, true),
         FunctionConsts::OP_CONCATENATE_N);
 
@@ -460,7 +461,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_subsequence_int,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","subsequence-int"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","subsequence-int"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR),
@@ -473,7 +474,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_subsequence_int,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","subsequence-int"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","subsequence-int"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
@@ -487,7 +488,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_sequence_point_access,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","sequence-point-access"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","sequence-point-access"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
@@ -600,7 +601,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_sum_double,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_double"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","sum_double"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_STAR, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
         FunctionConsts::OP_SUM_DOUBLE_1);
@@ -612,7 +613,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_sum_double,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_double"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","sum_double"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION),
@@ -625,7 +626,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_sum_float,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_float"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","sum_float"), 
         GENV_TYPESYSTEM.FLOAT_TYPE_STAR, 
         GENV_TYPESYSTEM.FLOAT_TYPE_ONE),
         FunctionConsts::OP_SUM_FLOAT_1);
@@ -637,7 +638,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_sum_float,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_float"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","sum_float"), 
         GENV_TYPESYSTEM.FLOAT_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION),
@@ -650,7 +651,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_sum_decimal,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_decimal"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","sum_decimal"), 
         GENV_TYPESYSTEM.DECIMAL_TYPE_STAR, 
         GENV_TYPESYSTEM.DECIMAL_TYPE_ONE),
         FunctionConsts::OP_SUM_DECIMAL_1);
@@ -662,7 +663,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_sum_decimal,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_decimal"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","sum_decimal"), 
         GENV_TYPESYSTEM.DECIMAL_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION),
@@ -675,7 +676,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_sum_integer,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_integer"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","sum_integer"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_STAR, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
         FunctionConsts::OP_SUM_INTEGER_1);
@@ -687,7 +688,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_sum_integer,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","sum_integer"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","sum_integer"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION),
@@ -700,7 +701,7 @@ void populate_context_sequences(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_to,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","to"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","to"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
         GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
         GENV_TYPESYSTEM.INTEGER_TYPE_STAR),

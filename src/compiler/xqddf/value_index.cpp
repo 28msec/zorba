@@ -403,7 +403,7 @@ void IndexDecl::analyzeExprInternal(
 
     if (func->isSource())
     {
-      if (func->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
+      if (func->getKind() == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1)
       {
         const expr* argExpr = foExpr->get_arg(0);
 
@@ -569,7 +569,7 @@ flwor_expr* IndexDecl::getViewExpr(std::vector<let_clause*>*& keyClauses)
 
     expr* keyClone = theKeyExprs[i]->clone(udf, subst);
 
-    keyClone->setNonDiscardable(ANNOTATION_TRUE_FIXED);
+    keyClone->set_scripting_detail(SEQUENTIAL_FUNC_EXPR);
 
     const QueryLoc& keyloc = keyClone->get_loc();
 

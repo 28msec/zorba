@@ -17,15 +17,18 @@
 #ifndef ZORBA_RUNTIME_PRINTER_VISITOR_API_H
 #define ZORBA_RUNTIME_PRINTER_VISITOR_API_H
 
-namespace zorba
-{
+namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
 
 class PlanIterator;
+class PlanState;
 class IterPrinter;
 
-void print_iter_plan(IterPrinter& aPrinter, PlanIterator* aIter);
+void print_iter_plan( IterPrinter&, PlanIterator*, PlanState* = 0 );
 
-} /* namespace zorba */
+///////////////////////////////////////////////////////////////////////////////
 
-#endif
+} // namespace zorba
+#endif /* ZORBA_RUNTIME_PRINTER_VISITOR_API_H */
 /* vim:set et sw=2 ts=2: */

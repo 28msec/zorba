@@ -1,0 +1,11 @@
+{
+  "$namespace" : "http://www.example.com/tiny-int",
+  "$types" : [
+    {
+      "$name" : "tiny-int",
+      "$kind" : "atomic",
+      "$baseType" : "integer",
+      "$maxInclusive" : 5
+    }
+  ]
+}

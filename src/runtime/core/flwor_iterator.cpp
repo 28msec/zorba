@@ -35,6 +35,7 @@
 #include "store/api/store.h"
 #include "store/api/pul.h"
 #include "store/api/item_factory.h"
+#include <zorba/internal/unique_ptr.h>
 
 
 #ifndef WIN32
@@ -1482,7 +1483,7 @@ void FLWORIterator::materializeGroupTuple(
 {
   ZORBA_ASSERT(theGroupByClause);
 
-  std::auto_ptr<GroupTuple> groupTuple(new GroupTuple());
+  std::unique_ptr<GroupTuple> groupTuple(new GroupTuple());
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
 
   std::vector<GroupingSpec> groupSpecs = theGroupByClause->theGroupingSpecs;
@@ -1534,7 +1535,8 @@ void FLWORIterator::materializeGroupTuple(
       nongroupingSpecs[i].reset(planState);
     }
 
-    groupMap->insert(groupTuple.release(), nongroupVarSequences);
+    groupMap->insert(groupTuple.get(), nongroupVarSequences);
+    groupTuple.release();
   }
 }
 
@@ -1799,6 +1801,11 @@ void FLWORIterator::closeImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
+zstring FLWORIterator::getNameAsString() const {
+  return "FLWORIterator";
+}
+
+
 uint32_t FLWORIterator::getStateSize() const  
 {
   return sizeof(FlworState); 

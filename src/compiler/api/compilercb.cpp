@@ -25,7 +25,7 @@
 
 #include "context/static_context.h"
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -39,13 +39,12 @@ SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
 SERIALIZABLE_CLASS_VERSIONS_2(CompilerCB::config, TYPE_CompilerCB_config)
 
 
-#define DEF_PRINT_EXPR_TREE( phase )                                    \
-static void print_expr_tree_##phase(const expr* e, const std::string& name) \
-{                                                                       \
-  std::ostream& os = Properties::instance()->debug_out();               \
-  os << "Expression tree after " << #phase                              \
-     << " for " << name << "\n";                                        \
-  e->put(os) << std::endl;                                              \
+#define DEF_PRINT_EXPR_TREE( phase )                          \
+static void print_expr_tree_##phase(const expr* e, const std::string& name) { \
+  std::ostream& os = Properties::instance().getDebugStream(); \
+  os << "Expression tree after " << #phase                    \
+     << " for " << name << "\n";                              \
+  e->put(os) << std::endl;                                    \
 }
 
 
@@ -66,15 +65,15 @@ CompilerCB::config::config()
   translate_cb = optimize_cb = NULL;
 
   // TODO: move these out
-  print_item_flow = Properties::instance()->printItemFlow();
+  print_item_flow = Properties::instance().getPrintItemFlow();
 
-  if (Properties::instance()->printTranslated())
+  if (Properties::instance().getPrintTranslated())
     translate_cb = print_expr_tree_translation;
 
-  if (Properties::instance()->printOptimized())
+  if (Properties::instance().getPrintOptimized())
     optimize_cb = print_expr_tree_optimization;
 
-  force_gflwor = Properties::instance()->forceGflwor();
+  force_gflwor = Properties::instance().getForceGFLWOR();
 }
 
 
@@ -186,7 +185,6 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 CompilerCB::~CompilerCB()
 {
   delete theEM;
-  theSctxMap.clear();
 }
 
 

@@ -109,6 +109,11 @@ void ForIterator::accept(PlanIterVisitor& v) const
 }
 
 
+zstring ForIterator::getNameAsString() const {
+  return "ForIterator";
+}
+
+
 bool ForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
 {
   ForState* lState;

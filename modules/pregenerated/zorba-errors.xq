@@ -1,3 +1,5 @@
+xquery version '1.0';
+
 (:
  : Copyright 2006-2013 The FLWOR Foundation.
  :
@@ -21,21 +23,20 @@
 
 (:~
  : This module contains one variable declaration for each diagnostic of the
- : http://zorba.io/modules/zorba-errors namespace.
+ : http://zorba.io/errors namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
  : the variables.
  :
  : @author Carlos Lopez
+ : @project Zorba/Zorba Error Codes
  :
  :)
 
-xquery version '1.0';
+module namespace zerr = 'http://zorba.io/errors';
 
-module namespace zerr = 'http://zorba.io/modules/zorba-errors';
-
-declare variable $zerr:NS := 'http://zorba.io/modules/zorba-errors';
+declare variable $zerr:NS := 'http://zorba.io/errors';
 
 (:~
  :
@@ -602,6 +603,18 @@ declare variable $zerr:ZDDY0040 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0040
 
 (:~
 :)
+declare variable $zerr:ZDDY0041 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0041");
+
+(:~
+:)
+declare variable $zerr:ZDDY0042 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0042");
+
+(:~
+:)
+declare variable $zerr:ZDDY0043 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0043");
+
+(:~
+:)
 declare variable $zerr:ZDST0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZDST0001");
 
 (:~
@@ -889,26 +902,6 @@ declare variable $zerr:XSST0010 as xs:QName := fn:QName($zerr:NS, "zerr:XSST0010
 
 (:~
 :)
-declare variable $zerr:ZDTP0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0001");
-
-(:~
-:)
-declare variable $zerr:ZDTP0002 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0002");
-
-(:~
-:)
-declare variable $zerr:ZDTP0003 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0003");
-
-(:~
-:)
-declare variable $zerr:ZDTP0004 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0004");
-
-(:~
-:)
-declare variable $zerr:ZDTP0005 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0005");
-
-(:~
-:)
 declare variable $zerr:ZJPE0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZJPE0001");
 
 (:~
@@ -965,14 +958,6 @@ declare variable $zerr:ZJSE0004 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0004
 
 (:~
 :)
-declare variable $zerr:ZJSE0005 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0005");
-
-(:~
-:)
-declare variable $zerr:ZJSE0006 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0006");
-
-(:~
-:)
 declare variable $zerr:ZJSE0007 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0007");
 
 (:~
@@ -980,16 +965,13 @@ declare variable $zerr:ZJSE0007 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0007
 declare variable $zerr:ZJSE0008 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0008");
 
 (:~
- :If the opaque-part section of the URI was specified in conjuction with other non-opaque parts.
 :)
-declare variable $zerr:ZURI0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZURI0001");
+declare variable $zerr:ZJSE0009 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0009");
 
 (:~
- :If an opaque-part section was specified without a scheme section.
 :)
-declare variable $zerr:ZURI0002 as xs:QName := fn:QName($zerr:NS, "zerr:ZURI0002");
+declare variable $zerr:ZJ2X0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZJ2X0001");
 
 (:~
- :If an absolute URI is specified with a path that does not start with slash ("/").
 :)
-declare variable $zerr:ZURI0003 as xs:QName := fn:QName($zerr:NS, "zerr:ZURI0003");
+declare variable $zerr:ZJ2X0002 as xs:QName := fn:QName($zerr:NS, "zerr:ZJ2X0002");

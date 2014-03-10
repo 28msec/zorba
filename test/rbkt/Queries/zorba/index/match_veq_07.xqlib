@@ -1,21 +1,21 @@
 module namespace x = "www.xmark.com";
 
 import module namespace ddl = 
-"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+  "http://zorba.io/modules/store/static/collections/ddl";
 
 import module namespace dml = 
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  "http://zorba.io/modules/store/static/collections/dml";
 
 import module namespace iddl = 
-"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+  "http://zorba.io/modules/store/static/indexes/ddl";
 
 import module namespace idml = 
-"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+  "http://zorba.io/modules/store/static/indexes/dml";
 
 import module namespace doc = 
-"http://www.zorba-xquery.com/modules/store/dynamic/documents";
+  "http://zorba.io/modules/store/documents";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 
 declare collection x:auctions;

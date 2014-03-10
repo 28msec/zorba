@@ -22,16 +22,18 @@
 #include <algorithm>
 #include "zorbatypes/schema_types.h"
 
-#include <zorba/diagnostic_handler.h>
-#include <zorba/error.h>
-#include <zorba/diagnostic_list.h>
-#include <zorba/sax2.h>
 #include <zorba/audit_scoped.h>
+#include <zorba/diagnostic_handler.h>
+#include <zorba/diagnostic_list.h>
+#include <zorba/error.h>
+#include <zorba/internal/unique_ptr.h>
 #include <zorba/module_info.h>
+#include <zorba/properties.h>
+#include <zorba/sax2.h>
 
-#include <zorbatypes/URI.h>
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "zorbatypes/URI.h"
 #include "zorbatypes/zstring.h"
 #include "zorbautils/lock.h"
 
@@ -39,7 +41,7 @@
 
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
-#include "api/resultiteratorimpl.h"
+#include "api/item_iter_query_result.h"
 #include "api/unmarshaller.h"
 #include "api/serialization/serializer.h"
 #include "api/serialization/serializable.h"
@@ -47,7 +49,7 @@
 #include "api/serializerimpl.h"
 #include "api/auditimpl.h"
 #include "api/staticcollectionmanagerimpl.h"
-#include "api/vectoriterator.h"
+#include "api/item_iter_vector.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -152,7 +154,6 @@ XQueryImpl::XQueryImpl()
 #ifdef ZORBA_WITH_DEBUGGER
   theIsDebugMode(false),
 #endif
-  theProfileName("xquery_profile.out"),
   theCollMgr(0)
 {
   // TODO ideally, we will have to move the error handler into the error manager
@@ -291,28 +292,6 @@ bool XQueryImpl::isDebugMode() const
   return theIsDebugMode;
 }
 #endif
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XQueryImpl::setProfileName(std::string aProfileName)
-{
-  SYNC_CODE(AutoMutex lock(&theMutex);)
-
-#ifdef ZORBA_WITH_DEBUGGER
-  checkIsDebugMode();
-#endif
-  theProfileName = aProfileName;
-}
-
-
-std::string XQueryImpl::getProfileName() const
-{
-  SYNC_CODE(AutoMutex lock(&theMutex);)
-
-  return theProfileName;
-}
 
 
 /*******************************************************************************
@@ -738,6 +717,17 @@ XQuery_t XQueryImpl::clone() const
 
 /*******************************************************************************
 
+ ******************************************************************************/
+
+void XQueryImpl::dispose( PlanWrapper_t const &plan ) {
+  theExecuting = false;
+  if ( Properties::instance().getProfile() )
+    plan->profile();
+  plan->close();
+}
+
+/*******************************************************************************
+
 ********************************************************************************/
 StaticCollectionManager*
 XQueryImpl::getStaticCollectionManager() const
@@ -758,7 +748,7 @@ XQueryImpl::getStaticCollectionManager() const
     {
       // this object is only need to construct the StaticCollectionManagerImpl
       // but it's not used after the construction anymore
-      std::auto_ptr<StaticContextImpl> lCtx(
+      std::unique_ptr<StaticContextImpl> lCtx(
       new StaticContextImpl(lIter->second.getp(), theDiagnosticHandler));
 
       lMgrs.push_back(new StaticCollectionManagerImpl(lCtx.get(),
@@ -1106,13 +1096,11 @@ void XQueryImpl::executeSAX()
     }
     catch (...)
     {
-      lPlan->close();
-      theExecuting = false;
+      dispose( lPlan );
       throw;
     }
 
-    lPlan->close();
-    theExecuting = false;
+    dispose( lPlan );
 
     theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
     theDocLoadingTime = theDynamicContext->theDocLoadingTime;
@@ -1150,13 +1138,11 @@ void XQueryImpl::execute(
     }
     catch (...)
     {
-      lPlan->close();
-      theExecuting = false;
+      dispose( lPlan );
       throw;
     }
 
-    lPlan->close();
-    theExecuting = false;
+    dispose( lPlan );
 
     theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
     theDocLoadingTime = theDynamicContext->theDocLoadingTime;
@@ -1196,13 +1182,11 @@ void XQueryImpl::execute(
     }
     catch (...)
     {
-      lPlan->close();
-      theExecuting = false;
+      dispose( lPlan );
       throw;
     }
 
-    lPlan->close();
-    theExecuting = false;
+    dispose( lPlan );
 
     theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
     theDocLoadingTime = theDynamicContext->theDocLoadingTime;
@@ -1245,13 +1229,11 @@ void XQueryImpl::execute()
     }
     catch (...)
     {
-      lPlan->close();
-      theExecuting = false;
+      dispose( lPlan );
       throw;
     }
 
-    lPlan->close();
-    theExecuting = false;
+    dispose( lPlan );
 
     theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
     theDocLoadingTime = theDynamicContext->theDocLoadingTime;
@@ -1569,7 +1551,7 @@ void XQueryImpl::printPlan(std::ostream& aStream, bool aDotFormat) const
     checkNotClosed();
     checkCompiled();
 
-    std::auto_ptr<IterPrinter> lPrinter;
+    std::unique_ptr<IterPrinter> lPrinter;
     if (aDotFormat)
       lPrinter.reset(new DOTIterPrinter(aStream));
     else
@@ -1641,6 +1623,39 @@ void XQueryImpl::parse(std::istream& aQuery, ModuleInfo_t& aResult)
 
     XQueryCompiler lCompiler(theCompilerCB);
     aResult = lCompiler.parseInfo(aQuery, theFileName);
+  }
+  QUERY_CATCH
+}
+
+/*******************************************************************************
+ Prints a query plan.
+********************************************************************************/
+void XQueryImpl::printPlan(std::ostream& aStream, Zorba_plan_format_t format) const
+{
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
+  try
+  {
+    checkNotClosed();
+    checkCompiled();
+
+    std::auto_ptr<IterPrinter> lPrinter;
+    switch (format)
+    {
+      case PLAN_FORMAT_NONE:
+        return;
+      case PLAN_FORMAT_XML:
+        lPrinter.reset(new XMLIterPrinter(aStream));
+        break;
+      case PLAN_FORMAT_JSON:
+        lPrinter.reset(new JSONIterPrinter(aStream));
+        break;
+      case PLAN_FORMAT_DOT:
+        lPrinter.reset(new DOTIterPrinter(aStream));
+        break;
+    }
+    print_iter_plan(*(lPrinter.get()),
+        static_cast<PlanIterator*>(thePlanProxy->theRootIter.getp()));
   }
   QUERY_CATCH
 }

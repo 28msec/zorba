@@ -15,10 +15,10 @@
  */
 #include "stdafx.h"
 
+# include <cstdlib>                     /* for getenv(3), _dupenv_s() */
 #ifndef WIN32
 # include <climits>                     /* for PATH_MAX */
 # include <cstdio>
-# include <cstdlib>                     /* for getenv(3) */
 # include <fcntl.h>                     /* for creat(2) */
 # include <sys/stat.h>
 # include <sys/types.h>
@@ -44,14 +44,21 @@ namespace fs {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char const *const type_string[] = {
-  "non_existant",
-  "directory",
-  "file",
-  "link",
-  "volume",
-  "other"
-};
+ostream& operator<<( ostream &o, type t ) {
+  static char const *const string_of[] = {
+    "non_existant",
+    "directory",
+    "file",
+    "link",
+    "volume",
+    "other"
+  };
+  if ( t >= 0 && t <= other )
+    o << string_of[ t ];
+  else
+    o << "<invalid fs::type " << (int)t << '>';
+  return o;
+}
 
 ////////// helper functions ///////////////////////////////////////////////////
 
@@ -136,7 +143,7 @@ replace_foreign( PathStringType *path ) {
 }
 
 static bool parse_file_uri( char const *uri, string *result ) {
-  if ( !ascii::begins_with( uri, "file://" ) )
+  if ( !ZA_BEGINS_WITH( uri, "file://" ) )
     return false;
 
   using namespace diagnostic;
@@ -274,6 +281,20 @@ void create( char const *path ) {
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
+string configdir() {
+#if defined( WINCE )
+  return "";
+#elif defined( WIN32 )
+  char *buf;
+  if ( _dupenv_s( &buf, nullptr, "APPDATA" ) != 0 ) {
+    throw ZORBA_IO_EXCEPTION( "_dupenv_s()", "" );
+  unique_ptr<char[]> const buf_ptr( buf );
+  return buf;
+#else
+  return getenv( "HOME" );
+#endif
+}
+
 string curdir() {
 #ifndef WIN32
   static size_t dir_buf_len = PATH_MAX;
@@ -298,7 +319,7 @@ string curdir() {
   win32::wtoa( wpath, path, MAX_PATH );
   string dir( path );
   if ( !is_absolute( dir ) ) {
-    // GetCurrentDirectory() sometimes misses drive letter.
+    // GetCurrentDirectory() sometimes misses the drive letter.
     make_absolute( &dir );
   }
   return dir;

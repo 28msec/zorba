@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_NODES_NODE_POSITION_H
 #define ZORBA_RUNTIME_NODES_NODE_POSITION_H
 
@@ -57,6 +58,8 @@ public:
 
   virtual ~NodePositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -86,6 +89,8 @@ public:
   {}
 
   virtual ~IsAncestorPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -117,6 +122,8 @@ public:
 
   virtual ~IsFollowingSiblingPositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -146,6 +153,8 @@ public:
   {}
 
   virtual ~IsFollowingPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -177,6 +186,8 @@ public:
 
   virtual ~IsInSubtreeOfPositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -206,6 +217,8 @@ public:
   {}
 
   virtual ~IsDescendantPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -237,6 +250,8 @@ public:
 
   virtual ~IsPrecedingSiblingPositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -266,6 +281,8 @@ public:
   {}
 
   virtual ~IsPrecedingPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -297,6 +314,8 @@ public:
 
   virtual ~IsChildPositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -326,6 +345,8 @@ public:
   {}
 
   virtual ~IsAttributeOfPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -357,6 +378,8 @@ public:
 
   virtual ~IsParentPositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -386,6 +409,8 @@ public:
   {}
 
   virtual ~IsPrecedingInDocumentOrderPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -417,6 +442,8 @@ public:
 
   virtual ~IsFollowingInDocumentOrderPositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -446,6 +473,8 @@ public:
   {}
 
   virtual ~LevelPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -477,6 +506,8 @@ public:
 
   virtual ~IsAttributePositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -506,6 +537,8 @@ public:
   {}
 
   virtual ~IsCommentPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -537,6 +570,8 @@ public:
 
   virtual ~IsDocumentPositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -566,6 +601,8 @@ public:
   {}
 
   virtual ~IsElementPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -597,6 +634,8 @@ public:
 
   virtual ~IsProcessingInstructionPositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -626,6 +665,8 @@ public:
   {}
 
   virtual ~IsTextPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -657,6 +698,8 @@ public:
 
   virtual ~IsSiblingPositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -686,6 +729,8 @@ public:
   {}
 
   virtual ~InSameTreePositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -717,6 +762,8 @@ public:
 
   virtual ~InCollectionPositionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -746,6 +793,8 @@ public:
   {}
 
   virtual ~InSameCollectionPositionIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

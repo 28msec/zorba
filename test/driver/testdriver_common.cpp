@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <iostream>
 
-#include <zorbatypes/URI.h>
-#include <zorba/static_context_consts.h>
+#include <zorba/diagnostic_list.h>
 #include <zorba/iterator.h>
-#include <zorba/xmldatamanager.h>
+#include <zorba/properties.h>
+#include <zorba/static_context_consts.h>
 #include <zorba/store_consts.h>
-#include <util/string_util.h>
-#include <util/ascii_util.h>
+#include <zorbatypes/URI.h>
+#include <zorba/xmldatamanager.h>
+
+#include "util/ascii_util.h"
+#include "util/string_util.h"
+
 #include "testdriverconfig.h"
 #include "testdriver_common.h"
 #include "specification.h"
-#include "system/properties.h"
 
 static void set_var(
     DriverContext& driverCtx,
@@ -41,6 +45,18 @@ static void set_vars(
     zorba::DynamicContext* dctx,
     const zorba::StaticContext* sctx,
     bool enableDtd);
+
+
+/*******************************************************************************
+
+********************************************************************************/
+DriverContext::DriverContext(zorba::Zorba* zorba)
+  :
+  theEngine(zorba),
+  theSpec(NULL)
+{
+  theXmlDataMgr = theEngine->getXmlDataManager();
+}
 
 
 /*******************************************************************************
@@ -92,6 +108,7 @@ void slurp_file (
   delete [] str;
 }
 
+
 /*******************************************************************************
   Check if an error that was repored was expected by the given spec object.
 ********************************************************************************/
@@ -114,10 +131,15 @@ bool isErrorExpected(const TestDiagnosticHandler& errHandler, const Specificatio
   return false;
 }
 
+
 /*******************************************************************************
   Print all errors that were raised
 ********************************************************************************/
-void printErrors(const TestDiagnosticHandler& errHandler, const char* msg, bool printInFile, std::ostream& output)
+void printErrors(
+    const TestDiagnosticHandler& errHandler,
+    const char* msg,
+    bool printInFile,
+    std::ostream& output)
 {
   if (!errHandler.errors())
   {
@@ -190,10 +212,10 @@ Zorba_CompilerHints getCompilerHints()
 
   lHints.for_serialization_only = false;
 
-  if (zorba::Properties::instance()->serializeOnlyQuery() > 0)
-  {
+#if 0
+  if ( zorba::Properties::instance().getSerializeOnlyQuery() )
     lHints.for_serialization_only = true;
-  }
+#endif
 
   return lHints;
 }
@@ -403,16 +425,10 @@ void set_var(
     std::cout << "Load xml " << val << std::endl;
 #endif
 
-    zorba::XmlDataManager* lXmlMgr =
-    zorba::Zorba::getInstance(NULL)->getXmlDataManager();
-
-    zorba::DocumentManager* lDocMgr = lXmlMgr->getDocumentManager();
+    zorba::DocumentManager* lDocMgr = driverCtx.theXmlDataMgr->getDocumentManager();
 
     zorba::Item lDoc;
-    if (lDocMgr->isAvailableDocument(val)) 
-    {
-      lDocMgr->remove(val);
-    }
+    zorba::Item lValidatedDoc;
 
     {
       const char* val_fname = val.c_str();
@@ -432,7 +448,8 @@ void set_var(
 #else
       std::string file_scheme = "file:///";
 #endif
-      zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(ifile, file_scheme + val, lOptions);
+      zorba::ItemSequence_t lSeq =
+      driverCtx.theXmlDataMgr->parseXML(ifile, file_scheme + val, lOptions);
 
       zorba::Iterator_t lIter = lSeq->getIterator();
       lIter->open();
@@ -440,21 +457,52 @@ void set_var(
       lIter->close();
 
       assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
-      zorba::Item lValidatedDoc;
-      zorba::validation_mode_t validationMode = enableDtd ? zorba::validate_lax_dtd :
-                                                     zorba::validate_lax;
+
+      zorba::validation_mode_t validationMode =
+      (enableDtd ? zorba::validate_lax_dtd : zorba::validate_lax);
+
       sctx->validate(lDoc, lValidatedDoc, validationMode);
 
-      lDocMgr->put(val, lValidatedDoc);
-      lDoc = lDocMgr->document(val);
+      bool done;
+
+      do
+      {
+        done = true;
+
+        try
+        {
+          lDocMgr->put(val, lValidatedDoc);
+        }
+        catch (const zorba::ZorbaException& e)
+        {
+          if (e.diagnostic() != zorba::zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
+            throw;
+
+          // The doc exists already. Remove it and try again, because the current
+          // versionmay bea validated doc whereas the existing version may not be.
+          try
+          {
+            lDocMgr->remove(val);
+          }
+          catch (const zorba::ZorbaException& e)
+          {
+            if (e.diagnostic() != zorba::zerr::ZXQD0002_DOCUMENT_NOT_VALID)
+              throw;
+          }
+
+          done = false;
+        }
+      }
+      while (!done);
     }
-    if(name != ".")
+
+    if (name != ".")
     {
-      dctx->setVariable(name, lDoc);
+      dctx->setVariable(name, lValidatedDoc);
     }
     else
     {
-      dctx->setContextItem(lDoc);
+      dctx->setContextItem(lValidatedDoc);
     }
   }
 }
@@ -479,7 +527,7 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
   if ( spec.getEnableDtd() )
   {
     zorba::Item lQName = driverCtx.theEngine->getItemFactory()->
-    createQName("http://www.zorba-xquery.com/options/features", "", "enable");
+    createQName("http://zorba.io/options/features", "", "enable");
 
     sctx->declareOption(lQName, "dtd");
   }

@@ -239,7 +239,6 @@ private:
   column_type column_end_;
 
   friend bool operator==( location const&, location const& );
-  friend bool operator!=( location const&, location const& );
 
   // for plan serialization
   friend void serialization::operator&( serialization::Archiver&, location& );

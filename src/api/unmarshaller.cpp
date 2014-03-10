@@ -22,7 +22,7 @@
 #include <zorba/iterator.h>
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
-#include "api/storeiteratorimpl.h"
+#include "api/item_iter_store.h"
 #include "api/collectionimpl.h"
 #include "store/api/collection.h"
 
@@ -76,6 +76,18 @@ public:
 store::Item* Unmarshaller::getInternalItem(const Item& aItem)
 {
   return aItem.m_item;
+}
+
+
+const XQType* Unmarshaller::getInternalType(const SequenceType& type)
+{
+  return type.theType;
+}
+
+
+SequenceType Unmarshaller::createSequenceType(const XQType* type)
+{
+  return type;
 }
 
 

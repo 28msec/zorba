@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_NODES_NODES_H
 #define ZORBA_RUNTIME_NODES_NODES_H
 
@@ -32,134 +33,6 @@
 
 
 namespace zorba {
-
-/**
- *        
- *      declare function ref:node-reference($node as node()) as xs:anyURI
- *    
- * Author: Federico Cavalieri
- */
-class NodeReferenceIterator : public NaryBaseIterator<NodeReferenceIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(NodeReferenceIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeReferenceIterator,
-    NaryBaseIterator<NodeReferenceIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  NodeReferenceIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<NodeReferenceIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~NodeReferenceIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      declare function ref:has-node-reference($node as node()) as xs:boolean
- *    
- * Author: Till Westmann
- */
-class HasNodeReferenceIterator : public NaryBaseIterator<HasNodeReferenceIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(HasNodeReferenceIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(HasNodeReferenceIterator,
-    NaryBaseIterator<HasNodeReferenceIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  HasNodeReferenceIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<HasNodeReferenceIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~HasNodeReferenceIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      declare function ref:assign-node-reference($node as node()) as xs:boolean
- *    
- * Author: Till Westmann
- */
-class AssignNodeReferenceIterator : public NaryBaseIterator<AssignNodeReferenceIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(AssignNodeReferenceIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AssignNodeReferenceIterator,
-    NaryBaseIterator<AssignNodeReferenceIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  AssignNodeReferenceIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<AssignNodeReferenceIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~AssignNodeReferenceIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      declare function ref:node-by-reference($reference as xs:anyURI) as node()?
- *    
- * Author: Federico Cavalieri
- */
-class NodeByReferenceIterator : public NaryBaseIterator<NodeByReferenceIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(NodeByReferenceIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeByReferenceIterator,
-    NaryBaseIterator<NodeByReferenceIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  NodeByReferenceIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<NodeByReferenceIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~NodeByReferenceIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
 
 /**
  * 
@@ -186,6 +59,8 @@ public:
   {}
 
   virtual ~FnLocalNameIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -219,6 +94,8 @@ public:
 
   virtual ~FnNamespaceUriIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -250,6 +127,8 @@ public:
   {}
 
   virtual ~FnLangIterator();
+
+  zstring getNameAsString() const;
 
 public:
   bool isLangAttr(const store::Item_t& aAttr) const;
@@ -283,6 +162,8 @@ public:
   {}
 
   virtual ~FnHasChildrenIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -328,6 +209,8 @@ public:
 
   virtual ~FnInnermostIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -372,6 +255,8 @@ public:
 
   virtual ~FnOutermostIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -401,6 +286,8 @@ public:
   {}
 
   virtual ~FnGenerateIdIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -432,6 +319,8 @@ public:
 
   virtual ~IsAncestorIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -461,6 +350,8 @@ public:
   {}
 
   virtual ~IsDescendantIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -492,6 +383,8 @@ public:
 
   virtual ~IsParentIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -521,6 +414,8 @@ public:
   {}
 
   virtual ~IsChildIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -552,6 +447,8 @@ public:
 
   virtual ~IsFollowingIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -581,6 +478,8 @@ public:
   {}
 
   virtual ~IsPrecedingIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -612,6 +511,8 @@ public:
 
   virtual ~IsFollowingSiblingIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -641,6 +542,8 @@ public:
   {}
 
   virtual ~IsPrecedingSiblingIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -672,6 +575,8 @@ public:
 
   virtual ~LevelIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -701,6 +606,8 @@ public:
   {}
 
   virtual ~LeastCommonAncestor();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -732,6 +639,8 @@ public:
 
   virtual ~FnPathIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -761,6 +670,8 @@ public:
   {}
 
   virtual ~NodeCopyIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

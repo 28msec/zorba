@@ -49,9 +49,9 @@ namespace zorba {
   theNS:
   ------
   One of the following:
-  http://www.zorba-xquery.com/modules/store/dynamic/collections/dml, or
-  http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml, or
-  http://www.zorba-xquery.com/modules/store/static/collections/dml
+  http://zorba.io/modules/store/dynamic/collections/dml, or
+  http://zorba.io/modules/store/dynamic/collections/w3c/dml, or
+  http://zorba.io/modules/store/static/collections/dml
 
   theDiagnosticHandler:
   ---------------------
@@ -135,7 +135,7 @@ protected:
   virtual bool
   isStatic() const;
 
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getType() const;
   
 }; /* class CollectionImpl */

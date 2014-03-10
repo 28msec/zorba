@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/collections/collections.h"
 #include "functions/func_collections.h"
@@ -46,7 +47,7 @@ PlanIter_t fn_collection::codegen(
 }
 
 
-PlanIter_t static_collections_dml_collection_name::codegen(
+PlanIter_t zorba_store_static_collections_dml_collection_name::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -92,7 +93,7 @@ PlanIter_t zorba_store_indexes_static_ddl_available_indexes::codegen(
   return new AvailableIndexesIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_integrity_constraints_static_ddl_is_activated_integrity_constraint::codegen(
+PlanIter_t zorba_store_static_integrity_constraints_ddl_is_activated_integrity_constraint::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -102,7 +103,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_is_activated_integrity_c
   return new IsActivatedICIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_integrity_constraints_static_ddl_activated_integrity_constraints::codegen(
+PlanIter_t zorba_store_static_integrity_constraints_ddl_activated_integrity_constraints::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -112,7 +113,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_activated_integrity_cons
   return new ActivatedICsIterator(sctx, loc, argv);
 }
 
-PlanIter_t static_collections_ddl_is_declared_collection::codegen(
+PlanIter_t zorba_store_static_collections_ddl_is_declared_collection::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -122,7 +123,7 @@ PlanIter_t static_collections_ddl_is_declared_collection::codegen(
   return new IsDeclaredCollectionIterator(sctx, loc, argv);
 }
 
-PlanIter_t static_collections_ddl_declared_collections::codegen(
+PlanIter_t zorba_store_static_collections_ddl_declared_collections::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -152,7 +153,7 @@ PlanIter_t zorba_store_indexes_static_ddl_declared_indexes::codegen(
   return new DeclaredIndexesIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_integrity_constraints_static_ddl_is_declared_integrity_constraint::codegen(
+PlanIter_t zorba_store_static_integrity_constraints_ddl_is_declared_integrity_constraint::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -162,7 +163,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_is_declared_integrity_co
   return new IsDeclaredICIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_integrity_constraints_static_ddl_declared_integrity_constraints::codegen(
+PlanIter_t zorba_store_static_integrity_constraints_ddl_declared_integrity_constraints::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -187,11 +188,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_create,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","create"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_create,
+        (createQName("http://zorba.io/modules/store/static/collections/ddl","","create"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DDL_CREATE_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DDL_CREATE_1);
 
   }
 
@@ -199,12 +200,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_create,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","create"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_create,
+        (createQName("http://zorba.io/modules/store/static/collections/ddl","","create"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DDL_CREATE_2);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DDL_CREATE_2);
 
   }
 
@@ -212,11 +213,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_create,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","create"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_create,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/ddl","","create"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DDL_CREATE_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_CREATE_1);
 
   }
 
@@ -224,12 +225,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_create,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","create"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_create,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/ddl","","create"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DDL_CREATE_2);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_CREATE_2);
 
   }
 
@@ -237,11 +238,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_delete,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","delete"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_delete,
+        (createQName("http://zorba.io/modules/store/static/collections/ddl","","delete"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DDL_DELETE_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DDL_DELETE_1);
 
   }
 
@@ -249,11 +250,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_delete,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","delete"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_delete,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/ddl","","delete"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DDL_DELETE_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_DELETE_1);
 
   }
 
@@ -261,11 +262,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_is_available_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","is-available-collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_is_available_collection,
+        (createQName("http://zorba.io/modules/store/static/collections/ddl","","is-available-collection"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::STATIC_COLLECTIONS_DDL_IS_AVAILABLE_COLLECTION_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DDL_IS_AVAILABLE_COLLECTION_1);
 
   }
 
@@ -273,11 +274,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_is_available_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","is-available-collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_is_available_collection,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/ddl","","is-available-collection"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DDL_IS_AVAILABLE_COLLECTION_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_IS_AVAILABLE_COLLECTION_1);
 
   }
 
@@ -285,10 +286,10 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_available_collections,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","available-collections"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_available_collections,
+        (createQName("http://zorba.io/modules/store/static/collections/ddl","","available-collections"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DDL_AVAILABLE_COLLECTIONS_0);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DDL_AVAILABLE_COLLECTIONS_0);
 
   }
 
@@ -296,10 +297,10 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_available_collections,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","available-collections"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_available_collections,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/ddl","","available-collections"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DDL_AVAILABLE_COLLECTIONS_0);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_AVAILABLE_COLLECTIONS_0);
 
   }
 
@@ -330,11 +331,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_collection,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","collection"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
 
   }
 
@@ -342,12 +343,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_collection,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","collection"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_2);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_2);
 
   }
 
@@ -355,13 +356,13 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_collection,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","collection"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_3);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_3);
 
   }
 
@@ -369,11 +370,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_collection,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","collection"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_1);
 
   }
 
@@ -381,12 +382,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_collection,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","collection"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_2);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_2);
 
   }
 
@@ -394,13 +395,13 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_collection,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","collection"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_3);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_3);
 
   }
 
@@ -408,11 +409,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_collection_name,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","collection-name"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_collection_name,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","collection-name"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_NAME_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_NAME_1);
 
   }
 
@@ -420,11 +421,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_collection_name,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","collection-name"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_collection_name,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","collection-name"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_NAME_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_NAME_1);
 
   }
 
@@ -432,11 +433,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_index_of,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","index-of"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_index_of,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","index-of"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INDEX_OF_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_INDEX_OF_1);
 
   }
 
@@ -444,11 +445,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_index_of,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","index-of"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_index_of,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","index-of"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_INDEX_OF_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_INDEX_OF_1);
 
   }
 
@@ -456,25 +457,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","insert-nodes"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INSERT_NODES_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","insert"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_apply_insert,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","apply-insert"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INSERT_2);
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_APPLY_INSERT_2);
 
   }
 
@@ -482,145 +470,13 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","insert-nodes-first"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INSERT_NODES_FIRST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","insert-nodes-first"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_INSERT_NODES_FIRST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","insert-first"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INSERT_FIRST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","insert-first"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_INSERT_FIRST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","insert-nodes-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INSERT_NODES_LAST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","insert-nodes-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_INSERT_NODES_LAST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","insert-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INSERT_LAST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","insert-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_INSERT_LAST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_before,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","insert-nodes-before"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INSERT_NODES_BEFORE_3);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_before,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","insert-nodes-before"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_INSERT_NODES_BEFORE_3);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_before,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","insert-before"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_insert_after,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","insert-after"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INSERT_BEFORE_3);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_INSERT_AFTER_3);
 
   }
 
@@ -628,13 +484,13 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_before,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","insert-before"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_insert_after,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","insert-after"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_INSERT_BEFORE_3);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_INSERT_AFTER_3);
 
   }
 
@@ -642,41 +498,13 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_after,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","insert-nodes-after"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INSERT_NODES_AFTER_3);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_after,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","insert-nodes-after"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_INSERT_NODES_AFTER_3);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_after,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","insert-after"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_insert_before,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","insert-before"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_INSERT_AFTER_3);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_INSERT_BEFORE_3);
 
   }
 
@@ -684,13 +512,13 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_insert_nodes_after,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","insert-after"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_insert_before,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","insert-before"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_INSERT_AFTER_3);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_INSERT_BEFORE_3);
 
   }
 
@@ -698,12 +526,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","apply-insert-nodes"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_insert_first,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","insert-first"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_APPLY_INSERT_NODES_2);
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_INSERT_FIRST_2);
 
   }
 
@@ -711,12 +539,51 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","apply-insert"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_insert_first,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","insert-first"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_INSERT_FIRST_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_insert_last,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","insert-last"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_INSERT_LAST_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_insert_last,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","insert-last"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_INSERT_LAST_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_apply_insert_first,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","apply-insert-first"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_APPLY_INSERT_2);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_APPLY_INSERT_FIRST_2);
 
   }
 
@@ -724,38 +591,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","apply-insert-nodes-first"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_APPLY_INSERT_NODES_FIRST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","apply-insert-nodes-first"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_NODES_FIRST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","apply-insert-first"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_apply_insert_first,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","apply-insert-first"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_APPLY_INSERT_FIRST_2);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_FIRST_2);
 
   }
 
@@ -763,12 +604,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","apply-insert-first"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_apply_insert_last,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","apply-insert-last"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_FIRST_2);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_APPLY_INSERT_LAST_2);
 
   }
 
@@ -776,38 +617,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","apply-insert-nodes-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_APPLY_INSERT_NODES_LAST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","apply-insert-nodes-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_NODES_LAST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","apply-insert-last"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_apply_insert_last,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","apply-insert-last"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_APPLY_INSERT_LAST_2);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_LAST_2);
 
   }
 
@@ -815,54 +630,13 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","apply-insert-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_LAST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_before,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","apply-insert-nodes-before"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_APPLY_INSERT_NODES_BEFORE_3);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_before,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","apply-insert-nodes-before"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_NODES_BEFORE_3);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_before,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","apply-insert-before"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_apply_insert_before,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","apply-insert-before"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_APPLY_INSERT_BEFORE_3);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_APPLY_INSERT_BEFORE_3);
 
   }
 
@@ -870,13 +644,13 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_before,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","apply-insert-before"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_apply_insert_before,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","apply-insert-before"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_BEFORE_3);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_BEFORE_3);
 
   }
 
@@ -884,41 +658,13 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_after,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","apply-insert-nodes-after"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_APPLY_INSERT_NODES_AFTER_3);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_after,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","apply-insert-nodes-after"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_NODES_AFTER_3);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_after,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","apply-insert-after"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_apply_insert_after,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","apply-insert-after"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DML_APPLY_INSERT_AFTER_3);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_APPLY_INSERT_AFTER_3);
 
   }
 
@@ -926,13 +672,13 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_apply_insert_nodes_after,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","apply-insert-after"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_apply_insert_after,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","apply-insert-after"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_AFTER_3);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_APPLY_INSERT_AFTER_3);
 
   }
 
@@ -940,35 +686,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_nodes,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-nodes"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_NODES_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_nodes,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-nodes"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_NODES_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_nodes,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_delete,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","delete"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_DELETE_1);
 
   }
 
@@ -976,11 +698,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_nodes,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_delete,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","delete"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_DELETE_1);
 
   }
 
@@ -988,11 +710,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-node-first"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_delete_first,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","delete-first"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_NODE_FIRST_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_DELETE_FIRST_1);
 
   }
 
@@ -1000,12 +722,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-nodes-first"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_delete_first,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","delete-first"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_NODES_FIRST_2);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_DELETE_FIRST_2);
 
   }
 
@@ -1013,11 +735,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-node-first"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_delete_first,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","delete-first"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_NODE_FIRST_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_DELETE_FIRST_1);
 
   }
 
@@ -1025,37 +747,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-nodes-first"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_NODES_FIRST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-first"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_FIRST_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-first"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_delete_first,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","delete-first"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_FIRST_2);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_DELETE_FIRST_2);
 
   }
 
@@ -1063,11 +760,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-first"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_delete_last,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","delete-last"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_FIRST_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_DELETE_LAST_1);
 
   }
 
@@ -1075,37 +772,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_first,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-first"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_FIRST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-node-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_NODE_LAST_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-nodes-last"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_delete_last,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","delete-last"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_NODES_LAST_2);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_DELETE_LAST_2);
 
   }
 
@@ -1113,11 +785,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-node-last"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_delete_last,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","delete-last"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_NODE_LAST_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_DELETE_LAST_1);
 
   }
 
@@ -1125,37 +797,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-nodes-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_NODES_LAST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_LAST_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-last"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_delete_last,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","delete-last"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_DELETE_LAST_2);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_DELETE_LAST_2);
 
   }
 
@@ -1163,37 +810,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_LAST_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_delete_node_last,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-last"), 
-        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
-        GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_LAST_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, static_collections_dml_edit,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","edit"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_edit,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","edit"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_EDIT_2);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_EDIT_2);
 
   }
 
@@ -1201,12 +823,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_edit,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","edit"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_edit,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","edit"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_EDIT_2);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_EDIT_2);
 
   }
 
@@ -1214,11 +836,12 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_truncate,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","truncate"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_insert,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","insert"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::STATIC_COLLECTIONS_DML_TRUNCATE_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_INSERT_2);
 
   }
 
@@ -1226,11 +849,23 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_dml_truncate,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","truncate"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_truncate,
+        (createQName("http://zorba.io/modules/store/static/collections/dml","","truncate"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::DYNAMIC_COLLECTIONS_DML_TRUNCATE_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_TRUNCATE_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_dml_truncate,
+        (createQName("http://zorba.io/modules/store/dynamic/collections/dml","","truncate"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_TRUNCATE_1);
 
   }
 
@@ -1239,7 +874,7 @@ void populate_context_collections(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_indexes_static_ddl_is_available_index,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/ddl","","is-available-index"), 
+        (createQName("http://zorba.io/modules/store/static/indexes/ddl","","is-available-index"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::ZORBA_STORE_INDEXES_STATIC_DDL_IS_AVAILABLE_INDEX_1);
@@ -1251,7 +886,7 @@ void populate_context_collections(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_indexes_static_ddl_available_indexes,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/ddl","","available-indexes"), 
+        (createQName("http://zorba.io/modules/store/static/indexes/ddl","","available-indexes"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
         FunctionConsts::ZORBA_STORE_INDEXES_STATIC_DDL_AVAILABLE_INDEXES_0);
 
@@ -1261,11 +896,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_is_activated_integrity_constraint,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","is-activated-integrity-constraint"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_integrity_constraints_ddl_is_activated_integrity_constraint,
+        (createQName("http://zorba.io/modules/store/static/integrity-constraints/ddl","","is-activated-integrity-constraint"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_IS_ACTIVATED_INTEGRITY_CONSTRAINT_1);
+        FunctionConsts::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_IS_ACTIVATED_INTEGRITY_CONSTRAINT_1);
 
   }
 
@@ -1273,10 +908,10 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_activated_integrity_constraints,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","activated-integrity-constraints"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_integrity_constraints_ddl_activated_integrity_constraints,
+        (createQName("http://zorba.io/modules/store/static/integrity-constraints/ddl","","activated-integrity-constraints"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
-        FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_ACTIVATED_INTEGRITY_CONSTRAINTS_0);
+        FunctionConsts::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_ACTIVATED_INTEGRITY_CONSTRAINTS_0);
 
   }
 
@@ -1284,11 +919,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_is_declared_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","is-declared-collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_is_declared_collection,
+        (createQName("http://zorba.io/modules/store/static/collections/ddl","","is-declared-collection"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::STATIC_COLLECTIONS_DDL_IS_DECLARED_COLLECTION_1);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DDL_IS_DECLARED_COLLECTION_1);
 
   }
 
@@ -1296,10 +931,10 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, static_collections_ddl_declared_collections,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","declared-collections"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_collections_ddl_declared_collections,
+        (createQName("http://zorba.io/modules/store/static/collections/ddl","","declared-collections"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
-        FunctionConsts::STATIC_COLLECTIONS_DDL_DECLARED_COLLECTIONS_0);
+        FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DDL_DECLARED_COLLECTIONS_0);
 
   }
 
@@ -1308,7 +943,7 @@ void populate_context_collections(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_indexes_static_ddl_is_declared_index,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/ddl","","is-declared-index"), 
+        (createQName("http://zorba.io/modules/store/static/indexes/ddl","","is-declared-index"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::ZORBA_STORE_INDEXES_STATIC_DDL_IS_DECLARED_INDEX_1);
@@ -1320,7 +955,7 @@ void populate_context_collections(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_indexes_static_ddl_declared_indexes,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/ddl","","declared-indexes"), 
+        (createQName("http://zorba.io/modules/store/static/indexes/ddl","","declared-indexes"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
         FunctionConsts::ZORBA_STORE_INDEXES_STATIC_DDL_DECLARED_INDEXES_0);
 
@@ -1330,11 +965,11 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_is_declared_integrity_constraint,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","is-declared-integrity-constraint"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_integrity_constraints_ddl_is_declared_integrity_constraint,
+        (createQName("http://zorba.io/modules/store/static/integrity-constraints/ddl","","is-declared-integrity-constraint"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_IS_DECLARED_INTEGRITY_CONSTRAINT_1);
+        FunctionConsts::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_IS_DECLARED_INTEGRITY_CONSTRAINT_1);
 
   }
 
@@ -1342,10 +977,10 @@ void populate_context_collections(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_declared_integrity_constraints,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","declared-integrity-constraints"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_integrity_constraints_ddl_declared_integrity_constraints,
+        (createQName("http://zorba.io/modules/store/static/integrity-constraints/ddl","","declared-integrity-constraints"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
-        FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_DECLARED_INTEGRITY_CONSTRAINTS_0);
+        FunctionConsts::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_DECLARED_INTEGRITY_CONSTRAINTS_0);
 
   }
 

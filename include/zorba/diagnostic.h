@@ -21,6 +21,7 @@
 #include <iostream>
 
 #include <zorba/config.h>
+#include <zorba/internal/ztd.h>
 
 namespace zorba {
 namespace diagnostic {
@@ -119,7 +120,8 @@ inline bool operator==( char const *q1, QName const &q2 ) {
  * @return Returns \c true only if the QNames are equal.
  */
 template<class StringType> inline
-bool operator==( QName const &q1, StringType const &q2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+operator==( QName const &q1, StringType const &q2 ) {
   return q1 == q2.c_str();
 }
 
@@ -136,7 +138,8 @@ bool operator==( QName const &q1, StringType const &q2 ) {
  * @return Returns \c true only if the QNames are equal.
  */
 template<class StringType> inline
-bool operator==( StringType const &q1, QName const &q2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+operator==( StringType const &q1, QName const &q2 ) {
   return q1.c_str() == q2;
 }
 
@@ -197,7 +200,8 @@ inline bool operator!=( char const *q1, QName const &q2 ) {
  * @return Returns \c true only if the QNames are not equal.
  */
 template<class StringType> inline
-bool operator!=( QName const &q1, StringType const &q2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+operator!=( QName const &q1, StringType const &q2 ) {
   return q1 != q2.c_str();
 }
 
@@ -214,7 +218,8 @@ bool operator!=( QName const &q1, StringType const &q2 ) {
  * @return Returns \c true only if the QNames are not equal.
  */
 template<class StringType> inline
-bool operator!=( StringType const &q1, QName const &q2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+operator!=( StringType const &q1, QName const &q2 ) {
   return q1.c_str() != q2;
 }
 
@@ -269,8 +274,6 @@ std::ostream& operator<<( std::ostream &o, kind k );
 
 } // namespace diagnostic
 } // namespace zorba
-
-#include <zorba/internal/qname.h>
 
 namespace zorba {
 
@@ -344,7 +347,8 @@ inline bool operator!=( Diagnostic const &d1, Diagnostic const &d2 ) {
 
 } // namespace zorba
 
-#include <zorba/internal/diagnostic.h>
+#include <zorba/internal/system_diagnostic.h>
+#include <zorba/internal/qname.h>
 
 #endif /* ZORBA_DIAGNOSTIC_API_H */
 /*

@@ -52,7 +52,7 @@ namespace zorba
 
 static xqtref_t print_expr_and_type(expr* e, xqtref_t t)
 {
-  if (Properties::instance()->printStaticTypes())
+  if (Properties::instance().getPrintStaticTypes())
   {
     std::cout << "Return type for " << e << ":\n";
     e->put(std::cout);
@@ -820,9 +820,9 @@ bool expr::is_map(expr* e, static_context* sctx) const
     return false;
 
   xqtref_t type = e->get_return_type();
-  TypeConstants::quantifier_t q = type->get_quantifier();
+  SequenceType::Quantifier q = type->get_quantifier();
 
-  if (q == TypeConstants::QUANT_ONE || q == TypeConstants::QUANT_QUESTION)
+  if (q == SequenceType::QUANT_ONE || q == SequenceType::QUANT_QUESTION)
     return true;
 
   bool found = false;
@@ -1051,9 +1051,9 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case treat_expr_kind:
   {
     const treat_expr* treatExpr = static_cast<const treat_expr*>(this);
-    TypeConstants::quantifier_t q = treatExpr->get_target_type()->get_quantifier();
+    SequenceType::Quantifier q = treatExpr->get_target_type()->get_quantifier();
 
-    if (q == TypeConstants::QUANT_STAR || q == TypeConstants::QUANT_PLUS)
+    if (q == SequenceType::QUANT_STAR || q == SequenceType::QUANT_PLUS)
     {
       const expr* argExpr = treatExpr->get_input();
       return argExpr->is_map_internal(e, found);
@@ -1065,9 +1065,9 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case promote_expr_kind:
   {
     const promote_expr* promoteExpr = static_cast<const promote_expr*>(this);
-    TypeConstants::quantifier_t q = promoteExpr->get_target_type()->get_quantifier();
+    SequenceType::Quantifier q = promoteExpr->get_target_type()->get_quantifier();
 
-    if (q == TypeConstants::QUANT_STAR || q == TypeConstants::QUANT_PLUS)
+    if (q == SequenceType::QUANT_STAR || q == SequenceType::QUANT_PLUS)
     {
       const expr* argExpr = promoteExpr->get_input();
       return argExpr->is_map_internal(e, found);

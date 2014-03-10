@@ -16,14 +16,13 @@
 #include "stdafx.h"
 
 #include <istream>
-#include <memory>
 
 #include "compiler/api/compiler_api.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/dict.h"
 
 #include "system/globalenv.h"
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #include "context/static_context.h"
 
@@ -165,7 +164,7 @@ bool XQueryCompiler::getLanguageMode(std::stringstream& s) const
 parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileName)
 {
   // TODO: move these out
-  if (Properties::instance()->printAst())
+  if (Properties::instance().getPrintAST())
   {
     theCompilerCB->theConfig.parse_cb = print_ast_tree;
   }
@@ -555,9 +554,9 @@ XQueryCompilerSubsystem::~XQueryCompilerSubsystem()
 }
 
 
-std::auto_ptr<XQueryCompilerSubsystem> XQueryCompilerSubsystem::create()
+std::unique_ptr<XQueryCompilerSubsystem> XQueryCompilerSubsystem::create()
 {
-  return std::auto_ptr<XQueryCompilerSubsystem>(new XQueryCompilerSubsystemImpl());
+  return std::unique_ptr<XQueryCompilerSubsystem>(new XQueryCompilerSubsystemImpl());
 }
 
 }

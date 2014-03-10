@@ -24,10 +24,9 @@
 
 #include "runtime/hof/function_item.h"
 #include "runtime/util/single_item_iterator.h"
+#include "runtime/base/narybase.h"
 
 #include "context/static_context.h"
-
-#include "runtime/base/narybase.h"
 
 
 namespace zorba {
@@ -169,6 +168,8 @@ public:
 
   virtual ~UDFunctionCallIterator();
 
+  zstring getNameAsString() const;
+
   bool isUpdating() const;
 
   void setDynamic() { theIsDynamic = true; }
@@ -253,6 +254,8 @@ public:
 
   virtual ~ExtFunctionCallIterator();
 
+  zstring getNameAsString() const;
+
   virtual bool isUpdating() const { return theIsUpdating; }
 
   void accept(PlanIterVisitor& v) const;
@@ -260,6 +263,9 @@ public:
   void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  bool count(store::Item_t& result, PlanState& planState) const;
+  bool skip(int64_t count, PlanState &planState) const;
 };
 
 }

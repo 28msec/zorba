@@ -232,29 +232,6 @@ SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES CLEAN_DIRECT_OUTPUT 0
 SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
 
 #
-# Build the Zorba STATIC library
-#
-IF (ZORBA_BUILD_STATIC_LIBRARY)
-  # Set the ar append flag to "q" instead of "r", which could create incomplete archives by replacing the files with the same names
-  SET(CMAKE_C_ARCHIVE_APPEND "<CMAKE_AR> <LINK_FLAGS> q <TARGET> <OBJECTS>")
-  SET(CMAKE_CXX_ARCHIVE_APPEND "<CMAKE_AR> <LINK_FLAGS> q <TARGET> <OBJECTS>")
-
-  ADD_LIBRARY(zorba_${ZORBA_STORE_NAME}_static STATIC ${ZORBA_SRCS} ${STORE_SRCS})
-  LIST(APPEND ZORBA_LIBRARY_INSTALL_LIST zorba_${ZORBA_STORE_NAME}_static)
-  SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-  SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
-  SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)  
-  TARGET_LINK_LIBRARIES(zorba_${ZORBA_STORE_NAME}_static ${requiredlibs})
-
-  # on windows, the static lib needs a different name because .lib is already generated when creating the .dll 
-  # on unix, the static library can have the same name because it uses a different file suffix (e.g. .a)
-  IF (UNIX)
-    SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_NAME}")      
-  ENDIF (UNIX)
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
-
-#
 # Specify where the zorba libs are to be installed
 # LIB_SUFFIX will be `64' on 64 bit processor
 #

@@ -18,7 +18,6 @@
 
 #include <time.h>
 #include <istream>
-#include <memory>
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
@@ -67,6 +66,25 @@ class ZORBA_DLL_PUBLIC DynamicContext
   setVariable(
       const String& aQName,
       const Item& aItem) = 0;
+
+  /** 
+   * \brief Defines the external variable identified by an expanded QName and
+   * assigns it the value of aItem.
+   *
+   * The named external variable may be located in the main query or in any
+   * modules imported directly or indirectly by the query.
+   *
+   * @param aNamespace the namespace URI of the variable's expanded QName
+   * @param aLocalname the local name of the variable's expanded QName
+   * @param aItem the Item that is used as value for the variable.
+   * @return true if the variable has been set successfully, false otherwise.
+   * @throw ZorbaException if an error occured (e.g. the given Item is not valid).
+   */
+  virtual bool
+  setVariable(
+      const String& inNamespace,
+      const String& inLocalname,
+      const Item& inValue) = 0;
 
   /**
    * \brief Defines the external variable identified by aQName and assigns it

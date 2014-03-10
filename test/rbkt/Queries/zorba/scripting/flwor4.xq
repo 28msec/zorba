@@ -1,7 +1,7 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/dynamic/collections/dml";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $col := xs:QName("myCollection");
 
@@ -13,7 +13,7 @@ declare %ann:sequential function local:test3()
   for $item in dml:collection($col)
   return
     {
-      dml:delete-nodes($item);
+      dml:delete($item);
     }
 
   fn:empty(dml:collection($col))
@@ -21,4 +21,3 @@ declare %ann:sequential function local:test3()
 
 
 local:test3()
-

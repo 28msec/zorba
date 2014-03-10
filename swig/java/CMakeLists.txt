@@ -30,17 +30,17 @@ IF (JAVA_INCLUDE_PATH)
     INCLUDE_DIRECTORIES( ${JAVA_INCLUDE_PATH2} )
   ENDIF ( NOT APPLE )
 
-  SET( CMAKE_SWIG_FLAGS -package org.zorbaxquery.api)
+  SET( CMAKE_SWIG_FLAGS -package io.zorba.api)
 
   SWIG_ADD_MODULE( zorba_api_java java zorba_api.i )
   SWIG_LINK_LIBRARIES( zorba_api_java zorba_simplestore ${JAVA_LIBRARY} )
   IF (WIN32)
-    SET_TARGET_PROPERTIES( zorba_api_java PROPERTIES PROJECT_LABEL "Java" OUTPUT_NAME "zorba_api" FOLDER "APIs")
+    SET_TARGET_PROPERTIES( zorba_api_java PROPERTIES PROJECT_LABEL "Java" OUTPUT_NAME "zorba_api_java" FOLDER "APIs")
   ELSE (WIN32)
-    SET_TARGET_PROPERTIES( zorba_api_java PROPERTIES OUTPUT_NAME "libzorba_api")
+    SET_TARGET_PROPERTIES( zorba_api_java PROPERTIES OUTPUT_NAME "libzorba_api_java")
   ENDIF (WIN32)
   IF ( APPLE )
-    SET_TARGET_PROPERTIES( zorba_api_java PROPERTIES SUFFIX .jnilib OUTPUT_NAME "${ZORBA_SWIG_LIB_PREFIX}zorba_api")
+    SET_TARGET_PROPERTIES( zorba_api_java PROPERTIES SUFFIX .jnilib OUTPUT_NAME "${ZORBA_SWIG_LIB_PREFIX}zorba_api_java")
   ENDIF ( APPLE )
 
   # The following fix was added because of the changes in CMake 2.8, which have the
@@ -65,7 +65,7 @@ IF (JAVA_INCLUDE_PATH)
                  COMMAND cmake -E echo "Compiling Java files..."
                  COMMAND ${Java_JAVAC_EXECUTABLE} *.java -d ${CMAKE_CURRENT_BINARY_DIR}
                  COMMAND cmake -E echo "Creating jar file..."
-                 COMMAND ${Java_JAR_EXECUTABLE} cf zorba_api.jar org
+                 COMMAND ${Java_JAR_EXECUTABLE} cf zorba_api.jar io
   )
 
   # ---  Install
@@ -78,22 +78,22 @@ IF (JAVA_INCLUDE_PATH)
   SET(ZORBA_JAVA_JAR ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.jar PARENT_SCOPE )
 
   IF ( APPLE )
-    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_SWIG_LIB_PREFIX}zorba_api.jnilib DESTINATION ${JAVA_SITEARCH_DIR})
-    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.jar DESTINATION ${JAVA_SITEARCH_DIR})
+    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_SWIG_LIB_PREFIX}zorba_api_java.jnilib DESTINATION ${JAVA_SITEARCH_DIR})
+	INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.jar DESTINATION ${JAVA_SITEARCH_DIR})
   ELSE ( APPLE )
     IF(NOT WIN32)
-      INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so DESTINATION ${JAVA_SITEARCH_DIR})
+      INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api_java.so DESTINATION ${JAVA_SITEARCH_DIR})
       INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.jar DESTINATION ${JAVA_SITEARCH_DIR})
     ELSE(NOT WIN32)
       IF (MSVC_IDE)
-        INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.dll 
+        INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api_java.dll 
         DESTINATION share/java
         COMPONENT "java_swig")
         INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.jar 
         DESTINATION share/java
         COMPONENT "java_swig")
       ELSE (MSVC_IDE)
-        INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll 
+        INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_java.dll 
         DESTINATION share/java
         COMPONENT "java_swig")
         INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.jar

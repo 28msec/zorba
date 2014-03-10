@@ -89,35 +89,35 @@ static void parse( parse_type parse_what, zstring const &buf,
     }
 
     throw XQUERY_EXCEPTION(
-      zerr::ZDTP0005_INCOMPLETE_DATE_OR_TIME,
+      dt::INCOMPLETE_DATE_OR_TIME,
       ERROR_PARAMS( fmt ),
       ERROR_LOC( loc )
     );
   }
   catch ( time::insufficient_buffer const& ) {
     throw XQUERY_EXCEPTION(
-      zerr::ZDTP0002_INSUFFICIENT_BUFFER,
+      dt::INSUFFICIENT_BUFFER,
       ERROR_PARAMS( buf, fmt ),
       ERROR_LOC( loc )
     );
   }
   catch ( time::invalid_specification const &e ) {
     throw XQUERY_EXCEPTION(
-      zerr::ZDTP0001_INVALID_SPECIFICATION,
+      dt::INVALID_SPECIFICATION,
       ERROR_PARAMS( ascii::printable_char( e.get_spec() ) ),
       ERROR_LOC( loc )
     );
   }
   catch ( time::invalid_value const &e ) {
     throw XQUERY_EXCEPTION(
-      zerr::ZDTP0003_INVALID_VALUE,
+      dt::INVALID_VALUE,
       ERROR_PARAMS( e.get_value(), e.get_specs() ),
       ERROR_LOC( loc )
     );
   }
   catch ( time::literal_mismatch const &e ) {
     throw XQUERY_EXCEPTION(
-      zerr::ZDTP0004_LITERAL_MISMATCH,
+      dt::LITERAL_MISMATCH,
       ERROR_PARAMS(
         ascii::printable_char( e.get_got() ),
         ascii::printable_char( e.get_expected() )
@@ -134,19 +134,19 @@ static void parse_locale( store::Item_t const &item, iso639_1::type *lang,
   item->getStringValue2( locale_str );
   if ( !locale::parse( locale_str, lang, country ) )
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP0011_INVALID_LOCALE,
+      dt::INVALID_LOCALE,
       ERROR_PARAMS( locale_str ),
       ERROR_LOC( loc )
     );
   if ( !*lang || !*country )
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP0012_UNKNOWN_LOCALE,
+      dt::UNKNOWN_LOCALE,
       ERROR_PARAMS( locale_str ),
       ERROR_LOC( loc )
     );
   if ( !locale::is_supported( *lang, *country ) )
     throw XQUERY_EXCEPTION(
-      zerr::ZOSE0007_UNSUPPORTED_LOCALE,
+      dt::UNSUPPORTED_LOCALE,
       ERROR_PARAMS( locale_str ),
       ERROR_LOC( loc )
     );

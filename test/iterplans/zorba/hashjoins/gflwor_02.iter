@@ -1,0 +1,222 @@
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="products">
+      <ElementIterator copyInputNodes="false">
+        <SingletonIterator value="xs:QName(,,products)"/>
+        <FnConcatIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,prod)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,id)">
+                <SingletonIterator value="xs:string(1)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,name)">
+                <SingletonIterator value="xs:string(car1)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,price)">
+                <SingletonIterator value="xs:string(10)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,prod)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,id)">
+                <SingletonIterator value="xs:string(2)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,name)">
+                <SingletonIterator value="xs:string(car2)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,price)">
+                <SingletonIterator value="xs:string(15)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,prod)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,id)">
+                <SingletonIterator value="xs:string(3)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,name)">
+                <SingletonIterator value="xs:string(car3)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,price)">
+                <SingletonIterator value="xs:string(9)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="5" varname="sales">
+      <ElementIterator copyInputNodes="false">
+        <SingletonIterator value="xs:QName(,,sales)"/>
+        <FnConcatIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,sale)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,pid)">
+                <SingletonIterator value="xs:string(3)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,qty)">
+                <SingletonIterator value="xs:string(3)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,date)">
+                <SingletonIterator value="xs:string(2013-01-01)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,sale)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,pid)">
+                <SingletonIterator value="xs:string(3)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,qty)">
+                <SingletonIterator value="xs:string(5)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,date)">
+                <SingletonIterator value="xs:string(2013-01-02)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,sale)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,pid)">
+                <SingletonIterator value="xs:string(2)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,qty)">
+                <SingletonIterator value="xs:string(1)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,date)">
+                <SingletonIterator value="xs:string(2013-01-01)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <TupleStreamIterator>
+      <ForIterator>
+        <ForVariable name="s"/>
+        <WhereIterator>
+          <ForIterator>
+            <ForVariable name="$$opt_temp_1"/>
+            <LetIterator>
+              <LetVariable name="$$opt_temp_2" materialize="true"/>
+              <LetIterator>
+                <LetVariable name="$$opt_temp_3" materialize="true"/>
+                <ForIterator>
+                  <ForVariable name="p"/>
+                  <LetIterator>
+                    <LetVariable name="$$opt_temp_6" materialize="true"/>
+                    <LetIterator>
+                      <LetVariable name="$$opt_temp_0" materialize="true"/>
+                      <TupleSourceIterator/>
+                      <HoistIterator>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sale)" typename="*" nill-allowed="0">
+                          <CtxVarIterator varid="5" varname="sales" varkind="global"/>
+                        </ChildAxisIterator>
+                      </HoistIterator>
+                    </LetIterator>
+                    <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+                      <FLWORIterator>
+                        <ForVariable name="$$opt_temp_4">
+                          <UnhoistIterator>
+                            <LetVarIterator varname="$$opt_temp_0"/>
+                          </UnhoistIterator>
+                        </ForVariable>
+                        <ReturnClause>
+                          <ValueIndexEntryBuilderIterator>
+                            <ForVarIterator varname="$$opt_temp_4"/>
+                            <FnStringIterator>
+                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,pid)" typename="*" nill-allowed="0">
+                                <ForVarIterator varname="$$opt_temp_4"/>
+                              </AttributeAxisIterator>
+                            </FnStringIterator>
+                          </ValueIndexEntryBuilderIterator>
+                        </ReturnClause>
+                      </FLWORIterator>
+                    </CreateInternalIndexIterator>
+                  </LetIterator>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,prod)" typename="*" nill-allowed="0">
+                    <CtxVarIterator varid="4" varname="products" varkind="global"/>
+                  </ChildAxisIterator>
+                </ForIterator>
+                <HoistIterator>
+                  <PromoteIterator type="xs:anyAtomicType">
+                    <FnDataIterator>
+                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill-allowed="0">
+                        <ForVarIterator varname="p"/>
+                      </AttributeAxisIterator>
+                    </FnDataIterator>
+                  </PromoteIterator>
+                </HoistIterator>
+              </LetIterator>
+              <HoistIterator>
+                <FnDataIterator>
+                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="0">
+                    <ForVarIterator varname="p"/>
+                  </AttributeAxisIterator>
+                </FnDataIterator>
+              </HoistIterator>
+            </LetIterator>
+            <HoistIterator>
+              <FnStringIterator>
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
+                  <ForVarIterator varname="p"/>
+                </AttributeAxisIterator>
+              </FnStringIterator>
+            </HoistIterator>
+          </ForIterator>
+          <CompareIterator>
+            <CastIterator type="xs:integer">
+              <FnDataIterator>
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill-allowed="0">
+                  <ForVarIterator varname="p"/>
+                </AttributeAxisIterator>
+              </FnDataIterator>
+            </CastIterator>
+            <SingletonIterator value="xs:integer(9)"/>
+          </CompareIterator>
+        </WhereIterator>
+        <ProbeIndexPointValueIterator>
+          <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+          <UnhoistIterator>
+            <ForVarIterator varname="$$opt_temp_1"/>
+          </UnhoistIterator>
+        </ProbeIndexPointValueIterator>
+      </ForIterator>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,sale)"/>
+        <FnConcatIterator>
+          <AttributeIterator qname="xs:QName(,,prod)">
+            <EnclosedIterator attr_cont="true">
+              <UnhoistIterator>
+                <LetVarIterator varname="$$opt_temp_2"/>
+              </UnhoistIterator>
+            </EnclosedIterator>
+          </AttributeIterator>
+          <AttributeIterator qname="xs:QName(,,amount)">
+            <EnclosedIterator attr_cont="true">
+              <GenericArithIterator_MultiplyOperation>
+                <UnhoistIterator>
+                  <LetVarIterator varname="$$opt_temp_3"/>
+                </UnhoistIterator>
+                <PromoteIterator type="xs:anyAtomicType">
+                  <FnDataIterator>
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,qty)" typename="*" nill-allowed="0">
+                      <ForVarIterator varname="s"/>
+                    </AttributeAxisIterator>
+                  </FnDataIterator>
+                </PromoteIterator>
+              </GenericArithIterator_MultiplyOperation>
+            </EnclosedIterator>
+          </AttributeIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </TupleStreamIterator>
+  </SequentialIterator>
+</iterator-tree>

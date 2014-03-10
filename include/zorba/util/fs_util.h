@@ -47,9 +47,11 @@ typedef os_error::exception exception;
 #ifdef WIN32
 char const dir_separator = '\\';
 char const path_separator = ';';
+char const newline[] = "\r\n";
 #else
 char const dir_separator = '/';
 char const path_separator = ':';
+char const newline[] = "\n";
 #endif /* WIN32 */
 
 ////////// types //////////////////////////////////////////////////////////////
@@ -74,7 +76,6 @@ enum type {
   volume,
   other   // named pipe, character/block special, socket, etc.
 };
-extern char const *const type_string[];
 
 /**
  * Emits the string representation of a file type to the given ostream.
@@ -83,11 +84,20 @@ extern char const *const type_string[];
  * @param t The file type to emit.
  * @return Returns \a o.
  */
-inline std::ostream& operator<<( std::ostream &o, type t ) {
-  return o << type_string[ t ];
-}
+ZORBA_DLL_PUBLIC
+std::ostream& operator<<( std::ostream &o, type t );
 
 ////////// Directory //////////////////////////////////////////////////////////
+
+/**
+ * Gets the directory where per-user configuration files are stored.
+ *
+ * @return Returns said directory.
+ * @throws ZorbaException with a diagnostic of zerr::ZOSE0004_IO_ERROR if it
+ * fails.
+ */
+ZORBA_DLL_PUBLIC
+std::string configdir();
 
 /**
  * Gets the current directory.
@@ -269,6 +279,37 @@ dir_name( PathStringType const &path ) {
   return path.substr( 0, pos );
 }
 
+/**
+ * Gets the extension (the part of the name after the last '.') of the last
+ * path component of the given path name.
+ *
+ * @param path The path to get the extension of.
+ * @return Returns the extension (without the '.') or the empty string if
+ * \a path does not have an extension.
+ */
+inline std::string extension( char const *path ) {
+  char const *const name = base_name( path );
+  char const *const dot = std::strrchr( name, '.' );
+  return dot ? dot + 1 : "";
+}
+
+/**
+ * Gets the extension (the part of the name after the last '.') of the last
+ * path component of the given path name.
+ *
+ * @tparam PathStringType The \a path string type.
+ * @param path The path to get the extension of.
+ * @return Returns the extension (without the '.') or the empty string if
+ * \a path does not have an extension.
+ */
+template<class PathStringType> inline
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),PathStringType>::type
+extension( PathStringType const &path ) {
+  PathStringType const name( base_name( path ) );
+  typename PathStringType::size_type const pos = name.rfind( '.' );
+  return pos != PathStringType::npos ? name.substr( pos + 1 ) : "";
+}
+
 #ifdef ZORBA_WITH_FILE_ACCESS
 
 /**
@@ -397,7 +438,9 @@ public:
   template<class PathStringType>
   iterator( PathStringType const &path,
             typename std::enable_if<ZORBA_HAS_C_STR(PathStringType)
-                                   >::type* = 0 ) : dir_path_( path.c_str() ) {
+                                   >::type* = nullptr ) :
+    dir_path_( path.c_str() )
+  {
     ctor_impl();
   }
 

@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -65,6 +66,10 @@ FnZorbaParseXmlFragmentIteratorState::~FnZorbaParseXmlFragmentIteratorState() {}
 void FnZorbaParseXmlFragmentIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
+
+zstring FnZorbaParseXmlFragmentIterator::getNameAsString() const {
+  return "fn-zorba-xml:parse";
+}
 // </FnZorbaParseXmlFragmentIterator>
 
 
@@ -101,6 +106,10 @@ FnZorbaCanonicalizeIteratorState::~FnZorbaCanonicalizeIteratorState() {}
 void FnZorbaCanonicalizeIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
+
+zstring FnZorbaCanonicalizeIterator::getNameAsString() const {
+  return "fn-zorba-xml:canonicalize-impl";
+}
 // </FnZorbaCanonicalizeIterator>
 
 
@@ -136,6 +145,10 @@ FnParseXmlFragmentIteratorState::~FnParseXmlFragmentIteratorState() {}
 
 void FnParseXmlFragmentIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
+}
+
+zstring FnParseXmlFragmentIterator::getNameAsString() const {
+  return "fn:parse-xml-fragment";
 }
 // </FnParseXmlFragmentIterator>
 

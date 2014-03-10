@@ -351,6 +351,13 @@ begins_with( StringType const &s, PrefixStringType const &ps ) {
 }
 
 /**
+ * A macro for calling ascii::begins_with() with a second argument of a string
+ * literal.
+ */
+#define ZA_BEGINS_WITH(STRING,LITERAL) \
+  ::zorba::ascii::begins_with( STRING, LITERAL, sizeof( LITERAL ) - 1 )
+
+/**
  * Checks whether a string ends with a given suffix.
  *
  * @param s The string to check.
@@ -447,6 +454,13 @@ typename std::enable_if<ZORBA_IS_STRING(StringType)
 ends_with( StringType const &s, SuffixStringType const &ss ) {
   return ends_with( s, ss.data(), ss.size() );
 }
+
+/**
+ * A macro for calling ascii::ends_with() with a second argument of a string
+ * literal.
+ */
+#define ZA_ENDS_WITH(STRING,LITERAL) \
+  ::zorba::ascii::ends_with( STRING, LITERAL, sizeof( LITERAL ) - 1 )
 
 ////////// Case conversion ////////////////////////////////////////////////////
 
@@ -669,6 +683,43 @@ typename std::enable_if<ZORBA_IS_STRING(StringType)
                         bool>::type
 replace_all( StringType &s, char const *from, ToStringType const &to ) {
   return replace_all( s, from, std::strlen( from ), to.data(), to.size() );
+}
+
+/**
+ * Replaces all occurrences of one substring with another.
+ *
+ * @tparam StringType The string type.
+ * @param s The string to modify.
+ * @param from The substring to replace.
+ * @param from_len The length of \a from.
+ * @param to The substring to replace with.
+ * @return Returns \c true only if at least one replacement is performed.
+ */
+template<class StringType,class ToStringType> inline
+typename std::enable_if<ZORBA_IS_STRING(StringType)
+                     && ZORBA_IS_STRING(ToStringType),
+                        bool>::type
+replace_all( StringType &s,
+             char const *from, typename StringType::size_type from_len,
+             ToStringType const &to ) {
+  return replace_all( s, from, from_len, to.data(), to.size() );
+}
+
+/**
+ * Replaces all occurrences of a character with a string.
+ *
+ * @tparam StringType The string type.
+ * @param s The string to modify.
+ * @param from The character to replace.
+ * @param to The substring to replace with.
+ * @return Returns \c true only if at least one replacement is performed.
+ */
+template<class StringType,class ToStringType> inline
+typename std::enable_if<ZORBA_IS_STRING(StringType)
+                     && ZORBA_IS_STRING(ToStringType),
+                        bool>::type
+replace_all( StringType &s, char from, ToStringType const &to ) {
+  return replace_all( s, &from, 1, to.data(), to.size() );
 }
 
 /**

@@ -6,7 +6,7 @@
 
 module namespace idx = "http://www.w3.org/TestModules/idx";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:value-range index idx:foo 
 on nodes doc("auction.xml")/site/people/person

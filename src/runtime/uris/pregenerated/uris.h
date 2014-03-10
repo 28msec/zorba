@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_URIS_URIS_H
 #define ZORBA_RUNTIME_URIS_URIS_H
 
@@ -61,6 +62,8 @@ public:
 
   virtual ~DecodeURIIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -93,6 +96,8 @@ public:
 
   virtual ~ParseURIIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -124,6 +129,8 @@ public:
   {}
 
   virtual ~SerializeURIIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

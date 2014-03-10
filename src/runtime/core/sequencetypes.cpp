@@ -32,21 +32,29 @@
 
 #include "store/api/item_factory.h"
 
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numeric_types.h"
 
 namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(InstanceOfIterator)
+DEF_GET_NAME_AS_STRING(InstanceOfIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CastIterator)
+DEF_GET_NAME_AS_STRING(CastIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CastableIterator)
+DEF_GET_NAME_AS_STRING(CastableIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(PromoteIterator)
+DEF_GET_NAME_AS_STRING(PromoteIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(TreatIterator)
+DEF_GET_NAME_AS_STRING(TreatIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(EitherNodesOrAtomicsIterator)
+DEF_GET_NAME_AS_STRING(EitherNodesOrAtomicsIterator)
 
 
 /*******************************************************************************
@@ -82,7 +90,7 @@ void InstanceOfIterator::serialize(::zorba::serialization::Archiver& ar)
 bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
-  TypeConstants::quantifier_t quant;
+  SequenceType::Quantifier quant;
   bool res = false;
   store::Item_t temp;
   const TypeManager* tm = theSctx->get_typemanager();
@@ -106,7 +114,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       {
         if (consumeNext(item, theChild.getp(), planState))
         {
-          if (quant == TypeConstants::QUANT_PLUS || quant == TypeConstants::QUANT_STAR)
+          if (quant == SequenceType::QUANT_PLUS || quant == SequenceType::QUANT_STAR)
           {
             res = true;
             do
@@ -140,7 +148,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     {
       if (consumeNext(item, theChild.getp(), planState))
       {
-        if (quant == TypeConstants::QUANT_PLUS || quant == TypeConstants::QUANT_STAR)
+        if (quant == SequenceType::QUANT_PLUS || quant == SequenceType::QUANT_STAR)
         {
           res = true;
           do
@@ -163,7 +171,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   }
   else
   {
-    res = !(quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_PLUS);
+    res = !(quant == SequenceType::QUANT_ONE || quant == SequenceType::QUANT_PLUS);
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state);
@@ -396,7 +404,7 @@ void PromoteIterator::serialize(::zorba::serialization::Archiver& ar)
   (UnaryBaseIterator<PromoteIterator, PlanIteratorState>*)this);
 
   ar & thePromoteType;
-  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  SERIALIZE_ENUM(SequenceType::Quantifier, theQuantifier);
   SERIALIZE_ENUM(PromoteErrorKind, theErrorKind);
   ar & theQName;
 
@@ -416,14 +424,14 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (!consumeNext(item, theChild.getp(), planState))
   {
-    if (theQuantifier == TypeConstants::QUANT_PLUS ||
-        theQuantifier == TypeConstants::QUANT_ONE)
+    if (theQuantifier == SequenceType::QUANT_PLUS ||
+        theQuantifier == SequenceType::QUANT_ONE)
     {
       raiseError("empty-sequence()");
     }
   }
-  else if (theQuantifier == TypeConstants::QUANT_QUESTION ||
-           theQuantifier == TypeConstants::QUANT_ONE)
+  else if (theQuantifier == SequenceType::QUANT_QUESTION ||
+           theQuantifier == SequenceType::QUANT_ONE)
   {
     if (consumeNext(temp, theChild.getp(), planState))
     {
@@ -465,7 +473,7 @@ void PromoteIterator::raiseError(const zstring& valueType) const
   zstring targetType;
 
   if (thePromoteType->type_kind() == XQType::NONE_KIND && 
-      theQuantifier == TypeConstants::QUANT_QUESTION)
+      theQuantifier == SequenceType::QUANT_QUESTION)
   {
     targetType = "empty-sequence()";
   }
@@ -473,11 +481,11 @@ void PromoteIterator::raiseError(const zstring& valueType) const
   {
     targetType = thePromoteType->toSchemaString();
 
-    if (theQuantifier == TypeConstants::QUANT_PLUS)
+    if (theQuantifier == SequenceType::QUANT_PLUS)
       targetType += "+";
-    else if (theQuantifier == TypeConstants::QUANT_STAR)
+    else if (theQuantifier == SequenceType::QUANT_STAR)
       targetType += "*";
-    else if (theQuantifier == TypeConstants::QUANT_QUESTION)
+    else if (theQuantifier == SequenceType::QUANT_QUESTION)
       targetType += "?";
   }
 
@@ -581,10 +589,49 @@ void TreatIterator::serialize(::zorba::serialization::Archiver& ar)
   (UnaryBaseIterator<TreatIterator, PlanIteratorState>*)this);
 
   ar & theTreatType;
-  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  SERIALIZE_ENUM(SequenceType::Quantifier, theQuantifier);
   ar & theCheckPrime;
   SERIALIZE_ENUM(TreatErrorKind, theErrorKind);
   ar & theQName;
+}
+
+bool TreatIterator::count( store::Item_t &result, PlanState &planState) const {
+  bool const ret_val = theChild->count( result, planState );
+  xs_integer const count( result->getIntegerValue() );
+
+  switch ( theQuantifier ) {
+    case SequenceType::QUANT_QUESTION:
+      if ( count <= numeric_consts<xs_integer>::one() )
+        break;
+      // no break;
+    case SequenceType::QUANT_ONE:
+      if ( count > numeric_consts<xs_integer>::one() )
+        raiseError("sequence of more than one item");
+      // no break;
+    case SequenceType::QUANT_PLUS:
+      if ( count == numeric_consts<xs_integer>::zero() )
+        raiseError("empty-sequence()");
+      break;
+    default:
+      // do nothing
+      break;
+  }
+  return ret_val;
+}
+
+bool TreatIterator::skip( int64_t count, PlanState &planState ) const {
+  switch ( theQuantifier ) {
+    //
+    // Given that the skip() signature is not as good as it could be (it should
+    // return a pair<int64_t,bool> indicating how many were skipped and whether
+    // there are more), it's not possible to optimize this for any quantifier
+    // other than '*' (since any number of elements is valid for '*').
+    //
+    case SequenceType::QUANT_STAR:
+      return theChild->skip( count, planState );
+    default:
+      return base_type::skip( count, planState );
+  }
 }
 
 
@@ -599,14 +646,14 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(result, theChild.getp(), planState))
   {
-    if (theQuantifier == TypeConstants::QUANT_PLUS ||
-        theQuantifier == TypeConstants::QUANT_ONE)
+    if (theQuantifier == SequenceType::QUANT_PLUS ||
+        theQuantifier == SequenceType::QUANT_ONE)
     {
       raiseError("empty-sequence()");
     }
   }
-  else if (theQuantifier == TypeConstants::QUANT_QUESTION ||
-           theQuantifier == TypeConstants::QUANT_ONE)
+  else if (theQuantifier == SequenceType::QUANT_QUESTION ||
+           theQuantifier == SequenceType::QUANT_ONE)
   {
     if (consumeNext(temp, theChild.getp(), planState))
     {
@@ -681,7 +728,7 @@ void TreatIterator::raiseError(const zstring& valueType) const
   zstring targetType;
 
   if (theTreatType->type_kind() == XQType::NONE_KIND && 
-      theQuantifier == TypeConstants::QUANT_QUESTION)
+      theQuantifier == SequenceType::QUANT_QUESTION)
   {
     targetType = "empty-sequence()";
   }
@@ -689,11 +736,11 @@ void TreatIterator::raiseError(const zstring& valueType) const
   {
     targetType = theTreatType->toSchemaString();
 
-    if (theQuantifier == TypeConstants::QUANT_PLUS)
+    if (theQuantifier == SequenceType::QUANT_PLUS)
       targetType += "+";
-    else if (theQuantifier == TypeConstants::QUANT_STAR)
+    else if (theQuantifier == SequenceType::QUANT_STAR)
       targetType += "*";
-    else if (theQuantifier == TypeConstants::QUANT_QUESTION)
+    else if (theQuantifier == SequenceType::QUANT_QUESTION)
       targetType += "?";
   }
 

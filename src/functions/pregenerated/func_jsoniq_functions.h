@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_JSONIQ_FUNCTIONS_H
 #define ZORBA_FUNCTIONS_JSONIQ_FUNCTIONS_H
 
@@ -95,44 +96,6 @@ public:
 };
 
 
-//fn-jsoniq:json-doc
-class fn_jsoniq_json_doc : public function
-{
-public:
-  fn_jsoniq_json_doc(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool isSource() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//op-zorba:json-item-accessor
-class op_zorba_json_item_accessor : public function
-{
-public:
-  op_zorba_json_item_accessor(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-
-
 //fn-jsoniq:keys
 class fn_jsoniq_keys : public function
 {
@@ -173,16 +136,39 @@ public:
 };
 
 
-//fn-jsoniq:value
-class fn_jsoniq_value : public function
+//op-zorba:multi-object-lookup
+class op_zorba_multi_object_lookup : public function
 {
 public:
-  fn_jsoniq_value(const signature& sig, FunctionConsts::FunctionKind kind)
+  op_zorba_multi_object_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:single-object-lookup
+class op_zorba_single_object_lookup : public function
+{
+public:
+  op_zorba_single_object_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
 
@@ -203,28 +189,36 @@ public:
 
   }
 
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool isMap(csize producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };
 
 
-//fn-jsoniq:member
-class fn_jsoniq_member : public function
+//fn-jsoniq:trim
+class fn_jsoniq_trim : public function
 {
 public:
-  fn_jsoniq_member(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_jsoniq_trim(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool isMap(csize producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };
@@ -270,6 +264,50 @@ public:
 };
 
 
+//op-zorba:multi-array-lookup
+class op_zorba_multi_array_lookup : public function
+{
+public:
+  op_zorba_multi_array_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool isMap(csize producer) const { return producer == 0; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:single-array-lookup
+class op_zorba_single_array_lookup : public function
+{
+public:
+  op_zorba_single_array_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-jsoniq:size
 class fn_jsoniq_size : public function
 {
@@ -280,6 +318,8 @@ public:
   {
 
   }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
 
@@ -304,6 +344,8 @@ public:
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
+  bool isMap(csize producer) const { return producer == 0; }
+
   CODEGEN_DECL();
 };
 
@@ -313,21 +355,6 @@ class fn_jsoniq_null : public function
 {
 public:
   fn_jsoniq_null(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-jsoniq:is-null
-class fn_jsoniq_is_null : public function
-{
-public:
-  fn_jsoniq_is_null(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

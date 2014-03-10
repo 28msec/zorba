@@ -1,7 +1,0 @@
-module namespace ns = "http://www.example.com/example";
-
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
-
-declare collection ns:collection as element(foo)*;

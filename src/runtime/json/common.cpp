@@ -17,7 +17,9 @@
 
 #include <zorba/xquery_exception.h>
 
+#include "store/api/item_factory.h"
 #include "store/api/iterator.h"
+#include "system/globalenv.h"
 
 #include "common.h"
 
@@ -34,7 +36,7 @@ bool get_attribute_value( store::Item_t const &element, char const *att_name,
   i->open();
   store::Item_t att_item;
   while ( i->next( att_item ) ) {
-    if ( att_item->getNodeName()->getStringValue() == att_name ) {
+    if ( name_of( att_item ) == att_name ) {
       att_item->getStringValue2( *att_value );
       found = true;
       break;
@@ -42,6 +44,48 @@ bool get_attribute_value( store::Item_t const &element, char const *att_name,
   }
   i->close();
   return found;
+}
+
+bool x2j_map_atomic( store::Item_t const &xml_item, store::Item_t *json_item ) {
+  if ( xml_item->isAtomic() ) {
+    switch ( xml_item->getTypeCode() ) {
+      case store::JS_NULL:
+      case store::XS_BOOLEAN:
+      case store::XS_BYTE:
+      case store::XS_DECIMAL:
+      case store::XS_DOUBLE:
+      case store::XS_ENTITY:
+      case store::XS_FLOAT:
+      case store::XS_ID:
+      case store::XS_IDREF:
+      case store::XS_INT:
+      case store::XS_INTEGER:
+      case store::XS_LONG:
+      case store::XS_NAME:
+      case store::XS_NCNAME:
+      case store::XS_NEGATIVE_INTEGER:
+      case store::XS_NMTOKEN:
+      case store::XS_NON_NEGATIVE_INTEGER:
+      case store::XS_NON_POSITIVE_INTEGER:
+      case store::XS_NORMALIZED_STRING:
+      case store::XS_POSITIVE_INTEGER:
+      case store::XS_SHORT:
+      case store::XS_STRING:
+      case store::XS_TOKEN:
+      case store::XS_UNSIGNED_BYTE:
+      case store::XS_UNSIGNED_INT:
+      case store::XS_UNSIGNED_LONG:
+      case store::XS_UNSIGNED_SHORT:
+        *json_item = xml_item;
+        break;
+      default:
+        zstring s( xml_item->getStringValue() );
+        GENV_ITEMFACTORY->createString( *json_item, s );
+        break;
+    } // switch
+    return true;
+  } // if
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

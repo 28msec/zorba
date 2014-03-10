@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<zorba:source>
+  <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+
+<!--========================================================================-->
+
+<zorba:iterator name="JSoundAnnotateIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="annotate" prefix="fn-zorba-jsound">
+      <zorba:param>object()</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>item()</zorba:param>
+      <zorba:param>object()</zorba:param>
+      <zorba:output>item()</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="JSoundValidateIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="validate" prefix="fn-zorba-jsound">
+      <zorba:param>object()</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>item()</zorba:param>
+      <zorba:param>object()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+</zorba:iterators>
+<!-- vim:set et sw=2 ts=2: -->

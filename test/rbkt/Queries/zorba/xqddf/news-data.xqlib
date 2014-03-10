@@ -4,10 +4,10 @@ module namespace news-data = "http://www.news.org/data";
 
 import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace init = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace manip = "http://zorba.io/modules/store/static/collections/dml";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare collection news-data:employees
   as schema-element(news:employee)*;

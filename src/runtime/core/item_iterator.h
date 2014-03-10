@@ -63,6 +63,8 @@ public:
 
   virtual ~SingletonIterator() {}
   
+  zstring getNameAsString() const;
+
   const store::Item_t& getValue() const { return theValue; }
 
   void accept(PlanIterVisitor& v) const;
@@ -114,6 +116,8 @@ public:
         PlanIter_t& aThenIter,
         PlanIter_t& aElseIter,
         bool aIsBooleanIter = false);
+
+  zstring getNameAsString() const;
 
   virtual uint32_t getStateSize() const { return sizeof(IfThenElseIteratorState); }
 

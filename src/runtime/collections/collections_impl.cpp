@@ -20,6 +20,7 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include <zorba/internal/unique_ptr.h>
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
@@ -178,7 +179,7 @@ store::Collection_t FnCollectionIterator::getCollection(PlanState& planState) co
 {
   store::Item_t uriItem;
   store::Collection_t coll;
-  std::auto_ptr<internal::Resource> resource;
+  std::unique_ptr<internal::Resource> resource;
   internal::CollectionResource* collResource;
   zstring resolvedURI;
   zstring errorMessage;
@@ -277,17 +278,13 @@ bool ZorbaCollectionIterator::isCountOptimizable() const
 }
 
 
-bool ZorbaCollectionIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& planState) const
+void ZorbaCollectionIterator::initCollection(PlanState& planState, int64_t skipCount) const
 {
   store::Item_t name;
-  store::Collection_t collection;
   xs_integer lSkip;
-  zstring lStart;
+  store::Collection_t collection;
 
-  ZorbaCollectionIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
+  ZorbaCollectionIteratorState* state = StateTraitsImpl<ZorbaCollectionIteratorState>::getState(planState, theStateOffset);
 
   consumeNext(name, theChildren[0].getp(), planState);
 
@@ -295,16 +292,20 @@ bool ZorbaCollectionIterator::nextImpl(
 
   if (theChildren.size() == 1)
   {
-    state->theIterator = collection->getIterator();
+    if (skipCount < 0)
+      skipCount = 0;
+    lSkip = skipCount;
+    state->theIterator = collection->getIterator(lSkip);
   }
   else
   {
+    zstring lStart;
     bool lRefPassed = theChildren.size() >= 3;
-    
+
     // read positional skip parameter
     store::Item_t lSkipItem;
     consumeNext(lSkipItem, theChildren[(lRefPassed ? 2 : 1)].getp(), planState);
-    lSkip = lSkipItem->getIntegerValue(); 
+    lSkip = lSkipItem->getIntegerValue() + skipCount;
 
     // negative skip is not allowed
     if (lSkip.sign() < 0)
@@ -320,7 +321,7 @@ bool ZorbaCollectionIterator::nextImpl(
     {
       store::Item_t lRefItem;
       consumeNext(lRefItem, theChildren[1].getp(), planState);
-      lStart = lRefItem->getString(); 
+      lStart = lRefItem->getString();
       try
       {
         state->theIterator = collection->getIterator(lSkip, lStart);
@@ -346,6 +347,29 @@ bool ZorbaCollectionIterator::nextImpl(
   }
 
   state->theIteratorOpened = true;
+}
+
+
+bool ZorbaCollectionIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t name;
+  xs_integer lSkip;
+  store::Collection_t collection;
+
+  ZorbaCollectionIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
+
+  if (state->theIterator.getp() != NULL && state->theIteratorOpened == false)
+  {
+    ZORBA_ASSERT (false && "nextImpl() called past iterator end");
+    return false;
+  }
+  else if ( ! state->theIteratorOpened)
+  {
+    initCollection(planState, 0);
+  }
 
   while (state->theIterator->next(result))
     STACK_PUSH(true, state);
@@ -355,6 +379,25 @@ bool ZorbaCollectionIterator::nextImpl(
   state->theIteratorOpened = false;
 
   STACK_END(state);
+}
+
+
+bool ZorbaCollectionIterator::skip(int64_t count, PlanState& planState) const
+{  
+  ZorbaCollectionIteratorState* state = StateTraitsImpl<ZorbaCollectionIteratorState>::getState(planState, theStateOffset);
+
+  if (state->theIterator.getp() != NULL && state->theIteratorOpened == false)
+  {
+    ZORBA_ASSERT (false && "nextImpl() called past iterator end");
+    return false;
+  }
+  else if ( ! state->theIteratorOpened)
+  {
+    initCollection(planState, count);
+    return true;
+  }
+  else
+    return false;
 }
 
 
@@ -447,7 +490,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t node;
   store::Item_t copyNode;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -563,7 +606,7 @@ bool ZorbaDeleteCollectionIterator::nextImpl(
 {
   store::Item_t name;
   store::Collection_t collection;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -585,16 +628,16 @@ bool ZorbaDeleteCollectionIterator::nextImpl(
 
 /*******************************************************************************
   declare updating function
-  insert-nodes($name as xs:QName, $newnode as node()*)
+  insert($name as xs:QName, $newnode as node()*)
 
   The function will insert the given nodes to the given collection.
 ********************************************************************************/
-bool ZorbaInsertNodesIterator::nextImpl(
+bool ZorbaInsertIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   store::Item_t                    name;
 
   PlanIteratorState* state;
@@ -616,7 +659,7 @@ bool ZorbaInsertNodesIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaInsertNodesIterator::getCollection(
+ZorbaInsertIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -655,18 +698,18 @@ ZorbaInsertNodesIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  insert-nodes-first($name as xs:QName, $newnode as node()*) as none
+  insert-first($name as xs:QName, $newnode as node()*) as none
 
   The function will insert the given node(s) as the first node(s) of the given
   collection. If multiple nodes are inserted, the nodes remain adjacent and
   their order preserves the node ordering of the source expression.
 ********************************************************************************/
-bool ZorbaInsertNodesFirstIterator::nextImpl(
+bool ZorbaInsertFirstIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
   std::vector<store::Item_t> nodes;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
   store::Item_t name;
 
   PlanIteratorState* state;
@@ -690,7 +733,7 @@ bool ZorbaInsertNodesFirstIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaInsertNodesFirstIterator::getCollection(
+ZorbaInsertFirstIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -733,7 +776,7 @@ ZorbaInsertNodesFirstIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  insert-nodes-last($name as xs:QName, $newnode as node()*) as none
+  insert-last($name as xs:QName, $newnode as node()*) as none
 
   The function will insert the given node(s) as the last node(s) of the given
   collection. If multiple nodes are inserted, the nodes remain adjacent and
@@ -747,12 +790,12 @@ ZorbaInsertNodesFirstIterator::getCollection(
   - If the node is already in the collection, an error is raised
     (ZAPI0031_NODE_ALREADY_IN_COLLECTION)
 ********************************************************************************/
-bool ZorbaInsertNodesLastIterator::nextImpl(
+bool ZorbaInsertLastIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   store::Item_t                    name;
 
   PlanIteratorState* state;
@@ -776,7 +819,7 @@ bool ZorbaInsertNodesLastIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaInsertNodesLastIterator::getCollection(
+ZorbaInsertLastIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -813,9 +856,9 @@ ZorbaInsertNodesLastIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  insert-nodes-before($name as xs:QName,
-                      $target as node(),
-                      $newnodes as node()*)
+  insert-before($name as xs:QName,
+                $target as node(),
+                $newnodes as node()*)
 
   The inserted nodes become the preceding (or following) nodes of the target.
   The $target should be a non-updating expression (e.g. an XPath expression)
@@ -823,7 +866,7 @@ ZorbaInsertNodesLastIterator::getCollection(
   If multiple nodes are inserted by a single insert expression, the nodes remain
   adjacent and their order preserves the node ordering of the source expression.
 ********************************************************************************/
-bool ZorbaInsertNodesBeforeIterator::nextImpl(
+bool ZorbaInsertBeforeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -831,7 +874,7 @@ bool ZorbaInsertNodesBeforeIterator::nextImpl(
   store::Item_t                    targetNode;
   store::Item_t                    node;
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -858,7 +901,7 @@ bool ZorbaInsertNodesBeforeIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaInsertNodesBeforeIterator::getCollection(
+ZorbaInsertBeforeIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -901,9 +944,9 @@ ZorbaInsertNodesBeforeIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  insert-nodes-after($name as xs:QName,
-                     $target as node(),
-                     $newnode as node()*)
+  insert-after($name as xs:QName,
+               $target as node(),
+               $newnode as node()*)
 
   The inserted nodes become the following nodes of the $target. The $target
   should be a non-updating expression (e.g. an XPath expression) identifying a
@@ -911,13 +954,13 @@ ZorbaInsertNodesBeforeIterator::getCollection(
   are inserted by a single insert expression, the nodes remain adjacent and
   their order preserves the node ordering of the source expression.
 ********************************************************************************/
-bool ZorbaInsertNodesAfterIterator::nextImpl(
+bool ZorbaInsertAfterIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
   store::Item_t               name;
   std::vector<store::Item_t>  nodes;
-  std::auto_ptr<store::PUL>   pul;
+  std::unique_ptr<store::PUL>   pul;
   store::Item_t               targetNode;
 
   store::CopyMode lCopyMode;
@@ -948,7 +991,7 @@ bool ZorbaInsertNodesAfterIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaInsertNodesAfterIterator::getCollection(
+ZorbaInsertAfterIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -992,39 +1035,39 @@ ZorbaInsertNodesAfterIterator::getCollection(
 
 /*******************************************************************************
   declare sequential function
-  apply-insert-nodes($name as xs:QName, $newnode as node()*)
+  apply-insert($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
-ZorbaApplyInsertNodesIteratorState::~ZorbaApplyInsertNodesIteratorState()
+ZorbaApplyInsertIteratorState::~ZorbaApplyInsertIteratorState()
 {
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesIteratorState::init(PlanState& planState)
+void ZorbaApplyInsertIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesIteratorState::reset(PlanState& planState)
+void ZorbaApplyInsertIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   nodes.clear();
 }
 
 
-bool ZorbaApplyInsertNodesIterator::nextImpl(
+bool ZorbaApplyInsertIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
 
-  ZorbaApplyInsertNodesIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaApplyInsertNodesIteratorState, state, planState);
+  ZorbaApplyInsertIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaApplyInsertIteratorState, state, planState);
 
   checkCollectionAndCopyNodes(planState, name, nodes);
 
@@ -1067,56 +1110,55 @@ bool ZorbaApplyInsertNodesIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaApplyInsertNodesIterator::getCollection(
+ZorbaApplyInsertIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
   return zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 }
 
-
 /*******************************************************************************
   declare sequential function
-  apply-insert-nodes-first($name as xs:QName, $newnode as node()*)
+  apply-insert-first($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
-ZorbaApplyInsertNodesFirstIteratorState::~ZorbaApplyInsertNodesFirstIteratorState()
+ZorbaApplyInsertFirstIteratorState::~ZorbaApplyInsertFirstIteratorState()
 {
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesFirstIteratorState::init(PlanState& planState)
+void ZorbaApplyInsertFirstIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesFirstIteratorState::reset(PlanState& planState)
+void ZorbaApplyInsertFirstIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   nodes.clear();
 }
 
 
-bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
+bool ZorbaApplyInsertFirstIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
 
-  ZorbaApplyInsertNodesFirstIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaApplyInsertNodesFirstIteratorState, state, planState);
+  ZorbaApplyInsertFirstIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaApplyInsertFirstIteratorState, state, planState);
 
   checkCollectionAndCopyNodes(planState, name, nodes);
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  if (nodes.size() > 0) 
+  if (nodes.size() > 0)
   {
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
@@ -1124,7 +1166,7 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
     pul->addInsertFirstIntoCollection(&loc, name, nodes, theIsDynamic);
   }
 
-  if (pul.get()) 
+  if (pul.get())
   {
     apply_updates(planState.theCompilerCB,
                   planState.theGlobalDynCtx,
@@ -1136,7 +1178,7 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
 
   state->iterator = state->nodes.begin();
 
-  while (state->iterator != state->nodes.end()) 
+  while (state->iterator != state->nodes.end())
   {
     result = *state->iterator;
     ++(state->iterator);
@@ -1148,9 +1190,8 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
   STACK_END(state);
 }
 
-
 const StaticallyKnownCollection*
-ZorbaApplyInsertNodesFirstIterator::getCollection(
+ZorbaApplyInsertFirstIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1160,23 +1201,23 @@ ZorbaApplyInsertNodesFirstIterator::getCollection(
 
 /*******************************************************************************
   declare sequential function
-  apply-insert-nodes-last($name as xs:QName, $newnode as node()*)
+  apply-last($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
-ZorbaApplyInsertNodesLastIteratorState::~ZorbaApplyInsertNodesLastIteratorState()
+ZorbaApplyInsertLastIteratorState::~ZorbaApplyInsertLastIteratorState()
 {
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesLastIteratorState::init(PlanState& planState)
+void ZorbaApplyInsertLastIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesLastIteratorState::reset(PlanState& planState)
+void ZorbaApplyInsertLastIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   nodes.clear();
@@ -1184,16 +1225,16 @@ void ZorbaApplyInsertNodesLastIteratorState::reset(PlanState& planState)
 
 
 bool
-ZorbaApplyInsertNodesLastIterator::nextImpl(
+ZorbaApplyInsertLastIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
 
-  ZorbaApplyInsertNodesLastIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaApplyInsertNodesLastIteratorState, state, planState);
+  ZorbaApplyInsertLastIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaApplyInsertLastIteratorState, state, planState);
 
   checkCollectionAndCopyNodes(planState, name, nodes);
 
@@ -1234,7 +1275,7 @@ ZorbaApplyInsertNodesLastIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaApplyInsertNodesLastIterator::getCollection(
+ZorbaApplyInsertLastIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1244,23 +1285,23 @@ ZorbaApplyInsertNodesLastIterator::getCollection(
 
 /*******************************************************************************
   declare sequential function
-  apply-insert-nodes-before($name as xs:QName, $newnode as node()*)
+  apply-before($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
-ZorbaApplyInsertNodesBeforeIteratorState::~ZorbaApplyInsertNodesBeforeIteratorState()
+ZorbaApplyInsertBeforeIteratorState::~ZorbaApplyInsertBeforeIteratorState()
 {
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesBeforeIteratorState::init(PlanState& planState)
+void ZorbaApplyInsertBeforeIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesBeforeIteratorState::reset(PlanState& planState)
+void ZorbaApplyInsertBeforeIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   nodes.clear();
@@ -1268,17 +1309,17 @@ void ZorbaApplyInsertNodesBeforeIteratorState::reset(PlanState& planState)
 
 
 bool
-ZorbaApplyInsertNodesBeforeIterator::nextImpl(
+ZorbaApplyInsertBeforeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
   store::Item_t                    targetNode;
 
-  ZorbaApplyInsertNodesIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaApplyInsertNodesIteratorState, state, planState);
+  ZorbaApplyInsertIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaApplyInsertIteratorState, state, planState);
 
   checkCollectionAndCopyNodes(planState, name, nodes, targetNode, true);
 
@@ -1323,7 +1364,7 @@ ZorbaApplyInsertNodesBeforeIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaApplyInsertNodesBeforeIterator::getCollection(
+ZorbaApplyInsertBeforeIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1333,23 +1374,23 @@ ZorbaApplyInsertNodesBeforeIterator::getCollection(
 
 /*******************************************************************************
   declare sequential function
-  apply-insert-nodes-after($name as xs:QName, $newnode as node()*)
+  apply-after($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
-ZorbaApplyInsertNodesAfterIteratorState::~ZorbaApplyInsertNodesAfterIteratorState()
+ZorbaApplyInsertAfterIteratorState::~ZorbaApplyInsertAfterIteratorState()
 {
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesAfterIteratorState::init(PlanState& planState)
+void ZorbaApplyInsertAfterIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesAfterIteratorState::reset(PlanState& planState)
+void ZorbaApplyInsertAfterIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   nodes.clear();
@@ -1357,17 +1398,17 @@ void ZorbaApplyInsertNodesAfterIteratorState::reset(PlanState& planState)
 
 
 bool
-ZorbaApplyInsertNodesAfterIterator::nextImpl(
+ZorbaApplyInsertAfterIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
   store::Item_t                    targetNode;
 
-  ZorbaApplyInsertNodesIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaApplyInsertNodesIteratorState, state, planState);
+  ZorbaApplyInsertIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaApplyInsertIteratorState, state, planState);
 
   checkCollectionAndCopyNodes(planState, name, nodes, targetNode, true);
 
@@ -1413,7 +1454,7 @@ ZorbaApplyInsertNodesAfterIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaApplyInsertNodesAfterIterator::getCollection(
+ZorbaApplyInsertAfterIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1423,13 +1464,13 @@ ZorbaApplyInsertNodesAfterIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  delete-nodes($name as xs:QName, $target as node()*)
+  delete($name as xs:QName, $target as node()*)
 
   The function will remove the node(s) identified by the $target expression
   from the given collection. The nodes themselves will not be deleted until all
   references to them have been removed.
 ********************************************************************************/
-bool ZorbaDeleteNodesIterator::nextImpl(
+bool ZorbaDeleteIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1437,7 +1478,7 @@ bool ZorbaDeleteNodesIterator::nextImpl(
   store::Item_t                    name;
   store::Item_t                    node;
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1493,7 +1534,7 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaDeleteNodesIterator::getCollection(
+ZorbaDeleteIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1532,7 +1573,7 @@ ZorbaDeleteNodesIterator::getCollection(
 /*******************************************************************************
 
 ********************************************************************************/
-bool ZorbaDeleteNodesFirstIterator::nextImpl(
+bool ZorbaDeleteFirstIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1541,7 +1582,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   store::Item_t                    numNodesItem;
   xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1581,7 +1622,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaDeleteNodesFirstIterator::getCollection(
+ZorbaDeleteFirstIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1623,7 +1664,7 @@ ZorbaDeleteNodesFirstIterator::getCollection(
 /*******************************************************************************
 
 ********************************************************************************/
-bool ZorbaDeleteNodesLastIterator::nextImpl(
+bool ZorbaDeleteLastIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1632,7 +1673,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   store::Item_t                    numNodesItem;
   xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1674,7 +1715,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
 
 ********************************************************************************/
 const StaticallyKnownCollection*
-ZorbaDeleteNodesLastIterator::getCollection(
+ZorbaDeleteLastIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1719,7 +1760,7 @@ ZorbaDeleteNodesLastIterator::getCollection(
 /*******************************************************************************
 
 ********************************************************************************/
-bool ZorbaEditNodesIterator::nextImpl(
+bool ZorbaEditIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1732,7 +1773,7 @@ bool ZorbaEditNodesIterator::nextImpl(
   store::Item_t                    content;
   store::CopyMode lCopyMode;
 
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1803,7 +1844,7 @@ bool ZorbaEditNodesIterator::nextImpl(
 
 ********************************************************************************/
 const StaticallyKnownCollection*
-ZorbaEditNodesIterator::getCollection(
+ZorbaEditIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1848,7 +1889,7 @@ bool ZorbaTruncateCollectionIterator::nextImpl(
 {
   store::Collection_t              collection;
   store::Item_t                    collectionName;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -2472,7 +2513,7 @@ bool FnURICollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 {
   store::Item_t lURI, resolvedURIItem, lIte;
   store::Collection_t coll;
-  std::auto_ptr<internal::Resource> lResource;
+  std::unique_ptr<internal::Resource> lResource;
   internal::CollectionResource* lCollResource;
   zstring resolvedURIString;
   zstring lErrorMessage;

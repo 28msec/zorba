@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.xquery.XQException;
-import org.zorbaxquery.api.ItemSequence;
-import org.zorbaxquery.api.XmlDataManager;
-import org.zorbaxquery.api.Zorba;
+import io.zorba.api.ItemSequence;
+import io.zorba.api.XmlDataManager;
+import io.zorba.api.Zorba;
 
 
   /**
@@ -42,6 +42,10 @@ public class ZorbaXQXmlDataManager {
         dm = zorba.getXmlDataManager();
     }
     
+    public XmlDataManager getXDM() {
+        return dm;
+    }
+
   /** \brief   Close the XmlDataManager and release all the resources associated with this item.
    * 
    *   Close the XmlDataManager and release all the resources associated with this item. No method other than the isClosed or close method may be called once the XmlDataManager is closed. Calling close on an XmlDataManager object that is already closed has no effect.

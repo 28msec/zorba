@@ -28,7 +28,6 @@
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/casting.h"
-#include "types/typeconstants.h"
 #include "types/typeops.h"
 #include "util/xml_util.h"
 #include "zorbatypes/float.h"

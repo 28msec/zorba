@@ -17,10 +17,14 @@
 #ifndef ZORBA_GLOBALENV_H
 #define ZORBA_GLOBALENV_H
 
-#include <memory>
 #include <zorba/config.h>
+#include <zorba/internal/unique_ptr.h>
+
 #include "common/common.h"
 #include "common/shared_types.h"
+
+#include "util/locale.h"
+
 
 namespace zorba
 {
@@ -50,14 +54,14 @@ class Store;
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC GlobalEnvironment 
+class GlobalEnvironment 
 {
 private:
 
   static GlobalEnvironment        * m_globalEnv;
 
 private:
-  store::Store                    * m_store;
+  store::Store                    * theStore;
 
   RootTypeManager                 * theRootTypeManager;
 
@@ -78,7 +82,11 @@ private:
   internal::ThesaurusURLResolver  * m_thesaurus_resolver;
 #endif /* ZORBA_NO_FULL_TEXT */
 
-  mutable DynamicLoader           * m_dynamic_loader;
+  mutable DynamicLoader           * theDynamicLoader;
+
+  locale::iso3166_1::type           theHostCountry;
+
+  locale::iso639_1::type            theHostLang;
 
 public:
 
@@ -92,6 +100,11 @@ public:
   {
     assert(m_globalEnv);
     return *m_globalEnv;
+  }
+
+  static GlobalEnvironment* getInstancePtr()
+  {
+    return m_globalEnv;
   }
 
 public:
@@ -125,6 +138,10 @@ public:
 
   DynamicLoader* getDynamicLoader() const;
 
+  locale::iso3166_1::type get_host_country() const { return theHostCountry; }
+
+  locale::iso639_1::type get_host_lang() const { return theHostLang; }
+
 #ifdef ZORBA_XQUERYX
   XQueryXConvertor* getXQueryXConvertor();
 #endif
@@ -139,6 +156,7 @@ private:
 
 
 #define GENV GlobalEnvironment::getInstance()
+#define GENV_PTR GlobalEnvironment::getInstancePtr()
 
 #define GENV_TYPESYSTEM GlobalEnvironment::getInstance().getRootTypeManager()
 

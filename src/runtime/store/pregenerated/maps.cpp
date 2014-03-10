@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -59,20 +60,24 @@ void MapCreateIterator::accept(PlanIterVisitor& v) const
 
 MapCreateIterator::~MapCreateIterator() {}
 
+
+zstring MapCreateIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:create";
+}
 // </MapCreateIterator>
 
 
-// <MapCreateTransientIterator>
-SERIALIZABLE_CLASS_VERSIONS(MapCreateTransientIterator)
+// <MapDropIterator>
+SERIALIZABLE_CLASS_VERSIONS(MapDropIterator)
 
-void MapCreateTransientIterator::serialize(::zorba::serialization::Archiver& ar)
+void MapDropIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<MapCreateTransientIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<MapDropIterator, PlanIteratorState>*)this);
 }
 
 
-void MapCreateTransientIterator::accept(PlanIterVisitor& v) const
+void MapDropIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -85,37 +90,13 @@ void MapCreateTransientIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-MapCreateTransientIterator::~MapCreateTransientIterator() {}
-
-// </MapCreateTransientIterator>
+MapDropIterator::~MapDropIterator() {}
 
 
-// <MapDestroyIterator>
-SERIALIZABLE_CLASS_VERSIONS(MapDestroyIterator)
-
-void MapDestroyIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<MapDestroyIterator, PlanIteratorState>*)this);
+zstring MapDropIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:drop";
 }
-
-
-void MapDestroyIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-MapDestroyIterator::~MapDestroyIterator() {}
-
-// </MapDestroyIterator>
+// </MapDropIterator>
 
 
 // <MapGetIterator>
@@ -155,6 +136,10 @@ void MapGetIteratorState::init(PlanState& planState) {
 void MapGetIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring MapGetIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:get";
+}
 // </MapGetIterator>
 
 
@@ -183,20 +168,24 @@ void MapInsertIterator::accept(PlanIterVisitor& v) const
 
 MapInsertIterator::~MapInsertIterator() {}
 
+
+zstring MapInsertIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:insert";
+}
 // </MapInsertIterator>
 
 
-// <MapRemoveIterator>
-SERIALIZABLE_CLASS_VERSIONS(MapRemoveIterator)
+// <MapDeleteIterator>
+SERIALIZABLE_CLASS_VERSIONS(MapDeleteIterator)
 
-void MapRemoveIterator::serialize(::zorba::serialization::Archiver& ar)
+void MapDeleteIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<MapRemoveIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<MapDeleteIterator, PlanIteratorState>*)this);
 }
 
 
-void MapRemoveIterator::accept(PlanIterVisitor& v) const
+void MapDeleteIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -209,9 +198,13 @@ void MapRemoveIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-MapRemoveIterator::~MapRemoveIterator() {}
+MapDeleteIterator::~MapDeleteIterator() {}
 
-// </MapRemoveIterator>
+
+zstring MapDeleteIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:delete";
+}
+// </MapDeleteIterator>
 
 
 // <MapKeysIterator>
@@ -221,8 +214,6 @@ void MapKeysIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
   (NaryBaseIterator<MapKeysIterator, MapKeysIteratorState>*)this);
-
-    ar & theNSBindings;
 }
 
 
@@ -253,6 +244,10 @@ void MapKeysIteratorState::init(PlanState& planState) {
 void MapKeysIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring MapKeysIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:keys";
+}
 // </MapKeysIterator>
 
 
@@ -281,6 +276,10 @@ void MapSizeIterator::accept(PlanIterVisitor& v) const
 
 MapSizeIterator::~MapSizeIterator() {}
 
+
+zstring MapSizeIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:size";
+}
 // </MapSizeIterator>
 
 
@@ -311,20 +310,24 @@ AvailableMapsIterator::~AvailableMapsIterator() {}
 
 AvailableMapsIteratorState::AvailableMapsIteratorState() {}
 
+
+zstring AvailableMapsIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:available-maps";
+}
 // </AvailableMapsIterator>
 
 
-// <MapIsTransientIterator>
-SERIALIZABLE_CLASS_VERSIONS(MapIsTransientIterator)
+// <MapOptionsIterator>
+SERIALIZABLE_CLASS_VERSIONS(MapOptionsIterator)
 
-void MapIsTransientIterator::serialize(::zorba::serialization::Archiver& ar)
+void MapOptionsIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<MapIsTransientIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<MapOptionsIterator, PlanIteratorState>*)this);
 }
 
 
-void MapIsTransientIterator::accept(PlanIterVisitor& v) const
+void MapOptionsIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -337,9 +340,13 @@ void MapIsTransientIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-MapIsTransientIterator::~MapIsTransientIterator() {}
+MapOptionsIterator::~MapOptionsIterator() {}
 
-// </MapIsTransientIterator>
+
+zstring MapOptionsIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:options";
+}
+// </MapOptionsIterator>
 
 
 

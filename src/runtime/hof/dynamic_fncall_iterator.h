@@ -20,8 +20,11 @@
 #include "common/shared_types.h"
 
 #include "runtime/base/narybase.h"
-
+#include "runtime/base/unarybase.h"
 #include "runtime/base/noarybase.h"
+
+#include "zorbautils/hashset.h"
+#include "zorbautils/hashmap_zstring.h"
 
 
 namespace zorba
@@ -60,7 +63,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class DynamicFnCallIteratorState : public PlanIteratorState
+class SingleDynamicFnCallIteratorState : public PlanIteratorState
 {
 public:
   PlanState  * thePlanState;
@@ -71,9 +74,9 @@ public:
 
   store::Iterator_t theIterator;
 
-  DynamicFnCallIteratorState();
+  SingleDynamicFnCallIteratorState();
 
-  ~DynamicFnCallIteratorState();
+  ~SingleDynamicFnCallIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -84,29 +87,30 @@ public:
   The 1st child iterator returns the functionItem obj to invoke. The rest of
   the child iterators compute the args to pass to the invocation.
 ********************************************************************************/
-class DynamicFnCallIterator : public NaryBaseIterator<DynamicFnCallIterator,
-                                                      DynamicFnCallIteratorState>
+class SingleDynamicFnCallIterator :
+public NaryBaseIterator<SingleDynamicFnCallIterator, SingleDynamicFnCallIteratorState>
 {
 protected:
-  bool   theIsPartialApply;
+  bool theIsPartialApply;
   
 public:
-  SERIALIZABLE_CLASS(DynamicFnCallIterator);
+  SERIALIZABLE_CLASS(SingleDynamicFnCallIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DynamicFnCallIterator,
-  NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingleDynamicFnCallIterator,
+  NaryBaseIterator<SingleDynamicFnCallIterator, SingleDynamicFnCallIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar);
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFnCallIterator(
+  SingleDynamicFnCallIterator(
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& args,
       bool isPartialApply,
       xqtref_t coercionTargetType = NULL)
     :
-    NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>(sctx, loc, args),
+    NaryBaseIterator<SingleDynamicFnCallIterator,
+                     SingleDynamicFnCallIteratorState>(sctx, loc, args),
     theIsPartialApply(isPartialApply)
   {
   }
@@ -117,7 +121,74 @@ public:
 
   void openImpl(PlanState& planState, uint32_t& offset);
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class MultiDynamicFnCallIteratorState : public PlanIteratorState
+{
+public:
+  PlanState      * thePlanState;
+  PlanIter_t       thePlan;
+  bool             theIsOpen;
+
+  uint32_t          theUDFStateOffset;
+
+  store::Iterator_t theIterator;
+
+  std::unique_ptr<HashSet<zstring, HashMapZStringCmp> > theKeysSet;
+
+public:
+  MultiDynamicFnCallIteratorState();
+
+  ~MultiDynamicFnCallIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+/*******************************************************************************
+  The 1st child iterator returns the functionItem obj to invoke. The rest of
+  the child iterators compute the args to pass to the invocation.
+********************************************************************************/
+class MultiDynamicFnCallIterator : 
+public UnaryBaseIterator<MultiDynamicFnCallIterator,
+                         MultiDynamicFnCallIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(MultiDynamicFnCallIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MultiDynamicFnCallIterator,
+  UnaryBaseIterator<MultiDynamicFnCallIterator, MultiDynamicFnCallIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  MultiDynamicFnCallIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      const PlanIter_t& arg)
+    :
+    UnaryBaseIterator<MultiDynamicFnCallIterator,
+                      MultiDynamicFnCallIteratorState>(sctx, loc, arg)
+  {
+  }
+
+  void accept(PlanIterVisitor& v) const;
+
+  uint32_t getStateSizeOfSubtree() const;
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  zstring getNameAsString() const;
 
   void resetImpl(PlanState& planState) const;
 };

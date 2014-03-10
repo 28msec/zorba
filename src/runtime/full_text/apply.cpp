@@ -20,6 +20,7 @@
 #include <vector>
 
 #include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 #include <zorba/tokenizer.h>
 
 #include "compiler/expression/ftnode.h"
@@ -36,9 +37,9 @@
 #include "zorbamisc/ns_consts.h"
 
 #ifndef NDEBUG
-# include "system/properties.h"
-# define DOUT             Properties::instance()->debug_out()
-# define TRACE_FULL_TEXT  Properties::instance()->traceFulltext()
+# include <zorba/properties.h>
+# define DOUT             Properties::instance().getDebugStream()
+# define TRACE_FULL_TEXT  Properties::instance().getTraceFulltext()
 #endif /* NDEBUG */
 
 #include "apply.h"
@@ -65,7 +66,7 @@ namespace zorba {
 #ifndef NDEBUG
 
 /**
- * An instance of this class is ued to perform RAII (Resource Acquisition Is
+ * An instance of this class is used to perform RAII (Resource Acquisition Is
  * Initialization) to guarantee that the result is printed and that the proper
  * number of "dec_indent" calls are done regardless of how the enclosing
  * function exits.
@@ -770,9 +771,12 @@ static void apply_ftscope_same( ft_all_matches const &am,
 
   FOR_EACH( ft_all_matches, m, am ) {
     bool every_satisfies = true;
-    FOR_EACH( ft_match::includes_t, i1, m->includes ) {
-      FOR_EACH( ft_match::includes_t, i2, m->includes ) {
-        if ( &*i1 != &*i2 && !same( *i1, *i2, sep ) ) {
+    if ( m->includes.size() > 1 ) {
+      ft_match::includes_t::const_iterator i( m->includes.begin() );
+      ft_match::includes_t::const_iterator const end( m->includes.end() );
+      ft_match::includes_t::value_type const &first = *i;
+      while ( ++i != end ) {
+        if ( !same( first, *i, sep ) ) {
           every_satisfies = false;
           break;
         }
@@ -1221,7 +1225,7 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
   zstring const &uri = t_id.get_uri();
 
   zstring error_msg;
-  auto_ptr<internal::Resource> rsrc = static_ctx_.resolve_uri(
+  unique_ptr<internal::Resource> rsrc = static_ctx_.resolve_uri(
     uri, internal::EntityData::THESAURUS, error_msg
   );
   ZORBA_ASSERT( rsrc.get() );
@@ -1235,7 +1239,7 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
     throw XQUERY_EXCEPTION(
       err::FTST0009,
       ERROR_PARAMS(
-        iso639_1::string_of[ qt0.lang() ], ZED( FTST0009_BadThesaurusLang )
+        iso639_1::str( qt0.lang() ), ZED( FTST0009_BadThesaurusLang )
       )
     );
 
@@ -1258,7 +1262,7 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
     throw XQUERY_EXCEPTION(
       err::FTST0009,
       ERROR_PARAMS(
-        iso639_1::string_of[ qt0.lang() ], ZED( FTST0009_BadTokenizerLang )
+        iso639_1::str( qt0.lang() ), ZED( FTST0009_BadTokenizerLang )
       )
     );
 

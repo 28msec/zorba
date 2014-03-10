@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_SEQUENCES_H
 #define ZORBA_FUNCTIONS_SEQUENCES_H
 
@@ -633,6 +634,8 @@ public:
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
+  bool accessesDynCtx() const { return true; }
+
   CODEGEN_DECL();
 };
 
@@ -647,6 +650,8 @@ public:
   {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -663,6 +668,10 @@ public:
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
+  bool accessesDynCtx() const { return true; }
+
+  bool isSource() const { return true; }
+
   CODEGEN_DECL();
 };
 
@@ -678,6 +687,10 @@ public:
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
+  bool accessesDynCtx() const { return true; }
+
+  bool isSource() const { return true; }
+
   CODEGEN_DECL();
 };
 
@@ -692,6 +705,10 @@ public:
   {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool isSource() const { return true; }
 
   CODEGEN_DECL();
 };

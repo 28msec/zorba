@@ -92,8 +92,9 @@ namespace has_insertion_operator_impl {
   typedef char yes[2];
 
   /**
-   * This dummy class is used to make the matching of the dummy operator<<()
-   * \e worse than the global \c operator<<(), if any.
+   * This dummy class is used to make the matching of the dummy
+   * \c operator&lt;&lt;() \e worse than the global \c operator&lt;&lt;(),
+   * if any.
    */
   struct any_t {
     template<typename T> any_t( T const& );
@@ -101,23 +102,24 @@ namespace has_insertion_operator_impl {
 
   /**
    * This dummy operator is matched only when there is \e no global
-   * operator<<() otherwise declared for type \c T.
+   * \c operator&lt;&lt;() otherwise declared for type \c T.
    *
    * @return Returns a \c no that selects defined(no).
    */
   no operator<<( std::ostream const&, any_t const& );
 
   /**
-   * This function is matched only when there \e is a global \c operator<<()
-   * declared for type \c T because \c operator<<()'s return type is
-   * \c std::ostream&.
+   * This function is matched only when there \e is a global
+   * \c operator&lt;&lt;() declared for type \c T because
+   * \c operator&lt;&lt;()'s return type is \c std::ostream&.
    *
    * @return Returns a yes& whose \c sizeof() equals \c sizeof(yes).
    */
   yes& defined( std::ostream& );
 
   /**
-   * This function is matched only when the dummy \c operator<<() is matched.
+   * This function is matched only when the dummy \c operator&lt;&lt;() is
+   * matched.
    *
    * @return Returns a no whose \c sizeof() equals \c sizeof(no).
    */
@@ -125,8 +127,10 @@ namespace has_insertion_operator_impl {
 
   /**
    * The implementation class that can be used to determine whether a given
-   * type \c T has a global <code>std::ostream& operator<<(std::ostream&,T
-   * const&)</code> defined for it.  However, do not use this class directly.
+   * type \c T has a global
+   * <code>std::ostream& operator&lt;&lt;(std::ostream&,T const&)</code>
+   * defined for it.
+   * However, do not use this class directly.
    *
    * @tparam T The type to check.
    */
@@ -136,8 +140,8 @@ namespace has_insertion_operator_impl {
     static T const &t;
   public:
     /**
-     * This is \c true only when the type \c T has a global \c operator<<()
-     * declared for it.
+     * This is \c true only when the type \c T has a global
+     * \c operator&lt;&lt;() declared for it.
      * \hideinitializer
      */
     static bool const value = sizeof( defined( s << t ) ) == sizeof( yes );
@@ -147,8 +151,8 @@ namespace has_insertion_operator_impl {
 /**
  * \internal
  * A class that can be used to determine whether a given type \c T has a global
- * <code>std::ostream& operator<<(std::ostream&,T const&)</code> defined for
- * it.
+ * <code>std::ostream& operator&lt;&lt;(std::ostream&,T const&)</code> defined
+ * for it.
  * For example:
  * \code
  * template<typename T> inline
@@ -172,7 +176,7 @@ struct has_insertion_operator :
  * \internal
  * Gets the \c char* to the given string.
  * 
- * @tparam OutputStringType The string's type.
+ * @tparam StringType The string's type.
  * @param s The string to get the \c char* of.
  * @return Returns said \c char*.
  */

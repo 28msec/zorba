@@ -57,8 +57,26 @@ function::function(
     setFlag(FunctionConsts::isBuiltin);
 #ifndef NDEBUG
     theRefCount = 1000000;
+
+    csize numTypes = sig.theTypes.size();
+    for (csize i = 0; i < numTypes; ++i)
+    {
+      assert(sig.theTypes[i]->is_builtin());
+    }
 #endif
   }
+#if 0
+  else
+  {
+    std::cout << "Allocated function ";
+    if (getName())
+    {
+      zstring qname = getName()->getStringValue();
+      std::cout << qname;
+    }
+    std::cout << " ( " << this << " )" << std::endl;
+  }
+#endif
 
   setFlag(FunctionConsts::isDeterministic);
 }
@@ -70,6 +88,16 @@ function::function(
 function::~function()
 {
   delete theAnnotationList;
+
+#if 0
+  if (!isBuiltin())
+  {
+    std::cout << "Deallocated function ";
+    if (getName())
+      std::cout << getName()->getStringValue();
+    std::cout << " ( " << this << " )" << std::endl;
+  }
+#endif
 }
 
 
@@ -116,6 +144,8 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
 ********************************************************************************/
 void function::setAnnotations(AnnotationList* annotations)
 {
+  delete theAnnotationList;
+
   theAnnotationList = annotations;
 
   if (!theAnnotationList)
@@ -222,8 +252,8 @@ bool function::isMap(csize input) const
 {
   if (!theSignature.isVariadic() &&
       theSignature.paramCount() > 0 &&
-      (theSignature[input]->get_quantifier() == TypeConstants::QUANT_ONE ||
-       theSignature[input]->get_quantifier() == TypeConstants::QUANT_QUESTION))
+      (theSignature[input]->get_quantifier() == SequenceType::QUANT_ONE ||
+       theSignature[input]->get_quantifier() == SequenceType::QUANT_QUESTION))
     return true;
 
   return false;

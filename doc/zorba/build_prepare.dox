@@ -13,8 +13,8 @@ into will be referred to as \c {ZORBASRC} in later instructions.
 
 \subsection download_source Getting a Source Code Release
 
-You may download the latest Zorba release source code as either a \c
-.zip or \c .tar.gz file from Launchpad:
+You may download the latest Zorba release source code as either a
+<b>.zip</b> or <b>.tar.gz</b> file from Launchpad:
 https://launchpad.net/zorba/+download .
 
 \subsection checkout_source Getting the Latest Code from Launchpad
@@ -77,15 +77,16 @@ build with CMake, provide the \c
 
 \note
 Please note that some of these modules depend on other modules.  Most
-notably, the EXPath http-client module (in the \c http-client module
-package) depends on the \c html module, which is in the \c
-data-converters module package. So, if you download the \c http-client
-package, you must also download the \c data-converters package (and
-ensure that \c libtidy is installed; see \ref noncore_requirements).
+notably, the EXPath http-client module (in the
+<a href="/modules/latest/expath.org/ns/http-client">http-client</a> module
+package) depends on the
+<a href="/modules/latest/www.zorba-xquery.com/modules/converters/html">html</a>
+module, which is in the <b>data-converters</b> module package. So, if you
+download the <b>http-client</b> package, you must also download the
+<b>data-converters</b> package (and ensure that
+<a href="http://tidy.sourceforge.net/">libtidy</a> is installed; see \ref noncore_requirements).
 \note
-Please see our <a
-href="../../zorba/xqdoc/xhtml/images/modules.svg">module-interdependency
-graph</a> for details.
+Please see our <a href="/images/doxygen/modules.svg">module-interdependency graph</a> for details.
 
 \section create_build_dir Creating a Build Directory
 
@@ -93,7 +94,7 @@ Zorba requires an <a
 href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F"
 target="_blank">out-of-source build</a>, which means you need to
 create a separate (empty) build directory. A common convention is to
-create a directory named \"\c build\" in the Zorba source directory,
+create a directory named <b>"build"</b> in the Zorba source directory,
 but you may name it and place it anywhere you like.  We refer to this
 directory as \c {ZORBABUILD} in the following steps.
 

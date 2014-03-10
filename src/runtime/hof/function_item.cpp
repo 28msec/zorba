@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 // This include needs to be kept in order to make sure the
-// auto_ptr<dynamic_context> manages to dealocate the
+// unique_ptr<dynamic_context> manages to dealocate the
 // dynamic_context object.
 #include "context/dynamic_context.h"
 
@@ -334,6 +334,37 @@ PlanIter_t FunctionItem::getImplementation(
       ++ite2;
     }
   }
+
+  expr* dummy = ccb->theEM->
+  create_function_item_expr(NULL,
+                            NULL,
+                            theFunctionItemInfo->theLoc,
+                            false,
+                            false);
+  
+  PlanIter_t udfCallIterator = theFunctionItemInfo->theFunction->
+  codegen(ccb,
+          theFunctionItemInfo->theClosureSctx,
+          theFunctionItemInfo->theLoc,
+          args,
+          *dummy);
+
+  UDFunctionCallIterator* udfIter =
+  static_cast<UDFunctionCallIterator*>(udfCallIterator.getp());
+
+  udfIter->setDynamic();
+  udfIter->setFunctionItem(this);
+
+  return udfCallIterator;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t FunctionItem::getImplementation(CompilerCB* ccb)
+{
+  std::vector<PlanIter_t> args;
 
   expr* dummy = ccb->theEM->
   create_function_item_expr(NULL,

@@ -23,13 +23,11 @@
 #include <set>
 #include <map>
 #include <sstream>
-#include <memory>
 #include <typeinfo>
 
 #include <zorba/config.h>
-
+#include <zorba/internal/unique_ptr.h>
 #include "command_arg.h"
-#include "tuple.h"
 
 
 namespace zorba { namespace debugger {
@@ -252,7 +250,7 @@ Command<Func, Tuple, CommandIdx>::addArgument(
         return false;
       }
       const CommandArg<Tuple>& arg = *(pos->second);
-      std::auto_ptr<CommandArgInstance<Tuple> > instance;
+      std::unique_ptr<CommandArgInstance<Tuple> > instance;
       if (arg.isVoid()) {
         instance.reset(arg.parse("1"));
       } else {

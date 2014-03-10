@@ -17,7 +17,6 @@
 
 #include <assert.h>
 #include <algorithm>
-#include <memory>
 
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
@@ -38,6 +37,7 @@
 #include "context/decimal_format.h"
 #include "context/sctx_map_iterator.h"
 
+#include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
 #ifndef ZORBA_NO_FULL_TEXT
@@ -52,7 +52,6 @@
 
 #include "api/unmarshaller.h"
 #include "api/auditimpl.h"
-
 #include "api/uri_resolver_wrappers.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -264,7 +263,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     ar & lURI;
     ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
-    ar & sctx;
+    ar & theSctx;
   }
   else
   {
@@ -276,12 +275,12 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     ar & lURI;
     ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
-    ar & sctx;
+    ar & theSctx;
 
     if (dyn_loaded_module)
     {
-      ZORBA_ASSERT(sctx);
-      module = GENV_DYNAMIC_LOADER->getExternalModule(lURI, *sctx);
+      ZORBA_ASSERT(theSctx);
+      module = GENV_DYNAMIC_LOADER->getExternalModule(lURI, *theSctx);
 
       // no way to get the module
       if (!module)
@@ -352,6 +351,9 @@ const char*
 static_context::ZORBA_IO_NS_PREFIX = "http://zorba.io/";
 
 const char*
+static_context::JSOUND_IO_NS_PREFIX = "http://jsound.io/";
+
+const char*
 static_context::ZORBA_MATH_FN_NS =
 "http://zorba.io/modules/math";
 
@@ -360,16 +362,20 @@ static_context::ZORBA_BASE64_FN_NS =
 "http://zorba.io/modules/base64";
 
 const char*
-static_context::ZORBA_JSON_FN_NS =
+static_context::ZORBA_JSON_CSV_FN_NS =
+"http://zorba.io/modules/json-csv";
+
+const char*
+static_context::ZORBA_JSON_XML_FN_NS =
 "http://zorba.io/modules/json-xml";
 
 const char*
-static_context::ZORBA_NODEREF_FN_NS =
-"http://www.zorba-xquery.com/modules/node-reference";
+static_context::ZORBA_JSOUND_FN_NS =
+"http://jsound.io/modules/jsound";
 
 const char*
 static_context::ZORBA_REFERENCE_FN_NS =
-"http://www.zorba-xquery.com/modules/reference";
+"http://zorba.io/modules/reference";
 
 const char*
 static_context::ZORBA_NODEPOS_FN_NS =
@@ -377,43 +383,43 @@ static_context::ZORBA_NODEPOS_FN_NS =
 
 const char*
 static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS =
-"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+"http://zorba.io/modules/store/dynamic/collections/ddl";
 
 const char*
 static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS =
-"http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+"http://zorba.io/modules/store/dynamic/collections/dml";
 
 const char*
 static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+"http://zorba.io/modules/store/static/collections/ddl";
 
 const char*
 static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+"http://zorba.io/modules/store/static/collections/dml";
 
 const char*
 static_context::ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+"http://zorba.io/modules/store/static/indexes/ddl";
 
 const char*
 static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+"http://zorba.io/modules/store/static/indexes/dml";
 
 const char*
 static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
+"http://zorba.io/modules/store/static/integrity-constraints/ddl";
 
 const char*
 static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
+"http://zorba.io/modules/store/static/integrity-constraints/dml";
 
 const char*
-static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS =
-"http://www.zorba-xquery.com/modules/store/dynamic/documents";
+static_context::ZORBA_STORE_DOCUMENTS_FN_NS =
+"http://zorba.io/modules/store/documents";
 
 const char*
-static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
-"http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+static_context::ZORBA_STORE_UNORDERED_MAPS_FN_NS =
+"http://zorba.io/modules/unordered-maps";
 
 const char*
 static_context::JSONIQ_DM_NS =
@@ -425,55 +431,59 @@ static_context::JSONIQ_FN_NS =
 
 const char*
 static_context::ZORBA_SCHEMA_FN_NS =
-"http://www.zorba-xquery.com/modules/schema";
+"http://zorba.io/modules/schema";
 
 const char*
 static_context::ZORBA_XQDOC_FN_NS =
-"http://www.zorba-xquery.com/modules/xqdoc";
+"http://zorba.io/modules/xqdoc";
 
 const char*
 static_context::ZORBA_RANDOM_FN_NS =
 "http://zorba.io/modules/random";
 
 const char*
-static_context::ZORBA_INTROSP_SCTX_FN_NS =
-"http://www.zorba-xquery.com/modules/introspection/sctx";
+static_context::ZORBA_SCTX_FN_NS =
+"http://zorba.io/modules/sctx";
 
 const char*
 static_context::ZORBA_REFLECTION_FN_NS =
-"http://www.zorba-xquery.com/modules/reflection";
+"http://zorba.io/modules/reflection";
 
 const char*
 static_context::ZORBA_UTIL_FN_NS =
-"http://www.zorba-xquery.com/zorba/util-functions";
+"http://zorba.io/util-functions";
 
 const char*
 static_context::ZORBA_SCRIPTING_FN_NS =
 "http://www.zorba-xquery.com/zorba/scripting";
 
 const char*
+static_context::ZORBA_SEQ_FN_NS =
+"http://zorba.io/modules/sequence";
+
+const char*
 static_context::ZORBA_STRING_FN_NS =
-"http://www.zorba-xquery.com/modules/string";
+"http://zorba.io/modules/string";
 
 const char*
 static_context::ZORBA_URI_FN_NS =
-"http://www.zorba-xquery.com/modules/uri";
+"http://zorba.io/modules/uri";
 
 const char*
 static_context::ZORBA_FETCH_FN_NS =
-"http://www.zorba-xquery.com/modules/fetch";
+"http://zorba.io/modules/fetch";
 
 const char*
 static_context::ZORBA_NODE_FN_NS =
-"http://www.zorba-xquery.com/modules/node";
+"http://zorba.io/modules/node";
 
 const char*
 static_context::ZORBA_ITEM_FN_NS =
-"http://www.zorba-xquery.com/modules/item";
+"http://zorba.io/modules/item";
 
 const char*
 static_context::ZORBA_XML_FN_NS =
-"http://www.zorba-xquery.com/modules/xml";
+"http://zorba.io/modules/xml";
 
 #ifndef ZORBA_NO_FULL_TEXT
 const char*
@@ -483,41 +493,35 @@ static_context::ZORBA_FULL_TEXT_FN_NS =
 
 const char*
 static_context::ZORBA_DATETIME_FN_NS =
-"http://www.zorba-xquery.com/modules/datetime";
+"http://zorba.io/modules/datetime";
 
 const char*
 static_context::ZORBA_XML_FN_OPTIONS_NS =
-"http://www.zorba-xquery.com/modules/xml-options";
+"http://zorba.io/modules/xml-options";
 
 /***************************************************************************//**
   Target namespaces of zorba reserved modules
 ********************************************************************************/
 const char*
-static_context::XQUERY_OP_NS =
-"http://www.zorba-xquery.com/internal/xquery-ops";
+static_context::XQUERY_OP_NS = "http://zorba.io/internal/xquery-ops";
 
 const char*
-static_context::ZORBA_OP_NS =
-"http://www.zorba-xquery.com/internal/zorba-ops";
+static_context::ZORBA_OP_NS = "http://zorba.io/internal/zorba-ops";
 
 /***************************************************************************//**
   Options-related namespaces
 ********************************************************************************/
 const char*
-static_context::ZORBA_OPTIONS_NS =
-"http://www.zorba-xquery.com/options";
+static_context::ZORBA_OPTIONS_NS = "http://zorba.io/options";
 
 const char*
-static_context::ZORBA_OPTION_WARN_NS =
-"http://www.zorba-xquery.com/options/warnings";
+static_context::ZORBA_OPTION_WARN_NS = "http://zorba.io/options/warnings";
 
 const char*
-static_context::ZORBA_OPTION_FEATURE_NS =
-"http://www.zorba-xquery.com/options/features";
+static_context::ZORBA_OPTION_FEATURE_NS = "http://zorba.io/options/features";
 
 const char*
-static_context::ZORBA_OPTION_OPTIM_NS =
-"http://www.zorba-xquery.com/options/optimizer";
+static_context::ZORBA_OPTION_OPTIM_NS = "http://zorba.io/options/optimizer";
 
 const char*
 static_context::XQUERY_NS =
@@ -529,7 +533,7 @@ static_context::XQUERY_OPTION_NS =
 
 const char*
 static_context::ZORBA_VERSIONING_NS =
-"http://www.zorba-xquery.com/options/versioning";
+"http://zorba.io/options/versioning";
 
 
 /***************************************************************************//**
@@ -539,16 +543,16 @@ static_context::ZORBA_VERSIONING_NS =
 bool static_context::is_builtin_module(const zstring& ns)
 {
   if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
-      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(JSOUND_IO_NS_PREFIX), JSOUND_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
-            ns == ZORBA_NODEREF_FN_NS ||
             ns == ZORBA_REFERENCE_FN_NS ||
             ns == ZORBA_NODEPOS_FN_NS ||
 
-            ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
-            ns == ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS ||
+            ns == ZORBA_STORE_DOCUMENTS_FN_NS ||
+            ns == ZORBA_STORE_UNORDERED_MAPS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS ||
             ns == ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS ||
@@ -560,17 +564,20 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_SCHEMA_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
-            ns == ZORBA_INTROSP_SCTX_FN_NS ||
+            ns == ZORBA_SCTX_FN_NS ||
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
 
             ns == ZORBA_URI_FN_NS ||
 
-            ns == ZORBA_JSON_FN_NS ||
+            ns == ZORBA_JSON_CSV_FN_NS ||
+            ns == ZORBA_JSON_XML_FN_NS ||
+            ns == ZORBA_JSOUND_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_ITEM_FN_NS ||
+            ns == ZORBA_SEQ_FN_NS ||
             ns == ZORBA_UTIL_FN_NS ||
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
@@ -624,15 +631,17 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
   if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
-      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(JSOUND_IO_NS_PREFIX), JSOUND_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
-            ns == ZORBA_INTROSP_SCTX_FN_NS ||
-            ns == ZORBA_JSON_FN_NS ||
+            ns == ZORBA_JSON_CSV_FN_NS ||
+            ns == ZORBA_JSON_XML_FN_NS ||
+            ns == ZORBA_JSOUND_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
-            ns == ZORBA_DATETIME_FN_NS ||
+            ns == ZORBA_STORE_UNORDERED_MAPS_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
@@ -847,6 +856,16 @@ static_context::~static_context()
 #if 0
   std::cout << "Deallocating SCTX : " << this << std::endl;
 #endif
+  for (std::vector<internal::URIMapper*>::const_iterator mapper =
+         theURIMappers.begin();
+       mapper != theURIMappers.end(); mapper++) {
+    delete *mapper;
+  }
+  for (std::vector<internal::URLResolver*>::const_iterator resolver =
+         theURLResolvers.begin();
+       resolver != theURLResolvers.end(); resolver++) {
+    delete *resolver;
+  }
 
   if (theExternalModulesMap)
   {
@@ -1129,10 +1148,11 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theVariablesMap;
   ar & theImportedPrivateVariablesMap;
 
-  ar.set_serialize_only_for_eval(true);
-  ar & theFunctionMap;
-  ar & theFunctionArityMap;
-  ar.set_serialize_only_for_eval(false);
+  if (ar.get_ccb()->theHasEval)
+  {
+    ar & theFunctionMap;
+    ar & theFunctionArityMap;
+  }
 
   ar & theCollectionMap;
 
@@ -1425,6 +1445,7 @@ void static_context::set_base_uri(const zstring& uri, bool from_prolog)
   compute_base_uri();
 }
 
+
 /***************************************************************************//**
   Base Uri Computation
 
@@ -1516,7 +1537,8 @@ void static_context::compute_base_uri()
     if (found)
     {
       URI base(entityUri);
-      if (base.is_absolute()) {
+      if (base.is_absolute())
+      {
         URI resolvedURI(base, userBaseUri);
         theBaseUriInfo->theBaseUri = resolvedURI.toString();
         theBaseUriInfo->theHaveBaseUri = true;
@@ -1599,7 +1621,7 @@ zstring static_context::resolve_relative_uri(
 ********************************************************************************/
 void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 {
-  theURIMappers.push_back(std::auto_ptr<internal::URIMapper>(aMapper));
+  theURIMappers.push_back(aMapper);
 }
 
 
@@ -1608,14 +1630,14 @@ void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 ********************************************************************************/
 void static_context::add_url_resolver(internal::URLResolver* aResolver)
 {
-  theURLResolvers.push_back(std::auto_ptr<internal::URLResolver>(aResolver));
+  theURLResolvers.push_back(aResolver);
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-std::auto_ptr<internal::Resource> static_context::resolve_uri(
+std::unique_ptr<internal::Resource> static_context::resolve_uri(
     zstring const& aUri,
     internal::EntityData::Kind aEntityKind,
     zstring& oErrorMessage) const
@@ -1625,7 +1647,7 @@ std::auto_ptr<internal::Resource> static_context::resolve_uri(
   return this->resolve_uri(aUri, lData, oErrorMessage);
 }
 
-std::auto_ptr<internal::Resource> static_context::resolve_uri(
+std::unique_ptr<internal::Resource> static_context::resolve_uri(
     zstring const& aUri,
     internal::EntityData const& aEntityData,
     zstring& oErrorMessage) const
@@ -1633,10 +1655,10 @@ std::auto_ptr<internal::Resource> static_context::resolve_uri(
   std::vector<zstring> lUris;
   apply_uri_mappers(aUri, &aEntityData, internal::URIMapper::CANDIDATE, lUris);
 
-  std::auto_ptr<internal::Resource> lRetval;
+  std::unique_ptr<internal::Resource> lRetval;
   apply_url_resolvers(lUris, &aEntityData, lRetval, oErrorMessage);
 
-  return lRetval;
+  return std::move(lRetval);
 }
 
 void static_context::get_component_uris(
@@ -1687,12 +1709,12 @@ void static_context::apply_uri_mappers(
        sctx != NULL; sctx = sctx->theParent)
   {
     // Iterate through all available mappers on this static_context...
-    for (ztd::auto_vector<internal::URIMapper>::const_iterator mapper =
+    for (std::vector<internal::URIMapper*>::const_iterator mapper =
            sctx->theURIMappers.begin();
          mapper != sctx->theURIMappers.end(); mapper++)
     {
       // Only call mappers of the appropriate kind
-      if ((*mapper)->mapperKind() != aMapperKind)
+      if ((**mapper).mapperKind() != aMapperKind)
       {
         continue;
       }
@@ -1758,7 +1780,7 @@ void static_context::apply_uri_mappers(
 void static_context::apply_url_resolvers(
     std::vector<zstring>& aUrls,
     internal::EntityData const* aEntityData,
-    std::auto_ptr<internal::Resource>& oResource,
+    std::unique_ptr<internal::Resource>& oResource,
     zstring& oErrorMessage) const
 {
   oErrorMessage.clear();
@@ -1770,7 +1792,9 @@ void static_context::apply_url_resolvers(
     // We should never try to load the http-client module using its original URI,
     // because that URI starts with http:, so we'll try to load the http-client
     // module, leading to a stack overflow.
-    if (ascii::begins_with(*url, "http://www.zorba-xquery.com/modules/http-client"))
+    if (ZA_BEGINS_WITH(*url, "http://zorba.io/modules/http-client")
+        ||
+        ZA_BEGINS_WITH(*url, "http://www.zorba-xquery.com/modules/http-client"))
     {
       continue;
     }
@@ -1780,14 +1804,14 @@ void static_context::apply_url_resolvers(
          sctx != NULL; sctx = sctx->theParent)
     {
       // Iterate through all available resolvers on this static_context...
-      for (ztd::auto_vector<internal::URLResolver>::const_iterator resolver =
+      for (std::vector<internal::URLResolver*>::const_iterator resolver =
              sctx->theURLResolvers.begin();
            resolver != sctx->theURLResolvers.end(); resolver++)
       {
         try
         {
           // Take ownership of returned Resource (if any)
-          oResource.reset((*resolver)->resolveURL(*url, aEntityData));
+          oResource.reset((**resolver).resolveURL(*url, aEntityData));
           if (oResource.get() != NULL)
           {
             // Populate the URL used to load this Resource
@@ -1912,7 +1936,10 @@ bool static_context::validate(
     return false;
 
   if ( rootElement->isValidated() )
+  {
+    validatedResult = rootElement;
     return true;
+  }
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
@@ -1940,13 +1967,14 @@ bool static_context::validate(
       mode = ParseConstants::val_lax;
     }
 
-    return Validator::effectiveValidationValue(validatedResult,
-                                               rootElement,
-                                               typeName,
-                                               tm,
-                                               mode,
-                                               this,
-                                               loc);
+    bool res = Validator::effectiveValidationValue(validatedResult,
+                                                   rootElement,
+                                                   typeName,
+                                                   tm,
+                                                   mode,
+                                                   this,
+                                                   loc);
+    return res;
 
   }
 #endif //ZORBA_NO_XMLSCHEMA
@@ -1983,6 +2011,7 @@ bool static_context::validateSimpleContent(
   return false;
 #endif
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -2759,8 +2788,7 @@ function* static_context::lookup_local_fn(
 /***************************************************************************//**
   Find all the in-scope and non-disabled functions in this sctx and its ancestors.
 ********************************************************************************/
-void static_context::get_functions(
-    std::vector<function *>& functions) const
+void static_context::get_functions(std::vector<function *>& functions) const
 {
   std::vector<function*> disabled;
   std::vector<zstring> importedBuiltinModules;
@@ -2918,8 +2946,8 @@ void static_context::find_functions(
 
   if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
   {
-    ulong numFunctions = (ulong)fv->size();
-    for (ulong i = 0; i < numFunctions; ++i)
+    csize numFunctions = fv->size();
+    for (csize i = 0; i < numFunctions; ++i)
     {
       if (!(*fv)[i].theIsDisabled)
         functions.push_back((*fv)[i].theFunction);
@@ -2955,7 +2983,7 @@ void static_context::bind_external_module(
   ctx_module_t modinfo;
   modinfo.module = aModule;
   modinfo.dyn_loaded_module = aDynamicallyLoaded;
-  modinfo.sctx = this;
+  modinfo.theSctx = this;
 
   if (!theExternalModulesMap->insert(uri, modinfo))
   {

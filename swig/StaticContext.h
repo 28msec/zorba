@@ -80,6 +80,7 @@ class StaticContext
 {
 friend class Zorba;
 friend class XQuery;
+friend class SequenceType;
 
 private:
   zorba::StaticContext_t theStaticContext;
@@ -91,12 +92,12 @@ public:
   /** \brief Adds a collation URI.
    *
    * The URI specifies the locale and collation strength of the collation that is added.
-   * A valid collation URI must begin with %http://www.zorba-xquery.com/collations/.
+   * A valid collation URI must begin with %http://zorba.io/collations/.
    * This prefix is followed by a collation strength (i.e. PRIMARY, SECONDARY, TERTIARY,
    * QUATTERNARY, or IDENTICAL) followed by a '/'.
    * After the strength a lower-case two- or three-letter ISO-639 language code must follow.
    * The URI may end with an upper-case two-letter ISO-3166.
-   * For example, %http://www.zorba-xquery.com/collations/PRIMARY/en/US
+   * For example, %http://zorba.io/collations/PRIMARY/en/US
    * specifies an english language with US begin the country..
    *
    * Internally, ICU is used for comparing strings. For detailed description see
@@ -291,19 +292,19 @@ public:
   
   /** \brief Get the type of a statically known collection
    */
-  TypeIdentifier getCollectionType(const std::string &aCollectionUri);
+  SequenceType getCollectionType(const std::string &aCollectionUri);
 
   /** \brief Get the type of a statically known document
    */
-  TypeIdentifier getDocumentType(const std::string &aDocUri);
+  SequenceType getDocumentType(const std::string &aDocUri);
 
   /** \brief Fetch the type of the context item.
    */
-  TypeIdentifier getContextItemStaticType();
+  SequenceType getContextItemStaticType();
 
   /** \brief Set the type of the context item.
    */
-  void setContextItemStaticType(const TypeIdentifier &aType);
+  void setContextItemStaticType(const SequenceType &aType);
   
   /** \brief Resets the output stream that is used by the fn:trace function to std::cerr
    */

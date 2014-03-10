@@ -59,8 +59,12 @@ IF (PHP5_FOUND)
   #set project folder location for IDEs
   SET_TARGET_PROPERTIES(zorba_api_php PROPERTIES PROJECT_LABEL "PHP" FOLDER "APIs")
 
-  SET_TARGET_PROPERTIES(zorba_api_php PROPERTIES OUTPUT_NAME "zorba_api")
-
+  IF ( APPLE )
+    SET_TARGET_PROPERTIES(zorba_api_php PROPERTIES OUTPUT_NAME "zorba_api_php")
+  ELSE ( APPLE )
+    SET_TARGET_PROPERTIES(zorba_api_php PROPERTIES OUTPUT_NAME "zorba_api")
+  ENDIF ( APPLE )
+  
   IF (NOT WIN32 OR CYGWIN)
     STRING (REPLACE ${CMAKE_INSTALL_PREFIX} "" PHP5_INSTALL_PATH ${PHP5_EXTENSION_DIR})
     SET (PHP5_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/share/php5")
@@ -69,7 +73,7 @@ IF (PHP5_FOUND)
       FILES
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/XQueryProcessor.php
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/zorba_api_wrapper.php
-        ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so
+        ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api_php.so
       DESTINATION ${PHP5_INSTALL_PATH}
     )
   ELSE (NOT WIN32 OR CYGWIN)
@@ -77,14 +81,14 @@ IF (PHP5_FOUND)
       INSTALL ( FILES 
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/XQueryProcessor.php
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/zorba_api_wrapper.php
-        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.dll
+        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api_php.dll
         COMPONENT "php_swig"
         DESTINATION share/php )
     ELSE (MSVC_IDE)
       INSTALL ( FILES 
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/XQueryProcessor.php
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/zorba_api_wrapper.php
-        ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll
+        ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_php.dll
         COMPONENT "php_swig"
         DESTINATION share/php )
     ENDIF (MSVC_IDE)

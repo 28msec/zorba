@@ -1,3 +1,5 @@
+xquery version '1.0';
+
 (:
  : Copyright 2006-2013 The FLWOR Foundation.
  :
@@ -21,21 +23,20 @@
 
 (:~
  : This module contains one variable declaration for each diagnostic of the
- : http://zorba.io/modules/zorba-warnings namespace.
+ : http://zorba.io/warnings namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
  : the variables.
  :
  : @author Carlos Lopez
+ : @project Zorba/Zorba Warning Codes
  :
  :)
 
-xquery version '1.0';
+module namespace zwarn = 'http://zorba.io/warnings';
 
-module namespace zwarn = 'http://zorba.io/modules/zorba-warnings';
-
-declare variable $zwarn:NS := 'http://zorba.io/modules/zorba-warnings';
+declare variable $zwarn:NS := 'http://zorba.io/warnings';
 
 (:~
  :

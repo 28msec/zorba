@@ -61,7 +61,7 @@ Execute the given queries multiple times.
 Query test or file URI (file://...)
 
 --as-files, -f
-Treat all -q arguments as file paths instead of URIs or inline queries.
+Treat all -q arguments as file paths instead of URIs or inline queries. This option is deprecated and will be defaulted to true in the future, so any entry in the command line is going to be treated as files.
 
 --external-variable, -e
 Provide the value for a variable given a file (name=file) or a value (name:=value)
@@ -87,7 +87,7 @@ Do not serialize (discard) result.
 --debug, -d
 Launch the Zorba debugger server and connect to a DBGP-enabled debugger client.
 
---debug-host, -p
+--debug-host, -h
 The host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1
 
 --debug-port, -p
@@ -108,8 +108,11 @@ Library path (list of directories) where Zorba will look for dynamic libraries (
 --module-path
 Path (list of directories) to add to both the URI and Library paths.
 
+--classpath
+JVM classpath to be used by modules using Java implementations
+
 --option
-Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value
+Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://zorba.io/}option=value
 
 --trailing-nl
 Output a trailing newline after the result of the query.
@@ -120,11 +123,17 @@ Mapping specifying a stop-words URI to another.
 --thesaurus
 Mapping specifying a thesaurus URI to another.
 
---compile, -c
-Output the query plan as binary.
+--serialize-plan, -s
+Serialize and then load the query execution plan.
 
---execute-plan, -e
-Execute a binary query plan. Binary query plans can be generated using the --compile-plan option.
+--compile-plan,
+Do not execute the query; just compile it and save the execution plan in the file specified with the -o option.
+
+--execute-plan
+Do not compile the query; instead load the execution plan from the file specified by the -f -q options (or by any file specified without any other argument), and execute the loaded plan.
+
+--disable-http-resolution
+Do not use HTTP to resolve URIs
 \endverbatim
 
 \section commandlineexamples Examples
@@ -184,15 +193,15 @@ The purpose of this example is to demonstrate the use of <tt>-f</tt> and <tt>-e<
  These are the files used in this example and their meaning:
 <table border="0">
  <tr>
-  <td><tt>  works-mod.xml</tt></td>
+  <td><tt>works-mod.xml</tt></td>
   <td>File that will be used as external variable.</td>
  </tr>
  <tr>
-  <td><tt>  comandline_doc_example_2.xq</tt></td>
+  <td><tt>comandline_doc_example_2.xq</tt></td>
   <td>This is an update query. For details please see below.</td>
  </tr>
  <tr>
-  <td><tt>  comandline_doc_example_2-test.xq</tt></td>
+  <td><tt>comandline_doc_example_2-test.xq</tt></td>
   <td>Query used to see the results of the update query. For details please see below.</td>
  </tr>
 </table>

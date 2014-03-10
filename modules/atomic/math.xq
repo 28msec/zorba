@@ -20,7 +20,7 @@ jsoniq version "1.0";
  : Extensive math library.<p/>
  :
  : @author Daniel Turcanu, Dan Muresan
- : @project Zorba/XQuery Data Model/Atomic/Math
+ : @project Zorba/XML and JSON Data Model/Atomic/Math
  :)
 module namespace math = "http://zorba.io/modules/math";
 
@@ -29,7 +29,7 @@ module namespace math = "http://zorba.io/modules/math";
 :)
 declare namespace W3Cmath = "http://www.w3.org/2005/xpath-functions/math";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
 declare %private variable $math:errNS as string := "http://zorba.io/modules/math";

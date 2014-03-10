@@ -1,8 +1,8 @@
-import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace xqd = "http://zorba.io/modules/xqdoc";
 import module namespace file = "http://expath.org/ns/file";
 import schema namespace xqds = "http://www.xqdoc.org/1.0";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:sequential function local:remove-date($xqdoc)
 {

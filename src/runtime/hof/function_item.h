@@ -22,6 +22,8 @@
 
 #include "store/api/item.h"
 
+#include "context/dynamic_context.h"
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba
 {
@@ -184,7 +186,7 @@ protected:
 
   csize                           theArity;
 
-  std::auto_ptr<dynamic_context>  theClosureDctx;
+  std::unique_ptr<dynamic_context>  theClosureDctx;
 
   std::vector<PlanIter_t>         theArgValues;
 
@@ -230,6 +232,8 @@ public:
       const std::vector<PlanIter_t>& argValues,
       CompilerCB* ccb);
   
+  PlanIter_t getImplementation(CompilerCB* ccb);
+
   zstring show() const;
 };
 

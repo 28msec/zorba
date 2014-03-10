@@ -1,6 +1,6 @@
-import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://zorba.io/modules/reflection";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:sequential function local:create() 
 {

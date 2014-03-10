@@ -130,6 +130,7 @@ LIST(APPEND RUNTIME_SRCS
   indexing/index_ddl.cpp
   json/common.cpp
   json/jsonml_array.cpp
+  json/jsonml_object.cpp
   json/snelson.cpp
   numerics/NumericsImpl.cpp
   numerics/format_integer.cpp
@@ -151,6 +152,10 @@ LIST(APPEND RUNTIME_SRCS
   json/json_constructors.cpp
   json/json_loader.cpp
 )
+
+ADD_SRC_SUBFOLDER(RUNTIME_SRCS csv CSV_SRCS)
+ADD_SRC_SUBFOLDER(RUNTIME_SRCS jsound JSOUND_SRCS)
+ADD_SRC_SUBFOLDER(RUNTIME_SRCS seq SEQ_SRCS)
 
 IF(NOT ZORBA_NO_FULL_TEXT)
   ADD_SRC_SUBFOLDER(RUNTIME_SRCS full_text FULLTEXT_SRCS)
@@ -177,3 +182,5 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS misc)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS nodes)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS scripting)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS json)
+
+# vim:set et sw=2 ts=2:

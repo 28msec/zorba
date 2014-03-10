@@ -1,14 +1,14 @@
 xquery version "3.0";
 
 import module namespace file = "http://expath.org/ns/file";
-import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
-import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
+import module namespace xqd = "http://zorba.io/modules/xqdoc";
+import module namespace fetch = "http://zorba.io/modules/fetch";
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace zm = "http://www.zorba-xquery.com/manifest";
+declare namespace zm = "http://zorba.io/manifest";
 
 declare copy-namespaces preserve, inherit;
 
@@ -62,10 +62,10 @@ declare %ann:sequential function local:testXQDoc() as xs:string?
           return string-join(
              if(($moduleUri = "http://www.w3.org/2005/xpath-functions") or
                 ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
-                ($moduleUri = "http://www.functx.com/") or
+                ($moduleUri = "http://www.functx.com") or
                 ($moduleUri = "http://www.w3.org/2005/xqt-errors") or
-                ($moduleUri = "http://zorba.io/modules/zorba-errors") or
-                ($moduleUri = "http://zorba.io/modules/zorba-warnings") or
+                ($moduleUri = "http://zorba.io/errors") or
+                ($moduleUri = "http://zorba.io/warnings") or
                 ($moduleUri = "http://jsoniq.org/errors") or
                 ($moduleUri = "http://www.zorba-xquery.com/modules/xqdoc/batch") or
                 ($moduleUri = "http://www.zorba-xquery.com/modules/xqdoc/menu") or
@@ -96,7 +96,9 @@ declare function local:test-module($xqdoc as element(xqdoc:xqdoc)) as xs:string?
   let $moduleUri := $xqdoc/xqdoc:module/xqdoc:uri
   let $hasDescription := exists($module/xqdoc:description)
   let $hasAuthor := exists($module/xqdoc:author)
-  let $hasXQueryVersion := exists($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="XQuery version"])
+  let $hasLanguageVersion := 
+    (exists($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="version"]) and
+     exists($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="language"]))
 
   return string-join((
     (: Test for module description :)
@@ -118,9 +120,9 @@ declare function local:test-module($xqdoc as element(xqdoc:xqdoc)) as xs:string?
     (: Test for explicit XQuery Version :)
     if(($moduleUri = "http://www.w3.org/2005/xpath-functions") or
        ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
-       ($moduleUri = "http://www.functx.com/")) then ()
+       ($moduleUri = "http://www.functx.com")) then ()
     else
-      if (fn:not($hasXQueryVersion)) then
+      if (fn:not($hasLanguageVersion)) then
       fn:concat("
     ERROR: Missing explicit XQuery version declaration in prolog
     Module: ", $xqdoc/xqdoc:module/xqdoc:uri)

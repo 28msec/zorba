@@ -38,7 +38,7 @@ declare namespace o = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 declare copy-namespaces no-preserve, inherit;
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 declare %private variable $html:empty-tags-to-delete := ("tt");
@@ -131,7 +131,7 @@ html:normalize(
         else ()
     }
     {
-      let $version  := $comment/xq:custom[@tag =  "XQuery version"]/text()
+      let $version  := $comment/xq:custom[@tag = "XQuery version"]/text()
       let $encoding := $comment/xq:custom[@tag = "encoding"]/text()
       return
         if(exists($version)) then
@@ -478,25 +478,25 @@ as xs:boolean
 declare %private function html:is-function-nondeterministic($function as element(xq:function))
 as xs:boolean
 {
-  exists($function//xq:annotation[@namespace = "http://www.zorba-xquery.com/annotations" and @localname = "nondeterministic"]) 
+  exists($function//xq:annotation[@namespace = "http://zorba.io/annotations" and @localname = "nondeterministic"]) 
 };
 
 declare %private function html:is-function-streamable($function as element(xq:function))
 as xs:boolean
 {
-  exists($function//xq:annotation[@namespace = "http://www.zorba-xquery.com/annotations" and @localname = "streamable"]) 
+  exists($function//xq:annotation[@namespace = "http://zorba.io/annotations" and @localname = "streamable"]) 
 };
 
 declare %private function html:is-function-variadic($function as element(xq:function))
 as xs:boolean
 {
-  exists($function//xq:annotation[@namespace = "http://www.zorba-xquery.com/annotations" and @localname = "variadic"]) 
+  exists($function//xq:annotation[@namespace = "http://zorba.io/annotations" and @localname = "variadic"]) 
 };
 
 declare %private function html:is-function-sequential($function as element(xq:function))
 as xs:boolean
 {
-  exists($function//xq:annotation[@namespace = "http://www.zorba-xquery.com/annotations" and @localname = "sequential"]) 
+  exists($function//xq:annotation[@namespace = "http://zorba.io/annotations" and @localname = "sequential"]) 
 };
 
 declare %private function html:is-function-external($function as element(xq:function))

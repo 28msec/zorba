@@ -12,15 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ADD_SUBDIRECTORY(ExpCompilerResults)
-
-# configure itertest
-CONFIGURE_FILE(itertest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/itertest.xq)
-
 # The NO_CTEST variable can be set to 1 so that CMake does not search
 # for and add most of the Zorba tests, to speed up building and
 # compiling the project.
 IF (NOT NO_CTEST)
   ADD_SUBDIRECTORY(Queries)
   ADD_SUBDIRECTORY(modules)
+  ADD_SUBDIRECTORY(jsound)
 ENDIF (NOT NO_CTEST)

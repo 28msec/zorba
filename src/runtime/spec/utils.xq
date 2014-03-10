@@ -60,7 +60,8 @@ declare function zi:add-copyright() as xs:string
 // * THIS IS A GENERATED FILE. DO NOT EDIT! *
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
-// ******************************************"
+// ******************************************
+"
 };
 
 declare function zi:add-guard-close() as xs:string

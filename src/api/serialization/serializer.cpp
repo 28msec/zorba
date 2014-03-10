@@ -258,7 +258,7 @@ int serializer::emitter::emit_expanded_string(
       in the instance of the data model.
     */
     if (ser && ser->method == PARAMETER_VALUE_HTML && *chars >= 0x7F && *chars <= 0x9f)
-      throw XQUERY_EXCEPTION( err::SERE0014, ERROR_PARAMS( *chars ) );
+      throw ZORBA_EXCEPTION( err::SERE0014, ERROR_PARAMS( *chars ) );
 
     /*
       In addition, the non-whitespace control characters #x1 through #x1F and
@@ -350,17 +350,17 @@ void serializer::emitter::emit_indentation(int depth)
 ********************************************************************************/
 void serializer::emitter::emit_declaration()
 {
-  if (ser->byte_order_mark == PARAMETER_VALUE_YES )
+  if ( ser->byte_order_mark == PARAMETER_VALUE_YES )
   {
-    if (ser->encoding == PARAMETER_VALUE_UTF_8 )
-    {
-      transcode::orig_streambuf( tr )->sputn( "\xEF\xBB\xBF", 3 );
-    }
-    else if (ser->encoding == PARAMETER_VALUE_UTF_16)
-    {
-      // Little-endian
-      transcode::orig_streambuf( tr )->sputn( "\xFF\xFE", 2 );
-    }
+    std::streambuf *const orig_buf = transcode::orig_streambuf( tr );
+    if ( ser->encoding == "UTF-8" )
+      orig_buf->sputn( utf8::BOM, sizeof utf8::BOM );
+    else if ( ser->encoding == "UTF-16" )
+      orig_buf->sputn( (char const*)&unicode::BOM, sizeof unicode::BOM );
+    else if ( ser->encoding == "UTF-16LE" )
+      orig_buf->sputn( (char const*)&unicode::BOM_LE, sizeof unicode::BOM_LE );
+    else if ( ser->encoding == "UTF-16BE" )
+      orig_buf->sputn( (char const*)&unicode::BOM_BE, sizeof unicode::BOM_BE );
   }
 }
 
@@ -412,8 +412,7 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
 
       rollover = emit_expanded_string(buffer, static_cast<zstring::size_type>(read_bytes + rollover));
       memmove(buffer, buffer + 1024 - rollover, rollover);
-    }
-    while (read_bytes > 0);
+    } while (read_bytes > 0);
     break;
   }
   case store::XS_BASE64BINARY:
@@ -448,7 +447,9 @@ void serializer::emitter::emit_item(store::Item* item)
   if (item->isAtomic())
   {
     if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
-      tr << " ";
+      tr << (ser->item_separator_is_set ? ser->item_separator : " ");
+    else if (thePreviousItemKind)
+      tr << ser->item_separator;
 
     if (item->isStreamable())
     {
@@ -468,7 +469,7 @@ void serializer::emitter::emit_item(store::Item* item)
     if (!theEmitAttributes &&
         item->getNodeKind() == store::StoreConsts::attributeNode)
     {
-      throw XQUERY_EXCEPTION(err::SENR0001,
+      throw ZORBA_EXCEPTION(err::SENR0001,
       ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_AttributeNode)));
     }
     emit_node(item, 0);
@@ -483,7 +484,7 @@ void serializer::emitter::emit_item(store::Item* item)
   }
   else if (item->isFunction())
   {
-    throw XQUERY_EXCEPTION(err::SENR0001,
+    throw ZORBA_EXCEPTION(err::SENR0001,
     ERROR_PARAMS(item->show(), "function item node"));
   }
 }
@@ -494,6 +495,8 @@ void serializer::emitter::emit_item(store::Item* item)
 ********************************************************************************/
 void serializer::emitter::emit_node(const store::Item* item, int depth)
 {
+  if (thePreviousItemKind)
+    tr << ser->item_separator;
   switch (item->getNodeKind())
   {
   case store::StoreConsts::documentNode:
@@ -609,7 +612,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   }
   case store::StoreConsts::namespaceNode:
   {
-    throw XQUERY_EXCEPTION(err::SENR0001,
+    throw ZORBA_EXCEPTION(err::SENR0001,
     ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_NamespaceNode)));
     break;
   }
@@ -899,6 +902,7 @@ serializer::xml_emitter::xml_emitter(
   :
   emitter(the_serializer, the_stream, aEmitAttributes)
 {
+  ser->attach_transcoder( the_stream );
 }
 
 
@@ -911,19 +915,9 @@ void serializer::xml_emitter::emit_declaration()
 
   if (ser->omit_xml_declaration == PARAMETER_VALUE_NO)
   {
-    tr << "<?xml version=\"" << ser->version_string;
-    switch (ser->encoding) {
-      case PARAMETER_VALUE_UTF_8:
-      case PARAMETER_VALUE_UTF_16:
-        tr << "\" encoding=\"";
-        switch (ser->encoding) {
-          case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
-          case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
-          default                    : ZORBA_ASSERT(false);
-        }
-        break;
-    }
-    tr << "\"";
+    tr << "<?xml version=\"" << ser->version_string << '"';
+    if ( !ser->encoding.empty() )
+      tr << " encoding=\"" << ser->encoding << '"';
 
     if (ser->standalone != PARAMETER_VALUE_OMIT) {
       tr << " standalone=\"";
@@ -994,7 +988,7 @@ void serializer::json_emitter::emit_item(store::Item *item)
   // right place to check for multiple items in the sequence.
   if (theMultipleItems && ser->jsoniq_multiple_items == PARAMETER_VALUE_NO)
   {
-    throw XQUERY_EXCEPTION(jerr::JNSE0012);
+    throw ZORBA_EXCEPTION(jerr::JNSE0012);
   }
   emit_json_item(item, 0);
   theMultipleItems = true;
@@ -1171,7 +1165,7 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 ********************************************************************************/
 void serializer::json_emitter::emit_jsoniq_xdm_node(store::Item*, int)
 {
-  throw XQUERY_EXCEPTION(jerr::JNSE0014);
+  throw ZORBA_EXCEPTION(jerr::JNSE0014);
 }
 
 
@@ -1502,19 +1496,9 @@ void serializer::html_emitter::emit_node(
       }
 
       tr << "<meta http-equiv=\"content-type\" content=\""
-         << ser->media_type;
-      switch (ser->encoding) {
-        case PARAMETER_VALUE_UTF_8:
-        case PARAMETER_VALUE_UTF_16:
-          tr << "\" charset=\"";
-          switch (ser->encoding) {
-            case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
-            case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
-            default                    : ZORBA_ASSERT(false);
-          }
-          break;
-      }
-      tr << "\"";
+         << ser->media_type << '"';
+      if ( !ser->encoding.empty() )
+        tr << "\" charset=\"" << ser->encoding << '"';
       // closed_parent_tag = 1;
     }
 
@@ -1701,19 +1685,9 @@ void serializer::xhtml_emitter::emit_node(
         }
 
         tr << "<meta http-equiv=\"content-type\" content=\""
-           << ser->media_type;
-        switch (ser->encoding) {
-          case PARAMETER_VALUE_UTF_8:
-          case PARAMETER_VALUE_UTF_16:
-            tr << "\" charset=\"";
-            switch (ser->encoding) {
-              case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
-              case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
-              default                    : ZORBA_ASSERT(false);
-            }
-            break;
-        }
-        tr << "\"/";
+           << ser->media_type << '"';
+        if ( !ser->encoding.empty() )
+          tr << "\" charset=\"" << ser->encoding << '"';
         //closed_parent_tag = 1;
       }
     }
@@ -2046,6 +2020,7 @@ serializer::text_emitter::text_emitter(
   :
   emitter(the_serializer, the_stream)
 {
+  ser->attach_transcoder( the_stream );
 }
 
 
@@ -2118,7 +2093,9 @@ void serializer::text_emitter::emit_item(store::Item* item)
   if (item->isAtomic())
   {
     if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
-      tr << " ";
+      tr << (ser->item_separator_is_set ? ser->item_separator : " ");
+    else if (thePreviousItemKind)
+      tr << ser->item_separator;
 
     if (item->isStreamable())
       emit_streamable_item(item);
@@ -2129,7 +2106,7 @@ void serializer::text_emitter::emit_item(store::Item* item)
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    throw XQUERY_EXCEPTION(err::SENR0001,
+    throw ZORBA_EXCEPTION(err::SENR0001,
     ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_AttributeNode)));
   }
   else
@@ -2328,9 +2305,12 @@ void serializer::reset()
   doctype_system.clear();
   doctype_public.clear();
 
-  encoding = PARAMETER_VALUE_UTF_8;
+  encoding = "UTF-8";
 
   include_content_type = PARAMETER_VALUE_NO;
+
+  item_separator.clear();
+  item_separator_is_set = false;
 
   media_type.clear();
 
@@ -2371,9 +2351,9 @@ convertMethodString(const char* aValue, const char* aName) {
   else if (!strcmp(aValue, "json-xml-hybrid"))
     return serializer::PARAMETER_VALUE_JSON_XML_HYBRID;
   else
-    throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
-        );
+    throw ZORBA_EXCEPTION(
+      err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
+    );
 }
 
 
@@ -2389,7 +2369,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       indent = PARAMETER_VALUE_NO;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
@@ -2402,7 +2382,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "omit"))
       standalone = PARAMETER_VALUE_OMIT;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016,
         ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNoOmit ) )
       );
@@ -2414,7 +2394,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       omit_xml_declaration = PARAMETER_VALUE_NO;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
@@ -2425,7 +2405,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       byte_order_mark = PARAMETER_VALUE_NO;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
@@ -2436,7 +2416,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       undeclare_prefixes = PARAMETER_VALUE_NO;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
@@ -2451,20 +2431,20 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       include_content_type = PARAMETER_VALUE_NO;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
   else if (!strcmp(aName, "encoding"))
   {
-    if (!strcmp(aValue, "UTF-8"))
-      encoding = PARAMETER_VALUE_UTF_8;
-    else if (!strcmp(aValue, "UTF-16"))
-      encoding = PARAMETER_VALUE_UTF_16;
-    else
-      throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
+    if ( !transcode::is_supported( aValue ) )
+      throw ZORBA_EXCEPTION(
+        err::SEPM0016,
+        ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8Etc ) )
       );
+    zstring temp( aValue );
+    ascii::to_upper( temp );
+    encoding = aValue;
   }
   else if (!strcmp(aName, "media-type"))
   {
@@ -2497,6 +2477,11 @@ void serializer::setParameter(const char* aName, const char* aValue)
   {
     cdata_section_elements = aValue;
   }
+  else if (!strcmp(aName, "item-separator"))
+  {
+    item_separator = aValue;
+    item_separator_is_set = true;
+  }
   else if (!strcmp(aName, "jsoniq-multiple-items"))
   {
     if (!strcmp(aValue, "no"))
@@ -2504,7 +2489,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "yes"))
       jsoniq_multiple_items = PARAMETER_VALUE_YES;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
@@ -2514,7 +2499,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else
   {
-    throw XQUERY_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
+    throw ZORBA_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
   }
 }
 
@@ -2559,8 +2544,8 @@ serializer::validate_parameters(void)
     if (method == PARAMETER_VALUE_XML)
     {
       if (version != PARAMETER_VALUE_VERSION_1_0 && version != PARAMETER_VALUE_VERSION_1_1)
-        throw XQUERY_EXCEPTION(
-          err::SESU0013, ERROR_PARAMS( version, "XML", "\"1.0\", \"1.1\"" )
+        throw ZORBA_EXCEPTION(
+          err::SESU0013, ERROR_PARAMS( version_string, "XML", "\"1.0\", \"1.1\"" )
         );
     }
 
@@ -2574,17 +2559,17 @@ serializer::validate_parameters(void)
     if (omit_xml_declaration == PARAMETER_VALUE_YES)
     {
       if (standalone != PARAMETER_VALUE_OMIT)
-        throw XQUERY_EXCEPTION(
+        throw ZORBA_EXCEPTION(
           err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_NotOmit ) )
         );
       if (version != PARAMETER_VALUE_VERSION_1_0 && !doctype_system.empty())
-        throw XQUERY_EXCEPTION(
+        throw ZORBA_EXCEPTION(
           err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_Not10 ) )
         );
     }
 
     if (undeclare_prefixes == PARAMETER_VALUE_YES && version == PARAMETER_VALUE_VERSION_1_0)
-      throw XQUERY_EXCEPTION( err::SEPM0010 );
+      throw ZORBA_EXCEPTION( err::SEPM0010 );
   }
 
   if (method == PARAMETER_VALUE_HTML)
@@ -2597,7 +2582,7 @@ serializer::validate_parameters(void)
     }
     else if (version != PARAMETER_VALUE_VERSION_4_0 && version != PARAMETER_VALUE_VERSION_4_01)
     {
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SESU0013, ERROR_PARAMS( version_string, "HTML", "\"4.0\", \"4.01\"" )
       );
     }
@@ -2645,20 +2630,10 @@ bool serializer::setup(std::ostream& os, bool aEmitAttributes)
 
 void serializer::attach_transcoder(std::ostream &os)
 {
-  if (encoding == PARAMETER_VALUE_UTF_8)
-  {
-    // do nothing
-  }
 #ifndef ZORBA_NO_UNICODE
-  else if (encoding == PARAMETER_VALUE_UTF_16)
-  {
-    transcode::attach( os, "UTF-16LE" );
-  }
-#endif
-  else
-  {
-    ZORBA_ASSERT(0);
-  }
+  if ( transcode::is_necessary( encoding.c_str() ) )
+    transcode::attach( os, encoding.c_str() );
+#endif /* ZORBA_NO_UNICODE */
 }
 
 /*******************************************************************************

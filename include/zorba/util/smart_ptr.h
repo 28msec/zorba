@@ -107,6 +107,12 @@ public:
     return assign (rhs);
   }
 
+  T* release() {
+    T *const temp = p;
+    p = 0;
+    return temp;
+  }
+
 }; // SmartPtr
 
 } // namespace zorba

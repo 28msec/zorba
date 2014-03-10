@@ -1,4 +1,4 @@
-/** \page php_ubuntu_tutorial Zorba XQuery in PHP 5 - Ubuntu Installation
+/** \page php_ubuntu_tutorial Zorba with PHP 5 - Ubuntu Installation
 
 \section initial_setup Initial setup
 
@@ -134,9 +134,8 @@ For more details on how to use Zorba API in PHP go to <a href="http://www.ibm.co
 
 \section useful_links Useful links
 
-<a href="http://www.giantflyingsaucer.com/blog/?p=1826">Install PHP 5, Apache 2 and MongoDB on Ubuntu 10.10</a>
-
-<a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-"> Building XQuery-powered applications with PHP and Zorba</a>
-
-<a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/build"> Zorba build instructions</a>
+<ul>
+  <li><a href="http://www.giantflyingsaucer.com/blog/?p=1826">Install PHP 5, Apache 2 and MongoDB on Ubuntu 10.10</a></li>
+  <li><a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-"> Building XQuery-powered applications with PHP and Zorba</a></li>
+  <li>\ref build</li>
 */

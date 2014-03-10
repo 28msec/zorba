@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_BASE64_BASE64_H
 #define ZORBA_RUNTIME_BASE64_BASE64_H
 
@@ -57,6 +58,8 @@ public:
 
   virtual ~Base64DecodeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -86,6 +89,8 @@ public:
   {}
 
   virtual ~Base64EncodeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/uris/uris.h"
 #include "functions/func_uris.h"
@@ -67,7 +68,7 @@ void populate_context_uris(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_uri_decode,
-        (createQName("http://www.zorba-xquery.com/modules/uri","","decode"), 
+        (createQName("http://zorba.io/modules/uri","","decode"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -81,7 +82,7 @@ void populate_context_uris(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_uri_parse,
-        (createQName("http://www.zorba-xquery.com/modules/uri","","parse"), 
+        (createQName("http://zorba.io/modules/uri","","parse"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
         FunctionConsts::FN_ZORBA_URI_PARSE_1);
@@ -93,7 +94,7 @@ void populate_context_uris(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_uri_serialize,
-        (createQName("http://www.zorba-xquery.com/modules/uri","","serialize"), 
+        (createQName("http://zorba.io/modules/uri","","serialize"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_ZORBA_URI_SERIALIZE_1);

@@ -65,7 +65,7 @@ uint32_t const Magic_Number = 42;       // same as TIFF -- why not?
  */
 static void append_wordnet_file( zstring &path, iso639_1::type lang ) {
   fs::append( path, "wordnet-" );
-  path += iso639_1::string_of[ lang ];
+  path += iso639_1::str( lang );
   path += ".zth";
 }
 

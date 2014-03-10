@@ -21,15 +21,15 @@ jsoniq version "1.0";
  : numbers and strings.
  :
  : @author Matthias Brantner, Sorin Nasoi
- : @project Zorba/XQuery Data Model/Atomic/Random
+ : @project Zorba/XML and JSON Data Model/Atomic/Random
  :
  :)
 module namespace r = "http://zorba.io/modules/random";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace zerr = "http://zorba.io/errors";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
 declare %private variable $r:errNS as string := "http://zorba.io/modules/random";

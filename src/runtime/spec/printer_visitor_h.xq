@@ -15,7 +15,7 @@
 :)
 
 declare namespace zorba = "http://www.zorba-xquery.com";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://expath.org/ns/file";
@@ -66,22 +66,28 @@ declare function local:create-class() as xs:string
     $gen:indent, 'private:', $gen:newline,
     gen:indent(2),'IterPrinter&amp; thePrinter;',$gen:newline,
     gen:indent(2),'PlanIterator* theIterator;',$gen:newline,
+    gen:indent(2),'PlanState* thePlanState;',$gen:newline,
     gen:indent(2),'int theId;',$gen:newline,
     $gen:indent,'public:',$gen:newline,
-    gen:indent(2),'PrinterVisitor(IterPrinter&amp; aPrinter, PlanIterator* aIter)',$gen:newline,
+    gen:indent(2),'PrinterVisitor(IterPrinter&amp; aPrinter, PlanIterator* aIter, PlanState *state = 0 )',$gen:newline,
     gen:indent(2),':',
-    gen:indent(2),'thePrinter(aPrinter), theIterator(aIter), theId(0) {}',$gen:newline,$gen:newline,
+    gen:indent(2),'thePrinter(aPrinter), theIterator(aIter), thePlanState( state ), theId(0) {}',$gen:newline,$gen:newline,
+    gen:indent(2),'PlanState* getPlanState() const { return thePlanState; }',$gen:newline,
+    gen:indent(2),'void setPlanState( PlanState *s ) { thePlanState = s; }',$gen:newline,
     gen:indent(2),'void print();',$gen:newline,
     gen:indent(2),'void printCommons(const PlanIterator* aIter, int theId);',$gen:newline, $gen:newline,
     (: temporarily included until all iterators are generated :)
-    '#include "runtime/visitors/printer_visitor_impl.h"'
+    '#include "runtime/visitors/plan_iter_visitor_impl.h"'
   )
 };
 
 declare function local:create-fwd-decl() as xs:string
 {
-  string-join(($gen:indent, 'class PlanIterator;', $gen:newline,
-  $gen:indent,'class IterPrinter;'),'')
+  concat(
+    $gen:indent, 'class PlanIterator;', $gen:newline,
+    $gen:indent, 'class PlanState;', $gen:newline,
+    $gen:indent,'class IterPrinter;', $gen:newline
+  )
 };
 
 (: list all files that need to be included :)
@@ -114,3 +120,4 @@ declare variable $files as xs:string external;
               string-join(($gen:newline,$gen:newline),''))
 }
 
+(: vim:set et sw=2 ts=2: :)

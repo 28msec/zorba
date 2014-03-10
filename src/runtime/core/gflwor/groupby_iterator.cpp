@@ -30,6 +30,8 @@
 
 #include "system/globalenv.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 using namespace zorba;
 
 namespace zorba 
@@ -159,6 +161,11 @@ void GroupByIterator::serialize(::zorba::serialization::Archiver& ar)
 /***************************************************************************//**
 
 ********************************************************************************/
+zstring GroupByIterator::getNameAsString() const {
+  return "GroupByIterator";
+}
+
+
 uint32_t GroupByIterator::getStateSize() const  
 {
   return StateTraitsImpl<GroupByState>::getStateSize();
@@ -356,7 +363,7 @@ void GroupByIterator::matVarsAndGroupBy(
 {
   store::Item_t temp;
 
-  std::auto_ptr<GroupTuple> groupTuple(new GroupTuple());
+  std::unique_ptr<GroupTuple> groupTuple(new GroupTuple());
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
 
   csize numVars = theGroupingSpecs.size();
@@ -414,7 +421,8 @@ void GroupByIterator::matVarsAndGroupBy(
       theNonGroupingSpecs[i].theInput->reset(aPlanState);
     }
 
-    groupMap->insert(groupTuple.release(), nonGroupTuple);
+    groupMap->insert(groupTuple.get(), nonGroupTuple);
+    groupTuple.release();
   }
 }
 

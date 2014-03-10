@@ -143,100 +143,48 @@ PlanIter_t op_zorba_function_lookup_3_0::codegen(
 ********************************************************************************/
 void populate_context_hof_impl(static_context* sctx)
 {
-  {
-    std::vector<xqtref_t> args;
-    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+  DECL_WITH_KIND(sctx,
+                 fn_for_each_3_0,
+                 (createQName(static_context::W3C_FN_NS, "", "for-each"),
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE,
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+                 FunctionConsts::FN_FOR_EACH_2);
 
-    xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
-                   args,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   TypeConstants::QUANT_ONE);
-
-    DECL_WITH_KIND(sctx,
-                   fn_for_each_3_0,
-                   (createQName(static_context::W3C_FN_NS, "", "for-each"),
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   hofParamType,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-                   FunctionConsts::FN_FOR_EACH_2);
-  }
-
-  {
-    std::vector<xqtref_t> args;
-    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-
-    xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
-                   args,
-                   GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
-                   TypeConstants::QUANT_ONE);
-
-    DECL_WITH_KIND(sctx,
-                   fn_filter,
-                   (createQName(static_context::W3C_FN_NS, "", "filter"),
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   hofParamType,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-                   FunctionConsts::FN_FILTER_2);
-  }
-
-  {
-    std::vector<xqtref_t> args;
-    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-
-    xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
-                   args,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   TypeConstants::QUANT_ONE);
-
-    DECL_WITH_KIND(sctx,
-                   fn_for_each_pair_3_0,
-                   (createQName(static_context::W3C_FN_NS, "", "for-each-pair"),
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   hofParamType,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-                   FunctionConsts::FN_FOR_EACH_PAIR_3);
-  }
-
-  {
-    std::vector<xqtref_t> args;
-    xqtref_t hofParamType;
-    
-    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-    hofParamType = GENV_TYPESYSTEM.create_function_type(
-                   args,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   TypeConstants::QUANT_ONE);
-
-    DECL_WITH_KIND(sctx,
-                   fn_fold_left_3_0,
-                   (createQName(static_context::W3C_FN_NS, "", "fold-left"),
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   hofParamType,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-                   FunctionConsts::FN_FOLD_LEFT_3);
-    
-    args.clear();
-    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-    hofParamType = GENV_TYPESYSTEM.create_function_type(
-                   args,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   TypeConstants::QUANT_ONE);
-
-    DECL_WITH_KIND(sctx,
-                   fn_fold_right_3_0,
-                   (createQName(static_context::W3C_FN_NS, "", "fold-right"),
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   hofParamType,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-                   FunctionConsts::FN_FOLD_RIGHT_3);
-  }
-
+  DECL_WITH_KIND(sctx,
+                 fn_filter,
+                 (createQName(static_context::W3C_FN_NS, "", "filter"),
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE,
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+                 FunctionConsts::FN_FILTER_2);
+  
+  DECL_WITH_KIND(sctx,
+                 fn_for_each_pair_3_0,
+                 (createQName(static_context::W3C_FN_NS, "", "for-each-pair"),
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE,
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+                 FunctionConsts::FN_FOR_EACH_PAIR_3);
+  
+  DECL_WITH_KIND(sctx,
+                 fn_fold_left_3_0,
+                 (createQName(static_context::W3C_FN_NS, "", "fold-left"),
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE,
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+                 FunctionConsts::FN_FOLD_LEFT_3);
+  
+  DECL_WITH_KIND(sctx,
+                 fn_fold_right_3_0,
+                 (createQName(static_context::W3C_FN_NS, "", "fold-right"),
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE,
+                  GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+                 FunctionConsts::FN_FOLD_RIGHT_3);
 }
 
 }

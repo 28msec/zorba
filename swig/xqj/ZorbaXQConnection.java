@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -40,7 +40,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xquery.*;
 import org.w3c.dom.*;
-import org.zorbaxquery.api.*;
+import io.zorba.api.*;
 
   /**
    * 
@@ -94,6 +94,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
             throw new XQException("Error returning Zorba Instance");
         }
     }
+
     public ZorbaXQConnection() {
         cExpression = new ArrayList<XQExpression>();
         cPreparedExpression = new ArrayList<XQPreparedExpression>();
@@ -102,6 +103,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         autocommit = true;
         closed = false;
     }
+
     public ZorbaXQConnection(Properties aProperties) {
         cExpression = new ArrayList<XQExpression>();
         cPreparedExpression = new ArrayList<XQPreparedExpression>();
@@ -133,15 +135,15 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                 }
             }
         }
-        lStaticContext = new org.zorbaxquery.api.xqj.ZorbaXQStaticContext(zorba);
+        lStaticContext = new io.zorba.api.xqj.ZorbaXQStaticContext(zorba);
         if (uriPaths!=null) {
-            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setURIPaths(uriPaths);
+            ((io.zorba.api.xqj.ZorbaXQStaticContext)lStaticContext).setURIPaths(uriPaths);
         }
         if (libPaths!=null) {
-            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setLIBPaths(libPaths);
+            ((io.zorba.api.xqj.ZorbaXQStaticContext)lStaticContext).setLIBPaths(libPaths);
         }
         if (modulePaths!=null) {
-            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setMODPaths(modulePaths);
+            ((io.zorba.api.xqj.ZorbaXQStaticContext)lStaticContext).setMODPaths(modulePaths);
         }
         
     }
@@ -167,7 +169,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         }
 
         if (lStaticContext != null ) {
-            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).getZorbaStaticContext().destroy();
+            ((io.zorba.api.xqj.ZorbaXQStaticContext)lStaticContext).getZorbaStaticContext().destroy();
         }
         if (lXmlDataManager != null) {
             lXmlDataManager.close();
@@ -225,9 +227,9 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         isClosedXQException();
         XQExpression expression;
         if (lStaticContext == null) {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQExpression(this);
+            expression = new io.zorba.api.xqj.ZorbaXQExpression(this);
         } else {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQExpression(this, lStaticContext);
+            expression = new io.zorba.api.xqj.ZorbaXQExpression(this, lStaticContext);
         }
         cExpression.add(expression);
         return expression;
@@ -245,7 +247,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQExpression createExpression(XQStaticContext value) throws XQException {
         isClosedXQException();
         isNullXQException(value);
-        XQExpression expression = new org.zorbaxquery.api.xqj.ZorbaXQExpression(this, value);
+        XQExpression expression = new io.zorba.api.xqj.ZorbaXQExpression(this, value);
         cExpression.add(expression);
         return expression;
     }
@@ -258,7 +260,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQMetaData getMetaData() throws XQException {
         isClosedXQException();
-        return new org.zorbaxquery.api.xqj.ZorbaXQMetaData(this);
+        return new io.zorba.api.xqj.ZorbaXQMetaData(this);
     }
 
   /** \brief Checks if the connection is closed.
@@ -285,9 +287,9 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         XQPreparedExpression expression;
         try {
             if (lStaticContext == null) {
-                expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, value);
+                expression = new io.zorba.api.xqj.ZorbaXQPreparedExpression(this, value);
             } else {
-                expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, value, lStaticContext);
+                expression = new io.zorba.api.xqj.ZorbaXQPreparedExpression(this, value, lStaticContext);
             }
             cPreparedExpression.add(expression);
         } catch (Exception e) {
@@ -312,7 +314,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         isNullXQException(xqsc);
         XQPreparedExpression expression = null;
         try {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, string, xqsc);
+            expression = new io.zorba.api.xqj.ZorbaXQPreparedExpression(this, string, xqsc);
             cPreparedExpression.add(expression);
         } catch (Exception e) {
           throw new XQException("Error preparing expression");
@@ -335,9 +337,9 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         
         XQPreparedExpression expression;
         if (lStaticContext == null) {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, reader);
+            expression = new io.zorba.api.xqj.ZorbaXQPreparedExpression(this, reader);
         } else {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, reader, lStaticContext);
+            expression = new io.zorba.api.xqj.ZorbaXQPreparedExpression(this, reader, lStaticContext);
         }
         cPreparedExpression.add(expression);
         return expression;
@@ -358,7 +360,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         isNullXQException(reader);
         isNullXQException(xqsc);
 
-        XQPreparedExpression expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, reader, xqsc);
+        XQPreparedExpression expression = new io.zorba.api.xqj.ZorbaXQPreparedExpression(this, reader, xqsc);
         
         cPreparedExpression.add(expression);
         return expression;
@@ -379,9 +381,9 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
 
         XQPreparedExpression expression;
         if (lStaticContext == null) {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, in);
+            expression = new io.zorba.api.xqj.ZorbaXQPreparedExpression(this, in);
         } else {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, in, lStaticContext);
+            expression = new io.zorba.api.xqj.ZorbaXQPreparedExpression(this, in, lStaticContext);
         }
         try {
             cPreparedExpression.add(expression);
@@ -409,7 +411,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         
         XQPreparedExpression expression = null;
         try {
-            expression = new org.zorbaxquery.api.xqj.ZorbaXQPreparedExpression(this, in, xqsc);
+            expression = new io.zorba.api.xqj.ZorbaXQPreparedExpression(this, in, xqsc);
             cPreparedExpression.add(expression);
         } catch (Exception ex) {
             throw new XQException("Error preparing expression" + ex.getLocalizedMessage());
@@ -438,15 +440,15 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQStaticContext getStaticContext() throws XQException {
         isClosedXQException();
-        lStaticContext = new org.zorbaxquery.api.xqj.ZorbaXQStaticContext(zorba);
+        lStaticContext = new io.zorba.api.xqj.ZorbaXQStaticContext(zorba);
         if (uriPaths!=null) {
-            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setURIPaths(uriPaths);
+            ((io.zorba.api.xqj.ZorbaXQStaticContext)lStaticContext).setURIPaths(uriPaths);
         }
         if (libPaths!=null) {
-            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setLIBPaths(libPaths);
+            ((io.zorba.api.xqj.ZorbaXQStaticContext)lStaticContext).setLIBPaths(libPaths);
         }
         if (modulePaths!=null) {
-            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).setMODPaths(modulePaths);
+            ((io.zorba.api.xqj.ZorbaXQStaticContext)lStaticContext).setMODPaths(modulePaths);
         }
         return lStaticContext;
     }
@@ -463,7 +465,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         isClosedXQException();
         isNullXQException(xqsc);
         if ((lStaticContext!=null) && (lStaticContext!=xqsc)) {  // delete previous static context
-            ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)lStaticContext).getZorbaStaticContext().delete();
+            ((io.zorba.api.xqj.ZorbaXQStaticContext)lStaticContext).getZorbaStaticContext().delete();
         }
         lStaticContext = xqsc;
     }
@@ -509,114 +511,114 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         isClosedXQException();
         isNullXQException(value);
         if (type==null) {
-            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_STRING);
+            type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_STRING);
         }
         ItemFactory itemFactory = zorba.getItemFactory();
         XQItem item = null;
         try {
             switch (type.getBaseType()) {
             case XQItemType.XQBASETYPE_BOOLEAN:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBoolean(Boolean.parseBoolean(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createBoolean(Boolean.parseBoolean(value)), type);
                 break;
             case XQItemType.XQBASETYPE_ANYURI:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createAnyURI(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createAnyURI(value), type);
                 break;
             case XQItemType.XQBASETYPE_BASE64BINARY:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value, value.length(), true), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value, value.length(), true), type);
                 break;
             case XQItemType.XQBASETYPE_BYTE:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createByte(value.charAt(0)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createByte(value.charAt(0)), type);
                 break;
             case XQItemType.XQBASETYPE_DATE:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDate(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDate(value), type);
                 break;
             case XQItemType.XQBASETYPE_DATETIME:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDateTime(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDateTime(value), type);
                 break;
             case XQItemType.XQBASETYPE_DAYTIMEDURATION:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDuration(value), type);
                 break;
             case XQItemType.XQBASETYPE_DECIMAL:
                 BigDecimal dec = new BigDecimal(value);
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDecimal(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDecimal(value), type);
                 break;
             case XQItemType.XQBASETYPE_DOUBLE:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDouble(Double.parseDouble(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDouble(Double.parseDouble(value)), type);
                 break;
             case XQItemType.XQBASETYPE_DURATION:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDuration(value), type);
                 break;
             case XQItemType.XQBASETYPE_FLOAT:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createFloat(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createFloat(value), type);
                 break;
             case XQItemType.XQBASETYPE_GDAY:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGDay(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createGDay(value), type);
                 break;
             case XQItemType.XQBASETYPE_GMONTH:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGMonth(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createGMonth(value), type);
                 break;
             case XQItemType.XQBASETYPE_GMONTHDAY:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGMonthDay(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createGMonthDay(value), type);
                 break;
             case XQItemType.XQBASETYPE_GYEAR:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGYear(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createGYear(value), type);
                 break;
             case XQItemType.XQBASETYPE_GYEARMONTH:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGYearMonth(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createGYearMonth(value), type);
                 break;
             case XQItemType.XQBASETYPE_HEXBINARY:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createHexBinary(value, value.length()), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createHexBinary(value, value.length()), type);
                 break;
             case XQItemType.XQBASETYPE_INT:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInt(Integer.parseInt(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createInt(Integer.parseInt(value)), type);
                 break;
             case XQItemType.XQBASETYPE_INTEGER:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInteger(Integer.parseInt(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createInteger(Integer.parseInt(value)), type);
                 break;
             case XQItemType.XQBASETYPE_LONG:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createLong(Long.parseLong(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createLong(Long.parseLong(value)), type);
                 break;
             case XQItemType.XQBASETYPE_NCNAME:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNCName(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNCName(value), type);
                 break;
             case XQItemType.XQBASETYPE_NEGATIVE_INTEGER:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNegativeInteger(Long.parseLong(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNegativeInteger(Long.parseLong(value)), type);
                 break;
             case XQItemType.XQBASETYPE_NONNEGATIVE_INTEGER:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonNegativeInteger(new BigInteger(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNonNegativeInteger(new BigInteger(value)), type);
                 break;
             case XQItemType.XQBASETYPE_NONPOSITIVE_INTEGER:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonPositiveInteger(Long.parseLong(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNonPositiveInteger(Long.parseLong(value)), type);
                 break;
             case XQItemType.XQBASETYPE_POSITIVE_INTEGER:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createPositiveInteger(new BigInteger(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createPositiveInteger(new BigInteger(value)), type);
                 break;
             case XQItemType.XQBASETYPE_QNAME:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createQName(type.getSchemaURI().toString(), value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createQName(type.getSchemaURI().toString(), value), type);
                 break;
             case XQItemType.XQBASETYPE_SHORT:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createShort(Short.parseShort(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createShort(Short.parseShort(value)), type);
                 break;
             case XQItemType.XQBASETYPE_STRING:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createString(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createString(value), type);
                 break;
             case XQItemType.XQBASETYPE_TIME:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createTime(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createTime(value), type);
                 break;
             case XQItemType.XQBASETYPE_UNSIGNED_BYTE:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedByte(Short.parseShort(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedByte(Short.parseShort(value)), type);
                 break;
             case XQItemType.XQBASETYPE_UNSIGNED_INT:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedInt(Long.parseLong(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedInt(Long.parseLong(value)), type);
                 break;
             case XQItemType.XQBASETYPE_UNSIGNED_LONG:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedLong(new BigInteger(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedLong(new BigInteger(value)), type);
                 break;
             case XQItemType.XQBASETYPE_UNSIGNED_SHORT:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedShort(Integer.parseInt(value)), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedShort(Integer.parseInt(value)), type);
                 break;
             case XQItemType.XQBASETYPE_YEARMONTHDURATION:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDuration(value), type);
                 break;
             // TODO: revisit this posibilities
             case XQItemType.XQBASETYPE_ANYATOMICTYPE:
@@ -639,7 +641,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                 throw new UnsupportedOperationException("Not supported yet.");
             default:
                 
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createString(value), type);
+                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createString(value), type);
                 break;
             }
         } catch (Exception e) {
@@ -678,10 +680,10 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         Item doc = null;
         XQItem item = null;
         try {
-            dm = zorba.getXmlDataManager();
+            dm = getXmlDataManager().getXDM();
             doc = new Item();
             doc =  dm.parseXMLtoItem(value);
-            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(doc);
+            item = new io.zorba.api.xqj.ZorbaXQItem(doc);
         } catch (Exception e) {
             throw new XQException("Error creating Item" + e.getLocalizedMessage());
         }
@@ -718,11 +720,11 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         Item doc = null;
         XQItem item = null;
         try {
-            dm = zorba.getXmlDataManager();
+            dm = getXmlDataManager().getXDM();
             doc = new Item();
             ZorbaReaderWrapper stream = new ZorbaReaderWrapper(value);
             doc =  dm.parseXMLtoItem(stream);
-            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(doc);
+            item = new io.zorba.api.xqj.ZorbaXQItem(doc);
         } catch (Exception e) {
             throw new XQException("Error creating Item" + e.getLocalizedMessage());
         }
@@ -759,11 +761,11 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         Item doc = null;
         XQItem item = null;
         try {
-            dm = zorba.getXmlDataManager();
+            dm = getXmlDataManager().getXDM();
             doc = new Item();
             ZorbaInputWrapper stream = new ZorbaInputWrapper(value);
             doc =  dm.parseXMLtoItem(stream);
-            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(doc);
+            item = new io.zorba.api.xqj.ZorbaXQItem(doc);
         } catch (Exception e) {
             throw new XQException("Error creating Item" + e.getLocalizedMessage());
         }
@@ -876,64 +878,64 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         if (type==null) {
             
             if (value instanceof Boolean) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BOOLEAN);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BOOLEAN);
             } else if (value instanceof Byte) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BYTE);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BYTE);
             } else if (value instanceof Float) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_FLOAT);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_FLOAT);
             } else if (value instanceof Double) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DOUBLE);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DOUBLE);
             } else if (value instanceof Integer) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INT);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INT);
             } else if (value instanceof Long) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_LONG);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_LONG);
             } else if (value instanceof Short) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_SHORT);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_SHORT);
             } else if (value instanceof String) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_STRING);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_STRING);
             } else if (value instanceof BigDecimal) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DECIMAL);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DECIMAL);
             } else if (value instanceof BigInteger) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INTEGER);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INTEGER);
             } else if (value instanceof Duration) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DURATION);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DURATION);
             } else if (value instanceof XMLGregorianCalendar) {
                 QName schType = ((XMLGregorianCalendar)value).getXMLSchemaType();
                 if (schType.equals(DatatypeConstants.GDAY)) {
-                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GDAY);
+                    type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GDAY);
                 } else if (schType.equals(DatatypeConstants.GMONTHDAY)) {
-                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GMONTHDAY);
+                    type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GMONTHDAY);
                 } else if (schType.equals(DatatypeConstants.GMONTH)) {
-                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GMONTH);
+                    type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GMONTH);
                 } else if (schType.equals(DatatypeConstants.GYEAR)) {
-                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GYEAR);
+                    type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GYEAR);
                 } else if (schType.equals(DatatypeConstants.GYEARMONTH)) {
-                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GYEARMONTH);
+                    type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_GYEARMONTH);
                 } else if (schType.equals(DatatypeConstants.DATETIME)) {
-                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DATETIME);
+                    type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DATETIME);
                 } else if (schType.equals(DatatypeConstants.DATE)) {
-                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DATE);
+                    type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DATE);
                 } else if (schType.equals(DatatypeConstants.TIME)) {
-                    type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_TIME);
+                    type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_TIME);
                 }
             } else if (value instanceof QName) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_QNAME);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_QNAME);
             } else if (value instanceof Document) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT);
             } else if (value instanceof DocumentFragment) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT);
             } else if (value instanceof Element){
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ELEMENT);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ELEMENT);
             } else if (value instanceof Attr) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATTRIBUTE);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATTRIBUTE);
             } else if (value instanceof Comment) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_COMMENT);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_COMMENT);
             } else if (value instanceof ProcessingInstruction) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_PI);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_PI);
             } else if (value instanceof Text) {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_TEXT);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_TEXT);
             } else {
-                type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC);
+                type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC);
             }
         }
         try {
@@ -941,44 +943,44 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                 case XQItemType.XQITEMKIND_ATOMIC:
                     switch (type.getBaseType()) {
                     case XQItemType.XQBASETYPE_BOOLEAN:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBoolean((Boolean)value), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createBoolean((Boolean)value), type);
                         break;
                     case XQItemType.XQBASETYPE_ANYURI:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createAnyURI(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createAnyURI(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_BASE64BINARY:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value.toString(), (value.toString()).length(), true), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value.toString(), (value.toString()).length(), true), type);
                         break;
                     case XQItemType.XQBASETYPE_BYTE:
                         if (value instanceof Byte) {
                             byte tmpByte = ((Byte)value).byteValue();
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createByte((char)tmpByte), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createByte((char)tmpByte), type);
                         } else {
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createByte((value.toString()).charAt(0)), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createByte((value.toString()).charAt(0)), type);
                         }
                         break;
                     case XQItemType.XQBASETYPE_DATE:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDate(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDate(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_DATETIME:
                         if (value.toString().contains(":")) {
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDateTime(value.toString()), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDateTime(value.toString()), type);
                         } else {
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDate(value.toString()), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDate(value.toString()), type);
                         }
                         break;
                     case XQItemType.XQBASETYPE_DAYTIMEDURATION:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_DECIMAL:
                         if (value instanceof BigDecimal) {
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDecimal(((BigDecimal)value).toPlainString()), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDecimal(((BigDecimal)value).toPlainString()), type);
                         } else {
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDecimal(value.toString()), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDecimal(value.toString()), type);
                         }
                         break;
                     case XQItemType.XQBASETYPE_DOUBLE:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDouble(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDouble(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_DURATION:
                         if (value instanceof Duration) {
@@ -987,111 +989,111 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                                               duration.isSet(DatatypeConstants.MINUTES) || duration.isSet(DatatypeConstants.SECONDS);
                             Boolean yearmonth = duration.isSet(DatatypeConstants.YEARS) || duration.isSet(DatatypeConstants.MONTHS);
                             if (daytime && yearmonth){
-                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
+                                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
                             } else if (yearmonth) {
-                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createYearMonthDuration(value.toString()), type);
+                                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createYearMonthDuration(value.toString()), type);
                             } else if (daytime) {
-                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDayTimeDuration(value.toString()), type);
+                                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDayTimeDuration(value.toString()), type);
                             }
                         } else {
                             boolean yearMonth = value.toString().contains("Y") || value.toString().contains("M");
                             boolean dayTime = value.toString().contains("D") || value.toString().contains("T");
                             if (yearMonth && dayTime) {
-                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
+                                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
                             } else if (yearMonth) {
-                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createYearMonthDuration(value.toString()), type);
+                                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createYearMonthDuration(value.toString()), type);
                             } else if (dayTime) {
-                                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDayTimeDuration(value.toString()), type);
+                                item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDayTimeDuration(value.toString()), type);
                             }
                         }
                         break;
                     case XQItemType.XQBASETYPE_FLOAT:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createFloat((Float)value), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createFloat((Float)value), type);
                         break;
                     case XQItemType.XQBASETYPE_GDAY:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGDay(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createGDay(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_GMONTH:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGMonth(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createGMonth(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_GMONTHDAY:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGMonthDay(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createGMonthDay(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_GYEAR:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGYear(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createGYear(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_GYEARMONTH:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createGYearMonth(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createGYearMonth(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_HEXBINARY:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createHexBinary(value.toString(), (value.toString()).length()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createHexBinary(value.toString(), (value.toString()).length()), type);
                         break;
                     case XQItemType.XQBASETYPE_INT:
                     case XQItemType.XQBASETYPE_INTEGER:
                         if (value instanceof BigInteger) {
                             BigInteger val = (BigInteger)value;
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInteger(val.longValue()), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createInteger(val.longValue()), type);
                         } else if (value instanceof Integer) {
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInt((Integer)value), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createInt((Integer)value), type);
                         } else if (value instanceof String) {
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInteger(value.toString()), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createInteger(value.toString()), type);
                         } else {
                             throw new XQException ("Error parsing integer: " + value.toString());
                         }
                         break;
                     case XQItemType.XQBASETYPE_LONG:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createLong((Long)value), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createLong((Long)value), type);
                         break;
                     case XQItemType.XQBASETYPE_NCNAME:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNCName(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNCName(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_NEGATIVE_INTEGER:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNegativeInteger((Long)value), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNegativeInteger((Long)value), type);
                         break;
                     case XQItemType.XQBASETYPE_NONNEGATIVE_INTEGER:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonNegativeInteger(new BigInteger(value.toString())), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNonNegativeInteger(new BigInteger(value.toString())), type);
                         break;
                     case XQItemType.XQBASETYPE_NONPOSITIVE_INTEGER:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonPositiveInteger((Long)value), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNonPositiveInteger((Long)value), type);
                         break;
                     case XQItemType.XQBASETYPE_POSITIVE_INTEGER:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createPositiveInteger(new BigInteger(value.toString())), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createPositiveInteger(new BigInteger(value.toString())), type);
                         break;
                     case XQItemType.XQBASETYPE_QNAME:
                         if (value instanceof QName) {
                             QName qname =  (QName) value;
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createQName(qname.getNamespaceURI(), qname.getPrefix(), qname.getLocalPart()), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createQName(qname.getNamespaceURI(), qname.getPrefix(), qname.getLocalPart()), type);
                         } else if (value.toString().contains("{")) {
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createQName(value.toString()), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createQName(value.toString()), type);
                         } else {
-                            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createQName("", value.toString()), type);
+                            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createQName("", value.toString()), type);
                         }
                         break;
                     case XQItemType.XQBASETYPE_SHORT:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createShort((Short)value), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createShort((Short)value), type);
                         break;
                     case XQItemType.XQBASETYPE_STRING:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createString(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createString(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_TIME:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createTime(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createTime(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_TOKEN:
                         break;
                     case XQItemType.XQBASETYPE_UNSIGNED_BYTE:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedByte((Short)value), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedByte((Short)value), type);
                         break;
                     case XQItemType.XQBASETYPE_UNSIGNED_INT:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedInt((Long)value), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedInt((Long)value), type);
                         break;
                     case XQItemType.XQBASETYPE_UNSIGNED_LONG:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedLong(new BigInteger(value.toString())), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedLong(new BigInteger(value.toString())), type);
                         break;
                     case XQItemType.XQBASETYPE_UNSIGNED_SHORT:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedShort((Integer)value), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedShort((Integer)value), type);
                         break;
                     case XQItemType.XQBASETYPE_YEARMONTHDURATION:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDuration(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_ANYATOMICTYPE:
                     case XQItemType.XQBASETYPE_ANYSIMPLETYPE:
@@ -1132,7 +1134,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                         //TODO: Rodolfo: use centralized constants instead of strings
                         Item iUntyped = itemFactory.createQName("http://www.w3.org/2001/XMLSchema", "xs", "untyped");
                         Item attributeNode = itemFactory.createAttributeNode(iEmpty, nodeName, iUntyped, nodeValue);
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(attributeNode, type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(attributeNode, type);
                     }
                     break;
                 case XQItemType.XQITEMKIND_COMMENT:
@@ -1140,11 +1142,11 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                         Comment comment = (Comment) value;
                         Item iEmpty = new Item();
                         Item elementNode = itemFactory.createCommentNode(iEmpty, comment.getTextContent());
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(elementNode, type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(elementNode, type);
                     } else {
                         Item iEmpty = new Item();
                         Item elementNode = itemFactory.createCommentNode(iEmpty, value.toString());
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(elementNode, type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(elementNode, type);
                     }
                     break;
                 case XQItemType.XQITEMKIND_DOCUMENT:
@@ -1164,13 +1166,13 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                         String xmlString = result.getWriter().toString();
                         Item tmpItem = new Item();
                         if (xmlString.length()>0) {
-                            XmlDataManager dataManager = zorba.getXmlDataManager();
+                            XmlDataManager dataManager = getXmlDataManager().getXDM();
                             tmpItem = dataManager.parseXMLtoItem(xmlString);
                         } else {
                             tmpItem = itemFactory.createDocumentNode("", "");
                         }
                         
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(tmpItem, type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(tmpItem, type);
                     }
                       
                     break;
@@ -1183,7 +1185,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                                                                 element.getNodeName()==null?"":element.getNodeName());
                         Item iUntyped = itemFactory.createQName("http://www.w3.org/2001/XMLSchema", "xs", "untyped");
                         Item elementNode = itemFactory.createElementNode(iEmpty, nodeName, iUntyped, false, false);
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(elementNode, type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(elementNode, type);
                     }
                     break;
                 case XQItemType.XQITEMKIND_PI:
@@ -1194,7 +1196,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                                 pi.getTarget(), 
                                 pi.getTextContent(), 
                                 pi.getBaseURI()==null?"":pi.getBaseURI());
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(elementNode, type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(elementNode, type);
                     }
                     break;
                 case XQItemType.XQITEMKIND_TEXT:
@@ -1202,7 +1204,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                         Text text = (Text) value;
                         Item iEmpty = new Item();
                         Item elementNode = itemFactory.createTextNode(iEmpty, text.getWholeText());
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(elementNode, type);
+                        item = new io.zorba.api.xqj.ZorbaXQItem(elementNode, type);
                     }
                     break;
                 case XQItemType.XQITEMKIND_DOCUMENT_ELEMENT:
@@ -1225,7 +1227,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQItem createItemFromBoolean(boolean bln, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BOOLEAN);
+            type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BOOLEAN);
         }
         if (type.getBaseType() != XQItemType.XQBASETYPE_BOOLEAN) {
             throw new XQException("Type is not boolean, use proper method");
@@ -1234,7 +1236,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         XQItem item = null;
         try {
             ItemFactory itemFactory = zorba.getItemFactory();
-            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBoolean(bln));
+            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createBoolean(bln));
         } catch (Exception e) {
             throw new XQException("Error creating new item");
         }
@@ -1247,46 +1249,46 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
             ItemFactory itemFactory = zorba.getItemFactory();
             switch (type.getBaseType()) {
                 case XQItemType.XQBASETYPE_BYTE:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createByte((char)value.byteValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createByte((char)value.byteValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_INTEGER:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInteger(value.longValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createInteger(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_DECIMAL:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDecimalFromLong(value.longValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDecimalFromLong(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_INT:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createInt(value.intValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createInt(value.intValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_LONG:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createLong(value.longValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createLong(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_NEGATIVE_INTEGER:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNegativeInteger(value.longValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNegativeInteger(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_NONNEGATIVE_INTEGER:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonNegativeInteger(value.toBigInteger()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNonNegativeInteger(value.toBigInteger()), type);
                     break;
                 case XQItemType.XQBASETYPE_NONPOSITIVE_INTEGER:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createNonPositiveInteger(value.longValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createNonPositiveInteger(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_POSITIVE_INTEGER:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createPositiveInteger(value.toBigInteger()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createPositiveInteger(value.toBigInteger()), type);
                     break;
                 case XQItemType.XQBASETYPE_SHORT:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createShort(value.shortValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createShort(value.shortValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_UNSIGNED_BYTE:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedByte(value.shortValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedByte(value.shortValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_UNSIGNED_INT:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedInt(value.longValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedInt(value.longValue()), type);
                     break;
                 case XQItemType.XQBASETYPE_UNSIGNED_LONG:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createUnsignedLong(value.toBigInteger()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createUnsignedLong(value.toBigInteger()), type);
                     break;
                 case XQItemType.XQBASETYPE_UNSIGNED_SHORT:
-                    item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createShort(value.shortValue()), type);
+                    item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createShort(value.shortValue()), type);
                     break;
                 default:
                     throw new XQException("Type is not xs:decimal or a derivate.");
@@ -1310,7 +1312,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQItem createItemFromByte(byte b, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BYTE);
+            type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_BYTE);
         }
         return createDecimal(new BigDecimal(b), type);
     }
@@ -1328,7 +1330,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQItem createItemFromDouble(double value, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DOUBLE);
+            type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_DOUBLE);
         }
         if (type.getBaseType() != XQItemType.XQBASETYPE_DOUBLE) {
             throw new XQException("Type is not double, use proper method");
@@ -1336,7 +1338,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         XQItem item = null;
         try {
             ItemFactory itemFactory = zorba.getItemFactory();
-            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createDouble(value), type);
+            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createDouble(value), type);
         } catch (Exception e) {
             throw new XQException("Error Creating Item From Double" + e.getLocalizedMessage());
         }
@@ -1356,7 +1358,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQItem createItemFromFloat(float value, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_FLOAT);
+            type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_FLOAT);
         }
         if (type.getBaseType() != XQItemType.XQBASETYPE_FLOAT) {
             throw new XQException("Type is not float, use proper method");
@@ -1364,7 +1366,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         XQItem item = null;
         try {
             ItemFactory itemFactory = zorba.getItemFactory();
-            item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createFloat(value), type);
+            item = new io.zorba.api.xqj.ZorbaXQItem(itemFactory.createFloat(value), type);
         } catch (Exception e) {
             throw new XQException("Error Creating Item From Float" + e.getLocalizedMessage());
         }
@@ -1384,7 +1386,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQItem createItemFromInt(int value, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INT);
+            type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_INT);
         }
         switch (type.getBaseType()) {
             case XQItemType.XQBASETYPE_BYTE:
@@ -1409,7 +1411,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQItem createItemFromLong(long value, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_LONG);
+            type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_LONG);
         }
         switch (type.getBaseType()) {
             case XQItemType.XQBASETYPE_BYTE:
@@ -1458,7 +1460,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     public XQItem createItemFromShort(short value, XQItemType type) throws XQException {
         isClosedXQException();
         if (type == null) {
-            type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_SHORT);
+            type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, XQItemType.XQBASETYPE_SHORT);
         }
         if (type.getBaseType()==XQItemType.XQBASETYPE_BYTE) {
             throw new XQException("Can't create a Byte from a Short number");
@@ -1481,7 +1483,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         if (value.isClosed()) {
             throw new XQException("Item is closed.");
         }
-        XQItem result = new org.zorbaxquery.api.xqj.ZorbaXQItem(value);
+        XQItem result = new io.zorba.api.xqj.ZorbaXQItem(value);
         return result;
     }
 
@@ -1502,7 +1504,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         }
         XQSequence result = null;
         try {
-            result = new org.zorbaxquery.api.xqj.ZorbaXQSequence(value);
+            result = new io.zorba.api.xqj.ZorbaXQSequence(value);
         } catch (Exception ex) {
             throw new XQException("Error creating sequence: " + ex.getLocalizedMessage());
         }
@@ -1523,7 +1525,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         isNullXQException(value);
         XQSequence result = null;
         try {
-            result = new org.zorbaxquery.api.xqj.ZorbaXQSequence(value);
+            result = new io.zorba.api.xqj.ZorbaXQSequence(value);
         } catch (Exception ex) {
             throw new XQException("Error creating sequence: " + ex.getLocalizedMessage());
         }
@@ -1555,7 +1557,12 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
             (basetype==XQItemType.XQBASETYPE_ANYSIMPLETYPE)) {
             throw new XQException("Invalid base type.");
         }
-        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, basetype);
+        XQItemType type = null;
+        if (lStaticContext==null) {
+             type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, basetype);
+        } else {
+             type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, basetype, lStaticContext);
+        }
         return type;
     }
 
@@ -1588,7 +1595,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
             (basetype==XQItemType.XQBASETYPE_ANYSIMPLETYPE)) {
             throw new XQException("Invalid base type.");
         }
-        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, qname, basetype, uri);
+        XQItemType type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATOMIC, qname, basetype, uri);
         return type;
     }
 
@@ -1633,7 +1640,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         if ((basetype==XQItemType.XQBASETYPE_UNTYPED)||(basetype==XQItemType.XQBASETYPE_ANYTYPE)) {
             throw new XQException("Base Type can't be XQItemType.XQBASETYPE_UNTYPED or XQItemType.XQBASETYPE_ANYTYPE");
         }
-        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATTRIBUTE, nodename, basetype);
+        return new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATTRIBUTE, nodename, basetype);
     }
 
   /** \brief  Creates a new ZorbaXQItemType object representing the XQuery attribute(nodename, basetype) type with the given node name and base type.
@@ -1689,7 +1696,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         if ((schemaURI!=null) && (typename==null)) {
             throw new XQException("If Schema URI is specified, Base Type must be also specified");
         }
-        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATTRIBUTE, nodename, basetype, typename, schemaURI, true);
+        return new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ATTRIBUTE, nodename, basetype, typename, schemaURI, true);
     }
 
   /** \brief Creates a new ZorbaXQItemType object representing the XQuery schema-attribute(nodename,basetype,schemaURI) type, with the given node name, base type, and schema URI.
@@ -1715,7 +1722,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQItemType createSchemaAttributeType(QName nodename, int basetype, URI uri) throws XQException {
         isClosedXQException();
-        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE, nodename, basetype, uri);
+        return new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_SCHEMA_ATTRIBUTE, nodename, basetype, uri);
     }
 
   /** \brief Creates a new ZorbaXQItemType object representing the XQuery comment() type.
@@ -1742,7 +1749,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQItemType createCommentType() throws XQException {
         isClosedXQException();
-        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_COMMENT);
+        return new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_COMMENT);
     }
 
   /** \brief Creates a new ZorbaXQItemType object representing the XQuery document-node(elementType) type containing a single element.
@@ -1760,7 +1767,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         if (elementType.getItemKind()!=XQItemType.XQITEMKIND_ELEMENT) {
             throw new XQException("Item Kind must be XQItemType.XQITEMKIND_ELEMENT");
         }
-        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT_ELEMENT, elementType.getNodeName(), elementType.getBaseType(), elementType.getSchemaURI());
+        return new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT_ELEMENT, elementType.getNodeName(), elementType.getBaseType(), elementType.getSchemaURI());
     }
 
   /** \brief Creates a new ZorbaXQItemType object representing the XQuery document-node(elementType) type containing a single schema-element(...).
@@ -1777,7 +1784,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         if (elementType.getItemKind()!=XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT) {
             throw new XQException("Item Kind must be XQItemType.XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT");
         }
-        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT_ELEMENT, elementType.getNodeName(), elementType.getBaseType(), elementType.getSchemaURI());
+        return new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT_ELEMENT, elementType.getNodeName(), elementType.getBaseType(), elementType.getSchemaURI());
     }
 
   /** \brief Creates a new ZorbaXQItemType object representing the XQuery document-node() type.
@@ -1790,7 +1797,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQItemType createDocumentType() throws XQException {
         isClosedXQException();
-        return new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT);
+        return new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_DOCUMENT);
     }
 
   /** \brief Creates a new ZorbaXQItemType object representing the XQuery element(nodename, basetype) type, with the given node name and base type.
@@ -1830,7 +1837,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQItemType createElementType(QName nodename, int baseType) throws XQException {
         isClosedXQException();
-        XQItemType item = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ELEMENT, nodename, baseType);
+        XQItemType item = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ELEMENT, nodename, baseType);
         return item;
     }
 
@@ -1894,7 +1901,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQItemType createElementType(QName nodename, int baseType, QName typename, URI schemaURI, boolean allowNill) throws XQException {
         isClosedXQException();
-        XQItemType item = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ELEMENT, nodename, baseType, typename, schemaURI, allowNill);
+        XQItemType item = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ELEMENT, nodename, baseType, typename, schemaURI, allowNill);
         return item;
     }
 
@@ -1919,7 +1926,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQItemType createSchemaElementType(QName nodename, int baseType, URI schemaURI) throws XQException {
         isClosedXQException();
-        XQItemType item = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_SCHEMA_ELEMENT, nodename, baseType, schemaURI);
+        XQItemType item = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_SCHEMA_ELEMENT, nodename, baseType, schemaURI);
         return item;
     }
 
@@ -1938,7 +1945,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQItemType createItemType() throws XQException {
         isClosedXQException();
-        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ITEM);
+        XQItemType type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ITEM);
         return type;
     }
 
@@ -1952,7 +1959,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQItemType createNodeType() throws XQException {
         isClosedXQException();
-        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_NODE);
+        XQItemType type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_NODE);
         return type;
     }
 
@@ -1988,7 +1995,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQItemType createProcessingInstructionType(String piTarget) throws XQException {
         isClosedXQException();
-        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_PI, piTarget);
+        XQItemType type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_PI, piTarget);
         return type;
     }
 
@@ -2013,7 +2020,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
             throw new XQException("Occurence must be from: OCC_ZERO_OR_ONE, OCC_EXACTLY_ONE, OCC_ZERO_OR_MORE, OCC_ONE_OR_MORE, OCC_EMPTY ");
         }
         
-        XQSequenceType result = new org.zorbaxquery.api.xqj.ZorbaXQSequenceType(item, occurence);
+        XQSequenceType result = new io.zorba.api.xqj.ZorbaXQSequenceType(item, occurence);
         return result;
     }
 
@@ -2027,7 +2034,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
     @Override
     public XQItemType createTextType() throws XQException {
         isClosedXQException();
-        XQItemType type = new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_TEXT);
+        XQItemType type = new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_TEXT);
         return type;
     }
     

@@ -22,8 +22,11 @@
 #include <set>
 #include <sstream>
 
-#include "tuple.h"
-
+#ifdef ZORBA_TR1_IN_TR1_SUBDIRECTORY
+# include <tr1/tuple>
+#else
+# include <tuple>
+#endif
 
 namespace zorba { namespace debugger {
 
@@ -33,6 +36,7 @@ class CommandArg;
 template<typename Tuple>
 class CommandArgInstance {
   public:
+    virtual ~CommandArgInstance() { }
     virtual int get_index() const = 0;
     virtual const CommandArg<Tuple>* get_arg() const = 0;
     virtual void insertValue(Tuple& t) = 0;

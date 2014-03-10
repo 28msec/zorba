@@ -15,7 +15,7 @@
 :)
 
 declare namespace zorba = "http://www.zorba-xquery.com";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://expath.org/ns/file";
@@ -36,13 +36,15 @@ declare function local:create-include() as xs:string
 
 declare function local:create-class() as xs:string
 {
-  string-join(('/**',$gen:newline,
-  ' * Visitor to visit a PlanIterator tree.',$gen:newline,
-  ' */',$gen:newline,
-  'class PlanIterVisitor {',$gen:newline,
-  'public:',$gen:newline,
-  '  virtual ~PlanIterVisitor() {}',$gen:newline,$gen:newline,
-  '#include "runtime/visitors/planiter_visitor_impl_code.h"'),'')
+  concat(
+    '/**', $gen:newline,
+    ' * Visitor to visit a PlanIterator tree.', $gen:newline,
+    ' */', $gen:newline,
+    'class PlanIterVisitor {', $gen:newline,
+    'public:', $gen:newline,
+    '  virtual ~PlanIterVisitor() { }', $gen:newline, $gen:newline,
+    '#include "runtime/visitors/plan_iter_visitor_decl.h"', $gen:newline
+  )
 };
  
 
@@ -96,7 +98,7 @@ declare %ann:nondeterministic function local:create-fwd-decl($files as xs:string
   variable $temp := local:process-files($files,'fwd-decl');
 
   string-join(($temp, $gen:newline, $gen:newline,
-               '#include "runtime/visitors/planiter_visitor_impl_include.h"'),'')
+               '#include "runtime/visitors/plan_iter_visitor_types.h"'),'')
 };
 
 
@@ -136,3 +138,4 @@ declare variable $files as xs:string external;
   )
 }
 
+(: vim:set et sw=2 ts=2: :)

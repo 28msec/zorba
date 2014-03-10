@@ -29,12 +29,12 @@ DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/schemas/xdm"
 
 # XQueryX
 DECLARE_ZORBA_SCHEMA(URI "http://www.w3.org/2005/XQueryX"
-FILE XQueryX.xsd)
+  FILE XQueryX.xsd)
 
 # The following are DTDs, not schemas, but (currently at least) we
 # only ever load them when an imported schema file references them
 # (which, in turn, only happens in error cases - see bug 921624). So,
-# we install them as schemas. Yes, this means they'll have an ".xsd"
+# we install them as schemas. Yes, this means they'll have an ".schema"
 # extension in the uri directory, but that's OK because Zorba will
 # look for them with that extension.
 DECLARE_ZORBA_SCHEMA(

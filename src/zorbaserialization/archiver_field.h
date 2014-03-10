@@ -125,9 +125,6 @@ class SerializeBaseClass;
   ----------
   The parent field in the fields tree.
 
-  theOnlyForEval:
-  ---------------
-
   theAllowDelay2:
   ---------------
 
@@ -174,8 +171,6 @@ public:
   class archive_field        * theLastChild;
   class archive_field        * theParent;
 
-  int                          theOnlyForEval;
-
   ENUM_ALLOW_DELAY             theAllowDelay2;
 
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
@@ -191,7 +186,6 @@ public:
       const void* ptr,
       ArchiveFieldKind kind,
       archive_field* refered,
-      int only_for_eval,
       ENUM_ALLOW_DELAY allow_delay,
       unsigned int level);
 
@@ -199,7 +193,6 @@ public:
       TypeCode type,
       const void* ptr,
       ArchiveFieldKind kind,
-      int only_for_eval,
       ENUM_ALLOW_DELAY allow_delay,
       unsigned int level);
 

@@ -769,7 +769,7 @@ void CtxItemDecl::accept(parsenode_visitor& v) const
 GlobalVarDecl::GlobalVarDecl(
     const QueryLoc& loc,
     QName* varname,
-    SequenceType* type_decl,
+    SequenceTypeAST* type_decl,
     exprnode* init_expr,
     AnnotationListParsenode* annotations,
     bool external)
@@ -797,7 +797,7 @@ FunctionDecl::FunctionDecl(
     const QueryLoc& loc,
     QName* name,
     ParamList* params,
-    SequenceType* retType,
+    SequenceTypeAST* retType,
     exprnode* body,
     bool updating,
     bool external)
@@ -865,7 +865,7 @@ void ParamList::accept(parsenode_visitor& v) const
 Param::Param(
     const QueryLoc& loc,
     rchandle<QName> name,
-    rchandle<SequenceType> type)
+    rchandle<SequenceTypeAST> type)
   :
   parsenode(loc),
   theName(name),
@@ -956,7 +956,7 @@ CollectionDecl::CollectionDecl(
     const QueryLoc& aLoc,
     QName* aName,
     rchandle<AnnotationListParsenode> aAnnotations,
-    SequenceType* aTypeDecl)
+    SequenceTypeAST* aTypeDecl)
   :
   XQDocumentable(aLoc),
   theName(aName),
@@ -1264,7 +1264,7 @@ void VarDeclStmt::accept(parsenode_visitor& v) const
 LocalVarDecl::LocalVarDecl(
     const QueryLoc& loc,
     QName* varname,
-    SequenceType* type_decl,
+    SequenceTypeAST* type_decl,
     exprnode* init_expr,
     AnnotationListParsenode* annotations)
   :
@@ -1648,7 +1648,7 @@ void VarInDeclList::accept( parsenode_visitor &v ) const
 VarInDecl::VarInDecl(
   const QueryLoc& loc,
   rchandle<QName> varname,
-  rchandle<SequenceType> typedecl_h,
+  rchandle<SequenceTypeAST> typedecl_h,
   rchandle<PositionalVar> _posvar_h,
   rchandle<FTScoreVar> _ftscorevar_h,
   rchandle<exprnode> valexpr_h,
@@ -1871,7 +1871,7 @@ void GroupSpecList::accept(parsenode_visitor& v) const
 GroupSpec::GroupSpec(
     const QueryLoc& loc,
     rchandle<QName> name,
-    rchandle<SequenceType> type,
+    rchandle<SequenceTypeAST> type,
     rchandle<exprnode> expr,
     rchandle<GroupCollationSpec> collation)
   :
@@ -1884,7 +1884,7 @@ GroupSpec::GroupSpec(
 GroupSpec::GroupSpec(
     const QueryLoc& loc,
     VarRef* varRef,
-    rchandle<SequenceType> type,
+    rchandle<SequenceTypeAST> type,
     rchandle<exprnode> expr,
     rchandle<GroupCollationSpec> collation)
   :
@@ -2136,7 +2136,7 @@ QVarInDecl::QVarInDecl(
 QVarInDecl::QVarInDecl(
   const QueryLoc& loc_,
   rchandle<QName> _name,
-  rchandle<SequenceType> _typedecl_h,
+  rchandle<SequenceTypeAST> _typedecl_h,
   rchandle<exprnode> _val_h)
 :
   parsenode(loc_),
@@ -2661,7 +2661,7 @@ void IntersectExceptExpr::accept( parsenode_visitor &v ) const
 InstanceofExpr::InstanceofExpr(
   const QueryLoc& loc_,
   rchandle<exprnode> _treat_expr_h,
-  rchandle<SequenceType> _seqtype_h)
+  rchandle<SequenceTypeAST> _seqtype_h)
 :
   exprnode(loc_),
   treat_expr_h(_treat_expr_h),
@@ -2685,7 +2685,7 @@ void InstanceofExpr::accept( parsenode_visitor &v ) const
 TreatExpr::TreatExpr(
   const QueryLoc& loc_,
   rchandle<exprnode> _castable_expr_h,
-  rchandle<SequenceType> _seqtype_h)
+  rchandle<SequenceTypeAST> _seqtype_h)
 :
   exprnode(loc_),
   castable_expr_h(_castable_expr_h),
@@ -3076,6 +3076,34 @@ RelativePathExpr::RelativePathExpr(
   FilterExpr* filter = dynamic_cast<FilterExpr*>(step.getp());
   if (filter != NULL)
     filter->setIsPathStep();
+}
+
+
+int RelativePathExpr::is_jsoniq_literal() const
+{
+  ContextItemExpr* cie = dynamic_cast<ContextItemExpr*>(get_step_expr());
+  AxisStep* as = dynamic_cast<AxisStep*>(get_relpath_expr());
+
+  if (cie == NULL ||
+      ! cie->is_placeholder() ||
+      as == NULL ||
+      as->get_forward_step() == NULL ||
+      as->get_forward_step()->get_abbrev_step() == NULL ||
+      as->get_forward_step()->get_abbrev_step()->get_node_test() == NULL)
+    return 0;
+
+  const NameTest* nt = dynamic_cast<const NameTest*>(as->get_forward_step()->get_abbrev_step()->get_node_test());
+  if (nt == NULL || nt->getWildcard().getp() != NULL)
+    return 0;
+
+  if (nt->getQName()->get_qname() == "null")
+    return 1;
+  else if (nt->getQName()->get_qname() == "false")
+    return 2;
+  else if (nt->getQName()->get_qname() == "true")
+    return 3;
+
+  return 0;
 }
 
 
@@ -4368,9 +4396,9 @@ void SimpleType::accept(parsenode_visitor& v) const
 }
 
 
-// [119] SequenceType
+// [119] SequenceTypeAST
 // ------------------
-SequenceType::SequenceType(
+SequenceTypeAST::SequenceTypeAST(
   const QueryLoc& loc_,
   rchandle<parsenode> _itemtype_h,
   rchandle<OccurrenceIndicator> _occur_h)
@@ -4383,7 +4411,7 @@ SequenceType::SequenceType(
 
 //-SequenceType::
 
-void SequenceType::accept( parsenode_visitor &v ) const
+void SequenceTypeAST::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT (itemtype_h);
@@ -5941,7 +5969,7 @@ void AnyFunctionTest::accept(parsenode_visitor& v) const
 void TypeList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  std::vector<rchandle<SequenceType> >::const_iterator it = theTypes.begin();
+  std::vector<rchandle<SequenceTypeAST> >::const_iterator it = theTypes.begin();
   for (; it!=theTypes.end(); ++it)
   {
     const parsenode* e_p = &**it;
@@ -5973,8 +6001,8 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 JSONObjectLookup::JSONObjectLookup(
     const QueryLoc& loc,
     const QueryLoc& a_dot_loc,
-    const exprnode* aObjectExpr,
-    const exprnode* aSelectorExpr)
+    exprnode* aObjectExpr,
+    exprnode* aSelectorExpr)
   :
   exprnode(loc),
   dot_loc(a_dot_loc),
@@ -6032,7 +6060,7 @@ void JSONArrayUnboxing::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONArrayConstructor::JSONArrayConstructor(
     const QueryLoc& loc,
-    const exprnode* expr)
+    exprnode* expr)
   :
   exprnode(loc),
   expr_(expr)

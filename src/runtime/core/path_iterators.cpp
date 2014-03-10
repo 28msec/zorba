@@ -143,36 +143,52 @@ SERIALIZABLE_CLASS_VERSIONS(FollowingAxisIterator)
 
 
 UNARY_ACCEPT(SelfAxisIterator);
+DEF_GET_NAME_AS_STRING(SelfAxisIterator)
 
 UNARY_ACCEPT(AttributeAxisIterator);
+DEF_GET_NAME_AS_STRING(AttributeAxisIterator)
 
 UNARY_ACCEPT(ParentAxisIterator);
+DEF_GET_NAME_AS_STRING(ParentAxisIterator)
 
 UNARY_ACCEPT(AncestorAxisIterator);
+DEF_GET_NAME_AS_STRING(AncestorAxisIterator)
 
 UNARY_ACCEPT(AncestorReverseAxisIterator);
+DEF_GET_NAME_AS_STRING(AncestorReverseAxisIterator)
 
 UNARY_ACCEPT(AncestorSelfAxisIterator);
+DEF_GET_NAME_AS_STRING(AncestorSelfAxisIterator)
 
 UNARY_ACCEPT(AncestorSelfReverseAxisIterator);
+DEF_GET_NAME_AS_STRING(AncestorSelfReverseAxisIterator)
 
 UNARY_ACCEPT(RSiblingAxisIterator);
+DEF_GET_NAME_AS_STRING(RSiblingAxisIterator)
 
 UNARY_ACCEPT(LSiblingAxisIterator);
+DEF_GET_NAME_AS_STRING(LSiblingAxisIterator)
 
 UNARY_ACCEPT(LSiblingReverseAxisIterator);
+DEF_GET_NAME_AS_STRING(LSiblingReverseAxisIterator)
 
 UNARY_ACCEPT(ChildAxisIterator);
+DEF_GET_NAME_AS_STRING(ChildAxisIterator)
 
 UNARY_ACCEPT(DescendantAxisIterator);
+DEF_GET_NAME_AS_STRING(DescendantAxisIterator)
 
 UNARY_ACCEPT(DescendantSelfAxisIterator);
+DEF_GET_NAME_AS_STRING(DescendantSelfAxisIterator)
 
 UNARY_ACCEPT(PrecedingAxisIterator);
+DEF_GET_NAME_AS_STRING(PrecedingAxisIterator)
 
 UNARY_ACCEPT(PrecedingReverseAxisIterator);
+DEF_GET_NAME_AS_STRING(PrecedingReverseAxisIterator)
 
 UNARY_ACCEPT(FollowingAxisIterator);
+DEF_GET_NAME_AS_STRING(FollowingAxisIterator)
 
 
 
@@ -309,7 +325,7 @@ doctest1:
     if (theType != NULL)
     {
       xqtref_t atype = sctx->get_typemanager()->
-      create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
+      create_named_type(node->getType(), SequenceType::QUANT_ONE, loc);
 
       if ((!TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType)) ||
           (theNilledAllowed == false &&
@@ -334,7 +350,7 @@ doctest2:
       return false;
 
     xqtref_t atype = sctx->get_typemanager()->
-    create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
+    create_named_type(node->getType(), SequenceType::QUANT_ONE, loc);
 
     if ((!TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType)) ||
         (theNilledAllowed == false &&
@@ -354,7 +370,7 @@ doctest2:
     if (theType != NULL)
     {
       xqtref_t atype = sctx->get_typemanager()->
-      create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
+      create_named_type(node->getType(), SequenceType::QUANT_ONE, loc);
 
       if (! TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType))
         return false;
@@ -371,7 +387,7 @@ doctest2:
       return false;
 
     xqtref_t atype = sctx->get_typemanager()->
-    create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
+    create_named_type(node->getType(), SequenceType::QUANT_ONE, loc);
 
     if (! TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType))
       return false;

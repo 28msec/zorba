@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/parsing_and_serializing/parse_fragment.h"
 #include "functions/func_parse_fragment.h"
@@ -67,7 +68,7 @@ void populate_context_parse_fragment(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_xml_canonicalize_impl,
-        (createQName("http://www.zorba-xquery.com/modules/xml","","canonicalize-impl"), 
+        (createQName("http://zorba.io/modules/xml","","canonicalize-impl"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),

@@ -15,21 +15,23 @@
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/api/version.cpp.cmake ${CMAKE_CURRENT_BINARY_DIR}/api/version.cpp)
 
 SET(API_SRCS
+    base64_util.cpp
+    external_function.cpp
     smart_ptr.cpp
     diagnostic_handler.cpp
+    iterator.cpp
     zorba.cpp
     zorbaimpl.cpp
     xqueryimpl.cpp
     sax2impl.cpp
     staticcontextimpl.cpp
     dynamiccontextimpl.cpp
-    resultiteratorimpl.cpp
     zorba_string.cpp
+    hexbinary_util.cpp
     hexbinary_streambuf.cpp
     itemfactoryimpl.cpp
     item.cpp
-    identtypesimpl.cpp
-    typeidentimpl.cpp
+    sequencetype.cpp
     unmarshaller.cpp
     xmldatamanagerimpl.cpp
     documentmanagerimpl.cpp
@@ -38,17 +40,17 @@ SET(API_SRCS
     collectionimpl.cpp
     options.cpp
     functionimpl.cpp
-    storeiteratorimpl.cpp
-    vectoriterator.cpp
-    iterator_singleton.cpp
     serialization_callback.cpp
-    vector_item_sequence.cpp
-    singleton_item_sequence.cpp
-    invoke_item_sequence.cpp
-    item_sequence_chainer.cpp
-    empty_sequence.cpp
+    item_iter_singleton.cpp
+    item_iter_vector.cpp
+    item_iter_store.cpp
+    item_iter_query_result.cpp
+    item_seq_vector.cpp
+    item_seq_singleton.cpp
+    item_seq_invoke.cpp
+    item_seq_chainer.cpp
+    item_seq_empty.cpp
     serializerimpl.cpp
-    base64impl.cpp
     base64_streambuf.cpp
     uriimpl.cpp
     uriresolverimpl.cpp
@@ -59,6 +61,8 @@ SET(API_SRCS
     auditimpl.cpp
     store_consts.cpp
     streambuf.cpp
+    mem_streambuf.cpp
+    properties.cpp
     transcode_streambuf.cpp
     uuid.cpp
     module_info_impl.cpp

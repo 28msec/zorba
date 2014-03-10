@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 // This include needs to be kept in order to make sure the
-// auto_ptr<dynamic_context> manages to dealocate the
+// unique_ptr<dynamic_context> manages to dealocate the
 // dynamic_context object.
 #include "context/dynamic_context.h"
 
@@ -33,6 +33,7 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionItemIterator)
+DEF_GET_NAME_AS_STRING(FunctionItemIterator)
 
 /*******************************************************************************
 
@@ -74,7 +75,7 @@ bool FunctionItemIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if (numOuterVars > 0)
   {
-    std::auto_ptr<dynamic_context> evalDctx;
+    std::unique_ptr<dynamic_context> evalDctx;
     evalDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
 
     for (csize i = 0; i < numOuterVars; ++i)
@@ -94,7 +95,8 @@ bool FunctionItemIterator::nextImpl(store::Item_t& result, PlanState& planState)
         theFunctionItemInfo->theQName = child->theFunctionItemInfo->theQName;
     }
 
-    result = new FunctionItem(theFunctionItemInfo, evalDctx.release());
+    result = new FunctionItem(theFunctionItemInfo, evalDctx.get());
+    evalDctx.release();
   }
   else
   {

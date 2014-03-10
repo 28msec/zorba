@@ -47,9 +47,9 @@ class DiagnosticHandler;
   loadProlog on this child in order to import either one of the following 3 
   modules, depending on whether "this" is supposed to manage dynamic collections,
   or w3c collections, or static collections respectively:
-  http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl, or
-  http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl, or
-  http://www.zorba-xquery.com/modules/store/static/collections/ddl
+  http://zorba.io/modules/store/dynamic/collections/ddl, or
+  http://zorba.io/modules/store/dynamic/collections/w3c/ddl, or
+  http://zorba.io/modules/store/static/collections/ddl
 
   theFactory:
   -----------
@@ -63,15 +63,15 @@ class DiagnosticHandler;
 
   theColDDLNamespace:
   -------------------
-  http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl, or
-  http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl, or
-  http://www.zorba-xquery.com/modules/store/static/collections/ddl
+  http://zorba.io/modules/store/dynamic/collections/ddl, or
+  http://zorba.io/modules/store/dynamic/collections/w3c/ddl, or
+  http://zorba.io/modules/store/static/collections/ddl
 
   theColDMLNamespace:
   -------------------
-  http://www.zorba-xquery.com/modules/store/dynamic/collections/dml, or
-  http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml, or
-  http://www.zorba-xquery.com/modules/store/static/collections/dml
+  http://zorba.io/modules/store/dynamic/collections/dml, or
+  http://zorba.io/modules/store/dynamic/collections/w3c/dml, or
+  http://zorba.io/modules/store/static/collections/dml
 
 ********************************************************************************/
 class CollectionManagerImpl : public virtual CollectionManager

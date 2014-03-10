@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -57,6 +58,10 @@ void ResolveUriIterator::accept(PlanIterVisitor& v) const
 
 ResolveUriIterator::~ResolveUriIterator() {}
 
+
+zstring ResolveUriIterator::getNameAsString() const {
+  return "fn:resolve-uri";
+}
 // </ResolveUriIterator>
 
 

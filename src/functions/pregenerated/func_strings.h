@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_STRINGS_H
 #define ZORBA_FUNCTIONS_STRINGS_H
 
@@ -447,6 +448,23 @@ public:
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-string:analyze-string
+class fn_zorba_string_analyze_string : public function
+{
+public:
+  fn_zorba_string_analyze_string(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
   CODEGEN_DECL();
 };
 
@@ -471,6 +489,21 @@ class fn_zorba_string_is_streamable : public function
 {
 public:
   fn_zorba_string_is_streamable(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-string:is-seekable
+class fn_zorba_string_is_seekable : public function
+{
+public:
+  fn_zorba_string_is_seekable(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

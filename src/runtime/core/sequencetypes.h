@@ -17,6 +17,8 @@
 #ifndef ZORBA_RUNTIME_SEQUENCETYPES
 #define ZORBA_RUNTIME_SEQUENCETYPES
 
+#include <zorba/typeident.h>
+
 #include "common/shared_types.h"
 
 #include "runtime/base/unarybase.h"
@@ -62,6 +64,8 @@ public:
   ~InstanceOfIterator();
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
   
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -112,6 +116,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
   
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -149,6 +155,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -164,11 +172,11 @@ class PromoteIterator : public UnaryBaseIterator<PromoteIterator,
   friend class PrinterVisitor;
 
 private:
-  xqtref_t                    thePromoteType;
-  TypeConstants::quantifier_t theQuantifier;
-  PromoteErrorKind            theErrorKind;
-  store::Item_t								theQName; 
-  namespace_context           theNsCtx;
+  xqtref_t                   thePromoteType;
+  SequenceType::Quantifier   theQuantifier;
+  PromoteErrorKind           theErrorKind;
+  store::Item_t							 theQName; 
+  namespace_context          theNsCtx;
 
 public:
   SERIALIZABLE_CLASS(PromoteIterator);
@@ -190,6 +198,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
 protected:
@@ -211,13 +221,14 @@ class TreatIterator : public UnaryBaseIterator<TreatIterator,
                                                PlanIteratorState> 
 {
   friend class PrinterVisitor;
+  typedef UnaryBaseIterator<TreatIterator,PlanIteratorState> base_type;
 
 private:
-  xqtref_t                    theTreatType;
-  TypeConstants::quantifier_t theQuantifier;
-  bool                        theCheckPrime;
-  TreatErrorKind              theErrorKind;
-  store::Item_t								theQName;
+  xqtref_t                  theTreatType;
+  SequenceType::Quantifier  theQuantifier;
+  bool                      theCheckPrime;
+  TreatErrorKind            theErrorKind;
+  store::Item_t						theQName;
 
 public:
   SERIALIZABLE_CLASS(TreatIterator);
@@ -238,7 +249,12 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  bool count(store::Item_t& result, PlanState& planState) const;
+  bool skip(int64_t count, PlanState &planState) const;
 
 protected:
   void raiseError(const zstring& valueType) const;

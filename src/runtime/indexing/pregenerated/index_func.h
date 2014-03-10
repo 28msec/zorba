@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_INDEXING_INDEX_FUNC_H
 #define ZORBA_RUNTIME_INDEXING_INDEX_FUNC_H
 
@@ -76,6 +77,8 @@ public:
   {}
 
   virtual ~IndexKeysIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

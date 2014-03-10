@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <zorba/thesaurus.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "runtime/full_text/thesaurus.h"
 
@@ -82,7 +83,7 @@ namespace zorba
     static_context const& aSctx,
     std::vector<zstring>& oUris)
   {
-    std::auto_ptr<const EntityDataWrapper> lDataWrap
+    std::unique_ptr<const EntityDataWrapper> lDataWrap
         (EntityDataWrapper::create(aEntityData));
     if (lDataWrap.get() == NULL) {
       return;
@@ -127,7 +128,7 @@ namespace zorba
   (const zstring& aUrl,
     internal::EntityData const* aEntityData)
   {
-    std::auto_ptr<const EntityDataWrapper> lDataWrap
+    std::unique_ptr<const EntityDataWrapper> lDataWrap
         (EntityDataWrapper::create(aEntityData));
     if (lDataWrap.get() == NULL) {
       return NULL;

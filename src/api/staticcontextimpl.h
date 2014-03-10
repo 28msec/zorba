@@ -17,7 +17,6 @@
 #ifndef ZORBA_API_STATIC_CONTEXT_IMPL_H
 #define ZORBA_API_STATIC_CONTEXT_IMPL_H
 
-#include <zorba/typeident.h>
 #include <zorba/static_context.h>
 #include <zorba/api_shared_types.h>
 #include <map>
@@ -27,9 +26,11 @@
 
 namespace zorba {
 
-  class DiagnosticHandler;
-  class StaticCollectionManagerImpl;
-  class static_context;
+class DiagnosticHandler;
+class StaticCollectionManagerImpl;
+class static_context;
+class function;
+
 
 /*******************************************************************************
 
@@ -72,8 +73,25 @@ protected:
   // allow for lazy creation
   mutable StaticCollectionManagerImpl * theCollectionMgr;
 
+protected:
+  static std::string createInvokeQuery(const function*, size_t aArity);
+
+  static std::string createHOFQuery(size_t aArity);
+
 private:
   StaticContextImpl(const StaticContextImpl&);
+
+  ItemSequence_t
+  invokeFunc(
+      const Item& aItem,
+      const store::Item_t& qname,
+      const std::vector<ItemSequence_t>& aArgs) const;
+
+  ItemSequence_t
+  invokeFuncItem(
+      const Item& aItem,
+      const store::Item_t& funItem,
+      const std::vector<ItemSequence_t>& aArgs) const;
 
 public:
   StaticContextImpl(DiagnosticHandler* = 0);
@@ -182,9 +200,9 @@ public:
   registerModule(ExternalModule* aModule);
 
   virtual void
-  setDocumentType(const String& aDocUri, TypeIdentifier_t type);
+  setDocumentType(const String& aDocUri, const SequenceType& type);
 
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getDocumentType(const String& aDocUri) const;
 
   virtual void
@@ -194,9 +212,9 @@ public:
   registerURLResolver(URLResolver* aResolver);
 
   virtual void
-  setCollectionType(const String& aCollectionUri, TypeIdentifier_t type);
+  setCollectionType(const String& aCollectionUri, const SequenceType& type);
 
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getCollectionType(const String& aCollectionUri) const;
 
   virtual bool
@@ -224,9 +242,9 @@ public:
       std::vector<Function_t>& aFunctions) const;
 
   virtual void
-  setContextItemStaticType(TypeIdentifier_t type);
+  setContextItemStaticType(const SequenceType& type);
 
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getContextItemStaticType() const;
 
   virtual void
@@ -257,22 +275,25 @@ public:
   resolve(const String& aRelativeUri, const String& aBaseUri) const;
 
   virtual bool
-  validate(const Item& rootElement, Item& validatedResult,
-           validation_mode_t validationMode = validate_strict) const;
+  validate(
+      const Item& rootElement,
+      Item& validatedResult,
+      validation_mode_t validationMode = validate_strict) const;
 
   virtual bool
-  validate(const Item& rootElement, Item& validatedResult,
-           const String& targetNamespace,
-           validation_mode_t validationMode = validate_strict) const;
+  validate(
+      const Item& rootElement, Item& validatedResult,
+      const String& targetNamespace,
+      validation_mode_t validationMode = validate_strict) const;
 
   virtual bool
-  validateSimpleContent(const String& stringValue,
-          const Item& typeQName,
-          std::vector<Item>& resultList) const;
+  validateSimpleContent(
+      const String& stringValue,
+      const Item& typeQName,
+      std::vector<Item>& resultList) const;
 
   ItemSequence_t
-  invoke(const Item& aQName,
-         const std::vector<ItemSequence_t>& aArgs) const;
+  invoke(const Item& item, const std::vector<ItemSequence_t>& aArgs) const;
 
   virtual StaticCollectionManager*
   getStaticCollectionManager() const;
@@ -322,17 +343,8 @@ public:
   virtual Item
   fetchBinary(const String& aURI, const String& aEntityKind) const;
 
-protected:
-  String
-  createInvokeQuery(const Function_t&, size_t aArity) const;
-
-  Function_t
-  checkInvokable(const Item& aQName, size_t aNumArgs) const;
-
-public:
   virtual void
   clearBaseURI();
-
 };
 
 } // namespace zorba

@@ -1,6 +1,6 @@
 import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
-import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
+import module namespace doc = "http://zorba.io/modules/store/documents";
 
 declare namespace x = "http://www.zorba-xquery.com/http-test-data";
 

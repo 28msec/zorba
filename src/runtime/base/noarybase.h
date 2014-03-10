@@ -142,7 +142,7 @@ class iterName : public NoaryBaseIterator<iterName, stateName >         \
   { }                                                                   \
                                                                         \
   void accept(PlanIterVisitor& v) const;                                \
-                                                                        \
+  zstring getNameAsString() const;                                      \
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
 };
 

@@ -6,11 +6,11 @@
   interface for the XQuery Data Model (XDM).
   The project is available under the BSD License and is hosted on <a href="http://www.sourceforge.net">http://www.sourceforge.net</a>.
   It is a joint effort between <a href="http://xqilla.sourceforge.net/">XQilla</a> and the 
-  <a href="http://www.zorba-xquery.org/">FLWOR Foundation's Zorba Group</a> with the goal to make these two 
-  XQuery processor easily exchangable.
+  <a href="http://www.zorba.io/">FLWOR Foundation's Zorba Group</a> with the goal to make these two 
+  XQuery processor easily exchangeable.
   However, XQC is still in it's early stages. Zorba implements most of the things 
   that are specified in XQC but also deviates from and enhances the XQC specification to some degree.
-  For instance, the following list contains the differences between the current implmentation of Zorba's C API and XQC.
+  For instance, the following list contains the differences between the current implementation of Zorba's C API and XQC.
 
   <ul>
     <li>Zorba's error codes and its error handler differ from the XQC specification.
@@ -23,7 +23,23 @@
         written in C.
   </ul>
 
-  To start with, this documentation provides a <a class="el" href="examples.html">set of examples</a> that demonstrate 
-  some features.
- */
+  To start with, this documentation provides a set of examples that demonstrate some features:
+  <ul>
+    <li><a class="el" href="ccontext_8c-example.html">ccontext.c</a>
+    <li><a class="el" href="cerror_8c-example.html">cerror.c</a>
+    <li><a class="el" href="cexternal_functions_8c-example.html">cexternal_functions.c</a>
+    <li><a class="el" href="cparsing_8c-example.html">cparsing.c</a>
+    <li><a class="el" href="csequences_8c-example.html">csequences.c</a>
+    <li><a class="el" href="cserialization_8c-example.html">cserialization.c</a>
+    <li><a class="el" href="csimple_8c-example.html">csimple.c</a>
+  </ul>
+
+  \example ccontext.c
+  \example cerror.c
+  \example cexternal_functions.c
+  \example cparsing.c
+  \example csequences.c
+  \example cserialization.c
+  \example csimple.c
+*/
 

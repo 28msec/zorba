@@ -1,5 +1,5 @@
 import module namespace 
-    fn-zorba-util="http://www.zorba-xquery.com/modules/schema";
+    fn-zorba-util="http://zorba.io/modules/schema";
 
 import schema namespace 
   s = "http://www.zorba-xquery.com/simple.xsd" 

@@ -1,7 +1,7 @@
 (: test if prefixes declared by schema imports can be used in type constructors :)
-import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace xqd = "http://zorba.io/modules/xqdoc";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $local:dir :=
   let $base-uri := fn:static-base-uri()

@@ -16,6 +16,7 @@
     <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
     <zorba:include form="Quoted">runtime/core/path_iterators.h</zorba:include>
     <zorba:include form="Quoted">zorbatypes/integer.h</zorba:include>
+    <zorba:include form="Angle-bracket">zorba/internal/unique_ptr.h</zorba:include>
     <zorba:fwd-decl ns="zorba">NodeHandleHashSet</zorba:fwd-decl>
     <zorba:fwd-decl ns="zorba">AtomicItemHandleHashSet</zorba:fwd-decl>
 </zorba:header>
@@ -242,7 +243,7 @@
                   brief="indicates whether NaN was found in the sequence"/>
 
     <zorba:member name="theAlreadySeenMap"
-                  type="std::auto_ptr&lt;AtomicItemHandleHashSet>"
+                  type="std::unique_ptr&lt;AtomicItemHandleHashSet>"
                   brief="hashmap for doing the duplicate elimination"/>
 
   </zorba:state>
@@ -1172,6 +1173,10 @@
     <zorba:signature localname="available-environment-variables" prefix="fn" version="3.0">
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
+    
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
 
   </zorba:function>
 
@@ -1179,10 +1184,6 @@
     <zorba:member type="store::Iterator_t" name="theIterator"
                   brief="the current iterator"/>
   </zorba:state>
-
-  <zorba:methods>
-    <zorba:accessesDynCtx returnValue="true"/>
-  </zorba:methods>
 
 </zorba:iterator>
 
@@ -1205,11 +1206,12 @@
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
+    
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+    
   </zorba:function>
-
-  <zorba:methods>
-    <zorba:accessesDynCtx returnValue="true"/>
-  </zorba:methods>
   
 </zorba:iterator>
 
@@ -1237,13 +1239,15 @@
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
+    
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
+    
   </zorba:function>
 
-  <zorba:methods>
-    <zorba:accessesDynCtx returnValue="true"/>
-    <zorba:isSource returnValue="true"/>
-  </zorba:methods>
-  
+ 
 </zorba:iterator>
 
 <!--
@@ -1272,13 +1276,13 @@
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
 
-  </zorba:function>
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
 
-  <zorba:methods>
-    <zorba:accessesDynCtx returnValue="true"/>
-    <zorba:isSource returnValue="true"/>
-  </zorba:methods>
-  
+  </zorba:function>
+ 
 </zorba:iterator>
 
 <!--
@@ -1305,6 +1309,12 @@
         <zorba:param>xs:string</zorba:param>
         <zorba:output>xs:string*</zorba:output>
       </zorba:signature>
+      
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:isSource returnValue="true"/>
+      </zorba:methods>
+      
     </zorba:function>
 
     
@@ -1316,11 +1326,6 @@
                   brief="the current iterator"/>
     </zorba:state> 
     
-    <zorba:methods>
-      <zorba:accessesDynCtx returnValue="true"/>
-      <zorba:isSource returnValue="true"/>
-    </zorba:methods>
-
   </zorba:iterator>
 
 </zorba:iterators>

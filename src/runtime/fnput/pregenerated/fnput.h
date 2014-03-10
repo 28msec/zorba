@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_FNPUT_FNPUT_H
 #define ZORBA_RUNTIME_FNPUT_FNPUT_H
 
@@ -56,6 +57,8 @@ public:
   {}
 
   virtual ~FnPutIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

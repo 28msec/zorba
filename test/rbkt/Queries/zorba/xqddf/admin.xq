@@ -1,14 +1,14 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
-import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
-import module namespace ic_ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://zorba.io/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://zorba.io/modules/store/static/indexes/dml";
+import module namespace ic_ddl = "http://zorba.io/modules/store/static/integrity-constraints/ddl";
 
 import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd";
 
 import module namespace news-data = "http://www.news.org/data" at "news-data.xqlib";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 
 declare %ann:sequential function local:init() 
@@ -31,7 +31,7 @@ declare %ann:sequential function local:init()
 
   ic_ddl:activate($news-data:ArticleEmployees);
 
-  dml:insert-nodes($news-data:employees, 
+  dml:insert($news-data:employees, 
     (
     validate {
     <news:employee id="100">
@@ -47,7 +47,7 @@ declare %ann:sequential function local:init()
     )
   );
 
-  dml:insert-nodes($news-data:articles, 
+  dml:insert($news-data:articles, 
     <articles>
       <empid>100</empid>
       <date>12/31/1999</date>
@@ -74,7 +74,7 @@ declare %ann:sequential function local:do()
 
 declare %ann:sequential function local:done() 
 {
-    dml:delete-nodes(
+    dml:delete(
       dml:collection($news-data:articles)[.//date lt "01/01/2000"]
     );
 };

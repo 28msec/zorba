@@ -43,127 +43,6 @@ namespace zorba
 
 
 /*******************************************************************************
-
-********************************************************************************/
-bool rewriteSubsequenceCollection(
-    static_context* aSctx,
-    const QueryLoc& aLoc,
-    std::vector<PlanIter_t>& aArgs,
-    bool aIsIntSubsequence)
-{
-  ZorbaCollectionIterator* collIter = 
-  dynamic_cast<ZorbaCollectionIterator*>(aArgs[0].getp());
-  assert(collIter);
-
-  std::vector<PlanIter_t>& lCollectionArgs = collIter->getChildren();
-
-  SingletonIterator* lPosIter = dynamic_cast<SingletonIterator*>(aArgs[1].getp());
-  if (lPosIter == NULL)
-  {
-    return false;
-  }
-
-  xs_long pos;
-  const store::Item_t& lPosItem = lPosIter->getValue();
-
-  try
-  {
-    if (aIsIntSubsequence)
-    {
-      pos = lPosItem->getLongValue();
-    }
-    else
-    {
-      xs_double dpos = lPosItem->getDoubleValue().round();
-      xs_integer ipos(dpos.getNumber());
-      pos = to_xs_long(ipos);
-    }
-  }
-  catch (std::exception const&)
-  {
-    return false;
-  }
-
-  if (pos <= 1)
-  {
-    // if the start position is less than 1 we can't push this down into
-    // the collection skip parameter because the result won't be equivalent.
-    return false;
-  }
-
-  // prepare helper
-  store::Item_t lItemOne;
-  GENV_ITEMFACTORY->createInteger(lItemOne, Integer(1));
-
-  int lNumCollArgs = lCollectionArgs.size();
-  if (lNumCollArgs == 1)
-  {
-    // argument is of type collection(qname)
-    // simply move the (pos-1) of subsequence into the skip of 
-    // collection function
-    // subsequence(collection(qname), 10, 20) 
-    //   -> subsequence(collection(qname, 10-1), 1, 20)
-    PlanIter_t& lNewCollSkipIter = aArgs[1];
-    PlanIter_t lOneIter = new SingletonIterator(aSctx, aLoc, lItemOne);
-
-    lCollectionArgs.push_back(
-      new NumArithIterator<zorba::SubtractOperation>(aSctx,
-                                                     collIter->getLocation(),
-                                                     lNewCollSkipIter,
-                                                     lOneIter)
-                              );
-  }
-  else if (lNumCollArgs <= 3 && lNumCollArgs != 0)
-  {
-    // argument is of type collection(qname,skip) or 
-    // collection(qname,start_uri,skip)
-    int lSkipPosition = 1;
-    if (lNumCollArgs == 3) 
-    {
-      // collection function with start reference -> skip is the 3rd param
-      lSkipPosition = 2;
-    }
-      
-    // add position-1 of subsequence to collection skip
-    // subsequence(collection(qname, 10), 10, 20) 
-    //   -> subsequence(collection(qname, 10+10-1), 10, 20)
-    PlanIter_t& lOldCollSkipIter = lCollectionArgs[lSkipPosition];
-    PlanIter_t lOneIter = new SingletonIterator (aSctx, aLoc, lItemOne);
-    PlanIter_t& lSubseqPosIter = aArgs[1];
-
-    PlanIter_t lCollSkipAdditionIter = 
-    new NumArithIterator<zorba::SubtractOperation>(aSctx,
-                                                   collIter->getLocation(),
-                                                   lSubseqPosIter,
-                                                   lOneIter);
-    lCollectionArgs[lSkipPosition] = 
-    new NumArithIterator<zorba::AddOperation>(aSctx,
-                                              collIter->getLocation(), 
-                                              lOldCollSkipIter,
-                                              lCollSkipAdditionIter);
-  }
-  else
-  {
-    // no collection function with 0 or >3 params
-    assert(false);
-  }
-
-  aArgs[0] = new ZorbaCollectionIterator(aSctx,
-                                         collIter->getLocation(),
-                                         lCollectionArgs,
-                                         collIter->isDynamic());
-
-  // after pushing the position param down we need to rewrite the actual 
-  // position to 1:
-  // subsequence(collection(qname, 10+10-1), 10, 20) 
-  //   -> subsequence(collection(qname, 10+10-1), 1, 20)
-  aArgs[1] = new SingletonIterator(aSctx, aLoc, lItemOne);
-
-  return true;
-}
-
-
-/*******************************************************************************
 ********************************************************************************/
 xqtref_t fn_unordered::getReturnType(const fo_expr* caller) const
 {
@@ -320,15 +199,15 @@ xqtref_t op_concatenate::getReturnType(const fo_expr* caller) const
   else
   {
     xqtref_t t = caller->get_arg(0)->get_return_type();
-    TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
+    SequenceType::Quantifier q = SequenceType::QUANT_STAR;
     for (csize i = 1; i < sz; i++)
     {
       t = TypeOps::union_type(*t, *caller->get_arg(i)->get_return_type(), tm);
 
-      TypeConstants::quantifier_t pq = t->get_quantifier();
+      SequenceType::Quantifier pq = t->get_quantifier();
 
-      if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
-        q = TypeConstants::QUANT_PLUS;
+      if (pq == SequenceType::QUANT_ONE || pq == SequenceType::QUANT_PLUS)
+        q = SequenceType::QUANT_PLUS;
     }
 
     return tm->create_type_x_quant(*t, q);
@@ -452,7 +331,7 @@ xqtref_t fn_remove::getReturnType(const fo_expr* caller) const
   TypeManager* tm = caller->get_type_manager();
 
   return tm->create_type_x_quant(*caller->get_arg(0)->get_return_type(),
-                                 TypeConstants::QUANT_QUESTION);
+                                 SequenceType::QUANT_QUESTION);
 }
 
 
@@ -560,10 +439,10 @@ xqtref_t fn_subsequence::getReturnType(const fo_expr* caller) const
     store::Item* len = static_cast<const_expr*>(caller->get_arg(2))->get_val();
 
     if (len->getDoubleValue().round().getNumber() == 1)
-      return tm->create_type(*argType, TypeConstants::QUANT_QUESTION);
+      return tm->create_type(*argType, SequenceType::QUANT_QUESTION);
   }
 
-  return tm->create_type_x_quant(*argType, TypeConstants::QUANT_QUESTION);
+  return tm->create_type_x_quant(*argType, SequenceType::QUANT_QUESTION);
 }
 
 
@@ -573,8 +452,7 @@ PlanIter_t fn_subsequence::codegen(
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
     expr& aAnn) const
-{
-  const std::type_info& lFirstArgType = typeid(*aArgs[0]);
+{  
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
   const expr* inputExpr = subseqExpr.get_arg(0);
   const expr* posExpr = subseqExpr.get_arg(1);
@@ -619,23 +497,8 @@ PlanIter_t fn_subsequence::codegen(
         return aArgs[0];
     }
   }
-  else if (typeid(ZorbaCollectionIterator) == lFirstArgType)
-  {
-    // push down position param into collection skip if possible
-    if (rewriteSubsequenceCollection(aSctx, aLoc, aArgs, false /*no int*/))
-    {
-      // we have rewritten the subsequence to start at the beginning.
-      // if there is no length param we can remove the entire
-      // subsequence function
-      // subsequence(collection(qname, 10), 1) -> collection(qname, 10)
-      if (aArgs.size() == 2)
-      {
-        return aArgs[0];
-      }
-    }
-  }
 
- done:
+done:
   return new FnSubsequenceIterator(aSctx, aLoc, aArgs);
 }
 
@@ -656,10 +519,10 @@ xqtref_t op_zorba_subsequence_int::getReturnType(const fo_expr* caller) const
     store::Item* len = static_cast<const_expr*>(caller->get_arg(2))->get_val();
 
     if (len->getIntegerValue() == Integer(1))
-      return tm->create_type(*argType, TypeConstants::QUANT_QUESTION);
+      return tm->create_type(*argType, SequenceType::QUANT_QUESTION);
   }
 
-  return tm->create_type_x_quant(*argType, TypeConstants::QUANT_QUESTION);
+  return tm->create_type_x_quant(*argType, SequenceType::QUANT_QUESTION);
 }
 
 
@@ -736,23 +599,8 @@ PlanIter_t op_zorba_subsequence_int::codegen(
       return aArgs[0];
     }
   }
-  else if (typeid(ZorbaCollectionIterator) == lFirstArgType)
-  {
-    // push down position param into collection skip if possible
-    if (rewriteSubsequenceCollection(aSctx, aLoc, aArgs, true /*flag int*/))
-    {
-      // we have rewritten the subsequence to start from the beginning.
-      // if there is no length param we can remove the entire
-      // subsequence function
-      // subsequence(collection(qname, 10), 1) -> collection(qname, 10)
-      if (aArgs.size() == 2)
-      {
-        return aArgs[0];
-      }
-    }
-  }
 
- done:
+done:
   return new SubsequenceIntIterator(aSctx, aLoc, aArgs);
 }
 
@@ -767,7 +615,7 @@ xqtref_t op_zorba_sequence_point_access::getReturnType(
   TypeManager* tm = caller->get_type_manager();
 
   return tm->create_type(*caller->get_arg(0)->get_return_type(),
-                         TypeConstants::QUANT_QUESTION);
+                         SequenceType::QUANT_QUESTION);
 }
 
 
@@ -887,7 +735,7 @@ xqtref_t fn_zero_or_one::getReturnType(const fo_expr* caller) const
   xqtref_t srcType = caller->get_arg(0)->get_return_type();
 
   return tm->create_type(*TypeOps::prime_type(tm, *srcType),
-                         TypeConstants::QUANT_QUESTION);
+                         SequenceType::QUANT_QUESTION);
 }
 
 
@@ -920,7 +768,7 @@ xqtref_t fn_one_or_more::getReturnType(const fo_expr* caller) const
 
   return tm->create_type(
       *TypeOps::prime_type(tm, *(caller->get_arg(0)->get_return_type())),
-      TypeConstants::QUANT_PLUS);
+      SequenceType::QUANT_PLUS);
 }
 
 

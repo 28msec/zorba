@@ -1,4 +1,4 @@
-# Copyright 2006-2010 The FLWOR Foundation.
+# Copyright 2006-2013 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,15 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ADD_SUBDIRECTORY(util-curl)
 ADD_SUBDIRECTORY(atomic)
 ADD_SUBDIRECTORY(com)
-ADD_SUBDIRECTORY(org)
-ADD_SUBDIRECTORY(functx)
-ADD_SUBDIRECTORY(xqxq)
-ADD_SUBDIRECTORY(w3c)
 ADD_SUBDIRECTORY(full-text)
+ADD_SUBDIRECTORY(functx)
+ADD_SUBDIRECTORY(dateTime)
+ADD_SUBDIRECTORY(ftp-client)
+ADD_SUBDIRECTORY(http-client)
+ADD_SUBDIRECTORY(item)
 ADD_SUBDIRECTORY(json)
-ADD_SUBDIRECTORY(nodes)
+ADD_SUBDIRECTORY(jsound)
+ADD_SUBDIRECTORY(org)
+ADD_SUBDIRECTORY(schema)
+ADD_SUBDIRECTORY(sctx)
+ADD_SUBDIRECTORY(sequence)
+ADD_SUBDIRECTORY(store)
+ADD_SUBDIRECTORY(structured-items)
+ADD_SUBDIRECTORY(uri)
+ADD_SUBDIRECTORY(w3c)
+ADD_SUBDIRECTORY(xml)    
+ADD_SUBDIRECTORY(xqdoc)
+ADD_SUBDIRECTORY(zorba-query)
+ADD_SUBDIRECTORY(reflection)
+
+IF (ZORBA_WITH_DEBUGGER)
+  ADD_SUBDIRECTORY(debugger)
+ENDIF (ZORBA_WITH_DEBUGGER)
 
 # Add external module projects - any subdirectories of a directory
 # named "zorba_modules" as a sibling to the main Zorba source
@@ -184,9 +202,9 @@ ENDFOREACH (module_project)
 
 # error and warning modules
 DECLARE_ZORBA_MODULE( FILE pregenerated/zorba-errors.xq
-  URI "http://zorba.io/modules/zorba-errors" )
+  URI "http://zorba.io/errors" )
 DECLARE_ZORBA_MODULE( FILE pregenerated/zorba-warnings.xq
-  URI "http://zorba.io/modules/zorba-warnings" )
+  URI "http://zorba.io/warnings" )
 DECLARE_ZORBA_MODULE( FILE pregenerated/jsoniq-errors.xq
   URI "http://jsoniq.org/errors" )
 

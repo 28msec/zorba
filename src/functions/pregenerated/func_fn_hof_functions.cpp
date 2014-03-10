@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/hof/fn_hof_functions.h"
 #include "functions/func_fn_hof_functions.h"
@@ -84,7 +85,7 @@ void populate_context_fn_hof_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_function_lookup_3_0,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","function-lookup"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","function-lookup"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 

@@ -12,5 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DECLARE_ZORBA_MODULE(FILE json-xml.xq VERSION 1.0
+DECLARE_ZORBA_MODULE(FILE json-xml.xq VERSION 1.1
   URI "http://zorba.io/modules/json-xml")
+
+DECLARE_ZORBA_MODULE(FILE json-csv.jq VERSION 1.0
+  URI "http://zorba.io/modules/json-csv")
+
+# vim:set et sw=2 ts=2:

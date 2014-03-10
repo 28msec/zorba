@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import javax.xml.xquery.XQConnection;
 import javax.xml.xquery.XQException;
-import org.zorbaxquery.api.Item;
+import io.zorba.api.Item;
  /**
    * This class represents an immutable item object obtained from an XQResultSequence using the getItem method.
    * 

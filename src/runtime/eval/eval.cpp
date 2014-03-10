@@ -50,6 +50,7 @@ namespace zorba {
 
 
 SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
+DEF_GET_NAME_AS_STRING(EvalIterator)
 
 
 /****************************************************************************//**
@@ -65,6 +66,17 @@ EvalIteratorState::EvalIteratorState()
 ********************************************************************************/
 EvalIteratorState::~EvalIteratorState()
 {
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+void EvalIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+
+  thePlanWrapper = NULL;
 }
 
 
@@ -126,6 +138,73 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 /****************************************************************************//**
 
 ********************************************************************************/
+void EvalIterator::init(
+    bool doCount,
+    PlanState& planState) const
+{
+  store::Item_t item;
+  EvalIteratorState* state = StateTraitsImpl<EvalIteratorState>::getState(planState, theStateOffset);
+
+  CONSUME(item, 0);
+
+  // Create the "import" sctx. The importOuterEnv() method (called below) will
+  // register into the importSctx (a) the outer vars of the eval query and (b)
+  // the expression-level ns bindings of the outer query at the place where
+  // the eval call appears at.
+  static_context* importSctx = theSctx->create_child_context();
+
+  // Create the root sctx for the eval query
+  static_context* evalSctx = importSctx->create_child_context();
+
+  // Create the ccb for the eval query
+  CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
+  evalCCB->theIsEval = true;
+  evalCCB->theRootSctx = evalSctx;
+  evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
+  (evalCCB->theSctxMap)[1] = evalSctx;
+
+  state->ccb.reset(evalCCB);
+
+  // Create the dynamic context for the eval query
+  dynamic_context* evalDctx = new dynamic_context(planState.theGlobalDynCtx);
+  state->dctx.reset(evalDctx);
+
+  // Import the outer environment.
+  ulong maxOuterVarId;
+  importOuterEnv(planState, evalCCB, importSctx, evalDctx, maxOuterVarId);
+
+  // If we are here after a reset, we must set state->thePlanWrapper to NULL
+  // before reseting the state->thePlan. Otherwise, the current state->thePlan
+  // will be destroyed first, and then we will attempt to close it when
+  // state->thePlanWrapper is reset later.
+  state->thePlanWrapper = NULL;
+
+  // Compile
+  state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId, doCount);
+
+  planState.theCompilerCB->theNextVisitId = evalCCB->theNextVisitId + 1;
+
+  // Set the values for the (explicit) external vars of the eval query
+  setExternalVariables(evalCCB, importSctx, evalSctx, evalDctx);
+
+  // Execute
+  state->thePlanWrapper = new PlanWrapper(state->thePlan,
+                                          evalCCB,
+                                          evalDctx,
+                                          planState.theQuery,
+                                          planState.theStackDepth + 1,
+                                          state->ccb->theHaveTimeout,
+                                          state->ccb->theTimeout);
+
+  state->thePlanWrapper->checkDepth(loc);
+
+  state->thePlanWrapper->open();
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
 bool EvalIterator::nextORcount(
     bool doCount,
     store::Item_t& result,
@@ -136,62 +215,8 @@ bool EvalIterator::nextORcount(
 
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
 
-  CONSUME(item, 0);
-
-  {
-    // Create the "import" sctx. The importOuterEnv() method (called below) will
-    // register into the importSctx (a) the outer vars of the eval query and (b)
-    // the expression-level ns bindings of the outer query at the place where
-    // the eval call appears at.
-    static_context* importSctx = theSctx->create_child_context();
-
-    // Create the root sctx for the eval query
-    static_context* evalSctx = importSctx->create_child_context();
-
-    // Create the ccb for the eval query
-    CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
-    evalCCB->theIsEval = true;
-    evalCCB->theRootSctx = evalSctx;
-    evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
-    (evalCCB->theSctxMap)[1] = evalSctx;
-
-    state->ccb.reset(evalCCB);
-
-    // Create the dynamic context for the eval query
-    dynamic_context* evalDctx = new dynamic_context(planState.theGlobalDynCtx);
-    state->dctx.reset(evalDctx);
-
-    // Import the outer environment.
-    ulong maxOuterVarId;
-    importOuterEnv(planState, evalCCB, importSctx, evalDctx, maxOuterVarId);
-
-    // If we are here after a reset, we must set state->thePlanWrapper to NULL
-    // before reseting the state->thePlan. Otherwise, the current state->thePlan
-    // will be destroyed first, and then we will attempt to close it when
-    // state->thePlanWrapper is reset later.
-    state->thePlanWrapper = NULL;
-
-    // Compile
-    state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId, doCount);
-
-    planState.theCompilerCB->theNextVisitId = evalCCB->theNextVisitId + 1;
-
-    // Set the values for the (explicit) external vars of the eval query
-    setExternalVariables(evalCCB, importSctx, evalSctx, evalDctx);
-
-    // Execute
-    state->thePlanWrapper = new PlanWrapper(state->thePlan,
-                                            evalCCB,
-                                            evalDctx,
-                                            planState.theQuery,
-                                            planState.theStackDepth + 1,
-                                            state->ccb->theHaveTimeout,
-                                            state->ccb->theTimeout);
-
-    state->thePlanWrapper->checkDepth(loc);
-
-    state->thePlanWrapper->open();
-  }
+  if (state->thePlanWrapper.getp() == NULL)
+    init(doCount, planState);
 
   while (state->thePlanWrapper->next(result))
   {
@@ -201,6 +226,20 @@ bool EvalIterator::nextORcount(
   state->thePlanWrapper = NULL;
 
   STACK_END(state);
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool EvalIterator::skip(int64_t count, PlanState &planState) const
+{
+  EvalIteratorState* state = StateTraitsImpl<EvalIteratorState>::getState(planState, theStateOffset);
+
+  if (state->thePlanWrapper.getp() == NULL)
+    init(false, planState);
+
+  return state->thePlanWrapper->skip(count);
 }
 
 

@@ -1,16 +1,15 @@
-
 module namespace upd = "www.upd_01.com";
 
 import module namespace ddl = 
-"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+  "http://zorba.io/modules/store/static/collections/ddl";
 
 import module namespace dml = 
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  "http://zorba.io/modules/store/static/collections/dml";
 
 import module namespace iddl = 
-"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+  "http://zorba.io/modules/store/static/indexes/ddl";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare collection upd:auctions as node()*;
 

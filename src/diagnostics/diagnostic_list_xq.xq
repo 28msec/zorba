@@ -92,9 +92,9 @@ declare function local:getNSURI( $namespace as xs:string )
   else if ( $namespace = "jerr" )
     then "http://jsoniq.org/errors"
   else if ( $namespace = "zerr" )
-    then "http://zorba.io/modules/zorba-errors"
+    then "http://zorba.io/errors"
   else if ( $namespace = "zwarn" )
-    then "http://zorba.io/modules/zorba-warnings"
+    then "http://zorba.io/warnings"
   else
     fn:error()
 };
@@ -104,6 +104,8 @@ declare function local:header( $namespace as xs:string )
 {
   let $uri := local:getNSURI($namespace)
   return concat(
+    "xquery version '1.0';",
+    $util:newline, $util:newline,
     fn:replace( fn:replace( fn:replace( util:copyright(),
       "/\*\*?", "(:" ),
       "\*/", ":)" ),
@@ -118,10 +120,15 @@ declare function local:header( $namespace as xs:string )
     " : the variables.", $util:newline,
     " :", $util:newline,
     " : @author Carlos Lopez", $util:newline,
+    switch ($namespace)
+    case "err"    return " : @project W3C/XPath Error Codes"
+    case "jerr"   return " : @project JSONiq/Error Codes"
+    case "zerr"   return " : @project Zorba/Zorba Error Codes"
+    case "zwarn"  return " : @project Zorba/Zorba Warning Codes"
+    default return (),
+    $util:newline,
     " :", $util:newline,
     " :)", $util:newline, $util:newline,
-    "xquery version '1.0';",
-    $util:newline, $util:newline,
     "module namespace ", $namespace, " = '", $uri, "';",
     $util:newline, $util:newline,
     "declare variable $", $namespace, ":NS := '", $uri, "';"

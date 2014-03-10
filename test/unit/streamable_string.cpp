@@ -29,8 +29,6 @@
 #include <zorba/xquery_exception.h>
 #include <zorba/diagnostic_list.h>
 
-#include "system/properties.h"
-
 
 using namespace zorba;
 

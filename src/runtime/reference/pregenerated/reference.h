@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_REFERENCE_REFERENCE_H
 #define ZORBA_RUNTIME_REFERENCE_REFERENCE_H
 
@@ -59,6 +60,8 @@ public:
 
   virtual ~ReferenceIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -90,6 +93,8 @@ public:
   {}
 
   virtual ~HasReferenceIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -123,6 +128,8 @@ public:
 
   virtual ~AssignReferenceIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -154,6 +161,8 @@ public:
   {}
 
   virtual ~DereferenceIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

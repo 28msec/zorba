@@ -40,6 +40,7 @@
 #include "runtime/util/flowctl_exception.h"  // for ExitException
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"
+#include "runtime/visitors/printer_visitor.h"
 
 #include "api/unmarshaller.h"
 #include "api/xqueryimpl.h"
@@ -49,8 +50,9 @@
 #include "util/string_util.h"
 
 #include "store/api/index.h"
-#include "store/api/store.h"
+#include "store/api/item_factory.h"
 #include "store/api/iterator_factory.h"
+#include "store/api/store.h"
 #include "store/api/temp_seq.h"
 
 
@@ -118,11 +120,8 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
   if (thePlanOpen)
     thePlan->close(*thePlanState);
-
-  if (thePlanState != NULL)
-    delete thePlanState;
-
-  if (theLocalDCtx != NULL && theIsLocalDCtxOwner)
+  delete thePlanState;
+  if (theIsLocalDCtxOwner)
     delete theLocalDCtx;
 }
 
@@ -221,6 +220,30 @@ void UDFunctionCallIterator::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theUDF;
   ar & theIsDynamic;
+
+  // If the query does not have eval, theFunctionMap and theFunctionArityMap
+  // members of static_context are not serialized. This can cause a memory leak
+  // if theUDF deserialization occuring above allocates a udf obj that is only
+  // pointed to (via a raw pointer) by this UDFunctionCallIterator. To fix the
+  // leak, we register the udf in theSctx.
+  if (!ar.is_serializing_out() &&
+      !ar.get_ccb()->theHasEval &&
+      !theUDF->isBuiltin())
+  {
+    function* f = theSctx->lookup_fn(theUDF->getName(), theUDF->getArity(), false);
+
+    if (!f)
+      theSctx->bind_fn(theUDF, theUDF->getArity(), loc);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+zstring UDFunctionCallIterator::getNameAsString() const
+{
+  return theUDF->getName()->getStringValue();
 }
 
 
@@ -624,7 +647,38 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 }
 
 
+#if 0
 NARY_ACCEPT(UDFunctionCallIterator);
+#else
+//
+// We specialize accept() to descend into the separate plan for the UDF, but
+// only for a PrinterVisitor and no other kind of visitor.
+//
+void UDFunctionCallIterator::accept( PlanIterVisitor &v ) const {
+  v.beginVisit( *this );
+  std::vector<PlanIter_t>::const_iterator i( theChildren.begin() );
+  std::vector<PlanIter_t>::const_iterator const end( theChildren.end() );
+  for ( ; i != end; ++i )
+    (*i)->accept( v );
+  if ( PrinterVisitor *const pv = dynamic_cast<PrinterVisitor*>( &v ) ) {
+    PlanState *const state = pv->getPlanState();
+    if ( state && Properties::instance().getProfile() ) {
+      UDFunctionCallIteratorState *const udf_state =
+        StateTraitsImpl<UDFunctionCallIteratorState>::getState(
+          *state, getStateOffset()
+        );
+      if ( udf_state->thePlanOpen ) {
+        if ( PlanIterator *const udf_pi = udf_state->thePlan.getp() ) {
+          pv->setPlanState( udf_state->thePlanState );
+          udf_pi->accept( *pv );
+          pv->setPlanState( state );
+        }
+      }
+    }
+  }
+  v.endVisit( *this );
+}
+#endif
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -772,6 +826,15 @@ ExtFunctionCallIterator::~ExtFunctionCallIterator()
 }
 
 
+zstring ExtFunctionCallIterator::getNameAsString() const {
+  String const uri( theFunction->getURI() );
+  String const local( theFunction->getLocalName() );
+
+  zstring name( '{' + Unmarshaller::getInternalString( uri ) + '}' + Unmarshaller::getInternalString( local ) );
+  return name;
+}
+
+
 void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
 {
   ar.dont_allow_delay_for_plan_sctx = true;
@@ -844,6 +907,93 @@ void ExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
 }
 
+bool ExtFunctionCallIterator::count( store::Item_t &result,
+                                     PlanState &planState ) const {
+  ItemSequence_t api_seq;
+
+  ExtFunctionCallIteratorState *state;
+  DEFAULT_STACK_INIT( ExtFunctionCallIteratorState, state, planState );
+
+  try {
+    if ( theFunction->isContextual() ) {
+      ContextualExternalFunction const *const f =
+        dynamic_cast<ContextualExternalFunction const*>( theFunction );
+      ZORBA_ASSERT( f );
+      StaticContextImpl sctx(
+        theModuleSctx,
+        planState.theQuery ?
+          planState.theQuery->getRegisteredDiagnosticHandlerNoSync() :
+          nullptr
+      );
+      DynamicContextImpl dctx(
+        nullptr, planState.theGlobalDynCtx, theModuleSctx
+      );
+      api_seq = f->evaluate( state->m_extArgs, &sctx, &dctx );
+    } else {
+      NonContextualExternalFunction const *const f =
+        dynamic_cast<NonContextualExternalFunction const*>( theFunction );
+      ZORBA_ASSERT( f );
+      api_seq = f->evaluate( state->m_extArgs );
+    }
+    if ( !!api_seq ) {
+      Iterator_t api_iter( api_seq->getIterator() );
+      api_iter->open();
+      int64_t const count = api_iter->count();
+      api_iter->close();
+      GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) );
+    }
+  }
+  catch ( ZorbaException &e ) {
+    set_source( e, loc );
+    throw;
+  }
+  STACK_PUSH( true, state );
+  STACK_END( state );
+}
+
+bool ExtFunctionCallIterator::skip( int64_t count,
+                                    PlanState &planState ) const {
+  ItemSequence_t api_seq;
+  bool more_items;
+
+  ExtFunctionCallIteratorState *state;
+  DEFAULT_STACK_INIT( ExtFunctionCallIteratorState, state, planState );
+
+  try {
+    if ( theFunction->isContextual() ) {
+      ContextualExternalFunction const *const f =
+        dynamic_cast<ContextualExternalFunction const*>( theFunction );
+      ZORBA_ASSERT( f );
+      StaticContextImpl sctx(
+        theModuleSctx,
+        planState.theQuery ?
+          planState.theQuery->getRegisteredDiagnosticHandlerNoSync() :
+          nullptr
+      );
+      DynamicContextImpl dctx(
+        nullptr, planState.theGlobalDynCtx, theModuleSctx
+      );
+      api_seq = f->evaluate( state->m_extArgs, &sctx, &dctx );
+    } else {
+      NonContextualExternalFunction const *const f =
+        dynamic_cast<NonContextualExternalFunction const*>( theFunction );
+      ZORBA_ASSERT( f );
+      api_seq = f->evaluate( state->m_extArgs );
+    }
+    if ( !!api_seq ) {
+      Iterator_t api_iter( api_seq->getIterator() );
+      api_iter->open();
+      more_items = api_iter->skip( count );
+      api_iter->close();
+    }
+  }
+  catch ( ZorbaException &e ) {
+    set_source( e, loc );
+    throw;
+  }
+  STACK_PUSH( more_items, state );
+  STACK_END( state );
+}
 
 bool ExtFunctionCallIterator::nextImpl(
     store::Item_t& result,
@@ -874,7 +1024,6 @@ bool ExtFunctionCallIterator::nextImpl(
 
       // The planState.theQuery maybe null, e.g. in the case of constant-folding
       // of global variable expressions
-
       StaticContextImpl theSctxWrapper(theModuleSctx,
                                        (planState.theQuery == NULL?
                                         NULL :
@@ -887,15 +1036,24 @@ bool ExtFunctionCallIterator::nextImpl(
       state->theResult = lNonePureFct->evaluate(state->m_extArgs,
                                                 &theSctxWrapper,
                                                 &theDctxWrapper);
+      
       if(state->theResult.get() != NULL)
         state->theResultIter = state->theResult->getIterator();
     } // if (!theFunction->isContextual())
   }
-  catch (XQueryException& e)
+  catch (ZorbaException& e)
   {
-		set_source( e, loc );
-		throw;
+    set_source( e, loc );
+    throw;
   }
+  catch (std::exception const& e)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
+      ERROR_PARAMS(e.what()),
+      ERROR_LOC(loc));
+  }
+  
 
   if(state->theResult.get() != NULL)
   {

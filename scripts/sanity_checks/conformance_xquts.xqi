@@ -19,14 +19,14 @@ xquery version "3.0";
 module namespace conf  = "http://www.zorba-xquery.com/modules/conformance";
 
 import module namespace file = "http://expath.org/ns/file";
-import module namespace functx = "http://www.functx.com/";
+import module namespace functx = "http://www.functx.com";
 
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 declare namespace xqCat = "http://www.w3.org/2005/02/query-test-update";
 declare namespace xqRes = "http://www.w3.org/2005/02/query-test-XQTSResult";
 

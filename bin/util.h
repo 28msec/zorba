@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_UTIL_H
-#define ZORBA_UTIL_H
 
-#include <vector>
+#ifndef ZORBA_CMD_UTIL_H
+#define ZORBA_CMD_UTIL_H
+
 #include <string>
+#include <vector>
 
-namespace zorba {
+///////////////////////////////////////////////////////////////////////////////
 
-  class Util {
-  public:
-    static void
-    tokenize(const std::string& str,
-             const std::string& delimiters,
-             std::vector<std::string>& tokens);
+template<class InStringType,class OutStringType>
+void tokenize( InStringType const &s, char delim,
+               std::vector<OutStringType> *tokens ) {
+  typename InStringType::size_type last_pos = s.find_first_not_of( delim, 0 );
+  typename InStringType::size_type pos = s.find_first_of( delim, last_pos );
 
-  };
-} /* namespace zorba */
+  while ( pos != InStringType::npos || last_pos != InStringType::npos ) {
+    tokens->push_back( s.substr( last_pos, pos - last_pos ).c_str() );
+    last_pos = s.find_first_not_of( delim, pos );
+    pos = s.find_first_of( delim, last_pos );
+  }
+}
 
-#endif
+///////////////////////////////////////////////////////////////////////////////
 
+#endif /* ZORBA_CMD_UTIL_H */
+/* vim:set et sw=2 ts=2: */

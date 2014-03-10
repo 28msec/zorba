@@ -45,7 +45,32 @@
 #include "types/typeops.h"
 #include "types/casting.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 namespace zorba {
+
+/*******************************************************************************
+********************************************************************************/
+zstring
+getMapURI(
+    const static_context* sctx,
+    const QueryLoc& aLoc)
+{
+  return "http://zorba.io/maps";
+}
+
+/*******************************************************************************
+********************************************************************************/
+void
+createMapQName(
+    store::Item_t& name,
+    const static_context* sctx,
+    const QueryLoc& loc)
+{
+  GENV_ITEMFACTORY->createQName(name, getMapURI(sctx, loc),
+      "", name->getStringValue()); 
+}
+
 
 /*******************************************************************************
 ********************************************************************************/
@@ -59,7 +84,7 @@ castOrCheckIndexType(
 {
   xqtref_t searchKeyType = GENV_TYPESYSTEM.create_value_type(aKeyItem);
   xqtref_t indexKeyType  = GENV_TYPESYSTEM.create_named_type(
-      aKeyType.getp(), TypeConstants::QUANT_ONE, loc);
+      aKeyType.getp(), SequenceType::QUANT_ONE, loc);
   
   if ( indexKeyType != NULL )
   {
@@ -100,6 +125,214 @@ castOrCheckIndexType(
 /*******************************************************************************
 ********************************************************************************/
 void
+createKeysArray(
+    store::IndexKey& aKey,
+    store::Item_t& aArray)
+{
+  std::vector<store::Item_t> lValues;
+  lValues.reserve(aKey.size());
+
+  size_t i = 1;
+
+  // build [ key1, null, key3 ]
+  for (store::ItemVector::iterator lIter = aKey.begin();
+       lIter != aKey.end();
+       ++lIter, ++i)
+  {
+    lValues.resize(i);
+
+    store::Item_t lValue = *lIter;
+    if (lValue)
+    {
+      lValues[i - 1] = (*lIter);
+    }
+    else
+    {
+      GENV_ITEMFACTORY->createJSONNull(lValues[i - 1]);
+    }
+  }
+
+  GENV_ITEMFACTORY->createJSONArray(aArray, lValues);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+void
+processTypes(
+    const store::Item_t& aMapName,
+    const QueryLoc& loc,
+    std::vector<store::Item_t>& aTypes)
+{
+  for (size_t i = 0; i < aTypes.size(); ++i)
+  {
+    store::Item_t& lType = aTypes[i];
+
+    if (!lType->isAtomic())
+    {
+      RAISE_ERROR(zerr::ZXQD0005_INVALID_KEY_FOR_MAP, loc,
+          ERROR_PARAMS(*(GENV_TYPESYSTEM.create_value_type(lType)),
+          "anyAtomicType",
+          aMapName->getStringValue()));
+    }
+
+    if (TypeOps::is_subtype(lType->getTypeCode(), store::XS_STRING))
+    {
+      zstring t = lType->getStringValue();
+      std::transform(t.begin(), t.end(), t.begin(), zorba::unicode::to_lower);
+      if (t == "string")
+        lType = GENV_TYPESYSTEM.XS_STRING_QNAME;
+      else if (t == "integer")
+        lType = GENV_TYPESYSTEM.XS_INTEGER_QNAME;
+      else if (t == "boolean")
+        lType = GENV_TYPESYSTEM.XS_BOOLEAN_QNAME;
+      else if (t == "datetime")
+        lType = GENV_TYPESYSTEM.XS_DATETIME_QNAME;
+      else if (t == "date")
+        lType = GENV_TYPESYSTEM.XS_DATE_QNAME;
+      else if (t == "time")
+        lType = GENV_TYPESYSTEM.XS_TIME_QNAME;
+      else if (t == "duration")
+        lType = GENV_TYPESYSTEM.XS_DURATION_QNAME;
+      else if (t == "daytimeduration")
+        lType = GENV_TYPESYSTEM.XS_DT_DURATION_QNAME;
+      else if (t == "yearmonthduration")
+        lType = GENV_TYPESYSTEM.XS_YM_DURATION_QNAME;
+      else if (t == "float")
+        lType = GENV_TYPESYSTEM.XS_FLOAT_QNAME;
+      else if (t == "double")
+        lType = GENV_TYPESYSTEM.XS_DOUBLE_QNAME;
+      else if (t == "decimal")
+        lType = GENV_TYPESYSTEM.XS_DECIMAL_QNAME;
+      else if (t == "long")
+        lType = GENV_TYPESYSTEM.XS_LONG_QNAME;
+      else if (t == "int")
+        lType = GENV_TYPESYSTEM.XS_INT_QNAME;
+      else if (t == "short")
+        lType = GENV_TYPESYSTEM.XS_SHORT_QNAME;
+      else if (t == "byte")
+        lType = GENV_TYPESYSTEM.XS_BYTE_QNAME;
+      else if (t == "base64binary")
+        lType = GENV_TYPESYSTEM.XS_BASE64BINARY_QNAME;
+      else if (t == "hexbinary")
+        lType = GENV_TYPESYSTEM.XS_HEXBINARY_QNAME;
+      else if (t == "null")
+        lType = GENV_TYPESYSTEM.JS_NULL_QNAME;
+      else
+        RAISE_ERROR(zerr::ZXQD0005_INVALID_KEY_FOR_MAP, loc,
+            ERROR_PARAMS(t,
+            "anyAtomicType",
+            aMapName->getStringValue()));
+    }
+    else if (!TypeOps::is_subtype(lType->getTypeCode(), store::XS_QNAME))
+    {
+      RAISE_ERROR(zerr::ZXQD0005_INVALID_KEY_FOR_MAP, loc,
+          ERROR_PARAMS(*(GENV_TYPESYSTEM.create_value_type(lType)),
+          "QName",
+          aMapName->getStringValue()));
+    }
+  }
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+prepareKeyAttributes(
+    const QueryLoc& loc,
+    const static_context* sctx,
+    const store::Item_t& aKey,
+    store::Index* aMap,
+    std::vector<store::Item_t>& aKeyAttrs)
+{
+  if (aKey->isArray())
+  {
+    ulong lNumKeys = to_xs_long(aKey->getArraySize());
+    aKeyAttrs.resize(lNumKeys);
+    for (size_t i = 0; i < lNumKeys; ++i)
+    {
+      aKeyAttrs[i] = aKey->getArrayValue(xs_integer(i+1));
+    }
+  }
+  else
+  {
+    aKeyAttrs.push_back(aKey);
+  }
+
+  const store::IndexSpecification& lSpec = aMap->getSpecification();
+
+  store::Item_t lName = aMap->getName();
+
+  if (lSpec.getNumColumns() != aKeyAttrs.size())
+  {
+    RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+    ERROR_PARAMS(lName->getLocalName(),
+                 "map",
+                 aKeyAttrs.size(),
+                 lSpec.getNumColumns()));
+  }
+
+  bool lValidProbe = true;
+
+  for (size_t i = 0; i < aKeyAttrs.size(); ++i)
+  {
+    store::Item_t& lTmp = aKeyAttrs[i];
+
+    if (! lTmp->isAtomic())
+    {
+      store::Item_t lVal;
+      store::Iterator_t lValIter;
+      lTmp->getTypedValue(lVal, lValIter);
+      if (! lValIter.isNull())
+      {
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion_2),
+                     lSpec.theKeyTypes.at(i)));
+      }
+      lTmp = lVal;
+    }
+
+    namespace_context tmp_ctx(sctx);
+    castOrCheckIndexType(lTmp, lSpec.theKeyTypes[i], lName, &tmp_ctx, loc);
+
+    if (lTmp == NULL ||
+        (lTmp->isAtomic() && lTmp->getTypeCode() == store::JS_NULL))
+    {
+      lValidProbe = false;
+    }
+  }
+  return lValidProbe;
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+void
+processOption(
+    const QueryLoc& loc,
+    const store::Item_t& aOption,
+    bool& aIsPersistent)
+{
+  assert(aOption->isObject());
+  zstring lTmp("persistent");
+
+  store::Item_t lPersistentItem;
+  GENV_ITEMFACTORY->createString(lPersistentItem, lTmp);
+
+  lPersistentItem = aOption->getObjectValue(lPersistentItem);
+  if (!lPersistentItem->isAtomic()
+      || lPersistentItem->getTypeCode() != store::XS_BOOLEAN)
+  {
+    RAISE_ERROR(zerr::ZDDY0043_INVALID_OPTION_TYPE,
+      loc, ERROR_PARAMS(
+        lPersistentItem->getType()->getLocalName(), "persistent", "boolean"));
+  }
+  aIsPersistent = lPersistentItem->getBooleanValue();
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+void
 checkMapTypes(
     std::vector<store::Item_t>& aTypes,
     const store::Item_t& aMapName,
@@ -111,7 +344,7 @@ checkMapTypes(
   {
     lAnyAtomicType = GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
     lIndexKeyType  = GENV_TYPESYSTEM.create_named_type(
-        aTypes[i].getp(), TypeConstants::QUANT_ONE, aLoc);
+        aTypes[i].getp(), SequenceType::QUANT_ONE, aLoc);
 
     if (lIndexKeyType != NULL &&
         !TypeOps::is_subtype(&GENV_TYPESYSTEM,
@@ -135,13 +368,14 @@ getMap(
     const store::Item_t& aName,
     const QueryLoc& aLoc,
     dynamic_context* aContext,
-    store::Index*& aIndex)
+    store::Index*& aIndex,
+    bool aLookupParent = true)
 {
   aIndex = GENV_STORE.getMap(aName);
 
   if (aIndex) return true;
 
-  aIndex = aContext->getMap(aName.getp());
+  aIndex = aContext->getMap(aName.getp(), aLookupParent);
 
   if (!aIndex)
   {
@@ -164,124 +398,58 @@ MapCreateIterator::nextImpl(
     store::Item_t& result,
     PlanState& aPlanState) const
 {
-  store::Item_t              lQName;
+  store::Item_t              lName;
+  store::Item_t              lTypeParam;
   std::vector<store::Item_t> lTypes;
-  std::vector<zstring>       lCollations;
-  std::auto_ptr<store::PUL>  lPul;
-  long                       lTimezone = 0;
+  bool                       lPersistent = true;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  createMapQName(lName, theSctx, loc);
 
-  if (GENV_STORE.getMap(lQName)
-      || aPlanState.theLocalDynCtx->getMap(lQName.getp()))
+  if (GENV_STORE.getMap(lName)
+      || aPlanState.theLocalDynCtx->getMap(lName.getp()))
   {
     RAISE_ERROR(
       zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
       loc,
-      ERROR_PARAMS( lQName->getStringValue() )
+      ERROR_PARAMS( lName->getStringValue() )
     );
   }
 
-  lCollations.resize(theChildren.size() - 1);
-  lTypes.resize(theChildren.size() - 1);
+  consumeNext(lTypeParam, theChildren[1].getp(), aPlanState);
 
-  for (size_t i = 1; i < theChildren.size(); ++i)
+  if (lTypeParam->isArray())
   {
-    consumeNext(lTypes[i-1], theChildren[i].getp(), aPlanState);
+    long lSize = to_xs_long(lTypeParam->getArraySize());
+    lTypes.resize(lSize);
+    for (long i = 1; i <= lSize; ++i)
+    {
+      lTypes[i-1] = lTypeParam->getArrayValue(xs_integer(i));
+    }
+  }
+  else
+  {
+    lTypes.push_back(lTypeParam);
   }
 
-  checkMapTypes(lTypes, lQName, loc);
-
-  lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  lPul->addCreateHashMap(&loc, lQName, lTypes, lCollations, lTimezone);
-
-  apply_updates(
-      aPlanState.theCompilerCB,
-      aPlanState.theGlobalDynCtx,
-      theSctx,
-      lPul.get(),
-      loc);
-
-  result = NULL;
-
-  STACK_END(state);
-}
-
-
-/*******************************************************************************
-********************************************************************************/
-bool
-MapCreateTransientIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& aPlanState) const
-{
-  store::Item_t              lQName;
-  store::IndexSpecification  lSpec;
-  store::Index_t             lIndex;
-  std::vector<std::string>   lCollations;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
-
-  if (GENV_STORE.getMap(lQName)
-      || aPlanState.theLocalDynCtx->getMap(lQName.getp()))
+  if (theChildren.size() == 3)
   {
-    RAISE_ERROR(
-      zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
-      loc,
-      ERROR_PARAMS( lQName->getStringValue() )
-    );
+    store::Item_t lOptions;
+    consumeNext(lOptions, theChildren[2].getp(), aPlanState);
+    processOption(loc, lOptions, lPersistent);
   }
 
-  lCollations.resize(theChildren.size() - 1);
-  lSpec.theKeyTypes.resize(theChildren.size() - 1);
+  processTypes(lName, loc, lTypes);
+  checkMapTypes(lTypes, lName, loc);
 
-  for (size_t i = 1; i < theChildren.size(); ++i)
+  if (lPersistent)
   {
-    consumeNext(lSpec.theKeyTypes[i-1], theChildren[i].getp(), aPlanState);
-  }
-
-  checkMapTypes(lSpec.theKeyTypes, lQName, loc);
-
-  lSpec.theNumKeyColumns = lSpec.theKeyTypes.size();
-  lSpec.theIsTemp = true;
-  lSpec.theCollations = lCollations;
-  lSpec.theTimezone = 0;
-
-  lIndex = GENV_STORE.createMap(lQName, lSpec);
-  
-  aPlanState.theLocalDynCtx->bindMap(lIndex->getName(), lIndex);
-
-  result = NULL;
-
-  STACK_END(state);
-}
-
-
-/*******************************************************************************
-********************************************************************************/
-bool
-MapDestroyIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& aPlanState) const
-{
-  store::Item_t              lQName;
-  store::Index*              lIndex;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
-
-  if (getMap(lQName, loc, aPlanState.theLocalDynCtx, lIndex))
-  {
-    std::auto_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
-    lPul->addDestroyHashMap(&loc, lQName);
+    std::unique_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
+    std::vector<zstring>       lCollations(lTypes.size());
+    lPul->addCreateHashMap(&loc, lName, lTypes, lCollations, 0);
 
     apply_updates(
         aPlanState.theCompilerCB,
@@ -292,13 +460,61 @@ MapDestroyIterator::nextImpl(
   }
   else
   {
-    aPlanState.theLocalDynCtx->unbindMap(lQName.getp());
+    store::IndexSpecification lSpec;
+    lSpec.theKeyTypes.swap(lTypes);
+    lSpec.theNumKeyColumns = lSpec.theKeyTypes.size();
+    lSpec.theIsTemp = true;
+    lSpec.theCollations.resize(lSpec.theKeyTypes.size());
+    lSpec.theTimezone = 0;
+    store::Index_t lMap = GENV_STORE.createMap(lName, lSpec);
+
+    aPlanState.theLocalDynCtx->bindMap(lMap->getName(), lMap);
   }
 
   result = NULL;
 
   STACK_END(state);
 }
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+MapDropIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& aPlanState) const
+{
+  store::Item_t              lName;
+  store::Index*              lIndex;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  createMapQName(lName, theSctx, loc);
+
+  if (getMap(lName, loc, aPlanState.theLocalDynCtx, lIndex, false))
+  {
+    std::unique_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
+    lPul->addDestroyHashMap(&loc, lName);
+
+    apply_updates(
+        aPlanState.theCompilerCB,
+        aPlanState.theGlobalDynCtx,
+        theSctx,
+        lPul.get(),
+        loc);
+  }
+  else
+  {
+    aPlanState.theLocalDynCtx->unbindMap(lName.getp());
+  }
+
+  result = NULL;
+
+  STACK_END(state);
+}
+
 
 /*******************************************************************************
 ********************************************************************************/
@@ -307,55 +523,35 @@ MapGetIterator::nextImpl(
     store::Item_t& result,
     PlanState& aPlanState) const
 {
-  store::Item_t              lQName;
-  std::vector<store::Item_t> lKey;
-  store::Index*              lIndex;
-  ulong i;
-  store::Item_t              lKeyItem;
+  store::Item_t              lName;
+  store::Item_t              lKey;
+  std::vector<store::Item_t> lKeyAttrs;
+  store::Index*              lMap;
   store::IndexSpecification  lSpec;
+  bool                       lValidProbe;
 
   MapGetIteratorState* state;
   DEFAULT_STACK_INIT(MapGetIteratorState, state, aPlanState);
 
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  createMapQName(lName, theSctx, loc);
 
-  getMap(lQName, loc, aPlanState.theLocalDynCtx, lIndex);
+  getMap(lName, loc, aPlanState.theLocalDynCtx, lMap);
 
-  lSpec = lIndex->getSpecification();
+  consumeNext(lKey, theChildren[1].getp(), aPlanState);
 
-  if (lSpec.getNumColumns() != theChildren.size() - 1)
+  state->theCond = lMap->createCondition(store::IndexCondition::POINT_VALUE);
+  lValidProbe = prepareKeyAttributes(loc, theSctx, lKey, lMap, lKeyAttrs);
+
+  if (lValidProbe)
   {
-    RAISE_ERROR(
-      zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-      loc,
-      ERROR_PARAMS(
-        lQName->getStringValue(),
-        "map",
-        theChildren.size() - 1,
-        lSpec.getNumColumns() )
-    );
-  }
-
-  state->theCond = lIndex->createCondition(store::IndexCondition::POINT_VALUE);
-
-  for (i = 1; i < theChildren.size(); ++i)
-  {
-    if (!consumeNext(lKeyItem, theChildren[i], aPlanState)) 
+    for (size_t i = 0; i < lKeyAttrs.size(); ++i)
     {
-      // Return the empty seq if any of the search key items is the empty seq.
-      break;
+      state->theCond->pushItem(lKeyAttrs[i]);
     }
 
-    namespace_context tmp_ctx(theSctx);
-    castOrCheckIndexType(lKeyItem, lSpec.theKeyTypes[i-1], lQName, &tmp_ctx, loc);
-
-    state->theCond->pushItem(lKeyItem);
-  }
-
-  if (i == theChildren.size())
-  {
     state->theIter = GENV_STORE.getIteratorFactory()->
-      createIndexProbeIterator(lIndex);
+      createIndexProbeIterator(lMap);
 
     state->theIter->init(state->theCond);
     state->theIter->open();
@@ -377,53 +573,31 @@ MapInsertIterator::nextImpl(
     store::Item_t& result,
     PlanState& aPlanState) const
 {
-  store::Item_t              lQName;
-  std::vector<store::Item_t> lKey;
-  store::IndexSpecification  lSpec;
-  store::Index*              lIndex;
+  store::Item_t              lName;
+  store::Item_t              lKey;
+  std::vector<store::Item_t> lKeyAttrs;
+  store::Index*              lMap;
   bool                       lPersistent;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  createMapQName(lName, theSctx, loc);
 
-  lPersistent = getMap(lQName, loc, aPlanState.theLocalDynCtx, lIndex);
+  lPersistent = getMap(lName, loc, aPlanState.theLocalDynCtx, lMap);
 
-  lSpec = lIndex->getSpecification();
+  consumeNext(lKey, theChildren[1].getp(), aPlanState);
 
-  if (lSpec.getNumColumns() != theChildren.size() - 2)
-  {
-    RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-    ERROR_PARAMS(lQName->getStringValue(),
-                 "map",
-                 theChildren.size() - 2,
-                 lSpec.getNumColumns()));
-  }
-
-  lKey.resize(theChildren.size() - 2);
-  for (size_t i = 2; i < theChildren.size(); ++i)
-  {
-    if (consumeNext(lKey[i-2], theChildren[i].getp(), aPlanState))
-    {
-      namespace_context tmp_ctx(theSctx);
-      castOrCheckIndexType(
-          lKey[i-2],
-          lSpec.theKeyTypes[i-2],
-          lQName,
-          &tmp_ctx,
-          loc);
-    }
-  }
+  prepareKeyAttributes(loc, theSctx, lKey, lMap, lKeyAttrs);
 
   if (lPersistent)
   {
-    std::auto_ptr<store::PUL>  lPul;
     store::Iterator_t lValue
-      = new PlanIteratorWrapper(theChildren[1], aPlanState);
+      = new PlanIteratorWrapper(theChildren[2], aPlanState);
 
-    lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-    lPul->addInsertIntoHashMap(&loc, lQName, lKey, lValue);
+    std::unique_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
+    lPul->addInsertIntoHashMap(&loc, lName, lKeyAttrs, lValue);
 
     apply_updates(
         aPlanState.theCompilerCB,
@@ -435,18 +609,27 @@ MapInsertIterator::nextImpl(
   else
   {
     store::Item_t lValue;
-    while (consumeNext(lValue, theChildren[1], aPlanState))
+    while (consumeNext(lValue, theChildren[2], aPlanState))
     {
-      std::auto_ptr<store::IndexKey> k(new store::IndexKey());
-      for (std::vector<store::Item_t>::const_iterator lIter = lKey.begin();
-           lIter != lKey.end();
-           ++lIter)
+      if ((lValue->isNode() || lValue->isArray() || lValue->isObject())
+          && lValue->getCollection() == 0)
       {
-        k->push_back(*lIter);
+        zstring lType = "node";
+        if (lValue->isArray()) lType = "array";
+        else if (lValue->isObject()) lType = "object";
+
+        RAISE_ERROR(zerr::ZDDY0042_ITEM_NOT_IN_COLLECTION, loc,
+        ERROR_PARAMS(lName->getLocalName(), lType));
+      }
+
+      std::unique_ptr<store::IndexKey> k(new store::IndexKey());
+      for (size_t i = 0; i < lKeyAttrs.size(); ++i)
+      {
+        k->push_back(lKeyAttrs[i]);
       }
 
       store::IndexKey* lKeyPtr = k.get();
-      if (!lIndex->insert(lKeyPtr, lValue))
+      if (!lMap->insert(lKeyPtr, lValue))
       {
         // the index took the ownership over the key if the index
         // did _not_ already contain an entry with the same key
@@ -464,51 +647,32 @@ MapInsertIterator::nextImpl(
 /*******************************************************************************
 ********************************************************************************/
 bool
-MapRemoveIterator::nextImpl(
+MapDeleteIterator::nextImpl(
     store::Item_t& result,
     PlanState& aPlanState) const
 {
-  store::Item_t              lQName;
-  std::vector<store::Item_t> lKey;
-  store::Index*              lIndex;
-  ulong i;
-  store::Item_t              lKeyItem;
-  std::auto_ptr<store::PUL>  lPul;
-  store::IndexSpecification  lSpec;
+  store::Item_t              lName;
+  store::Item_t              lKey;
+  std::vector<store::Item_t> lKeyAttrs;
+  store::Index*              lMap;
   bool                       lPersistent;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  createMapQName(lName, theSctx, loc);
 
-  lPersistent = getMap(lQName, loc, aPlanState.theLocalDynCtx, lIndex);
+  lPersistent = getMap(lName, loc, aPlanState.theLocalDynCtx, lMap);
 
-  lSpec = lIndex->getSpecification();
+  consumeNext(lKey, theChildren[1].getp(), aPlanState);
 
-  if (lSpec.getNumColumns() != theChildren.size() - 1)
-  {
-    RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-    ERROR_PARAMS(lQName->getStringValue(),
-                 "map",
-                 theChildren.size() - 1,
-                 lSpec.getNumColumns()));
-  }
-
-  lKey.resize(theChildren.size()-1);
-  for (i = 1; i < theChildren.size(); ++i)
-  {
-    if (consumeNext(lKey[i-1], theChildren[i], aPlanState)) 
-    {
-      namespace_context tmp_ctx(theSctx);
-      castOrCheckIndexType(lKey[i-1], lSpec.theKeyTypes[i-1], lQName, &tmp_ctx, loc);
-    }
-  }
+  prepareKeyAttributes(loc, theSctx, lKey, lMap, lKeyAttrs);
 
   if (lPersistent)
   {
-    lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-    lPul->addRemoveFromHashMap(&loc, lQName, lKey);
+    std::unique_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
+    lPul->addRemoveFromHashMap(&loc, lName, lKeyAttrs);
 
     apply_updates(
         aPlanState.theCompilerCB,
@@ -520,14 +684,12 @@ MapRemoveIterator::nextImpl(
   else
   {
     store::IndexKey k;
-    for (std::vector<store::Item_t>::const_iterator lIter = lKey.begin();
-         lIter != lKey.end();
-         ++lIter)
+    for (size_t i = 0; i < lKeyAttrs.size(); ++i)
     {
-      k.push_back(*lIter);
+      k.push_back(lKeyAttrs[i]);
     }
     store::Item_t lValue;
-    lIndex->remove(&k, lValue, true);
+    lMap->remove(&k, lValue, true);
   }
 
   result = NULL;
@@ -537,78 +699,33 @@ MapRemoveIterator::nextImpl(
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 bool
 MapKeysIterator::nextImpl(
     store::Item_t& result,
     PlanState& aPlanState) const
 {
-  store::Item_t    lQName;
+  store::Item_t    lName;
   store::Index*    lIndex;
   store::IndexKey  lKey;
   store::Item_t    lTypeName;
-  zstring          lBaseURI =
-    static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
-
-  store::Item_t lKeyNodeName;
-  GENV_ITEMFACTORY->createQName(lKeyNodeName,
-      static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
-      "", "key");
 
   MapKeysIteratorState* state;
   DEFAULT_STACK_INIT(MapKeysIteratorState, state, aPlanState);
 
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  createMapQName(lName, theSctx, loc);
 
-  getMap(lQName, loc, aPlanState.theLocalDynCtx, lIndex);
+  getMap(lName, loc, aPlanState.theLocalDynCtx, lIndex);
 
   state->theIter = lIndex->keys();
 
   state->theIter->open();
 
-  // generate result elements of the form
-  // <key>
-  //   <attribute value="key1_value"/>
-  //   <attribute value="key2_value"/>
-  //   <attribute value="key3_value"/>
-  // </key>
   while (state->theIter->next(lKey))
   {
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    createKeysArray(lKey, result);
 
-    GENV_ITEMFACTORY->createElementNode(
-        result, NULL, lKeyNodeName, lTypeName,
-        true, false, theNSBindings, lBaseURI);
-
-    for (store::ItemVector::iterator lIter = lKey.begin();
-         lIter != lKey.end();
-         ++lIter)
-    {
-      store::Item_t lAttrElem, lAttrNodeName;
-      store::Item_t lNameAttr, lValueAttr, lValueAttrName;
-
-      GENV_ITEMFACTORY->createQName(lAttrNodeName,
-          static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
-          "", "attribute");
-
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-
-      GENV_ITEMFACTORY->createElementNode(
-          lAttrElem, result, lAttrNodeName, lTypeName,
-          true, false, theNSBindings, lBaseURI);
-
-      store::Item_t& lValue = (*lIter);
-      if (! lValue.isNull())
-      {
-        GENV_ITEMFACTORY->createQName(lValueAttrName, "", "", "value");
-
-        lTypeName = lValue->getType();
-
-        GENV_ITEMFACTORY->createAttributeNode(
-            lValueAttr, lAttrElem.getp(), lValueAttrName, lTypeName, lValue);
-      }
-    }
     STACK_PUSH(true, state);
   }
 
@@ -623,17 +740,18 @@ MapSizeIterator::nextImpl(
     store::Item_t& result,
     PlanState& aPlanState) const
 {
-  store::Item_t              lQName;
-  store::Index*              lIndex;
+  store::Item_t lName;
+  store::Index* lMap;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  createMapQName(lName, theSctx, loc);
 
-  getMap(lQName, loc, aPlanState.theLocalDynCtx, lIndex);
+  getMap(lName, loc, aPlanState.theLocalDynCtx, lMap);
 
-  GENV_ITEMFACTORY->createInteger(result, xs_integer(lIndex->size()));
+  GENV_ITEMFACTORY->createInteger(result, xs_integer(lMap->size()));
 
   STACK_PUSH(true, state);
 
@@ -642,7 +760,6 @@ MapSizeIterator::nextImpl(
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 AvailableMapsIteratorState::~AvailableMapsIteratorState()
 {
@@ -676,16 +793,22 @@ void AvailableMapsIteratorState::reset(PlanState& planState)
 bool
 AvailableMapsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  AvailableMapsIteratorState * state;
-  store::Item_t              nameItem;
+  store::Item_t lNameItem;;
+  zstring       lLocalName;
 
+  AvailableMapsIteratorState * state;
   DEFAULT_STACK_INIT(AvailableMapsIteratorState, state, planState);
 
   for ((state->persistentMapNamesIter = GENV_STORE.listMapNames())->open ();
-       state->persistentMapNamesIter->next(nameItem); ) 
+       state->persistentMapNamesIter->next(lNameItem); ) 
   {
-    result = nameItem;
-    STACK_PUSH( true, state);
+    if (lNameItem->getNamespace() != getMapURI(theSctx, loc))
+    {
+      continue;
+    }
+    lLocalName = lNameItem->getLocalName();
+    GENV_ITEMFACTORY->createString(result, lLocalName);
+    STACK_PUSH(true, state);
   }
 
   state->persistentMapNamesIter->close();
@@ -696,7 +819,13 @@ AvailableMapsIterator::nextImpl(store::Item_t& result, PlanState& planState) con
        state->transientMapNamesIter != state->transientMapNames.end();
        ++state->transientMapNamesIter)
   {
-    result = *state->transientMapNamesIter;
+    lNameItem = *state->transientMapNamesIter;
+    if (lNameItem->getNamespace() != getMapURI(theSctx, loc))
+    {
+      continue;
+    }
+    lLocalName = lNameItem->getLocalName();
+    GENV_ITEMFACTORY->createString(result, lLocalName);
     STACK_PUSH( true, state);
   }
 
@@ -707,22 +836,29 @@ AvailableMapsIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 /*******************************************************************************
 ********************************************************************************/
 bool
-MapIsTransientIterator::nextImpl(
+MapOptionsIterator::nextImpl(
     store::Item_t& result,
     PlanState& aPlanState) const
 {
-  store::Item_t lQName;
-  store::Index* lIndex;
-  bool          lPersistent;
+  store::Item_t              lName;
+  store::Index*              lMap;
+  bool                       lPersistent;
+  std::vector<store::Item_t> lNames(1);
+  std::vector<store::Item_t> lValues(1);
+  zstring lTmp("persistent");
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  createMapQName(lName, theSctx, loc);
 
-  lPersistent = getMap(lQName, loc, aPlanState.theLocalDynCtx, lIndex);
+  lPersistent = getMap(lName, loc, aPlanState.theLocalDynCtx, lMap);
 
-  GENV_ITEMFACTORY->createBoolean(result, !lPersistent);
+  GENV_ITEMFACTORY->createString(lNames[0], lTmp);
+  GENV_ITEMFACTORY->createBoolean(lValues[0], lPersistent);
+
+  GENV_ITEMFACTORY->createJSONObject(result, lNames, lValues);
 
   STACK_PUSH(true, state);
 

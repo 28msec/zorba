@@ -17,7 +17,6 @@
 #ifndef ZORBA_SEQUENCES_IMPL_H
 #define ZORBA_SEQUENCES_IMPL_H
 
-#include <memory>
 #include <vector>
 #include <stack>
 
@@ -85,6 +84,8 @@ public:
   Type getType() const { return theType; }
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };

@@ -191,28 +191,28 @@ void populate_context_index_ddl(static_context* sctx)
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, fn_zorba_ddl_create_index,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/ddl",
+       (createQName("http://zorba.io/modules/store/static/indexes/ddl",
                     "",
                     "create"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, fn_zorba_ddl_delete_index,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/ddl",
+       (createQName("http://zorba.io/modules/store/static/indexes/ddl",
                     "",
                     "delete"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, fn_zorba_ddl_refresh_index,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
+       (createQName("http://zorba.io/modules/store/static/indexes/dml",
                     "",
                     "refresh-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, fn_zorba_ddl_probe_index_point_value,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
+       (createQName("http://zorba.io/modules/store/static/indexes/dml",
                     "",
                     "probe-index-point-value"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
@@ -220,7 +220,7 @@ void populate_context_index_ddl(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_zorba_ddl_probe_index_point_value_skip,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
+       (createQName("http://zorba.io/modules/store/static/indexes/dml",
                     "",
                     "probe-index-point-value-skip"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
@@ -229,7 +229,7 @@ void populate_context_index_ddl(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_zorba_ddl_probe_index_point_general,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
+       (createQName("http://zorba.io/modules/store/static/indexes/dml",
                     "",
                     "probe-index-point-general"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
@@ -238,7 +238,7 @@ void populate_context_index_ddl(static_context* sctx)
 
 
   DECL(sctx, fn_zorba_ddl_probe_index_range_value,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
+       (createQName("http://zorba.io/modules/store/static/indexes/dml",
                     "",
                     "probe-index-range-value"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
@@ -246,7 +246,7 @@ void populate_context_index_ddl(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_zorba_ddl_probe_index_range_value_skip,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
+       (createQName("http://zorba.io/modules/store/static/indexes/dml",
                     "",
                     "probe-index-range-value-skip"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
@@ -255,7 +255,7 @@ void populate_context_index_ddl(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_zorba_ddl_probe_index_range_general,
-       (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml",
+       (createQName("http://zorba.io/modules/store/static/indexes/dml",
                     "",
                     "probe-index-range-general"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,

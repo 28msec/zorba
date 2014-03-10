@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/reference/reference.h"
 #include "functions/func_reference.h"
@@ -77,7 +78,7 @@ void populate_context_reference(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_reference_reference,
-        (createQName("http://www.zorba-xquery.com/modules/reference","","reference"), 
+        (createQName("http://zorba.io/modules/reference","","reference"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_REFERENCE_REFERENCE_1);
@@ -89,7 +90,7 @@ void populate_context_reference(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_reference_has_reference,
-        (createQName("http://www.zorba-xquery.com/modules/reference","","has-reference"), 
+        (createQName("http://zorba.io/modules/reference","","has-reference"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_REFERENCE_HAS_REFERENCE_1);
@@ -101,7 +102,7 @@ void populate_context_reference(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_reference_assign_reference,
-        (createQName("http://www.zorba-xquery.com/modules/reference","","assign-reference"), 
+        (createQName("http://zorba.io/modules/reference","","assign-reference"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -114,7 +115,7 @@ void populate_context_reference(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_reference_dereference,
-        (createQName("http://www.zorba-xquery.com/modules/reference","","dereference"), 
+        (createQName("http://zorba.io/modules/reference","","dereference"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_QUESTION),
         FunctionConsts::FN_REFERENCE_DEREFERENCE_1);

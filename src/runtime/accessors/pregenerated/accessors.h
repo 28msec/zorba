@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_ACCESSORS_ACCESSORS_H
 #define ZORBA_RUNTIME_ACCESSORS_ACCESSORS_H
 
@@ -57,6 +58,8 @@ public:
 
   virtual ~NodeNameIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -86,6 +89,8 @@ public:
   {}
 
   virtual ~NilledIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -136,6 +141,8 @@ public:
 
   bool isUpdating() const { return theEmptyStringOnNULL; }
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -179,6 +186,8 @@ public:
 
   virtual ~FnDataIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -208,6 +217,8 @@ public:
   {}
 
   virtual ~BaseUriIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -239,6 +250,8 @@ public:
 
   virtual ~DocumentUriIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -268,6 +281,8 @@ public:
   {}
 
   virtual ~RootIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

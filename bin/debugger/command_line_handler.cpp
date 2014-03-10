@@ -138,7 +138,7 @@ CommandLineHandler::handle<Stop>(ZORBA_TR1_NS::tuple<> &t)
 
 template<>
 void
-CommandLineHandler::handle<BreakpointSet>(std::tr1::tuple<bstring, bstring, bint> &aTuple)
+CommandLineHandler::handle<BreakpointSet>(tuple<bstring, bstring, bint> &aTuple)
 {
   DebuggerClient::BreakpointType lType = DebuggerClient::Line;
   bool lEnabled = true;

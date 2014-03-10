@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (:~
  : Generate navigation for XQDoc batches.
  : 
@@ -6,7 +8,7 @@
  :)
 module namespace menu = "http://www.zorba-xquery.com/modules/xqdoc/menu";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 declare variable $menu:not-found as xs:QName := xs:QName('menu:not-found');

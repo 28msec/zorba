@@ -314,12 +314,12 @@ namespace zorba {
       /** \brief Creates a DateTime Item
        *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
        *
-       * @param aYear short-valued representation of the year.
-       * @param aMonth short-valued representation of the month.
-       * @param aDay short-valued representation of the day.
-       * @param aHour short-valued representation of the hour.
-       * @param aMinute short-valued representation of the minute.
-       * @param aSecond double-valued representation of the seconds and fractional seconds.
+       * @param aYear the year.
+       * @param aMonth the month [1-12].
+       * @param aDay the day [1-31].
+       * @param aHour the hour [0-23].
+       * @param aMinute the minute [0-59].
+       * @param aSecond the seconds and fractional seconds.
        * @param aTimeZone the number of seconds east of the prime meridian.
        * @return The DateTime Item.
        */
@@ -331,12 +331,12 @@ namespace zorba {
       /** \brief Creates a DateTime Item without setting a time zone.
        *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
        *
-       * @param aYear short-valued representation of the year.
-       * @param aMonth short-valued representation of the month.
-       * @param aDay short-valued representation of the day.
-       * @param aHour short-valued representation of the hour.
-       * @param aMinute short-valued representation of the minute.
-       * @param aSecond double-valued representation of the seconds and fractional seconds.
+       * @param aYear the year.
+       * @param aMonth the month [1-12].
+       * @param aDay the day [1-31].
+       * @param aHour the hour [0-23].
+       * @param aMinute the minute [0-59].
+       * @param aSecond the seconds and fractional seconds.
        * @return The DateTime Item.
        */
       virtual Item

@@ -29,7 +29,7 @@
 
 #include "types/typeops.h"
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #include "diagnostics/assert.h"
 
@@ -500,8 +500,8 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   xqtref_t innerType = predInfo.theInnerOp->get_return_type();
   xqtref_t primeOuterType = TypeOps::prime_type(tm, *outerType);
   xqtref_t primeInnerType = TypeOps::prime_type(tm, *innerType);
-  TypeConstants::quantifier_t outerQuant = outerType->get_quantifier();
-  TypeConstants::quantifier_t innerQuant = innerType->get_quantifier();
+  SequenceType::Quantifier outerQuant = outerType->get_quantifier();
+  SequenceType::Quantifier innerQuant = innerType->get_quantifier();
   const QueryLoc& innerLoc = predInfo.theInnerOp->get_loc();
   const QueryLoc& outerLoc = predInfo.theOuterOp->get_loc();
 
@@ -513,12 +513,12 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
     // check again here and reject the hashjoin rewrite if these conditions
     // are violated.
 
-    if (innerQuant != TypeConstants::QUANT_ONE &&
-        innerQuant != TypeConstants::QUANT_QUESTION)
+    if (innerQuant != SequenceType::QUANT_ONE &&
+        innerQuant != SequenceType::QUANT_QUESTION)
       return false;
 
-    if (outerQuant != TypeConstants::QUANT_ONE &&
-        outerQuant != TypeConstants::QUANT_QUESTION)
+    if (outerQuant != SequenceType::QUANT_ONE &&
+        outerQuant != SequenceType::QUANT_QUESTION)
       return false;
 
     // The type of the inner operand in the join predicate must not be
@@ -588,13 +588,13 @@ var_expr* IndexJoinRule::findLoopVar(expr* curExpr, csize& varid)
       curExpr = fc->get_expr();
 
       xqtref_t domainType = curExpr->get_return_type();
-      TypeConstants::quantifier_t quant = domainType->get_quantifier();
+      SequenceType::Quantifier quant = domainType->get_quantifier();
 
-      if (quant == TypeConstants::QUANT_STAR || quant == TypeConstants::QUANT_PLUS)
+      if (quant == SequenceType::QUANT_STAR || quant == SequenceType::QUANT_PLUS)
       {
         return var;
       }
-      else if (quant == TypeConstants::QUANT_ONE)
+      else if (quant == SequenceType::QUANT_ONE)
       {
         // this FOR var is equivalent to a LET var, so we drill into its
         // domain expr
@@ -1124,7 +1124,7 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo)
 
   sctx->bind_index(idx, loc);
 
-  if (Properties::instance()->printIntermediateOpt())
+  if (Properties::instance().getPrintIntermediateOpt())
   {
     std::cout << std::endl << idx->toString() << std::endl;
   }

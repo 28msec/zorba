@@ -1,9 +1,9 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare function local:testa() {
@@ -39,7 +39,7 @@ declare %ann:sequential function local:testc() {
 declare %ann:sequential function local:testd() {
   try {
     {
-      dml:insert-nodes-first($ns:http, <a/>);
+      dml:insert-first($ns:http, <a/>);
     }
   } catch *  {
     exit returning ("d",$err:code);
@@ -49,7 +49,7 @@ declare %ann:sequential function local:testd() {
 declare %ann:sequential function local:teste() {
   try {
     {
-      dml:insert-nodes-last($ns:http, <a/>);
+      dml:insert-last($ns:http, <a/>);
     }
   } catch *  {
     exit returning ("e",$err:code);
@@ -59,7 +59,7 @@ declare %ann:sequential function local:teste() {
 declare %ann:sequential function local:testf() {
   try {
     {
-      dml:insert-nodes-before($ns:http, <a/>, <a/>);
+      dml:insert-before($ns:http, <a/>, <a/>);
     }
   } catch *  {
     exit returning ("f",$err:code);
@@ -69,7 +69,7 @@ declare %ann:sequential function local:testf() {
 declare %ann:sequential function local:testg() {
   try {
     {
-      dml:insert-nodes-after($ns:http, <a/>, <a/>);
+      dml:insert-after($ns:http, <a/>, <a/>);
     }
   } catch *  {
     exit returning ("g",$err:code);
@@ -79,7 +79,7 @@ declare %ann:sequential function local:testg() {
 declare %ann:sequential function local:testi() {
   try {
     {
-      dml:delete-nodes(<a/>);
+      dml:delete(<a/>);
     }
   } catch *  {
     exit returning ("i",$err:code);

@@ -22,14 +22,16 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
-#include "diagnostics/assert.h"
+#include <zorba/internal/unique_ptr.h>
+#include <zorba/properties.h>
 
+#include "diagnostics/assert.h"
 #include "util/hashmap32.h"
+#include "util/indent.h"
 #include "util/stl_util.h"
 #include "util/tracer.h"
 
 #include "system/globalenv.h"
-#include "system/properties.h"
 
 #include "compiler/expression/expr_manager.h"
 #include "compiler/api/compilercb.h"
@@ -126,7 +128,7 @@
 #define CODEGEN_TRACE(msg)                                         \
   QLOCDECL;                                                        \
   SCTXDECL;                                                        \
-  if (Properties::instance()->traceCodegen())                      \
+  if (Properties::instance().getTraceCodegen())                    \
   {                                                                \
     std::cout << (msg) << TRACE << ", stk size " << itstack.size() \
               << std::endl << std::endl;                           \
@@ -147,6 +149,7 @@
 #define CODEGEN_TRACE_OUT(msg) CODEGEN_TRACE(msg)
 #endif
 
+using namespace std;
 
 namespace zorba
 {
@@ -516,13 +519,13 @@ void end_visit(dynamic_function_invocation_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  csize numArgs = v.get_args().size() + 1;
+  csize numArgs = v.get_args().size();
 
   std::vector<PlanIter_t> argIters;
   
   bool isPartialApply = false;
   
-  for (csize i = 0; i < numArgs-1; ++i)
+  for (csize i = 0; i < numArgs; ++i)
   {
     if (v.get_args()[i]->get_expr_kind() == argument_placeholder_expr_kind)
       isPartialApply = true;
@@ -534,7 +537,10 @@ void end_visit(dynamic_function_invocation_expr& v)
 
   std::reverse(argIters.begin(), argIters.end());
 
-  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, isPartialApply));
+  if (numArgs > 0 || v.get_input()->get_return_type()->max_card() <= 1)
+    push_itstack(new SingleDynamicFnCallIterator(sctx, qloc, argIters, isPartialApply));
+  else
+    push_itstack(new MultiDynamicFnCallIterator(sctx, qloc, argIters[0]));
 }
 
 
@@ -568,13 +574,14 @@ void end_visit(function_trace_expr& v)
   CODEGEN_TRACE_OUT("");
   std::vector<PlanIter_t> argv;
   argv.push_back(pop_itstack());
-  std::auto_ptr<FunctionTraceIterator> lDummyIter(
+  std::unique_ptr<FunctionTraceIterator> lDummyIter(
       new FunctionTraceIterator(sctx, qloc, argv));
   lDummyIter->setFunctionName(v.getFunctionName());
   lDummyIter->setFunctionArity(v.getFunctionArity());
   lDummyIter->setFunctionLocation(v.getFunctionLocation());
   lDummyIter->setFunctionCallLocation(v.getFunctionCallLocation());
-  push_itstack(lDummyIter.release());
+  push_itstack(lDummyIter.get());
+  lDummyIter.release();
 }
 
 bool begin_visit(wrapper_expr& v)
@@ -667,7 +674,7 @@ void end_visit(var_decl_expr& v)
 
     xqtref_t exprType = initExpr->get_return_type();
 
-    if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
+    if (exprType->get_quantifier() == SequenceType::QUANT_ONE)
       singleItem = true;
   }
 
@@ -710,7 +717,7 @@ void end_visit(var_set_expr& v)
                            (varExpr->get_kind() == var_expr::local_var),
                            exprIter);
 
-  if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
+  if (exprType->get_quantifier() == SequenceType::QUANT_ONE)
     iter->setSingleItem();
 
   push_itstack(iter);
@@ -935,6 +942,9 @@ bool begin_visit(flwor_expr& v)
     
   if (v.is_sequential())
   {
+    pragma* pr = 0;
+    theCCB->lookup_pragma(&v, "no-materialization", pr);
+
     if (!isGeneral)
     {
       if (v.has_sequential_clauses())
@@ -983,15 +993,13 @@ bool begin_visit(flwor_expr& v)
 
       // Note: a materialize clause may exist already in case plan serialization
       // is on (see comment in materialize_clause::clone)
-      if (!isGeneral &&
+      if (!pr && !isGeneral &&
           v.get_return_expr()->is_sequential() &&
           v.get_clause(numClauses-1)->get_kind() != flwor_clause::materialize_clause &&
           (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
       {
-        materialize_clause* mat =
-        theCCB->theEM->create_materialize_clause(v.get_sctx(),
+        materialize_clause* mat = theCCB->theEM->create_materialize_clause(v.get_sctx(),
                                                  v.get_return_expr()->get_loc());
-
         v.add_clause(mat);
         ++numClauses;
       }
@@ -1023,11 +1031,11 @@ bool begin_visit(flwor_expr& v)
           {
             xqtref_t domainType = domExpr->get_return_type();
 
-            if (domainType->get_quantifier() != TypeConstants::QUANT_ONE)
+            if (domainType->get_quantifier() != SequenceType::QUANT_ONE)
               ++numForClauses;
           }
 
-          if (domExpr->is_sequential() &&
+          if (!pr && domExpr->is_sequential() &&
               (k == flwor_clause::for_clause ||
                k == flwor_clause::window_clause ||
                numForClauses > 0))
@@ -1066,8 +1074,8 @@ bool begin_visit(flwor_expr& v)
           break;
         }
         default:
-          ZORBA_ASSERT(false);
-        }
+          ZORBA_ASSERT_WITH_MSG(false, "ClauseKind = " << k);
+        } // switch
 
         ++i;
       }
@@ -1252,9 +1260,9 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     clauseVarMap->theVarExprs.push_back(lc->get_var());
     clauseVarMap->theVarRebinds.push_back(varRebind);
 
-    if (domType->get_quantifier() == TypeConstants::QUANT_ONE)
+    if (domType->get_quantifier() == SequenceType::QUANT_ONE)
       varRebind->theIsFakeLetVar = true;
-    else if (domType->get_quantifier() == TypeConstants::QUANT_QUESTION)
+    else if (domType->get_quantifier() == SequenceType::QUANT_QUESTION)
       varRebind->theIsSingleItemLetVar = true;
 
     break;
@@ -1635,8 +1643,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     PlanIter_t domainIter = pop_itstack();
 
-    std::auto_ptr<flwor::StartClause> start_clause;
-    std::auto_ptr<flwor::EndClause> end_clause;
+    std::unique_ptr<flwor::StartClause> start_clause;
+    std::unique_ptr<flwor::EndClause> end_clause;
     const flwor_wincond* cond;
     ulong varPos = 1;
 
@@ -1798,9 +1806,9 @@ void flwor_codegen(const flwor_expr& flworExpr)
 {
   flwor::FLWORIterator* flworIter;
   PlanIter_t returnIter;
-  std::auto_ptr<flwor::OrderByClause> orderClause(NULL);
-  std::auto_ptr<flwor::GroupByClause> groupClause(NULL);
-  std::auto_ptr<flwor::MaterializeClause> materializeClause(NULL);
+  std::unique_ptr<flwor::OrderByClause> orderClause;
+  std::unique_ptr<flwor::GroupByClause> groupClause;
+  std::unique_ptr<flwor::MaterializeClause> materializeClause;
   PlanIter_t whereIter;
   std::vector<flwor::ForLetClause> forletClauses;
 
@@ -2033,10 +2041,13 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                        flworExpr.get_loc(),
                                        forletClauses,
                                        whereIter,
-                                       groupClause.release(),
-                                       orderClause.release(),
-                                       materializeClause.release(),
+                                       groupClause.get(),
+                                       orderClause.get(),
+                                       materializeClause.get(),
                                        returnIter);
+  groupClause.release();
+  orderClause.release();
+  materializeClause.release();
   push_itstack(flworIter);
 }
 
@@ -2312,7 +2323,7 @@ void end_visit(debugger_expr& v)
   reverse(argvEvalIter.begin(), argvEvalIter.end());
 
   // get the debugger iterator from the debugger stack
-  std::auto_ptr<DebugIterator> lDebugIterator(theDebuggerStack.top());
+  std::unique_ptr<DebugIterator> lDebugIterator(theDebuggerStack.top());
   theDebuggerStack.pop();
 
   // set the children of the debugger iterator
@@ -2351,7 +2362,8 @@ void end_visit(debugger_expr& v)
     lDebugIterator->setParent(theDebuggerStack.top());
   }
 
-  push_itstack(lDebugIterator.release());
+  push_itstack(lDebugIterator.get());
+  lDebugIterator.release();
 }
 #endif
 
@@ -2761,7 +2773,7 @@ bool begin_visit(axis_step_expr& v)
     if (typeName != NULL)
     {
       prd->setType(sctx->get_typemanager()->create_named_type(typeName,
-                                                              TypeConstants::QUANT_ONE,
+                                                              SequenceType::QUANT_ONE,
                                                               loc,
                                                               XPTY0004));
     }
@@ -2984,7 +2996,7 @@ bool begin_visit(match_expr& v)
     {
       axisItep->setType(sctx->get_typemanager()->
                         create_named_type(typeName,
-                                          TypeConstants::QUANT_ONE,
+                                          SequenceType::QUANT_ONE,
                                           qloc));
     }
     axisItep->setNilledAllowed(v.getNilledAllowed());
@@ -3796,21 +3808,27 @@ PlanIter_t codegen(
   root->accept(c);
   PlanIter_t result = c.result();
 
-  if (result != NULL &&
-      descr != NULL &&
-      Properties::instance()->printIteratorTree())
-  {
-    std::ostream& os = (Properties::instance()->iterPlanTest() ?
-                        std::cout :
-                        Properties::instance()->debug_out());
-
-    os << "Iterator tree for " << descr << ":\n";
-    XMLIterPrinter vp(os);
-    print_iter_plan(vp, result);
-    os << std::endl;
-  }
-
   nextDynamicVarId = c.getNextDynamicVarId();
+
+  Zorba_plan_format_t const format = Properties::instance().getPlanFormat();
+  if ( result && descr && format ) {
+    std::ostream &os = Properties::instance().getDebugStream();
+    unique_ptr<IterPrinter> printer;
+    switch ( format ) {
+      case PLAN_FORMAT_DOT:
+        printer.reset( new DOTIterPrinter( os, descr ) );
+        break;
+      case PLAN_FORMAT_JSON:
+        printer.reset( new JSONIterPrinter( os, descr ) );
+        break;
+      case PLAN_FORMAT_XML:
+        printer.reset( new XMLIterPrinter( os, descr ) );
+        break;
+      default: // to silence warning
+        break;
+    } // switch
+    print_iter_plan( *printer, result );
+  }
 
   return result;
 }

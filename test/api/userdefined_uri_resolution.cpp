@@ -17,7 +17,6 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <memory>
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
@@ -85,7 +84,7 @@ class DenyAccessURIMapper : public URIMapper
   {
     // Deny access to an URI that would otherwise work
     if(aUri == "http://zorbatest.lambda.nu:8080/tutorial/helloworld.xsd" ||
-       aUri == "http://www.zorba-xquery.com/modules/fetch" ||
+       aUri == "http://zorba.io/modules/fetch" ||
        aUri == "http://expath.org/ns/file") {
       oUris.push_back(URIMapper::DENY_ACCESS);
     }
@@ -273,7 +272,7 @@ bool test_deny_internal_module_access(Zorba* aZorba)
   try {
     XQuery_t lQuery = aZorba->compileQuery
       ("import module namespace fetch = "
-        "'http://www.zorba-xquery.com/modules/fetch'; "
+        "'http://zorba.io/modules/fetch'; "
         "1 + 1", lContext);
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {

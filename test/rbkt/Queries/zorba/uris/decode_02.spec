@@ -1,1 +1,1 @@
-Error: http://zorba.io/modules/zorba-errors:ZXQP0006
+Error: http://zorba.io/modules/uri:CHARSET_UNKNOWN

@@ -4,9 +4,9 @@
 
 module namespace guestbook = "http://www.28msec.com/templates/guestbook/guestbook";
 
-import module namespace db = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace db = "http://zorba.io/modules/store/static/collections/dml";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare collection guestbook:entries as node()*;
 
@@ -15,7 +15,7 @@ declare variable $guestbook:entries as xs:QName := xs:QName("guestbook:entries")
 
 declare %an:sequential function guestbook:add()
 {
- db:insert-nodes(
+ db:insert(
       $guestbook:entries,
       <entry author="Matthias" date="{fn:current-date()}" time="{fn:current-time()}">
       foo
