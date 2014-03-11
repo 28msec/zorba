@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.6.2.  */
+/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2012 Free Software Foundation, Inc.
+      Copyright (C) 2002-2013 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -31,18 +31,18 @@
    version 2.2 of Bison.  */
 
 /**
- ** \file /Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.hpp
+ ** \file /Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.hpp
  ** Define the zorba::parser class.
  */
 
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP
-# define ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP
+#ifndef YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
+# define YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
 
 /* "%code requires" blocks.  */
-/* Line 36 of lalr1.cc  */
-#line 5 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.y"
+/* Line 33 of lalr1.cc  */
+#line 5 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
 
 /*
@@ -88,8 +88,8 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 
-/* Line 36 of lalr1.cc  */
-#line 93 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.hpp"
+/* Line 33 of lalr1.cc  */
+#line 93 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
 
 
 #include <string>
@@ -104,8 +104,8 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 namespace zorba {
-/* Line 36 of lalr1.cc  */
-#line 109 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.hpp"
+/* Line 33 of lalr1.cc  */
+#line 109 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
 
   /// A Bison parser.
   class jsoniq_parser
@@ -115,8 +115,8 @@ namespace zorba {
 #ifndef YYSTYPE
     union semantic_type
     {
-/* Line 36 of lalr1.cc  */
-#line 150 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.y"
+/* Line 33 of lalr1.cc  */
+#line 150 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -138,8 +138,8 @@ namespace zorba {
     ft_anyall_mode::type ft_anyall_value;
 
 
-/* Line 36 of lalr1.cc  */
-#line 143 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.hpp"
+/* Line 33 of lalr1.cc  */
+#line 143 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -516,6 +516,10 @@ namespace zorba {
 #endif
 
   private:
+    /// This class is not copyable.
+    jsoniq_parser (const jsoniq_parser&);
+    jsoniq_parser& operator= (const jsoniq_parser&);
+
     /// Report a syntax error.
     /// \param loc    where the syntax error is found.
     /// \param msg    a description of the syntax error.
@@ -633,6 +637,7 @@ namespace zorba {
 
     /// \brief Reclaim the memory associated to a symbol.
     /// \param yymsg        Why this token is reclaimed.
+    ///                     If null, do not display the symbol, just free it.
     /// \param yytype       The symbol type.
     /// \param yyvaluep     Its semantic value.
     /// \param yylocationp  Its location.
@@ -662,9 +667,9 @@ namespace zorba {
   };
 
 } // zorba
-/* Line 36 of lalr1.cc  */
-#line 667 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.hpp"
+/* Line 33 of lalr1.cc  */
+#line 672 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
 
 
 
-#endif /* !ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP  */
+#endif /* !YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED  */
