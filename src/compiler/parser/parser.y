@@ -1236,7 +1236,7 @@ MainModule :
     {
       $$ = $1; $$ = $3; // to prevent the Bison warning
       @1.step();
-      error(@1, "syntax error, missing semicolon \";\" after statement");
+      error(@1, "syntax error: missing semicolon ';' after statement");
       YYERROR;
     }
   |
@@ -1244,7 +1244,7 @@ MainModule :
     {
       $$ = $1; $$ = $3; // to prevent the Bison warning
       @1.step();
-      error(@1, "syntax error, missing semicolon \";\" after declaration");
+      error(@1, "syntax error: missing semicolon ';' after declaration");
       YYERROR;
     }
   |
@@ -1252,7 +1252,7 @@ MainModule :
     {
       $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
       @3.step();
-      error(@3, "syntax error, missing semicolon \";\" after declaration");
+      error(@3, "syntax error: missing semicolon ';' after declaration");
       YYERROR;
     }
   |
@@ -1260,7 +1260,7 @@ MainModule :
     {
       $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
       @1.step();
-      error(@1, "syntax error, missing semicolon \";\" after statement");
+      error(@1, "syntax error: missing semicolon ';' after statement");
       YYERROR;
     }
 ;
@@ -1327,7 +1327,7 @@ SIND_DeclList :
       // error
       $$ = $1; $$ = $3; // to prevent the Bison warning
       @1.step();
-      error(@1, "syntax error, missing semicolon \";\" after declaration");
+      error(@1, "syntax error: missing semicolon ';' after declaration");
       YYERROR;
     }
 ;
@@ -1456,7 +1456,7 @@ Import :
     IMPORT QNAME_SVAL error
     {
       $$ = $$; // to prevent the Bison warning
-      error(@2, "syntax error, \"import\" should be followed by either \"schema\" or \"module\"");
+      error(@2, "syntax error: \"import\" should be followed by either \"schema\" or \"module\"");
       YYERROR;
     }
 ;
@@ -1608,7 +1608,7 @@ VFO_DeclList :
     {
       $$ = $1; $$ = $3; // to prevent the Bison warning
       @1.step();
-      error(@1, "syntax error, missing semicolon \";\" after declaration");
+      error(@1, "syntax error: missing semicolon ';' after declaration");
       YYERROR;
     }
 ;
@@ -2218,7 +2218,7 @@ QueryBody :
     {
       if ($1 == NULL)
       {
-        error(@1, "syntax error, unexpected end of file, the query body should not be empty");
+        error(@1, "syntax error: unexpected end of file, the query body should not be empty");
         YYERROR;
       }
 
@@ -2305,7 +2305,7 @@ Statements :
       $$ = $1; // to prevent the Bison warning
       $$ = $2; // to prevent the Bison warning
       $$ = $4; // to prevent the Bison warning
-      error(@3, "syntax error, unexpected statement (missing semicolon \";\" between statements?)");
+      error(@3, "syntax error: unexpected statement");
       delete $1; // these need to be deleted here because the parser deallocator will skip them
       delete $2;
       delete $4;
@@ -2637,11 +2637,13 @@ Expr :
     {
       $$ = $1; // to prevent the Bison warning
       $$ = $3; // to prevent the Bison warning
-      // Heuristics to improve the error message: if the $1 Expr is a QName (which in turn gets
-      // promoted to a PathExpr), chances are that it's not a missing comma, so don't modify
-      // the error message.
+      //
+      // Heuristics to improve the error message: if the $1 Expr is a QName
+      // (which in turn gets promoted to a PathExpr), chances are that it's not
+      // a missing comma, so don't modify the error message.
+      //
       if (dynamic_cast<PathExpr*>($1) == NULL)
-        error(@2, "syntax error, unexpected expression (missing comma \",\" between expressions?)");
+        error(@2, "syntax error: unexpected expression");
       delete $1; // these need to be deleted here because the parser deallocator will skip them
       delete $3;
       YYERROR;
@@ -2837,8 +2839,8 @@ ForClause :
   | FOR error VarInDeclList
     {
       $$ = $3; // to prevent the Bison warning
-      error(@2, "syntax error, unexpected qualified name \""
-          + static_cast<VarInDeclList*>($3)->operator[](0)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      error(@2, "syntax error: unexpected qualified name \""
+          + static_cast<VarInDeclList*>($3)->operator[](0)->get_var_name()->get_qname().str() + "\" (missing '$' sign?)");
       delete $3;
       YYERROR;
     }
@@ -2846,8 +2848,8 @@ ForClause :
   | FROM error VarInDeclList  %prec JSONLOOKUPEXPR_REDUCE
     {
       $$ = $3; // to prevent the Bison warning
-      error(@2, "syntax error, unexpected qualified name \""
-          + static_cast<VarInDeclList*>($3)->operator[](0)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      error(@2, "syntax error: unexpected qualified name \""
+          + static_cast<VarInDeclList*>($3)->operator[](0)->get_var_name()->get_qname().str() + "\" (missing '$' sign?)");
       delete $3;
       YYERROR;
     }
@@ -2892,8 +2894,8 @@ VarInDeclList :
     VarInDeclList COMMA VarInDecl
     {
       $$ = $1; // to prevent the Bison warning
-      error(@3, "syntax error, unexpected QName \""
-          + static_cast<VarInDecl*>($3)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
+      error(@3, "syntax error: unexpected QName \""
+          + static_cast<VarInDecl*>($3)->get_var_name()->get_qname().str() + "\" (missing '$' sign?)");
       delete $1;
       YYERROR;
     }
@@ -4249,7 +4251,7 @@ PathExpr :
         switch (rpe->is_jsoniq_literal())
         {
         case 0:
-          // error(@1, "syntax error, a path expression cannot begin with an axis step");
+          // error(@1, "syntax error: a path expression cannot begin with an axis step");
           // YYERROR;
           break;
         case 1:
@@ -4868,7 +4870,7 @@ DirElemConstructor :
     {
       if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($6)->get_qname())
       {
-        error(@5, "syntax error, end tag </" +
+        error(@5, "syntax error: end tag </" +
                   static_cast<QName*>($6)->get_qname().str() +
                   "> does not match start tag <" +
                   static_cast<QName*>($2)->get_qname().str() + ">");
@@ -4893,7 +4895,7 @@ DirElemConstructor :
     {
       if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
       {
-        error(@5, "syntax error, end tag </" +
+        error(@5, "syntax error: end tag </" +
                   static_cast<QName*>($7)->get_qname().str() +
                   "> does not match start tag <" +
                   static_cast<QName*>($2)->get_qname().str() + ">");
@@ -4912,7 +4914,7 @@ DirElemConstructor :
     {
       if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
       {
-        error(@5, "syntax error, end tag </" +
+        error(@5, "syntax error: end tag </" +
                   static_cast<QName*>($7)->get_qname().str() +
                   "> does not match start tag <" +
                   static_cast<QName*>($2)->get_qname().str() + ">");
@@ -4931,7 +4933,7 @@ DirElemConstructor :
     {
       if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($8)->get_qname())
       {
-        error(@5, "syntax error, end tag </" +
+        error(@5, "syntax error: end tag </" +
                   static_cast<QName*>($8)->get_qname().str() +
                   "> does not match start tag <" +
                   static_cast<QName*>($2)->get_qname().str() + ">");
@@ -7405,19 +7407,6 @@ void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string
   else
   {
     ParseErrorNode* prevErr = dynamic_cast<ParseErrorNode*>(driver.get_expr());
-
-    if (prevErr != NULL)
-    {
-      // Error message heuristics: if the current error message has the "(missing comma "," between expressions?)" text,
-      // and the old message has a "','" text, then replace the old message with the new one. Unfortunately this 
-      // makes the parser error messages harder to internationalize.
-      if ((msg.find("(missing comma \",\" between expressions?)") != string::npos &&
-            ! contains(prevErr->msg, "expecting", ","))
-          ||
-          (msg.find("missing semicolon \";\" after") != string::npos &&
-            ! contains(prevErr->msg, "expecting", ";")))
-        return;
-    }
 
     // Replace the first occurrence of "unexpected "'QName'"" with "unexpected qualified name %actual_qname%"
     string message = msg;
