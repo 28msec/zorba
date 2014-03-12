@@ -7413,7 +7413,7 @@ void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string
       // Error message heuristics: if the current error message has the "(missing comma "," between expressions?)" text,
       // and the old message has a "','" text, then replace the old message with the new one. Unfortunately this 
       // makes the parser error messages harder to internationalize.
-      if ((msg.find("(missing comma \",\" between expressions?)") != string::npos &&
+      if ((msg.find("unexpected expression") != string::npos &&
             ! contains(prevErr->msg, "expecting", ","))
           ||
           (msg.find("missing semicolon \";\" after") != string::npos &&
@@ -7437,3 +7437,4 @@ void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string
 }
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */
