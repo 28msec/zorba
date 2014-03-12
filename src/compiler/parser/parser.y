@@ -2305,7 +2305,7 @@ Statements :
       $$ = $1; // to prevent the Bison warning
       $$ = $2; // to prevent the Bison warning
       $$ = $4; // to prevent the Bison warning
-      error(@3, "syntax error, unexpected statement (missing semicolon \";\" between statements?)");
+      error(@3, "syntax error, unexpected statement");
       delete $1; // these need to be deleted here because the parser deallocator will skip them
       delete $2;
       delete $4;
@@ -2637,11 +2637,13 @@ Expr :
     {
       $$ = $1; // to prevent the Bison warning
       $$ = $3; // to prevent the Bison warning
-      // Heuristics to improve the error message: if the $1 Expr is a QName (which in turn gets
-      // promoted to a PathExpr), chances are that it's not a missing comma, so don't modify
-      // the error message.
+      //
+      // Heuristics to improve the error message: if the $1 Expr is a QName
+      // (which in turn gets promoted to a PathExpr), chances are that it's not
+      // a missing comma, so don't modify the error message.
+      //
       if (dynamic_cast<PathExpr*>($1) == NULL)
-        error(@2, "syntax error, unexpected expression (missing comma \",\" between expressions?)");
+        error(@2, "syntax error, unexpected expression");
       delete $1; // these need to be deleted here because the parser deallocator will skip them
       delete $3;
       YYERROR;
