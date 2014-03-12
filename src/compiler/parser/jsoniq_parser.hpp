@@ -31,18 +31,18 @@
    version 2.2 of Bison.  */
 
 /**
- ** \file /Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.hpp
+ ** \file /Users/pjl/src/flwor/zorba/repo/no_commas/zorba/build/src/compiler/parser/jsoniq_parser.hpp
  ** Define the zorba::parser class.
  */
 
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
-# define YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
+#ifndef YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_NO_COMMAS_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
+# define YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_NO_COMMAS_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
 
 /* "%code requires" blocks.  */
 /* Line 267 of lalr1.cc  */
-#line 5 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.y"
+#line 5 "/Users/pjl/src/flwor/zorba/repo/no_commas/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
 
 /*
@@ -89,7 +89,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 267 of lalr1.cc  */
-#line 93 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
+#line 93 "/Users/pjl/src/flwor/zorba/repo/no_commas/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
 
 
 #include <string>
@@ -105,7 +105,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 namespace zorba {
 /* Line 267 of lalr1.cc  */
-#line 109 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
+#line 109 "/Users/pjl/src/flwor/zorba/repo/no_commas/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
 
   /// A Bison parser.
   class jsoniq_parser
@@ -116,7 +116,7 @@ namespace zorba {
     union semantic_type
     {
 /* Line 267 of lalr1.cc  */
-#line 150 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.y"
+#line 150 "/Users/pjl/src/flwor/zorba/repo/no_commas/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -139,7 +139,7 @@ namespace zorba {
 
 
 /* Line 267 of lalr1.cc  */
-#line 143 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
+#line 143 "/Users/pjl/src/flwor/zorba/repo/no_commas/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -663,8 +663,8 @@ namespace zorba {
 
 } // zorba
 /* Line 267 of lalr1.cc  */
-#line 667 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
+#line 667 "/Users/pjl/src/flwor/zorba/repo/no_commas/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
 
 
 
-#endif /* !YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED  */
+#endif /* !YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_NO_COMMAS_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED  */
