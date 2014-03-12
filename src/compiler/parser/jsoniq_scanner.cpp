@@ -5314,7 +5314,7 @@ YY_RULE_SETUP
 #line 832 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_scanner.l"
 {
 
-  yylval->err = getDriver()->parserErr(std::string("syntax error, unexpected \"") + yytext + "\", separator needed after numeric literal", *yylloc);
+  yylval->err = getDriver()->parserErr(std::string("syntax error: unexpected \"") + yytext + "\", separator needed after numeric literal", *yylloc);
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
@@ -5371,7 +5371,7 @@ case 279:
 /* rule 279 can match eol */
 YY_RULE_SETUP
 #line 863 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/jsoniq_scanner.l"
-{ yylval->err = getDriver()->parserErr(std::string("syntax error, unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
+{ yylval->err = getDriver()->parserErr(std::string("syntax error: unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 case 280:
 YY_RULE_SETUP

@@ -2697,7 +2697,7 @@ namespace zorba {
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].expr);
       (yylocation_stack_[(3) - (1)]).step();
-      error((yylocation_stack_[(3) - (1)]), "syntax error: missing semicolon ';' after statement");
+      error((yylocation_stack_[(3) - (1)]), "syntax error, missing semicolon \";\" after statement");
       YYERROR;
     }
     break;
@@ -2708,7 +2708,7 @@ namespace zorba {
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].expr);
       (yylocation_stack_[(3) - (1)]).step();
-      error((yylocation_stack_[(3) - (1)]), "syntax error: missing semicolon ';' after declaration");
+      error((yylocation_stack_[(3) - (1)]), "syntax error, missing semicolon \";\" after declaration");
       YYERROR;
     }
     break;
@@ -2719,7 +2719,7 @@ namespace zorba {
     {
       (yyval.node) = (yysemantic_stack_[(5) - (1)].node); (yyval.node) = (yysemantic_stack_[(5) - (3)].node); (yyval.node) = (yysemantic_stack_[(5) - (5)].expr);
       (yylocation_stack_[(5) - (3)]).step();
-      error((yylocation_stack_[(5) - (3)]), "syntax error: missing semicolon ';' after declaration");
+      error((yylocation_stack_[(5) - (3)]), "syntax error, missing semicolon \";\" after declaration");
       YYERROR;
     }
     break;
@@ -2730,7 +2730,7 @@ namespace zorba {
     {
       (yyval.node) = (yysemantic_stack_[(5) - (1)].node); (yyval.node) = (yysemantic_stack_[(5) - (3)].node); (yyval.node) = (yysemantic_stack_[(5) - (5)].expr);
       (yylocation_stack_[(5) - (1)]).step();
-      error((yylocation_stack_[(5) - (1)]), "syntax error: missing semicolon ';' after statement");
+      error((yylocation_stack_[(5) - (1)]), "syntax error, missing semicolon \";\" after statement");
       YYERROR;
     }
     break;
@@ -2811,7 +2811,7 @@ namespace zorba {
 
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       (yylocation_stack_[(3) - (1)]).step();
-      error((yylocation_stack_[(3) - (1)]), "syntax error: missing semicolon ';' after declaration");
+      error((yylocation_stack_[(3) - (1)]), "syntax error, missing semicolon \";\" after declaration");
       YYERROR;
     }
     break;
@@ -2933,7 +2933,7 @@ namespace zorba {
 #line 1400 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yyval.node);
-      error((yylocation_stack_[(3) - (2)]), "syntax error: \"import\" should be followed by either \"schema\" or \"module\"");
+      error((yylocation_stack_[(3) - (2)]), "syntax error, \"import\" should be followed by either \"schema\" or \"module\"");
       YYERROR;
     }
     break;
@@ -3117,7 +3117,7 @@ namespace zorba {
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       (yylocation_stack_[(3) - (1)]).step();
-      error((yylocation_stack_[(3) - (1)]), "syntax error: missing semicolon ';' after declaration");
+      error((yylocation_stack_[(3) - (1)]), "syntax error, missing semicolon \";\" after declaration");
       YYERROR;
     }
     break;
@@ -3874,7 +3874,7 @@ namespace zorba {
     {
       if ((yysemantic_stack_[(1) - (1)].expr) == NULL)
       {
-        error((yylocation_stack_[(1) - (1)]), "syntax error: unexpected end of file, the query body should not be empty");
+        error((yylocation_stack_[(1) - (1)]), "syntax error, unexpected end of file, the query body should not be empty");
         YYERROR;
       }
 
@@ -3985,7 +3985,7 @@ namespace zorba {
       (yyval.expr) = (yysemantic_stack_[(4) - (1)].expr);
       (yyval.expr) = (yysemantic_stack_[(4) - (2)].expr);
       (yyval.expr) = (yysemantic_stack_[(4) - (4)].expr);
-      error((yylocation_stack_[(4) - (3)]), "syntax error: unexpected statement");
+      error((yylocation_stack_[(4) - (3)]), "syntax error, unexpected statement");
       delete (yysemantic_stack_[(4) - (1)].expr);
       delete (yysemantic_stack_[(4) - (2)].expr);
       delete (yysemantic_stack_[(4) - (4)].expr);
@@ -4324,7 +4324,7 @@ namespace zorba {
 
 
       if (dynamic_cast<PathExpr*>((yysemantic_stack_[(3) - (1)].expr)) == NULL)
-        error((yylocation_stack_[(3) - (2)]), "syntax error: unexpected expression");
+        error((yylocation_stack_[(3) - (2)]), "syntax error, unexpected expression");
       delete (yysemantic_stack_[(3) - (1)].expr);
       delete (yysemantic_stack_[(3) - (3)].expr);
       YYERROR;
@@ -4492,8 +4492,8 @@ namespace zorba {
 #line 2773 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
-      error((yylocation_stack_[(3) - (2)]), "syntax error: unexpected qualified name \""
-          + static_cast<VarInDeclList*>((yysemantic_stack_[(3) - (3)].node))->operator[](0)->get_var_name()->get_qname().str() + "\" (missing '$' sign?)");
+      error((yylocation_stack_[(3) - (2)]), "syntax error, unexpected qualified name \""
+          + static_cast<VarInDeclList*>((yysemantic_stack_[(3) - (3)].node))->operator[](0)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
       delete (yysemantic_stack_[(3) - (3)].node);
       YYERROR;
     }
@@ -4542,8 +4542,8 @@ namespace zorba {
 #line 2818 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
-      error((yylocation_stack_[(3) - (3)]), "syntax error: unexpected QName \""
-          + static_cast<VarInDecl*>((yysemantic_stack_[(3) - (3)].node))->get_var_name()->get_qname().str() + "\" (missing '$' sign?)");
+      error((yylocation_stack_[(3) - (3)]), "syntax error, unexpected QName \""
+          + static_cast<VarInDecl*>((yysemantic_stack_[(3) - (3)].node))->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
       delete (yysemantic_stack_[(3) - (1)].node);
       YYERROR;
     }
@@ -6797,7 +6797,7 @@ namespace zorba {
     {
       if (static_cast<QName*>((yysemantic_stack_[(8) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(8) - (6)].expr))->get_qname())
       {
-        error((yylocation_stack_[(8) - (5)]), "syntax error: end tag </" +
+        error((yylocation_stack_[(8) - (5)]), "syntax error, end tag </" +
                   static_cast<QName*>((yysemantic_stack_[(8) - (6)].expr))->get_qname().str() +
                   "> does not match start tag <" +
                   static_cast<QName*>((yysemantic_stack_[(8) - (2)].expr))->get_qname().str() + ">");
@@ -6830,7 +6830,7 @@ namespace zorba {
     {
       if (static_cast<QName*>((yysemantic_stack_[(9) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(9) - (7)].expr))->get_qname())
       {
-        error((yylocation_stack_[(9) - (5)]), "syntax error: end tag </" +
+        error((yylocation_stack_[(9) - (5)]), "syntax error, end tag </" +
                   static_cast<QName*>((yysemantic_stack_[(9) - (7)].expr))->get_qname().str() +
                   "> does not match start tag <" +
                   static_cast<QName*>((yysemantic_stack_[(9) - (2)].expr))->get_qname().str() + ">");
@@ -6851,7 +6851,7 @@ namespace zorba {
     {
       if (static_cast<QName*>((yysemantic_stack_[(9) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(9) - (7)].expr))->get_qname())
       {
-        error((yylocation_stack_[(9) - (5)]), "syntax error: end tag </" +
+        error((yylocation_stack_[(9) - (5)]), "syntax error, end tag </" +
                   static_cast<QName*>((yysemantic_stack_[(9) - (7)].expr))->get_qname().str() +
                   "> does not match start tag <" +
                   static_cast<QName*>((yysemantic_stack_[(9) - (2)].expr))->get_qname().str() + ">");
@@ -6872,7 +6872,7 @@ namespace zorba {
     {
       if (static_cast<QName*>((yysemantic_stack_[(10) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(10) - (8)].expr))->get_qname())
       {
-        error((yylocation_stack_[(10) - (5)]), "syntax error: end tag </" +
+        error((yylocation_stack_[(10) - (5)]), "syntax error, end tag </" +
                   static_cast<QName*>((yysemantic_stack_[(10) - (8)].expr))->get_qname().str() +
                   "> does not match start tag <" +
                   static_cast<QName*>((yysemantic_stack_[(10) - (2)].expr))->get_qname().str() + ">");
@@ -16242,6 +16242,19 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string
   else
   {
     ParseErrorNode* prevErr = dynamic_cast<ParseErrorNode*>(driver.get_expr());
+
+    if (prevErr != NULL)
+    {
+
+
+
+      if ((msg.find("(missing comma \",\" between expressions?)") != string::npos &&
+            ! contains(prevErr->msg, "expecting", ","))
+          ||
+          (msg.find("missing semicolon \";\" after") != string::npos &&
+            ! contains(prevErr->msg, "expecting", ";")))
+        return;
+    }
 
 
     string message = msg;
