@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2013 Free Software Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@
 # define YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_SKIPLIMIT_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP_INCLUDED
 
 /* "%code requires" blocks.  */
-/* Line 33 of lalr1.cc  */
+/* Line 267 of lalr1.cc  */
 #line 5 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.y"
 
 
@@ -88,7 +88,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 
-/* Line 33 of lalr1.cc  */
+/* Line 267 of lalr1.cc  */
 #line 93 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
@@ -104,7 +104,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 namespace zorba {
-/* Line 33 of lalr1.cc  */
+/* Line 267 of lalr1.cc  */
 #line 109 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
@@ -115,7 +115,7 @@ namespace zorba {
 #ifndef YYSTYPE
     union semantic_type
     {
-/* Line 33 of lalr1.cc  */
+/* Line 267 of lalr1.cc  */
 #line 148 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
@@ -138,7 +138,7 @@ namespace zorba {
     ft_anyall_mode::type ft_anyall_value;
 
 
-/* Line 33 of lalr1.cc  */
+/* Line 267 of lalr1.cc  */
 #line 143 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
@@ -512,10 +512,6 @@ namespace zorba {
 #endif
 
   private:
-    /// This class is not copyable.
-    xquery_parser (const xquery_parser&);
-    xquery_parser& operator= (const xquery_parser&);
-
     /// Report a syntax error.
     /// \param loc    where the syntax error is found.
     /// \param msg    a description of the syntax error.
@@ -633,7 +629,6 @@ namespace zorba {
 
     /// \brief Reclaim the memory associated to a symbol.
     /// \param yymsg        Why this token is reclaimed.
-    ///                     If null, do not display the symbol, just free it.
     /// \param yytype       The symbol type.
     /// \param yyvaluep     Its semantic value.
     /// \param yylocationp  Its location.
@@ -663,8 +658,8 @@ namespace zorba {
   };
 
 } // zorba
-/* Line 33 of lalr1.cc  */
-#line 668 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 267 of lalr1.cc  */
+#line 663 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

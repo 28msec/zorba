@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2013 Free Software Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@
 #define yylex   zorbalex
 
 /* First part of user declarations.  */
-/* Line 283 of lalr1.cc  */
+/* Line 278 of lalr1.cc  */
 #line 1 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
 #define JSONIQ_PARSER
-/* Line 283 of lalr1.cc  */
+/* Line 278 of lalr1.cc  */
 #line 59 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
 
@@ -75,7 +75,7 @@
 using namespace std;
 using namespace zorba;
 
-/* Line 283 of lalr1.cc  */
+/* Line 278 of lalr1.cc  */
 #line 102 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
 
@@ -93,14 +93,14 @@ using namespace zorba;
 #endif
 
 
-/* Line 283 of lalr1.cc  */
+/* Line 278 of lalr1.cc  */
 #line 98 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
 
 
 #include "jsoniq_parser.hpp"
 
 /* User implementation prologue.  */
-/* Line 289 of lalr1.cc  */
+/* Line 284 of lalr1.cc  */
 #line 909 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
 
@@ -111,7 +111,7 @@ template<typename T> inline void release_hack( T *ref ) {
         RCHelper::removeReference( ref );
     }
 }
-/* Line 289 of lalr1.cc  */
+/* Line 284 of lalr1.cc  */
 #line 1048 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
 namespace {
@@ -207,7 +207,7 @@ bool convert_postfix_to_target_and_selector(
 };
 }
 
-/* Line 289 of lalr1.cc  */
+/* Line 284 of lalr1.cc  */
 #line 212 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
 
 
@@ -286,9 +286,9 @@ do {					\
 #else /* !YYDEBUG */
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location) YYUSE(Type)
-# define YY_REDUCE_PRINT(Rule)        static_cast<void>(0)
-# define YY_STACK_PRINT()             static_cast<void>(0)
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
+# define YY_REDUCE_PRINT(Rule)
+# define YY_STACK_PRINT()
 
 #endif /* !YYDEBUG */
 
@@ -302,7 +302,7 @@ do {					\
 
 
 namespace zorba {
-/* Line 357 of lalr1.cc  */
+/* Line 352 of lalr1.cc  */
 #line 307 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -372,7 +372,11 @@ namespace zorba {
     std::ostream& yyo = debug_stream ();
     std::ostream& yyoutput = yyo;
     YYUSE (yyoutput);
-    YYUSE (yytype);
+    switch (yytype)
+      {
+         default:
+	  break;
+      }
   }
 
 
@@ -396,2031 +400,2030 @@ namespace zorba {
     YYUSE (yymsg);
     YYUSE (yyvaluep);
 
-    if (yymsg)
-      YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
+    YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
     switch (yytype)
-    {
-      case 111: /* "'DECIMAL'" */
-/* Line 452 of lalr1.cc  */
+      {
+        case 111: /* "'DECIMAL'" */
+/* Line 453 of lalr1.cc  */
 #line 907 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { delete ((*yyvaluep).decval); };
-/* Line 452 of lalr1.cc  */
-#line 410 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ delete ((*yyvaluep).decval); };
+/* Line 453 of lalr1.cc  */
+#line 413 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 126: /* "'DOUBLE'" */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 906 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { delete ((*yyvaluep).dval); };
-/* Line 452 of lalr1.cc  */
-#line 417 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ delete ((*yyvaluep).dval); };
+/* Line 453 of lalr1.cc  */
+#line 420 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 151: /* "'INTEGER'" */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 905 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { delete ((*yyvaluep).ival); };
-/* Line 452 of lalr1.cc  */
-#line 424 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ delete ((*yyvaluep).ival); };
+/* Line 453 of lalr1.cc  */
+#line 427 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 346: /* VersionDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 431 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 434 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 347: /* MainModule */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 438 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 441 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 348: /* LibraryModule */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 445 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 448 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 349: /* ModuleDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 452 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 455 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 350: /* SIND_DeclList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 459 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 462 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 351: /* SIND_Decl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 466 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 469 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 352: /* Setter */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 473 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 476 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 353: /* BoundarySpaceDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 480 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 483 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 354: /* DefaultCollationDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 487 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 490 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 355: /* BaseURIDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 494 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 497 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 356: /* ConstructionDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 501 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 504 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 357: /* OrderingModeDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 508 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 511 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 358: /* EmptyOrderDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 515 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 518 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 359: /* CopyNamespacesDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 522 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 525 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 360: /* Import */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 529 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 532 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 361: /* SchemaImport */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 536 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 539 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 362: /* URILiteralList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 543 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 546 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 363: /* SchemaPrefix */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 550 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 553 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 364: /* ModuleImport */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 557 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 560 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 365: /* NamespaceDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 564 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 567 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 366: /* DefaultNamespaceDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 571 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 574 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 367: /* VFO_DeclList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 578 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 581 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 368: /* VFO_Decl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 585 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 588 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 369: /* DecimalFormatDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 592 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 595 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 370: /* DecimalFormatParamList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 956 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { delete ((*yyvaluep).vstrpair); };
-/* Line 452 of lalr1.cc  */
-#line 599 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ delete ((*yyvaluep).vstrpair); };
+/* Line 453 of lalr1.cc  */
+#line 602 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 371: /* DecimalFormatParam */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 956 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { delete ((*yyvaluep).strpair); };
-/* Line 452 of lalr1.cc  */
-#line 606 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ delete ((*yyvaluep).strpair); };
+/* Line 453 of lalr1.cc  */
+#line 609 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 373: /* OptionDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 613 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 616 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 374: /* FTOptionDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 620 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 623 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 375: /* CtxItemDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 627 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 630 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 376: /* CtxItemDecl2 */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 634 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 637 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 377: /* CtxItemDecl3 */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 641 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 644 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 378: /* CtxItemDecl4 */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 648 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 651 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 379: /* VarDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 655 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 658 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 380: /* VarNameAndType */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 956 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { delete ((*yyvaluep).varnametype); };
-/* Line 452 of lalr1.cc  */
-#line 662 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ delete ((*yyvaluep).varnametype); };
+/* Line 453 of lalr1.cc  */
+#line 665 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 381: /* AnnotationList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 669 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 672 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 382: /* Annotation */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 676 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 679 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 383: /* AnnotationLiteralList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 683 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 686 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 384: /* FunctionDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 690 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 693 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 385: /* FunctionDecl2 */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 697 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 700 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 386: /* FunctionDeclSimple */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 704 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 707 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 387: /* FunctionDeclUpdating */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 711 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 714 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 388: /* FunctionSig */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 956 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { delete ((*yyvaluep).fnsig); };
-/* Line 452 of lalr1.cc  */
-#line 718 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ delete ((*yyvaluep).fnsig); };
+/* Line 453 of lalr1.cc  */
+#line 721 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 389: /* ParamList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 725 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 728 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 390: /* Param */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 732 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 735 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 391: /* CollectionDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 739 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 742 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 393: /* IndexDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 746 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 749 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 394: /* IndexKeyList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 753 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 756 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 395: /* IndexKeySpec */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 760 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 763 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 396: /* IntegrityConstraintDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 767 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 770 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 397: /* QueryBody */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 774 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 777 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 398: /* StatementsAndOptionalExprTop */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 781 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 784 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 399: /* StatementsAndOptionalExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 788 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 791 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 400: /* StatementsAndExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 795 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 798 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 401: /* Statements */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 802 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 805 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 402: /* Statement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 809 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 812 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 403: /* BlockStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 816 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 819 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 404: /* BlockExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 823 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 826 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 405: /* EnclosedStatementsAndOptionalExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 830 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 833 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 406: /* VarDeclStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 837 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 840 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 409: /* AssignStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 844 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 847 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 410: /* ApplyStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 851 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 854 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 411: /* ExitStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 858 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 861 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 412: /* WhileStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 865 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 868 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 413: /* FlowCtlStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 872 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 875 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 414: /* FLWORStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 879 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 882 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 415: /* ReturnStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 886 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 889 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 416: /* IfStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 893 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 896 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 417: /* TryStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 900 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 903 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 418: /* CatchListStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 907 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 910 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 419: /* CatchStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 914 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 917 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 420: /* VoidStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 937 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 921 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 924 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 421: /* Expr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 422: /* ExprSingle */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 938 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 423: /* ExprSimple */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 942 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 945 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 424: /* FLWORExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 949 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 952 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 425: /* ReturnExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 956 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 959 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 429: /* FLWORWinCond */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 963 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 966 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 430: /* WindowClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 970 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 973 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 431: /* CountClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 977 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 980 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 432: /* ForLetWinClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 984 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 987 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 434: /* OffsetClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 991 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 994 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 435: /* LimitClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 998 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1001 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 436: /* FLWORClauseList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1005 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1008 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 437: /* ForClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1012 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1015 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 439: /* VarInDeclList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1019 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1022 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 440: /* VarInDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1026 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1029 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 441: /* PositionalVar */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1033 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1036 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 442: /* FTScoreVar */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1040 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1043 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 443: /* LetClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1047 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1050 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 444: /* VarGetsDeclList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1054 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1057 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 445: /* VarGetsDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1061 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1064 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 446: /* WindowVarDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1068 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1071 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 447: /* WindowVars */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1075 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1078 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 448: /* WindowVars3 */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1082 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1085 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 449: /* WindowVars2 */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1089 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1092 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 450: /* WhereClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1096 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1099 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 451: /* GroupByClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1103 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1106 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 452: /* GroupSpecList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1110 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1113 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 453: /* GroupSpec */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1117 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1120 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 454: /* GroupCollationSpec */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1124 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1127 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 455: /* OrderByClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1131 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1134 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 456: /* OrderSpecList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1138 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1141 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 457: /* OrderSpec */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1145 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1148 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 458: /* OrderModifier */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1152 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1155 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 459: /* OrderDirSpec */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1159 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1162 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 460: /* OrderEmptySpec */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1166 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1169 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 461: /* OrderCollationSpec */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1173 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1176 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 462: /* QuantifiedExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1180 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1183 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 463: /* QVarInDeclList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1187 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1190 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 464: /* QVarInDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1194 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1197 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 465: /* SwitchExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1201 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1204 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 466: /* SwitchCaseClauseList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 937 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1208 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1211 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 467: /* SwitchCaseClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 937 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1215 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1218 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 468: /* SwitchCaseOperandList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 937 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1222 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1225 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 469: /* SwitchStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1229 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1232 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 472: /* TypeswitchExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1236 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1239 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 473: /* TypeswitchStatement */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1243 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1246 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 474: /* CaseClauseList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1250 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1253 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 475: /* CaseClause */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1257 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1260 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 478: /* SequenceTypeList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1264 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1267 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 479: /* IfExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1271 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1274 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 480: /* OrExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1278 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1281 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 481: /* AndExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1285 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1288 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 482: /* NotExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 940 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1292 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1295 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 483: /* ComparisonExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1299 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1302 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 485: /* FTContainsExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1306 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1309 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 486: /* StringConcatExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1313 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1316 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 487: /* opt_FTIgnoreOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1320 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1323 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 488: /* RangeExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1327 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1330 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 489: /* AdditiveExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1334 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1337 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 490: /* MultiplicativeExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1341 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1344 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 491: /* UnionExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1348 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1351 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 492: /* IntersectExceptExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1355 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1358 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 493: /* InstanceofExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1362 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1365 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 494: /* TreatExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1369 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1372 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 495: /* CastableExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1376 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1379 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 496: /* CastExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1383 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1386 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 497: /* SingleType */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1390 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1393 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 498: /* UnaryExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1397 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1400 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 499: /* SignList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1404 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1407 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 500: /* ValueExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1411 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1414 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 501: /* SimpleMapExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1418 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1421 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 502: /* ValueComp */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1425 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1428 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 503: /* NodeComp */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 937 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1432 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1435 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 504: /* ValidateExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1439 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1442 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 505: /* ExtensionExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1446 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1449 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 506: /* Pragma_list */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1453 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1456 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 507: /* Pragma */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1460 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1463 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 508: /* PathExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1467 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1470 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 510: /* RelativePathExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1474 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1477 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 511: /* StepExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1481 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1484 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 512: /* AxisStep */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 950 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1488 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1491 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 513: /* ForwardStep */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 922 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1495 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1498 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 514: /* ForwardAxis */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 922 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1502 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1505 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 515: /* AbbrevForwardStep */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 922 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1509 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1512 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 516: /* ReverseStep */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 922 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1516 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1519 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 517: /* ReverseAxis */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 922 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1523 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1526 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 518: /* NodeTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 922 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1530 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1533 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 519: /* NameTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1537 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1540 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 520: /* Wildcard */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1544 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1547 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 521: /* PostfixExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1551 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1554 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 522: /* PredicateList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1558 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1561 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 523: /* Predicate */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1565 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1568 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 524: /* PrimaryExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1572 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1575 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 525: /* Literal */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1579 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1582 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 526: /* NumericLiteral */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1586 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1589 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 527: /* VarRef */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1593 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1596 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 528: /* ParenthesizedExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1600 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1603 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 529: /* ContextItemExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1607 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1610 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 530: /* OrderedExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1614 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1617 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 531: /* UnorderedExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1621 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1624 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 532: /* FunctionCall */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1628 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1631 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 533: /* ArgList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1635 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1638 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 537: /* Constructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1642 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1645 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 538: /* DirectConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1649 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1652 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 539: /* DirElemConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1656 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1659 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 540: /* DirElemContentList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1663 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1666 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 541: /* DirAttributeList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1670 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1673 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 542: /* DirAttr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1677 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1680 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 544: /* DirAttributeValue */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1684 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1687 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 545: /* opt_QuoteAttrContentList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1691 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1694 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 546: /* QuoteAttrContentList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1698 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1701 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 547: /* opt_AposAttrContentList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1705 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1708 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 548: /* AposAttrContentList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1712 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1715 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 549: /* QuoteAttrValueContent */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1719 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1722 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 550: /* AposAttrValueContent */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1726 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1729 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 551: /* DirElemContent */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1733 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1736 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 552: /* CommonContent */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1740 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1743 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 553: /* DirCommentConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1747 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1750 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 554: /* DirPIConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1754 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1757 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 555: /* CDataSection */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1761 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1764 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 556: /* ComputedConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1768 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1771 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 557: /* CompDocConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1775 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1778 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 558: /* CompElemConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1782 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1785 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 559: /* CompAttrConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1789 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1792 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 560: /* CompTextConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1796 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1799 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 561: /* CompCommentConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1803 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1806 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 562: /* CompPIConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1810 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1813 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 563: /* CompNamespaceConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1817 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1820 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 564: /* TypeDeclaration */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1824 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1827 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 565: /* SequenceType */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1831 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1834 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 566: /* OccurrenceIndicator */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1838 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1841 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 567: /* ItemType */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1845 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1848 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 568: /* TypeList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1852 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1855 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 569: /* GeneralizedAtomicType */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1859 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1862 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 570: /* SimpleType */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1866 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1869 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 571: /* KindTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1873 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1876 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 572: /* AnyKindTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1880 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1883 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 574: /* DocumentTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1887 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1890 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 575: /* NamespaceTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1894 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1897 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 576: /* TextTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1901 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1904 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 577: /* CommentTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1908 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1911 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 578: /* PITest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1915 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1918 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 579: /* AttributeTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1922 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 580: /* SchemaAttributeTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 581: /* ElementTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1939 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 582: /* SchemaElementTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1943 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1946 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 583: /* TypeName */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1950 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 584: /* TypeName_WITH_HOOK */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1957 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1960 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 585: /* StringLiteral */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1964 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1967 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 587: /* AnyFunctionTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1971 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1974 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 588: /* TypedFunctionTest */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 1978 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 1981 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 591: /* InsertExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1985 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1988 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 592: /* DeleteExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1992 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 1995 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 593: /* ReplaceExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 1999 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2002 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 594: /* RenameExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2006 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2009 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 595: /* TransformExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2013 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2016 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 596: /* VarNameList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2020 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2023 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 597: /* VarNameDecl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2027 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2030 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 598: /* TryExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2034 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2037 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 599: /* CatchListExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2041 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2044 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 600: /* CatchExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2048 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2051 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 601: /* BracedExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2055 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2058 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 602: /* NameTestList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 956 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { delete ((*yyvaluep).name_test_list); };
-/* Line 452 of lalr1.cc  */
-#line 2062 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ delete ((*yyvaluep).name_test_list); };
+/* Line 453 of lalr1.cc  */
+#line 2065 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 603: /* FTSelection */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2069 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2072 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 606: /* FTOr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2076 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2079 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 607: /* FTAnd */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2083 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2086 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 608: /* FTMildNot */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2090 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2093 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 609: /* FTUnaryNot */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2097 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2100 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 610: /* FTPrimaryWithOptions */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2104 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2107 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 611: /* opt_FTMatchOptions */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2111 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2114 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 613: /* FTWeight */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2118 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2121 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 614: /* FTPrimary */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2125 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2128 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 615: /* opt_FTTimes */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2132 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2135 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 616: /* FTExtensionSelection */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2139 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2142 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 618: /* FTWords */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2146 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2149 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 619: /* FTWordsValue */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2153 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2156 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 621: /* FTAnyallOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2160 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2163 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 624: /* FTPosFilter */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2167 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2170 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 625: /* FTOrder */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2174 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2177 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 626: /* FTWindow */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2181 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2184 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 627: /* FTDistance */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2188 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2191 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 628: /* FTUnit */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2195 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2198 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 629: /* FTMatchOptions */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2202 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2205 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 630: /* FTMatchOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2209 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2212 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 631: /* FTCaseOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2216 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2219 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 632: /* FTDiacriticsOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2223 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2226 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 633: /* FTExtensionOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2230 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2233 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 634: /* FTStemOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2237 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2240 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 635: /* FTThesaurusOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2244 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2247 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 639: /* FTThesaurusID */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2251 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2254 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 642: /* FTStopWordOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2258 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2261 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 643: /* FTStopWords */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2265 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2268 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 647: /* FTStopWordsInclExcl */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2272 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2275 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 648: /* FTLanguageOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2279 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2282 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 649: /* FTWildCardOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2286 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2289 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 650: /* FTContent */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2293 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2296 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 651: /* FTTimes */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2300 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2303 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 652: /* FTRange */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2307 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2310 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 653: /* FTScope */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2314 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2317 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 654: /* FTBigUnit */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2321 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2324 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 655: /* FTIgnoreOption */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2328 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2331 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 656: /* JSONArrayConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2335 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2338 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 657: /* JSONSimpleObjectUnion */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2342 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2345 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 658: /* JSONAccumulatorObjectUnion */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2349 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2352 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 659: /* JSONObjectConstructor */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2356 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2359 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 660: /* JSONPairList */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).node) ); };
-/* Line 452 of lalr1.cc  */
-#line 2363 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).node) ); };
+/* Line 453 of lalr1.cc  */
+#line 2366 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 661: /* JSONInsertExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2370 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2373 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 662: /* JSONAppendExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2377 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2380 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 663: /* JSONDeleteExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2384 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2387 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 664: /* JSONRenameExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2391 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2394 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 665: /* JSONReplaceExpr */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2398 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2401 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 668: /* QNAME */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2405 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2408 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 669: /* FUNCTION_NAME */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2412 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2415 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
       case 670: /* EQNAME */
-/* Line 452 of lalr1.cc  */
+/* Line 453 of lalr1.cc  */
 #line 953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
-        { release_hack( ((*yyvaluep).expr) ); };
-/* Line 452 of lalr1.cc  */
-#line 2419 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-        break;
+	{ release_hack( ((*yyvaluep).expr) ); };
+/* Line 453 of lalr1.cc  */
+#line 2422 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
 
-      default:
-        break;
-    }
+	default:
+	  break;
+      }
   }
 
   void
@@ -2501,29 +2504,25 @@ namespace zorba {
 
     int yyresult;
 
-    // FIXME: This shoud be completely indented.  It is not yet to
-    // avoid gratuitous conflicts when merging into the master branch.
-    try
-      {
     YYCDEBUG << "Starting parse" << std::endl;
 
 
 /* User initialization code.  */
-/* Line 539 of lalr1.cc  */
+/* Line 543 of lalr1.cc  */
 #line 141 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
 {
     yylloc.begin.filename = yylloc.end.filename = &(driver.theFilename2);
 }
-/* Line 539 of lalr1.cc  */
-#line 2519 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+/* Line 543 of lalr1.cc  */
+#line 2518 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
 
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
        stacks with a primary value.  */
-    yystate_stack_.clear ();
-    yysemantic_stack_.clear ();
-    yylocation_stack_.clear ();
+    yystate_stack_ = state_stack_type (0);
+    yysemantic_stack_ = semantic_stack_type (0);
+    yylocation_stack_ = location_stack_type (0);
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yylloc);
 
@@ -2549,8 +2548,8 @@ namespace zorba {
     /* Read a lookahead token.  */
     if (yychar == yyempty_)
       {
-        YYCDEBUG << "Reading a token: ";
-        yychar = yylex (&yylval, &yylloc);
+	YYCDEBUG << "Reading a token: ";
+	yychar = yylex (&yylval, &yylloc);
       }
 
     /* Convert token to internal form.  */
@@ -2623,18 +2622,15 @@ namespace zorba {
     else
       yyval = yysemantic_stack_[0];
 
-    // Compute the default @$.
     {
       slice<location_type, location_stack_type> slice (yylocation_stack_, yylen);
       YYLLOC_DEFAULT (yyloc, slice, yylen);
     }
-
-    // Perform the reduction.
     YY_REDUCE_PRINT (yyn);
     switch (yyn)
       {
-          case 3:
-/* Line 664 of lalr1.cc  */
+	  case 3:
+/* Line 661 of lalr1.cc  */
 #line 1155 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -2642,7 +2638,7 @@ namespace zorba {
     break;
 
   case 4:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1159 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -2650,7 +2646,7 @@ namespace zorba {
     break;
 
   case 5:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1163 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
@@ -2658,7 +2654,7 @@ namespace zorba {
     break;
 
   case 6:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1171 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = NULL;
@@ -2666,7 +2662,7 @@ namespace zorba {
     break;
 
   case 7:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1177 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = NULL; YYABORT;
@@ -2674,7 +2670,7 @@ namespace zorba {
     break;
 
   case 8:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1181 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = NULL; YYABORT;
@@ -2682,7 +2678,7 @@ namespace zorba {
     break;
 
   case 9:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1190 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -2691,7 +2687,7 @@ namespace zorba {
     break;
 
   case 10:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1196 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       MainModule* mm = dynamic_cast<MainModule*>((yysemantic_stack_[(2) - (2)].node));
@@ -2702,7 +2698,7 @@ namespace zorba {
     break;
 
   case 11:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1204 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -2711,7 +2707,7 @@ namespace zorba {
     break;
 
   case 12:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1210 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       LibraryModule* lm = dynamic_cast<LibraryModule*>((yysemantic_stack_[(2) - (2)].node));
@@ -2722,7 +2718,7 @@ namespace zorba {
     break;
 
   case 13:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1221 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VersionDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)), "utf-8", VersionDecl::jsoniq );
@@ -2730,7 +2726,7 @@ namespace zorba {
     break;
 
   case 14:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1226 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VersionDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(6) - (3)].sval)), SYMTAB((yysemantic_stack_[(6) - (5)].sval)), VersionDecl::jsoniq );
@@ -2738,7 +2734,7 @@ namespace zorba {
     break;
 
   case 15:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1235 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (1)].node)), NULL);
@@ -2748,7 +2744,7 @@ namespace zorba {
     break;
 
   case 16:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1242 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), NULL, static_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (1)].node)));
@@ -2758,7 +2754,7 @@ namespace zorba {
     break;
 
   case 17:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1249 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)),
@@ -2770,7 +2766,7 @@ namespace zorba {
     break;
 
   case 18:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1258 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new MainModule( LOC((yyloc)), static_cast<QueryBody*>((yysemantic_stack_[(1) - (1)].expr)), NULL );
@@ -2778,7 +2774,7 @@ namespace zorba {
     break;
 
   case 19:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1265 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].expr);
@@ -2789,7 +2785,7 @@ namespace zorba {
     break;
 
   case 20:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1273 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].expr);
@@ -2800,7 +2796,7 @@ namespace zorba {
     break;
 
   case 21:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1281 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(5) - (1)].node); (yyval.node) = (yysemantic_stack_[(5) - (3)].node); (yyval.node) = (yysemantic_stack_[(5) - (5)].expr);
@@ -2811,7 +2807,7 @@ namespace zorba {
     break;
 
   case 22:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1289 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(5) - (1)].node); (yyval.node) = (yysemantic_stack_[(5) - (3)].node); (yyval.node) = (yysemantic_stack_[(5) - (5)].expr);
@@ -2822,7 +2818,7 @@ namespace zorba {
     break;
 
   case 23:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1300 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new LibraryModule(LOC((yyloc)), static_cast<ModuleDecl*>((yysemantic_stack_[(1) - (1)].node)), NULL);
@@ -2830,7 +2826,7 @@ namespace zorba {
     break;
 
   case 24:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1305 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (2)].node)), NULL);
@@ -2840,7 +2836,7 @@ namespace zorba {
     break;
 
   case 25:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1312 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), NULL, static_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -2850,7 +2846,7 @@ namespace zorba {
     break;
 
   case 26:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1319 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)),
@@ -2862,7 +2858,7 @@ namespace zorba {
     break;
 
   case 27:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1331 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(6) - (3)].expr), (yylocation_stack_[(6) - (3)]));
@@ -2872,7 +2868,7 @@ namespace zorba {
     break;
 
   case 28:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1341 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       SIND_DeclList *sdl = new SIND_DeclList( LOC((yyloc)) );
@@ -2882,7 +2878,7 @@ namespace zorba {
     break;
 
   case 29:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1348 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ((SIND_DeclList*)(yysemantic_stack_[(3) - (1)].node))->push_back( (yysemantic_stack_[(3) - (3)].node) );
@@ -2891,7 +2887,7 @@ namespace zorba {
     break;
 
   case 30:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1355 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
 
@@ -2903,7 +2899,7 @@ namespace zorba {
     break;
 
   case 44:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1390 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new BoundarySpaceDecl(LOC((yyloc)), StaticContextConsts::preserve_space);
@@ -2911,7 +2907,7 @@ namespace zorba {
     break;
 
   case 45:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1395 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new BoundarySpaceDecl(LOC((yyloc)), StaticContextConsts::strip_space);
@@ -2919,7 +2915,7 @@ namespace zorba {
     break;
 
   case 46:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1403 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DefaultCollationDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (4)].sval)) );
@@ -2927,7 +2923,7 @@ namespace zorba {
     break;
 
   case 47:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1411 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new BaseURIDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
@@ -2935,7 +2931,7 @@ namespace zorba {
     break;
 
   case 48:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1419 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ConstructionDecl(LOC((yyloc)), StaticContextConsts::cons_preserve);
@@ -2943,7 +2939,7 @@ namespace zorba {
     break;
 
   case 49:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1424 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ConstructionDecl(LOC((yyloc)), StaticContextConsts::cons_strip);
@@ -2951,7 +2947,7 @@ namespace zorba {
     break;
 
   case 50:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1432 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new OrderingModeDecl(LOC((yyloc)), StaticContextConsts::ordered);
@@ -2959,7 +2955,7 @@ namespace zorba {
     break;
 
   case 51:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1437 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new OrderingModeDecl(LOC((yyloc)), StaticContextConsts::unordered);
@@ -2967,7 +2963,7 @@ namespace zorba {
     break;
 
   case 52:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1445 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new EmptyOrderDecl(LOC((yyloc)), StaticContextConsts::empty_greatest);
@@ -2975,7 +2971,7 @@ namespace zorba {
     break;
 
   case 53:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1450 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new EmptyOrderDecl(LOC((yyloc)), StaticContextConsts::empty_least);
@@ -2983,7 +2979,7 @@ namespace zorba {
     break;
 
   case 54:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1458 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)), true, true);
@@ -2991,7 +2987,7 @@ namespace zorba {
     break;
 
   case 55:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1463 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)), true, false);
@@ -2999,7 +2995,7 @@ namespace zorba {
     break;
 
   case 56:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1468 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)), false, true);
@@ -3007,7 +3003,7 @@ namespace zorba {
     break;
 
   case 57:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1473 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)), false, false);
@@ -3015,7 +3011,7 @@ namespace zorba {
     break;
 
   case 60:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1486 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yyval.node);
@@ -3025,7 +3021,7 @@ namespace zorba {
     break;
 
   case 61:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1496 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SchemaImport( LOC((yyloc)), NULL, SYMTAB((yysemantic_stack_[(3) - (3)].sval)), NULL );
@@ -3033,7 +3029,7 @@ namespace zorba {
     break;
 
   case 62:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1501 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SchemaImport(LOC((yyloc)),
@@ -3044,7 +3040,7 @@ namespace zorba {
     break;
 
   case 63:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1509 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SchemaImport(LOC((yyloc)),
@@ -3055,7 +3051,7 @@ namespace zorba {
     break;
 
   case 64:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1517 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SchemaImport(LOC((yyloc)),
@@ -3066,7 +3062,7 @@ namespace zorba {
     break;
 
   case 65:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1528 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       URILiteralList *ull = new URILiteralList( LOC((yyloc)));
@@ -3076,7 +3072,7 @@ namespace zorba {
     break;
 
   case 66:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1535 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ( URILiteralList *ull = dynamic_cast<URILiteralList*>((yysemantic_stack_[(3) - (1)].node)) )
@@ -3087,7 +3083,7 @@ namespace zorba {
     break;
 
   case 67:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1546 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(3) - (2)].expr), (yylocation_stack_[(3) - (2)]));
@@ -3096,7 +3092,7 @@ namespace zorba {
     break;
 
   case 68:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1552 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SchemaPrefix( LOC((yyloc)), true );
@@ -3104,7 +3100,7 @@ namespace zorba {
     break;
 
   case 69:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1560 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ModuleImport(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)), NULL);
@@ -3114,7 +3110,7 @@ namespace zorba {
     break;
 
   case 70:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1567 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(6) - (4)].expr), (yylocation_stack_[(6) - (4)]));
@@ -3124,7 +3120,7 @@ namespace zorba {
     break;
 
   case 71:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1574 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ModuleImport(LOC((yyloc)),
@@ -3136,7 +3132,7 @@ namespace zorba {
     break;
 
   case 72:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1583 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(8) - (4)].expr), (yylocation_stack_[(8) - (4)]));
@@ -3150,7 +3146,7 @@ namespace zorba {
     break;
 
   case 73:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1597 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(5) - (3)].expr), (yylocation_stack_[(5) - (3)]));
@@ -3159,7 +3155,7 @@ namespace zorba {
     break;
 
   case 74:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1606 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DefaultNamespaceDecl(LOC((yyloc)),
@@ -3169,7 +3165,7 @@ namespace zorba {
     break;
 
   case 75:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1613 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DefaultNamespaceDecl(LOC((yyloc)),
@@ -3179,7 +3175,7 @@ namespace zorba {
     break;
 
   case 76:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1623 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       VFO_DeclList *vdl = new VFO_DeclList( LOC((yyloc)));
@@ -3189,7 +3185,7 @@ namespace zorba {
     break;
 
   case 77:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1630 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ((VFO_DeclList*)(yysemantic_stack_[(3) - (1)].node))->push_back( (yysemantic_stack_[(3) - (3)].node) );
@@ -3198,7 +3194,7 @@ namespace zorba {
     break;
 
   case 78:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1637 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
@@ -3209,7 +3205,7 @@ namespace zorba {
     break;
 
   case 87:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1660 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DecimalFormatNode(LOC((yyloc)), (yysemantic_stack_[(4) - (4)].vstrpair));
@@ -3218,7 +3214,7 @@ namespace zorba {
     break;
 
   case 88:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1666 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DecimalFormatNode(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), (yysemantic_stack_[(4) - (4)].vstrpair));
@@ -3227,7 +3223,7 @@ namespace zorba {
     break;
 
   case 89:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1675 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.vstrpair) = new vector<string_pair_t>();
@@ -3237,7 +3233,7 @@ namespace zorba {
     break;
 
   case 90:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1682 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yysemantic_stack_[(2) - (1)].vstrpair)->push_back( *(yysemantic_stack_[(2) - (2)].strpair) );
@@ -3247,7 +3243,7 @@ namespace zorba {
     break;
 
   case 91:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1692 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       StringLiteral *sl = static_cast<StringLiteral*>((yysemantic_stack_[(3) - (3)].expr));
@@ -3257,67 +3253,67 @@ namespace zorba {
     break;
 
   case 92:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1701 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "decimal-separator"; }
     break;
 
   case 93:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1702 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "digit"; }
     break;
 
   case 94:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1703 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "grouping-separator"; }
     break;
 
   case 95:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1704 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "infinity"; }
     break;
 
   case 96:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1705 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "minus-sign"; }
     break;
 
   case 97:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1706 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "NaN"; }
     break;
 
   case 98:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1707 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "pattern-separator"; }
     break;
 
   case 99:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1708 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "percent"; }
     break;
 
   case 100:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1709 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "per-mille"; }
     break;
 
   case 101:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1710 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "zero-digit"; }
     break;
 
   case 102:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1716 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new OptionDecl(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), SYMTAB((yysemantic_stack_[(4) - (4)].sval)));
@@ -3336,7 +3332,7 @@ namespace zorba {
     break;
 
   case 103:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1735 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FTOptionDecl( LOC((yyloc)), dynamic_cast<FTMatchOptions*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -3344,7 +3340,7 @@ namespace zorba {
     break;
 
   case 104:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1743 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(4) - (4)].node);
@@ -3352,7 +3348,7 @@ namespace zorba {
     break;
 
   case 105:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1751 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CtxItemDecl* d = dynamic_cast<CtxItemDecl*>((yysemantic_stack_[(3) - (3)].node));
@@ -3362,7 +3358,7 @@ namespace zorba {
     break;
 
   case 106:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1758 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3370,7 +3366,7 @@ namespace zorba {
     break;
 
   case 107:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1766 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CtxItemDecl* d = dynamic_cast<CtxItemDecl*>((yysemantic_stack_[(1) - (1)].node));
@@ -3380,7 +3376,7 @@ namespace zorba {
     break;
 
   case 108:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1773 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CtxItemDecl(LOC((yyloc)), NULL);
@@ -3388,7 +3384,7 @@ namespace zorba {
     break;
 
   case 109:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1778 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -3396,7 +3392,7 @@ namespace zorba {
     break;
 
   case 110:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1786 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CtxItemDecl(LOC((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
@@ -3404,7 +3400,7 @@ namespace zorba {
     break;
 
   case 111:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1794 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(4) - (2)].varnametype)));
@@ -3421,7 +3417,7 @@ namespace zorba {
     break;
 
   case 112:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1808 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(3) - (2)].varnametype)));
@@ -3438,7 +3434,7 @@ namespace zorba {
     break;
 
   case 113:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1822 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(5) - (2)].varnametype)));
@@ -3455,7 +3451,7 @@ namespace zorba {
     break;
 
   case 114:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1839 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)), NULL, NULL);
@@ -3463,7 +3459,7 @@ namespace zorba {
     break;
 
   case 115:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1844 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)),
@@ -3474,7 +3470,7 @@ namespace zorba {
     break;
 
   case 116:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1852 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)),
@@ -3485,7 +3481,7 @@ namespace zorba {
     break;
 
   case 117:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1860 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)),
@@ -3496,7 +3492,7 @@ namespace zorba {
     break;
 
   case 118:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1871 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationListParsenode(LOC((yyloc)), static_cast<AnnotationParsenode*>((yysemantic_stack_[(1) - (1)].node)));
@@ -3504,7 +3500,7 @@ namespace zorba {
     break;
 
   case 119:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1876 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       static_cast<AnnotationListParsenode*>((yysemantic_stack_[(2) - (1)].node))->push_back(static_cast<AnnotationParsenode*>((yysemantic_stack_[(2) - (2)].node)));
@@ -3513,7 +3509,7 @@ namespace zorba {
     break;
 
   case 120:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1885 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))), NULL);
@@ -3521,7 +3517,7 @@ namespace zorba {
     break;
 
   case 121:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1890 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)),
@@ -3531,7 +3527,7 @@ namespace zorba {
     break;
 
   case 122:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1897 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), true), NULL);
@@ -3539,7 +3535,7 @@ namespace zorba {
     break;
 
   case 123:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1902 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)),
@@ -3549,7 +3545,7 @@ namespace zorba {
     break;
 
   case 124:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1912 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationLiteralListParsenode(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr));
@@ -3557,7 +3553,7 @@ namespace zorba {
     break;
 
   case 125:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1917 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       static_cast<AnnotationLiteralListParsenode*>((yysemantic_stack_[(3) - (1)].node))->push_back((yysemantic_stack_[(3) - (3)].expr));
@@ -3566,7 +3562,7 @@ namespace zorba {
     break;
 
   case 126:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       static_cast<FunctionDecl*>((yysemantic_stack_[(2) - (2)].node))->setComment( SYMTAB((yysemantic_stack_[(2) - (1)].sval)) );
@@ -3575,7 +3571,7 @@ namespace zorba {
     break;
 
   case 127:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       FunctionDecl* fdecl = static_cast<FunctionDecl*>((yysemantic_stack_[(3) - (3)].node));
@@ -3588,7 +3584,7 @@ namespace zorba {
     break;
 
   case 130:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1951 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       exprnode* body = (yysemantic_stack_[(4) - (4)].expr);
@@ -3607,7 +3603,7 @@ namespace zorba {
     break;
 
   case 131:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1966 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FunctionDecl(LOC ((yyloc)),
@@ -3622,7 +3618,7 @@ namespace zorba {
     break;
 
   case 132:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1981 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       exprnode* body = (yysemantic_stack_[(5) - (5)].expr);
@@ -3641,7 +3637,7 @@ namespace zorba {
     break;
 
   case 133:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 1997 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FunctionDecl(LOC((yyloc)),
@@ -3656,7 +3652,7 @@ namespace zorba {
     break;
 
   case 134:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2012 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(NULL);
@@ -3664,7 +3660,7 @@ namespace zorba {
     break;
 
   case 135:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2017 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -3672,7 +3668,7 @@ namespace zorba {
     break;
 
   case 136:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2022 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(NULL, dynamic_cast<SequenceTypeAST*>((yysemantic_stack_[(4) - (4)].node)));
@@ -3680,7 +3676,7 @@ namespace zorba {
     break;
 
   case 137:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2027 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(dynamic_cast<ParamList*>((yysemantic_stack_[(5) - (2)].node)), dynamic_cast<SequenceTypeAST*>((yysemantic_stack_[(5) - (5)].node)));
@@ -3688,7 +3684,7 @@ namespace zorba {
     break;
 
   case 138:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2035 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ParamList *pl = new ParamList( LOC((yyloc)) );
@@ -3698,7 +3694,7 @@ namespace zorba {
     break;
 
   case 139:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2042 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ( ParamList *pl = dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (1)].node)) )
@@ -3709,7 +3705,7 @@ namespace zorba {
     break;
 
   case 140:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2053 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Param(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)), NULL);
@@ -3717,7 +3713,7 @@ namespace zorba {
     break;
 
   case 141:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2058 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Param(LOC((yyloc)),
@@ -3727,7 +3723,7 @@ namespace zorba {
     break;
 
   case 142:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2068 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
@@ -3740,7 +3736,7 @@ namespace zorba {
     break;
 
   case 143:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2077 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
@@ -3753,7 +3749,7 @@ namespace zorba {
     break;
 
   case 144:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2086 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
@@ -3766,7 +3762,7 @@ namespace zorba {
     break;
 
   case 145:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2095 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
@@ -3779,7 +3775,7 @@ namespace zorba {
     break;
 
   case 146:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2107 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = static_cast<parsenode*>(new SequenceTypeAST(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), NULL));
@@ -3787,7 +3783,7 @@ namespace zorba {
     break;
 
   case 147:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2111 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = static_cast<parsenode*>(new SequenceTypeAST(LOC((yyloc)),
@@ -3797,7 +3793,7 @@ namespace zorba {
     break;
 
   case 148:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2117 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = static_cast<parsenode*>(new SequenceTypeAST(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), NULL));
@@ -3805,7 +3801,7 @@ namespace zorba {
     break;
 
   case 149:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2121 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = static_cast<parsenode*>(new SequenceTypeAST(LOC((yyloc)),
@@ -3816,7 +3812,7 @@ namespace zorba {
     break;
 
   case 150:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2131 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AST_IndexDecl(LOC((yyloc)),
@@ -3830,7 +3826,7 @@ namespace zorba {
     break;
 
   case 151:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2141 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AST_IndexDecl(LOC((yyloc)),
@@ -3844,7 +3840,7 @@ namespace zorba {
     break;
 
   case 152:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2154 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       IndexKeyList* keyList = new IndexKeyList(LOC((yyloc)));
@@ -3854,7 +3850,7 @@ namespace zorba {
     break;
 
   case 153:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2160 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       dynamic_cast<IndexKeyList*>((yysemantic_stack_[(3) - (1)].node))->addKeySpec(dynamic_cast<IndexKeySpec*>((yysemantic_stack_[(3) - (3)].node)));
@@ -3863,7 +3859,7 @@ namespace zorba {
     break;
 
   case 154:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2169 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr), NULL, NULL);
@@ -3871,7 +3867,7 @@ namespace zorba {
     break;
 
   case 155:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2174 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)),
@@ -3882,7 +3878,7 @@ namespace zorba {
     break;
 
   case 156:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2181 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)),
@@ -3893,7 +3889,7 @@ namespace zorba {
     break;
 
   case 157:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2188 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)),
@@ -3904,7 +3900,7 @@ namespace zorba {
     break;
 
   case 158:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2200 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ICCollSimpleCheck(LOC((yyloc)),
@@ -3916,7 +3912,7 @@ namespace zorba {
     break;
 
   case 159:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2210 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ICCollUniqueKeyCheck(LOC((yyloc)),
@@ -3928,7 +3924,7 @@ namespace zorba {
     break;
 
   case 160:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2220 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ICCollForeachNode(LOC((yyloc)),
@@ -3940,7 +3936,7 @@ namespace zorba {
     break;
 
   case 161:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2231 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ICForeignKey( LOC((yyloc)),
@@ -3955,7 +3951,7 @@ namespace zorba {
     break;
 
   case 162:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2247 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ((yysemantic_stack_[(1) - (1)].expr) == NULL)
@@ -3975,7 +3971,7 @@ namespace zorba {
     break;
 
   case 163:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2267 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3983,7 +3979,7 @@ namespace zorba {
     break;
 
   case 164:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2271 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3991,7 +3987,7 @@ namespace zorba {
     break;
 
   case 165:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2275 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = NULL;
@@ -3999,7 +3995,7 @@ namespace zorba {
     break;
 
   case 166:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2283 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -4007,7 +4003,7 @@ namespace zorba {
     break;
 
   case 167:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2287 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -4015,7 +4011,7 @@ namespace zorba {
     break;
 
   case 168:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2291 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = NULL;
@@ -4023,7 +4019,7 @@ namespace zorba {
     break;
 
   case 169:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2299 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -4031,7 +4027,7 @@ namespace zorba {
     break;
 
   case 170:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2304 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       BlockBody* blk = static_cast<BlockBody*>((yysemantic_stack_[(2) - (1)].expr));
@@ -4043,7 +4039,7 @@ namespace zorba {
     break;
 
   case 171:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2316 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       BlockBody* blk = new BlockBody(LOC((yyloc)));
@@ -4053,7 +4049,7 @@ namespace zorba {
     break;
 
   case 172:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2323 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       BlockBody* blk = static_cast<BlockBody*>((yysemantic_stack_[(2) - (1)].expr));
@@ -4065,13 +4061,13 @@ namespace zorba {
     break;
 
   case 173:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2333 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(4) - (1)].expr);
       (yyval.expr) = (yysemantic_stack_[(4) - (2)].expr);
       (yyval.expr) = (yysemantic_stack_[(4) - (4)].expr);
-      error((yylocation_stack_[(4) - (3)]), "syntax error, unexpected statement (missing semicolon \";\" between statements?)");
+      error((yylocation_stack_[(4) - (3)]), "syntax error, unexpected statement");
       delete (yysemantic_stack_[(4) - (1)].expr);
       delete (yysemantic_stack_[(4) - (2)].expr);
       delete (yysemantic_stack_[(4) - (4)].expr);
@@ -4080,7 +4076,7 @@ namespace zorba {
     break;
 
   case 187:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2366 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
@@ -4088,7 +4084,7 @@ namespace zorba {
     break;
 
   case 188:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2374 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       BlockBody* block = dynamic_cast<BlockBody*>((yysemantic_stack_[(3) - (2)].expr));
@@ -4120,7 +4116,7 @@ namespace zorba {
     break;
 
   case 189:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2406 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
@@ -4128,7 +4124,7 @@ namespace zorba {
     break;
 
   case 190:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2414 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(2) - (1)].expr);
@@ -4136,7 +4132,7 @@ namespace zorba {
     break;
 
   case 191:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2422 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       VarDeclStmt* vdecl = static_cast<VarDeclStmt*>((yysemantic_stack_[(3) - (1)].expr));
@@ -4146,7 +4142,7 @@ namespace zorba {
     break;
 
   case 192:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2429 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       VarDeclStmt* vdecl = new VarDeclStmt(LOC((yyloc)), NULL);
@@ -4156,7 +4152,7 @@ namespace zorba {
     break;
 
   case 193:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2436 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       VarDeclStmt* vdecl = new VarDeclStmt(LOC((yyloc)),
@@ -4167,7 +4163,7 @@ namespace zorba {
     break;
 
   case 194:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2447 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       LocalVarDecl* vd = new LocalVarDecl(LOC((yyloc)),
@@ -4180,7 +4176,7 @@ namespace zorba {
     break;
 
   case 195:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2456 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       LocalVarDecl* vd = new LocalVarDecl(LOC((yyloc)),
@@ -4193,7 +4189,7 @@ namespace zorba {
     break;
 
   case 196:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2465 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       LocalVarDecl* vd = new LocalVarDecl(LOC((yyloc)),
@@ -4206,7 +4202,7 @@ namespace zorba {
     break;
 
   case 197:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2474 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       LocalVarDecl* vd = new LocalVarDecl(LOC((yyloc)),
@@ -4219,7 +4215,7 @@ namespace zorba {
     break;
 
   case 198:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2487 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new AssignExpr(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)), (yysemantic_stack_[(5) - (4)].expr));
@@ -4227,7 +4223,7 @@ namespace zorba {
     break;
 
   case 199:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2495 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new ApplyExpr(LOC((yyloc)), (yysemantic_stack_[(2) - (1)].expr));
@@ -4235,7 +4231,7 @@ namespace zorba {
     break;
 
   case 200:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2503 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new ExitExpr(LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
@@ -4243,7 +4239,7 @@ namespace zorba {
     break;
 
   case 201:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2511 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       BlockBody* bb = dynamic_cast<BlockBody *>((yysemantic_stack_[(5) - (5)].expr));
@@ -4258,7 +4254,7 @@ namespace zorba {
     break;
 
   case 202:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2526 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement(LOC((yyloc)), FlowCtlStatement::BREAK);
@@ -4266,7 +4262,7 @@ namespace zorba {
     break;
 
   case 203:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2531 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement( LOC((yyloc)), FlowCtlStatement::CONTINUE );
@@ -4274,7 +4270,7 @@ namespace zorba {
     break;
 
   case 204:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2539 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ReturnExpr* re = dynamic_cast<ReturnExpr*>((yysemantic_stack_[(2) - (2)].expr));
@@ -4288,7 +4284,7 @@ namespace zorba {
     break;
 
   case 205:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2553 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       exprnode* retExpr = (yysemantic_stack_[(2) - (2)].expr);
@@ -4305,7 +4301,7 @@ namespace zorba {
     break;
 
   case 206:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2570 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       exprnode* thenExpr = (yysemantic_stack_[(8) - (6)].expr);
@@ -4330,7 +4326,7 @@ namespace zorba {
     break;
 
   case 207:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2595 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new TryExpr(LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -4338,7 +4334,7 @@ namespace zorba {
     break;
 
   case 208:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2603 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CatchListExpr* cle = new CatchListExpr( LOC((yyloc)) );
@@ -4348,7 +4344,7 @@ namespace zorba {
     break;
 
   case 209:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2610 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CatchListExpr *cle = dynamic_cast<CatchListExpr*>((yysemantic_stack_[(2) - (1)].expr));
@@ -4359,7 +4355,7 @@ namespace zorba {
     break;
 
   case 210:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2621 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC((yyloc)), *(yysemantic_stack_[(3) - (2)].name_test_list), (yysemantic_stack_[(3) - (3)].expr));
@@ -4368,7 +4364,7 @@ namespace zorba {
     break;
 
   case 211:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2630 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new BlockBody(LOC((yyloc)));
@@ -4376,7 +4372,7 @@ namespace zorba {
     break;
 
   case 212:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2638 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -4384,7 +4380,7 @@ namespace zorba {
     break;
 
   case 213:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2643 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       Expr* expr = dynamic_cast<Expr*>((yysemantic_stack_[(3) - (1)].expr));
@@ -4399,7 +4395,7 @@ namespace zorba {
     break;
 
   case 214:
-/* Line 664 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 2656 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (1)].expr);
@@ -4407,8 +4403,10 @@ namespace zorba {
 
 
 
+
+
       if (dynamic_cast<PathExpr*>((yysemantic_stack_[(3) - (1)].expr)) == NULL)
-        error((yylocation_stack_[(3) - (2)]), "syntax error, unexpected expression (missing comma \",\" between expressions?)");
+        error((yylocation_stack_[(3) - (2)]), "syntax error, unexpected expression");
       delete (yysemantic_stack_[(3) - (1)].expr);
       delete (yysemantic_stack_[(3) - (3)].expr);
       YYERROR;
@@ -4416,8 +4414,8 @@ namespace zorba {
     break;
 
   case 233:
-/* Line 664 of lalr1.cc  */
-#line 2703 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2705 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ReturnExpr *re = dynamic_cast<ReturnExpr*>((yysemantic_stack_[(2) - (2)].expr));
       (yyval.expr) = new FLWORExpr(LOC((yyloc)),
@@ -4430,63 +4428,63 @@ namespace zorba {
     break;
 
   case 234:
-/* Line 664 of lalr1.cc  */
-#line 2717 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2719 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new ReturnExpr( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].expr) );
     }
     break;
 
   case 236:
-/* Line 664 of lalr1.cc  */
-#line 2729 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2731 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
     }
     break;
 
   case 237:
-/* Line 664 of lalr1.cc  */
-#line 2736 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2738 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.strval) = parser::the_sliding;
     }
     break;
 
   case 238:
-/* Line 664 of lalr1.cc  */
-#line 2741 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2743 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.strval) = parser::the_tumbling;
     }
     break;
 
   case 239:
-/* Line 664 of lalr1.cc  */
-#line 2749 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2751 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.strval) = parser::the_start;
     }
     break;
 
   case 240:
-/* Line 664 of lalr1.cc  */
-#line 2754 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2756 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.strval) = parser::the_end;
     }
     break;
 
   case 241:
-/* Line 664 of lalr1.cc  */
-#line 2759 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2761 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
     (yyval.strval) = parser::the_only_end;
   }
     break;
 
   case 242:
-/* Line 664 of lalr1.cc  */
-#line 2767 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2769 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FLWORWinCond(LOC((yyloc)),
                             dynamic_cast<WindowVars*>((yysemantic_stack_[(4) - (2)].node)),
@@ -4497,8 +4495,8 @@ namespace zorba {
     break;
 
   case 243:
-/* Line 664 of lalr1.cc  */
-#line 2776 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2778 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FLWORWinCond(LOC((yyloc)),
                             NULL,
@@ -4509,8 +4507,8 @@ namespace zorba {
     break;
 
   case 244:
-/* Line 664 of lalr1.cc  */
-#line 2788 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2790 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)),
                              ((yysemantic_stack_[(5) - (2)].strval) == parser::the_tumbling ?
@@ -4523,8 +4521,8 @@ namespace zorba {
     break;
 
   case 245:
-/* Line 664 of lalr1.cc  */
-#line 2798 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2800 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)),
                              ((yysemantic_stack_[(4) - (2)].strval) == parser::the_tumbling ?
@@ -4536,32 +4534,32 @@ namespace zorba {
     break;
 
   case 246:
-/* Line 664 of lalr1.cc  */
-#line 2811 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2813 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CountClause(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
     break;
 
   case 257:
-/* Line 664 of lalr1.cc  */
-#line 2836 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2838 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
     (yyval.node) = new OffsetClause(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
   }
     break;
 
   case 258:
-/* Line 664 of lalr1.cc  */
-#line 2843 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2845 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
     (yyval.node) = new LimitClause(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
   }
     break;
 
   case 259:
-/* Line 664 of lalr1.cc  */
-#line 2850 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2852 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       FLWORClauseList *fcl = new FLWORClauseList( LOC((yyloc)) );
       fcl->push_back( dynamic_cast<FLWORClause*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -4570,8 +4568,8 @@ namespace zorba {
     break;
 
   case 260:
-/* Line 664 of lalr1.cc  */
-#line 2857 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2859 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       FLWORClauseList *fcl = dynamic_cast<FLWORClauseList*>((yysemantic_stack_[(2) - (1)].node));
       fcl->push_back( dynamic_cast<FLWORClause*>((yysemantic_stack_[(2) - (2)].node)) );
@@ -4580,16 +4578,16 @@ namespace zorba {
     break;
 
   case 261:
-/* Line 664 of lalr1.cc  */
-#line 2867 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2869 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ForClause(LOC((yyloc)), dynamic_cast<VarInDeclList*>((yysemantic_stack_[(3) - (3)].node)));
     }
     break;
 
   case 262:
-/* Line 664 of lalr1.cc  */
-#line 2872 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2874 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       error((yylocation_stack_[(3) - (2)]), "syntax error, unexpected qualified name \""
@@ -4600,8 +4598,8 @@ namespace zorba {
     break;
 
   case 263:
-/* Line 664 of lalr1.cc  */
-#line 2881 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2883 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       error((yylocation_stack_[(3) - (2)]), "syntax error, unexpected qualified name \""
@@ -4612,8 +4610,8 @@ namespace zorba {
     break;
 
   case 264:
-/* Line 664 of lalr1.cc  */
-#line 2890 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2892 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = NULL;
       error((yylocation_stack_[(2) - (2)]), "");
@@ -4622,16 +4620,16 @@ namespace zorba {
     break;
 
   case 266:
-/* Line 664 of lalr1.cc  */
-#line 2904 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2906 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
 
     }
     break;
 
   case 267:
-/* Line 664 of lalr1.cc  */
-#line 2912 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2914 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       VarInDeclList* vdl = new VarInDeclList( LOC((yyloc)) );
       vdl->push_back( dynamic_cast<VarInDecl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -4640,8 +4638,8 @@ namespace zorba {
     break;
 
   case 268:
-/* Line 664 of lalr1.cc  */
-#line 2919 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2921 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ( VarInDeclList* vdl = dynamic_cast<VarInDeclList*>((yysemantic_stack_[(4) - (1)].node)) )
         vdl->push_back( dynamic_cast<VarInDecl*>((yysemantic_stack_[(4) - (4)].node)) );
@@ -4650,8 +4648,8 @@ namespace zorba {
     break;
 
   case 269:
-/* Line 664 of lalr1.cc  */
-#line 2927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
       error((yylocation_stack_[(3) - (3)]), "syntax error, unexpected QName \""
@@ -4662,8 +4660,8 @@ namespace zorba {
     break;
 
   case 270:
-/* Line 664 of lalr1.cc  */
-#line 2939 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2941 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)),
@@ -4676,8 +4674,8 @@ namespace zorba {
     break;
 
   case 271:
-/* Line 664 of lalr1.cc  */
-#line 2949 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2951 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -4690,8 +4688,8 @@ namespace zorba {
     break;
 
   case 272:
-/* Line 664 of lalr1.cc  */
-#line 2959 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2961 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -4704,8 +4702,8 @@ namespace zorba {
     break;
 
   case 273:
-/* Line 664 of lalr1.cc  */
-#line 2969 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2971 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (1)].expr)),
@@ -4718,8 +4716,8 @@ namespace zorba {
     break;
 
   case 274:
-/* Line 664 of lalr1.cc  */
-#line 2979 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2981 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -4732,8 +4730,8 @@ namespace zorba {
     break;
 
   case 275:
-/* Line 664 of lalr1.cc  */
-#line 2989 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 2991 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (1)].expr)),
@@ -4746,8 +4744,8 @@ namespace zorba {
     break;
 
   case 276:
-/* Line 664 of lalr1.cc  */
-#line 2999 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3001 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -4760,8 +4758,8 @@ namespace zorba {
     break;
 
   case 277:
-/* Line 664 of lalr1.cc  */
-#line 3009 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3011 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(7) - (1)].expr)),
@@ -4774,8 +4772,8 @@ namespace zorba {
     break;
 
   case 278:
-/* Line 664 of lalr1.cc  */
-#line 3020 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3022 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -4787,8 +4785,8 @@ namespace zorba {
     break;
 
   case 279:
-/* Line 664 of lalr1.cc  */
-#line 3029 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3031 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -4801,8 +4799,8 @@ namespace zorba {
     break;
 
   case 280:
-/* Line 664 of lalr1.cc  */
-#line 3039 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3041 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC ((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -4815,8 +4813,8 @@ namespace zorba {
     break;
 
   case 281:
-/* Line 664 of lalr1.cc  */
-#line 3049 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3051 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC ((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (1)].expr)),
@@ -4829,32 +4827,32 @@ namespace zorba {
     break;
 
   case 282:
-/* Line 664 of lalr1.cc  */
-#line 3065 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3067 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new PositionalVar(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
     break;
 
   case 283:
-/* Line 664 of lalr1.cc  */
-#line 3074 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3076 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FTScoreVar(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
     break;
 
   case 284:
-/* Line 664 of lalr1.cc  */
-#line 3083 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3085 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new LetClause( LOC((yyloc)), dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(2) - (2)].node)) );
         }
     break;
 
   case 285:
-/* Line 664 of lalr1.cc  */
-#line 3091 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3093 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             VarGetsDeclList *vgdl = new VarGetsDeclList( LOC((yyloc)) );
             vgdl->push_back( dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -4863,8 +4861,8 @@ namespace zorba {
     break;
 
   case 286:
-/* Line 664 of lalr1.cc  */
-#line 3097 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3099 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             if( VarGetsDeclList *vgdl = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(3) - (1)].node)) )
                 vgdl->push_back( dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -4873,8 +4871,8 @@ namespace zorba {
     break;
 
   case 287:
-/* Line 664 of lalr1.cc  */
-#line 3109 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3111 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -4885,8 +4883,8 @@ namespace zorba {
     break;
 
   case 288:
-/* Line 664 of lalr1.cc  */
-#line 3117 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3119 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -4897,8 +4895,8 @@ namespace zorba {
     break;
 
   case 289:
-/* Line 664 of lalr1.cc  */
-#line 3127 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3129 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            dynamic_cast<FTScoreVar*>((yysemantic_stack_[(3) - (1)].node))->get_var_name(),
@@ -4909,8 +4907,8 @@ namespace zorba {
     break;
 
   case 290:
-/* Line 664 of lalr1.cc  */
-#line 3135 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3137 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            static_cast<QName*>((yysemantic_stack_[(6) - (2)].expr)),
@@ -4921,8 +4919,8 @@ namespace zorba {
     break;
 
   case 291:
-/* Line 664 of lalr1.cc  */
-#line 3147 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3149 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVarDecl(LOC ((yyloc)),
                              static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -4931,8 +4929,8 @@ namespace zorba {
     break;
 
   case 292:
-/* Line 664 of lalr1.cc  */
-#line 3153 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3155 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVarDecl(LOC ((yyloc)),
                              static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -4942,16 +4940,16 @@ namespace zorba {
     break;
 
   case 294:
-/* Line 664 of lalr1.cc  */
-#line 3166 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3168 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)), NULL, NULL);
     }
     break;
 
   case 295:
-/* Line 664 of lalr1.cc  */
-#line 3170 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3172 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       dynamic_cast<WindowVars *>((yyval.node))->set_curr(static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)));
@@ -4959,16 +4957,16 @@ namespace zorba {
     break;
 
   case 296:
-/* Line 664 of lalr1.cc  */
-#line 3178 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3180 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), dynamic_cast<PositionalVar*>((yysemantic_stack_[(1) - (1)].node)), NULL, NULL, NULL);
     }
     break;
 
   case 297:
-/* Line 664 of lalr1.cc  */
-#line 3182 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3184 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
       dynamic_cast<WindowVars *>((yyval.node))->set_posvar(dynamic_cast<PositionalVar*>((yysemantic_stack_[(2) - (1)].node)));
@@ -4976,48 +4974,48 @@ namespace zorba {
     break;
 
   case 299:
-/* Line 664 of lalr1.cc  */
-#line 3191 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3193 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, NULL, static_cast<QName*>((yysemantic_stack_[(6) - (3)].expr)), static_cast<QName*>((yysemantic_stack_[(6) - (6)].expr)));
     }
     break;
 
   case 300:
-/* Line 664 of lalr1.cc  */
-#line 3195 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3197 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, NULL, NULL, static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
     break;
 
   case 301:
-/* Line 664 of lalr1.cc  */
-#line 3199 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3201 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, NULL, static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)), NULL);
     }
     break;
 
   case 302:
-/* Line 664 of lalr1.cc  */
-#line 3209 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3211 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WhereClause(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
     }
     break;
 
   case 303:
-/* Line 664 of lalr1.cc  */
-#line 3217 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3219 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupByClause(LOC((yyloc)), dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (3)].node)));
     }
     break;
 
   case 304:
-/* Line 664 of lalr1.cc  */
-#line 3224 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3226 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       GroupSpecList* gsl = new GroupSpecList(LOC((yyloc)));
       gsl->push_back(static_cast<GroupSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5026,8 +5024,8 @@ namespace zorba {
     break;
 
   case 305:
-/* Line 664 of lalr1.cc  */
-#line 3230 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3232 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       GroupSpecList* gsl = static_cast<GroupSpecList*>((yysemantic_stack_[(3) - (1)].node));
       gsl->push_back(static_cast<GroupSpec*>((yysemantic_stack_[(3) - (3)].node)));
@@ -5036,16 +5034,16 @@ namespace zorba {
     break;
 
   case 306:
-/* Line 664 of lalr1.cc  */
-#line 3240 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3242 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)), NULL, (yysemantic_stack_[(4) - (4)].expr), NULL);
     }
     break;
 
   case 307:
-/* Line 664 of lalr1.cc  */
-#line 3244 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3246 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -5056,8 +5054,8 @@ namespace zorba {
     break;
 
   case 308:
-/* Line 664 of lalr1.cc  */
-#line 3252 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3254 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (2)].expr)),
@@ -5068,8 +5066,8 @@ namespace zorba {
     break;
 
   case 309:
-/* Line 664 of lalr1.cc  */
-#line 3260 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3262 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -5080,8 +5078,8 @@ namespace zorba {
     break;
 
   case 310:
-/* Line 664 of lalr1.cc  */
-#line 3268 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3270 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       VarRef* varRef = dynamic_cast<VarRef*>((yysemantic_stack_[(1) - (1)].expr));
       if (varRef != NULL)
@@ -5092,8 +5090,8 @@ namespace zorba {
     break;
 
   case 311:
-/* Line 664 of lalr1.cc  */
-#line 3276 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3278 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       VarRef* varRef = dynamic_cast<VarRef*>((yysemantic_stack_[(2) - (1)].expr));
       if (varRef != NULL)
@@ -5104,16 +5102,16 @@ namespace zorba {
     break;
 
   case 312:
-/* Line 664 of lalr1.cc  */
-#line 3288 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3290 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupCollationSpec( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
     }
     break;
 
   case 313:
-/* Line 664 of lalr1.cc  */
-#line 3296 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3298 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderByClause(
                 LOC((yyloc)), dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (3)].node))
@@ -5122,8 +5120,8 @@ namespace zorba {
     break;
 
   case 314:
-/* Line 664 of lalr1.cc  */
-#line 3302 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3304 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderByClause(
                 LOC((yyloc)), dynamic_cast<OrderSpecList*>((yysemantic_stack_[(4) - (4)].node)), true
@@ -5132,8 +5130,8 @@ namespace zorba {
     break;
 
   case 315:
-/* Line 664 of lalr1.cc  */
-#line 3312 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3314 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             OrderSpecList *osl = new OrderSpecList( LOC((yyloc)) );
             osl->push_back( dynamic_cast<OrderSpec*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5142,8 +5140,8 @@ namespace zorba {
     break;
 
   case 316:
-/* Line 664 of lalr1.cc  */
-#line 3318 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3320 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             if ( OrderSpecList* osl = dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (1)].node)) )
                 osl->push_back( dynamic_cast<OrderSpec*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -5152,16 +5150,16 @@ namespace zorba {
     break;
 
   case 317:
-/* Line 664 of lalr1.cc  */
-#line 3328 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3330 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderSpec( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr), NULL );
         }
     break;
 
   case 318:
-/* Line 664 of lalr1.cc  */
-#line 3332 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3334 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderSpec(
                 LOC((yyloc)), (yysemantic_stack_[(2) - (1)].expr), dynamic_cast<OrderModifierPN*>((yysemantic_stack_[(2) - (2)].node))
@@ -5170,8 +5168,8 @@ namespace zorba {
     break;
 
   case 319:
-/* Line 664 of lalr1.cc  */
-#line 3342 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3344 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)), dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(1) - (1)].node)), NULL, NULL
@@ -5180,8 +5178,8 @@ namespace zorba {
     break;
 
   case 320:
-/* Line 664 of lalr1.cc  */
-#line 3348 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3350 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)), NULL, dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(1) - (1)].node)), NULL
@@ -5190,8 +5188,8 @@ namespace zorba {
     break;
 
   case 321:
-/* Line 664 of lalr1.cc  */
-#line 3354 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3356 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)), NULL, NULL, dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(1) - (1)].node))
@@ -5200,8 +5198,8 @@ namespace zorba {
     break;
 
   case 322:
-/* Line 664 of lalr1.cc  */
-#line 3360 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3362 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5213,8 +5211,8 @@ namespace zorba {
     break;
 
   case 323:
-/* Line 664 of lalr1.cc  */
-#line 3369 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3371 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5226,8 +5224,8 @@ namespace zorba {
     break;
 
   case 324:
-/* Line 664 of lalr1.cc  */
-#line 3378 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3380 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5239,8 +5237,8 @@ namespace zorba {
     break;
 
   case 325:
-/* Line 664 of lalr1.cc  */
-#line 3387 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3389 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5252,24 +5250,24 @@ namespace zorba {
     break;
 
   case 326:
-/* Line 664 of lalr1.cc  */
-#line 3400 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3402 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderDirSpec( LOC((yyloc)), ParseConstants::dir_ascending );
         }
     break;
 
   case 327:
-/* Line 664 of lalr1.cc  */
-#line 3404 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3406 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderDirSpec( LOC((yyloc)), ParseConstants::dir_descending );
         }
     break;
 
   case 328:
-/* Line 664 of lalr1.cc  */
-#line 3412 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3414 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderEmptySpec(
                 LOC((yyloc)), StaticContextConsts::empty_greatest
@@ -5278,8 +5276,8 @@ namespace zorba {
     break;
 
   case 329:
-/* Line 664 of lalr1.cc  */
-#line 3418 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3420 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderEmptySpec(
                 LOC((yyloc)), StaticContextConsts::empty_least
@@ -5288,16 +5286,16 @@ namespace zorba {
     break;
 
   case 330:
-/* Line 664 of lalr1.cc  */
-#line 3428 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3430 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderCollationSpec( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
         }
     break;
 
   case 331:
-/* Line 664 of lalr1.cc  */
-#line 3436 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3438 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new QuantifiedExpr(
                 LOC((yyloc)),
@@ -5309,8 +5307,8 @@ namespace zorba {
     break;
 
   case 332:
-/* Line 664 of lalr1.cc  */
-#line 3445 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3447 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new QuantifiedExpr(
                 LOC((yyloc)),
@@ -5322,8 +5320,8 @@ namespace zorba {
     break;
 
   case 333:
-/* Line 664 of lalr1.cc  */
-#line 3458 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3460 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       QVarInDeclList *qvidl = new QVarInDeclList( LOC((yyloc)) );
       qvidl->push_back( dynamic_cast<QVarInDecl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5333,8 +5331,8 @@ namespace zorba {
     break;
 
   case 334:
-/* Line 664 of lalr1.cc  */
-#line 3465 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3467 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       QVarInDeclList *qvidl = dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
       qvidl->push_back( dynamic_cast<QVarInDecl*>((yysemantic_stack_[(4) - (4)].node)) );
@@ -5343,16 +5341,16 @@ namespace zorba {
     break;
 
   case 335:
-/* Line 664 of lalr1.cc  */
-#line 3477 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3479 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new QVarInDecl(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), (yysemantic_stack_[(3) - (3)].expr));
     }
     break;
 
   case 336:
-/* Line 664 of lalr1.cc  */
-#line 3481 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3483 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new QVarInDecl(LOC((yyloc)),
                           static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -5362,16 +5360,16 @@ namespace zorba {
     break;
 
   case 337:
-/* Line 664 of lalr1.cc  */
-#line 3493 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3495 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new SwitchExpr(LOC((yyloc)), (yysemantic_stack_[(8) - (3)].expr), static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(8) - (5)].node)), (yysemantic_stack_[(8) - (8)].expr));
     }
     break;
 
   case 338:
-/* Line 664 of lalr1.cc  */
-#line 3500 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3502 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = new SwitchCaseClauseList(LOC((yyloc)));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5380,8 +5378,8 @@ namespace zorba {
     break;
 
   case 339:
-/* Line 664 of lalr1.cc  */
-#line 3506 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3508 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -5390,16 +5388,16 @@ namespace zorba {
     break;
 
   case 340:
-/* Line 664 of lalr1.cc  */
-#line 3515 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3517 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SwitchCaseClause(LOC((yyloc)), dynamic_cast<SwitchCaseOperandList*>((yysemantic_stack_[(3) - (1)].node)), (yysemantic_stack_[(3) - (3)].expr));
     }
     break;
 
   case 341:
-/* Line 664 of lalr1.cc  */
-#line 3522 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3524 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseOperandList* sco_list_p = new SwitchCaseOperandList(LOC((yyloc)));
       sco_list_p->push_back((yysemantic_stack_[(2) - (2)].expr));
@@ -5408,8 +5406,8 @@ namespace zorba {
     break;
 
   case 342:
-/* Line 664 of lalr1.cc  */
-#line 3528 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3530 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseOperandList* sco_list_p = static_cast<SwitchCaseOperandList*>((yysemantic_stack_[(3) - (1)].node));
       sco_list_p->push_back((yysemantic_stack_[(3) - (3)].expr));
@@ -5418,16 +5416,16 @@ namespace zorba {
     break;
 
   case 343:
-/* Line 664 of lalr1.cc  */
-#line 3539 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3541 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new SwitchExpr(LOC((yyloc)), (yysemantic_stack_[(8) - (3)].expr), static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(8) - (5)].node)), (yysemantic_stack_[(8) - (8)].expr));
     }
     break;
 
   case 344:
-/* Line 664 of lalr1.cc  */
-#line 3546 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3548 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = new SwitchCaseClauseList(LOC((yyloc)));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5436,8 +5434,8 @@ namespace zorba {
     break;
 
   case 345:
-/* Line 664 of lalr1.cc  */
-#line 3552 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3554 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -5446,16 +5444,16 @@ namespace zorba {
     break;
 
   case 346:
-/* Line 664 of lalr1.cc  */
-#line 3561 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3563 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SwitchCaseClause(LOC((yyloc)), dynamic_cast<SwitchCaseOperandList*>((yysemantic_stack_[(3) - (1)].node)), (yysemantic_stack_[(3) - (3)].expr));
     }
     break;
 
   case 347:
-/* Line 664 of lalr1.cc  */
-#line 3570 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3572 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC((yyloc)),
                               (yysemantic_stack_[(8) - (3)].expr),
@@ -5465,8 +5463,8 @@ namespace zorba {
     break;
 
   case 348:
-/* Line 664 of lalr1.cc  */
-#line 3577 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3579 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
                               (yysemantic_stack_[(10) - (3)].expr),
@@ -5477,8 +5475,8 @@ namespace zorba {
     break;
 
   case 349:
-/* Line 664 of lalr1.cc  */
-#line 3588 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3590 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC((yyloc)),
                               (yysemantic_stack_[(8) - (3)].expr),
@@ -5488,8 +5486,8 @@ namespace zorba {
     break;
 
   case 350:
-/* Line 664 of lalr1.cc  */
-#line 3595 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3597 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
                               (yysemantic_stack_[(10) - (3)].expr),
@@ -5500,8 +5498,8 @@ namespace zorba {
     break;
 
   case 351:
-/* Line 664 of lalr1.cc  */
-#line 3607 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3609 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
       cc_list_p->push_back(static_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5510,8 +5508,8 @@ namespace zorba {
     break;
 
   case 352:
-/* Line 664 of lalr1.cc  */
-#line 3613 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3615 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       cc_list_p->push_back(static_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -5520,8 +5518,8 @@ namespace zorba {
     break;
 
   case 353:
-/* Line 664 of lalr1.cc  */
-#line 3625 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3627 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           static_cast<SequenceTypeList*>((yysemantic_stack_[(4) - (2)].node)),
@@ -5530,8 +5528,8 @@ namespace zorba {
     break;
 
   case 354:
-/* Line 664 of lalr1.cc  */
-#line 3631 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3633 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           static_cast<QName*>((yysemantic_stack_[(7) - (3)].expr)),
@@ -5541,8 +5539,8 @@ namespace zorba {
     break;
 
   case 355:
-/* Line 664 of lalr1.cc  */
-#line 3642 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3644 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
       cc_list_p->push_back(static_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5551,8 +5549,8 @@ namespace zorba {
     break;
 
   case 356:
-/* Line 664 of lalr1.cc  */
-#line 3648 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3650 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CaseClauseList* cc_list_p = static_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       cc_list_p->push_back(static_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -5561,8 +5559,8 @@ namespace zorba {
     break;
 
   case 357:
-/* Line 664 of lalr1.cc  */
-#line 3659 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3661 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           static_cast<SequenceTypeList*>((yysemantic_stack_[(4) - (2)].node)),
@@ -5571,8 +5569,8 @@ namespace zorba {
     break;
 
   case 358:
-/* Line 664 of lalr1.cc  */
-#line 3665 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3667 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           static_cast<QName*>((yysemantic_stack_[(7) - (3)].expr)),
@@ -5582,8 +5580,8 @@ namespace zorba {
     break;
 
   case 359:
-/* Line 664 of lalr1.cc  */
-#line 3676 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3678 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       SequenceTypeList* seqList = new SequenceTypeList(LOC((yyloc)));
       seqList->push_back(static_cast<SequenceTypeAST*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5592,8 +5590,8 @@ namespace zorba {
     break;
 
   case 360:
-/* Line 664 of lalr1.cc  */
-#line 3682 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3684 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       SequenceTypeList* seqList = static_cast<SequenceTypeList*>((yysemantic_stack_[(3) - (1)].node));
       seqList->push_back(static_cast<SequenceTypeAST*>((yysemantic_stack_[(3) - (3)].node)));
@@ -5602,56 +5600,56 @@ namespace zorba {
     break;
 
   case 361:
-/* Line 664 of lalr1.cc  */
-#line 3693 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3695 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new IfExpr(LOC ((yyloc)), (yysemantic_stack_[(8) - (3)].expr), (yysemantic_stack_[(8) - (6)].expr), (yysemantic_stack_[(8) - (8)].expr));
     }
     break;
 
   case 362:
-/* Line 664 of lalr1.cc  */
-#line 3702 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3704 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
     break;
 
   case 363:
-/* Line 664 of lalr1.cc  */
-#line 3706 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3708 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new OrExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
     }
     break;
 
   case 364:
-/* Line 664 of lalr1.cc  */
-#line 3720 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3722 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 365:
-/* Line 664 of lalr1.cc  */
-#line 3730 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3732 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AndExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
     break;
 
   case 366:
-/* Line 664 of lalr1.cc  */
-#line 3740 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3742 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 367:
-/* Line 664 of lalr1.cc  */
-#line 3744 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3746 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new ComparisonExpr(
               LOC((yyloc)),
@@ -5663,16 +5661,16 @@ namespace zorba {
     break;
 
   case 368:
-/* Line 664 of lalr1.cc  */
-#line 3759 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3761 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 369:
-/* Line 664 of lalr1.cc  */
-#line 3763 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3765 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
 
             (yyval.expr) = new ComparisonExpr(
@@ -5685,8 +5683,8 @@ namespace zorba {
     break;
 
   case 370:
-/* Line 664 of lalr1.cc  */
-#line 3773 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3775 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
 
             (yyval.expr) = new ComparisonExpr(
@@ -5696,8 +5694,8 @@ namespace zorba {
     break;
 
   case 371:
-/* Line 664 of lalr1.cc  */
-#line 3780 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3782 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -5709,8 +5707,8 @@ namespace zorba {
     break;
 
   case 372:
-/* Line 664 of lalr1.cc  */
-#line 3789 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3791 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -5722,8 +5720,8 @@ namespace zorba {
     break;
 
   case 373:
-/* Line 664 of lalr1.cc  */
-#line 3798 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3800 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
 
 
@@ -5735,8 +5733,8 @@ namespace zorba {
     break;
 
   case 374:
-/* Line 664 of lalr1.cc  */
-#line 3807 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3809 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -5748,8 +5746,8 @@ namespace zorba {
     break;
 
   case 375:
-/* Line 664 of lalr1.cc  */
-#line 3816 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3818 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -5761,8 +5759,8 @@ namespace zorba {
     break;
 
   case 376:
-/* Line 664 of lalr1.cc  */
-#line 3825 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3827 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -5774,8 +5772,8 @@ namespace zorba {
     break;
 
   case 377:
-/* Line 664 of lalr1.cc  */
-#line 3834 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3836 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -5787,16 +5785,16 @@ namespace zorba {
     break;
 
   case 378:
-/* Line 664 of lalr1.cc  */
-#line 3847 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3849 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 379:
-/* Line 664 of lalr1.cc  */
-#line 3851 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3853 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new FTContainsExpr(
                 LOC((yyloc)),
@@ -5808,88 +5806,88 @@ namespace zorba {
     break;
 
   case 380:
-/* Line 664 of lalr1.cc  */
-#line 3863 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3865 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 381:
-/* Line 664 of lalr1.cc  */
-#line 3867 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3869 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new StringConcatExpr(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
         }
     break;
 
   case 382:
-/* Line 664 of lalr1.cc  */
-#line 3874 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3876 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
     break;
 
   case 383:
-/* Line 664 of lalr1.cc  */
-#line 3878 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3880 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 384:
-/* Line 664 of lalr1.cc  */
-#line 3885 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3887 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 385:
-/* Line 664 of lalr1.cc  */
-#line 3889 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3891 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new RangeExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
     break;
 
   case 386:
-/* Line 664 of lalr1.cc  */
-#line 3898 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3900 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 387:
-/* Line 664 of lalr1.cc  */
-#line 3902 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3904 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AdditiveExpr( LOC((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
     break;
 
   case 388:
-/* Line 664 of lalr1.cc  */
-#line 3906 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3908 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AdditiveExpr( LOC((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
     break;
 
   case 389:
-/* Line 664 of lalr1.cc  */
-#line 3914 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3916 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 390:
-/* Line 664 of lalr1.cc  */
-#line 3918 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3920 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -5898,8 +5896,8 @@ namespace zorba {
     break;
 
   case 391:
-/* Line 664 of lalr1.cc  */
-#line 3924 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -5908,8 +5906,8 @@ namespace zorba {
     break;
 
   case 392:
-/* Line 664 of lalr1.cc  */
-#line 3930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -5918,8 +5916,8 @@ namespace zorba {
     break;
 
   case 393:
-/* Line 664 of lalr1.cc  */
-#line 3936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3938 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -5928,40 +5926,40 @@ namespace zorba {
     break;
 
   case 394:
-/* Line 664 of lalr1.cc  */
-#line 3946 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3948 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 395:
-/* Line 664 of lalr1.cc  */
-#line 3950 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3952 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new UnionExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
     break;
 
   case 396:
-/* Line 664 of lalr1.cc  */
-#line 3954 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3956 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new UnionExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
     break;
 
   case 397:
-/* Line 664 of lalr1.cc  */
-#line 3962 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3964 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 398:
-/* Line 664 of lalr1.cc  */
-#line 3966 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3968 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new IntersectExceptExpr(
                 LOC((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -5970,8 +5968,8 @@ namespace zorba {
     break;
 
   case 399:
-/* Line 664 of lalr1.cc  */
-#line 3972 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3974 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new IntersectExceptExpr(
                 LOC((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -5980,16 +5978,16 @@ namespace zorba {
     break;
 
   case 400:
-/* Line 664 of lalr1.cc  */
-#line 3982 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3984 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 401:
-/* Line 664 of lalr1.cc  */
-#line 3986 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3988 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InstanceofExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SequenceTypeAST*>((yysemantic_stack_[(4) - (4)].node))
@@ -5998,16 +5996,16 @@ namespace zorba {
     break;
 
   case 402:
-/* Line 664 of lalr1.cc  */
-#line 3996 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 3998 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 403:
-/* Line 664 of lalr1.cc  */
-#line 4000 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4002 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new TreatExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SequenceTypeAST*>((yysemantic_stack_[(4) - (4)].node))
@@ -6016,16 +6014,16 @@ namespace zorba {
     break;
 
   case 404:
-/* Line 664 of lalr1.cc  */
-#line 4010 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4012 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 405:
-/* Line 664 of lalr1.cc  */
-#line 4014 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4016 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new CastableExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SingleType*>((yysemantic_stack_[(4) - (4)].node))
@@ -6034,16 +6032,16 @@ namespace zorba {
     break;
 
   case 406:
-/* Line 664 of lalr1.cc  */
-#line 4024 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4026 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 407:
-/* Line 664 of lalr1.cc  */
-#line 4028 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4030 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new CastExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SingleType*>((yysemantic_stack_[(4) - (4)].node))
@@ -6052,64 +6050,64 @@ namespace zorba {
     break;
 
   case 408:
-/* Line 664 of lalr1.cc  */
-#line 4038 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4040 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SingleType(LOC((yyloc)), dynamic_cast<SimpleType*>((yysemantic_stack_[(1) - (1)].node)), false);
     }
     break;
 
   case 409:
-/* Line 664 of lalr1.cc  */
-#line 4042 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4044 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SingleType(LOC((yyloc)), dynamic_cast<SimpleType*>((yysemantic_stack_[(2) - (1)].node)), true);
     }
     break;
 
   case 410:
-/* Line 664 of lalr1.cc  */
-#line 4051 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4053 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 411:
-/* Line 664 of lalr1.cc  */
-#line 4055 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4057 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new UnaryExpr( LOC((yyloc)), dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].expr) );
         }
     break;
 
   case 412:
-/* Line 664 of lalr1.cc  */
-#line 4063 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4065 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SignList( LOC((yyloc)), true );
         }
     break;
 
   case 413:
-/* Line 664 of lalr1.cc  */
-#line 4067 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4069 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SignList( LOC((yyloc)), false );
         }
     break;
 
   case 414:
-/* Line 664 of lalr1.cc  */
-#line 4071 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4073 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(2) - (1)].node);
         }
     break;
 
   case 415:
-/* Line 664 of lalr1.cc  */
-#line 4075 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4077 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             if ( SignList *sl = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)) )
                 sl->negate();
@@ -6118,120 +6116,120 @@ namespace zorba {
     break;
 
   case 419:
-/* Line 664 of lalr1.cc  */
-#line 4091 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4093 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
       }
     break;
 
   case 420:
-/* Line 664 of lalr1.cc  */
-#line 4096 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4098 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.expr) = new SimpleMapExpr(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
       }
     break;
 
   case 421:
-/* Line 664 of lalr1.cc  */
-#line 4104 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4106 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_eq );
         }
     break;
 
   case 422:
-/* Line 664 of lalr1.cc  */
-#line 4108 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4110 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_ne );
         }
     break;
 
   case 423:
-/* Line 664 of lalr1.cc  */
-#line 4112 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4114 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_lt );
         }
     break;
 
   case 424:
-/* Line 664 of lalr1.cc  */
-#line 4116 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4118 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_le );
         }
     break;
 
   case 425:
-/* Line 664 of lalr1.cc  */
-#line 4120 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4122 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_gt );
         }
     break;
 
   case 426:
-/* Line 664 of lalr1.cc  */
-#line 4124 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4126 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_ge );
         }
     break;
 
   case 427:
-/* Line 664 of lalr1.cc  */
-#line 4132 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4134 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new NodeComp( LOC((yyloc)), ParseConstants::op_is );
         }
     break;
 
   case 428:
-/* Line 664 of lalr1.cc  */
-#line 4136 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4138 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new NodeComp( LOC((yyloc)), ParseConstants::op_precedes );
         }
     break;
 
   case 429:
-/* Line 664 of lalr1.cc  */
-#line 4140 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4142 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new NodeComp( LOC((yyloc)), ParseConstants::op_follows );
         }
     break;
 
   case 430:
-/* Line 664 of lalr1.cc  */
-#line 4148 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4150 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ValidateExpr( LOC((yyloc)), "strict", (yysemantic_stack_[(4) - (3)].expr) );
         }
     break;
 
   case 431:
-/* Line 664 of lalr1.cc  */
-#line 4152 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4154 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ValidateExpr( LOC((yyloc)), "lax", (yysemantic_stack_[(5) - (4)].expr) );
         }
     break;
 
   case 432:
-/* Line 664 of lalr1.cc  */
-#line 4156 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4158 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ValidateExpr( LOC((yyloc)), "strict", (yysemantic_stack_[(5) - (4)].expr) );
         }
     break;
 
   case 433:
-/* Line 664 of lalr1.cc  */
-#line 4160 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4162 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ValidateExpr(
                 LOC((yyloc)), dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (3)].node))->get_name(), (yysemantic_stack_[(6) - (5)].expr)
@@ -6241,8 +6239,8 @@ namespace zorba {
     break;
 
   case 434:
-/* Line 664 of lalr1.cc  */
-#line 4171 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4173 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ExtensionExpr(
                 LOC((yyloc)), dynamic_cast<PragmaList*>((yysemantic_stack_[(4) - (1)].node)), (yysemantic_stack_[(4) - (3)].expr)
@@ -6251,8 +6249,8 @@ namespace zorba {
     break;
 
   case 435:
-/* Line 664 of lalr1.cc  */
-#line 4181 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4183 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             PragmaList *pl = new PragmaList( LOC((yyloc)) );
             pl->push_back( dynamic_cast<Pragma*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -6261,8 +6259,8 @@ namespace zorba {
     break;
 
   case 436:
-/* Line 664 of lalr1.cc  */
-#line 4187 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4189 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             if ( PragmaList *pl = dynamic_cast<PragmaList*>((yysemantic_stack_[(2) - (1)].node)) )
                 pl->push_back( dynamic_cast<Pragma*>((yysemantic_stack_[(2) - (2)].node)) );
@@ -6271,40 +6269,40 @@ namespace zorba {
     break;
 
   case 437:
-/* Line 664 of lalr1.cc  */
-#line 4197 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4199 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new Pragma( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
         }
     break;
 
   case 438:
-/* Line 664 of lalr1.cc  */
-#line 4201 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4203 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new Pragma( LOC((yyloc)), new QName( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) ), "" );
         }
     break;
 
   case 439:
-/* Line 664 of lalr1.cc  */
-#line 4205 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4207 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new Pragma( LOC((yyloc)), new QName( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)), true ), "" );
         }
     break;
 
   case 440:
-/* Line 664 of lalr1.cc  */
-#line 4211 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4213 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new PathExpr(LOC((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
     }
     break;
 
   case 441:
-/* Line 664 of lalr1.cc  */
-#line 4215 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4217 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       RelativePathExpr* rpe;
 
@@ -6317,8 +6315,8 @@ namespace zorba {
     break;
 
   case 442:
-/* Line 664 of lalr1.cc  */
-#line 4225 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4227 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       RelativePathExpr* rpe;
 
@@ -6331,8 +6329,8 @@ namespace zorba {
     break;
 
   case 443:
-/* Line 664 of lalr1.cc  */
-#line 4235 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4237 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = NULL;
 
@@ -6382,16 +6380,16 @@ namespace zorba {
     break;
 
   case 444:
-/* Line 664 of lalr1.cc  */
-#line 4288 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4290 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = NULL;
     }
     break;
 
   case 445:
-/* Line 664 of lalr1.cc  */
-#line 4297 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4299 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       AxisStep* as = dynamic_cast<AxisStep*>((yysemantic_stack_[(1) - (1)].expr));
       (yyval.expr) = (as ?
@@ -6404,24 +6402,24 @@ namespace zorba {
     break;
 
   case 446:
-/* Line 664 of lalr1.cc  */
-#line 4307 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4309 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr), false);
     }
     break;
 
   case 447:
-/* Line 664 of lalr1.cc  */
-#line 4311 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4313 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr), false);
     }
     break;
 
   case 450:
-/* Line 664 of lalr1.cc  */
-#line 4327 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4329 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)), dynamic_cast<ForwardStep*>((yysemantic_stack_[(1) - (1)].node)), NULL
@@ -6430,8 +6428,8 @@ namespace zorba {
     break;
 
   case 451:
-/* Line 664 of lalr1.cc  */
-#line 4333 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4335 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)),
@@ -6442,8 +6440,8 @@ namespace zorba {
     break;
 
   case 452:
-/* Line 664 of lalr1.cc  */
-#line 4341 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4343 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)), dynamic_cast<ReverseStep*>((yysemantic_stack_[(1) - (1)].node)), NULL
@@ -6452,8 +6450,8 @@ namespace zorba {
     break;
 
   case 453:
-/* Line 664 of lalr1.cc  */
-#line 4347 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4349 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)),
@@ -6464,8 +6462,8 @@ namespace zorba {
     break;
 
   case 454:
-/* Line 664 of lalr1.cc  */
-#line 4360 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4362 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardStep(
                 LOC((yyloc)), dynamic_cast<ForwardAxis*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].node)
@@ -6474,8 +6472,8 @@ namespace zorba {
     break;
 
   case 455:
-/* Line 664 of lalr1.cc  */
-#line 4366 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4368 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardStep(
                 LOC((yyloc)), dynamic_cast<AbbrevForwardStep*>((yysemantic_stack_[(1) - (1)].node))
@@ -6484,40 +6482,40 @@ namespace zorba {
     break;
 
   case 456:
-/* Line 664 of lalr1.cc  */
-#line 4377 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4379 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_child );
         }
     break;
 
   case 457:
-/* Line 664 of lalr1.cc  */
-#line 4381 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4383 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_descendant);
         }
     break;
 
   case 458:
-/* Line 664 of lalr1.cc  */
-#line 4385 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4387 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_attribute );
         }
     break;
 
   case 459:
-/* Line 664 of lalr1.cc  */
-#line 4389 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4391 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_self );
         }
     break;
 
   case 460:
-/* Line 664 of lalr1.cc  */
-#line 4393 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4395 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis(
                 LOC((yyloc)), ParseConstants::axis_descendant_or_self
@@ -6526,8 +6524,8 @@ namespace zorba {
     break;
 
   case 461:
-/* Line 664 of lalr1.cc  */
-#line 4399 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4401 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis(
                 LOC((yyloc)), ParseConstants::axis_following_sibling
@@ -6536,40 +6534,40 @@ namespace zorba {
     break;
 
   case 462:
-/* Line 664 of lalr1.cc  */
-#line 4405 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4407 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_following );
         }
     break;
 
   case 463:
-/* Line 664 of lalr1.cc  */
-#line 4414 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4416 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AbbrevForwardStep( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), false );
         }
     break;
 
   case 464:
-/* Line 664 of lalr1.cc  */
-#line 4418 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4420 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AbbrevForwardStep( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].node), true );
         }
     break;
 
   case 465:
-/* Line 664 of lalr1.cc  */
-#line 4427 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4429 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseStep( LOC((yyloc)), dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].node) );
         }
     break;
 
   case 466:
-/* Line 664 of lalr1.cc  */
-#line 4431 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4433 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             ReverseAxis *ra = new ReverseAxis(
                 LOC((yyloc)), ParseConstants::axis_parent
@@ -6579,24 +6577,24 @@ namespace zorba {
     break;
 
   case 467:
-/* Line 664 of lalr1.cc  */
-#line 4443 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4445 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseAxis( LOC((yyloc)), ParseConstants::axis_parent );
         }
     break;
 
   case 468:
-/* Line 664 of lalr1.cc  */
-#line 4447 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4449 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseAxis( LOC((yyloc)), ParseConstants::axis_ancestor );
         }
     break;
 
   case 469:
-/* Line 664 of lalr1.cc  */
-#line 4451 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4453 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseAxis(
                 LOC((yyloc)), ParseConstants::axis_preceding_sibling
@@ -6605,16 +6603,16 @@ namespace zorba {
     break;
 
   case 470:
-/* Line 664 of lalr1.cc  */
-#line 4457 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4459 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseAxis( LOC((yyloc)), ParseConstants::axis_preceding );
         }
     break;
 
   case 471:
-/* Line 664 of lalr1.cc  */
-#line 4461 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4463 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseAxis(
                 LOC((yyloc)), ParseConstants::axis_ancestor_or_self
@@ -6623,96 +6621,96 @@ namespace zorba {
     break;
 
   case 474:
-/* Line 664 of lalr1.cc  */
-#line 4483 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4485 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new NameTest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
         }
     break;
 
   case 475:
-/* Line 664 of lalr1.cc  */
-#line 4487 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4489 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new NameTest( LOC((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)) );
         }
     break;
 
   case 476:
-/* Line 664 of lalr1.cc  */
-#line 4497 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4499 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), "", "", ParseConstants::wild_all, false);
     }
     break;
 
   case 477:
-/* Line 664 of lalr1.cc  */
-#line 4501 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4503 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), "", ParseConstants::wild_elem, false);
     }
     break;
 
   case 478:
-/* Line 664 of lalr1.cc  */
-#line 4505 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4507 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), "", ParseConstants::wild_elem, true);
     }
     break;
 
   case 479:
-/* Line 664 of lalr1.cc  */
-#line 4509 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4511 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), "", SYMTAB((yysemantic_stack_[(1) - (1)].sval)), ParseConstants::wild_prefix, false);
     }
     break;
 
   case 480:
-/* Line 664 of lalr1.cc  */
-#line 4522 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4524 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
      }
     break;
 
   case 481:
-/* Line 664 of lalr1.cc  */
-#line 4526 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4528 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new FilterExpr(LOC((yyloc)), (yysemantic_stack_[(2) - (1)].expr), dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
      }
     break;
 
   case 482:
-/* Line 664 of lalr1.cc  */
-#line 4530 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4532 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new DynamicFunctionInvocation(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), false);
      }
     break;
 
   case 483:
-/* Line 664 of lalr1.cc  */
-#line 4534 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4536 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new DynamicFunctionInvocation(LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<ArgList*>((yysemantic_stack_[(4) - (3)].node)), false);
      }
     break;
 
   case 484:
-/* Line 664 of lalr1.cc  */
-#line 4540 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4542 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new JSONArrayUnboxing(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr));
     }
     break;
 
   case 485:
-/* Line 664 of lalr1.cc  */
-#line 4544 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4546 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(3) - (3)].expr), (yylocation_stack_[(3) - (3)]));
        StringLiteral* sl = new StringLiteral( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
@@ -6721,8 +6719,8 @@ namespace zorba {
     break;
 
   case 486:
-/* Line 664 of lalr1.cc  */
-#line 4550 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4552 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new JSONObjectLookup(LOC((yyloc)), LOC((yylocation_stack_[(4) - (2)])),
                                  (yysemantic_stack_[(4) - (1)].expr),
@@ -6731,8 +6729,8 @@ namespace zorba {
     break;
 
   case 487:
-/* Line 664 of lalr1.cc  */
-#line 4556 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4558 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new JSONObjectLookup(LOC((yyloc)), LOC((yylocation_stack_[(5) - (2)])),
                                  (yysemantic_stack_[(5) - (1)].expr),
@@ -6741,32 +6739,32 @@ namespace zorba {
     break;
 
   case 488:
-/* Line 664 of lalr1.cc  */
-#line 4562 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4564 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.expr) = new JSONObjectLookup(LOC((yyloc)), LOC((yylocation_stack_[(3) - (2)])), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
      }
     break;
 
   case 489:
-/* Line 664 of lalr1.cc  */
-#line 4566 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4568 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.expr) = new JSONObjectLookup(LOC((yyloc)), LOC((yylocation_stack_[(3) - (2)])), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
      }
     break;
 
   case 490:
-/* Line 664 of lalr1.cc  */
-#line 4570 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4572 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new JSONObjectLookup(LOC((yyloc)), LOC((yylocation_stack_[(3) - (2)])), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
      }
     break;
 
   case 491:
-/* Line 664 of lalr1.cc  */
-#line 4579 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4581 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       PredicateList* pl = new PredicateList( LOC((yyloc)) );
       pl->push_back(dynamic_cast<exprnode*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -6775,8 +6773,8 @@ namespace zorba {
     break;
 
   case 492:
-/* Line 664 of lalr1.cc  */
-#line 4585 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4587 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if (PredicateList* pl = dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (1)].node)))
         pl->push_back(dynamic_cast<exprnode*>((yysemantic_stack_[(2) - (2)].expr)));
@@ -6786,32 +6784,32 @@ namespace zorba {
     break;
 
   case 493:
-/* Line 664 of lalr1.cc  */
-#line 4596 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4598 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
     }
     break;
 
   case 508:
-/* Line 664 of lalr1.cc  */
-#line 4624 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4626 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 509:
-/* Line 664 of lalr1.cc  */
-#line 4628 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4630 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
 
   case 510:
-/* Line 664 of lalr1.cc  */
-#line 4636 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4638 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = NumericLiteral::new_literal(
                 LOC((yyloc)), ParseConstants::num_decimal, *(yysemantic_stack_[(1) - (1)].decval)
@@ -6821,8 +6819,8 @@ namespace zorba {
     break;
 
   case 511:
-/* Line 664 of lalr1.cc  */
-#line 4643 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4645 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = NumericLiteral::new_literal(
                 LOC((yyloc)), ParseConstants::num_integer, *(yysemantic_stack_[(1) - (1)].ival)
@@ -6832,8 +6830,8 @@ namespace zorba {
     break;
 
   case 512:
-/* Line 664 of lalr1.cc  */
-#line 4650 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4652 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = NumericLiteral::new_literal(
                 LOC((yyloc)), ParseConstants::num_double, *(yysemantic_stack_[(1) - (1)].dval)
@@ -6843,32 +6841,32 @@ namespace zorba {
     break;
 
   case 513:
-/* Line 664 of lalr1.cc  */
-#line 4661 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4663 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new VarRef(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)));
         }
     break;
 
   case 514:
-/* Line 664 of lalr1.cc  */
-#line 4669 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4671 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ParenthesizedExpr( LOC((yyloc)), NULL);
         }
     break;
 
   case 515:
-/* Line 664 of lalr1.cc  */
-#line 4673 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4675 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ParenthesizedExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr) );
         }
     break;
 
   case 516:
-/* Line 664 of lalr1.cc  */
-#line 4681 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4683 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
 
             driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0009_CONTEXT_ITEM_EXPR));
@@ -6877,32 +6875,32 @@ namespace zorba {
     break;
 
   case 517:
-/* Line 664 of lalr1.cc  */
-#line 4692 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4694 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new OrderedExpr( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
         }
     break;
 
   case 518:
-/* Line 664 of lalr1.cc  */
-#line 4700 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4702 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new UnorderedExpr( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
         }
     break;
 
   case 519:
-/* Line 664 of lalr1.cc  */
-#line 4706 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4708 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new FunctionCall(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), NULL);
     }
     break;
 
   case 520:
-/* Line 664 of lalr1.cc  */
-#line 4710 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4712 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ArgList* argList = dynamic_cast<ArgList*>((yysemantic_stack_[(4) - (3)].node));
 
@@ -6923,8 +6921,8 @@ namespace zorba {
     break;
 
   case 521:
-/* Line 664 of lalr1.cc  */
-#line 4732 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4734 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ArgList* al = new ArgList(LOC((yyloc)));
       al->push_back(new ArgumentPlaceholder(LOC((yyloc))));
@@ -6933,8 +6931,8 @@ namespace zorba {
     break;
 
   case 522:
-/* Line 664 of lalr1.cc  */
-#line 4738 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4740 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if (ArgList* al = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node)))
         al->push_back(new ArgumentPlaceholder(LOC((yyloc))));
@@ -6943,8 +6941,8 @@ namespace zorba {
     break;
 
   case 523:
-/* Line 664 of lalr1.cc  */
-#line 4744 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4746 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ArgList *al = new ArgList( LOC((yyloc)) );
       al->push_back( (yysemantic_stack_[(1) - (1)].expr) );
@@ -6953,8 +6951,8 @@ namespace zorba {
     break;
 
   case 524:
-/* Line 664 of lalr1.cc  */
-#line 4750 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4752 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ( ArgList *al = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node)) )
         al->push_back( (yysemantic_stack_[(3) - (3)].expr) );
@@ -6963,32 +6961,32 @@ namespace zorba {
     break;
 
   case 525:
-/* Line 664 of lalr1.cc  */
-#line 4760 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4762 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
     break;
 
   case 526:
-/* Line 664 of lalr1.cc  */
-#line 4764 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4766 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
     break;
 
   case 527:
-/* Line 664 of lalr1.cc  */
-#line 4772 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4774 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new LiteralFunctionItem(LOC ((yyloc)), dynamic_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), (yysemantic_stack_[(3) - (3)].ival));
     }
     break;
 
   case 528:
-/* Line 664 of lalr1.cc  */
-#line 4780 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4782 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new InlineFunction(LOC((yyloc)),
                               &*(yysemantic_stack_[(3) - (2)].fnsig)->theParams,
@@ -6999,8 +6997,8 @@ namespace zorba {
     break;
 
   case 534:
-/* Line 664 of lalr1.cc  */
-#line 4805 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4807 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirElemConstructor(LOC((yyloc)),
                                   static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -7011,8 +7009,8 @@ namespace zorba {
     break;
 
   case 535:
-/* Line 664 of lalr1.cc  */
-#line 4813 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4815 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if (static_cast<QName*>((yysemantic_stack_[(8) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(8) - (6)].expr))->get_qname())
       {
@@ -7032,8 +7030,8 @@ namespace zorba {
     break;
 
   case 536:
-/* Line 664 of lalr1.cc  */
-#line 4830 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4832 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirElemConstructor(LOC((yyloc)),
                                   static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -7044,8 +7042,8 @@ namespace zorba {
     break;
 
   case 537:
-/* Line 664 of lalr1.cc  */
-#line 4838 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4840 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if (static_cast<QName*>((yysemantic_stack_[(9) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(9) - (7)].expr))->get_qname())
       {
@@ -7065,8 +7063,8 @@ namespace zorba {
     break;
 
   case 538:
-/* Line 664 of lalr1.cc  */
-#line 4857 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4859 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if (static_cast<QName*>((yysemantic_stack_[(9) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(9) - (7)].expr))->get_qname())
       {
@@ -7086,8 +7084,8 @@ namespace zorba {
     break;
 
   case 539:
-/* Line 664 of lalr1.cc  */
-#line 4876 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4878 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       if (static_cast<QName*>((yysemantic_stack_[(10) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(10) - (8)].expr))->get_qname())
       {
@@ -7107,8 +7105,8 @@ namespace zorba {
     break;
 
   case 540:
-/* Line 664 of lalr1.cc  */
-#line 4898 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4900 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       DirElemContentList *decl = new DirElemContentList( LOC((yyloc)) );
       decl->push_back( dynamic_cast<DirElemContent*>((yysemantic_stack_[(1) - (1)].expr)) );
@@ -7117,8 +7115,8 @@ namespace zorba {
     break;
 
   case 541:
-/* Line 664 of lalr1.cc  */
-#line 4904 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4906 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       DirElemContentList *decl = dynamic_cast<DirElemContentList*>((yysemantic_stack_[(2) - (1)].node));
       if ( decl )
@@ -7128,8 +7126,8 @@ namespace zorba {
     break;
 
   case 542:
-/* Line 664 of lalr1.cc  */
-#line 4915 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4917 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       DirAttributeList *dal = new DirAttributeList( LOC((yyloc)) );
       dal->push_back( dynamic_cast<DirAttr*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -7138,8 +7136,8 @@ namespace zorba {
     break;
 
   case 543:
-/* Line 664 of lalr1.cc  */
-#line 4921 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4923 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       DirAttributeList *dal = dynamic_cast<DirAttributeList*>((yysemantic_stack_[(2) - (1)].node));
       if ( dal )
@@ -7149,8 +7147,8 @@ namespace zorba {
     break;
 
   case 544:
-/* Line 664 of lalr1.cc  */
-#line 4932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DirAttr(LOC((yyloc)),
                        static_cast<QName*>((yysemantic_stack_[(6) - (2)].expr)),
@@ -7159,8 +7157,8 @@ namespace zorba {
     break;
 
   case 547:
-/* Line 664 of lalr1.cc  */
-#line 4947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4949 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DirAttributeValue(LOC((yyloc)),
                                  dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -7168,8 +7166,8 @@ namespace zorba {
     break;
 
   case 548:
-/* Line 664 of lalr1.cc  */
-#line 4952 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4954 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DirAttributeValue( LOC((yyloc)),
                                   dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -7177,24 +7175,24 @@ namespace zorba {
     break;
 
   case 549:
-/* Line 664 of lalr1.cc  */
-#line 4961 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4963 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new QuoteAttrContentList( LOC((yyloc)) );
     }
     break;
 
   case 550:
-/* Line 664 of lalr1.cc  */
-#line 4965 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4967 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 551:
-/* Line 664 of lalr1.cc  */
-#line 4972 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4974 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC((yyloc)) );
       qacl->push_back( new QuoteAttrValueContent( LOC((yyloc)), "\"" ) );
@@ -7203,8 +7201,8 @@ namespace zorba {
     break;
 
   case 552:
-/* Line 664 of lalr1.cc  */
-#line 4978 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4980 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC((yyloc)) );
       qacl->push_back( dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -7213,8 +7211,8 @@ namespace zorba {
     break;
 
   case 553:
-/* Line 664 of lalr1.cc  */
-#line 4984 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4986 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       QuoteAttrContentList* qacl = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
       if ( qacl )
@@ -7224,8 +7222,8 @@ namespace zorba {
     break;
 
   case 554:
-/* Line 664 of lalr1.cc  */
-#line 4991 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 4993 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       QuoteAttrContentList *qacl = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
       if ( qacl )
@@ -7235,24 +7233,24 @@ namespace zorba {
     break;
 
   case 555:
-/* Line 664 of lalr1.cc  */
-#line 5002 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5004 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AposAttrContentList( LOC((yyloc)) );
     }
     break;
 
   case 556:
-/* Line 664 of lalr1.cc  */
-#line 5006 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5008 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 557:
-/* Line 664 of lalr1.cc  */
-#line 5013 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5015 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       AposAttrContentList *aacl = new AposAttrContentList( LOC((yyloc)) );
       aacl->push_back( new AposAttrValueContent( LOC((yyloc)),"'") );
@@ -7261,8 +7259,8 @@ namespace zorba {
     break;
 
   case 558:
-/* Line 664 of lalr1.cc  */
-#line 5019 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5021 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       AposAttrContentList *aacl = new AposAttrContentList( LOC((yyloc)) );
       aacl->push_back( dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -7271,8 +7269,8 @@ namespace zorba {
     break;
 
   case 559:
-/* Line 664 of lalr1.cc  */
-#line 5025 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5027 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
       if (aacl)
@@ -7282,8 +7280,8 @@ namespace zorba {
     break;
 
   case 560:
-/* Line 664 of lalr1.cc  */
-#line 5032 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5034 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
       if ( aacl )
@@ -7293,56 +7291,56 @@ namespace zorba {
     break;
 
   case 561:
-/* Line 664 of lalr1.cc  */
-#line 5043 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5045 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new QuoteAttrValueContent( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
     }
     break;
 
   case 562:
-/* Line 664 of lalr1.cc  */
-#line 5047 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5049 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new QuoteAttrValueContent(LOC((yyloc)), dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
     }
     break;
 
   case 563:
-/* Line 664 of lalr1.cc  */
-#line 5055 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5057 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AposAttrValueContent( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
     }
     break;
 
   case 564:
-/* Line 664 of lalr1.cc  */
-#line 5059 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5061 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AposAttrValueContent(LOC((yyloc)), dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
     }
     break;
 
   case 565:
-/* Line 664 of lalr1.cc  */
-#line 5067 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5069 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirElemContent( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr) );
     }
     break;
 
   case 566:
-/* Line 664 of lalr1.cc  */
-#line 5071 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5073 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirElemContent( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
     }
     break;
 
   case 567:
-/* Line 664 of lalr1.cc  */
-#line 5075 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5077 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
       (yyval.expr) = new DirElemContent( LOC((yyloc)), cdata_h );
@@ -7350,8 +7348,8 @@ namespace zorba {
     break;
 
   case 568:
-/* Line 664 of lalr1.cc  */
-#line 5080 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5082 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
       (yyval.expr) = new DirElemContent( LOC((yyloc)), cont_h );
@@ -7359,56 +7357,56 @@ namespace zorba {
     break;
 
   case 569:
-/* Line 664 of lalr1.cc  */
-#line 5089 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5091 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CommonContent(LOC((yyloc)), ParseConstants::cont_charref, SYMTAB((yysemantic_stack_[(1) - (1)].sval)));
     }
     break;
 
   case 570:
-/* Line 664 of lalr1.cc  */
-#line 5093 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5095 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CommonContent(LOC((yyloc)), ParseConstants::cont_escape_lbrace);
     }
     break;
 
   case 571:
-/* Line 664 of lalr1.cc  */
-#line 5097 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5099 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CommonContent(LOC((yyloc)), ParseConstants::cont_escape_rbrace);
     }
     break;
 
   case 572:
-/* Line 664 of lalr1.cc  */
-#line 5101 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5103 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CommonContent(LOC((yyloc)), new EnclosedExpr(LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr)));
     }
     break;
 
   case 573:
-/* Line 664 of lalr1.cc  */
-#line 5109 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5111 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirCommentConstructor( LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (2)].sval)) );
     }
     break;
 
   case 574:
-/* Line 664 of lalr1.cc  */
-#line 5114 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5116 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirCommentConstructor( LOC((yyloc)), "" );
     }
     break;
 
   case 575:
-/* Line 664 of lalr1.cc  */
-#line 5122 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5124 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(3) - (2)].expr), (yylocation_stack_[(3) - (2)]));
       (yyval.expr) = new DirPIConstructor( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)) );
@@ -7416,8 +7414,8 @@ namespace zorba {
     break;
 
   case 576:
-/* Line 664 of lalr1.cc  */
-#line 5128 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5130 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(3) - (2)].expr), (yylocation_stack_[(3) - (2)]));
       (yyval.expr) = new DirPIConstructor( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
@@ -7425,184 +7423,184 @@ namespace zorba {
     break;
 
   case 577:
-/* Line 664 of lalr1.cc  */
-#line 5137 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5139 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CDataSection( LOC((yyloc)),SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
     }
     break;
 
   case 578:
-/* Line 664 of lalr1.cc  */
-#line 5145 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5147 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
     break;
 
   case 579:
-/* Line 664 of lalr1.cc  */
-#line 5150 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5152 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
     break;
 
   case 580:
-/* Line 664 of lalr1.cc  */
-#line 5155 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5157 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
     break;
 
   case 581:
-/* Line 664 of lalr1.cc  */
-#line 5160 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5162 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
     break;
 
   case 582:
-/* Line 664 of lalr1.cc  */
-#line 5165 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5167 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
     break;
 
   case 583:
-/* Line 664 of lalr1.cc  */
-#line 5170 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5172 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
     break;
 
   case 585:
-/* Line 664 of lalr1.cc  */
-#line 5181 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5183 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompDocConstructor( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
     }
     break;
 
   case 586:
-/* Line 664 of lalr1.cc  */
-#line 5189 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5191 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompElemConstructor(LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval))), (yysemantic_stack_[(3) - (2)].expr));
     }
     break;
 
   case 587:
-/* Line 664 of lalr1.cc  */
-#line 5193 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5195 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompElemConstructor( LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr) );
     }
     break;
 
   case 588:
-/* Line 664 of lalr1.cc  */
-#line 5199 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5201 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompAttrConstructor( LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval))), (yysemantic_stack_[(3) - (2)].expr) );
     }
     break;
 
   case 589:
-/* Line 664 of lalr1.cc  */
-#line 5203 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5205 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompAttrConstructor( LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr) );
     }
     break;
 
   case 590:
-/* Line 664 of lalr1.cc  */
-#line 5211 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5213 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompTextConstructor( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
     }
     break;
 
   case 591:
-/* Line 664 of lalr1.cc  */
-#line 5219 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5221 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompCommentConstructor( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
     }
     break;
 
   case 592:
-/* Line 664 of lalr1.cc  */
-#line 5227 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5229 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompPIConstructor(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval)), (yysemantic_stack_[(3) - (2)].expr));
     }
     break;
 
   case 593:
-/* Line 664 of lalr1.cc  */
-#line 5231 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5233 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompPIConstructor(LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
     }
     break;
 
   case 594:
-/* Line 664 of lalr1.cc  */
-#line 5239 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5241 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompNamespaceConstructor(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval)), (yysemantic_stack_[(3) - (2)].expr));
     }
     break;
 
   case 595:
-/* Line 664 of lalr1.cc  */
-#line 5243 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5245 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompNamespaceConstructor(LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
     }
     break;
 
   case 596:
-/* Line 664 of lalr1.cc  */
-#line 5251 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5253 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     }
     break;
 
   case 597:
-/* Line 664 of lalr1.cc  */
-#line 5259 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5261 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SequenceTypeAST( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), NULL );
         }
     break;
 
   case 598:
-/* Line 664 of lalr1.cc  */
-#line 5263 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5265 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SequenceTypeAST(LOC((yyloc)), (yysemantic_stack_[(2) - (1)].node), dynamic_cast<OccurrenceIndicator*>((yysemantic_stack_[(2) - (2)].node)));
         }
     break;
 
   case 599:
-/* Line 664 of lalr1.cc  */
-#line 5267 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5269 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SequenceTypeAST( LOC((yyloc)), NULL, NULL );
         }
     break;
 
   case 600:
-/* Line 664 of lalr1.cc  */
-#line 5273 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5275 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
 
             driver.addCommonLanguageWarning((yylocation_stack_[(2) - (1)]), ZED(ZWST0009_JSONIQ_EMPTY_SEQUENCE));
@@ -7611,8 +7609,8 @@ namespace zorba {
     break;
 
   case 601:
-/* Line 664 of lalr1.cc  */
-#line 5282 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5284 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OccurrenceIndicator(
                 LOC((yyloc)), ParseConstants::occurs_optionally
@@ -7621,8 +7619,8 @@ namespace zorba {
     break;
 
   case 602:
-/* Line 664 of lalr1.cc  */
-#line 5288 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5290 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OccurrenceIndicator(
                 LOC((yyloc)), ParseConstants::occurs_zero_or_more
@@ -7631,8 +7629,8 @@ namespace zorba {
     break;
 
   case 603:
-/* Line 664 of lalr1.cc  */
-#line 5294 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5296 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OccurrenceIndicator(
                 LOC((yyloc)), ParseConstants::occurs_one_or_more
@@ -7641,8 +7639,8 @@ namespace zorba {
     break;
 
   case 604:
-/* Line 664 of lalr1.cc  */
-#line 5304 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5306 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             GeneralizedAtomicType* gat = static_cast<GeneralizedAtomicType*>((yysemantic_stack_[(1) - (1)].node));
             QName* q = gat->get_qname();
@@ -7689,56 +7687,56 @@ namespace zorba {
     break;
 
   case 605:
-/* Line 664 of lalr1.cc  */
-#line 5348 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5350 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 606:
-/* Line 664 of lalr1.cc  */
-#line 5352 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5354 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ItemType( LOC((yyloc)), true );
         }
     break;
 
   case 607:
-/* Line 664 of lalr1.cc  */
-#line 5356 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5358 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new StructuredItemType(LOC((yyloc)));
         }
     break;
 
   case 608:
-/* Line 664 of lalr1.cc  */
-#line 5360 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5362 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 609:
-/* Line 664 of lalr1.cc  */
-#line 5364 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5366 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 610:
-/* Line 664 of lalr1.cc  */
-#line 5368 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5370 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 611:
-/* Line 664 of lalr1.cc  */
-#line 5375 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5377 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           TypeList* aTypeList = new TypeList(LOC ((yyloc)));
           aTypeList->push_back(dynamic_cast<SequenceTypeAST *>((yysemantic_stack_[(1) - (1)].node)));
@@ -7747,8 +7745,8 @@ namespace zorba {
     break;
 
   case 612:
-/* Line 664 of lalr1.cc  */
-#line 5381 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5383 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           TypeList* aTypeList = dynamic_cast<TypeList *>((yysemantic_stack_[(3) - (1)].node));
           aTypeList->push_back(dynamic_cast<SequenceTypeAST *>((yysemantic_stack_[(3) - (3)].node)));
@@ -7757,176 +7755,176 @@ namespace zorba {
     break;
 
   case 613:
-/* Line 664 of lalr1.cc  */
-#line 5391 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5393 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GeneralizedAtomicType( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
     }
     break;
 
   case 614:
-/* Line 664 of lalr1.cc  */
-#line 5399 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5401 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SimpleType( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
     }
     break;
 
   case 615:
-/* Line 664 of lalr1.cc  */
-#line 5407 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5409 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 616:
-/* Line 664 of lalr1.cc  */
-#line 5411 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5413 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 617:
-/* Line 664 of lalr1.cc  */
-#line 5415 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5417 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 618:
-/* Line 664 of lalr1.cc  */
-#line 5419 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5421 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 619:
-/* Line 664 of lalr1.cc  */
-#line 5423 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5425 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 620:
-/* Line 664 of lalr1.cc  */
-#line 5427 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5429 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 621:
-/* Line 664 of lalr1.cc  */
-#line 5431 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5433 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 622:
-/* Line 664 of lalr1.cc  */
-#line 5435 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5437 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 623:
-/* Line 664 of lalr1.cc  */
-#line 5439 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5441 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 624:
-/* Line 664 of lalr1.cc  */
-#line 5443 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5445 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 625:
-/* Line 664 of lalr1.cc  */
-#line 5451 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5453 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnyKindTest( LOC((yyloc)) );
     }
     break;
 
   case 626:
-/* Line 664 of lalr1.cc  */
-#line 5458 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5460 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = NULL;
     }
     break;
 
   case 627:
-/* Line 664 of lalr1.cc  */
-#line 5465 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5467 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DocumentTest(LOC((yyloc)));
     }
     break;
 
   case 628:
-/* Line 664 of lalr1.cc  */
-#line 5469 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5471 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DocumentTest(LOC((yyloc)), dynamic_cast<ElementTest*>((yysemantic_stack_[(4) - (3)].node)));
     }
     break;
 
   case 629:
-/* Line 664 of lalr1.cc  */
-#line 5473 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5475 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DocumentTest(LOC((yyloc)), dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(4) - (3)].node)));
     }
     break;
 
   case 630:
-/* Line 664 of lalr1.cc  */
-#line 5481 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5483 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new NamespaceTest(LOC((yyloc)));
     }
     break;
 
   case 631:
-/* Line 664 of lalr1.cc  */
-#line 5488 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5490 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new TextTest(LOC((yyloc)));
     }
     break;
 
   case 632:
-/* Line 664 of lalr1.cc  */
-#line 5496 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5498 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CommentTest(LOC((yyloc)));
     }
     break;
 
   case 633:
-/* Line 664 of lalr1.cc  */
-#line 5504 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5506 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new PITest( LOC((yyloc)), "" );
         }
     break;
 
   case 634:
-/* Line 664 of lalr1.cc  */
-#line 5508 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5510 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(4) - (3)].expr), (yylocation_stack_[(4) - (3)]));
             (yyval.node) = new PITest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)) );
@@ -7934,24 +7932,24 @@ namespace zorba {
     break;
 
   case 635:
-/* Line 664 of lalr1.cc  */
-#line 5513 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5515 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new PITest( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)) );
         }
     break;
 
   case 636:
-/* Line 664 of lalr1.cc  */
-#line 5521 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5523 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AttributeTest( LOC((yyloc)), NULL, NULL );
         }
     break;
 
   case 637:
-/* Line 664 of lalr1.cc  */
-#line 5525 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5527 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AttributeTest(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), NULL
@@ -7960,8 +7958,8 @@ namespace zorba {
     break;
 
   case 638:
-/* Line 664 of lalr1.cc  */
-#line 5531 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5533 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AttributeTest(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(6) - (3)].expr)), dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node))
@@ -7970,16 +7968,16 @@ namespace zorba {
     break;
 
   case 639:
-/* Line 664 of lalr1.cc  */
-#line 5537 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5539 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AttributeTest( LOC((yyloc)), NULL, NULL );
         }
     break;
 
   case 640:
-/* Line 664 of lalr1.cc  */
-#line 5541 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5543 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AttributeTest(
                 LOC((yyloc)), NULL, dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node))
@@ -7988,24 +7986,24 @@ namespace zorba {
     break;
 
   case 641:
-/* Line 664 of lalr1.cc  */
-#line 5551 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5553 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SchemaAttributeTest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)) );
         }
     break;
 
   case 642:
-/* Line 664 of lalr1.cc  */
-#line 5559 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5561 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest( LOC((yyloc)), NULL, NULL, true );
         }
     break;
 
   case 643:
-/* Line 664 of lalr1.cc  */
-#line 5563 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5565 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), NULL, true
@@ -8014,8 +8012,8 @@ namespace zorba {
     break;
 
   case 644:
-/* Line 664 of lalr1.cc  */
-#line 5569 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5571 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)),
@@ -8027,8 +8025,8 @@ namespace zorba {
     break;
 
   case 645:
-/* Line 664 of lalr1.cc  */
-#line 5578 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5580 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)),
@@ -8040,8 +8038,8 @@ namespace zorba {
     break;
 
   case 646:
-/* Line 664 of lalr1.cc  */
-#line 5587 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5589 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), NULL, NULL, true
@@ -8050,8 +8048,8 @@ namespace zorba {
     break;
 
   case 647:
-/* Line 664 of lalr1.cc  */
-#line 5593 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5595 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), NULL, dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node)), false
@@ -8060,8 +8058,8 @@ namespace zorba {
     break;
 
   case 648:
-/* Line 664 of lalr1.cc  */
-#line 5599 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5601 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), NULL, dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node)), true
@@ -8070,72 +8068,72 @@ namespace zorba {
     break;
 
   case 649:
-/* Line 664 of lalr1.cc  */
-#line 5609 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5611 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SchemaElementTest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)) );
         }
     break;
 
   case 650:
-/* Line 664 of lalr1.cc  */
-#line 5615 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5617 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new TypeName( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
         }
     break;
 
   case 651:
-/* Line 664 of lalr1.cc  */
-#line 5622 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5624 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new TypeName( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (1)].expr)), true );
         }
     break;
 
   case 652:
-/* Line 664 of lalr1.cc  */
-#line 5628 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5630 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new StringLiteral( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
         }
     break;
 
   case 653:
-/* Line 664 of lalr1.cc  */
-#line 5634 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5636 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 654:
-/* Line 664 of lalr1.cc  */
-#line 5638 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5640 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
     break;
 
   case 655:
-/* Line 664 of lalr1.cc  */
-#line 5646 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5648 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnyFunctionTest(LOC((yyloc)));
     }
     break;
 
   case 656:
-/* Line 664 of lalr1.cc  */
-#line 5654 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5656 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = new TypedFunctionTest(LOC ((yyloc)), dynamic_cast<SequenceTypeAST *>((yysemantic_stack_[(5) - (5)].node)));
         }
     break;
 
   case 657:
-/* Line 664 of lalr1.cc  */
-#line 5658 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5660 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = new TypedFunctionTest(LOC ((yyloc)),
               dynamic_cast<TypeList *>((yysemantic_stack_[(6) - (3)].node)),
@@ -8144,16 +8142,16 @@ namespace zorba {
     break;
 
   case 658:
-/* Line 664 of lalr1.cc  */
-#line 5669 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5671 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
            (yyval.node) = (yysemantic_stack_[(3) - (2)].node);
         }
     break;
 
   case 659:
-/* Line 664 of lalr1.cc  */
-#line 5675 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5677 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new RevalidationDecl(
                 LOC((yyloc)), StaticContextConsts::strict_validation
@@ -8162,8 +8160,8 @@ namespace zorba {
     break;
 
   case 660:
-/* Line 664 of lalr1.cc  */
-#line 5681 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5683 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new RevalidationDecl(
                 LOC((yyloc)), StaticContextConsts::lax_validation
@@ -8172,8 +8170,8 @@ namespace zorba {
     break;
 
   case 661:
-/* Line 664 of lalr1.cc  */
-#line 5687 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5689 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new RevalidationDecl(
                 LOC((yyloc)), StaticContextConsts::skip_validation
@@ -8182,16 +8180,16 @@ namespace zorba {
     break;
 
   case 662:
-/* Line 664 of lalr1.cc  */
-#line 5697 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5699 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr( LOC((yyloc)), store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
     break;
 
   case 663:
-/* Line 664 of lalr1.cc  */
-#line 5701 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5703 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC((yyloc)), store::UpdateConsts::AS_FIRST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -8200,8 +8198,8 @@ namespace zorba {
     break;
 
   case 664:
-/* Line 664 of lalr1.cc  */
-#line 5707 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5709 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC((yyloc)), store::UpdateConsts::AS_LAST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -8210,16 +8208,16 @@ namespace zorba {
     break;
 
   case 665:
-/* Line 664 of lalr1.cc  */
-#line 5713 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5715 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr( LOC((yyloc)), store::UpdateConsts::AFTER, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
     break;
 
   case 666:
-/* Line 664 of lalr1.cc  */
-#line 5717 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5719 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC ((yyloc)), store::UpdateConsts::BEFORE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr)
@@ -8228,16 +8226,16 @@ namespace zorba {
     break;
 
   case 667:
-/* Line 664 of lalr1.cc  */
-#line 5723 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5725 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr( LOC((yyloc)), store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
     break;
 
   case 668:
-/* Line 664 of lalr1.cc  */
-#line 5727 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5729 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC((yyloc)), store::UpdateConsts::AS_FIRST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -8246,8 +8244,8 @@ namespace zorba {
     break;
 
   case 669:
-/* Line 664 of lalr1.cc  */
-#line 5733 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5735 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                   LOC((yyloc)), store::UpdateConsts::AS_LAST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -8256,8 +8254,8 @@ namespace zorba {
     break;
 
   case 670:
-/* Line 664 of lalr1.cc  */
-#line 5739 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5741 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC ((yyloc)),
@@ -8267,8 +8265,8 @@ namespace zorba {
     break;
 
   case 671:
-/* Line 664 of lalr1.cc  */
-#line 5746 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5748 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC ((yyloc)), store::UpdateConsts::BEFORE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr)
@@ -8277,24 +8275,24 @@ namespace zorba {
     break;
 
   case 672:
-/* Line 664 of lalr1.cc  */
-#line 5756 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5758 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr) );
         }
     break;
 
   case 673:
-/* Line 664 of lalr1.cc  */
-#line 5761 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5763 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr) );
         }
     break;
 
   case 674:
-/* Line 664 of lalr1.cc  */
-#line 5769 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5771 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ReplaceExpr(
                 LOC((yyloc)), store::UpdateConsts::NODE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr)
@@ -8303,8 +8301,8 @@ namespace zorba {
     break;
 
   case 675:
-/* Line 664 of lalr1.cc  */
-#line 5775 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5777 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ReplaceExpr(
                 LOC((yyloc)), store::UpdateConsts::VALUE_OF_NODE, (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -8313,16 +8311,16 @@ namespace zorba {
     break;
 
   case 676:
-/* Line 664 of lalr1.cc  */
-#line 5785 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5787 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new RenameExpr( LOC ((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
     break;
 
   case 677:
-/* Line 664 of lalr1.cc  */
-#line 5791 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5793 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CopyVarList *cvl = dynamic_cast<CopyVarList*>((yysemantic_stack_[(7) - (3)].expr));
       (yyval.expr) = new TransformExpr( LOC((yyloc)), cvl, (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr) );
@@ -8330,8 +8328,8 @@ namespace zorba {
     break;
 
   case 678:
-/* Line 664 of lalr1.cc  */
-#line 5800 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5802 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CopyVarList* lList = new CopyVarList(LOC((yyloc)));
       lList->push_back (dynamic_cast<VarBinding*> ((yysemantic_stack_[(1) - (1)].expr)));
@@ -8340,8 +8338,8 @@ namespace zorba {
     break;
 
   case 679:
-/* Line 664 of lalr1.cc  */
-#line 5806 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5808 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       CopyVarList* lList = dynamic_cast<CopyVarList*>((yysemantic_stack_[(4) - (1)].expr));
       VarBinding* lBinding = dynamic_cast<VarBinding*>((yysemantic_stack_[(4) - (4)].expr));
@@ -8351,24 +8349,24 @@ namespace zorba {
     break;
 
   case 680:
-/* Line 664 of lalr1.cc  */
-#line 5819 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5821 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new VarBinding(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), (yysemantic_stack_[(3) - (3)].expr));
     }
     break;
 
   case 681:
-/* Line 664 of lalr1.cc  */
-#line 5825 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5827 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new TryExpr( LOC((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
     break;
 
   case 682:
-/* Line 664 of lalr1.cc  */
-#line 5832 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5834 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             CatchListExpr *cle = new CatchListExpr( LOC((yyloc)) );
             cle->push_back( static_cast<CatchExpr*>((yysemantic_stack_[(1) - (1)].expr)) );
@@ -8377,8 +8375,8 @@ namespace zorba {
     break;
 
   case 683:
-/* Line 664 of lalr1.cc  */
-#line 5838 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5840 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             CatchListExpr *cle = dynamic_cast<CatchListExpr*>((yysemantic_stack_[(2) - (1)].expr));
             if ( cle )
@@ -8388,8 +8386,8 @@ namespace zorba {
     break;
 
   case 684:
-/* Line 664 of lalr1.cc  */
-#line 5848 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5850 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC((yyloc)), *(yysemantic_stack_[(3) - (2)].name_test_list), (yysemantic_stack_[(3) - (3)].expr));
        delete (yysemantic_stack_[(3) - (2)].name_test_list);
@@ -8397,16 +8395,16 @@ namespace zorba {
     break;
 
   case 685:
-/* Line 664 of lalr1.cc  */
-#line 5857 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5859 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
     }
     break;
 
   case 686:
-/* Line 664 of lalr1.cc  */
-#line 5865 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5867 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             CatchExpr::NameTestList *ntl = new CatchExpr::NameTestList;
             ntl->push_back( static_cast<NameTest*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -8415,8 +8413,8 @@ namespace zorba {
     break;
 
   case 687:
-/* Line 664 of lalr1.cc  */
-#line 5871 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5873 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             CatchExpr::NameTestList *ntl =
                 static_cast<CatchExpr::NameTestList*>((yysemantic_stack_[(3) - (1)].name_test_list));
@@ -8426,8 +8424,8 @@ namespace zorba {
     break;
 
   case 688:
-/* Line 664 of lalr1.cc  */
-#line 5880 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5882 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTSelection( LOC((yyloc)), (yysemantic_stack_[(2) - (1)].node), (yysemantic_stack_[(2) - (2)].pos_filter_list) );
             delete (yysemantic_stack_[(2) - (2)].pos_filter_list);
@@ -8435,24 +8433,24 @@ namespace zorba {
     break;
 
   case 689:
-/* Line 664 of lalr1.cc  */
-#line 5888 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5890 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.pos_filter_list) = NULL;
         }
     break;
 
   case 690:
-/* Line 664 of lalr1.cc  */
-#line 5892 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5894 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.pos_filter_list) = (yysemantic_stack_[(1) - (1)].pos_filter_list);
         }
     break;
 
   case 691:
-/* Line 664 of lalr1.cc  */
-#line 5899 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5901 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.pos_filter_list) = new FTSelection::pos_filter_list_t;
             (yyval.pos_filter_list)->push_back( dynamic_cast<FTPosFilter*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -8460,8 +8458,8 @@ namespace zorba {
     break;
 
   case 692:
-/* Line 664 of lalr1.cc  */
-#line 5904 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5906 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yysemantic_stack_[(2) - (1)].pos_filter_list)->push_back( dynamic_cast<FTPosFilter*>((yysemantic_stack_[(2) - (2)].node)) );
             (yyval.pos_filter_list) = (yysemantic_stack_[(2) - (1)].pos_filter_list);
@@ -8469,64 +8467,64 @@ namespace zorba {
     break;
 
   case 693:
-/* Line 664 of lalr1.cc  */
-#line 5912 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5914 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 694:
-/* Line 664 of lalr1.cc  */
-#line 5916 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5918 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTOr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].node), (yysemantic_stack_[(3) - (3)].node) );
         }
     break;
 
   case 695:
-/* Line 664 of lalr1.cc  */
-#line 5923 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 696:
-/* Line 664 of lalr1.cc  */
-#line 5927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTAnd( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].node), (yysemantic_stack_[(3) - (3)].node) );
         }
     break;
 
   case 697:
-/* Line 664 of lalr1.cc  */
-#line 5934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 698:
-/* Line 664 of lalr1.cc  */
-#line 5938 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5940 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTMildNot( LOC((yyloc)), (yysemantic_stack_[(4) - (1)].node), (yysemantic_stack_[(4) - (4)].node) );
         }
     break;
 
   case 699:
-/* Line 664 of lalr1.cc  */
-#line 5945 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 700:
-/* Line 664 of lalr1.cc  */
-#line 5949 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5951 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTUnaryNot(
                 LOC((yyloc)), dynamic_cast<FTPrimaryWithOptions*>((yysemantic_stack_[(2) - (2)].node))
@@ -8535,8 +8533,8 @@ namespace zorba {
     break;
 
   case 701:
-/* Line 664 of lalr1.cc  */
-#line 5958 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5960 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTPrimaryWithOptions(
                 LOC((yyloc)),
@@ -8548,48 +8546,48 @@ namespace zorba {
     break;
 
   case 702:
-/* Line 664 of lalr1.cc  */
-#line 5970 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5972 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
     break;
 
   case 703:
-/* Line 664 of lalr1.cc  */
-#line 5974 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5976 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 704:
-/* Line 664 of lalr1.cc  */
-#line 5981 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5983 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
     break;
 
   case 705:
-/* Line 664 of lalr1.cc  */
-#line 5985 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5987 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 706:
-/* Line 664 of lalr1.cc  */
-#line 5993 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 5995 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWeight( LOC((yyloc)), dynamic_cast<exprnode*>((yysemantic_stack_[(4) - (3)].expr)) );
         }
     break;
 
   case 707:
-/* Line 664 of lalr1.cc  */
-#line 6001 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6003 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWordsTimes(
                 LOC((yyloc)),
@@ -8600,40 +8598,40 @@ namespace zorba {
     break;
 
   case 708:
-/* Line 664 of lalr1.cc  */
-#line 6009 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6011 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(3) - (2)].node);
         }
     break;
 
   case 709:
-/* Line 664 of lalr1.cc  */
-#line 6013 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6015 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 710:
-/* Line 664 of lalr1.cc  */
-#line 6020 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6022 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
     break;
 
   case 711:
-/* Line 664 of lalr1.cc  */
-#line 6024 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6026 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 712:
-/* Line 664 of lalr1.cc  */
-#line 6032 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6034 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTExtensionSelection(
                 LOC((yyloc)),
@@ -8644,24 +8642,24 @@ namespace zorba {
     break;
 
   case 713:
-/* Line 664 of lalr1.cc  */
-#line 6043 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6045 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
     break;
 
   case 714:
-/* Line 664 of lalr1.cc  */
-#line 6047 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6049 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 715:
-/* Line 664 of lalr1.cc  */
-#line 6055 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6057 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWords(
                 LOC((yyloc)),
@@ -8672,8 +8670,8 @@ namespace zorba {
     break;
 
   case 716:
-/* Line 664 of lalr1.cc  */
-#line 6067 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6069 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWordsValue(
                 LOC((yyloc)), static_cast<StringLiteral*>((yysemantic_stack_[(1) - (1)].expr)), NULL
@@ -8682,8 +8680,8 @@ namespace zorba {
     break;
 
   case 717:
-/* Line 664 of lalr1.cc  */
-#line 6073 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6075 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWordsValue(
                 LOC((yyloc)), NULL, dynamic_cast<exprnode*>((yysemantic_stack_[(3) - (2)].expr))
@@ -8692,128 +8690,128 @@ namespace zorba {
     break;
 
   case 718:
-/* Line 664 of lalr1.cc  */
-#line 6082 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6084 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), ft_anyall_mode::any );
         }
     break;
 
   case 719:
-/* Line 664 of lalr1.cc  */
-#line 6086 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6088 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 720:
-/* Line 664 of lalr1.cc  */
-#line 6094 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6096 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].ft_anyall_value) );
         }
     break;
 
   case 721:
-/* Line 664 of lalr1.cc  */
-#line 6098 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6100 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].ft_anyall_value) );
         }
     break;
 
   case 722:
-/* Line 664 of lalr1.cc  */
-#line 6102 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6104 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), ft_anyall_mode::phrase );
         }
     break;
 
   case 723:
-/* Line 664 of lalr1.cc  */
-#line 6109 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6111 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::any;
         }
     break;
 
   case 724:
-/* Line 664 of lalr1.cc  */
-#line 6113 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6115 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::any_word;
         }
     break;
 
   case 725:
-/* Line 664 of lalr1.cc  */
-#line 6120 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6122 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::all;
         }
     break;
 
   case 726:
-/* Line 664 of lalr1.cc  */
-#line 6124 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6126 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::all_words;
         }
     break;
 
   case 727:
-/* Line 664 of lalr1.cc  */
-#line 6132 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6134 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 728:
-/* Line 664 of lalr1.cc  */
-#line 6136 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6138 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 729:
-/* Line 664 of lalr1.cc  */
-#line 6140 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6142 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 730:
-/* Line 664 of lalr1.cc  */
-#line 6144 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6146 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 731:
-/* Line 664 of lalr1.cc  */
-#line 6148 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6150 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 732:
-/* Line 664 of lalr1.cc  */
-#line 6156 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6158 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTOrder( LOC((yyloc)) );
         }
     break;
 
   case 733:
-/* Line 664 of lalr1.cc  */
-#line 6164 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6166 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWindow(
                 LOC((yyloc)),
@@ -8824,8 +8822,8 @@ namespace zorba {
     break;
 
   case 734:
-/* Line 664 of lalr1.cc  */
-#line 6176 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6178 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTDistance(
                 LOC((yyloc)),
@@ -8836,32 +8834,32 @@ namespace zorba {
     break;
 
   case 735:
-/* Line 664 of lalr1.cc  */
-#line 6188 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6190 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTUnit( LOC((yyloc)), ft_unit::words );
         }
     break;
 
   case 736:
-/* Line 664 of lalr1.cc  */
-#line 6192 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6194 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTUnit( LOC((yyloc)), ft_unit::sentences );
         }
     break;
 
   case 737:
-/* Line 664 of lalr1.cc  */
-#line 6196 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6198 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTUnit( LOC((yyloc)), ft_unit::paragraphs );
         }
     break;
 
   case 738:
-/* Line 664 of lalr1.cc  */
-#line 6204 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6206 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             FTMatchOptions *mo = new FTMatchOptions( LOC((yyloc)) );
             mo->push_back( dynamic_cast<FTMatchOption*>((yysemantic_stack_[(2) - (2)].node)) );
@@ -8870,8 +8868,8 @@ namespace zorba {
     break;
 
   case 739:
-/* Line 664 of lalr1.cc  */
-#line 6210 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6212 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             FTMatchOptions *mo = dynamic_cast<FTMatchOptions*>((yysemantic_stack_[(3) - (1)].node));
             mo->push_back( dynamic_cast<FTMatchOption*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -8880,104 +8878,104 @@ namespace zorba {
     break;
 
   case 740:
-/* Line 664 of lalr1.cc  */
-#line 6220 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6222 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 741:
-/* Line 664 of lalr1.cc  */
-#line 6224 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6226 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 742:
-/* Line 664 of lalr1.cc  */
-#line 6228 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6230 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 743:
-/* Line 664 of lalr1.cc  */
-#line 6232 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6234 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 744:
-/* Line 664 of lalr1.cc  */
-#line 6236 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6238 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 745:
-/* Line 664 of lalr1.cc  */
-#line 6240 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6242 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 746:
-/* Line 664 of lalr1.cc  */
-#line 6244 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6246 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 747:
-/* Line 664 of lalr1.cc  */
-#line 6248 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6250 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 748:
-/* Line 664 of lalr1.cc  */
-#line 6256 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6258 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::sensitive );
         }
     break;
 
   case 749:
-/* Line 664 of lalr1.cc  */
-#line 6260 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6262 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::insensitive );
         }
     break;
 
   case 750:
-/* Line 664 of lalr1.cc  */
-#line 6264 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6266 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::lower );
         }
     break;
 
   case 751:
-/* Line 664 of lalr1.cc  */
-#line 6268 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6270 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::upper );
         }
     break;
 
   case 752:
-/* Line 664 of lalr1.cc  */
-#line 6276 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6278 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTDiacriticsOption(
                 LOC((yyloc)), ft_diacritics_mode::sensitive
@@ -8986,8 +8984,8 @@ namespace zorba {
     break;
 
   case 753:
-/* Line 664 of lalr1.cc  */
-#line 6282 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6284 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTDiacriticsOption(
                 LOC((yyloc)), ft_diacritics_mode::insensitive
@@ -8996,8 +8994,8 @@ namespace zorba {
     break;
 
   case 754:
-/* Line 664 of lalr1.cc  */
-#line 6292 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6294 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTExtensionOption(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)), SYMTAB((yysemantic_stack_[(3) - (3)].sval))
@@ -9006,24 +9004,24 @@ namespace zorba {
     break;
 
   case 755:
-/* Line 664 of lalr1.cc  */
-#line 6302 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6304 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStemOption( LOC((yyloc)), ft_stem_mode::stemming );
         }
     break;
 
   case 756:
-/* Line 664 of lalr1.cc  */
-#line 6306 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6308 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStemOption( LOC((yyloc)), ft_stem_mode::no_stemming );
         }
     break;
 
   case 757:
-/* Line 664 of lalr1.cc  */
-#line 6314 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6316 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             FTThesaurusOption::thesaurus_id_list_t *til = NULL;
             if ( (yysemantic_stack_[(2) - (2)].node) ) {
@@ -9036,8 +9034,8 @@ namespace zorba {
     break;
 
   case 758:
-/* Line 664 of lalr1.cc  */
-#line 6324 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6326 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             FTThesaurusOption::thesaurus_id_list_t *til = (yysemantic_stack_[(5) - (4)].thesaurus_id_list);
             if ( (yysemantic_stack_[(5) - (3)].node) ) {
@@ -9051,48 +9049,48 @@ namespace zorba {
     break;
 
   case 759:
-/* Line 664 of lalr1.cc  */
-#line 6335 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6337 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTThesaurusOption( LOC((yyloc)), NULL, false, true );
         }
     break;
 
   case 760:
-/* Line 664 of lalr1.cc  */
-#line 6342 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6344 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
     break;
 
   case 761:
-/* Line 664 of lalr1.cc  */
-#line 6346 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6348 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
     break;
 
   case 762:
-/* Line 664 of lalr1.cc  */
-#line 6353 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6355 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.thesaurus_id_list) = NULL;
         }
     break;
 
   case 763:
-/* Line 664 of lalr1.cc  */
-#line 6357 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6359 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.thesaurus_id_list) = (yysemantic_stack_[(2) - (2)].thesaurus_id_list);
         }
     break;
 
   case 764:
-/* Line 664 of lalr1.cc  */
-#line 6364 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6366 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.thesaurus_id_list) = new FTThesaurusOption::thesaurus_id_list_t;
             (yyval.thesaurus_id_list)->push_back( dynamic_cast<FTThesaurusID*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -9100,8 +9098,8 @@ namespace zorba {
     break;
 
   case 765:
-/* Line 664 of lalr1.cc  */
-#line 6369 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6371 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yysemantic_stack_[(3) - (1)].thesaurus_id_list)->push_back( dynamic_cast<FTThesaurusID*>((yysemantic_stack_[(3) - (3)].node)) );
             (yyval.thesaurus_id_list) = (yysemantic_stack_[(3) - (1)].thesaurus_id_list);
@@ -9109,8 +9107,8 @@ namespace zorba {
     break;
 
   case 766:
-/* Line 664 of lalr1.cc  */
-#line 6378 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6380 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTThesaurusID(
                 LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (2)].sval)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)), dynamic_cast<FTRange*>((yysemantic_stack_[(4) - (4)].node))
@@ -9119,40 +9117,40 @@ namespace zorba {
     break;
 
   case 767:
-/* Line 664 of lalr1.cc  */
-#line 6387 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6389 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.sval) = 0;
         }
     break;
 
   case 768:
-/* Line 664 of lalr1.cc  */
-#line 6391 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6393 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.sval) = (yysemantic_stack_[(2) - (2)].sval);
         }
     break;
 
   case 769:
-/* Line 664 of lalr1.cc  */
-#line 6398 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6400 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
     break;
 
   case 770:
-/* Line 664 of lalr1.cc  */
-#line 6402 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6404 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(2) - (1)].node);
         }
     break;
 
   case 771:
-/* Line 664 of lalr1.cc  */
-#line 6410 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6412 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWordOption(
                 LOC((yyloc)),
@@ -9164,8 +9162,8 @@ namespace zorba {
     break;
 
   case 772:
-/* Line 664 of lalr1.cc  */
-#line 6419 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6421 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWordOption(
                 LOC((yyloc)), NULL, (yysemantic_stack_[(4) - (4)].incl_excl_list), ft_stop_words_mode::with_default
@@ -9175,8 +9173,8 @@ namespace zorba {
     break;
 
   case 773:
-/* Line 664 of lalr1.cc  */
-#line 6426 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6428 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWordOption(
                 LOC((yyloc)), NULL, NULL, ft_stop_words_mode::without
@@ -9185,24 +9183,24 @@ namespace zorba {
     break;
 
   case 774:
-/* Line 664 of lalr1.cc  */
-#line 6436 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6438 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWords( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)), NULL );
         }
     break;
 
   case 775:
-/* Line 664 of lalr1.cc  */
-#line 6440 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6442 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWords( LOC((yyloc)), "", (yysemantic_stack_[(3) - (2)].strlist) );
         }
     break;
 
   case 776:
-/* Line 664 of lalr1.cc  */
-#line 6447 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6449 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             string_list_t *sl = new string_list_t;
             sl->push_back( SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
@@ -9211,8 +9209,8 @@ namespace zorba {
     break;
 
   case 777:
-/* Line 664 of lalr1.cc  */
-#line 6453 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6455 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             if ( (yysemantic_stack_[(3) - (1)].strlist) )
                 (yysemantic_stack_[(3) - (1)].strlist)->push_back( SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
@@ -9221,24 +9219,24 @@ namespace zorba {
     break;
 
   case 778:
-/* Line 664 of lalr1.cc  */
-#line 6462 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6464 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.incl_excl_list) = NULL;
         }
     break;
 
   case 779:
-/* Line 664 of lalr1.cc  */
-#line 6466 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6468 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.incl_excl_list) = (yysemantic_stack_[(1) - (1)].incl_excl_list);
         }
     break;
 
   case 780:
-/* Line 664 of lalr1.cc  */
-#line 6473 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6475 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.incl_excl_list) = new FTStopWordOption::incl_excl_list_t;
             (yyval.incl_excl_list)->push_back( dynamic_cast<FTStopWordsInclExcl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -9246,8 +9244,8 @@ namespace zorba {
     break;
 
   case 781:
-/* Line 664 of lalr1.cc  */
-#line 6478 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6480 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             FTStopWordOption::incl_excl_list_t *iel = (yysemantic_stack_[(2) - (1)].incl_excl_list);
             if ( !iel )
@@ -9258,8 +9256,8 @@ namespace zorba {
     break;
 
   case 782:
-/* Line 664 of lalr1.cc  */
-#line 6490 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6492 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWordsInclExcl(
                 LOC((yyloc)),
@@ -9270,8 +9268,8 @@ namespace zorba {
     break;
 
   case 783:
-/* Line 664 of lalr1.cc  */
-#line 6498 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6500 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWordsInclExcl(
                 LOC((yyloc)),
@@ -9282,96 +9280,96 @@ namespace zorba {
     break;
 
   case 784:
-/* Line 664 of lalr1.cc  */
-#line 6510 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6512 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTLanguageOption( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
         }
     break;
 
   case 785:
-/* Line 664 of lalr1.cc  */
-#line 6518 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6520 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWildCardOption( LOC((yyloc)), ft_wild_card_mode::with );
         }
     break;
 
   case 786:
-/* Line 664 of lalr1.cc  */
-#line 6522 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6524 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWildCardOption( LOC((yyloc)), ft_wild_card_mode::without );
         }
     break;
 
   case 787:
-/* Line 664 of lalr1.cc  */
-#line 6530 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6532 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTContent( LOC((yyloc)), ft_content_mode::at_start );
         }
     break;
 
   case 788:
-/* Line 664 of lalr1.cc  */
-#line 6534 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6536 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTContent( LOC((yyloc)), ft_content_mode::at_end );
         }
     break;
 
   case 789:
-/* Line 664 of lalr1.cc  */
-#line 6538 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6540 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTContent( LOC((yyloc)), ft_content_mode::entire );
         }
     break;
 
   case 790:
-/* Line 664 of lalr1.cc  */
-#line 6546 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6548 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTTimes( LOC((yyloc)), dynamic_cast<FTRange*>((yysemantic_stack_[(3) - (2)].node)) );
         }
     break;
 
   case 791:
-/* Line 664 of lalr1.cc  */
-#line 6554 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6556 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::exactly, (yysemantic_stack_[(2) - (2)].expr) );
         }
     break;
 
   case 792:
-/* Line 664 of lalr1.cc  */
-#line 6558 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6560 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::at_least, (yysemantic_stack_[(3) - (3)].expr) );
         }
     break;
 
   case 793:
-/* Line 664 of lalr1.cc  */
-#line 6562 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6564 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::at_most, (yysemantic_stack_[(3) - (3)].expr) );
         }
     break;
 
   case 794:
-/* Line 664 of lalr1.cc  */
-#line 6566 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6568 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::from_to, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr) );
         }
     break;
 
   case 795:
-/* Line 664 of lalr1.cc  */
-#line 6574 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6576 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTScope(
                 LOC((yyloc)),
@@ -9382,8 +9380,8 @@ namespace zorba {
     break;
 
   case 796:
-/* Line 664 of lalr1.cc  */
-#line 6582 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6584 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTScope(
                 LOC((yyloc)),
@@ -9394,80 +9392,80 @@ namespace zorba {
     break;
 
   case 797:
-/* Line 664 of lalr1.cc  */
-#line 6594 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6596 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTBigUnit( LOC((yyloc)), ft_big_unit::sentence );
         }
     break;
 
   case 798:
-/* Line 664 of lalr1.cc  */
-#line 6598 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6600 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTBigUnit( LOC((yyloc)), ft_big_unit::paragraph );
         }
     break;
 
   case 799:
-/* Line 664 of lalr1.cc  */
-#line 6606 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6608 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTIgnoreOption( LOC((yyloc)), static_cast<UnionExpr*>((yysemantic_stack_[(3) - (3)].expr)) );
         }
     break;
 
   case 800:
-/* Line 664 of lalr1.cc  */
-#line 6612 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6614 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONArrayConstructor( LOC((yyloc)), NULL );
         }
     break;
 
   case 801:
-/* Line 664 of lalr1.cc  */
-#line 6616 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6618 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONArrayConstructor( LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr) );
         }
     break;
 
   case 802:
-/* Line 664 of lalr1.cc  */
-#line 6623 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6625 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONObjectConstructor(LOC((yyloc)), NULL, false);
         }
     break;
 
   case 803:
-/* Line 664 of lalr1.cc  */
-#line 6627 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6629 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONObjectConstructor(LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr), false);
         }
     break;
 
   case 804:
-/* Line 664 of lalr1.cc  */
-#line 6634 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6636 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONObjectConstructor(LOC((yyloc)), NULL, true);
         }
     break;
 
   case 805:
-/* Line 664 of lalr1.cc  */
-#line 6638 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6640 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONObjectConstructor(LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr), true);
         }
     break;
 
   case 806:
-/* Line 664 of lalr1.cc  */
-#line 6646 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6648 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONDirectObjectConstructor(LOC((yyloc)),
                                                dynamic_cast<JSONPairList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -9475,8 +9473,8 @@ namespace zorba {
     break;
 
   case 807:
-/* Line 664 of lalr1.cc  */
-#line 6656 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6658 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(3) - (1)].expr), (yylocation_stack_[(3) - (1)]));
 
@@ -9491,8 +9489,8 @@ namespace zorba {
     break;
 
   case 808:
-/* Line 664 of lalr1.cc  */
-#line 6670 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6672 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           JSONPairList* jpl = new JSONPairList(LOC((yyloc)));
           jpl->push_back(new JSONPairConstructor(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)));
@@ -9501,8 +9499,8 @@ namespace zorba {
     break;
 
   case 809:
-/* Line 664 of lalr1.cc  */
-#line 6676 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6678 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yysemantic_stack_[(5) - (1)].node));
           assert(jpl);
@@ -9512,8 +9510,8 @@ namespace zorba {
     break;
 
   case 810:
-/* Line 664 of lalr1.cc  */
-#line 6685 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6687 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(5) - (3)].expr), (yylocation_stack_[(5) - (3)]));
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yysemantic_stack_[(5) - (1)].node));
@@ -9525,8 +9523,8 @@ namespace zorba {
     break;
 
   case 811:
-/* Line 664 of lalr1.cc  */
-#line 6698 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6700 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONObjectInsertExpr(LOC((yyloc)),
                                         (yysemantic_stack_[(5) - (3)].expr),
@@ -9535,8 +9533,8 @@ namespace zorba {
     break;
 
   case 812:
-/* Line 664 of lalr1.cc  */
-#line 6704 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6706 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yysemantic_stack_[(5) - (3)].node));
           (yyval.expr) = new JSONObjectInsertExpr(
@@ -9549,24 +9547,24 @@ namespace zorba {
     break;
 
   case 813:
-/* Line 664 of lalr1.cc  */
-#line 6714 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6716 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONArrayInsertExpr(LOC((yyloc)), (yysemantic_stack_[(8) - (3)].expr), (yysemantic_stack_[(8) - (5)].expr), (yysemantic_stack_[(8) - (8)].expr));
         }
     break;
 
   case 814:
-/* Line 664 of lalr1.cc  */
-#line 6721 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6723 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONArrayAppendExpr(LOC((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
         }
     break;
 
   case 815:
-/* Line 664 of lalr1.cc  */
-#line 6728 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6730 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
@@ -9584,8 +9582,8 @@ namespace zorba {
     break;
 
   case 816:
-/* Line 664 of lalr1.cc  */
-#line 6746 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6748 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
@@ -9610,8 +9608,8 @@ namespace zorba {
     break;
 
   case 817:
-/* Line 664 of lalr1.cc  */
-#line 6771 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6773 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
@@ -9631,1416 +9629,1415 @@ namespace zorba {
     break;
 
   case 818:
-/* Line 664 of lalr1.cc  */
-#line 6791 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6793 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonItem);
         }
     break;
 
   case 819:
-/* Line 664 of lalr1.cc  */
-#line 6795 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6797 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonArray);
         }
     break;
 
   case 820:
-/* Line 664 of lalr1.cc  */
-#line 6799 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6801 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonObject);
         }
     break;
 
   case 823:
-/* Line 664 of lalr1.cc  */
-#line 6817 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6819 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))); }
     break;
 
   case 824:
-/* Line 664 of lalr1.cc  */
-#line 6818 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6820 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("attribute"))); }
     break;
 
   case 825:
-/* Line 664 of lalr1.cc  */
-#line 6819 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6821 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("comment"))); }
     break;
 
   case 826:
-/* Line 664 of lalr1.cc  */
-#line 6820 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6822 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("document-node"))); }
     break;
 
   case 827:
-/* Line 664 of lalr1.cc  */
-#line 6821 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6823 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("namespace-node"))); }
     break;
 
   case 828:
-/* Line 664 of lalr1.cc  */
-#line 6822 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6824 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("element"))); }
     break;
 
   case 829:
-/* Line 664 of lalr1.cc  */
-#line 6823 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6825 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("item"))); }
     break;
 
   case 830:
-/* Line 664 of lalr1.cc  */
-#line 6824 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6826 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("if"))); }
     break;
 
   case 831:
-/* Line 664 of lalr1.cc  */
-#line 6825 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6827 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("node"))); }
     break;
 
   case 832:
-/* Line 664 of lalr1.cc  */
-#line 6826 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6828 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("processing-instruction"))); }
     break;
 
   case 833:
-/* Line 664 of lalr1.cc  */
-#line 6827 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6829 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema-attribute"))); }
     break;
 
   case 834:
-/* Line 664 of lalr1.cc  */
-#line 6828 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6830 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema-element"))); }
     break;
 
   case 835:
-/* Line 664 of lalr1.cc  */
-#line 6829 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6831 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("text"))); }
     break;
 
   case 836:
-/* Line 664 of lalr1.cc  */
-#line 6830 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6832 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("typeswitch"))); }
     break;
 
   case 837:
-/* Line 664 of lalr1.cc  */
-#line 6831 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6833 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("switch"))); }
     break;
 
   case 838:
-/* Line 664 of lalr1.cc  */
-#line 6832 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6834 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("empty-sequence"))); }
     break;
 
   case 839:
-/* Line 664 of lalr1.cc  */
-#line 6833 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6835 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("while"))); }
     break;
 
   case 840:
-/* Line 664 of lalr1.cc  */
-#line 6834 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6836 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("json"))); }
     break;
 
   case 841:
-/* Line 664 of lalr1.cc  */
-#line 6835 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6837 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("array"))); }
     break;
 
   case 842:
-/* Line 664 of lalr1.cc  */
-#line 6836 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6838 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("object"))); }
     break;
 
   case 843:
-/* Line 664 of lalr1.cc  */
-#line 6837 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6839 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("json-item"))); }
     break;
 
   case 844:
-/* Line 664 of lalr1.cc  */
-#line 6838 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6840 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("structured-item"))); }
     break;
 
   case 846:
-/* Line 664 of lalr1.cc  */
-#line 6843 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6845 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))); }
     break;
 
   case 847:
-/* Line 664 of lalr1.cc  */
-#line 6844 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6846 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("xquery"))); }
     break;
 
   case 848:
-/* Line 664 of lalr1.cc  */
-#line 6845 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6847 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("empty"))); }
     break;
 
   case 849:
-/* Line 664 of lalr1.cc  */
-#line 6846 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6848 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("boundary-space"))); }
     break;
 
   case 850:
-/* Line 664 of lalr1.cc  */
-#line 6847 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6849 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ft-option"))); }
     break;
 
   case 851:
-/* Line 664 of lalr1.cc  */
-#line 6848 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6850 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("base-uri"))); }
     break;
 
   case 852:
-/* Line 664 of lalr1.cc  */
-#line 6849 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6851 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lax"))); }
     break;
 
   case 853:
-/* Line 664 of lalr1.cc  */
-#line 6850 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6852 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("strict"))); }
     break;
 
   case 854:
-/* Line 664 of lalr1.cc  */
-#line 6851 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6853 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("idiv"))); }
     break;
 
   case 855:
-/* Line 664 of lalr1.cc  */
-#line 6852 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6854 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("document"))); }
     break;
 
   case 856:
-/* Line 664 of lalr1.cc  */
-#line 6853 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6855 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ftnot"))); }
     break;
 
   case 857:
-/* Line 664 of lalr1.cc  */
-#line 6854 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6856 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("not"))); }
     break;
 
   case 858:
-/* Line 664 of lalr1.cc  */
-#line 6855 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6857 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sensitive"))); }
     break;
 
   case 859:
-/* Line 664 of lalr1.cc  */
-#line 6856 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6858 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("insensitive"))); }
     break;
 
   case 860:
-/* Line 664 of lalr1.cc  */
-#line 6857 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6859 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("diacritics"))); }
     break;
 
   case 861:
-/* Line 664 of lalr1.cc  */
-#line 6858 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6860 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("without"))); }
     break;
 
   case 862:
-/* Line 664 of lalr1.cc  */
-#line 6859 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6861 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stemming"))); }
     break;
 
   case 863:
-/* Line 664 of lalr1.cc  */
-#line 6860 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6862 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("thesaurus"))); }
     break;
 
   case 864:
-/* Line 664 of lalr1.cc  */
-#line 6861 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6863 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stop"))); }
     break;
 
   case 865:
-/* Line 664 of lalr1.cc  */
-#line 6862 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6864 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("wildcards"))); }
     break;
 
   case 866:
-/* Line 664 of lalr1.cc  */
-#line 6863 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6865 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("entire"))); }
     break;
 
   case 867:
-/* Line 664 of lalr1.cc  */
-#line 6864 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6866 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("content"))); }
     break;
 
   case 868:
-/* Line 664 of lalr1.cc  */
-#line 6865 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6867 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("word"))); }
     break;
 
   case 869:
-/* Line 664 of lalr1.cc  */
-#line 6866 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6868 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("start"))); }
     break;
 
   case 870:
-/* Line 664 of lalr1.cc  */
-#line 6867 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6869 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("end"))); }
     break;
 
   case 871:
-/* Line 664 of lalr1.cc  */
-#line 6868 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6870 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("most"))); }
     break;
 
   case 872:
-/* Line 664 of lalr1.cc  */
-#line 6869 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6871 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("skip"))); }
     break;
 
   case 873:
-/* Line 664 of lalr1.cc  */
-#line 6870 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6872 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("copy"))); }
     break;
 
   case 874:
-/* Line 664 of lalr1.cc  */
-#line 6871 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6873 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("general"))); }
     break;
 
   case 875:
-/* Line 664 of lalr1.cc  */
-#line 6872 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6874 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("value"))); }
     break;
 
   case 876:
-/* Line 664 of lalr1.cc  */
-#line 6873 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6875 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("eq"))); }
     break;
 
   case 877:
-/* Line 664 of lalr1.cc  */
-#line 6874 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6876 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ne"))); }
     break;
 
   case 878:
-/* Line 664 of lalr1.cc  */
-#line 6875 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6877 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lt"))); }
     break;
 
   case 879:
-/* Line 664 of lalr1.cc  */
-#line 6876 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6878 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("le"))); }
     break;
 
   case 880:
-/* Line 664 of lalr1.cc  */
-#line 6877 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6879 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("gt"))); }
     break;
 
   case 881:
-/* Line 664 of lalr1.cc  */
-#line 6878 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6880 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ge"))); }
     break;
 
   case 882:
-/* Line 664 of lalr1.cc  */
-#line 6879 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6881 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("at"))); }
     break;
 
   case 883:
-/* Line 664 of lalr1.cc  */
-#line 6880 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6882 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("context"))); }
     break;
 
   case 884:
-/* Line 664 of lalr1.cc  */
-#line 6881 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6883 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("variable"))); }
     break;
 
   case 885:
-/* Line 664 of lalr1.cc  */
-#line 6882 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6884 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("return"))); }
     break;
 
   case 886:
-/* Line 664 of lalr1.cc  */
-#line 6883 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6885 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("for"))); }
     break;
 
   case 887:
-/* Line 664 of lalr1.cc  */
-#line 6884 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6886 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("from"))); }
     break;
 
   case 888:
-/* Line 664 of lalr1.cc  */
-#line 6885 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6887 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("allowing"))); }
     break;
 
   case 889:
-/* Line 664 of lalr1.cc  */
-#line 6886 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6888 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sliding"))); }
     break;
 
   case 890:
-/* Line 664 of lalr1.cc  */
-#line 6887 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6889 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("tumbling"))); }
     break;
 
   case 891:
-/* Line 664 of lalr1.cc  */
-#line 6888 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6890 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("previous"))); }
     break;
 
   case 892:
-/* Line 664 of lalr1.cc  */
-#line 6889 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6891 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("next"))); }
     break;
 
   case 893:
-/* Line 664 of lalr1.cc  */
-#line 6890 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6892 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("only"))); }
     break;
 
   case 894:
-/* Line 664 of lalr1.cc  */
-#line 6891 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6893 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("when"))); }
     break;
 
   case 895:
-/* Line 664 of lalr1.cc  */
-#line 6892 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6894 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("count"))); }
     break;
 
   case 896:
-/* Line 664 of lalr1.cc  */
-#line 6893 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6895 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("in"))); }
     break;
 
   case 897:
-/* Line 664 of lalr1.cc  */
-#line 6894 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6896 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("let"))); }
     break;
 
   case 898:
-/* Line 664 of lalr1.cc  */
-#line 6895 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6897 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("where"))); }
     break;
 
   case 899:
-/* Line 664 of lalr1.cc  */
-#line 6896 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6898 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("offset"))); }
     break;
 
   case 900:
-/* Line 664 of lalr1.cc  */
-#line 6897 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6899 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("limit"))); }
     break;
 
   case 901:
-/* Line 664 of lalr1.cc  */
-#line 6898 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6900 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("by"))); }
     break;
 
   case 902:
-/* Line 664 of lalr1.cc  */
-#line 6899 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6901 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("group"))); }
     break;
 
   case 903:
-/* Line 664 of lalr1.cc  */
-#line 6900 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6902 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("order"))); }
     break;
 
   case 904:
-/* Line 664 of lalr1.cc  */
-#line 6901 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6903 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stable"))); }
     break;
 
   case 905:
-/* Line 664 of lalr1.cc  */
-#line 6902 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6904 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ascending"))); }
     break;
 
   case 906:
-/* Line 664 of lalr1.cc  */
-#line 6903 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6905 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descending"))); }
     break;
 
   case 907:
-/* Line 664 of lalr1.cc  */
-#line 6904 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6906 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("greatest"))); }
     break;
 
   case 908:
-/* Line 664 of lalr1.cc  */
-#line 6905 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6907 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("least"))); }
     break;
 
   case 909:
-/* Line 664 of lalr1.cc  */
-#line 6906 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6908 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("collation"))); }
     break;
 
   case 910:
-/* Line 664 of lalr1.cc  */
-#line 6907 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6909 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("some"))); }
     break;
 
   case 911:
-/* Line 664 of lalr1.cc  */
-#line 6908 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6910 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("every"))); }
     break;
 
   case 912:
-/* Line 664 of lalr1.cc  */
-#line 6909 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6911 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("satisfies"))); }
     break;
 
   case 913:
-/* Line 664 of lalr1.cc  */
-#line 6910 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6912 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("case"))); }
     break;
 
   case 914:
-/* Line 664 of lalr1.cc  */
-#line 6911 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6913 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("as"))); }
     break;
 
   case 915:
-/* Line 664 of lalr1.cc  */
-#line 6912 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6914 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("then"))); }
     break;
 
   case 916:
-/* Line 664 of lalr1.cc  */
-#line 6913 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6915 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("else"))); }
     break;
 
   case 917:
-/* Line 664 of lalr1.cc  */
-#line 6914 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6916 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("or"))); }
     break;
 
   case 918:
-/* Line 664 of lalr1.cc  */
-#line 6915 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6917 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("and"))); }
     break;
 
   case 919:
-/* Line 664 of lalr1.cc  */
-#line 6916 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6918 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("instance"))); }
     break;
 
   case 920:
-/* Line 664 of lalr1.cc  */
-#line 6917 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6919 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("of"))); }
     break;
 
   case 921:
-/* Line 664 of lalr1.cc  */
-#line 6918 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6920 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("castable"))); }
     break;
 
   case 922:
-/* Line 664 of lalr1.cc  */
-#line 6919 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6921 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("to"))); }
     break;
 
   case 923:
-/* Line 664 of lalr1.cc  */
-#line 6920 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6922 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("div"))); }
     break;
 
   case 924:
-/* Line 664 of lalr1.cc  */
-#line 6921 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6923 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("mod"))); }
     break;
 
   case 925:
-/* Line 664 of lalr1.cc  */
-#line 6922 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6924 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("union"))); }
     break;
 
   case 926:
-/* Line 664 of lalr1.cc  */
-#line 6923 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("intersect"))); }
     break;
 
   case 927:
-/* Line 664 of lalr1.cc  */
-#line 6924 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("except"))); }
     break;
 
   case 928:
-/* Line 664 of lalr1.cc  */
-#line 6925 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("validate"))); }
     break;
 
   case 929:
-/* Line 664 of lalr1.cc  */
-#line 6926 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("type"))); }
     break;
 
   case 930:
-/* Line 664 of lalr1.cc  */
-#line 6927 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("cast"))); }
     break;
 
   case 931:
-/* Line 664 of lalr1.cc  */
-#line 6928 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("treat"))); }
     break;
 
   case 932:
-/* Line 664 of lalr1.cc  */
-#line 6929 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("is"))); }
     break;
 
   case 933:
-/* Line 664 of lalr1.cc  */
-#line 6930 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preserve"))); }
     break;
 
   case 934:
-/* Line 664 of lalr1.cc  */
-#line 6931 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("strip"))); }
     break;
 
   case 935:
-/* Line 664 of lalr1.cc  */
-#line 6932 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("namespace"))); }
     break;
 
   case 936:
-/* Line 664 of lalr1.cc  */
-#line 6933 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("external"))); }
     break;
 
   case 937:
-/* Line 664 of lalr1.cc  */
-#line 6934 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("encoding"))); }
     break;
 
   case 938:
-/* Line 664 of lalr1.cc  */
-#line 6935 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6937 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("no-preserve"))); }
     break;
 
   case 939:
-/* Line 664 of lalr1.cc  */
-#line 6936 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6938 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("inherit"))); }
     break;
 
   case 940:
-/* Line 664 of lalr1.cc  */
-#line 6937 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6939 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("no-inherit"))); }
     break;
 
   case 941:
-/* Line 664 of lalr1.cc  */
-#line 6938 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6940 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("declare"))); }
     break;
 
   case 942:
-/* Line 664 of lalr1.cc  */
-#line 6939 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6941 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("construction"))); }
     break;
 
   case 943:
-/* Line 664 of lalr1.cc  */
-#line 6940 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6942 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ordering"))); }
     break;
 
   case 944:
-/* Line 664 of lalr1.cc  */
-#line 6941 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6943 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("default"))); }
     break;
 
   case 945:
-/* Line 664 of lalr1.cc  */
-#line 6942 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("copy-namespaces"))); }
     break;
 
   case 946:
-/* Line 664 of lalr1.cc  */
-#line 6943 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6945 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("option"))); }
     break;
 
   case 947:
-/* Line 664 of lalr1.cc  */
-#line 6944 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6946 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("version"))); }
     break;
 
   case 948:
-/* Line 664 of lalr1.cc  */
-#line 6945 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("import"))); }
     break;
 
   case 949:
-/* Line 664 of lalr1.cc  */
-#line 6946 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6948 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema"))); }
     break;
 
   case 950:
-/* Line 664 of lalr1.cc  */
-#line 6947 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6949 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("module"))); }
     break;
 
   case 951:
-/* Line 664 of lalr1.cc  */
-#line 6948 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6950 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("function"))); }
     break;
 
   case 952:
-/* Line 664 of lalr1.cc  */
-#line 6949 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6951 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("score"))); }
     break;
 
   case 953:
-/* Line 664 of lalr1.cc  */
-#line 6950 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6952 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("contains"))); }
     break;
 
   case 954:
-/* Line 664 of lalr1.cc  */
-#line 6951 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("weight"))); }
     break;
 
   case 955:
-/* Line 664 of lalr1.cc  */
-#line 6952 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6954 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("window"))); }
     break;
 
   case 956:
-/* Line 664 of lalr1.cc  */
-#line 6953 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6955 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("distance"))); }
     break;
 
   case 957:
-/* Line 664 of lalr1.cc  */
-#line 6954 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6956 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("occurs"))); }
     break;
 
   case 958:
-/* Line 664 of lalr1.cc  */
-#line 6955 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6957 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("times"))); }
     break;
 
   case 959:
-/* Line 664 of lalr1.cc  */
-#line 6956 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6958 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("same"))); }
     break;
 
   case 960:
-/* Line 664 of lalr1.cc  */
-#line 6957 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6959 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("different"))); }
     break;
 
   case 961:
-/* Line 664 of lalr1.cc  */
-#line 6958 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6960 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lowercase"))); }
     break;
 
   case 962:
-/* Line 664 of lalr1.cc  */
-#line 6959 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6961 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("uppercase"))); }
     break;
 
   case 963:
-/* Line 664 of lalr1.cc  */
-#line 6960 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6962 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("relationship"))); }
     break;
 
   case 964:
-/* Line 664 of lalr1.cc  */
-#line 6961 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6963 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("levels"))); }
     break;
 
   case 965:
-/* Line 664 of lalr1.cc  */
-#line 6962 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6964 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("language"))); }
     break;
 
   case 966:
-/* Line 664 of lalr1.cc  */
-#line 6963 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6965 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("any"))); }
     break;
 
   case 967:
-/* Line 664 of lalr1.cc  */
-#line 6964 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6966 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("all"))); }
     break;
 
   case 968:
-/* Line 664 of lalr1.cc  */
-#line 6965 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6967 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("exactly"))); }
     break;
 
   case 969:
-/* Line 664 of lalr1.cc  */
-#line 6966 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6968 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("words"))); }
     break;
 
   case 970:
-/* Line 664 of lalr1.cc  */
-#line 6967 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6969 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sentences"))); }
     break;
 
   case 971:
-/* Line 664 of lalr1.cc  */
-#line 6968 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6970 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sentence"))); }
     break;
 
   case 972:
-/* Line 664 of lalr1.cc  */
-#line 6969 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6971 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("phrase"))); }
     break;
 
   case 973:
-/* Line 664 of lalr1.cc  */
-#line 6970 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6972 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("paragraph"))); }
     break;
 
   case 974:
-/* Line 664 of lalr1.cc  */
-#line 6971 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6973 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("paragraphs"))); }
     break;
 
   case 975:
-/* Line 664 of lalr1.cc  */
-#line 6972 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6974 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("modify"))); }
     break;
 
   case 976:
-/* Line 664 of lalr1.cc  */
-#line 6973 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6975 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("first"))); }
     break;
 
   case 977:
-/* Line 664 of lalr1.cc  */
-#line 6974 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6976 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("append"))); }
     break;
 
   case 978:
-/* Line 664 of lalr1.cc  */
-#line 6975 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6977 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("insert"))); }
     break;
 
   case 979:
-/* Line 664 of lalr1.cc  */
-#line 6976 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6978 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("replace"))); }
     break;
 
   case 980:
-/* Line 664 of lalr1.cc  */
-#line 6977 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6979 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("rename"))); }
     break;
 
   case 981:
-/* Line 664 of lalr1.cc  */
-#line 6978 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6980 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("delete"))); }
     break;
 
   case 982:
-/* Line 664 of lalr1.cc  */
-#line 6979 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6981 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("before"))); }
     break;
 
   case 983:
-/* Line 664 of lalr1.cc  */
-#line 6980 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6982 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("after"))); }
     break;
 
   case 984:
-/* Line 664 of lalr1.cc  */
-#line 6981 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6983 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("revalidation"))); }
     break;
 
   case 985:
-/* Line 664 of lalr1.cc  */
-#line 6982 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6984 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("with"))); }
     break;
 
   case 986:
-/* Line 664 of lalr1.cc  */
-#line 6983 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6985 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("nodes"))); }
     break;
 
   case 987:
-/* Line 664 of lalr1.cc  */
-#line 6984 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6986 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("last"))); }
     break;
 
   case 988:
-/* Line 664 of lalr1.cc  */
-#line 6985 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6987 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("into"))); }
     break;
 
   case 989:
-/* Line 664 of lalr1.cc  */
-#line 6986 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6988 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("simple"))); }
     break;
 
   case 990:
-/* Line 664 of lalr1.cc  */
-#line 6987 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6989 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sequential"))); }
     break;
 
   case 991:
-/* Line 664 of lalr1.cc  */
-#line 6988 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6990 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("updating"))); }
     break;
 
   case 992:
-/* Line 664 of lalr1.cc  */
-#line 6989 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6991 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ordered"))); }
     break;
 
   case 993:
-/* Line 664 of lalr1.cc  */
-#line 6990 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6992 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("unordered"))); }
     break;
 
   case 994:
-/* Line 664 of lalr1.cc  */
-#line 6991 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6993 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("returning"))); }
     break;
 
   case 995:
-/* Line 664 of lalr1.cc  */
-#line 6992 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6994 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("exit"))); }
     break;
 
   case 996:
-/* Line 664 of lalr1.cc  */
-#line 6993 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6995 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("loop"))); }
     break;
 
   case 997:
-/* Line 664 of lalr1.cc  */
-#line 6994 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6996 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("break"))); }
     break;
 
   case 998:
-/* Line 664 of lalr1.cc  */
-#line 6995 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6997 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("continue"))); }
     break;
 
   case 999:
-/* Line 664 of lalr1.cc  */
-#line 6996 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6998 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("try"))); }
     break;
 
   case 1000:
-/* Line 664 of lalr1.cc  */
-#line 6997 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 6999 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("catch"))); }
     break;
 
   case 1001:
-/* Line 664 of lalr1.cc  */
-#line 6998 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7000 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("using"))); }
     break;
 
   case 1002:
-/* Line 664 of lalr1.cc  */
-#line 6999 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7001 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("set"))); }
     break;
 
   case 1003:
-/* Line 664 of lalr1.cc  */
-#line 7000 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7002 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("index"))); }
     break;
 
   case 1004:
-/* Line 664 of lalr1.cc  */
-#line 7001 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7003 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("unique"))); }
     break;
 
   case 1005:
-/* Line 664 of lalr1.cc  */
-#line 7002 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7004 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("non"))); }
     break;
 
   case 1006:
-/* Line 664 of lalr1.cc  */
-#line 7003 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7005 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("on"))); }
     break;
 
   case 1007:
-/* Line 664 of lalr1.cc  */
-#line 7004 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7006 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("range"))); }
     break;
 
   case 1008:
-/* Line 664 of lalr1.cc  */
-#line 7005 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7007 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("equality"))); }
     break;
 
   case 1009:
-/* Line 664 of lalr1.cc  */
-#line 7006 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7008 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("manually"))); }
     break;
 
   case 1010:
-/* Line 664 of lalr1.cc  */
-#line 7007 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7009 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("automatically"))); }
     break;
 
   case 1011:
-/* Line 664 of lalr1.cc  */
-#line 7008 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7010 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("maintained"))); }
     break;
 
   case 1012:
-/* Line 664 of lalr1.cc  */
-#line 7009 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7011 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("decimal-format"))); }
     break;
 
   case 1013:
-/* Line 664 of lalr1.cc  */
-#line 7010 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7012 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("decimal-separator"))); }
     break;
 
   case 1014:
-/* Line 664 of lalr1.cc  */
-#line 7011 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7013 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("grouping-separator"))); }
     break;
 
   case 1015:
-/* Line 664 of lalr1.cc  */
-#line 7012 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7014 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("infinity"))); }
     break;
 
   case 1016:
-/* Line 664 of lalr1.cc  */
-#line 7013 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7015 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("minus-sign"))); }
     break;
 
   case 1017:
-/* Line 664 of lalr1.cc  */
-#line 7014 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7016 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("NaN"))); }
     break;
 
   case 1018:
-/* Line 664 of lalr1.cc  */
-#line 7015 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7017 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("percent"))); }
     break;
 
   case 1019:
-/* Line 664 of lalr1.cc  */
-#line 7016 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7018 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("per-mille"))); }
     break;
 
   case 1020:
-/* Line 664 of lalr1.cc  */
-#line 7017 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7019 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("zero-digit"))); }
     break;
 
   case 1021:
-/* Line 664 of lalr1.cc  */
-#line 7018 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7020 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("digit"))); }
     break;
 
   case 1022:
-/* Line 664 of lalr1.cc  */
-#line 7019 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7021 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("pattern-separator"))); }
     break;
 
   case 1023:
-/* Line 664 of lalr1.cc  */
-#line 7020 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7022 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("collection"))); }
     break;
 
   case 1024:
-/* Line 664 of lalr1.cc  */
-#line 7021 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7023 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("const"))); }
     break;
 
   case 1025:
-/* Line 664 of lalr1.cc  */
-#line 7022 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7024 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("append-only"))); }
     break;
 
   case 1026:
-/* Line 664 of lalr1.cc  */
-#line 7023 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7025 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("queue"))); }
     break;
 
   case 1027:
-/* Line 664 of lalr1.cc  */
-#line 7024 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7026 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("mutable"))); }
     break;
 
   case 1028:
-/* Line 664 of lalr1.cc  */
-#line 7025 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7027 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("read-only"))); }
     break;
 
   case 1029:
-/* Line 664 of lalr1.cc  */
-#line 7026 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7028 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("integrity"))); }
     break;
 
   case 1030:
-/* Line 664 of lalr1.cc  */
-#line 7027 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7029 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("constraint"))); }
     break;
 
   case 1031:
-/* Line 664 of lalr1.cc  */
-#line 7028 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7030 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("check"))); }
     break;
 
   case 1032:
-/* Line 664 of lalr1.cc  */
-#line 7029 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7031 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("key"))); }
     break;
 
   case 1033:
-/* Line 664 of lalr1.cc  */
-#line 7030 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7032 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("foreach"))); }
     break;
 
   case 1034:
-/* Line 664 of lalr1.cc  */
-#line 7031 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7033 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("foreign"))); }
     break;
 
   case 1035:
-/* Line 664 of lalr1.cc  */
-#line 7032 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7034 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("keys"))); }
     break;
 
   case 1036:
-/* Line 664 of lalr1.cc  */
-#line 7033 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7035 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ancestor"))); }
     break;
 
   case 1037:
-/* Line 664 of lalr1.cc  */
-#line 7034 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7036 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("child"))); }
     break;
 
   case 1038:
-/* Line 664 of lalr1.cc  */
-#line 7035 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7037 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descendant"))); }
     break;
 
   case 1039:
-/* Line 664 of lalr1.cc  */
-#line 7036 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7038 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("parent"))); }
     break;
 
   case 1040:
-/* Line 664 of lalr1.cc  */
-#line 7037 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7039 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preceding"))); }
     break;
 
   case 1041:
-/* Line 664 of lalr1.cc  */
-#line 7038 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7040 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("self"))); }
     break;
 
   case 1042:
-/* Line 664 of lalr1.cc  */
-#line 7039 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7041 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("following"))); }
     break;
 
   case 1043:
-/* Line 664 of lalr1.cc  */
-#line 7040 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7042 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ancestor-or-self"))); }
     break;
 
   case 1044:
-/* Line 664 of lalr1.cc  */
-#line 7041 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7043 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     break;
 
   case 1045:
-/* Line 664 of lalr1.cc  */
-#line 7042 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7044 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     break;
 
   case 1046:
-/* Line 664 of lalr1.cc  */
-#line 7043 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7045 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
     break;
 
   case 1047:
-/* Line 664 of lalr1.cc  */
-#line 7044 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7046 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("position"))); }
     break;
 
   case 1048:
-/* Line 664 of lalr1.cc  */
-#line 7046 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7048 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("null"))); }
     break;
 
   case 1049:
-/* Line 664 of lalr1.cc  */
-#line 7047 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7049 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("true"))); }
     break;
 
   case 1050:
-/* Line 664 of lalr1.cc  */
-#line 7048 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7050 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("false"))); }
     break;
 
   case 1051:
-/* Line 664 of lalr1.cc  */
-#line 7049 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7051 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("select"))); }
     break;
 
   case 1052:
-/* Line 664 of lalr1.cc  */
-#line 7050 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7052 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("jsoniq"))); }
     break;
 
   case 1053:
-/* Line 664 of lalr1.cc  */
-#line 7056 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 661 of lalr1.cc  */
+#line 7058 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), true); }
     break;
 
 
-/* Line 664 of lalr1.cc  */
-#line 11040 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-      default:
-        break;
+/* Line 661 of lalr1.cc  */
+#line 11038 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+	default:
+          break;
       }
-
     /* User semantic actions sometimes alter yychar, and that requires
        that yytoken be updated with the new translation.  We take the
        approach of translating immediately before every use of yytoken.
@@ -11091,19 +11088,20 @@ namespace zorba {
     yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
-        /* If just tried and failed to reuse lookahead token after an
-           error, discard it.  */
-        if (yychar <= yyeof_)
-          {
-            /* Return failure if at end of input.  */
-            if (yychar == yyeof_)
-              YYABORT;
-          }
-        else
-          {
-            yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
-            yychar = yyempty_;
-          }
+	/* If just tried and failed to reuse lookahead token after an
+	 error, discard it.  */
+
+	if (yychar <= yyeof_)
+	  {
+	  /* Return failure if at end of input.  */
+	  if (yychar == yyeof_)
+	    YYABORT;
+	  }
+	else
+	  {
+	    yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
+	    yychar = yyempty_;
+	  }
       }
 
     /* Else will try to reuse lookahead token after shifting the error
@@ -11152,7 +11150,7 @@ namespace zorba {
 
 	/* Pop the current state because it cannot handle the error token.  */
 	if (yystate_stack_.height () == 1)
-	  YYABORT;
+	YYABORT;
 
 	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
@@ -11200,42 +11198,16 @@ namespace zorba {
     /* Do not reclaim the symbols of the rule which action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
-    while (1 < yystate_stack_.height ())
+    while (yystate_stack_.height () != 1)
       {
-        yydestruct_ ("Cleanup: popping",
-                     yystos_[yystate_stack_[0]],
-                     &yysemantic_stack_[0],
-                     &yylocation_stack_[0]);
-        yypop_ ();
+	yydestruct_ ("Cleanup: popping",
+		   yystos_[yystate_stack_[0]],
+		   &yysemantic_stack_[0],
+		   &yylocation_stack_[0]);
+	yypop_ ();
       }
 
     return yyresult;
-    }
-    catch (...)
-      {
-        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
-                 << std::endl;
-        // Do not try to display the values of the reclaimed symbols,
-        // as their printer might throw an exception.
-        if (yychar != yyempty_)
-          {
-            /* Make sure we have latest lookahead translation.  See
-               comments at user semantic actions for why this is
-               necessary.  */
-            yytoken = yytranslate_ (yychar);
-            yydestruct_ (YY_NULL, yytoken, &yylval, &yylloc);
-          }
-
-        while (1 < yystate_stack_.height ())
-          {
-            yydestruct_ (YY_NULL,
-                         yystos_[yystate_stack_[0]],
-                         &yysemantic_stack_[0],
-                         &yylocation_stack_[0]);
-            yypop_ ();
-          }
-        throw;
-      }
   }
 
   // Generate an error message.
@@ -16791,91 +16763,91 @@ namespace zorba {
     2353,  2355,  2356,  2357,  2358,  2359,  2360,  2365,  2373,  2405,
     2413,  2421,  2428,  2435,  2446,  2455,  2464,  2473,  2486,  2494,
     2502,  2510,  2525,  2530,  2538,  2552,  2569,  2594,  2602,  2609,
-    2620,  2629,  2637,  2642,  2655,  2672,  2673,  2674,  2675,  2676,
-    2677,  2682,  2683,  2686,  2687,  2688,  2689,  2690,  2693,  2694,
-    2695,  2696,  2697,  2702,  2716,  2724,  2727,  2735,  2740,  2748,
-    2753,  2758,  2766,  2775,  2787,  2797,  2810,  2818,  2819,  2820,
-    2825,  2826,  2827,  2828,  2829,  2830,  2831,  2835,  2842,  2849,
-    2856,  2866,  2871,  2880,  2889,  2899,  2902,  2911,  2918,  2926,
-    2938,  2948,  2958,  2968,  2978,  2988,  2998,  3008,  3019,  3028,
-    3038,  3048,  3064,  3073,  3082,  3090,  3096,  3108,  3116,  3126,
-    3134,  3146,  3152,  3163,  3165,  3169,  3177,  3181,  3186,  3190,
-    3194,  3198,  3208,  3216,  3223,  3229,  3239,  3243,  3251,  3259,
-    3267,  3275,  3287,  3295,  3301,  3311,  3317,  3327,  3331,  3341,
-    3347,  3353,  3359,  3368,  3377,  3386,  3399,  3403,  3411,  3417,
-    3427,  3435,  3444,  3457,  3464,  3476,  3480,  3492,  3499,  3505,
-    3514,  3521,  3527,  3538,  3545,  3551,  3560,  3569,  3576,  3587,
-    3594,  3606,  3612,  3624,  3630,  3641,  3647,  3658,  3664,  3675,
-    3681,  3692,  3701,  3705,  3718,  3728,  3739,  3743,  3758,  3762,
-    3772,  3779,  3788,  3798,  3797,  3815,  3824,  3833,  3846,  3850,
-    3862,  3866,  3874,  3877,  3884,  3888,  3897,  3901,  3905,  3913,
-    3917,  3923,  3929,  3935,  3945,  3949,  3953,  3961,  3965,  3971,
-    3981,  3985,  3995,  3999,  4009,  4013,  4023,  4027,  4037,  4041,
-    4050,  4054,  4062,  4066,  4070,  4074,  4084,  4085,  4086,  4090,
-    4095,  4103,  4107,  4111,  4115,  4119,  4123,  4131,  4135,  4139,
-    4147,  4151,  4155,  4159,  4170,  4180,  4186,  4196,  4200,  4204,
-    4210,  4214,  4224,  4234,  4287,  4296,  4306,  4310,  4319,  4320,
-    4326,  4332,  4340,  4346,  4359,  4365,  4376,  4380,  4384,  4388,
-    4392,  4398,  4404,  4413,  4417,  4426,  4430,  4442,  4446,  4450,
-    4456,  4460,  4475,  4476,  4482,  4486,  4496,  4500,  4504,  4508,
-    4520,  4525,  4529,  4533,  4539,  4543,  4549,  4555,  4561,  4565,
-    4569,  4578,  4584,  4595,  4603,  4604,  4605,  4606,  4607,  4608,
-    4609,  4610,  4611,  4612,  4615,  4616,  4617,  4618,  4623,  4627,
-    4635,  4642,  4649,  4660,  4668,  4672,  4680,  4691,  4699,  4705,
-    4709,  4731,  4737,  4743,  4749,  4759,  4763,  4771,  4779,  4791,
-    4792,  4797,  4798,  4799,  4804,  4812,  4829,  4837,  4854,  4873,
-    4897,  4903,  4914,  4920,  4931,  4940,  4942,  4946,  4951,  4961,
-    4964,  4971,  4977,  4983,  4990,  5002,  5005,  5012,  5018,  5024,
-    5031,  5042,  5046,  5054,  5058,  5066,  5070,  5074,  5079,  5088,
-    5092,  5096,  5100,  5108,  5113,  5121,  5127,  5136,  5144,  5149,
-    5154,  5159,  5164,  5169,  5174,  5180,  5188,  5192,  5198,  5202,
-    5210,  5218,  5226,  5230,  5238,  5242,  5250,  5258,  5262,  5266,
-    5272,  5281,  5287,  5293,  5303,  5347,  5351,  5355,  5359,  5363,
-    5367,  5374,  5380,  5390,  5398,  5406,  5410,  5414,  5418,  5422,
-    5426,  5430,  5434,  5438,  5442,  5450,  5457,  5464,  5468,  5472,
-    5480,  5487,  5495,  5503,  5507,  5512,  5520,  5524,  5530,  5536,
-    5540,  5550,  5558,  5562,  5568,  5577,  5586,  5592,  5598,  5608,
-    5614,  5621,  5627,  5633,  5637,  5645,  5653,  5657,  5668,  5674,
-    5680,  5686,  5696,  5700,  5706,  5712,  5716,  5722,  5726,  5732,
-    5738,  5745,  5755,  5760,  5768,  5774,  5784,  5790,  5799,  5805,
-    5818,  5824,  5831,  5837,  5847,  5856,  5864,  5870,  5879,  5887,
-    5891,  5898,  5903,  5911,  5915,  5922,  5926,  5933,  5937,  5944,
-    5948,  5957,  5970,  5973,  5981,  5984,  5992,  6000,  6008,  6012,
-    6020,  6023,  6031,  6043,  6046,  6054,  6066,  6072,  6082,  6085,
-    6093,  6097,  6101,  6109,  6112,  6120,  6123,  6131,  6135,  6139,
-    6143,  6147,  6155,  6163,  6175,  6187,  6191,  6195,  6203,  6209,
-    6219,  6223,  6227,  6231,  6235,  6239,  6243,  6247,  6255,  6259,
-    6263,  6267,  6275,  6281,  6291,  6301,  6305,  6313,  6323,  6334,
-    6341,  6345,  6353,  6356,  6363,  6368,  6377,  6387,  6390,  6397,
-    6401,  6409,  6418,  6425,  6435,  6439,  6446,  6452,  6462,  6465,
-    6472,  6477,  6489,  6497,  6509,  6517,  6521,  6529,  6533,  6537,
-    6545,  6553,  6557,  6561,  6565,  6573,  6581,  6593,  6597,  6605,
-    6611,  6615,  6622,  6626,  6633,  6637,  6645,  6655,  6669,  6675,
-    6684,  6697,  6703,  6713,  6720,  6727,  6745,  6770,  6790,  6794,
-    6798,  6811,  6816,  6817,  6818,  6819,  6820,  6821,  6822,  6823,
-    6824,  6825,  6826,  6827,  6828,  6829,  6830,  6831,  6832,  6833,
-    6834,  6835,  6836,  6837,  6838,  6842,  6843,  6844,  6845,  6846,
-    6847,  6848,  6849,  6850,  6851,  6852,  6853,  6854,  6855,  6856,
-    6857,  6858,  6859,  6860,  6861,  6862,  6863,  6864,  6865,  6866,
-    6867,  6868,  6869,  6870,  6871,  6872,  6873,  6874,  6875,  6876,
-    6877,  6878,  6879,  6880,  6881,  6882,  6883,  6884,  6885,  6886,
-    6887,  6888,  6889,  6890,  6891,  6892,  6893,  6894,  6895,  6896,
-    6897,  6898,  6899,  6900,  6901,  6902,  6903,  6904,  6905,  6906,
-    6907,  6908,  6909,  6910,  6911,  6912,  6913,  6914,  6915,  6916,
-    6917,  6918,  6919,  6920,  6921,  6922,  6923,  6924,  6925,  6926,
-    6927,  6928,  6929,  6930,  6931,  6932,  6933,  6934,  6935,  6936,
-    6937,  6938,  6939,  6940,  6941,  6942,  6943,  6944,  6945,  6946,
-    6947,  6948,  6949,  6950,  6951,  6952,  6953,  6954,  6955,  6956,
-    6957,  6958,  6959,  6960,  6961,  6962,  6963,  6964,  6965,  6966,
-    6967,  6968,  6969,  6970,  6971,  6972,  6973,  6974,  6975,  6976,
-    6977,  6978,  6979,  6980,  6981,  6982,  6983,  6984,  6985,  6986,
-    6987,  6988,  6989,  6990,  6991,  6992,  6993,  6994,  6995,  6996,
-    6997,  6998,  6999,  7000,  7001,  7002,  7003,  7004,  7005,  7006,
-    7007,  7008,  7009,  7010,  7011,  7012,  7013,  7014,  7015,  7016,
-    7017,  7018,  7019,  7020,  7021,  7022,  7023,  7024,  7025,  7026,
-    7027,  7028,  7029,  7030,  7031,  7032,  7033,  7034,  7035,  7036,
-    7037,  7038,  7039,  7040,  7041,  7042,  7043,  7044,  7046,  7047,
-    7048,  7049,  7050,  7056
+    2620,  2629,  2637,  2642,  2655,  2674,  2675,  2676,  2677,  2678,
+    2679,  2684,  2685,  2688,  2689,  2690,  2691,  2692,  2695,  2696,
+    2697,  2698,  2699,  2704,  2718,  2726,  2729,  2737,  2742,  2750,
+    2755,  2760,  2768,  2777,  2789,  2799,  2812,  2820,  2821,  2822,
+    2827,  2828,  2829,  2830,  2831,  2832,  2833,  2837,  2844,  2851,
+    2858,  2868,  2873,  2882,  2891,  2901,  2904,  2913,  2920,  2928,
+    2940,  2950,  2960,  2970,  2980,  2990,  3000,  3010,  3021,  3030,
+    3040,  3050,  3066,  3075,  3084,  3092,  3098,  3110,  3118,  3128,
+    3136,  3148,  3154,  3165,  3167,  3171,  3179,  3183,  3188,  3192,
+    3196,  3200,  3210,  3218,  3225,  3231,  3241,  3245,  3253,  3261,
+    3269,  3277,  3289,  3297,  3303,  3313,  3319,  3329,  3333,  3343,
+    3349,  3355,  3361,  3370,  3379,  3388,  3401,  3405,  3413,  3419,
+    3429,  3437,  3446,  3459,  3466,  3478,  3482,  3494,  3501,  3507,
+    3516,  3523,  3529,  3540,  3547,  3553,  3562,  3571,  3578,  3589,
+    3596,  3608,  3614,  3626,  3632,  3643,  3649,  3660,  3666,  3677,
+    3683,  3694,  3703,  3707,  3720,  3730,  3741,  3745,  3760,  3764,
+    3774,  3781,  3790,  3800,  3799,  3817,  3826,  3835,  3848,  3852,
+    3864,  3868,  3876,  3879,  3886,  3890,  3899,  3903,  3907,  3915,
+    3919,  3925,  3931,  3937,  3947,  3951,  3955,  3963,  3967,  3973,
+    3983,  3987,  3997,  4001,  4011,  4015,  4025,  4029,  4039,  4043,
+    4052,  4056,  4064,  4068,  4072,  4076,  4086,  4087,  4088,  4092,
+    4097,  4105,  4109,  4113,  4117,  4121,  4125,  4133,  4137,  4141,
+    4149,  4153,  4157,  4161,  4172,  4182,  4188,  4198,  4202,  4206,
+    4212,  4216,  4226,  4236,  4289,  4298,  4308,  4312,  4321,  4322,
+    4328,  4334,  4342,  4348,  4361,  4367,  4378,  4382,  4386,  4390,
+    4394,  4400,  4406,  4415,  4419,  4428,  4432,  4444,  4448,  4452,
+    4458,  4462,  4477,  4478,  4484,  4488,  4498,  4502,  4506,  4510,
+    4522,  4527,  4531,  4535,  4541,  4545,  4551,  4557,  4563,  4567,
+    4571,  4580,  4586,  4597,  4605,  4606,  4607,  4608,  4609,  4610,
+    4611,  4612,  4613,  4614,  4617,  4618,  4619,  4620,  4625,  4629,
+    4637,  4644,  4651,  4662,  4670,  4674,  4682,  4693,  4701,  4707,
+    4711,  4733,  4739,  4745,  4751,  4761,  4765,  4773,  4781,  4793,
+    4794,  4799,  4800,  4801,  4806,  4814,  4831,  4839,  4856,  4875,
+    4899,  4905,  4916,  4922,  4933,  4942,  4944,  4948,  4953,  4963,
+    4966,  4973,  4979,  4985,  4992,  5004,  5007,  5014,  5020,  5026,
+    5033,  5044,  5048,  5056,  5060,  5068,  5072,  5076,  5081,  5090,
+    5094,  5098,  5102,  5110,  5115,  5123,  5129,  5138,  5146,  5151,
+    5156,  5161,  5166,  5171,  5176,  5182,  5190,  5194,  5200,  5204,
+    5212,  5220,  5228,  5232,  5240,  5244,  5252,  5260,  5264,  5268,
+    5274,  5283,  5289,  5295,  5305,  5349,  5353,  5357,  5361,  5365,
+    5369,  5376,  5382,  5392,  5400,  5408,  5412,  5416,  5420,  5424,
+    5428,  5432,  5436,  5440,  5444,  5452,  5459,  5466,  5470,  5474,
+    5482,  5489,  5497,  5505,  5509,  5514,  5522,  5526,  5532,  5538,
+    5542,  5552,  5560,  5564,  5570,  5579,  5588,  5594,  5600,  5610,
+    5616,  5623,  5629,  5635,  5639,  5647,  5655,  5659,  5670,  5676,
+    5682,  5688,  5698,  5702,  5708,  5714,  5718,  5724,  5728,  5734,
+    5740,  5747,  5757,  5762,  5770,  5776,  5786,  5792,  5801,  5807,
+    5820,  5826,  5833,  5839,  5849,  5858,  5866,  5872,  5881,  5889,
+    5893,  5900,  5905,  5913,  5917,  5924,  5928,  5935,  5939,  5946,
+    5950,  5959,  5972,  5975,  5983,  5986,  5994,  6002,  6010,  6014,
+    6022,  6025,  6033,  6045,  6048,  6056,  6068,  6074,  6084,  6087,
+    6095,  6099,  6103,  6111,  6114,  6122,  6125,  6133,  6137,  6141,
+    6145,  6149,  6157,  6165,  6177,  6189,  6193,  6197,  6205,  6211,
+    6221,  6225,  6229,  6233,  6237,  6241,  6245,  6249,  6257,  6261,
+    6265,  6269,  6277,  6283,  6293,  6303,  6307,  6315,  6325,  6336,
+    6343,  6347,  6355,  6358,  6365,  6370,  6379,  6389,  6392,  6399,
+    6403,  6411,  6420,  6427,  6437,  6441,  6448,  6454,  6464,  6467,
+    6474,  6479,  6491,  6499,  6511,  6519,  6523,  6531,  6535,  6539,
+    6547,  6555,  6559,  6563,  6567,  6575,  6583,  6595,  6599,  6607,
+    6613,  6617,  6624,  6628,  6635,  6639,  6647,  6657,  6671,  6677,
+    6686,  6699,  6705,  6715,  6722,  6729,  6747,  6772,  6792,  6796,
+    6800,  6813,  6818,  6819,  6820,  6821,  6822,  6823,  6824,  6825,
+    6826,  6827,  6828,  6829,  6830,  6831,  6832,  6833,  6834,  6835,
+    6836,  6837,  6838,  6839,  6840,  6844,  6845,  6846,  6847,  6848,
+    6849,  6850,  6851,  6852,  6853,  6854,  6855,  6856,  6857,  6858,
+    6859,  6860,  6861,  6862,  6863,  6864,  6865,  6866,  6867,  6868,
+    6869,  6870,  6871,  6872,  6873,  6874,  6875,  6876,  6877,  6878,
+    6879,  6880,  6881,  6882,  6883,  6884,  6885,  6886,  6887,  6888,
+    6889,  6890,  6891,  6892,  6893,  6894,  6895,  6896,  6897,  6898,
+    6899,  6900,  6901,  6902,  6903,  6904,  6905,  6906,  6907,  6908,
+    6909,  6910,  6911,  6912,  6913,  6914,  6915,  6916,  6917,  6918,
+    6919,  6920,  6921,  6922,  6923,  6924,  6925,  6926,  6927,  6928,
+    6929,  6930,  6931,  6932,  6933,  6934,  6935,  6936,  6937,  6938,
+    6939,  6940,  6941,  6942,  6943,  6944,  6945,  6946,  6947,  6948,
+    6949,  6950,  6951,  6952,  6953,  6954,  6955,  6956,  6957,  6958,
+    6959,  6960,  6961,  6962,  6963,  6964,  6965,  6966,  6967,  6968,
+    6969,  6970,  6971,  6972,  6973,  6974,  6975,  6976,  6977,  6978,
+    6979,  6980,  6981,  6982,  6983,  6984,  6985,  6986,  6987,  6988,
+    6989,  6990,  6991,  6992,  6993,  6994,  6995,  6996,  6997,  6998,
+    6999,  7000,  7001,  7002,  7003,  7004,  7005,  7006,  7007,  7008,
+    7009,  7010,  7011,  7012,  7013,  7014,  7015,  7016,  7017,  7018,
+    7019,  7020,  7021,  7022,  7023,  7024,  7025,  7026,  7027,  7028,
+    7029,  7030,  7031,  7032,  7033,  7034,  7035,  7036,  7037,  7038,
+    7039,  7040,  7041,  7042,  7043,  7044,  7045,  7046,  7048,  7049,
+    7050,  7051,  7052,  7058
   };
 
   // Print the state stack on the debug stream.
@@ -16996,10 +16968,10 @@ namespace zorba {
 
 
 } // zorba
-/* Line 1135 of lalr1.cc  */
-#line 17001 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
-/* Line 1136 of lalr1.cc  */
-#line 7060 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
+/* Line 1106 of lalr1.cc  */
+#line 16973 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.cpp"
+/* Line 1107 of lalr1.cc  */
+#line 7062 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
 
 namespace zorba {
@@ -17036,7 +17008,7 @@ void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string
 
 
 
-      if ((msg.find("(missing comma \",\" between expressions?)") != string::npos &&
+      if ((msg.find("unexpected expression") != string::npos &&
             ! contains(prevErr->msg, "expecting", ","))
           ||
           (msg.find("missing semicolon \";\" after") != string::npos &&

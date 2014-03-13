@@ -5265,7 +5265,7 @@ YY_RULE_SETUP
 #line 816 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_scanner.l"
 {
 
-  yylval->err = getDriver()->parserErr(std::string("syntax error, unexpected \"") + yytext + "\", separator needed after numeric literal", *yylloc);
+  yylval->err = getDriver()->parserErr(std::string("syntax error: unexpected \"") + yytext + "\", separator needed after numeric literal", *yylloc);
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
@@ -5328,7 +5328,7 @@ case 276:
 /* rule 276 can match eol */
 YY_RULE_SETUP
 #line 847 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_scanner.l"
-{ yylval->err = getDriver()->parserErr(std::string("syntax error, unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
+{ yylval->err = getDriver()->parserErr(std::string("syntax error: unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 case 277:
 YY_RULE_SETUP

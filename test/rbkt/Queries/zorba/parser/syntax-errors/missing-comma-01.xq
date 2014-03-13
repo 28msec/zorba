@@ -24,5 +24,5 @@ true()'
 }
 catch err:XPST0003
 {
-  $err:description eq 'invalid expression: syntax error, unexpected expression (missing comma "," between expressions?)'
+  $err:description eq 'invalid expression: syntax error, unexpected expression'
 }
