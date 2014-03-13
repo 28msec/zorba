@@ -70,8 +70,6 @@ public:
   {
   }
 
-  virtual ~RewriteRule() { }
-
   RuleKind getKind() const { return theKind; }
 
   const std::string& getRuleName() const { return theRuleName; }
@@ -92,8 +90,6 @@ public:
   {
   }
 
-  virtual ~PrePostRewriteRule() { }
-
   expr* apply(RewriterContext& rCtx, expr* node, bool& modifed);
 
 protected:
@@ -112,8 +108,6 @@ class name : public PrePostRewriteRule                              \
  public:                                                            \
  name()                                                             \
    : PrePostRewriteRule(RewriteRule::name, #name) { }               \
-                                                                    \
-  ~name() { }                                                       \
                                                                     \
  protected:                                                         \
   expr* rewritePre(expr* node, RewriterContext& rCtx);             \
