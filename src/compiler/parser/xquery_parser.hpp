@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.2.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
@@ -31,18 +31,18 @@
    version 2.2 of Bison.  */
 
 /**
- ** \file /Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp
+ ** \file /Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.hpp
  ** Define the zorba::parser class.
  */
 
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
-# define ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
+#ifndef YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP_INCLUDED
+# define YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP_INCLUDED
 
 /* "%code requires" blocks.  */
-/* Line 36 of lalr1.cc  */
-#line 5 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.y"
+/* Line 267 of lalr1.cc  */
+#line 5 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -88,8 +88,8 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 
-/* Line 36 of lalr1.cc  */
-#line 93 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+/* Line 267 of lalr1.cc  */
+#line 93 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -104,8 +104,8 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 namespace zorba {
-/* Line 36 of lalr1.cc  */
-#line 109 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+/* Line 267 of lalr1.cc  */
+#line 109 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -115,8 +115,8 @@ namespace zorba {
 #ifndef YYSTYPE
     union semantic_type
     {
-/* Line 36 of lalr1.cc  */
-#line 148 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.y"
+/* Line 267 of lalr1.cc  */
+#line 148 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -138,8 +138,8 @@ namespace zorba {
     ft_anyall_mode::type ft_anyall_value;
 
 
-/* Line 36 of lalr1.cc  */
-#line 143 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+/* Line 267 of lalr1.cc  */
+#line 143 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -656,9 +656,9 @@ namespace zorba {
   };
 
 } // zorba
-/* Line 36 of lalr1.cc  */
-#line 661 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+/* Line 267 of lalr1.cc  */
+#line 661 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
-#endif /* !ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP  */
+#endif /* !YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP_INCLUDED  */
