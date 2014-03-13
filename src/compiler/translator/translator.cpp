@@ -8056,7 +8056,7 @@ void end_visit(const OffsetClause& v, void* /*visit_state*/)
   theFlworClausesStack.push_back(countClause);
 
   //2. Create WhereExpr
-  function* f = BUILTIN_FUNC(OP_GREATER_EQUAL_2);
+  function* f = BUILTIN_FUNC(OP_GREATER_2);
   expr* left = lookup_var(countVar, loc, true);
   expr* right = theOffsetExpr; 
   expr* whereExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, left, right);
