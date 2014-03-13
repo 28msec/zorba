@@ -656,7 +656,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 {IntegerLiteral}[a-zA-Z_][0-9a-zA-Z_]* {
   /* invalid integer literal */
-  yylval->err = getDriver()->parserErr(std::string("syntax error, unexpected \"") + yytext + "\", separator needed after numeric literal", *yylloc);
+  yylval->err = getDriver()->parserErr(std::string("syntax error: unexpected \"") + yytext + "\", separator needed after numeric literal", *yylloc);
   return token::UNRECOGNIZED;
 }
 
@@ -685,7 +685,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 #ifdef XQUERY_SCANNER  
 {InvalidRefStringLiteral}     { yylval->err = getDriver()->invalidCharRef(yytext, *yylloc); return token::UNRECOGNIZED; }
 #endif
-{UnterminatedStringLiteral}   { yylval->err = getDriver()->parserErr(std::string("syntax error, unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
+{UnterminatedStringLiteral}   { yylval->err = getDriver()->parserErr(std::string("syntax error: unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
 
   /*______________________________________________________________________
    |

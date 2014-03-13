@@ -2305,7 +2305,7 @@ Statements :
       $$ = $1; // to prevent the Bison warning
       $$ = $2; // to prevent the Bison warning
       $$ = $4; // to prevent the Bison warning
-      error(@3, "syntax error, unexpected statement (missing semicolon \";\" between statements?)");
+      error(@3, "syntax error, unexpected statement");
       delete $1; // these need to be deleted here because the parser deallocator will skip them
       delete $2;
       delete $4;
@@ -2637,11 +2637,13 @@ Expr :
     {
       $$ = $1; // to prevent the Bison warning
       $$ = $3; // to prevent the Bison warning
-      // Heuristics to improve the error message: if the $1 Expr is a QName (which in turn gets
-      // promoted to a PathExpr), chances are that it's not a missing comma, so don't modify
-      // the error message.
+      //
+      // Heuristics to improve the error message: if the $1 Expr is a QName
+      // (which in turn gets promoted to a PathExpr), chances are that it's not
+      // a missing comma, so don't modify the error message.
+      //
       if (dynamic_cast<PathExpr*>($1) == NULL)
-        error(@2, "syntax error, unexpected expression (missing comma \",\" between expressions?)");
+        error(@2, "syntax error, unexpected expression");
       delete $1; // these need to be deleted here because the parser deallocator will skip them
       delete $3;
       YYERROR;
@@ -7411,7 +7413,7 @@ void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string
       // Error message heuristics: if the current error message has the "(missing comma "," between expressions?)" text,
       // and the old message has a "','" text, then replace the old message with the new one. Unfortunately this 
       // makes the parser error messages harder to internationalize.
-      if ((msg.find("(missing comma \",\" between expressions?)") != string::npos &&
+      if ((msg.find("unexpected expression") != string::npos &&
             ! contains(prevErr->msg, "expecting", ","))
           ||
           (msg.find("missing semicolon \";\" after") != string::npos &&
@@ -7435,3 +7437,4 @@ void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string
 }
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */
