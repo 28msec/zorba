@@ -1061,12 +1061,7 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
   } // while
   it->close();
 
-  if ( !content_ ) {
-    if ( !baseType_ )
-      throw XQUERY_EXCEPTION(
-        jse::MISSING_KEY,
-        ERROR_PARAMS( "$content", name_, ZED( MISSING_KEY_NoInherit ) )
-      );
+  if ( !content_ && baseType_ ) {
     DECL_baseType( array );
     content_ = baseType->content_;      // inherit baseType's content
   }
@@ -1766,12 +1761,7 @@ void object_type::load_type( store::Item_t const &type_item, schema &s ) {
   } // while
   it->close();
 
-  if ( content_.empty() ) {
-    if ( !baseType_ )
-      throw XQUERY_EXCEPTION(
-        jse::MISSING_KEY,
-        ERROR_PARAMS( "$content", name_, ZED( MISSING_KEY_NoInherit ) )
-      );
+  if ( content_.empty() && baseType_ ) {
     DECL_baseType( object );
     content_ = baseType->content_;      // inherit baseType's content
   }
@@ -2213,12 +2203,7 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
   } // while
   it->close();
 
-  if ( content_.empty() ) {
-    if ( !baseType_ )
-      throw XQUERY_EXCEPTION(
-        jse::MISSING_KEY,
-        ERROR_PARAMS( "$content", name_, ZED( MISSING_KEY_NoInherit ) )
-      );
+  if ( content_.empty() && baseType_ ) {
     DECL_baseType( union );
     content_ = baseType->content_;      // inherit baseType's content
   }
