@@ -7,12 +7,12 @@ let $jsd :=
       {
         "$name" : "foo",
         "$kind" : "object"
-     (: "$content" is missing :)
+     (: missing "$content" is OK :)
       }
     ]
   }
 
-let $instance := "foo"
+let $instance := { }
 
 return jsd:validate( $jsd, "foo", $instance )
 
