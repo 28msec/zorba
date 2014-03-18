@@ -1951,13 +1951,15 @@ void type::load_constraints( store::Item_t const &constraints_item ) {
   it->open();
   while ( it->next( item ) ) {
     ASSERT_TYPE( item, "constraint", XS_STRING );
-    zstring const constraint_str( item->getStringValue() );
+    zstring constraint_str( item->getStringValue() );
     try {
       unique_ptr<constraint> c( new constraint( constraint_str ) );
       constraints_.push_back( c.get() );
       c.release();
     }
     catch ( ZorbaException const &e ) {
+      ascii::replace_all( constraint_str, '\n', ' ' );
+      ascii::normalize_space( constraint_str );
       throw XQUERY_EXCEPTION(
         jse::ILLEGAL_FACET_VALUE,
         ERROR_PARAMS(
