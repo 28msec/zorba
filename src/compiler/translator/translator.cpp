@@ -8043,7 +8043,7 @@ void end_visit(const OffsetClause& v, void* /*visit_state*/)
   
   //'offset offset_expr' is rewritten to:
   //count $Q{http://zorba.io/internals}count
-  //where ${http://zorba.io/internals}count ge offset_expr
+  //where ${http://zorba.io/internals}count gt offset_expr
 
   //1. Add Count Clause
   push_scope();
