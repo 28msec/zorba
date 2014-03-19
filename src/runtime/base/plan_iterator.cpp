@@ -232,7 +232,7 @@ bool PlanIterator::consumeNext(
     else
       std::cout << "next (" << iter;
 
-    std::cout << " = " << typeid (*iter).name()
+    std::cout << " = " << iter->getNameAsString() // typeid (*iter).name()
               << ") -> "
               << "status: " << status << " -> "
               << ((status && result != NULL) ? result->show().c_str() : "null")
