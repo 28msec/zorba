@@ -186,6 +186,7 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
       ADD_PAIR_ELEMENT( value_item->getStringValue() );
       PUSH_ITEM( xml );
       value_item = json_item->getObjectValue( value_item );
+      ZORBA_ASSERT( !!value_item );
       added_pair_element = true;
     }
 
@@ -246,6 +247,7 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
         ADD_TYPE_ATTRIBUTE( "array" );
         ADD_ITEM_ELEMENT( "array" );
         PUSH_STATE( in_array );
+        PUSH_ITEM( json );
         PUSH_ITERATOR( cur_iter );
         cur_iter = value_item->getArrayValues();
         cur_iter->open();
