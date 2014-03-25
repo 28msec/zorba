@@ -8039,7 +8039,7 @@ void end_visit(const OffsetClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  expr* theOffsetExpr = pop_nodestack();
+  expr* offset_expr = pop_nodestack();
   
   //'offset offset_expr' is rewritten to:
   //count $Q{http://zorba.io/internals}count
@@ -8058,8 +8058,7 @@ void end_visit(const OffsetClause& v, void* /*visit_state*/)
   //2. Create WhereExpr
   function* f = BUILTIN_FUNC(OP_GREATER_2);
   expr* left = lookup_var(countVar, loc, true);
-  expr* right = theOffsetExpr; 
-  expr* whereExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, left, right);
+  expr* whereExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, left, offset_expr);
 
   //3. Add WhereClause
   whereExpr = wrap_in_bev(whereExpr);
