@@ -678,8 +678,6 @@ protected:
 
   std::vector<flwor_clause*>             theFlworClausesStack;
 
-  expr*                                  theOffsetExpr;
-
   std::vector<const parsenode*>          theTryStack;
 
   std::stack<NodeSortInfo>               theNodeSortStack;
@@ -6977,7 +6975,6 @@ void* begin_visit(const FLWORExpr& v)
   TRACE_VISIT();
 
   theFlworClausesStack.push_back(NULL);
-  theOffsetExpr = CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one());
 
   return no_state;
 }
@@ -8094,14 +8091,10 @@ void end_visit(const LimitClause& v, void* /*visit_state*/)
                                                              varExpr);
   theFlworClausesStack.push_back(countClause);
   
-  //4. Create (offset_expr + limit_expr) expr
-  function* add = BUILTIN_FUNC(OP_ADD_2);
-  expr* limitPlusOffsetExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, add, theOffsetExpr, limitExpr); 
-
   //3. Create WhereExpr
-  function* f = BUILTIN_FUNC(OP_LESS_2);
+  function* f = BUILTIN_FUNC(OP_LESS_EQUAL_2);
   expr* left = lookup_var(countVar, loc, true);
-  expr* whereExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, left, limitPlusOffsetExpr);
+  expr* whereExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, left, limitExpr);
 
   //4. Add WhereClause
   whereExpr = wrap_in_bev(whereExpr);
