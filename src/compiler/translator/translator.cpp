@@ -8077,7 +8077,7 @@ void end_visit(const LimitClause& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   //'limit 3' is rewritten to:
   //count $Q{http://zorba.io/internals}count
-  //where ${http://zorba.io/internals}count lt ($offset + 3) 
+  //where ${http://zorba.io/internals}count le 3
 
   expr* limitExpr = pop_nodestack();
   
