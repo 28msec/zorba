@@ -288,7 +288,9 @@ bool SimpleJSONObject::add(
     bool accumulate)
 {
   ASSERT_INVARIANT();
-  const char* lName = aName->getStringValue().c_str();
+  zstring zname;
+  aName->getStringValue2( zname );
+  const char *const lName = zname.c_str();
 
   Keys::iterator ite = theKeys.find(lName);
 
@@ -303,7 +305,7 @@ bool SimpleJSONObject::add(
       lStructuredItem->setCollectionTreeInfo(theCollectionInfo);
     }
     
-    csize lPosition = thePairs.size();
+    size_type lPosition = thePairs.size();
     theKeys.insert(std::make_pair(lName, lPosition));
     thePairs.push_back(std::make_pair(aName.getp(), lValue));
     aName->addReference();
@@ -314,7 +316,7 @@ bool SimpleJSONObject::add(
   }
   else if (accumulate)
   {
-    csize lPosition = ite->second;
+    size_type lPosition = ite->second;
 
     assert(thePairs[lPosition].first->getStringValue() == lName);
 
@@ -364,7 +366,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
     ASSERT_INVARIANT();
     return 0;
   }
-  csize lPosition = lIter->second;
+  size_type lPosition = lIter->second;
   
   store::Item* lKey;
 
@@ -390,7 +392,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
     Keys::iterator lKeysEnd = theKeys.end();
     for (; lKeysIte != lKeysEnd; ++lKeysIte)
     {
-      csize lPos = lKeysIte->second;
+      size_type lPos = lKeysIte->second;
       if (lPos > lPosition)
       {
         lKeysIte->second = lPos - 1;
@@ -419,7 +421,7 @@ store::Item_t SimpleJSONObject::setValue(
     ASSERT_INVARIANT();
     return 0;
   }
-  csize lPosition = lIter->second;
+  size_type lPosition = lIter->second;
 
   assert(thePairs[lPosition].first->getStringValue() == lName);
 
@@ -479,7 +481,7 @@ bool SimpleJSONObject::rename(
     return false;
   }
 
-  csize lPosition = ite->second;
+  size_type lPosition = ite->second;
   assert(thePairs[lPosition].first->getStringValue() == lName);
   
   thePairs[lPosition].first->removeReference();
@@ -583,7 +585,7 @@ store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
   {
     return NULL;
   }
-  csize lPosition = lIter->second;
+  size_type lPosition = lIter->second;
 
   assert(thePairs[lPosition].first->getStringValue() == lName);
 
@@ -624,7 +626,7 @@ void SimpleJSONObject::assertInvariant() const
       lIter != theKeys.end();
       ++lIter)
   {
-    csize lPosition = lIter->second;
+    size_type lPosition = lIter->second;
     assert(lPosition < thePairs.size());
     assert(thePairs[lPosition].first != NULL);
     assert(thePairs[lPosition].first->isAtomic());
