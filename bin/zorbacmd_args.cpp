@@ -139,7 +139,7 @@ char const* get_help_msg() {
     HELP_OPT( "--execute-plan" )
       "Do not compile the query; instead load the execution plan from the file specified by the -f -q options (or by any file specified without any other argument), and execute the loaded plan.\n\n"
 
-    HELP_OPT( "--external-variable, -e <name>{=file|:=<value>}" )
+    HELP_OPT( "--external-variable, -e <name>{=<file>|:=<value>}" )
       "Set the value for an externsl variable.\n\n"
 
     ////////// f //////////////////////////////////////////////////////////////
