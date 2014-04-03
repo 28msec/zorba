@@ -209,13 +209,14 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
+  typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
+  typedef Pairs::size_type size_type;
+
   typedef std::unordered_map<
     const char*,
-    csize,
+    size_type,
     ztd::hash<char const*>,
     ztd::equal_to<char const*> > Keys;
-
-  typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
   class KeyIterator : public store::Iterator
   {

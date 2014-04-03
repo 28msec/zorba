@@ -491,7 +491,7 @@ public:
     if ( planState.profile_ ) {
       //
       // Temporaries are used here to guarantee the order in which the timers
-      // are stopped.  (If the expressions were passed as functio arguments,
+      // are stopped.  (If the expressions were passed as function arguments,
       // the order is platform/compiler-dependent.)
       //
       time::msec_type const ce( c.elapsed() );
