@@ -116,7 +116,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class SimpleRCObject : public serialization::SerializeBaseClass
+class ZORBA_DLL_PUBLIC SimpleRCObject : public serialization::SerializeBaseClass
 {
 protected:
   mutable long  theRefCount;

@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifdef WIN32
+#define _WINSOCKAPI_
+# include <Windows.h>
+# define MAX_BUF_SIZE 2048
+#endif
+
 #include <curl/curl.h>
 #include <map>
 #include <zorba/zorba.h>
@@ -28,10 +34,6 @@
 #include "http_response_handler.h"
 #include "http_response_parser.h"
 
-#ifdef WIN32
-# include <Windows.h>
-# define MAX_BUF_SIZE 2048
-#endif
 
 namespace zorba {
 

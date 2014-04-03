@@ -23,6 +23,7 @@
 #include <streambuf>
 #include <string>
 #ifdef WIN32
+#define _WINSOCKAPI_
 #include <windows.h>
 #endif /* WIN32 */
 
@@ -274,10 +275,7 @@ protected:
   std::streamsize xsgetn( char_type*, std::streamsize );
 
 private:
-  void curl_destroy() {
-    destroy( curl_ );
-    curl_ = 0;
-  }
+  void curl_destroy();
   void curl_init();
   void curlm_init();
   void curl_io( size_t* );

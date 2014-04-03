@@ -277,9 +277,7 @@ void get_epoch( sec_type *sec, usec_type *usec = nullptr );
  *
  * @param tv A pointer to the result.
  */
-inline void get_epoch( timeval *tv ) {
-  return get_epoch( &tv->tv_sec, &tv->tv_usec );
-}
+void get_epoch( timeval *tv );
 
 /**
  * Gets the Greenwich time and populates the given ztm structure.
@@ -479,7 +477,7 @@ inline void get_time( time_type *t ) {
   clock_gettime( CLOCK_REALTIME, t );
 #endif /* _POSIX_MONOTONIC_CLOCK */
 #elif defined(WIN32)
-  _ftime_s( &t );
+  _ftime_s( t );
 #else
   gettimeofday( t, nullptr );
 #endif

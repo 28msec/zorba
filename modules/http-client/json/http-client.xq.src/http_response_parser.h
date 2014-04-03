@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef HTTP_RESPONSE_PARSER_H
 #define HTTP_RESPONSE_PARSER_H
 #include <vector>

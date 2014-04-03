@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef REQUEST_PARSER_H
 #define REQUEST_PARSER_H
 

@@ -343,6 +343,10 @@ void get_epoch( sec_type *sec, usec_type *usec ) {
 #endif /* WIN32 */
 }
 
+void get_epoch( timeval *tv ) {
+  return get_epoch( (sec_type*) &tv->tv_sec, (usec_type*) &tv->tv_usec );
+}
+
 void get_gmtime( ztm *tm, sec_type when ) {
   if ( !when )
     get_epoch( &when );

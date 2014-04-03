@@ -148,7 +148,10 @@ void streambuf::close() {
     curl_destroy();
   }
 }
-
+void streambuf::curl_destroy() {
+  destroy( curl_ );
+  curl_ = 0;
+}
 void streambuf::curl_verbose( bool verbose ) {
   verbose_ = verbose;
   if ( curl_ )
