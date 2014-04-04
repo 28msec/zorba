@@ -30,6 +30,7 @@
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
 #include <zorba/util/transcode_stream.h>
+#include <zorba/zorba_functions.h>
 #include <zorba/xmldatamanager.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_exception.h>
@@ -286,12 +287,15 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
 
   void HttpResponseParser::parseStatusAndMessage(std::string const &aHeader)
   {
-    std::string::size_type lPos = aHeader.find(' ');
-    assert(lPos != std::string::npos);
-    std::string lStatus = aHeader.substr(lPos, aHeader.find(' ', lPos + 1));
+    zorba::String lHeader(aHeader);
+    zfn::trim(lHeader);
+    zorba::String::size_type lPos = aHeader.find(' ');
+    assert(lPos != zorba::String::npos);
+    zorba::String lStatus = aHeader.substr(lPos, aHeader.find(' ', lPos + 1));
     theMessage = aHeader.substr(aHeader.find(' ', lPos + 1) + 1);
+
     {
-      std::string::size_type lPosition = theMessage.size() - 1;
+      zorba::String::size_type lPosition = theMessage.size() - 1;
       while (true) {
         if (lPosition != std::string::npos) {
           break;
@@ -304,7 +308,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       }
       theMessage = theMessage.substr(0, lPosition + 1);
     }
-    std::stringstream lStream(lStatus);
+    std::stringstream lStream(lStatus.c_str());
     lStream >> theStatus;
     // everything that is not a valid http status is an error
     if (theStatus < 100) {
