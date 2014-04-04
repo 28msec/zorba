@@ -465,16 +465,6 @@ declare function fn:ceiling($arg as numeric?) as  numeric? external;
 declare function fn:codepoint-equal( $comparand1 as xs:string?,  $comparand2 as xs:string?) as  xs:boolean? external;
  
 (:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Creates an <code>xs:string</code> from a sequence of <termref def="codepoint">codepoints</termref>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="codepoints-to-string" return-type="xs:string" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="arg" type="xs:integer*"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns the string made up from the <termref def="character">characters</termref> whose Unicode <termref def="codepoint">codepoints</termref> are
- :             supplied in <code>$arg</code>. This will be the zero-length string if <code>$arg</code>
- :             is the empty sequence. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="M">dynamic</phrase> error is raised <errorref class="CH" code="0001"/> if any of the codepoints in
- :                <code>$arg</code> is not a permitted XML character.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-codepoints-to-string
- :)
-declare function fn:codepoints-to-string($arg as xs:integer*) as  xs:string external;
- 
-(:~
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Returns a sequence of nodes representing a collection of documents indentified
  :             by a collection URI; or a default collection if no URI is supplied.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="collection" return-type="node()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"/></example><example role="signature"><proto name="collection" return-type="node()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="arg" type="xs:string?"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>.  It depends on 
  : 		available node collections, and static base uri.
@@ -3658,79 +3648,7 @@ declare function fn:unparsed-text($href as xs:string?) as  xs:string? external;
  : @see http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text
  :)
 declare function fn:unparsed-text($href as xs:string?,  $encoding as xs:string) as  xs:string? external;
- 
-(:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Because errors in evaluating the <function>fn:unparsed-text</function> function are
- :             non-recoverable, these two functions are provided to allow an application to determine
- :             whether a call with particular arguments would succeed.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="unparsed-text-available" return-type="xs:boolean" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="href" type="xs:string?"/></proto></example><example role="signature"><proto name="unparsed-text-available" return-type="xs:boolean" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="href" type="xs:string?"/><arg name="encoding" type="xs:string"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>.  It depends on 
- : 		static base uri.
- : 	</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <function>fn:unparsed-text-available</function> function determines whether a call
- :             on the <function>fn:unparsed-text</function> function with identical arguments would
- :             return a string.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If the first argument is an empty sequence, the function returns false. <phrase diff="del" at="L">If the second
- :             argument is an empty sequence, the function behaves as if the second argument were
- :             omitted.</phrase></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">In other cases, the function returns true if a call on
- :                <function>fn:unparsed-text</function> with the same arguments would succeed, and
- :             false if a call on <function>fn:unparsed-text</function> with the same arguments would
- :             fail with a non-recoverable dynamic error.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The functions <function>fn:unparsed-text</function> and
- :                <function>fn:unparsed-text-available</function> have the same requirement for
- :                <termref def="deterministic">determinism</termref> as the functions
- :                <code>fn:doc</code> and <code>fn:doc-available</code>. This means that unless the
- :             user has explicitly stated a requirement for a reduced level of determinism, either of
- :             these functions if called twice with the same arguments during the course of a
- :             transformation <rfc2119>must</rfc2119> return the same results each time; moreover, the
- :             results of a call on <function>fn:unparsed-text-available</function>
- :             <rfc2119>must</rfc2119> be consistent with the results of a subsequent call on
- :                <function>unparsed-text</function> with the same arguments.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This requires that the <function>unparsed-text-available</function> function should
- :             actually attempt to read the resource identified by the URI, and check that it is
- :             correctly encoded and contains no characters that are invalid in XML. Implementations
- :             may avoid the cost of repeating these checks for example by caching the validated
- :             contents of the resource, to anticipate a subsequent call on the
- :                <function>unparsed-text</function>
- :             <phrase diff="add" at="A">or <function>unparsed-text-lines</function>
- :             </phrase> function. Alternatively, implementations may be able to rewrite an expression
- :             such as <code>if (unparsed-text-available(A)) then unparsed-text(A) else ...</code> to
- :             generate a single call internally.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-available
- :)
-declare function fn:unparsed-text-available($href as xs:string?) as  xs:boolean external;
- 
-(:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Because errors in evaluating the <function>fn:unparsed-text</function> function are
- :             non-recoverable, these two functions are provided to allow an application to determine
- :             whether a call with particular arguments would succeed.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="unparsed-text-available" return-type="xs:boolean" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="href" type="xs:string?"/></proto></example><example role="signature"><proto name="unparsed-text-available" return-type="xs:boolean" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="href" type="xs:string?"/><arg name="encoding" type="xs:string"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>.  It depends on 
- : 		static base uri.
- : 	</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <function>fn:unparsed-text-available</function> function determines whether a call
- :             on the <function>fn:unparsed-text</function> function with identical arguments would
- :             return a string.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If the first argument is an empty sequence, the function returns false. <phrase diff="del" at="L">If the second
- :             argument is an empty sequence, the function behaves as if the second argument were
- :             omitted.</phrase></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">In other cases, the function returns true if a call on
- :                <function>fn:unparsed-text</function> with the same arguments would succeed, and
- :             false if a call on <function>fn:unparsed-text</function> with the same arguments would
- :             fail with a non-recoverable dynamic error.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The functions <function>fn:unparsed-text</function> and
- :                <function>fn:unparsed-text-available</function> have the same requirement for
- :                <termref def="deterministic">determinism</termref> as the functions
- :                <code>fn:doc</code> and <code>fn:doc-available</code>. This means that unless the
- :             user has explicitly stated a requirement for a reduced level of determinism, either of
- :             these functions if called twice with the same arguments during the course of a
- :             transformation <rfc2119>must</rfc2119> return the same results each time; moreover, the
- :             results of a call on <function>fn:unparsed-text-available</function>
- :             <rfc2119>must</rfc2119> be consistent with the results of a subsequent call on
- :                <function>unparsed-text</function> with the same arguments.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This requires that the <function>unparsed-text-available</function> function should
- :             actually attempt to read the resource identified by the URI, and check that it is
- :             correctly encoded and contains no characters that are invalid in XML. Implementations
- :             may avoid the cost of repeating these checks for example by caching the validated
- :             contents of the resource, to anticipate a subsequent call on the
- :                <function>unparsed-text</function>
- :             <phrase diff="add" at="A">or <function>unparsed-text-lines</function>
- :             </phrase> function. Alternatively, implementations may be able to rewrite an expression
- :             such as <code>if (unparsed-text-available(A)) then unparsed-text(A) else ...</code> to
- :             generate a single call internally.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-available
- :)
-declare function fn:unparsed-text-available( $href as xs:string?,  $encoding as xs:string) as  xs:boolean external;
- 
+
 (:~
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <code>fn:unparsed-text-lines</code> function reads an external resource (for
  :             example, a file) and returns its contents as a sequence of strings, one for each line of
@@ -3753,29 +3671,6 @@ declare function fn:unparsed-text-available( $href as xs:string?,  $encoding as 
  : @see http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-lines
  :)
 declare function fn:unparsed-text-lines($href as xs:string?) as  xs:string* external;
- 
-(:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <code>fn:unparsed-text-lines</code> function reads an external resource (for
- :             example, a file) and returns its contents as a sequence of strings, one for each line of
- :             text in the  <phrase diff="chg" at="L">string representation</phrase> of the resource.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="unparsed-text-lines" return-type="xs:string*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="href" type="xs:string?"/></proto></example><example role="signature"><proto name="unparsed-text-lines" return-type="xs:string*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="href" type="xs:string?"/><arg name="encoding" type="xs:string"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>.  It depends on 
- : 		static base uri.
- : 	</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <code>unparsed-text-lines</code> function reads an external resource (for example, a
- :             file) and returns its <phrase diff="chg" at="L">string representation</phrase> as a sequence of strings, separated at newline
- :             boundaries. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The result of the single-argument function is the same as the result of the expression
- :                <code>fn:tokenize(fn:unparsed-text($href), '\r\n|\r|\n')[not(position()=last() and
- :                .='')]</code>. The result of the two-argument function is the same as the result of
- :             the expression <code>fn:tokenize(fn:unparsed-text($href, $encoding),
- :                '\r\n|\r|\n'))[not(position()=last() and .='')]</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The result is a thus a sequence of strings containing the text of the resource retrieved
- :             using the URI, each string representing one line of text. Lines are separated by one of
- :             the sequences x0A, x0D, or x0Dx0A. The characters representing the newline are not
- :             included in the returned strings. If there are two adjacent newline sequences, a
- :             zero-length string will be returned to represent the empty line; but if the external
- :             resource ends with a newline sequence, no zero-length string will be returned as the
- :             last item in the result.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Error conditions are the same as for the <code>fn:unparsed-text</code> function.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-lines
- :)
-declare function fn:unparsed-text-lines( $href as xs:string?,  $encoding as xs:string) as  xs:string* external;
  
 (:~
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Converts a string to upper case.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="upper-case" return-type="xs:string" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="arg" type="xs:string?"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If the value of <code>$arg</code> is the empty sequence, the zero-length string is
@@ -3878,15 +3773,6 @@ declare function fn:zero-or-one($arg as item()*) as  item()? external;
  : @see http://www.w3.org/TR/xpath-functions-30/#func-codepoints-to-string
  :)
 declare function fn:codepoints-to-string($arg as xs:integer*) as  xs:string external;
- 
-(:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Returns the sequence of <termref def="codepoint">codepoints</termref> that
- :             constitute an <code>xs:string</code> value. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="string-to-codepoints" return-type="xs:integer*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="arg" type="xs:string?"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns a sequence of integers, each integer being the Unicode <termref def="codepoint">codepoints</termref> of the corresponding <termref def="character">character</termref> in <code>$arg</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$arg</code> is a zero-length string or the empty sequence, the function returns
- :             the empty sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:string-to-codepoints("Thérèse")</code> returns <code>(84, 104, 233, 114, 232, 115, 101)</code>.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-string-to-codepoints
- :)
-declare function fn:string-to-codepoints($arg as xs:string?) as  xs:integer* external;
  
 (:~
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Returns the base URI of a node.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="base-uri" return-type="xs:anyURI?" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"/></example><example role="signature"><proto name="base-uri" return-type="xs:anyURI?" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="arg" type="node()?"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The zero-argument form of this function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-dependent">focus-dependent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The one-argument form of this function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="add" at="B">The zero-argument version of the function returns the base URI of the
@@ -4598,133 +4484,7 @@ declare function fn:string() as  xs:string external;
  : @see http://www.w3.org/TR/xpath-functions-30/#func-string
  :)
 declare function fn:string($arg as item()?) as  xs:string external;
- 
-(:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Returns a list of environment variable names that are suitable for passing to
- :                <code>fn:environment-variable</code>, as a (possibly empty) sequence of strings.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="available-environment-variables" return-type="xs:string*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"/></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>.  It depends on 
- : 		environment variables.
- : 	</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns a sequence of strings, being the names of the environment variables
- :             in the dynamic context in some <termref def="implementation-dependent">implementation-dependent</termref> order.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function is <termref def="dt-deterministic">deterministic</termref>: that is, the
- :             set of available environment variables does not vary during evaluation.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns a list of strings, containing no duplicates.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">It is intended that the strings in this list should be suitable for passing to
- :                <code>fn:environment-variable</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">See also the note on security under the definition of the
- :                <code>fn:environment-variable</code> function. If access to environment variables has
- :             been disabled, <code>fn:available-environment-variables</code> always returns the empty
- :             sequence.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-available-environment-variables
- :)
-declare function fn:available-environment-variables() as  xs:string* external;
- 
-(:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Returns the value of a system environment variable, if it exists.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="environment-variable" return-type="xs:string?" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="name" type="xs:string"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>.  It depends on 
- : 		environment variables.
- : 	</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The set of available <xtermref spec="XP30" ref="dt-environment-variables">environment variables</xtermref> 
- :             is a set of (name, value) pairs forming part
- :             of the dynamic context, in which the name is unique within the set of pairs. The name
- :             and value are arbitrary strings.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If the <code>$name</code> argument matches the name of one of these pairs, the function
- :             returns the corresponding value.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If there is no environment variable with a matching name, the function returns the empty
- :             sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The collation used for matching names is <termref def="implementation-defined"/>, but
- :             must be the same as the collation used to ensure that the names of all environment
- :             variables are unique.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="add" at="I">The function is <termref def="dt-deterministic">deterministic</termref>, 
- :             which means that if it is called several times
- :          within the same <termref def="dt-execution-scope">execution scope</termref>, with the same arguments,
- :             it must return the same result.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">On many platforms, the term "environment variable" has a natural meaning in terms of
- :             facilities provided by the operating system. This interpretation of the concept does not
- :             exclude other interpretations, such as a mapping to a set of configuration parameters in
- :             a database system.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Environment variable names are usually case sensitive. Names are usually of the form
- :                <code>(letter|_) (letter|_|digit)*</code>, but this varies by platform.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">On some platforms, there may sometimes be multiple environment variables with the same name;
- :             in this case, it is implementation-dependent as to which is returned; see for example
- :                <bibref ref="POSIX.1-2008"/> (Chapter 8, Environment Variables).
- :             Implementations <rfc2119>may</rfc2119> use prefixes or other naming conventions
- :             to disambiguate the names.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The requirement to ensure that the function is deterministic means in practice that
- :          the implementation must make a snapshot of the environment variables at some time
- :          during execution, and return values obtained from this snapshot, rather than using
- :          live values that are subject to change at any time.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Operating system environment variables may be associated with a particular process,
- :          while queries and stylesheets may execute across multiple processes (or multiple machines).
- :          In such circumstances implementations <rfc2119>may</rfc2119> choose to provide access
- :          to the environment variables associated with the process in which the query or stylesheet
- :          processing was initiated.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Security advice: Queries from untrusted sources should not be permitted unrestricted
- :             access to environment variables. For example, the name of the account under which the
- :             query is running may be useful information to a would-be intruder. An implementation may
- :             therefore choose to restrict access to the environment, or may provide a facility to
- :             make <code>fn:environment-variable</code> always return the empty sequence.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-environment-variable
- :)
-declare function fn:environment-variable($arg as xs:string) as  xs:string? external;
- 
-(:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <code>fn:unparsed-text</code> function reads an external resource (for example, a
- :             file) and returns <phrase diff="chg" at="L">a string representation of the resource</phrase>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="unparsed-text" return-type="xs:string?" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="href" type="xs:string?"/></proto></example><example role="signature"><proto name="unparsed-text" return-type="xs:string?" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="href" type="xs:string?"/><arg name="encoding" type="xs:string"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>.  It depends on 
- : 		static base uri.
- : 	</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <code>$href</code> argument <rfc2119>must</rfc2119> be a string in the form of a URI
- :             reference, which <rfc2119>must</rfc2119> contain no fragment identifier, and
- :                <rfc2119>must</rfc2119> identify a resource 
- :             <phrase diff="chg" at="L">for which a string representation is available</phrase>. If the URI is a
- :             relative URI reference, then it is resolved relative to the 
- :             <phrase diff="chg" at="L">Static Base URI property from the static context</phrase>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="add" at="L">The mapping of URIs to the string representation of a resource is the mapping defined
- :             in the <xtermref spec="XP30" ref="dt-available-text-resources">available text resources</xtermref>
- :          component of the dynamic context.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If the value of the <code>$href</code> argument is an empty sequence, the function
- :             returns an empty sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <code>$encoding</code> argument, if present, is the name of an encoding. The values
- :             for this attribute follow the same rules as for the <code>encoding</code> attribute in
- :             an XML declaration. The only values which every <termref def="implementation">implementation</termref> is <rfc2119>required</rfc2119> to recognize are
- :                <code>utf-8</code> and <code>utf-16</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The encoding of the external resource is determined as follows:</p><olist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p>external encoding information is used if available, otherwise</p></item><item><p>if the media type of the resource is <code>text/xml</code> or
- :                      <code>application/xml</code> (see <bibref ref="rfc2376"/>), or if it matches
- :                   the conventions <code>text/*+xml</code> or <code>application/*+xml</code> (see
- :                      <bibref ref="rfc3023"/> and/or its successors), then the encoding is recognized
- :                   as specified in <bibref ref="REC-xml"/>, otherwise</p></item><item><p>the value of the <code>$encoding</code> argument is used if present, otherwise</p></item><item><p>the processor <rfc2119>may</rfc2119> use <termref def="implementation-defined">implementation-defined</termref> heuristics to determine the likely encoding,
- :                   otherwise</p></item><item><p>UTF-8 is assumed.</p></item></olist><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The result of the function is a string containing the 
- :             <phrase diff="chg" at="L">string representation</phrase> of the resource retrieved
- :             using the URI.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="UT" code="1170"/> if <code>$href</code>
- :             contains a fragment identifier, or if it cannot be used to retrieve the 
- :             <phrase diff="chg" at="L">string representation</phrase> of a resource.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="UT" code="1190"/> <phrase diff="add" at="L">if the value 
- :             of the <code>$encoding</code> argument is not a valid encoding name, </phrase>if the <termref def="dt-processor">processor</termref> does not support the specified encoding,
- :             if the <phrase diff="chg" at="L">string representation</phrase> of the retrieved
- :             resource contains octets that cannot be decoded into Unicode <termref def="character">characters</termref> using the specified encoding, or if the resulting characters
- :             are not permitted XML characters.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="UT" code="1200"/> if
- :                <code>$encoding</code> is absent and the <termref def="dt-processor">processor</termref> cannot infer the encoding using external information and the
- :             encoding is not UTF-8.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text
- :)
-declare function fn:unparsed-text($href as xs:string?) as  xs:string? external;
- 
-(:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <code>fn:unparsed-text</code> function reads an external resource (for example, a
- :             file) and returns <phrase diff="chg" at="L">a string representation of the resource</phrase>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="unparsed-text" return-type="xs:string?" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="href" type="xs:string?"/></proto></example><example role="signature"><proto name="unparsed-text" return-type="xs:string?" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="href" type="xs:string?"/><arg name="encoding" type="xs:string"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>.  It depends on 
- : 		static base uri.
- : 	</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <code>$href</code> argument <rfc2119>must</rfc2119> be a string in the form of a URI
- :             reference, which <rfc2119>must</rfc2119> contain no fragment identifier, and
- :                <rfc2119>must</rfc2119> identify a resource 
- :             <phrase diff="chg" at="L">for which a string representation is available</phrase>. If the URI is a
- :             relative URI reference, then it is resolved relative to the 
- :             <phrase diff="chg" at="L">Static Base URI property from the static context</phrase>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="add" at="L">The mapping of URIs to the string representation of a resource is the mapping defined
- :             in the <xtermref spec="XP30" ref="dt-available-text-resources">available text resources</xtermref>
- :          component of the dynamic context.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If the value of the <code>$href</code> argument is an empty sequence, the function
- :             returns an empty sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <code>$encoding</code> argument, if present, is the name of an encoding. The values
- :             for this attribute follow the same rules as for the <code>encoding</code> attribute in
- :             an XML declaration. The only values which every <termref def="implementation">implementation</termref> is <rfc2119>required</rfc2119> to recognize are
- :                <code>utf-8</code> and <code>utf-16</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The encoding of the external resource is determined as follows:</p><olist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p>external encoding information is used if available, otherwise</p></item><item><p>if the media type of the resource is <code>text/xml</code> or
- :                      <code>application/xml</code> (see <bibref ref="rfc2376"/>), or if it matches
- :                   the conventions <code>text/*+xml</code> or <code>application/*+xml</code> (see
- :                      <bibref ref="rfc3023"/> and/or its successors), then the encoding is recognized
- :                   as specified in <bibref ref="REC-xml"/>, otherwise</p></item><item><p>the value of the <code>$encoding</code> argument is used if present, otherwise</p></item><item><p>the processor <rfc2119>may</rfc2119> use <termref def="implementation-defined">implementation-defined</termref> heuristics to determine the likely encoding,
- :                   otherwise</p></item><item><p>UTF-8 is assumed.</p></item></olist><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The result of the function is a string containing the 
- :             <phrase diff="chg" at="L">string representation</phrase> of the resource retrieved
- :             using the URI.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="UT" code="1170"/> if <code>$href</code>
- :             contains a fragment identifier, or if it cannot be used to retrieve the 
- :             <phrase diff="chg" at="L">string representation</phrase> of a resource.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="UT" code="1190"/> <phrase diff="add" at="L">if the value 
- :             of the <code>$encoding</code> argument is not a valid encoding name, </phrase>if the <termref def="dt-processor">processor</termref> does not support the specified encoding,
- :             if the <phrase diff="chg" at="L">string representation</phrase> of the retrieved
- :             resource contains octets that cannot be decoded into Unicode <termref def="character">characters</termref> using the specified encoding, or if the resulting characters
- :             are not permitted XML characters.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="UT" code="1200"/> if
- :                <code>$encoding</code> is absent and the <termref def="dt-processor">processor</termref> cannot infer the encoding using external information and the
- :             encoding is not UTF-8.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text
- :)
-declare function fn:unparsed-text($href as xs:string?,  $encoding as xs:string) as  xs:string? external;
- 
+
 (:~
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Because errors in evaluating the <function>fn:unparsed-text</function> function are
  :             non-recoverable, these two functions are provided to allow an application to determine
@@ -4819,39 +4579,4 @@ declare function fn:unparsed-text-lines(	$href	 as xs:string?,  $encoding	 as xs
  : @see http://www.w3.org/TR/xpath-functions-30/#func-unparsed-text-available
  :)
 declare function fn:unparsed-text-available(	$href	 as xs:string?,  $encoding	 as xs:string) as  xs:boolean external;
- 
-(:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Returns a sequence of <code>xs:anyURI</code> values representing the URIs in a resource collection.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="uri-collection" return-type="xs:anyURI*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"/></example><example role="signature"><proto name="uri-collection" return-type="xs:anyURI*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="arg" type="xs:string?"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>.  It depends on 
- : 		available resource collections, and static base uri.
- : 	</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The zero-argument form of the function returns the URIs in the <term>Default resource collection</term>
- :             described in <xspecref spec="XP30" ref="id-xp-evaluation-context-components"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If the value of <code>$arg</code> is a relative <code>xs:anyURI</code>, it is resolved
- :             against the value of the base-URI property from the static context. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$arg</code> is the empty sequence, the function behaves as if it had been
- :             called without an argument. See above.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The single-argument form of the function returns the sequence of URIs corresponding to the 
- :             supplied URI in the <term>Available resource collections</term> described in 
- :             <xspecref spec="XP30" ref="id-xp-evaluation-context-components"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0002"/> if no URI is supplied (that is, if the
- :             the function is called with no arguments, or with a single argument that evaluates to an empty sequence), and the
- :             value of the default resource collection is <xtermref ref="dt-absent" spec="DM30">absent</xtermref>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="J">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0002"/> 
- :             if <term>available resource collections</term> provides no mapping for the absolutized URI.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0004"/> if <code>$arg</code> is not a
- :             valid <code>xs:anyURI</code>.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-uri-collection
- :)
-declare function fn:uri-collection() as  xs:anyURI* external;
- 
-(:~
- : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Returns a sequence of <code>xs:anyURI</code> values representing the URIs in a resource collection.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="uri-collection" return-type="xs:anyURI*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"/></example><example role="signature"><proto name="uri-collection" return-type="xs:anyURI*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="arg" type="xs:string?"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-dependent">context-dependent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>.  It depends on 
- : 		available resource collections, and static base uri.
- : 	</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The zero-argument form of the function returns the URIs in the <term>Default resource collection</term>
- :             described in <xspecref spec="XP30" ref="id-xp-evaluation-context-components"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If the value of <code>$arg</code> is a relative <code>xs:anyURI</code>, it is resolved
- :             against the value of the base-URI property from the static context. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$arg</code> is the empty sequence, the function behaves as if it had been
- :             called without an argument. See above.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The single-argument form of the function returns the sequence of URIs corresponding to the 
- :             supplied URI in the <term>Available resource collections</term> described in 
- :             <xspecref spec="XP30" ref="id-xp-evaluation-context-components"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0002"/> if no URI is supplied (that is, if the
- :             the function is called with no arguments, or with a single argument that evaluates to an empty sequence), and the
- :             value of the default resource collection is <xtermref ref="dt-absent" spec="DM30">absent</xtermref>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="J">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0002"/> 
- :             if <term>available resource collections</term> provides no mapping for the absolutized URI.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0004"/> if <code>$arg</code> is not a
- :             valid <code>xs:anyURI</code>.</p></div> 
- :
- : @see http://www.w3.org/TR/xpath-functions-30/#func-uri-collection
- :)
-declare function fn:uri-collection($arg as xs:string?) as  xs:anyURI* external;
+
