@@ -22,7 +22,7 @@ jsoniq version "1.0";
  : sections 1.7 (Functions) and 1.10 (Update Primitives). JSONiq extends
  : the XQuery specification to also deal with JSON data natively. See
  :
- :     http://jsoniq.org/
+ :     <a href="http://jsoniq.org/">jsoniq.org</a>
  :
  : for details.
  :
@@ -47,7 +47,7 @@ declare option ver:module-version "1.0";
  : Calling this version of the function is equivalent to calling the
  : 2 argument version of the function with the second argument
  :
- :   { "prefix" : "Q{http://jsoniq.org/roundtrip}" }
+ :   <code>{ "prefix" : "Q{http://jsoniq.org/roundtrip}" }</code>
  :
  : @param $items the items to be decoded.
  : @return the decoded items.
@@ -63,23 +63,23 @@ declare function jn:decode-from-roundtrip($items as item()*) as item()* external
  : that determines if this function decodes an item.
  :
  : Example:
- :   jn:decode-from-roundtrip(
+ :   <pre highlight-as="jsoniq">jn:decode-from-roundtrip(
  :     { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } },
  :     { "prefix" : "pre-" }
- :   )
+ :   )</pre>
  : returns the same instance that would be constructed by
- :   { "nan" : xs:double("NaN") }
+ :   <code>{ "nan" : xs:double("NaN") }</code>
  :
  : So
- :   let $decoded := jn:decode-from-roundtrip(
+ :   <pre highlight-as="jsoniq">let $decoded := jn:decode-from-roundtrip(
  :           { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } },
  :           { "prefix" : "pre-" }
  :       )
  :   let $nan := $decoded("nan")
  :   return
- :       ($nan instance of xs:double, $nan)
+ :       ($nan instance of xs:double, $nan)</pre>
  : returns
- :   true NaN
+ :   <code>true NaN</code>
  :
  : @param $items the items to be decoded.
  : @param $options the decoding options.
@@ -98,11 +98,12 @@ declare function jn:decode-from-roundtrip(
  : can be serialized as JSON while keeping roundtrip capability.
  : Calling this version of the function is equivalent to calling the
  : 2 argument version of the function with the second argument
- :
+ :  <code>
  :  {
  :    "prefix" : "Q{http://jsoniq.org/roundtrip}"
  :    "serialization-parameters" : <serialization-parameters xmlns="http://www.w3.org/2010/xslt-xquery-serialization"/>
  :  }
+ :  </code>
  :
  : Note: The computations are made with respect to the static context of the
  : caller, so that the schema type definitions are available.
@@ -121,12 +122,12 @@ declare function jn:encode-for-roundtrip($items as item()*) as item()* external;
  : caller, so that the schema type definitions are available.
  :
  : Example:
- :   jn:encode-for-roundtrip(
+ :   <pre highlight-as="jsoniq">jn:encode-for-roundtrip(
  :     { "nan" : xs:double("NaN") },
  :     { "prefix" : "pre-" }
- :   )
+ :   )</pre>
  : returns
- :   { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } }
+ :   <code>{ "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } }</code>
  :
  : @param $items the items to be encoded.
  : @param $options the encoding options.
@@ -250,7 +251,7 @@ declare function jn:members($a as item*) as item* external;
  :
  : Note: The function is equivalent to
  :
- :   define function jn:flatten($args as item()*)
+ :   <pre highlight-as="jsoniq">define function jn:flatten($args as item()*)
  :   {
  :     for $arg in args
  :     return
@@ -263,7 +264,7 @@ declare function jn:members($a as item*) as item* external;
  :           else $value
  :       else
  :         $arg
- :   };
+ :   };</pre>
  :
  : @param $items A sequence of items
  : @return The flattened-out items of the arrays in $items.
