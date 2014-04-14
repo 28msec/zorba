@@ -249,7 +249,7 @@ declare function fn:adjust-time-to-timezone( $arg as xs:time?,  $timezone as xs:
  :             used in an environment where type annotations are not supported (for example, a Basic
  :             XSLT Processor), in which case the elements will all be annotated as
  :                <code>xs:untyped</code> and the attributes as <code>xs:untypedAtomic</code>.</p><note xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><p diff="add" at="M">A free-standing copy of this schema can be found at <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="analyze-string.xsd" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">analyze-string.xsd</loc></p></note><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">
- :             <eg xml:space="preserve">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+ :             <pre highlight-as="xquery" xml:space="preserve">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
  : &lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
  :     targetNamespace="http://www.w3.org/2005/xpath-functions"
  :     xmlns:fn="http://www.w3.org/2005/xpath-functions"
@@ -281,7 +281,7 @@ declare function fn:adjust-time-to-timezone( $arg as xs:time?,  $timezone as xs:
  :     &lt;/xs:complexType&gt;    
  :  
  : &lt;/xs:schema&gt;
- : </eg>
+ : </pre>
  :          </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0002"/> if the value of
  :                <code>$pattern</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0001"/> if the value of
  :                <code>$flags</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0003"/> if the supplied
@@ -339,7 +339,7 @@ declare function fn:analyze-string( $input as xs:string?,  $pattern as xs:string
  :             used in an environment where type annotations are not supported (for example, a Basic
  :             XSLT Processor), in which case the elements will all be annotated as
  :                <code>xs:untyped</code> and the attributes as <code>xs:untypedAtomic</code>.</p><note xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><p diff="add" at="M">A free-standing copy of this schema can be found at <loc xmlns:xlink="http://www.w3.org/1999/xlink" href="analyze-string.xsd" xlink:type="simple" xlink:show="replace" xlink:actuate="onRequest">analyze-string.xsd</loc></p></note><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">
- :             <eg xml:space="preserve">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+ :             <pre xml:space="preserve">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
  : &lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
  :     targetNamespace="http://www.w3.org/2005/xpath-functions"
  :     xmlns:fn="http://www.w3.org/2005/xpath-functions"
@@ -371,7 +371,7 @@ declare function fn:analyze-string( $input as xs:string?,  $pattern as xs:string
  :     &lt;/xs:complexType&gt;    
  :  
  : &lt;/xs:schema&gt;
- : </eg>
+ : </pre>
  :          </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0002"/> if the value of
  :                <code>$pattern</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0001"/> if the value of
  :                <code>$flags</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0003"/> if the supplied
@@ -833,10 +833,10 @@ declare function fn:deep-equal( $parameter1 as item()*,  $parameter2 as item()*,
  : 
  :             <p>For example, this arises when computing:</p>
  : 
- :             <eg xml:space="preserve">    distinct-values(
+ :             <pre highlight-as="xquery" xml:space="preserve">    distinct-values(
  :             (xs:float('1.0'),
  :             xs:decimal('1.0000000000100000000001',
- :             xs:double( '1.00000000001'))</eg>
+ :             xs:double( '1.00000000001'))</pre>
  : 
  :             <p>because the values of type <code>xs:float</code> and <code>xs:double</code> both
  :                compare equal to the value of type <code>xs:decimal</code> but not equal to each
@@ -878,10 +878,10 @@ declare function fn:distinct-values($arg as xs:anyAtomicType*) as  xs:anyAtomicT
  : 
  :             <p>For example, this arises when computing:</p>
  : 
- :             <eg xml:space="preserve">    distinct-values(
+ :             <pre highlight-as="xquery" xml:space="preserve">    distinct-values(
  :             (xs:float('1.0'),
  :             xs:decimal('1.0000000000100000000001',
- :             xs:double( '1.00000000001'))</eg>
+ :             xs:double( '1.00000000001'))</pre>
  : 
  :             <p>because the values of type <code>xs:float</code> and <code>xs:double</code> both
  :                compare equal to the value of type <code>xs:decimal</code> but not equal to each
@@ -902,7 +902,7 @@ declare function fn:distinct-values( $arg as xs:anyAtomicType*,  $collation as x
  :             node, the function returns that document node.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="add" at="A-E26">The URI may include a fragment identifier.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">By default, this function is <termref def="deterministic">deterministic</termref>. Two calls on this function
  :             return the same document node if the same URI Reference (after resolution to an absolute
  :             URI Reference) is supplied to both calls. Thus, the following expression (if it does not
- :             raise an error) will always be true:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">doc("foo.xml") is doc("foo.xml")</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">However, for performance reasons, implementations may provide a user option to evaluate
+ :             raise an error) will always be true:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">doc("foo.xml") is doc("foo.xml")</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">However, for performance reasons, implementations may provide a user option to evaluate
  :             the function without a guarantee of determinism. The manner in which any such option is
  :             provided is implementation-defined. If the user has not selected such an option, a call
  :             of the function must either return a deterministic result or must raise a <phrase diff="add" at="L">dynamic</phrase> error
@@ -1005,8 +1005,8 @@ declare function fn:doc-available($uri as xs:string?) as  xs:boolean external;
  :                            tokens is not a lexically valid <code>IDREF</code> (that is, if it is not
  :                            lexically an <code>xs:NCName</code>), it is ignored. Formally, the
  :                            candidate <code>IDREF</code> values are the strings in the sequence given
- :                            by the expression:</p><eg xml:space="preserve">for $s in $arg return 
- :    fn:tokenize(fn:normalize-space($s), ' ')[. castable as xs:IDREF]</eg></item></ulist></item><item><p> If several elements have the same <code>ID</code> value, then <code>E</code>
+ :                            by the expression:</p><pre highlight-as="xquery" xml:space="preserve">for $s in $arg return 
+ :    fn:tokenize(fn:normalize-space($s), ' ')[. castable as xs:IDREF]</pre></item></ulist></item><item><p> If several elements have the same <code>ID</code> value, then <code>E</code>
  :                      is the one that is first in document order.</p></item></olist>
  :          </change><change xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="add" at="A-E31">
  :             <p>A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0001" type="dynamic"/> if
@@ -1062,8 +1062,8 @@ declare function fn:element-with-id($arg as xs:string*) as  element()* external;
  :                            tokens is not a lexically valid <code>IDREF</code> (that is, if it is not
  :                            lexically an <code>xs:NCName</code>), it is ignored. Formally, the
  :                            candidate <code>IDREF</code> values are the strings in the sequence given
- :                            by the expression:</p><eg xml:space="preserve">for $s in $arg return 
- :    fn:tokenize(fn:normalize-space($s), ' ')[. castable as xs:IDREF]</eg></item></ulist></item><item><p> If several elements have the same <code>ID</code> value, then <code>E</code>
+ :                            by the expression:</p><pre highlight-as="xquery" xml:space="preserve">for $s in $arg return 
+ :    fn:tokenize(fn:normalize-space($s), ' ')[. castable as xs:IDREF]</pre></item></ulist></item><item><p> If several elements have the same <code>ID</code> value, then <code>E</code>
  :                      is the one that is first in document order.</p></item></olist>
  :          </change><change xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="add" at="A-E31">
  :             <p>A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0001" type="dynamic"/> if
@@ -1181,8 +1181,8 @@ declare function fn:environment-variable($name as xs:string) as  xs:string? exte
  :             a try/catch construct in XSLT or XQuery, for example), or by the calling application or
  :             external processing environment. The way in which error information is returned to the
  :             external processing environment is <termref def="implementation-dependent"/></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>fn:error</code> is called with no arguments, then its behavior is the same as
- :             the function call: </p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')) </eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$code</code> is the empty sequence then the effective value is the
- :                <code>xs:QName</code> constructed by:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">There are three pieces of information that may be associated with an error:</p><ulist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p>The <code>$code</code> is an error code that distinguishes this error from others.
+ :             the function call: </p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')) </pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$code</code> is the empty sequence then the effective value is the
+ :                <code>xs:QName</code> constructed by:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">There are three pieces of information that may be associated with an error:</p><ulist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p>The <code>$code</code> is an error code that distinguishes this error from others.
  :                   It is an <code>xs:QName</code>; the namespace URI conventionally identifies the
  :                   component, subsystem, or authority responsible for defining the meaning of the
  :                   error code, while the local part identifies the specific error condition. The
@@ -1211,8 +1211,8 @@ declare function fn:error() as  none external;
  :             a try/catch construct in XSLT or XQuery, for example), or by the calling application or
  :             external processing environment. The way in which error information is returned to the
  :             external processing environment is <termref def="implementation-dependent"/></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>fn:error</code> is called with no arguments, then its behavior is the same as
- :             the function call: </p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')) </eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$code</code> is the empty sequence then the effective value is the
- :                <code>xs:QName</code> constructed by:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">There are three pieces of information that may be associated with an error:</p><ulist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p>The <code>$code</code> is an error code that distinguishes this error from others.
+ :             the function call: </p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')) </pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$code</code> is the empty sequence then the effective value is the
+ :                <code>xs:QName</code> constructed by:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">There are three pieces of information that may be associated with an error:</p><ulist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p>The <code>$code</code> is an error code that distinguishes this error from others.
  :                   It is an <code>xs:QName</code>; the namespace URI conventionally identifies the
  :                   component, subsystem, or authority responsible for defining the meaning of the
  :                   error code, while the local part identifies the specific error condition. The
@@ -1241,8 +1241,8 @@ declare function fn:error($code as xs:QName) as  none external;
  :             a try/catch construct in XSLT or XQuery, for example), or by the calling application or
  :             external processing environment. The way in which error information is returned to the
  :             external processing environment is <termref def="implementation-dependent"/></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>fn:error</code> is called with no arguments, then its behavior is the same as
- :             the function call: </p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')) </eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$code</code> is the empty sequence then the effective value is the
- :                <code>xs:QName</code> constructed by:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">There are three pieces of information that may be associated with an error:</p><ulist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p>The <code>$code</code> is an error code that distinguishes this error from others.
+ :             the function call: </p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')) </pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$code</code> is the empty sequence then the effective value is the
+ :                <code>xs:QName</code> constructed by:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">There are three pieces of information that may be associated with an error:</p><ulist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p>The <code>$code</code> is an error code that distinguishes this error from others.
  :                   It is an <code>xs:QName</code>; the namespace URI conventionally identifies the
  :                   component, subsystem, or authority responsible for defining the meaning of the
  :                   error code, while the local part identifies the specific error condition. The
@@ -1271,8 +1271,8 @@ declare function fn:error($code as xs:QName?,  $description as xs:string) as  no
  :             a try/catch construct in XSLT or XQuery, for example), or by the calling application or
  :             external processing environment. The way in which error information is returned to the
  :             external processing environment is <termref def="implementation-dependent"/></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>fn:error</code> is called with no arguments, then its behavior is the same as
- :             the function call: </p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')) </eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$code</code> is the empty sequence then the effective value is the
- :                <code>xs:QName</code> constructed by:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">There are three pieces of information that may be associated with an error:</p><ulist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p>The <code>$code</code> is an error code that distinguishes this error from others.
+ :             the function call: </p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')) </pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$code</code> is the empty sequence then the effective value is the
+ :                <code>xs:QName</code> constructed by:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">There are three pieces of information that may be associated with an error:</p><ulist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p>The <code>$code</code> is an error code that distinguishes this error from others.
  :                   It is an <code>xs:QName</code>; the namespace URI conventionally identifies the
  :                   component, subsystem, or authority responsible for defining the meaning of the
  :                   error code, while the local part identifies the specific error condition. The
@@ -1317,7 +1317,7 @@ declare function fn:false() as  xs:boolean external;
  
 (:~
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Returns those items from the sequence <var>$seq</var> for which the supplied
- :             function <var>$f</var> returns true.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="filter" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="seq" type="item()*"/><arg name="f" type="function(item()) as xs:boolean"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The effect of the function is equivalent to the following implementation in XQuery:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :             function <var>$f</var> returns true.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="filter" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="seq" type="item()*"/><arg name="f" type="function(item()) as xs:boolean"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The effect of the function is equivalent to the following implementation in XQuery:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : declare function fn:filter(
  :         $seq as item()*,
  :         $f as function(item()) as xs:boolean)
@@ -1327,7 +1327,7 @@ declare function fn:false() as  xs:boolean external;
  :   else ( fn:head($seq)[$f(.) eq fn:true()], 
  :          fn:filter(fn:tail($seq), $f)
  :        )
- : };</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">or its equivalent in XSLT:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ : };</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">or its equivalent in XSLT:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : &lt;xsl:function name="fn:filter" as="item()*"&gt;
  :   &lt;xsl:param name="seq" as="item()*"/&gt;
  :   &lt;xsl:param name="f" as="function(item()) as xs:boolean"/&gt;
@@ -1335,7 +1335,7 @@ declare function fn:false() as  xs:boolean external;
  :     &lt;xsl:sequence select="fn:head($seq)[$f(.) eq fn:true()], fn:filter(fn:tail($seq), $f)"/&gt;
  :   &lt;/xsl:if&gt;
  : &lt;/xsl:function&gt;
- :          </eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="G">As a consequence of the function signature and the function calling
+ :          </pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="G">As a consequence of the function signature and the function calling
  :             rules, a type error occurs if the supplied function <var>$f</var> returns anything other
  :             than a single <code>xs:boolean</code> item; there is no conversion to an effective
  :             boolean value.</p></div> 
@@ -1360,7 +1360,7 @@ declare function fn:floor($arg as numeric?) as  numeric? external;
  
 (:~
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Processes the supplied sequence from left to right, applying the supplied
- :             function repeatedly to each item in turn, together with an accumulated result value.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="fold-left" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="seq" type="item()*"/><arg name="zero" type="item()*"/><arg name="f" type="function(item()*, item()) as item()*"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The effect of the function is equivalent to the following implementation in XQuery:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :             function repeatedly to each item in turn, together with an accumulated result value.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="fold-left" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="seq" type="item()*"/><arg name="zero" type="item()*"/><arg name="f" type="function(item()*, item()) as item()*"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The effect of the function is equivalent to the following implementation in XQuery:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : declare function fn:fold-left(
  :         $seq as item()*
  :         $zero as item()*,
@@ -1369,7 +1369,7 @@ declare function fn:floor($arg as numeric?) as  numeric? external;
  :   if (fn:empty($seq))
  :   then $zero
  :   else fn:fold-left(fn:tail($seq), $f($zero, fn:head($seq)), $f)
- : };</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">or its equivalent in XSLT:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ : };</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">or its equivalent in XSLT:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : &lt;xsl:function name="fn:fold-left" as="item()*"&gt;
  :   &lt;xsl:param name="seq" as="item()*"/&gt;
  :   &lt;xsl:param name="zero" as="item()*"/&gt;
@@ -1383,7 +1383,7 @@ declare function fn:floor($arg as numeric?) as  numeric? external;
  :     &lt;/xsl:otherwise&gt;
  :   &lt;/xsl:choose&gt;
  : &lt;/xsl:function&gt;
- :          </eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="G">As a consequence of the function signature and the function calling
+ :          </pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="G">As a consequence of the function signature and the function calling
  :             rules, a type error occurs if the supplied function <var>$f</var> cannot be applied to
  :             two arguments, where the first argument is either the value of <var>$zero</var> or the
  :             result of a previous application of <var>$f</var>, and the second is <var>$seq</var> or
@@ -1395,7 +1395,7 @@ declare function fn:fold-left($seq as item()*,  $zero as item()*,  $f as functio
  
 (:~
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Processes the supplied sequence from right to left, applying the supplied
- :             function repeatedly to each item in turn, together with an accumulated result value.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="fold-right" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="seq" type="item()*"/><arg name="zero" type="item()*"/><arg name="f" type="function(item()*, item()) as item()*"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The effect of the function is equivalent to the following implementation in XQuery:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :             function repeatedly to each item in turn, together with an accumulated result value.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="fold-right" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="seq" type="item()*"/><arg name="zero" type="item()*"/><arg name="f" type="function(item()*, item()) as item()*"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The effect of the function is equivalent to the following implementation in XQuery:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : declare function fn:fold-right(
  :         $seq as item()*, 
  :         $zero as item()*, 
@@ -1404,7 +1404,7 @@ declare function fn:fold-left($seq as item()*,  $zero as item()*,  $f as functio
  :   if (fn:empty($seq))
  :   then $zero
  :   else $f(fn:head($seq), fn:fold-right(fn:tail($seq), $zero, $f))
- : };</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">or its equivalent in XSLT:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ : };</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">or its equivalent in XSLT:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : &lt;xsl:function name="fn:fold-right" as="item()*"&gt;
  :   &lt;xsl:param name="seq" as="item()*"/&gt;
  :   &lt;xsl:param name="zero" as="item()*"/&gt;
@@ -1418,7 +1418,7 @@ declare function fn:fold-left($seq as item()*,  $zero as item()*,  $f as functio
  :     &lt;/xsl:otherwise&gt;
  :   &lt;/xsl:choose&gt;
  : &lt;/xsl:function&gt;
- :          </eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="G">As a consequence of the function signature and the function calling
+ :          </pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="G">As a consequence of the function signature and the function calling
  :             rules, a type error occurs if the supplied function <var>$f</var> cannot be applied to
  :             two arguments, where the first argument is any item in the sequence <var>$seq</var>, and
  :             the second is either the value of <var>$zero</var> or the result of a previous
@@ -1618,8 +1618,8 @@ declare function fn:format-dateTime($value as xs:dateTime?,  $picture as xs:stri
  :             modifier are supported. If ordinal numbering is not supported for the combination of the
  :             format token, the language, and the string appearing in parentheses, the request is
  :             ignored and cardinal numbers are generated instead.</p><example xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><head>Ordinal Numbering in Italian</head><p>The specification <code>"1;o(-º)"</code> with <code>$lang</code> equal to
- :                   <code>it</code>, if supported, should produce the sequence:</p><eg xml:space="preserve">1º 2º 3º 4º ...</eg><p>The specification <code>"Ww;o"</code> with <code>$lang</code> equal to
- :                   <code>it</code>, if supported, should produce the sequence:</p><eg xml:space="preserve">Primo Secondo Terzo Quarto Quinto ...</eg></example><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <phrase diff="chg" at="G">use of the <code>a</code> or <code>t</code>
+ :                   <code>it</code>, if supported, should produce the sequence:</p><pre highlight-as="xquery" xml:space="preserve">1º 2º 3º 4º ...</pre><p>The specification <code>"Ww;o"</code> with <code>$lang</code> equal to
+ :                   <code>it</code>, if supported, should produce the sequence:</p><pre highlight-as="xquery" xml:space="preserve">Primo Secondo Terzo Quarto Quinto ...</pre></example><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <phrase diff="chg" at="G">use of the <code>a</code> or <code>t</code>
  :                modifier</phrase> disambiguates between numbering sequences that use letters. In many
  :             languages there are two commonly used numbering sequences that use letters. One
  :             numbering sequence assigns numeric values to letters in alphabetic sequence, and the
@@ -1782,8 +1782,8 @@ declare function fn:format-integer($value as xs:integer?,  $picture as xs:string
  :             modifier are supported. If ordinal numbering is not supported for the combination of the
  :             format token, the language, and the string appearing in parentheses, the request is
  :             ignored and cardinal numbers are generated instead.</p><example xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><head>Ordinal Numbering in Italian</head><p>The specification <code>"1;o(-º)"</code> with <code>$lang</code> equal to
- :                   <code>it</code>, if supported, should produce the sequence:</p><eg xml:space="preserve">1º 2º 3º 4º ...</eg><p>The specification <code>"Ww;o"</code> with <code>$lang</code> equal to
- :                   <code>it</code>, if supported, should produce the sequence:</p><eg xml:space="preserve">Primo Secondo Terzo Quarto Quinto ...</eg></example><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <phrase diff="chg" at="G">use of the <code>a</code> or <code>t</code>
+ :                   <code>it</code>, if supported, should produce the sequence:</p><pre highlight-as="xquery" xml:space="preserve">1º 2º 3º 4º ...</pre><p>The specification <code>"Ww;o"</code> with <code>$lang</code> equal to
+ :                   <code>it</code>, if supported, should produce the sequence:</p><pre highlight-as="xquery" xml:space="preserve">Primo Secondo Terzo Quarto Quinto ...</pre></example><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The <phrase diff="chg" at="G">use of the <code>a</code> or <code>t</code>
  :                modifier</phrase> disambiguates between numbering sequences that use letters. In many
  :             languages there are two commonly used numbering sequences that use letters. One
  :             numbering sequence assigns numeric values to letters in alphabetic sequence, and the
@@ -2008,8 +2008,8 @@ declare function fn:hours-from-time($arg as xs:time?) as  xs:integer? external;
  :                         lexically valid <code>IDREF</code> (that is, if it is not lexically an
  :                            <code>xs:NCName</code>), it is ignored. Formally, the candidate
  :                            <code>IDREF</code> values are the strings in the sequence given by the
- :                         expression:</p><eg xml:space="preserve">for $s in $arg return 
- :     fn:tokenize(fn:normalize-space($s), ' ')[. castable as xs:IDREF]</eg></item></ulist></item><item><p>If several elements have the same <code>ID</code> value, then <code>E</code> is
+ :                         expression:</p><pre highlight-as="xquery" xml:space="preserve">for $s in $arg return 
+ :     fn:tokenize(fn:normalize-space($s), ' ')[. castable as xs:IDREF]</pre></item></ulist></item><item><p>If several elements have the same <code>ID</code> value, then <code>E</code> is
  :                   the one that is first in document order.</p></item></olist><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0001" type="dynamic"/> if
  :                <code>$node</code>, or the context item if the second argument is absent, is a node
  :                in a tree whose root is not a document node.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The following errors may be raised when <code>$node</code> is omitted:</p><ul xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><li><p>If the context
@@ -2048,8 +2048,8 @@ declare function fn:id($arg as xs:string*) as  element()* external;
  :                         lexically valid <code>IDREF</code> (that is, if it is not lexically an
  :                            <code>xs:NCName</code>), it is ignored. Formally, the candidate
  :                            <code>IDREF</code> values are the strings in the sequence given by the
- :                         expression:</p><eg xml:space="preserve">for $s in $arg return 
- :     fn:tokenize(fn:normalize-space($s), ' ')[. castable as xs:IDREF]</eg></item></ulist></item><item><p>If several elements have the same <code>ID</code> value, then <code>E</code> is
+ :                         expression:</p><pre highlight-as="xquery" xml:space="preserve">for $s in $arg return 
+ :     fn:tokenize(fn:normalize-space($s), ' ')[. castable as xs:IDREF]</pre></item></ulist></item><item><p>If several elements have the same <code>ID</code> value, then <code>E</code> is
  :                   the one that is first in document order.</p></item></olist><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0001" type="dynamic"/> if
  :                <code>$node</code>, or the context item if the second argument is absent, is a node
  :                in a tree whose root is not a document node.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The following errors may be raised when <code>$node</code> is omitted:</p><ul xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><li><p>If the context
@@ -2072,7 +2072,7 @@ declare function fn:id($arg as xs:string*,  $node as node()) as  element()* exte
  :                   function if <code>$node</code> is omitted is exactly the same as if the context
  :                   item had been passed as <code>$node</code>.</p></item><item><p><code>$N</code> has an <code>IDREF</code> value equal to one of the candidate
  :                      <code>ID</code> values, where:</p><ulist><item><p>A node <code>$N</code> has an <code>IDREF</code> value equal to
- :                            <code>V</code> if both of the following conditions are true:</p><ulist><item><p>The <code>is-idrefs</code> property (see <xspecref spec="DM30" ref="dm-is-idrefs"/>) of <code>$N</code> is <code>true</code>.</p></item><item><p>The sequence <!--Text replaced by erratum E29 change 1"--><eg diff="chg" at="A-E29" xml:space="preserve">fn:tokenize(fn:normalize-space(fn:string($N)), ' ')</eg>
+ :                            <code>V</code> if both of the following conditions are true:</p><ulist><item><p>The <code>is-idrefs</code> property (see <xspecref spec="DM30" ref="dm-is-idrefs"/>) of <code>$N</code> is <code>true</code>.</p></item><item><p>The sequence <!--Text replaced by erratum E29 change 1"--><pre highlight-as="xquery" diff="chg" at="A-E29" xml:space="preserve">fn:tokenize(fn:normalize-space(fn:string($N)), ' ')</pre>
  :                               <!--End of text replaced by erratum E29--> contains a string that is
  :                               equal to <code>V</code> under the rules of the <code>eq</code>
  :                               operator using the Unicode code point collation
@@ -2082,7 +2082,7 @@ declare function fn:id($arg as xs:string*,  $node as node()) as  element()* exte
  :                         in <code>$arg</code> is not a lexically valid <code>xs:ID</code> (that is,
  :                         if it is not lexically an <code>xs:NCName</code>), it is ignored. More
  :                         formally, the candidate <code>ID</code> values are the strings in the
- :                         sequence:</p><eg xml:space="preserve">$arg[. castable as xs:NCName]</eg></item></ulist></item></olist><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0001" type="dynamic"/> if
+ :                         sequence:</p><pre highlight-as="xquery" xml:space="preserve">$arg[. castable as xs:NCName]</pre></item></ulist></item></olist><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0001" type="dynamic"/> if
  :                <code>$node</code>, or the context item if the second argument is omitted, is a node
  :                in a tree whose root is not a document node. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The following errors may be raised when <code>$node</code> is omitted:</p><ul xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><li><p>If the context
  :                item is <xtermref ref="dt-absent" spec="DM30">absent</xtermref>, <phrase diff="add" at="M">dynamic error</phrase>
@@ -2104,7 +2104,7 @@ declare function fn:idref($arg as xs:string*) as  node()* external;
  :                   function if <code>$node</code> is omitted is exactly the same as if the context
  :                   item had been passed as <code>$node</code>.</p></item><item><p><code>$N</code> has an <code>IDREF</code> value equal to one of the candidate
  :                      <code>ID</code> values, where:</p><ulist><item><p>A node <code>$N</code> has an <code>IDREF</code> value equal to
- :                            <code>V</code> if both of the following conditions are true:</p><ulist><item><p>The <code>is-idrefs</code> property (see <xspecref spec="DM30" ref="dm-is-idrefs"/>) of <code>$N</code> is <code>true</code>.</p></item><item><p>The sequence <!--Text replaced by erratum E29 change 1"--><eg diff="chg" at="A-E29" xml:space="preserve">fn:tokenize(fn:normalize-space(fn:string($N)), ' ')</eg>
+ :                            <code>V</code> if both of the following conditions are true:</p><ulist><item><p>The <code>is-idrefs</code> property (see <xspecref spec="DM30" ref="dm-is-idrefs"/>) of <code>$N</code> is <code>true</code>.</p></item><item><p>The sequence <!--Text replaced by erratum E29 change 1"--><pre highlight-as="xquery" diff="chg" at="A-E29" xml:space="preserve">fn:tokenize(fn:normalize-space(fn:string($N)), ' ')</pre>
  :                               <!--End of text replaced by erratum E29--> contains a string that is
  :                               equal to <code>V</code> under the rules of the <code>eq</code>
  :                               operator using the Unicode code point collation
@@ -2114,7 +2114,7 @@ declare function fn:idref($arg as xs:string*) as  node()* external;
  :                         in <code>$arg</code> is not a lexically valid <code>xs:ID</code> (that is,
  :                         if it is not lexically an <code>xs:NCName</code>), it is ignored. More
  :                         formally, the candidate <code>ID</code> values are the strings in the
- :                         sequence:</p><eg xml:space="preserve">$arg[. castable as xs:NCName]</eg></item></ulist></item></olist><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0001" type="dynamic"/> if
+ :                         sequence:</p><pre highlight-as="xquery" xml:space="preserve">$arg[. castable as xs:NCName]</pre></item></ulist></item></olist><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="DC" code="0001" type="dynamic"/> if
  :                <code>$node</code>, or the context item if the second argument is omitted, is a node
  :                in a tree whose root is not a document node. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The following errors may be raised when <code>$node</code> is omitted:</p><ul xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><li><p>If the context
  :                item is <xtermref ref="dt-absent" spec="DM30">absent</xtermref>, <phrase diff="add" at="M">dynamic error</phrase>
@@ -2240,12 +2240,12 @@ declare function fn:lower-case($arg as xs:string?) as  xs:string external;
 (:~
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Applies the function item <var>$f</var> to every item from the sequence
  :                <var>$seq</var> in turn, returning the concatenation of the resulting sequences in
- :             order.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="for-each" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="seq" type="item()*"/><arg name="f" type="function(item()) as item()*"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The effect of the function is equivalent to the following implementation in XQuery:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :             order.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="for-each" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="seq" type="item()*"/><arg name="f" type="function(item()) as item()*"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The effect of the function is equivalent to the following implementation in XQuery:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : declare function fn:for-each($seq, $f) {
  :   if (fn:empty($seq))
  :   then ()
  :   else ($f(fn:head($seq)), fn:for-each(fn:tail($seq), $f))
- : };</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">or its equivalent in XSLT:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ : };</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">or its equivalent in XSLT:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : &lt;xsl:function name="fn:for-each"&gt;
  :   &lt;xsl:param name="seq"/&gt;
  :   &lt;xsl:param name="f"/&gt;
@@ -2253,7 +2253,7 @@ declare function fn:lower-case($arg as xs:string?) as  xs:string external;
  :     &lt;xsl:sequence select="$f(fn:head($seq)), fn:for-each(fn:tail($seq), $f)"/&gt;
  :   &lt;/xsl:if&gt;
  : &lt;/xsl:function&gt;
- :          </eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function call <code>fn:for-each($SEQ, $F)</code> is equivalent to the expression
+ :          </pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function call <code>fn:for-each($SEQ, $F)</code> is equivalent to the expression
  :                <code>for $i in $SEQ return $F($i)</code><phrase diff="add" at="G">, assuming that
  :                ordering mode is <code>ordered</code>.</phrase></p></div> 
  :
@@ -2264,7 +2264,7 @@ declare function fn:for-each( $seq as item()*,  $f as function(item()) as item()
 (:~
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Applies the function item <var>$f</var> to successive pairs of items taken one
  :             from <var>$seq1</var> and one from <var>$seq2</var>, returning the concatenation of the
- :             resulting sequences in order.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="for-each-pair" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="seq1" type="item()*"/><arg name="seq2" type="item()*"/><arg name="f" type="function(item(), item()) as item()*"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The effect of the function is equivalent to the following implementation in XQuery:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :             resulting sequences in order.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="for-each-pair" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="seq1" type="item()*"/><arg name="seq2" type="item()*"/><arg name="f" type="function(item(), item()) as item()*"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The effect of the function is equivalent to the following implementation in XQuery:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : declare function fn:for-each-pair($seq1, $seq2, $f)
  : {
  :    if(fn:exists($seq1) and fn:exists($seq2)) 
@@ -2273,7 +2273,7 @@ declare function fn:for-each( $seq as item()*,  $f as function(item()) as item()
  :      fn:for-each-pair(fn:tail($seq1), fn:tail($seq2), $f)
  :    )
  :    else ()
- : };</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">or its equivalent in XSLT:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ : };</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">or its equivalent in XSLT:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : &lt;xsl:function name="fn:for-each-pair"&gt;
  :   &lt;xsl:param name="seq1/&gt;
  :   &lt;xsl:param name="seq2/&gt;
@@ -2283,7 +2283,7 @@ declare function fn:for-each( $seq as item()*,  $f as function(item()) as item()
  :     &lt;xsl:sequence select="fn:for-each-pair(fn:tail($seq1), fn:tail($seq2), $f)"/&gt;
  :   &lt;/xsl:if&gt;
  : &lt;/xsl:function&gt;
- :          </eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:for-each-pair(("a", "b", "c"), ("x", "y", "z"), concat#2)</code> returns <code>("ax", "by", "cz")</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:for-each-pair(1 to 5, 1 to 5, function($a, $b){10*$a + $b}</code> returns <code>(11, 22, 33, 44, 55)</code>.</p></div> 
+ :          </pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:for-each-pair(("a", "b", "c"), ("x", "y", "z"), concat#2)</code> returns <code>("ax", "by", "cz")</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:for-each-pair(1 to 5, 1 to 5, function($a, $b){10*$a + $b}</code> returns <code>(11, 22, 33, 44, 55)</code>.</p></div> 
  :
  : @see http://www.w3.org/TR/xpath-functions-30/#func-for-each-pair
  :)
@@ -2343,10 +2343,10 @@ declare function fn:matches( $input as xs:string?,  $pattern as xs:string,  $fla
  :             type <code>xs:string</code> or types derived by restriction from <code>xs:string</code>,
  :             then the determination of the item with the smallest value is made according to the
  :             collation that is used. If the type of the items in the <phrase diff="chg" at="A-E47">converted sequence</phrase> is not <code>xs:string</code> and
- :                <code>$collation</code> is specified, the collation is ignored.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The collation used by this function is determined according to the rules in <specref ref="choosing-a-collation"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns the result of the expression:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :                <code>$collation</code> is specified, the collation is ignored.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The collation used by this function is determined according to the rules in <specref ref="choosing-a-collation"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns the result of the expression:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  :    if (every $v in $c satisfies $c[1] ge $v)
  :    then $c[1] 
- :    else fn:max(fn:subsequence($c, 2))</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">evaluated with <code>$collation</code> as the default collation if specified, and with
+ :    else fn:max(fn:subsequence($c, 2))</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">evaluated with <code>$collation</code> as the default collation if specified, and with
  :                <code>$c</code> as the converted sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="del" at="F">For detailed type semantics, see [Formal Semantics].</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A type error is raised <errorref class="RG" code="0006"/> if the input sequence contains
  :             items of incompatible types, as described above.</p></div> 
  :
@@ -2376,10 +2376,10 @@ declare function fn:max($arg as xs:anyAtomicType*) as  xs:anyAtomicType? externa
  :             type <code>xs:string</code> or types derived by restriction from <code>xs:string</code>,
  :             then the determination of the item with the smallest value is made according to the
  :             collation that is used. If the type of the items in the <phrase diff="chg" at="A-E47">converted sequence</phrase> is not <code>xs:string</code> and
- :                <code>$collation</code> is specified, the collation is ignored.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The collation used by this function is determined according to the rules in <specref ref="choosing-a-collation"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns the result of the expression:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :                <code>$collation</code> is specified, the collation is ignored.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The collation used by this function is determined according to the rules in <specref ref="choosing-a-collation"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns the result of the expression:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  :    if (every $v in $c satisfies $c[1] ge $v)
  :    then $c[1] 
- :    else fn:max(fn:subsequence($c, 2))</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">evaluated with <code>$collation</code> as the default collation if specified, and with
+ :    else fn:max(fn:subsequence($c, 2))</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">evaluated with <code>$collation</code> as the default collation if specified, and with
  :                <code>$c</code> as the converted sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="del" at="F">For detailed type semantics, see [Formal Semantics].</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A type error is raised <errorref class="RG" code="0006"/> if the input sequence contains
  :             items of incompatible types, as described above.</p></div> 
  :
@@ -2409,10 +2409,10 @@ declare function fn:max($arg as xs:anyAtomicType*,  $collation as xs:string) as 
  :             type <code>xs:string</code> or types derived by restriction from <code>xs:string</code>,
  :             then the determination of the item with the smallest value is made according to the
  :             collation that is used. If the type of the items in the <phrase diff="chg" at="A-E47">converted sequence</phrase> is not <code>xs:string</code> and
- :                <code>$collation</code> is specified, the collation is ignored.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The collation used by this function is determined according to the rules in <specref ref="choosing-a-collation"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns the result of the expression:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :                <code>$collation</code> is specified, the collation is ignored.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The collation used by this function is determined according to the rules in <specref ref="choosing-a-collation"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns the result of the expression:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  :    if (every $v in $c satisfies $c[1] le $v) 
  :    then $c[1] 
- :    else fn:min(fn:subsequence($c, 2))</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">evaluated with <code>$collation</code> as the default collation if specified, and with
+ :    else fn:min(fn:subsequence($c, 2))</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">evaluated with <code>$collation</code> as the default collation if specified, and with
  :                <code>$c</code> as the converted sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="del" at="F">For detailed type semantics, see [Formal Semantics].</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A type error is raised <errorref class="RG" code="0006"/> if the input sequence contains
  :             items of incompatible types, as described above.</p></div> 
  :
@@ -2442,10 +2442,10 @@ declare function fn:min($arg as xs:anyAtomicType*) as  xs:anyAtomicType? externa
  :             type <code>xs:string</code> or types derived by restriction from <code>xs:string</code>,
  :             then the determination of the item with the smallest value is made according to the
  :             collation that is used. If the type of the items in the <phrase diff="chg" at="A-E47">converted sequence</phrase> is not <code>xs:string</code> and
- :                <code>$collation</code> is specified, the collation is ignored.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The collation used by this function is determined according to the rules in <specref ref="choosing-a-collation"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns the result of the expression:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :                <code>$collation</code> is specified, the collation is ignored.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The collation used by this function is determined according to the rules in <specref ref="choosing-a-collation"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The function returns the result of the expression:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  :    if (every $v in $c satisfies $c[1] le $v) 
  :    then $c[1] 
- :    else fn:min(fn:subsequence($c, 2))</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">evaluated with <code>$collation</code> as the default collation if specified, and with
+ :    else fn:min(fn:subsequence($c, 2))</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">evaluated with <code>$collation</code> as the default collation if specified, and with
  :                <code>$c</code> as the converted sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="del" at="F">For detailed type semantics, see [Formal Semantics].</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A type error is raised <errorref class="RG" code="0006"/> if the input sequence contains
  :             items of incompatible types, as described above.</p></div> 
  :
@@ -2508,10 +2508,10 @@ declare function fn:months-from-duration($arg as xs:duration?) as  xs:integer? e
  :             sequence, then if <code>$element</code> has a default namespace (that is, a namespace
  :             node with no name), the function returns the namespace URI of the default namespace. If
  :                <code>$element</code> has no default namespace, the function returns the empty
- :             sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Prefixes are equal only if their Unicode codepoints match exactly.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">let <code>$e</code> := <eg xml:space="preserve">
+ :             sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Prefixes are equal only if their Unicode codepoints match exactly.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">let <code>$e</code> := <pre highlight-as="xquery" xml:space="preserve">
  : &lt;z:a xmlns="http://example.org/one" xmlns:z="http://example.org/two"&gt;
  :   &lt;b xmlns=""/&gt;
- : &lt;/z:a&gt;</eg></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:namespace-uri-for-prefix("z", $e)</code> returns <code>"http://example.org/two"</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:namespace-uri-for-prefix("", $e)</code> returns <code>"http://example.org/one"</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:namespace-uri-for-prefix((), $e)</code> returns <code>"http://example.org/one"</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:namespace-uri-for-prefix("xml", $e)</code> returns <code>"http://www.w3.org/XML/1998/namespace"</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:namespace-uri-for-prefix("xml", $e)</code> returns <code>"http://www.w3.org/XML/1998/namespace"</code>.</p></div> 
+ : &lt;/z:a&gt;</pre></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:namespace-uri-for-prefix("z", $e)</code> returns <code>"http://example.org/two"</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:namespace-uri-for-prefix("", $e)</code> returns <code>"http://example.org/one"</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:namespace-uri-for-prefix((), $e)</code> returns <code>"http://example.org/one"</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:namespace-uri-for-prefix("xml", $e)</code> returns <code>"http://www.w3.org/XML/1998/namespace"</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The expression <code>fn:namespace-uri-for-prefix("xml", $e)</code> returns <code>"http://www.w3.org/XML/1998/namespace"</code>.</p></div> 
  :
  : @see http://www.w3.org/TR/xpath-functions-30/#func-namespace-uri-for-prefix
  :)
@@ -2802,7 +2802,7 @@ declare function fn:remove($target as item()*,  $position as xs:integer) as  ite
  :             character within the replacement string must be written as <code>\$</code>, and a
  :             literal <code>\</code> character must be written as <code>\\</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If two alternatives within the pattern both match at the same position in the
  :                <code>$input</code>, then the match that is chosen is the one matched by the first
- :             alternative. For example:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:replace("abcd", "(ab)|(a)", "[1=$1][2=$2]") returns "[1=ab][2=]cd"</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0002"/> if the value of
+ :             alternative. For example:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:replace("abcd", "(ab)|(a)", "[1=$1][2=$2]") returns "[1=ab][2=]cd"</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0002"/> if the value of
  :                <code>$pattern</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0001"/> if the value of
  :                <code>$flags</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0003"/> if the pattern matches a
  :             zero-length string, that is, if the expression <code>fn:matches("", $pattern,
@@ -2858,7 +2858,7 @@ declare function fn:replace( $input as xs:string?,  $pattern as xs:string,  $rep
  :             character within the replacement string must be written as <code>\$</code>, and a
  :             literal <code>\</code> character must be written as <code>\\</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If two alternatives within the pattern both match at the same position in the
  :                <code>$input</code>, then the match that is chosen is the one matched by the first
- :             alternative. For example:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:replace("abcd", "(ab)|(a)", "[1=$1][2=$2]") returns "[1=ab][2=]cd"</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0002"/> if the value of
+ :             alternative. For example:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:replace("abcd", "(ab)|(a)", "[1=$1][2=$2]") returns "[1=ab][2=]cd"</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0002"/> if the value of
  :                <code>$pattern</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0001"/> if the value of
  :                <code>$flags</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0003"/> if the pattern matches a
  :             zero-length string, that is, if the expression <code>fn:matches("", $pattern,
@@ -3214,8 +3214,8 @@ declare function fn:string-to-codepoints($arg as xs:string?) as  xs:integer* ext
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Returns the contiguous sequence of items in the value of
  :                <code>$sourceSeq</code> beginning at the position indicated by the value of
  :                <code>$startingLoc</code> and continuing for the number of items indicated by the
- :             value of <code>$length</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="subsequence" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="sourceSeq" type="item()*"/><arg name="startingLoc" type="xs:double"/></proto></example><example role="signature"><proto name="subsequence" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="sourceSeq" type="item()*"/><arg name="startingLoc" type="xs:double"/><arg name="length" type="xs:double"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">In the two-argument case, returns:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="A-E2" xml:space="preserve">$sourceSeq[fn:round($startingLoc) le position()]</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">In the three-argument case, returns:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="A-E2" xml:space="preserve">$sourceSeq[fn:round($startingLoc) le position() 
- :          and position() lt fn:round($startingLoc) + fn:round($length)]</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="del" at="F">For detailed type semantics, see [Formal Semantics].</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The first item of a sequence is located at position 1, not position 0.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$sourceSeq</code> is the empty sequence, the empty sequence is returned.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If <code>$startingLoc</code> is zero or negative, the subsequence includes items from
+ :             value of <code>$length</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="subsequence" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="sourceSeq" type="item()*"/><arg name="startingLoc" type="xs:double"/></proto></example><example role="signature"><proto name="subsequence" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="sourceSeq" type="item()*"/><arg name="startingLoc" type="xs:double"/><arg name="length" type="xs:double"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">In the two-argument case, returns:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="A-E2" xml:space="preserve">$sourceSeq[fn:round($startingLoc) le position()]</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">In the three-argument case, returns:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="A-E2" xml:space="preserve">$sourceSeq[fn:round($startingLoc) le position() 
+ :          and position() lt fn:round($startingLoc) + fn:round($length)]</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="del" at="F">For detailed type semantics, see [Formal Semantics].</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The first item of a sequence is located at position 1, not position 0.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$sourceSeq</code> is the empty sequence, the empty sequence is returned.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If <code>$startingLoc</code> is zero or negative, the subsequence includes items from
  :             the beginning of the <code>$sourceSeq</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If <code>$length</code> is not specified, the subsequence includes items to the end of
  :                <code>$sourceSeq</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If <code>$length</code> is greater than the number of items in the value of
  :                <code>$sourceSeq</code> following <code>$startingLoc</code>, the subsequence includes
@@ -3236,8 +3236,8 @@ declare function fn:subsequence($sourceSeq as item()*,  $startingLoc as xs:doubl
  : <div><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Returns the contiguous sequence of items in the value of
  :                <code>$sourceSeq</code> beginning at the position indicated by the value of
  :                <code>$startingLoc</code> and continuing for the number of items indicated by the
- :             value of <code>$length</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="subsequence" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="sourceSeq" type="item()*"/><arg name="startingLoc" type="xs:double"/></proto></example><example role="signature"><proto name="subsequence" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="sourceSeq" type="item()*"/><arg name="startingLoc" type="xs:double"/><arg name="length" type="xs:double"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">In the two-argument case, returns:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="A-E2" xml:space="preserve">$sourceSeq[fn:round($startingLoc) le position()]</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">In the three-argument case, returns:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="A-E2" xml:space="preserve">$sourceSeq[fn:round($startingLoc) le position() 
- :          and position() lt fn:round($startingLoc) + fn:round($length)]</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="del" at="F">For detailed type semantics, see [Formal Semantics].</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The first item of a sequence is located at position 1, not position 0.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$sourceSeq</code> is the empty sequence, the empty sequence is returned.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If <code>$startingLoc</code> is zero or negative, the subsequence includes items from
+ :             value of <code>$length</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><example role="signature"><proto name="subsequence" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="sourceSeq" type="item()*"/><arg name="startingLoc" type="xs:double"/></proto></example><example role="signature"><proto name="subsequence" return-type="item()*" isOp="no" prefix="fn" returnEmptyOk="no" returnSeq="no" returnVaries="no" isSchema="no" isDatatype="no" isSpecial="no"><arg name="sourceSeq" type="item()*"/><arg name="startingLoc" type="xs:double"/><arg name="length" type="xs:double"/></proto></example></p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">This function is <termref def="dt-deterministic">deterministic</termref>, <termref def="dt-context-independent">context-independent</termref>,  and <termref def="dt-focus-independent">focus-independent</termref>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">In the two-argument case, returns:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="A-E2" xml:space="preserve">$sourceSeq[fn:round($startingLoc) le position()]</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">In the three-argument case, returns:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="chg" at="A-E2" xml:space="preserve">$sourceSeq[fn:round($startingLoc) le position() 
+ :          and position() lt fn:round($startingLoc) + fn:round($length)]</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="del" at="F">For detailed type semantics, see [Formal Semantics].</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The first item of a sequence is located at position 1, not position 0.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$sourceSeq</code> is the empty sequence, the empty sequence is returned.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If <code>$startingLoc</code> is zero or negative, the subsequence includes items from
  :             the beginning of the <code>$sourceSeq</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If <code>$length</code> is not specified, the subsequence includes items to the end of
  :                <code>$sourceSeq</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If <code>$length</code> is greater than the number of items in the value of
  :                <code>$sourceSeq</code> following <code>$startingLoc</code>, the subsequence includes
@@ -3398,13 +3398,13 @@ declare function fn:substring-before( $arg1 as xs:string?,  $arg2 as xs:string?,
  :             common type. The sum of a sequence of integers will therefore be an integer, while the
  :             sum of a numeric sequence that includes at least one <code>xs:double</code> will be an
  :                <code>xs:double</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The result of the function, using the second signature, is the result of the
- :             expression:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :             expression:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : if (fn:count($c) eq 0) then
  :     $zero
  : else if (fn:count($c) eq 1) then
  :     $c[1]
  : else
- :     $c[1] + fn:sum(subsequence($c, 2))</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">where <code>$c</code> is the converted sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The result of the function, using the first signature, is the result of the expression:
+ :     $c[1] + fn:sum(subsequence($c, 2))</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">where <code>$c</code> is the converted sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The result of the function, using the first signature, is the result of the expression:
  :                <code>fn:sum($arg, 0)</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="del" at="F">For detailed type semantics, see [Formal Semantics].</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A type error is raised <errorref class="RG" code="0006"/> if the input sequence contains
  :             items of incompatible types, as described above.</p></div> 
  :
@@ -3428,13 +3428,13 @@ declare function fn:sum($arg as xs:anyAtomicType*) as  xs:anyAtomicType external
  :             common type. The sum of a sequence of integers will therefore be an integer, while the
  :             sum of a numeric sequence that includes at least one <code>xs:double</code> will be an
  :                <code>xs:double</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The result of the function, using the second signature, is the result of the
- :             expression:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
+ :             expression:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">
  : if (fn:count($c) eq 0) then
  :     $zero
  : else if (fn:count($c) eq 1) then
  :     $c[1]
  : else
- :     $c[1] + fn:sum(subsequence($c, 2))</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">where <code>$c</code> is the converted sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The result of the function, using the first signature, is the result of the expression:
+ :     $c[1] + fn:sum(subsequence($c, 2))</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">where <code>$c</code> is the converted sequence.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The result of the function, using the first signature, is the result of the expression:
  :                <code>fn:sum($arg, 0)</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" diff="del" at="F">For detailed type semantics, see [Formal Semantics].</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A type error is raised <errorref class="RG" code="0006"/> if the input sequence contains
  :             items of incompatible types, as described above.</p></div> 
  :
@@ -3498,7 +3498,7 @@ declare function fn:timezone-from-time($arg as xs:time?) as  xs:dayTimeDuration?
  :             the result sequence if a separator occurs at the end of the <code>$input</code> string,
  :             or if two adjacent substrings match the supplied <code>$pattern</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If two alternatives within the supplied <code>$pattern</code> both match at the same
  :             position in the <code>$input</code> string, then the match that is chosen is the first.
- :             For example:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:tokenize("abracadabra", "(ab)|(a)") returns ("", "r", "c", "d", "r", "")</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0002"/> if the value of
+ :             For example:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:tokenize("abracadabra", "(ab)|(a)") returns ("", "r", "c", "d", "r", "")</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0002"/> if the value of
  :                <code>$pattern</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0001"/> if the value of
  :                <code>$flags</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0003"/> if the supplied
  :                <code>$pattern</code> matches a zero-length string, that is, if <code>fn:matches("",
@@ -3523,7 +3523,7 @@ declare function fn:tokenize($input as xs:string?,  $pattern as xs:string) as  x
  :             the result sequence if a separator occurs at the end of the <code>$input</code> string,
  :             or if two adjacent substrings match the supplied <code>$pattern</code>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"> If two alternatives within the supplied <code>$pattern</code> both match at the same
  :             position in the <code>$input</code> string, then the match that is chosen is the first.
- :             For example:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:tokenize("abracadabra", "(ab)|(a)") returns ("", "r", "c", "d", "r", "")</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0002"/> if the value of
+ :             For example:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve"> fn:tokenize("abracadabra", "(ab)|(a)") returns ("", "r", "c", "d", "r", "")</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0002"/> if the value of
  :                <code>$pattern</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0001"/> if the value of
  :                <code>$flags</code> is invalid according to the rules described in section <specref ref="regex-syntax"/>.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">A <phrase diff="add" at="L">dynamic</phrase> error is raised <errorref class="RX" code="0003"/> if the supplied
  :                <code>$pattern</code> matches a zero-length string, that is, if <code>fn:matches("",
@@ -4182,7 +4182,7 @@ declare function fn:iri-to-uri($iri as xs:string?) as  xs:string external;
  :                <code>xml:lang</code> attribute. If there is no such ancestor, then the function
  :             returns <code>false</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$testlang</code> is the empty sequence it is interpreted as the zero-length
  :             string.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The relevant <code>xml:lang</code> attribute is determined by the value of the XPath
- :             expression:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">(ancestor-or-self::*/@xml:lang)[last()]</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If this expression returns an empty sequence, the function returns <code>false</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Otherwise, the function returns <code>true</code> if and only if, based on a caseless
+ :             expression:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">(ancestor-or-self::*/@xml:lang)[last()]</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If this expression returns an empty sequence, the function returns <code>false</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Otherwise, the function returns <code>true</code> if and only if, based on a caseless
  :             default match as specified in section 3.13 of <bibref ref="Unicode"/>, either:</p><olist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p diff="chg" at="A-E16">
  :                   <code>$testlang</code> is equal to the string-value of the relevant
  :                      <code>xml:lang</code> attribute, or</p></item><item><p diff="chg" at="A-E16">
@@ -4210,7 +4210,7 @@ declare function fn:lang($testlang as xs:string?) as  xs:boolean external;
  :                <code>xml:lang</code> attribute. If there is no such ancestor, then the function
  :             returns <code>false</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If <code>$testlang</code> is the empty sequence it is interpreted as the zero-length
  :             string.</p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">The relevant <code>xml:lang</code> attribute is determined by the value of the XPath
- :             expression:</p><eg xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">(ancestor-or-self::*/@xml:lang)[last()]</eg><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If this expression returns an empty sequence, the function returns <code>false</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Otherwise, the function returns <code>true</code> if and only if, based on a caseless
+ :             expression:</p><pre highlight-as="xquery" xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax" xml:space="preserve">(ancestor-or-self::*/@xml:lang)[last()]</pre><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">If this expression returns an empty sequence, the function returns <code>false</code>. </p><p xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax">Otherwise, the function returns <code>true</code> if and only if, based on a caseless
  :             default match as specified in section 3.13 of <bibref ref="Unicode"/>, either:</p><olist xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"><item><p diff="chg" at="A-E16">
  :                   <code>$testlang</code> is equal to the string-value of the relevant
  :                      <code>xml:lang</code> attribute, or</p></item><item><p diff="chg" at="A-E16">
