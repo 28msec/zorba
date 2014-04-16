@@ -1,442 +1,442 @@
-Iterator tree for const-folded expr:
-<CastIterator type="xs:double">
-  <SingletonIterator value="xs:integer(0)"/>
-</CastIterator>
-
-Iterator tree for const-folded expr:
-<CastIterator type="xs:double">
-  <SingletonIterator value="xs:integer(0)"/>
-</CastIterator>
-
-Iterator tree for main query:
-<SequentialIterator>
-  <CtxVarDeclareIterator varid="4" varname="local:x">
-    <FnConcatIterator/>
-  </CtxVarDeclareIterator>
+<iterator-tree description="const-folded expr">
+  <CastIterator type="xs:double">
+    <SingletonIterator value="xs:integer(0)"/>
+  </CastIterator>
+</iterator-tree>
+<iterator-tree description="const-folded expr">
+  <CastIterator type="xs:double">
+    <SingletonIterator value="xs:integer(0)"/>
+  </CastIterator>
+</iterator-tree>
+<iterator-tree description="main query">
   <SequentialIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-1"/>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-2">
-        <ElementIterator copyInputNodes="false">
-          <SingletonIterator value="xs:QName(,,x)"/>
-        </ElementIterator>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-3">
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-4">
-        <JSONObjectIterator/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-5">
-        <SingletonIterator value="xs:integer(1)"/>
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-6">
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-7">
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-8">
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-9">
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-10">
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-11">
-        <SingletonIterator value="xs:double(0)"/>
-        <SingletonIterator value="xs:integer(2)"/>
-        <SingletonIterator value="xs:integer(1)"/>
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="local:not-cached-12">
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator cached="true" function="local:cached-1">
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator cached="true" function="local:cached-2">
-        <SingletonIterator value="xs:integer(1)"/>
-        <SingletonIterator value="xs:integer(1)"/>
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator cached="true" function="local:cached-3">
-        <FnConcatIterator/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator cached="true" function="local:cached-4">
-        <FnConcatIterator/>
-        <FnConcatIterator/>
-        <FnConcatIterator/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator cached-across-snapshots="true" function="local:cached-5">
-        <FnConcatIterator/>
-        <FnConcatIterator/>
-        <FnConcatIterator/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator cached="true" function="local:cached-6">
-        <SingletonIterator value="xs:double(0)"/>
-        <SingletonIterator value="xs:integer(2)"/>
-        <SingletonIterator value="xs:integer(1)"/>
-        <SingletonIterator value="xs:integer(1)"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <SingletonIterator value="xs:integer(1)"/>
-  </SequentialIterator>
-</SequentialIterator>
-
-Iterator tree for local:not-cached-1:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator function="local:not-cached-1"/>
-  <FnConcatIterator/>
-</IfThenElseIterator>
-
-Iterator tree for local:not-cached-2:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator function="local:not-cached-2">
-    <LetVarIterator varname="x"/>
-  </UDFunctionCallIterator>
-  <JSONObjectIterator/>
-</IfThenElseIterator>
-
-Iterator tree for local:not-cached-3:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator function="local:not-cached-3">
-    <LetVarIterator varname="x"/>
-  </UDFunctionCallIterator>
-  <JSONObjectIterator/>
-</IfThenElseIterator>
-
-Iterator tree for local:not-cached-4:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator function="local:not-cached-4">
-    <LetVarIterator varname="x"/>
-  </UDFunctionCallIterator>
-  <SingletonIterator value="xs:integer(1)"/>
-</IfThenElseIterator>
-
-Iterator tree for local:not-cached-5:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator function="local:not-cached-5">
-    <LetVarIterator varname="x"/>
-    <LetVarIterator varname="y"/>
-  </UDFunctionCallIterator>
-  <SingletonIterator value="xs:integer(1)"/>
-</IfThenElseIterator>
-
-Iterator tree for local:not-cached-6:
-<FLWORIterator>
-  <ForVariable name="x">
-    <LetVarIterator varname="x"/>
-  </ForVariable>
-  <MaterializeClause>
-    <MaterializeForVariable inputVar="x : "/>
-  </MaterializeClause>
-  <ReturnClause>
+    <CtxVarDeclareIterator varid="4" varname="local:x">
+      <FnConcatIterator/>
+    </CtxVarDeclareIterator>
     <SequentialIterator>
       <ApplyIterator>
-        <DeleteIterator>
-          <ElementIterator>
+        <UDFunctionCallIterator function="local:not-cached-1"/>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-2">
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,x)"/>
           </ElementIterator>
-        </DeleteIterator>
-      </ApplyIterator>
-      <IfThenElseIterator>
-        <FnBooleanIterator>
-          <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-        </FnBooleanIterator>
-        <UDFunctionCallIterator function="local:not-cached-6">
-          <ForVarIterator varname="x"/>
         </UDFunctionCallIterator>
-        <SingletonIterator value="xs:integer(1)"/>
-      </IfThenElseIterator>
-    </SequentialIterator>
-  </ReturnClause>
-</FLWORIterator>
-
-Iterator tree for local:not-cached-7:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator function="local:not-cached-7">
-    <LetVarIterator varname="x"/>
-  </UDFunctionCallIterator>
-  <SingletonIterator value="xs:integer(1)"/>
-</IfThenElseIterator>
-
-Iterator tree for local:not-cached-8:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator function="local:not-cached-8">
-    <LetVarIterator varname="x"/>
-  </UDFunctionCallIterator>
-  <SingletonIterator value="xs:integer(1)"/>
-</IfThenElseIterator>
-
-Iterator tree for local:not-cached-9:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator function="local:not-cached-9">
-    <LetVarIterator varname="x"/>
-  </UDFunctionCallIterator>
-  <DeleteIterator>
-    <ElementIterator>
-      <SingletonIterator value="xs:QName(,,x)"/>
-    </ElementIterator>
-  </DeleteIterator>
-</IfThenElseIterator>
-
-Iterator tree for local:not-cached-10:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator function="local:not-cached-10">
-    <LetVarIterator varname="x"/>
-  </UDFunctionCallIterator>
-  <FnConcatIterator/>
-</IfThenElseIterator>
-
-Iterator tree for local:not-cached-11:
-<FLWORIterator>
-  <LetVariable name="v" materialize="true">
-    <LetVarIterator varname="v"/>
-  </LetVariable>
-  <ForVariable name="stride">
-    <LetVarIterator varname="stride"/>
-  </ForVariable>
-  <ForVariable name="remaining">
-    <LetVarIterator varname="remaining"/>
-  </ForVariable>
-  <ForVariable name="offset">
-    <LetVarIterator varname="offset"/>
-  </ForVariable>
-  <ReturnClause>
-    <IfThenElseIterator>
-      <TypedValueCompareIterator_INTEGER>
-        <ForVarIterator varname="remaining"/>
-        <ForVarIterator varname="stride"/>
-      </TypedValueCompareIterator_INTEGER>
-      <ElementIterator copyInputNodes="false">
-        <SingletonIterator value="xs:QName(,,a)"/>
-      </ElementIterator>
-      <FLWORIterator>
-        <ForVariable name="x">
-          <UDFunctionCallIterator function="local:not-cached-11">
-            <LetVarIterator varname="v"/>
-            <ForVarIterator varname="stride"/>
-            <SpecificNumArithIterator_SubtractOperation_INTEGER>
-              <ForVarIterator varname="remaining"/>
-              <ForVarIterator varname="stride"/>
-            </SpecificNumArithIterator_SubtractOperation_INTEGER>
-            <SpecificNumArithIterator_AddOperation_INTEGER>
-              <ForVarIterator varname="offset"/>
-              <ForVarIterator varname="stride"/>
-            </SpecificNumArithIterator_AddOperation_INTEGER>
-          </UDFunctionCallIterator>
-        </ForVariable>
-        <ReturnClause>
-          <GenericArithIterator_AddOperation>
-            <PromoteIterator type="xs:anyAtomicType">
-              <FnDataIterator>
-                <ForVarIterator varname="x"/>
-              </FnDataIterator>
-            </PromoteIterator>
-            <LetVarIterator varname="v">
-              <SpecificNumArithIterator_AddOperation_INTEGER>
-                <ForVarIterator varname="offset"/>
-                <ForVarIterator varname="p"/>
-              </SpecificNumArithIterator_AddOperation_INTEGER>
-            </LetVarIterator>
-          </GenericArithIterator_AddOperation>
-        </ReturnClause>
-      </FLWORIterator>
-    </IfThenElseIterator>
-  </ReturnClause>
-</FLWORIterator>
-
-Iterator tree for local:not-cached-12:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator function="local:not-cached-12">
-    <LetVarIterator varname="x"/>
-  </UDFunctionCallIterator>
-  <SingletonIterator value="xs:integer(1)"/>
-</IfThenElseIterator>
-
-Iterator tree for local:cached-1:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator cached="true" function="local:cached-1">
-    <LetVarIterator varname="x"/>
-  </UDFunctionCallIterator>
-  <SingletonIterator value="xs:integer(1)"/>
-</IfThenElseIterator>
-
-Iterator tree for local:cached-2:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator cached="true" function="local:cached-2">
-    <LetVarIterator varname="x"/>
-    <LetVarIterator varname="y"/>
-    <LetVarIterator varname="z"/>
-  </UDFunctionCallIterator>
-  <FnConcatIterator/>
-</IfThenElseIterator>
-
-Iterator tree for local:cached-3:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator cached="true" function="local:cached-3">
-    <LetVarIterator varname="x"/>
-  </UDFunctionCallIterator>
-  <FnConcatIterator/>
-</IfThenElseIterator>
-
-Iterator tree for local:cached-4:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator cached="true" function="local:cached-4">
-    <LetVarIterator varname="x"/>
-    <LetVarIterator varname="y"/>
-    <LetVarIterator varname="z"/>
-  </UDFunctionCallIterator>
-  <FnConcatIterator/>
-</IfThenElseIterator>
-
-Iterator tree for local:cached-5:
-<IfThenElseIterator>
-  <FnBooleanIterator>
-    <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
-  </FnBooleanIterator>
-  <UDFunctionCallIterator cached-across-snapshots="true" function="local:cached-5">
-    <LetVarIterator varname="x"/>
-    <LetVarIterator varname="y"/>
-    <LetVarIterator varname="z"/>
-  </UDFunctionCallIterator>
-  <FnConcatIterator/>
-</IfThenElseIterator>
-
-Iterator tree for local:cached-6:
-<FLWORIterator>
-  <LetVariable name="v" materialize="true">
-    <LetVarIterator varname="v"/>
-  </LetVariable>
-  <ForVariable name="stride">
-    <LetVarIterator varname="stride"/>
-  </ForVariable>
-  <ForVariable name="remaining">
-    <LetVarIterator varname="remaining"/>
-  </ForVariable>
-  <ForVariable name="offset">
-    <LetVarIterator varname="offset"/>
-  </ForVariable>
-  <ReturnClause>
-    <IfThenElseIterator>
-      <TypedValueCompareIterator_INTEGER>
-        <ForVarIterator varname="remaining"/>
-        <ForVarIterator varname="stride"/>
-      </TypedValueCompareIterator_INTEGER>
-      <LetVarIterator varname="v">
-        <SpecificNumArithIterator_AddOperation_INTEGER>
-          <ForVarIterator varname="offset"/>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-3">
           <SingletonIterator value="xs:integer(1)"/>
-        </SpecificNumArithIterator_AddOperation_INTEGER>
-      </LetVarIterator>
-      <FLWORIterator>
-        <ForVariable name="x">
-          <UDFunctionCallIterator cached="true" function="local:cached-6">
-            <LetVarIterator varname="v"/>
-            <ForVarIterator varname="stride"/>
-            <SpecificNumArithIterator_SubtractOperation_INTEGER>
-              <ForVarIterator varname="remaining"/>
-              <ForVarIterator varname="stride"/>
-            </SpecificNumArithIterator_SubtractOperation_INTEGER>
-            <SpecificNumArithIterator_AddOperation_INTEGER>
-              <ForVarIterator varname="offset"/>
-              <ForVarIterator varname="stride"/>
-            </SpecificNumArithIterator_AddOperation_INTEGER>
-          </UDFunctionCallIterator>
-        </ForVariable>
-        <ReturnClause>
-          <SpecificNumArithIterator_AddOperation_DOUBLE>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-4">
+          <JSONObjectIterator/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-5">
+          <SingletonIterator value="xs:integer(1)"/>
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-6">
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-7">
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-8">
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-9">
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-10">
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-11">
+          <SingletonIterator value="xs:double(0)"/>
+          <SingletonIterator value="xs:integer(2)"/>
+          <SingletonIterator value="xs:integer(1)"/>
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="local:not-cached-12">
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator cached="true" function="local:cached-1">
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator cached="true" function="local:cached-2">
+          <SingletonIterator value="xs:integer(1)"/>
+          <SingletonIterator value="xs:integer(1)"/>
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator cached="true" function="local:cached-3">
+          <FnConcatIterator/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator cached="true" function="local:cached-4">
+          <FnConcatIterator/>
+          <FnConcatIterator/>
+          <FnConcatIterator/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator cached-across-snapshots="true" function="local:cached-5">
+          <FnConcatIterator/>
+          <FnConcatIterator/>
+          <FnConcatIterator/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator cached="true" function="local:cached-6">
+          <SingletonIterator value="xs:double(0)"/>
+          <SingletonIterator value="xs:integer(2)"/>
+          <SingletonIterator value="xs:integer(1)"/>
+          <SingletonIterator value="xs:integer(1)"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+    </SequentialIterator>
+  </SequentialIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-1">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator function="local:not-cached-1"/>
+    <FnConcatIterator/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-2">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator function="local:not-cached-2">
+      <LetVarIterator varname="x"/>
+    </UDFunctionCallIterator>
+    <JSONObjectIterator/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-3">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator function="local:not-cached-3">
+      <LetVarIterator varname="x"/>
+    </UDFunctionCallIterator>
+    <JSONObjectIterator/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-4">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator function="local:not-cached-4">
+      <LetVarIterator varname="x"/>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:integer(1)"/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-5">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator function="local:not-cached-5">
+      <LetVarIterator varname="x"/>
+      <LetVarIterator varname="y"/>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:integer(1)"/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-6">
+  <FLWORIterator>
+    <ForVariable name="x">
+      <LetVarIterator varname="x"/>
+    </ForVariable>
+    <MaterializeClause>
+      <MaterializeForVariable inputVar="x : "/>
+    </MaterializeClause>
+    <ReturnClause>
+      <SequentialIterator>
+        <ApplyIterator>
+          <DeleteIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,x)"/>
+            </ElementIterator>
+          </DeleteIterator>
+        </ApplyIterator>
+        <IfThenElseIterator>
+          <FnBooleanIterator>
+            <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+          </FnBooleanIterator>
+          <UDFunctionCallIterator function="local:not-cached-6">
             <ForVarIterator varname="x"/>
-            <LetVarIterator varname="v">
+          </UDFunctionCallIterator>
+          <SingletonIterator value="xs:integer(1)"/>
+        </IfThenElseIterator>
+      </SequentialIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-7">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator function="local:not-cached-7">
+      <LetVarIterator varname="x"/>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:integer(1)"/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-8">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator function="local:not-cached-8">
+      <LetVarIterator varname="x"/>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:integer(1)"/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-9">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator function="local:not-cached-9">
+      <LetVarIterator varname="x"/>
+    </UDFunctionCallIterator>
+    <DeleteIterator>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,x)"/>
+      </ElementIterator>
+    </DeleteIterator>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-10">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator function="local:not-cached-10">
+      <LetVarIterator varname="x"/>
+    </UDFunctionCallIterator>
+    <FnConcatIterator/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-11">
+  <FLWORIterator>
+    <LetVariable name="v" materialize="true">
+      <LetVarIterator varname="v"/>
+    </LetVariable>
+    <ForVariable name="stride">
+      <LetVarIterator varname="stride"/>
+    </ForVariable>
+    <ForVariable name="remaining">
+      <LetVarIterator varname="remaining"/>
+    </ForVariable>
+    <ForVariable name="offset">
+      <LetVarIterator varname="offset"/>
+    </ForVariable>
+    <ReturnClause>
+      <IfThenElseIterator>
+        <TypedValueCompareIterator_INTEGER>
+          <ForVarIterator varname="remaining"/>
+          <ForVarIterator varname="stride"/>
+        </TypedValueCompareIterator_INTEGER>
+        <ElementIterator copyInputNodes="false">
+          <SingletonIterator value="xs:QName(,,a)"/>
+        </ElementIterator>
+        <FLWORIterator>
+          <ForVariable name="x">
+            <UDFunctionCallIterator function="local:not-cached-11">
+              <LetVarIterator varname="v"/>
+              <ForVarIterator varname="stride"/>
+              <SpecificNumArithIterator_SubtractOperation_INTEGER>
+                <ForVarIterator varname="remaining"/>
+                <ForVarIterator varname="stride"/>
+              </SpecificNumArithIterator_SubtractOperation_INTEGER>
               <SpecificNumArithIterator_AddOperation_INTEGER>
                 <ForVarIterator varname="offset"/>
-                <ForVarIterator varname="p"/>
+                <ForVarIterator varname="stride"/>
               </SpecificNumArithIterator_AddOperation_INTEGER>
-            </LetVarIterator>
-          </SpecificNumArithIterator_AddOperation_DOUBLE>
-        </ReturnClause>
-      </FLWORIterator>
-    </IfThenElseIterator>
-  </ReturnClause>
-</FLWORIterator>
-
+            </UDFunctionCallIterator>
+          </ForVariable>
+          <ReturnClause>
+            <GenericArithIterator_AddOperation>
+              <PromoteIterator type="xs:anyAtomicType">
+                <FnDataIterator>
+                  <ForVarIterator varname="x"/>
+                </FnDataIterator>
+              </PromoteIterator>
+              <LetVarIterator varname="v">
+                <SpecificNumArithIterator_AddOperation_INTEGER>
+                  <ForVarIterator varname="offset"/>
+                  <ForVarIterator varname="p"/>
+                </SpecificNumArithIterator_AddOperation_INTEGER>
+              </LetVarIterator>
+            </GenericArithIterator_AddOperation>
+          </ReturnClause>
+        </FLWORIterator>
+      </IfThenElseIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="local:not-cached-12">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator function="local:not-cached-12">
+      <LetVarIterator varname="x"/>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:integer(1)"/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:cached-1">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator cached="true" function="local:cached-1">
+      <LetVarIterator varname="x"/>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:integer(1)"/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:cached-2">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator cached="true" function="local:cached-2">
+      <LetVarIterator varname="x"/>
+      <LetVarIterator varname="y"/>
+      <LetVarIterator varname="z"/>
+    </UDFunctionCallIterator>
+    <FnConcatIterator/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:cached-3">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator cached="true" function="local:cached-3">
+      <LetVarIterator varname="x"/>
+    </UDFunctionCallIterator>
+    <FnConcatIterator/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:cached-4">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator cached="true" function="local:cached-4">
+      <LetVarIterator varname="x"/>
+      <LetVarIterator varname="y"/>
+      <LetVarIterator varname="z"/>
+    </UDFunctionCallIterator>
+    <FnConcatIterator/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:cached-5">
+  <IfThenElseIterator>
+    <FnBooleanIterator>
+      <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
+    </FnBooleanIterator>
+    <UDFunctionCallIterator cached-across-snapshots="true" function="local:cached-5">
+      <LetVarIterator varname="x"/>
+      <LetVarIterator varname="y"/>
+      <LetVarIterator varname="z"/>
+    </UDFunctionCallIterator>
+    <FnConcatIterator/>
+  </IfThenElseIterator>
+</iterator-tree>
+<iterator-tree description="local:cached-6">
+  <FLWORIterator>
+    <LetVariable name="v" materialize="true">
+      <LetVarIterator varname="v"/>
+    </LetVariable>
+    <ForVariable name="stride">
+      <LetVarIterator varname="stride"/>
+    </ForVariable>
+    <ForVariable name="remaining">
+      <LetVarIterator varname="remaining"/>
+    </ForVariable>
+    <ForVariable name="offset">
+      <LetVarIterator varname="offset"/>
+    </ForVariable>
+    <ReturnClause>
+      <IfThenElseIterator>
+        <TypedValueCompareIterator_INTEGER>
+          <ForVarIterator varname="remaining"/>
+          <ForVarIterator varname="stride"/>
+        </TypedValueCompareIterator_INTEGER>
+        <LetVarIterator varname="v">
+          <SpecificNumArithIterator_AddOperation_INTEGER>
+            <ForVarIterator varname="offset"/>
+            <SingletonIterator value="xs:integer(1)"/>
+          </SpecificNumArithIterator_AddOperation_INTEGER>
+        </LetVarIterator>
+        <FLWORIterator>
+          <ForVariable name="x">
+            <UDFunctionCallIterator cached="true" function="local:cached-6">
+              <LetVarIterator varname="v"/>
+              <ForVarIterator varname="stride"/>
+              <SpecificNumArithIterator_SubtractOperation_INTEGER>
+                <ForVarIterator varname="remaining"/>
+                <ForVarIterator varname="stride"/>
+              </SpecificNumArithIterator_SubtractOperation_INTEGER>
+              <SpecificNumArithIterator_AddOperation_INTEGER>
+                <ForVarIterator varname="offset"/>
+                <ForVarIterator varname="stride"/>
+              </SpecificNumArithIterator_AddOperation_INTEGER>
+            </UDFunctionCallIterator>
+          </ForVariable>
+          <ReturnClause>
+            <SpecificNumArithIterator_AddOperation_DOUBLE>
+              <ForVarIterator varname="x"/>
+              <LetVarIterator varname="v">
+                <SpecificNumArithIterator_AddOperation_INTEGER>
+                  <ForVarIterator varname="offset"/>
+                  <ForVarIterator varname="p"/>
+                </SpecificNumArithIterator_AddOperation_INTEGER>
+              </LetVarIterator>
+            </SpecificNumArithIterator_AddOperation_DOUBLE>
+          </ReturnClause>
+        </FLWORIterator>
+      </IfThenElseIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
