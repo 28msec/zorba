@@ -363,6 +363,8 @@ public:
   virtual store::SchemaValidator* getValidator() const = 0;
   
   virtual void setICChecker(ICChecker* icChecker) = 0;
+
+  virtual bool isTransform() = 0;
 };
 
 

@@ -1262,8 +1262,10 @@ bool SimpleJSONArray::isInSubtree(const StructuredItem* anItem) const
 zstring SimpleJSONArray::show() const
 {
   std::stringstream str;
-  str << "[ ]";
-
+  str << "Array size: " << theContent.size() << " [";
+  for ( ulong i = 0; i < theContent.size(); i++)
+   str << theContent[i]->show() << ", ";
+  str << "]";
   return str.str();
 }
 

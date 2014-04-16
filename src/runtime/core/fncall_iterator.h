@@ -28,11 +28,15 @@
 
 #include "context/static_context.h"
 
-
 namespace zorba {
 
 class StaticContextImpl;
 
+class external_function;
+
+class VectorItemSequence;
+
+class FunctionCache;
 
 /*******************************************************************************
 
@@ -93,21 +97,25 @@ class StaticContextImpl;
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
 public:
-  dynamic_context                  * theLocalDCtx;
-  bool                               theIsLocalDCtxOwner;
+  dynamic_context* theLocalDCtx;
+  bool theIsLocalDCtxOwner;
 
-  PlanIter_t                         thePlan;
-  PlanState                        * thePlanState;
-  bool                               thePlanOpen;
-  uint32_t                           thePlanStateSize;
+  PlanIter_t thePlan;
+  PlanState* thePlanState;
+  bool thePlanOpen;
+  uint32_t thePlanStateSize;
 
-  std::vector<store::Iterator_t>     theArgWrappers;
+  std::vector<ItemIterator_t> theArgValues;
+  std::vector<store::Iterator_t> theArgWrappers;
 
-  store::Index                     * theCache;
-  store::IndexKey                  * theCacheKey;
-  store::IndexCondition_t            theCacheCond;
-  store::IndexProbeIterator_t        theCacheProbeIte;
-  std::vector<SingleItemIterator_t>  theArgValues;
+  FunctionCache* theCache;
+
+  store::Item_t theCacheKey;
+  uint64_t theCacheKeySnapshot;
+
+  store::Item_t theNextResult;
+  std::vector<store::Item_t> theCachedResult;
+  std::vector<store::Item_t>::const_iterator theCachedResultIterator;
 
   UDFunctionCallIteratorState();
 
@@ -178,6 +186,8 @@ public:
 
   bool isCached() const;
 
+  bool isCacheAcrossSnapshots() const;
+
   void accept(PlanIterVisitor& v) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);
@@ -186,23 +196,29 @@ public:
 
   void closeImpl(PlanState& planState);
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  bool nextImpl(store::Item_t& aResult, PlanState& aPlanState) const;
+
+private:
+  bool nextImplCache(store::Item_t& aResult, PlanState& aPlanState) const;
+
+  bool nextImplNoCache(store::Item_t& aResult, PlanState& aPlanState) const;
+
+  void bindArguments(UDFunctionCallIteratorState* aState, bool aReset) const;
 
 protected:
-  void createCache(
-    PlanState& planState,
-    UDFunctionCallIteratorState* state);
+  void initCache(
+    PlanState& aPlanState,
+    UDFunctionCallIteratorState* aState);
 
   bool probeCache(
-    PlanState& planState,
-    UDFunctionCallIteratorState* state,
-    store::Item_t& result,
-    std::vector<store::Item_t>& argValues) const;
+    PlanState& aPlanState,
+    UDFunctionCallIteratorState* aState,
+    std::vector< std::vector <store::Item_t> >& aArguments) const;
 
   void insertCacheEntry(
-    UDFunctionCallIteratorState* state,
-    std::vector<store::Item_t>& argValues,
-    const store::Item_t& udfResult) const;
+      PlanState& aPlanState,
+      UDFunctionCallIteratorState* aState,
+      std::vector<store::Item_t>& aResult) const;
 };
 
 
@@ -217,6 +233,14 @@ class ExtFunctionCallIteratorState : public PlanIteratorState
   Iterator_t                 theResultIter;
   bool                       theIsEvaluated;
 
+  FunctionCache* theCache;
+
+  zorba::store::Item_t theCacheKey;
+  uint64_t theCacheKeySnapshot;
+
+  std::vector<store::Item_t> theCachedResult;
+  std::vector<store::Item_t>::const_iterator theCachedResultIterator;
+
   ExtFunctionCallIteratorState();
 
   ~ExtFunctionCallIteratorState();
@@ -229,8 +253,10 @@ class ExtFunctionCallIterator : public NaryBaseIterator<ExtFunctionCallIterator,
                                                         ExtFunctionCallIteratorState>
 {
 protected:
+  external_function * theFunctionDef;
   const ExternalFunction * theFunction;
   bool                     theIsUpdating;
+  bool                     theIsSequential;
   zstring                  theNamespace;
   static_context         * theModuleSctx;
 
@@ -248,8 +274,10 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& args,
+        const external_function* functionDef,
         const ExternalFunction* function,
         bool isUpdating,
+        bool isSequential,
         const zstring& ns,
         static_context* moduleSctx);
 
@@ -259,18 +287,42 @@ public:
 
   virtual bool isUpdating() const { return theIsUpdating; }
 
+  virtual bool isSequential() const { return theIsSequential; }
+
   void accept(PlanIterVisitor& v) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   bool count(store::Item_t& result, PlanState& planState) const;
 
   bool skip(int64_t count, PlanState &planState) const;
 
-private:
-  void evaluate(ExtFunctionCallIteratorState* state, PlanState& planState) const;
+  bool nextImpl(store::Item_t& aResult, PlanState& aPlanState) const;
+
+  bool nextImplCache(store::Item_t& aResult, PlanState& aPlanState) const;
+
+  bool nextImplNoCache(store::Item_t& aResult, PlanState& aPlanState) const;
+
+  void evaluate(PlanState& aPlanState, ExtFunctionCallIteratorState* aState, std::vector<zorba::ItemSequence*>& aArguments) const;
+
+  bool isCached() const;
+
+  bool isCacheAcrossSnapshots() const;
+
+protected:
+  void initCache(
+    PlanState& aPlanState,
+    ExtFunctionCallIteratorState* aState);
+
+  bool probeCache(
+    PlanState& aPlanState,
+    ExtFunctionCallIteratorState* aState,
+    std::vector<zorba::VectorItemSequence>& aArguments) const;
+
+  void insertCacheEntry(
+      PlanState& aPlanState,
+      ExtFunctionCallIteratorState* aState,
+      std::vector<store::Item_t>& aResult) const;
 };
 
 }

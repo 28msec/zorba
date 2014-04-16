@@ -188,7 +188,8 @@ public:
       store::Item_t& aItem1,
       const TypeManager* typemgr,
       long timezone,
-      XQPCollator* aCollation);
+      XQPCollator* aCollation,
+      bool raiseError);
 
   static long valueCompare(
       const QueryLoc& loc,
@@ -229,7 +230,8 @@ public:
       const store::Item_t& aItem1,
       const TypeManager* typemgr,
       long timezone,
-      XQPCollator* aCollation);
+      XQPCollator* aCollation,
+      bool raiseError);
 
   static long compare(
       const QueryLoc& loc,
@@ -240,13 +242,14 @@ public:
       XQPCollator* aCollation);
 
 private:
-  static void valueCasting(
+  static bool valueCasting(
       const QueryLoc& loc,
       const TypeManager* typemgr,
       store::Item_t& aItem0,
       store::Item_t& aItem1,
       store::Item_t& castItem0,
-      store::Item_t& castItem1);
+      store::Item_t& castItem1,
+      bool raiseError);
 
   static void generalCasting(
       const QueryLoc& loc,

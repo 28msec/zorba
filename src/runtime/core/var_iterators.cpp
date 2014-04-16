@@ -201,6 +201,8 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
       planState.theGlobalDynCtx->set_variable(theVarId, theVarName, loc, planIter);
   }
 
+  planState.theGlobalDynCtx->changeSnapshot();
+
   STACK_END (state);
 }
 

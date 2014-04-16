@@ -570,6 +570,8 @@ public:
 
   store::Item* getType() const;
 
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
   bool equals(
       const store::Item* item,
       long timezone = 0,
@@ -943,7 +945,7 @@ class StreamableStringItem : public StringItem
   friend class BasicItemFactory;
 
 protected:
-  std::istream & theIstream;
+  std::istream * theIstream;
 
   bool theIsMaterialized;
   bool theIsConsumed;
@@ -982,6 +984,8 @@ public:
 
   bool isSeekable() const;
 
+  void ensureSeekable();
+
   std::istream& getStream();
 
   StreamReleaser getStreamReleaser();
@@ -992,7 +996,7 @@ public:
   {
     if (theStreamReleaser)
     {
-      theStreamReleaser(&theIstream);
+      theStreamReleaser(theIstream);
     }
   }
 
@@ -1011,6 +1015,10 @@ protected:
       store::Item_t& streamableDependent);
 
   void materialize() const;
+
+private:
+  static void streamReleaser(std::istream* aStream) { delete aStream;}
+
 };
 
 
@@ -2370,7 +2378,7 @@ class StreamableBase64BinaryItem : public Base64BinaryItem
   friend class BasicItemFactory;
 
 protected:
-  std::istream & theIstream;
+  std::istream * theIstream;
 
   bool           theIsMaterialized;
   bool           theIsConsumed;
@@ -2387,7 +2395,7 @@ protected:
       bool is_encoded = false)
     :
     Base64BinaryItem(t, is_encoded),
-    theIstream(aStream),
+    theIstream(&aStream),
     theIsMaterialized(false),
     theIsConsumed(false),
     theIsSeekable(seekable),
@@ -2402,13 +2410,15 @@ public:
   {
     if (theStreamReleaser) 
     {
-      theStreamReleaser(&theIstream);
+      theStreamReleaser(theIstream);
     }
   }
 
   bool isStreamable() const;
 
   bool isSeekable() const;
+
+  void ensureSeekable();
 
   std::istream& getStream();
 
@@ -2420,6 +2430,9 @@ public:
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
+  bool equals(store::Item const *, long timezone = 0,
+    XQPCollator const* = 0) const;
+
   zstring getStringValue() const;
 
   void getStringValue2(zstring& val) const;
@@ -2427,6 +2440,9 @@ public:
   void appendStringValue(zstring& buf) const;
 
   zstring show() const;
+
+private:
+  static void streamReleaser(std::istream* aStream) { delete aStream;}
 };
 
 

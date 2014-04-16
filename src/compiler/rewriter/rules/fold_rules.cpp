@@ -1060,6 +1060,11 @@ RULE_REWRITE_POST(InlineFunctions)
       expr* body = udf->getBody();
 
       if (//!udf->isSequential() &&
+          (
+            !udf->getAnnotationList() ||
+            (!udf->getAnnotationList()->contains(AnnotationInternal::zann_cache) &&
+             !udf->getAnnotationList()->contains(AnnotationInternal::zann_strictlydeterministic))
+          ) &&
           body != NULL &&
           !udf->isExiting() &&
           udf->isLeaf())

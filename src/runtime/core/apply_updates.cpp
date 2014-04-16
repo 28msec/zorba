@@ -41,6 +41,8 @@
 #include "diagnostics/util_macros.h"
 #include "zorba/internal/system_diagnostic.h"
 
+#include "context/dynamic_context.h"
+
 
 namespace zorba 
 {
@@ -241,6 +243,8 @@ void apply_updates(
       set_source( e, loc );
     throw;
   }
+  if (!pul->isTransform())
+    gdctx->changeSnapshot();
 }
 
 

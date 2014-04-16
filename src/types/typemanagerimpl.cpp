@@ -437,8 +437,8 @@ xqtref_t TypeManagerImpl::create_named_type(
       {
         if (raiseError)
         {
-					RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)));
+          RAISE_ERROR(err::XPTY0004, loc,
+            ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)));
         }
         else
         {
@@ -454,8 +454,8 @@ xqtref_t TypeManagerImpl::create_named_type(
 
     if (raiseError)
     {
-			RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)));
+      RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)));
     }
     else
     {

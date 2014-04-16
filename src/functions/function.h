@@ -51,7 +51,7 @@ class pragma;
 class function : public SimpleRCObject
 {
 protected:
-	signature                    theSignature;
+  signature                    theSignature;
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
   AnnotationList             * theAnnotationList;

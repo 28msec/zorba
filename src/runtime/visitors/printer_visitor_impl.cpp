@@ -189,7 +189,6 @@ DEF_VISIT( EmptyIterator )
 DEF_VISIT( EvalIterator )
 DEF_VISIT( ExitCatcherIterator )
 DEF_VISIT( ExitIterator )
-DEF_VISIT( ExtFunctionCallIterator )
 DEF_VISIT( FlowCtlIterator )
 DEF_VISIT( FnAdjustToTimeZoneIterator_1 )
 DEF_VISIT( FnAdjustToTimeZoneIterator_2 )
@@ -568,16 +567,34 @@ DEF_END_VISIT( TreatIterator )
 void PrinterVisitor::beginVisit( UDFunctionCallIterator const &i ) {
   thePrinter.startBeginVisit( "UDFunctionCallIterator", ++theId );
   if ( i.isCached() )
-    thePrinter.addAttribute( "cached", "true" );
-  store::Item const *const name = i.theUDF->getSignature().getName();
-  if ( name )
-    thePrinter.addAttribute( "function", name->getStringValue().str() );
+  {
+    if (i.isCacheAcrossSnapshots())
+      thePrinter.addAttribute("cached-across-snapshots", "true");
+    else
+      thePrinter.addAttribute("cached", "true");
+  }
+  if ( i.theUDF->getSignature().getName() )
+    thePrinter.addAttribute( "function", i.theUDF->getSignature().getName()->getStringValue().str() );
   else
     thePrinter.addAttribute( "function", "inline function" );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
 }
 DEF_END_VISIT( UDFunctionCallIterator )
+
+void PrinterVisitor::beginVisit( ExtFunctionCallIterator const &i ) {
+  thePrinter.startBeginVisit( "ExtFunctionCallIterator", ++theId );
+  if ( i.isCached() )
+  {
+    if (i.isCacheAcrossSnapshots())
+      thePrinter.addAttribute("cached-across-snapshots", "true");
+    else
+      thePrinter.addAttribute("cached", "true");
+  }
+  printCommons(  &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( ExtFunctionCallIterator )
 
 ////////// really special cases ///////////////////////////////////////////////
 
