@@ -60,7 +60,9 @@ namespace http_client
       std::string aOverridenContentType = "",
       bool aStatusOnly = false);
     virtual ~HttpResponseParser();
-    int parse();
+    CURLcode parse();
+    int getStatus() { return theStatus; }
+
     /**
      * After calling parse(), it is possible that HttpResponseParser will have
      * created some long-lived objects that depend on it. In that case, it will
