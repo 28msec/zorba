@@ -30,7 +30,6 @@
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
 #include <zorba/util/transcode_stream.h>
-#include <zorba/zorba_functions.h>
 #include <zorba/xmldatamanager.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_exception.h>
@@ -129,38 +128,42 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     delete theStreamBuffer;
   }
 
-  int HttpResponseParser::parse()
+  CURLcode HttpResponseParser::parse()
   {
     theStreamBuffer->set_listener(this);
     theHandler.begin();
     bool lStatusAndMesssageParsed = false;
-    int lCode = 0;
-    lCode = theStreamBuffer->curl_multi_info_read(false);
-    if (lCode)
-      return lCode; 
-    if (!theStatusOnly) {
+    CURLcode lCurlCode = theStreamBuffer->curl_multi_info_read(false);
+    if (lCurlCode)
+      return lCurlCode;
 
-      if (!theOverridenContentType.empty()) {
+    if (!theStatusOnly)
+    {
+      if (!theOverridenContentType.empty())
+      {
         parse_content_type(
           theOverridenContentType, &theCurrentContentType, &theCurrentCharset
         );
       }
 
       std::unique_ptr<std::istream> lStream;
-      try {
+      try
+      {
         if ( !theCurrentCharset.empty() &&
-             transcode::is_necessary( theCurrentCharset.c_str() ) ) {
+             transcode::is_necessary( theCurrentCharset.c_str() ) )
+        {
           lStream.reset(
             new transcode::stream<std::istream>(
               theCurrentCharset.c_str(), theStreamBuffer
             )
           );
-        } else
+        }
+        else
           lStream.reset(new std::istream(theStreamBuffer));
       }
-      catch ( std::invalid_argument const &e ) {
-        theErrorThrower.raiseException("http://www.zorba-xquery.com/errors", "ZXQP0006", e.what()
-        );
+      catch ( std::invalid_argument const &e )
+      {
+        theErrorThrower.raiseException("http://www.zorba-xquery.com/errors", "ZXQP0006", e.what());
       }
 
       Item lItem;
@@ -171,7 +174,11 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
           theCurrentContentType == "text/javascript" ||
           theCurrentContentType == "text/x-javascript" ||
           theCurrentContentType == "text/x-json" ||
-          theCurrentContentType.find("+xml") == theCurrentContentType.size()-4 ||
+          (
+            theCurrentContentType.length() > 5 &&
+              (theCurrentContentType.find("+xml") == theCurrentContentType.size()-4 ||
+              theCurrentContentType.find("+json") == theCurrentContentType.size()-5)
+          ) ||
           theCurrentContentType.find("text/") == 0)
       {
         lItem = createTextItem(lStream.release());
@@ -181,28 +188,35 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
         lItem = createBase64Item(*lStream.get());
       }
 
-      if (!lItem.isNull()) {
+      if (!lItem.isNull())
+      {
         std::string empty;
         theHandler.any(lItem, empty);
       }
-      if (!theInsideRead) {
+
+      if (!theInsideRead)
+      {
         theHandler.beginResponse(theStatus, theMessage);
         lStatusAndMesssageParsed = true;
-      } else {
-        theHandler.endBody();
       }
+      else
+        theHandler.endBody();
     }
-    if (!theInsideRead) {
+
+    if (!theInsideRead)
+    {
       if (!lStatusAndMesssageParsed)
         theHandler.beginResponse(theStatus, theMessage);
+
       for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
           i != theHeaders.end(); ++i) {
         theHandler.header(i->first, i->second);
       }
     }
+
     theHandler.endResponse();
     theHandler.end();
-    return lCode;
+    return lCurlCode;
   }
 
   void HttpResponseParser::curl_read(void*,size_t)
@@ -287,15 +301,12 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
 
   void HttpResponseParser::parseStatusAndMessage(std::string const &aHeader)
   {
-    zorba::String lHeader(aHeader);
-    zfn::trim(lHeader);
-    zorba::String::size_type lPos = aHeader.find(' ');
-    assert(lPos != zorba::String::npos);
-    zorba::String lStatus = aHeader.substr(lPos, aHeader.find(' ', lPos + 1));
+    std::string::size_type lPos = aHeader.find(' ');
+    assert(lPos != std::string::npos);
+    std::string lStatus = aHeader.substr(lPos, aHeader.find(' ', lPos + 1));
     theMessage = aHeader.substr(aHeader.find(' ', lPos + 1) + 1);
-
     {
-      zorba::String::size_type lPosition = theMessage.size() - 1;
+      std::string::size_type lPosition = theMessage.size() - 1;
       while (true) {
         if (lPosition != std::string::npos) {
           break;
@@ -308,11 +319,11 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       }
       theMessage = theMessage.substr(0, lPosition + 1);
     }
-    std::stringstream lStream(lStatus.c_str());
+    std::stringstream lStream(lStatus);
     lStream >> theStatus;
     // everything that is not a valid http status is an error
     if (theStatus < 100) {
-      theErrorThrower.raiseException("HTTP", "An HTTP error occurred");
+      theErrorThrower.raiseException("HTTP", "An HTTP error occurred. The returned status is: " + lStatus);
     }
   }
 
