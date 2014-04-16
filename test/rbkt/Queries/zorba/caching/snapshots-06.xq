@@ -1,4 +1,4 @@
-import module namespace debug = "http://www.28msec.com/modules/debug";
+import module namespace debug = "http://zorba.io/modules/caching-tests";
 import module namespace doc = "http://zorba.io/modules/store/documents";
 
 variable $x := debug:test-03-sd();

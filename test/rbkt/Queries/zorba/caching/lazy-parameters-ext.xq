@@ -1,4 +1,4 @@
-import module namespace debug = "http://www.28msec.com/modules/debug";
+import module namespace debug = "http://zorba.io/modules/caching-tests";
 declare namespace an = "http://zorba.io/annotations";
 
 debug:test-05-cache(false, error(xs:QName("debug:ERR"), "ERR")),

@@ -84,6 +84,18 @@ SerializerImpl::serialize(ItemSequence* aObject, std::ostream& aOs) const
   }
 }
 
+void
+SerializerImpl::serialize(Iterator_t aIterator, std::ostream& aOs) const
+{
+  try {
+    aIterator->open();
+    theInternalSerializer.serialize(Unmarshaller::getInternalIterator(aIterator), aOs);
+    aIterator->close();
+  } catch (ZorbaException const &e) {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
 int
 SerializerImpl::getSerializationMethod() const
 {

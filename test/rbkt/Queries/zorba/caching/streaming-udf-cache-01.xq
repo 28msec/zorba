@@ -1,5 +1,5 @@
 declare namespace an = "http://zorba.io/annotations";
-import module namespace debug = "http://www.28msec.com/modules/debug";
+import module namespace debug = "http://zorba.io/modules/caching-tests";
 import module namespace http = "http://zorba.io/modules/http-client";
 
 declare %an:cache function local:test-04-cache($x, $y)

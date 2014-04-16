@@ -1,5 +1,5 @@
 import module namespace dctx = "http://zorba.io/modules/dctx";
-import module namespace debug = "http://www.28msec.com/modules/debug";
+import module namespace debug = "http://zorba.io/modules/caching-tests";
 declare namespace an = "http://zorba.io/annotations";
 
 declare %an:strictlydeterministic function local:test-02-cache($arg)

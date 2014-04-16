@@ -51,6 +51,11 @@ namespace zorba {
         ItemSequence* object,
         std::ostream& stream) const;
 
+      virtual void
+      serialize(
+        Iterator_t iterator,
+        std::ostream& stream) const;
+
       virtual int
       getSerializationMethod() const;
 
