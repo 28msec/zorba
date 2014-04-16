@@ -36,15 +36,12 @@ namespace zorba { namespace http_client {
 
   HttpRequestHandler::HttpRequestHandler(CURL* aCurl)
     : theCurl(aCurl),
-      theStatusOnly(false),
       theInsideMultipart(false),
       theLastBodyHadContent(false),
       theSerStream(NULL),
       thePost(NULL),
       theLast(NULL),
-      theLastSerializerOptions(NULL),
-      thePostData(NULL),
-      theIsHeadRequest(false)
+      thePostData(NULL)
   {
     theHeaderLists.push_back(NULL);
   }
@@ -65,6 +62,59 @@ namespace zorba { namespace http_client {
     delete theSerStream;
   }
 
+  void HttpRequestHandler::sendRequest(Request& aRequest)
+  {
+    begin();
+    beginRequest(
+          aRequest.theMethod,
+          aRequest.theHref,
+          aRequest.theAuthentication.theUserName,
+          aRequest.theAuthentication.thePassword,
+          aRequest.theAuthentication.theAuthMethod,
+          aRequest.theAuthentication.theSendAuthentication,
+          aRequest.theOptions
+      );
+
+      for (unsigned int i=0; i<aRequest.theHeaders.size(); ++i)
+      {
+        std::pair<String, String>& lHeader = aRequest.theHeaders[i];
+        header(lHeader.first, lHeader.second);
+      }
+
+      if (aRequest.theHaveBody)
+      {
+        Body& lBody = aRequest.theBody;
+        beginBody(lBody.theMediaType, lBody.theSrc);
+        any(lBody.theContent, lBody.theCharset);
+        endBody();
+      }
+
+      if (aRequest.theHaveMultiPart)
+      {
+        MultiPart& lMultiPart = aRequest.theMultiPart;
+        beginMultipart(lMultiPart.theMediaType, lMultiPart.theBoundary);
+        for (unsigned int i=0; i<lMultiPart.theParts.size(); ++i)
+        {
+          Part& lPart = lMultiPart.theParts[i];
+
+          for (unsigned int i=0; i<lPart.theHeaders.size(); ++i)
+          {
+            std::pair<String, String>& lHeader = lPart.theHeaders[i];
+            header(lHeader.first, lHeader.second);
+          }
+
+          Body& lBody = lPart.theBody;
+          beginBody(lBody.theMediaType, lBody.theSrc);
+          any(lBody.theContent, lBody.theCharset);
+          endBody();
+        }
+        endMultipart();
+      }
+      endRequest();
+      end();
+  }
+
+
   void HttpRequestHandler::begin()
   {
   }
@@ -79,15 +129,11 @@ namespace zorba { namespace http_client {
 
   void HttpRequestHandler::beginRequest(String aMethod,
                                         String href,
-                                        bool aStatusOnly,
                                         String aUsername,
                                         String aPassword,
                                         String aAuthMethod,
                                         bool aSendAuthorization,
-                                        String aOverrideContentType,
-                                        bool aFollowRedirect,
-                                        String aUserAgent,
-                                        int aTimeout /*= -1*/ )
+                                        Options aOptions)
   {
     aMethod = fn::upper_case(aMethod);
     const char* lStr = aMethod.c_str();
@@ -95,22 +141,20 @@ namespace zorba { namespace http_client {
     String const lAuthMethod = fn::lower_case(aAuthMethod);
     if (theMethodString == "HEAD" || theMethodString == "OPTIONS") {
       curl_easy_setopt(theCurl, CURLOPT_NOBODY, 1L);
-      theIsHeadRequest = true;
     }
     curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, theMethodString.c_str());
     if (href != "") {
       curl_easy_setopt(theCurl, CURLOPT_URL, href.c_str());
     }
-    if (aFollowRedirect) {
+    if (aOptions.theFollowRedirect) {
       curl_easy_setopt(theCurl, CURLOPT_FOLLOWLOCATION, 1);
     }
-    theStatusOnly = aStatusOnly;
-    theOverrideContentType = aOverrideContentType;
-    if (aTimeout != -1) {
-      curl_easy_setopt(theCurl, CURLOPT_TIMEOUT, aTimeout);
+    theOptions = aOptions;
+    if (aOptions.theTimeout != -1) {
+      curl_easy_setopt(theCurl, CURLOPT_TIMEOUT, aOptions.theTimeout);
     }
-    if (aUserAgent != "")
-      curl_easy_setopt( theCurl, CURLOPT_USERAGENT, aUserAgent.c_str() );
+    if (aOptions.theUserAgent != "")
+      curl_easy_setopt( theCurl, CURLOPT_USERAGENT, aOptions.theUserAgent.c_str() );
     else
       curl_easy_setopt( theCurl, CURLOPT_USERAGENT, "libcurl-agent/1.0" );
 
@@ -180,11 +224,8 @@ namespace zorba { namespace http_client {
     }
   }
 
-  void HttpRequestHandler::beginBody(String aContentType,
-                                     String aSrc,
-                                     ItemSequence* aSerializerOptions)
+  void HttpRequestHandler::beginBody(String aContentType, String aSrc)
   {
-    theLastSerializerOptions = aSerializerOptions;
     theSerStream = new std::ostringstream();
     theCurrentContentType = aContentType;
     theContentType = "Content-Type: ";
@@ -407,15 +448,6 @@ namespace zorba { namespace http_client {
     }
   }
 
-  bool HttpRequestHandler::getOverrideContentType( String& aResult )
-  {
-    if (theOverrideContentType == "") {
-      return false;
-    }
-    aResult = theOverrideContentType;
-    return true;
-  }
-
   void HttpRequestHandler::cleanUpBody()
   {
     delete theSerStream;
@@ -426,8 +458,8 @@ namespace zorba { namespace http_client {
   void HttpRequestHandler::serializeItem( Item aItem )
   {
     theLastBodyHadContent = true;
-    Serializer_t lSerializer =
-    Serializer::createSerializer(theLastSerializerOptions);
+    Zorba_SerializerOptions_t lOptions;
+    Serializer_t lSerializer = Serializer::createSerializer(lOptions);
     SingletonItemSequence lSequence(aItem);
     lSerializer->serialize(&lSequence, *theSerStream);
   }

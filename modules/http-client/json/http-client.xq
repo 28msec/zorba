@@ -1,5 +1,5 @@
 jsoniq version "1.0";
-
+ 
 (:
  : Copyright 2006-2013 The FLWOR Foundation.
  :
@@ -22,10 +22,11 @@ jsoniq version "1.0";
  : This module provides functions for performing HTTP requests.
  : </p>
  :
- : <h2>A simple GET request using the get#1 convenience function</h2>
+ : <p>A simple GET request using the get#1 convenience function</p>
  :
  : <pre class="ace-static" ace-mode="xquery">
  : import module namespace http="http://zorba.io/modules/http-client";
+ :
  : http:get("http://www.example.com")
  : </pre>
  :
@@ -130,10 +131,13 @@ jsoniq version "1.0";
  : According to the HTTP RFC, GET, HEAD an OPTIONS requests should not have any side-effects. 
  : However, in practice it is not uncommon, especially for GET requests, to have side-effects. 
  : If your application depends on the ordering of side-effects from requests issued through
- : these functions, you should either use the <a href="#send-request-3">send-request()</a>
+ : these functions, you should either use the <a href="#send-request-1">send-request()</a>
  : function (which is declared <i>sequential</i>), or alternatively
  : wrap each call to get() in your own sequential function, to ensure
  : that the requests are not reordered.
+ : Conversely, if you want their results to be cached you can use the 
+ : <a href="#send-deterministic-request-3">send-deterministic-request()</a>
+ : function (which is declared <i>deterministic</i>). 
  : </p>
  :
  : <h2 id="url_string">$href Arguments to Functions</h2>
@@ -153,11 +157,8 @@ jsoniq version "1.0";
  : this module:
  : 
  : <ol>
- :   <li>EXPath defines only the send-request() function, although it
- : does include convenient 1- and 2-argument forms in addition to the
- : full 3-argument form. EXPath does not include the simpler get(),
- : post(), put(), delete(), head(), and options() functions defined by
- : this module.</li>
+ :   <li>EXPath does not include the simpler get(), post(), put(), delete(), 
+ : head(), options() and patch() functions defined by this module.</li>
  : <li>EXPath uses XML to represent request for its send-request() function, 
  : whereas this module uses JSON.</li>
  : <li>EXPath specifies that all XML content returned by an HTTP server
@@ -235,7 +236,13 @@ declare option ver:module-version "1.0";
  :      "override-media-type": "text/plain",
  :      "follow-redirect": false,
  :      "timeout": 30,
- :      "user-agent": "Mozilla/5.0"
+ :      "user-agent": "Mozilla/5.0",
+ :      "retry":
+ :      {
+ :        "delay": [1000, 2000, 5000],
+ :        "on-connection-error": false,
+ :        "on-statuses": [500, 501]
+ :      }
  :    },   
  :    "headers":
  :    {
@@ -272,6 +279,15 @@ declare option ver:module-version "1.0";
  :         If no response is received withing this time duration, an error is thrown.</li>
  :    <li>user-agent. The user agent sent to the server when issuing the request.
  :        If not specified libcurl-agent/1.0 is used.</li>
+ :    <li>retry. The request will be automatically retried in case of connection error
+ ;        and/or for certain response status codes. The behaviour is controlled by the
+ :        following mandatory suboptions:
+ :        <ul>
+ :            <li>delay: an array specifying the milliseconds of wait before each retry.</li>
+ :            <li>on-connection-error: whether to retry the request if a connection to the
+ :                server cannot be estabilished</li>
+ :            <li>on-statuses: an array containing the statuses which will trigger a retry</li>
+ :        </ul></li> 
  : </ul>
  : </p>
  :
@@ -338,8 +354,8 @@ declare %an:sequential function http:send-request($request as object) as object
  : This function sends an HTTP request and returns the corresponding response.
  : </p>
  : <p>
- : This function has the same semantics of <a href="#send-request-1">send-request-1</a>, 
- : but is declared as nondeterministic and thus should only be used when
+ : This function has the same semantics as <a href="#send-request-1">send-request-1</a>, 
+ : but is declared as being non deterministic and thus should only be used when
  : the request has no side-effects.
  : </p>
  :
@@ -357,6 +373,34 @@ declare %an:nondeterministic function http:send-nondeterministic-request($reques
 {
   if (http:check-request($request))
   then http:http-nondeterministic-impl($request)
+  else ()
+};
+
+(:~
+ : <p> 
+ : This function sends an HTTP request and returns the corresponding response.
+ : </p>
+ : <p>
+ : This function has the same semantics as <a href="#send-request-1">send-request-1</a>, 
+ : but is declared as deterministic and thus should only be used when
+ : the request has no side-effects and behaves deterministic as required by the
+ : application.
+ : </p>
+ :
+ : @see <a href="#deterministic_warning">Notice about deterministic functions</a>
+ : @param $request see request parameter of <a href="#send-request-1">send-request#1</a>
+ : @return <a href="#standard_return">standard http-client return type</a>.
+ :
+ : @error http:HTTP An HTTP error occurred.
+ : @error http:REQUEST The specified request is not valid.
+ : @error http:TIMEOUT A timeout occurred waiting for the response.
+ : @error http:FOLLOW Cannot follow a redirect of a POST, PUT, or DELETE request.
+ : @error http:CHARSET The specified charset is unsupported.
+ :)
+declare function http:send-deterministic-request($request as object) as object
+{
+  if (http:check-request($request))
+  then http:http-deterministic-impl($request)
   else ()
 };
 
@@ -654,6 +698,74 @@ declare %an:sequential function http:post($href as string, $body as atomic, $con
   })  
 };
 
+(:~
+ : <p>
+ : This function makes an HTTP PATCH request to a given URL.
+ : </p>
+ : <p>
+ : The body passed to this function must be either a string, a base64Binary or 
+ : an hexBinary.
+ : If it is a string, the Content-Type sent to the server will be "text/plain",
+ : "application/octet-stream" otherwise.
+ : </p>
+ :
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @param $body The body which will be sent to the server.
+ : @return <a href="#standard_return">standard http-client return type</a>.
+ :
+ : @error http:HTTP An HTTP error occurred.
+ : @error http:REQUEST The specified request is not valid.
+ : @error http:TIMEOUT A timeout occurred waiting for the response.
+ :
+ :)
+declare %an:sequential function http:patch($href as string, $body as atomic) as object
+{
+  variable $media-type as string :=
+    typeswitch($body)
+      case string return "text/plain"
+      case base64Binary return "application/octet-stream"
+      case hexBinary return "application/octet-stream"
+      default return fn:error(QName("http:REQUEST"), "The specified request is not valid. The type of the request body must be string, base64Binary, or hexBinary.");
+  http:patch($href, $body, $media-type)
+};
+
+(:~
+ : <p>
+ : This function makes an HTTP PATCH request to a given URL.
+ : </p>
+ : <p>
+ : The body passed to this function must be either a string, a base64Binary, or
+ : an hexBinary.
+ : In any case, Content-Type of the request sent to the server will
+ : be $content-type.
+ : </p>
+ :
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @param $body The body which will be sent to the server.
+ : @param $content-type The content type of $body to send to the server.
+ : @return <a href="#standard_return">standard http-client return type</a>.
+ :
+ : @error http:HTTP An HTTP error occurred.
+ : @error http:REQUEST The specified request is not valid.
+ : @error http:TIMEOUT A timeout occurred waiting for the response.
+ : @error http:CHARSET The specified charset is unsupported.
+ : 
+ :)
+declare %an:sequential function http:patch($href as string, $body as atomic, $content-type as string) as object
+{
+  http:send-request(
+  {
+    "method": "PATCH",
+    "href": $href,
+    "body": {
+      "media-type": $content-type,
+      "content": $body
+    }
+  })
+};
+
 
 (:~
  : Private function used internally by this module.
@@ -691,3 +803,5 @@ declare %private function http:check-request($request as object) as boolean
 declare %private %an:sequential function http:http-sequential-impl($request as object) as object external;
 
 declare %private %an:nondeterministic function http:http-nondeterministic-impl($request as object) as object external;
+
+declare %private function http:http-deterministic-impl($request as object) as object external;
