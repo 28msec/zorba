@@ -1,4 +1,4 @@
-import module namespace debug = "http://zorba.io/modules/caching-tests";
+import module namespace debug = "http://zorba.io/modules/util-tests";
 
 declare function local:is-cached($uuids, $old-uuids)
 {

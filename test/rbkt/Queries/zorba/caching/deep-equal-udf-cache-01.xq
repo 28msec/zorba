@@ -1,4 +1,4 @@
-import module namespace debug = "http://zorba.io/modules/caching-tests";
+import module namespace debug = "http://zorba.io/modules/util-tests";
 declare namespace an = "http://zorba.io/annotations";
 
 declare %an:cache %an:compare-with-deep-equal(2) function local:test-07-cache($x as item(), $y as item())

@@ -1,4 +1,4 @@
-import module namespace debug = "http://zorba.io/modules/caching-tests";
+import module namespace debug = "http://zorba.io/modules/util-tests";
 declare namespace an = "http://zorba.io/annotations";
 
 declare %an:strictlydeterministic function local:test-02-cache($arg)

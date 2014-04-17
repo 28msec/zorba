@@ -1,4 +1,4 @@
-import module namespace debug = "http://zorba.io/modules/caching-tests";
+import module namespace debug = "http://zorba.io/modules/util-tests";
 
 debug:test-01-cache(2),
 "
