@@ -20,6 +20,7 @@ xquery version "3.0";
  : This module provides a function to put the currently running query
  : to sleep.
  :
+ : @author Matthias Brantner
  :)
 module namespace sleep = "http://zorba.io/modules/sleep";
 
