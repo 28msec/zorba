@@ -16,9 +16,10 @@
 #ifndef ZORBA_UTILS_HASHMAP_H
 #define ZORBA_UTILS_HASHMAP_H
 
+#include <cassert>
+#include <cstddef>
 #include <vector>
 
-#include <cstddef>
 #include <zorba/config.h>
 
 #include "common/common.h"

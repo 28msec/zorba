@@ -17,6 +17,7 @@
 #ifndef ZORBA_SIMPLE_STORE_TEXT_NODE_CONTENT
 #define ZORBA_SIMPLE_STORE_TEXT_NODE_CONTENT
 
+#include <cassert>
 #include <cstring>                      /* for memset(3) */
 
 #include "shared_types.h"

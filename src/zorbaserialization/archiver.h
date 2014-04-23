@@ -17,6 +17,7 @@
 #ifndef ZORBA_BINARY_SERIALIZATION_ARCHIVER
 #define ZORBA_BINARY_SERIALIZATION_ARCHIVER
 
+#include <cassert>
 #include <stack>
 
 #include "zorbaserialization/class_serializer.h"

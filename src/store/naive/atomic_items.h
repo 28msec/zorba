@@ -17,11 +17,12 @@
 #ifndef ZORBA_STORE_ATOMIC_ITEMS_H
 #define ZORBA_STORE_ATOMIC_ITEMS_H
 
-#include <zorba/config.h>
+#include <cassert>
 #include <iostream>
 #include <vector>
 #include <cstring>
 
+#include <zorba/config.h>
 #include <zorba/streams.h>
 #ifndef ZORBA_NO_FULL_TEXT
 #include <zorba/tokenizer.h>

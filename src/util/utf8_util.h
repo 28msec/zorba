@@ -18,6 +18,7 @@
 #define ZORBA_UTF8_UTIL_H
 
 #include <algorithm>
+#include <cassert>
 #include <cwchar>
 #include <string>
 

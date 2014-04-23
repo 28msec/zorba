@@ -17,6 +17,7 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITEMS
 #define ZORBA_SIMPLE_STORE_NODE_ITEMS
 
+#include <cassert>
 #include <stack>
 #include <vector>
 

@@ -17,6 +17,7 @@
 #ifndef ZORBA_UTILS_STACK
 #define ZORBA_UTILS_STACK
 
+#include <cassert>
 #include <vector>
 
 #include <zorba/config.h>

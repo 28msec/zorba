@@ -17,6 +17,8 @@
 #ifndef ZORBA_RUNTIME_UNARY_ITERATOR
 #define ZORBA_RUNTIME_UNARY_ITERATOR
 
+#include <cassert>
+
 #include "common/shared_types.h"
 
 #include "runtime/base/plan_iterator.h"

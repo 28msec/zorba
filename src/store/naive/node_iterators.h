@@ -16,6 +16,7 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITERATORS
 #define ZORBA_SIMPLE_STORE_NODE_ITERATORS
 
+#include <cassert>
 #include <set>
 #include <vector>
 
