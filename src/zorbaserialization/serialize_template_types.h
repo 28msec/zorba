@@ -17,6 +17,7 @@
 #ifndef TEMPLATE_SERIALIZATION_OPERATORS
 #define TEMPLATE_SERIALIZATION_OPERATORS
 
+#include <cassert>
 #include <list>
 #include <vector>
 #include <map>

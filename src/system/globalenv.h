@@ -17,6 +17,8 @@
 #ifndef ZORBA_GLOBALENV_H
 #define ZORBA_GLOBALENV_H
 
+#include <cassert>
+
 #include <zorba/config.h>
 #include <zorba/internal/unique_ptr.h>
 

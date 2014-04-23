@@ -16,6 +16,8 @@
 #ifndef ZORBA_ZORBAUTILS_HAHSET_ATOMIC_ITEMH
 #define ZORBA_ZORBAUTILS_HAHSET_ATOMIC_ITEMH
 
+#include <cassert>
+
 #include "zorbautils/hashset.h"
 
 #include "runtime/booleans/BooleanImpl.h"

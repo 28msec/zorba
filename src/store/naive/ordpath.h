@@ -17,6 +17,7 @@
 #ifndef ZORBA_STORE_ORDPATH_H
 #define ZORBA_STORE_ORDPATH_H
 
+#include <cassert>
 #include <vector>
 
 #include <zorba/config.h>

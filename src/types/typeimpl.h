@@ -17,6 +17,8 @@
 #ifndef ZORBA_TYPEIMPL_H
 #define ZORBA_TYPEIMPL_H
 
+#include <cassert>
+
 #include "common/shared_types.h"
 
 #include "types/node_test.h"

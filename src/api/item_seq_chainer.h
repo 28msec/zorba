@@ -19,7 +19,7 @@
 
 #include <vector>
 #include <set>
-#include <assert.h>
+#include <cassert>
 
 #include <zorba/config.h>
 #include <zorba/item_sequence.h>

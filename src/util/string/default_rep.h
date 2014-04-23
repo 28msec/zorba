@@ -17,6 +17,7 @@
 #ifndef ZORBA_RSTRING_DEFAULT_REP_H
 #define ZORBA_RSTRING_DEFAULT_REP_H
 
+#include <cassert>
 #include <iterator>
 
 #include <zorba/internal/cxx_util.h>
