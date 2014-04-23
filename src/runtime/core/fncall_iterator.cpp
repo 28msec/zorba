@@ -773,7 +773,8 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-ExtFunctionCallIteratorState::ExtFunctionCallIteratorState()
+ExtFunctionCallIteratorState::ExtFunctionCallIteratorState():
+  theIsEvaluated(false)
 {
 }
 
@@ -796,6 +797,7 @@ void ExtFunctionCallIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
   theResultIter = NULL;
   theResult = NULL;
+  theIsEvaluated = false;
 }
 
 
@@ -951,97 +953,31 @@ bool ExtFunctionCallIterator::count( store::Item_t &result,
   STACK_END( state );
 }
 
-bool ExtFunctionCallIterator::skip( int64_t count,
-                                    PlanState &planState ) const {
+bool ExtFunctionCallIterator::skip(int64_t count, PlanState &planState) const
+{
+  if (count == 0)
+    return true;
+
   ItemSequence_t api_seq;
   bool more_items;
-
-  ExtFunctionCallIteratorState *state;
-  DEFAULT_STACK_INIT( ExtFunctionCallIteratorState, state, planState );
-
-  try {
-    if ( theFunction->isContextual() ) {
-      ContextualExternalFunction const *const f =
-        dynamic_cast<ContextualExternalFunction const*>( theFunction );
-      ZORBA_ASSERT( f );
-      StaticContextImpl sctx(
-        theModuleSctx,
-        planState.theQuery ?
-          planState.theQuery->getRegisteredDiagnosticHandlerNoSync() :
-          nullptr
-      );
-      DynamicContextImpl dctx(
-        nullptr, planState.theGlobalDynCtx, theModuleSctx
-      );
-      api_seq = f->evaluate( state->m_extArgs, &sctx, &dctx );
-    } else {
-      NonContextualExternalFunction const *const f =
-        dynamic_cast<NonContextualExternalFunction const*>( theFunction );
-      ZORBA_ASSERT( f );
-      api_seq = f->evaluate( state->m_extArgs );
-    }
-    if ( !!api_seq ) {
-      Iterator_t api_iter( api_seq->getIterator() );
-      api_iter->open();
-      more_items = api_iter->skip( count );
-      api_iter->close();
-    }
-  }
-  catch ( ZorbaException &e ) {
-    set_source( e, loc );
-    throw;
-  }
-  STACK_PUSH( more_items, state );
-  STACK_END( state );
-}
-
-bool ExtFunctionCallIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& planState) const
-{
-  Item lOutsideItem;
-  const NonContextualExternalFunction* lPureFct = 0;
-  const ContextualExternalFunction* lNonePureFct = 0;
-
-  ExtFunctionCallIteratorState* state;
-  DEFAULT_STACK_INIT(ExtFunctionCallIteratorState, state, planState);
+  ExtFunctionCallIteratorState *state =
+      StateTraitsImpl<ExtFunctionCallIteratorState>::getState(planState, this->theStateOffset);
 
   try
   {
-    if (!theFunction->isContextual())
-    {
-      lPureFct = dynamic_cast<const NonContextualExternalFunction*>(theFunction);
-      ZORBA_ASSERT(lPureFct);
+    ZORBA_ASSERT(!state->theIsEvaluated);
+    evaluate(state, planState);
 
-      state->theResult = lPureFct->evaluate(state->m_extArgs);
-      if(state->theResult.get() != NULL)
-        state->theResultIter = state->theResult->getIterator();
+    if ( !state->theResult.isNull() )
+    {
+      state->theResultIter = state->theResult->getIterator();
+      state->theResultIter->open();
+      more_items = state->theResultIter->skip( count );
+      if (!more_items)
+        state->theResultIter->close();
     }
-    else
-    {
-      lNonePureFct = dynamic_cast<const ContextualExternalFunction*>(theFunction);
-      ZORBA_ASSERT(lNonePureFct);
-
-      // The planState.theQuery maybe null, e.g. in the case of constant-folding
-      // of global variable expressions
-      StaticContextImpl theSctxWrapper(theModuleSctx,
-                                       (planState.theQuery == NULL?
-                                        NULL :
-                                        planState.theQuery->getRegisteredDiagnosticHandlerNoSync()));
-
-      DynamicContextImpl theDctxWrapper(NULL,
-                                        planState.theGlobalDynCtx,
-                                        theModuleSctx);
-
-      state->theResult = lNonePureFct->evaluate(state->m_extArgs,
-                                                &theSctxWrapper,
-                                                &theDctxWrapper);
-      
-      if(state->theResult.get() != NULL)
-        state->theResultIter = state->theResult->getIterator();
-    } // if (!theFunction->isContextual())
   }
-  catch (ZorbaException& e)
+  catch ( ZorbaException &e )
   {
     set_source( e, loc );
     throw;
@@ -1053,49 +989,117 @@ bool ExtFunctionCallIterator::nextImpl(
       ERROR_PARAMS(e.what()),
       ERROR_LOC(loc));
   }
-  
+  return more_items;
+}
 
-  if(state->theResult.get() != NULL)
-  {
-    state->theResultIter->open();
-  }
-  while (true)
+bool ExtFunctionCallIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  Item lOutsideItem;
+
+  ExtFunctionCallIteratorState* state;
+  DEFAULT_STACK_INIT(ExtFunctionCallIteratorState, state, planState);
+
+  if (!state->theIsEvaluated)
   {
     try
     {
-      if (state->theResult.get() == NULL) // This will happen if the user's external function returns a zorba::ItemSequence_t(NULL)
-        break;
+      evaluate(state, planState);
 
-      if (!state->theResultIter->next(lOutsideItem))
+      if (state->theResult.get() != NULL)
       {
-        state->theResultIter->close();
-        break;
+        state->theResultIter = state->theResult->getIterator();
+        state->theResultIter->open();
       }
     }
-    catch (XQueryException& e)
+    catch (ZorbaException& e)
     {
-			set_source( e, loc );
-			throw;
+      set_source( e, loc );
+      throw;
     }
-
-    result = Unmarshaller::getInternalItem(lOutsideItem);
-
-    if (theIsUpdating)
+    catch (std::exception const& e)
     {
-      if (!result->isPul())
-        throw XQUERY_EXCEPTION(err::XUDY0019, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+          zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
+          ERROR_PARAMS(e.what()),
+          ERROR_LOC(loc));
     }
-    else
-    {
-      if (result->isPul())
-        throw XQUERY_EXCEPTION(err::XUDY0018, ERROR_LOC(loc));
-    }
-    STACK_PUSH(true, state);
   }
 
+  if (!state->theResult.isNull() && //The external function returns zorba::ItemSequence_t(NULL)
+      state->theResultIter->isOpen()) //The iterator has not been skipped past its end
+  {
+    while (true)
+    {
+      try
+      {
+        if (!state->theResultIter->next(lOutsideItem))
+        {
+          state->theResultIter->close();
+          break;
+        }
+      }
+      catch (XQueryException& e)
+      {
+        set_source( e, loc );
+        throw;
+      }
+      catch (std::exception const& e)
+      {
+        throw XQUERY_EXCEPTION(
+            zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
+            ERROR_PARAMS(e.what()),
+            ERROR_LOC(loc));
+      }
+
+      result = Unmarshaller::getInternalItem(lOutsideItem);
+
+      if (theIsUpdating)
+      {
+        if (!result->isPul())
+          throw XQUERY_EXCEPTION(err::XUDY0019, ERROR_LOC(loc));
+      }
+      else
+      {
+        if (result->isPul())
+          throw XQUERY_EXCEPTION(err::XUDY0018, ERROR_LOC(loc));
+      }
+      STACK_PUSH(true, state);
+    }
+  }
   STACK_END (state);
 }
 
+void ExtFunctionCallIterator::evaluate(ExtFunctionCallIteratorState* state, PlanState& planState) const
+{
+  if ( theFunction->isContextual() )
+  {
+    ContextualExternalFunction const *const lFunction =
+      dynamic_cast<ContextualExternalFunction const*>( theFunction );
+    ZORBA_ASSERT( lFunction );
+
+    StaticContextImpl lSctx(theModuleSctx,
+                            planState.theQuery ?
+                              planState.theQuery->getRegisteredDiagnosticHandlerNoSync():
+                              nullptr);
+
+    DynamicContextImpl lDctx(nullptr,
+                            planState.theGlobalDynCtx,
+                            theModuleSctx);
+
+    state->theResult = lFunction->evaluate( state->m_extArgs, &lSctx, &lDctx );
+  }
+  else
+  {
+    NonContextualExternalFunction const *const lFunction =
+      dynamic_cast<NonContextualExternalFunction const*>( theFunction );
+    ZORBA_ASSERT( lFunction );
+
+    state->theResult = lFunction->evaluate( state->m_extArgs );
+  }
+  state->theIsEvaluated = true;
+}
 
 NARY_ACCEPT(ExtFunctionCallIterator);
 

@@ -215,6 +215,7 @@ class ExtFunctionCallIteratorState : public PlanIteratorState
   std::vector<ItemSequence*> m_extArgs;
   ItemSequence_t             theResult;
   Iterator_t                 theResultIter;
+  bool                       theIsEvaluated;
 
   ExtFunctionCallIteratorState();
 
@@ -265,7 +266,11 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   bool count(store::Item_t& result, PlanState& planState) const;
+
   bool skip(int64_t count, PlanState &planState) const;
+
+private:
+  void evaluate(ExtFunctionCallIteratorState* state, PlanState& planState) const;
 };
 
 }

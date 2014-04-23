@@ -41,7 +41,7 @@ public:
   void raiseException( String const &aNamespace, String const &aLocalName,
                        String const &aDescription )
   {
-    if (*theHeaderList) 
+    if (theHeaderList && *theHeaderList)
       curl_slist_free_all(*theHeaderList);
 
     throw USER_EXCEPTION(
@@ -51,14 +51,14 @@ public:
 
   void raiseException( String const &aLocalName,
                          String const &aDescription )
-    {
-      if (*theHeaderList)
-        curl_slist_free_all(*theHeaderList);
+  {
+    if (theHeaderList && *theHeaderList)
+      curl_slist_free_all(*theHeaderList);
 
-      throw USER_EXCEPTION(
-        theFactory->createQName(theModuleURI, aLocalName), aDescription
-      );
-    }
+    throw USER_EXCEPTION(
+      theFactory->createQName(theModuleURI, aLocalName), aDescription
+    );
+  }
 };
   
 } // namespace http_client
