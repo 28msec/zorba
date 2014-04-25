@@ -103,7 +103,8 @@ public:
   setVariable(
       const String& inNamespace,
       const String& inLocalname,
-      const Item& inValue);
+      const Item& inValue,
+      bool cast = false);
 
   virtual bool
   setVariable(

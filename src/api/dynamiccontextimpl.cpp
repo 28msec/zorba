@@ -336,7 +336,8 @@ bool DynamicContextImpl::setVariable(
 bool DynamicContextImpl::setVariable(
     const String& inNamespace,
     const String& inLocalname,
-    const Item& inValue)
+    const Item& inValue,
+    bool cast)
 {
   ZORBA_DCTX_TRY
   {
@@ -364,6 +365,15 @@ bool DynamicContextImpl::setVariable(
         return false;
       }
       throw;
+    }
+
+    if ( cast && var->getType() ) {
+      store::Item_t cast_value;
+      GenericCast::castToAtomic(
+        cast_value, value, var->getType(), var->getVar()->get_type_manager(),
+        /*nsCtx*/ nullptr, QueryLoc::null
+      );
+      value = cast_value;
     }
 
     ulong varId = var->getId();
@@ -413,13 +423,13 @@ bool DynamicContextImpl::setVariable(
       throw;
     }
 
-    if ( cast ) {
-      store::Item_t temp;
+    if ( cast && var->getType() ) {
+      store::Item_t cast_value;
       GenericCast::castToAtomic(
-        temp, value, var->getType(), var->getVar()->get_type_manager(),
+        cast_value, value, var->getType(), var->getVar()->get_type_manager(),
         /*nsCtx*/ nullptr, QueryLoc::null
       );
-      value = temp;
+      value = cast_value;
     }
 
     ulong varId = var->getId();
