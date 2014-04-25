@@ -250,7 +250,7 @@ bool populateDynamicContext( Zorba *zorba, DynamicContext *dctx ) {
         dctx->setVariable( i->var_name, doc );
       } else {
         Item item( zorba->getItemFactory()->createString( i->var_value ) );
-        dctx->setVariable( i->var_name, item );
+        dctx->setVariable( i->var_name, item, true );
       }
     }
     catch ( ... ) {

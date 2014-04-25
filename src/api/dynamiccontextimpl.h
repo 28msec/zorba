@@ -96,7 +96,8 @@ public:
   virtual bool
   setVariable(
       const String& inVarName,
-      const Item& inValue);
+      const Item& inValue,
+      bool cast = false);
 
   virtual bool
   setVariable(

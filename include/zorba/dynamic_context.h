@@ -65,7 +65,8 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual bool
   setVariable(
       const String& aQName,
-      const Item& aItem) = 0;
+      const Item& aItem,
+      bool cast = false) = 0;
 
   /** 
    * \brief Defines the external variable identified by an expanded QName and
