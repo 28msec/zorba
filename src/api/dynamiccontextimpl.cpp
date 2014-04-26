@@ -36,6 +36,7 @@
 #include "api/item_iter_store.h"
 #include "api/dynamiccontextimpl.h"
 
+#include "compiler/expression/var_expr.h"
 #include "compiler/parser/query_loc.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/api/compilercb.h"
@@ -46,6 +47,7 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/temp_seq.h"
+#include "types/casting.h"
 
 #include "util/xml_util.h"
 
@@ -334,7 +336,8 @@ bool DynamicContextImpl::setVariable(
 bool DynamicContextImpl::setVariable(
     const String& inNamespace,
     const String& inLocalname,
-    const Item& inValue)
+    const Item& inValue,
+    bool cast)
 {
   ZORBA_DCTX_TRY
   {
@@ -364,6 +367,15 @@ bool DynamicContextImpl::setVariable(
       throw;
     }
 
+    if ( cast && var->getType() ) {
+      store::Item_t cast_value;
+      GenericCast::castToAtomic(
+        cast_value, value, var->getType(), var->getVar()->get_type_manager(),
+        /*nsCtx*/ nullptr, QueryLoc::null
+      );
+      value = cast_value;
+    }
+
     ulong varId = var->getId();
 
     theCtx->add_variable(varId, value);
@@ -380,7 +392,8 @@ bool DynamicContextImpl::setVariable(
 ********************************************************************************/
 bool DynamicContextImpl::setVariable(
     const String& inVarName,
-    const Item& inValue)
+    const Item& inValue,
+    bool cast)
 {
   ZORBA_DCTX_TRY
   {
@@ -408,6 +421,15 @@ bool DynamicContextImpl::setVariable(
         return false;
       }
       throw;
+    }
+
+    if ( cast && var->getType() ) {
+      store::Item_t cast_value;
+      GenericCast::castToAtomic(
+        cast_value, value, var->getType(), var->getVar()->get_type_manager(),
+        /*nsCtx*/ nullptr, QueryLoc::null
+      );
+      value = cast_value;
     }
 
     ulong varId = var->getId();
