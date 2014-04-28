@@ -934,6 +934,7 @@ void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
   }
 
   ar & theIsUpdating;
+  ar & theIsSequential;
 }
 
 
