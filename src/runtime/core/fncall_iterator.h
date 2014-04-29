@@ -27,6 +27,7 @@
 #include "runtime/base/narybase.h"
 
 #include "context/static_context.h"
+#include "functions/external_function.h"
 
 namespace zorba {
 
@@ -253,7 +254,7 @@ class ExtFunctionCallIterator : public NaryBaseIterator<ExtFunctionCallIterator,
                                                         ExtFunctionCallIteratorState>
 {
 protected:
-  external_function * theFunctionDef;
+  rchandle<external_function> theFunctionDef;
   const ExternalFunction * theFunction;
   bool                     theIsUpdating;
   bool                     theIsSequential;

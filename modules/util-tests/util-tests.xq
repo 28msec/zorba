@@ -218,7 +218,7 @@ declare %an:strictlydeterministic %an:exclude-from-cache-key(2) function tests:t
  : @param $y as described above
  : @return as described above
  :)
-declare %an:cache %an:compare-with-deep-equal(2) function tests:test-07-cache($x as item()*, $y as item()*) external;
+declare %an:cache %an:compare-with-deep-equal(2) function tests:test-07-cache($x as item()*, $y as item()*) as item()* external;
 
 (:~
  : Equivalent to:
@@ -232,7 +232,7 @@ declare %an:cache %an:compare-with-deep-equal(2) function tests:test-07-cache($x
  : @param $y as described above
  : @return as described above
  :)
-declare %an:strictlydeterministic %an:compare-with-deep-equal(2) function tests:test-07-sd($x as item()*, $y as item()*) external;
+declare %an:strictlydeterministic %an:compare-with-deep-equal(2) function tests:test-07-sd($x as item()*, $y as item()*) as item()* external;
 
 (:~
  : Returns a non seekable streamable string
