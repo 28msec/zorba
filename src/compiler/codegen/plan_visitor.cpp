@@ -106,6 +106,7 @@
 
 #include "functions/function.h"
 #include "functions/udf.h"
+#include "functions/external_function.h"
 #include "functions/library.h"
 
 #include "types/typeops.h"
@@ -2522,9 +2523,15 @@ void end_visit(fo_expr& v)
     }
     else if (func->isUdf())
     {
-      // need to computeResultCaching here for iterprint to work
+      // need to computeCacheSettings here for iterprint to work
       user_function* udf = static_cast<user_function*>(func);
-      udf->computeResultCaching(theCCB->theXQueryDiagnostics);
+      udf->computeCacheSettings(theCCB->theXQueryDiagnostics);
+    }
+    else if (func->isExternal())
+    {
+      // need to computeCacheSettings here for iterprint to work
+      external_function* extf = static_cast<external_function*>(func);
+      extf->computeCacheSettings(theCCB->theXQueryDiagnostics);
     }
   }
   else

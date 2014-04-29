@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ADD_SUBDIRECTORY(util-tests)
 ADD_SUBDIRECTORY(util-curl)
 ADD_SUBDIRECTORY(atomic)
 ADD_SUBDIRECTORY(com)
@@ -26,6 +27,7 @@ ADD_SUBDIRECTORY(jsound)
 ADD_SUBDIRECTORY(org)
 ADD_SUBDIRECTORY(schema)
 ADD_SUBDIRECTORY(sctx)
+ADD_SUBDIRECTORY(dctx)
 ADD_SUBDIRECTORY(sequence)
 ADD_SUBDIRECTORY(sleep)
 ADD_SUBDIRECTORY(store)

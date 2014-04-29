@@ -379,7 +379,7 @@ void Item::appendStringValue(zstring& buf) const
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
+      ZED( OperationNotDef_23 ), ZED( AppendStringValue ),
       getType()->getStringValue()
     )
   );
@@ -1452,6 +1452,11 @@ bool Item::isStreamable() const
 bool Item::isSeekable() const
 {
   return false;
+}
+
+void
+Item::ensureSeekable()
+{
 }
 
 std::istream& Item::getStream()

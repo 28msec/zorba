@@ -43,6 +43,11 @@ namespace zorba {
       static Serializer_t
       createSerializer(ItemSequence* options);
 
+      virtual void
+      serialize(
+        Iterator_t object,
+        std::ostream& stream) const = 0;
+
   };
 
 } /* namespace zorba */

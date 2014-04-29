@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 #include "stdafx.h"
-
 #include "runtime/core/fncall_iterator.h"
 
-#include <map>
-
-#include <zorba/item.h>
-#include <zorba/item_sequence.h>
-#include <zorba/iterator.h>
-#include <zorba/function.h>
+#include "zorba/item.h"
+#include "zorba/item_sequence.h"
+#include "zorba/iterator.h"
+#include "zorba/function.h"
+#include "zorba/vector_item_sequence.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/user_exception.h"
@@ -35,9 +33,11 @@
 #include "compiler/api/compilercb.h"
 
 #include "functions/udf.h"
+#include "functions/external_function.h"
 
 #include "runtime/core/var_iterators.h"
 #include "runtime/util/flowctl_exception.h"  // for ExitException
+#include "runtime/util/item_iterator.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/visitors/printer_visitor.h"
@@ -55,12 +55,11 @@
 #include "store/api/store.h"
 #include "store/api/temp_seq.h"
 
-
 #ifdef ZORBA_WITH_DEBUGGER
 
 #include "debugger/debugger_commons.h"
 
-#define DEBUGGER_COMMONS state->thePlanState->theDebuggerCommons
+#define DEBUGGER_COMMONS lState->thePlanState->theDebuggerCommons
 #define DEBUGGER_PUSH_FRAME                                   \
   /* if the debugger is turned on, push the current frame */  \
   if (DEBUGGER_COMMONS) {                                     \
@@ -95,10 +94,7 @@ SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
 
-
-
 /*******************************************************************************
-
 ********************************************************************************/
 UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   :
@@ -108,20 +104,23 @@ UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   thePlanState(NULL),
   thePlanOpen(false),
   thePlanStateSize(0),
-  theCache(0)
+  theCache(0),
+  theCacheKeySnapshot(0)
 {
 }
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
   if (thePlanOpen)
     thePlan->close(*thePlanState);
-  delete thePlanState;
-  if (theIsLocalDCtxOwner)
+
+  if (thePlanState != NULL)
+    delete thePlanState;
+
+  if (theLocalDCtx != NULL && theIsLocalDCtxOwner)
     delete theLocalDCtx;
 }
 
@@ -175,7 +174,6 @@ void UDFunctionCallIteratorState::open(
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 void UDFunctionCallIteratorState::reset(PlanState& planState)
 {
@@ -189,7 +187,6 @@ void UDFunctionCallIteratorState::reset(PlanState& planState)
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 UDFunctionCallIterator::UDFunctionCallIterator(
     static_context* sctx,
@@ -205,13 +202,14 @@ UDFunctionCallIterator::UDFunctionCallIterator(
 }
 
 
+/*******************************************************************************
+********************************************************************************/
 UDFunctionCallIterator::~UDFunctionCallIterator()
 {
 }
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 void UDFunctionCallIterator::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -237,18 +235,14 @@ void UDFunctionCallIterator::serialize(::zorba::serialization::Archiver& ar)
   }
 }
 
-
 /*******************************************************************************
-
 ********************************************************************************/
 zstring UDFunctionCallIterator::getNameAsString() const
 {
   return theUDF->getName()->getStringValue();
 }
 
-
 /*******************************************************************************
-
 ********************************************************************************/
 bool UDFunctionCallIterator::isUpdating() const
 {
@@ -257,128 +251,99 @@ bool UDFunctionCallIterator::isUpdating() const
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 bool UDFunctionCallIterator::isCached() const
 {
-  return theUDF->cacheResults();
+  return theUDF->hasCache();
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool UDFunctionCallIterator::isCacheAcrossSnapshots() const
+{
+  return theUDF->cacheAcrossSnapshots();
 }
 
 
 /*******************************************************************************
-
 ********************************************************************************/
-void UDFunctionCallIterator::createCache(
-    PlanState& planState,
-    UDFunctionCallIteratorState* state)
+void UDFunctionCallIterator::initCache(
+    PlanState& aPlanState,
+    UDFunctionCallIteratorState* aState)
 {
-  if (theUDF->cacheResults())
+  if (!aState->theCache && theUDF->hasCache())
   {
-    store::Index_t index = theUDF->getCache();
-
+    aState->theCache = theUDF->getCache();
     csize numArgs = theChildren.size();
-
-    if (!index)
-    {
-      const signature& sig = theUDF->getSignature();
-
-      store::IndexSpecification lSpec;
-      lSpec.theNumKeyColumns = numArgs;
-      lSpec.theKeyTypes.resize(numArgs);
-      lSpec.theCollations.resize(numArgs);
-      lSpec.theIsTemp = true;
-      lSpec.theIsUnique = false;
-
-      for (csize i = 0; i < numArgs; ++i)
-      {
-        lSpec.theKeyTypes[i] = sig[i]->getBaseBuiltinType()->getQName().getp();
-      }
-
-      index = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
-
-      theUDF->setCache(index.getp()); // cache the cache in the function itself
-
-      state->theArgValues.reserve(numArgs);
-    }
-
-    state->theCache = index.getp();
-    state->theCacheCond = index->createCondition(store::IndexCondition::POINT_VALUE);
-    state->theCacheProbeIte = GENV_ITERATOR_FACTORY->createIndexProbeIterator(index);
-    state->theArgValues.resize(numArgs);
-
+    aState->theArgValues.resize(numArgs);
     for (csize i = 0; i < numArgs; ++i)
-    {
-      state->theArgValues[i] = new SingleItemIterator();
-    }
+      aState->theArgValues[i] = new ItemIterator();
   }
 }
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 bool UDFunctionCallIterator::probeCache(
-    PlanState& planState,
-    UDFunctionCallIteratorState* state,
-    store::Item_t& result,
-    std::vector<store::Item_t>& argValues) const
+    PlanState& aPlanState,
+    UDFunctionCallIteratorState* aState,
+    std::vector<std::vector <store::Item_t> >& aArguments) const
 {
-  assert(state->theCache);
+  assert(aState->theCache);
 
-  state->theCacheCond->clear();
-
-  std::vector<store::Iterator_t>::iterator ite = state->theArgWrappers.begin();
-
-  for (; ite != state->theArgWrappers.end(); ++ite)
+  std::vector<store::Iterator_t>::iterator lIte = aState->theArgWrappers.begin();
+  std::vector<store::Item_t> lProbeKeys;
+  for (; lIte != aState->theArgWrappers.end(); ++lIte)
   {
-    store::Iterator_t& argWrapper = (*ite);
-    store::Item_t argValue;
+    store::Iterator_t& lArgWrapper = (*lIte);
+    std::vector<store::Item_t> lArgSeq;
+    std::vector<store::Item_t> lKeySeq;
+    store::Item_t lArgItemValue;
 
-    if (argWrapper) // might be 0 if argument is not used
+    if (lArgWrapper) // might be 0 if argument is not used
     {
-      argWrapper->next(argValue); // guaranteed to have exactly one result
+      while (lArgWrapper->next(lArgItemValue))
+      {
+        lArgItemValue->ensureSeekable();
+        lArgSeq.push_back(lArgItemValue);
+        lKeySeq.push_back(lArgItemValue);
+      }
     }
 
-    argValues.push_back(argValue);
-
-    state->theCacheCond->pushItem(argValue);
+    aArguments.push_back(lArgSeq);
+    lProbeKeys.push_back(store::Item_t(new simplestore::ItemVector(lKeySeq)));
   }
 
-  state->theCacheProbeIte->init(state->theCacheCond);
-  state->theCacheProbeIte->open();
+  aState->theCacheKey = store::Item_t(new simplestore::ItemVector(lProbeKeys));
+  if (!isCacheAcrossSnapshots())
+    aState->theCacheKeySnapshot = aPlanState.theGlobalDynCtx->getSnapshotID();
 
-  return state->theCacheProbeIte->next(result);
+  FunctionCache::iterator lIt = aState->theCache->find(aState->theCacheKey, aPlanState);
+  if (lIt == aState->theCache->end())
+  {
+    aState->theCachedResult.clear();
+    return false;
+  }
+
+  aState->theCachedResult = lIt.getValue();
+  return true;
 }
 
-
 /*******************************************************************************
-
 ********************************************************************************/
 void UDFunctionCallIterator::insertCacheEntry(
-  UDFunctionCallIteratorState* state,
-  std::vector<store::Item_t>& argValues,
-  const store::Item_t& udfResult) const
+  PlanState& aPlanState,
+  UDFunctionCallIteratorState* aState,
+  std::vector<store::Item_t>& aResult) const
 {
-  assert(state->theCache);
-
-  state->theCacheKey = new store::IndexKey();
-  state->theCacheKey->theItems.swap(argValues);
-  store::Item_t tmp = udfResult;
-
-  try
+  assert(aState->theCache);
+  if (isCacheAcrossSnapshots() || aState->theCacheKeySnapshot == aPlanState.theGlobalDynCtx->getSnapshotID())
   {
-    ZORBA_ASSERT(!state->theCache->insert(state->theCacheKey, tmp));
-  }
-  catch (...)
-  {
-    delete state->theCacheKey;
-    throw;
+    aState->theCache->insert(aState->theCacheKey, aResult, aPlanState);
   }
 }
 
-
 /*******************************************************************************
-
 ********************************************************************************/
 void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
@@ -404,7 +369,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   if (planState.theStackDepth + 1 > planState.theMaxStackDepth)
   {
     RAISE_ERROR(zerr::ZXQP0003_INTERNAL_ERROR, loc,
-    ERROR_PARAMS(ZED(StackOverflow)));
+      ERROR_PARAMS(ZED(StackOverflow)));
   }
 
   // Create the plan for the udf body (if not done already) and allocate
@@ -414,7 +379,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   // if the results of the function should be cached (prereq: atomic in and out)
   // this functions stores an index in the dynamic context that contains
   // the cached results. The name of the index is the name of the function.
-  createCache(planState, state);
+  initCache(planState, state);
 
   // Create a wrapper over each subplan that computes an argument expr, if the
   // associated param is actually used anywhere in the function body.
@@ -436,7 +401,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
     if (!argVarRefs.empty())
     {
       if ((*argWrapsIte) == NULL)
-      (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
+        (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
 
       // Cannot do the arg bind here because the state->thePlan has not been
       // opened yet, and as a result, state->thePlanState has not been
@@ -448,7 +413,6 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 void UDFunctionCallIterator::resetImpl(PlanState& planState) const
 {
@@ -466,7 +430,6 @@ void UDFunctionCallIterator::resetImpl(PlanState& planState) const
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 void UDFunctionCallIterator::closeImpl(PlanState& planState)
 {
@@ -484,156 +447,15 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
 
 
 /*******************************************************************************
-
 ********************************************************************************/
-bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool UDFunctionCallIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
   try
   {
-    std::vector<store::Item_t> argValues;
-    bool cacheHit;
-    store::Item_t tmp;
-
-    UDFunctionCallIteratorState* state;
-    DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
-
-    // Open the plan, if not done already. This cannot be done in the openImpl
-    // method because in the case of recursive functions, we will get into an
-    // infinite loop.
-    if (!state->thePlanOpen) 
-    {
-      uint32_t planOffset = 0;
-      state->thePlan->open(*state->thePlanState, planOffset);
-      state->thePlanOpen = true;
-    }
-
-    if (state->theCache)
-    {
-      // check if the result is already in the cache
-      cacheHit = probeCache(planState, state, result, argValues);
-
-      // if not in the cache, we bind the arguments to the function
-      if (!cacheHit)
-      {
-        const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
-        const std::vector<store::Iterator_t>& argWraps = state->theArgWrappers;
-
-        for (csize i = 0; i < argsRefs.size(); ++i)
-        {
-          if (argWraps[i] != NULL)
-          {
-            const ArgVarRefs& argVarRefs = argsRefs[i];
-            store::Iterator_t argWrapper;
-            
-            store::Item_t argValue = argValues[i];
-            state->theArgValues[i]->init(argValue);
-            argWrapper = state->theArgValues[i];
-
-            ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
-            ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
-
-            for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
-            {
-              const LetVarIter_t& argRef = (*argVarRefsIte);
-              assert(argRef != NULL);
-              
-              if (argRef != NULL)
-              {
-                argRef->bind(argWrapper, *state->thePlanState);
-              }
-            }
-          }
-        }
-      }
-
-      if (!cacheHit)
-      {
-        DEBUGGER_PUSH_FRAME;
-
-        if (consumeNext(result, state->thePlan, *state->thePlanState))
-        {
-          insertCacheEntry(state, argValues, result);
-
-          DEBUGGER_POP_FRAME;
-          STACK_PUSH(true, state);
-          DEBUGGER_PUSH_FRAME;
-
-          while (consumeNext(result, state->thePlan, *state->thePlanState))
-          {
-            tmp = result;
-            ZORBA_ASSERT(state->theCache->insert(state->theCacheKey, tmp));
-
-            DEBUGGER_POP_FRAME;
-            STACK_PUSH(true, state);
-            DEBUGGER_PUSH_FRAME;
-          }
-        }
-        else
-        {
-          insertCacheEntry(state, argValues, NULL);
-        }
-
-        DEBUGGER_POP_FRAME;
-      }
-      else // cache hit
-      {
-        if (result != NULL)
-        {
-          STACK_PUSH(true, state);
-
-          while (state->theCacheProbeIte->next(result))
-          {
-            STACK_PUSH(true, state);
-          }
-        }
-      }
-    }
-    else // no cache
-    {
-      {
-        const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
-        const std::vector<store::Iterator_t>& argWraps = state->theArgWrappers;
-
-        for (csize i = 0; i < argsRefs.size(); ++i)
-        {
-          if (argWraps[i] != NULL)
-          {
-            const ArgVarRefs& argVarRefs = argsRefs[i];
-            store::Iterator_t argWrapper;
-
-            if (i < argWraps.size())
-              argWrapper = argWraps[i];
-
-            ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
-            ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
-
-            for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
-            {
-              const LetVarIter_t& argRef = (*argVarRefsIte);
-              assert(argRef != NULL);
-              
-              if (argRef != NULL)
-              {
-                argRef->bind(argWrapper, *state->thePlanState);
-              }
-            }
-          }
-        }
-      }
-
-      DEBUGGER_PUSH_FRAME;
-
-      while (consumeNext(result, state->thePlan, *state->thePlanState))
-      {
-        DEBUGGER_POP_FRAME;
-        STACK_PUSH(true, state);
-        DEBUGGER_PUSH_FRAME;
-      }
-
-      DEBUGGER_POP_FRAME;
-    }
-
-    STACK_END(state);
+    if (theUDF->hasCache())
+      return nextImplCache(aResult, aPlanState);
+    else
+      return nextImplNoCache(aResult, aPlanState);
   }
   catch (ZorbaException& err)
   {
@@ -647,9 +469,218 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 }
 
 
-#if 0
-NARY_ACCEPT(UDFunctionCallIterator);
-#else
+/*******************************************************************************
+ ********************************************************************************/
+bool UDFunctionCallIterator::nextImplCache(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  std::vector< std::vector <store::Item_t> > lArguments;
+  bool lSkipCache = false;
+  bool lCacheHit = false;
+
+  UDFunctionCallIteratorState* lState;
+  DEFAULT_STACK_INIT(UDFunctionCallIteratorState, lState, aPlanState);
+
+  // Open the plan, if not done already. This cannot be done in the openImpl
+  // method because in the case of recursive functions, we will get into an
+  // infinite loop.
+  if (!lState->thePlanOpen)
+  {
+    uint32_t planOffset = 0;
+    lState->thePlan->open(*lState->thePlanState, planOffset);
+    lState->thePlanOpen = true;
+  }
+
+
+  try
+  {
+    // check if the result is already in the cache
+    lCacheHit = probeCache(aPlanState, lState, lArguments);
+  }
+  catch (ZorbaException& err)
+  {
+    lSkipCache = true;
+  }
+
+  if (lSkipCache)
+  {
+    //Pulling the argument iterators eagerly raised an error
+    //Disable automatic caching
+    //Try to evaluate the function as if no cache is present
+    theUDF->disableAutomaticCaching();
+    bindArguments(lState, true);
+
+    DEBUGGER_PUSH_FRAME;
+
+    while (consumeNext(aResult, lState->thePlan, *lState->thePlanState))
+    {
+      DEBUGGER_POP_FRAME;
+      STACK_PUSH(true, lState);
+      DEBUGGER_PUSH_FRAME;
+    }
+
+    DEBUGGER_POP_FRAME;
+  }
+  else
+  {
+    // if not in the cache, we bind the arguments to the function
+    if (!lSkipCache && !lCacheHit)
+    {
+      const std::vector<ArgVarRefs>& lArgsRefs = theUDF->getArgVarsRefs();
+      const std::vector<store::Iterator_t>& lArgWraps = lState->theArgWrappers;
+
+      for (csize i = 0; i < lArgsRefs.size(); ++i)
+      {
+        if (lArgWraps[i] != NULL)
+        {
+          const ArgVarRefs& lArgVarRefs = lArgsRefs[i];
+          store::Iterator_t lArgWrapper;
+          lState->theArgValues[i]->init(lArguments[i]);
+          lArgWrapper = lState->theArgValues[i];
+
+          ArgVarRefs::const_iterator lArgVarRefsIte = lArgVarRefs.begin();
+          ArgVarRefs::const_iterator lArgVarRefsEnd = lArgVarRefs.end();
+
+          for (; lArgVarRefsIte != lArgVarRefsEnd; ++lArgVarRefsIte)
+          {
+            const LetVarIter_t& argRef = (*lArgVarRefsIte);
+            assert(argRef != NULL);
+
+            if (argRef != NULL)
+            {
+              argRef->bind(lArgWrapper, *lState->thePlanState);
+            }
+          }
+        }
+      }
+    }
+
+    if (!lCacheHit)
+    {
+      DEBUGGER_PUSH_FRAME;
+
+      if (consumeNext(aResult, lState->thePlan, *lState->thePlanState))
+      {
+        //We cannot insert directly into the cache, or different call iterators
+        //for the same function will see partial results in the cache.
+        //We cannot do a stack push here or self-recursive UDFs will not be
+        //cached
+        while (consumeNext(lState->theNextResult, lState->thePlan, *lState->thePlanState))
+        {
+          if (!aResult.isNull())
+          {
+            aResult->ensureSeekable();
+            lState->theCachedResult.push_back(aResult);
+
+            DEBUGGER_POP_FRAME;
+            STACK_PUSH(true, lState);
+            DEBUGGER_PUSH_FRAME;
+          }
+          aResult = lState->theNextResult;
+        }
+
+        if (!aResult.isNull())
+        {
+          aResult->ensureSeekable();
+          lState->theCachedResult.push_back(aResult);
+          insertCacheEntry(aPlanState, lState, lState->theCachedResult);
+
+          DEBUGGER_POP_FRAME;
+          STACK_PUSH(true, lState);
+          DEBUGGER_PUSH_FRAME;
+        }
+      }
+      else
+      {
+        insertCacheEntry(aPlanState, lState, lState->theCachedResult);
+      }
+
+      DEBUGGER_POP_FRAME;
+    }
+    else // cache hit
+    {
+      lState->theCachedResultIterator = lState->theCachedResult.begin();
+      while (lState->theCachedResultIterator != lState->theCachedResult.end())
+      {
+        aResult = *(lState->theCachedResultIterator++);
+        STACK_PUSH(true, lState);
+      }
+    }
+  }
+  STACK_END(lState);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool UDFunctionCallIterator::nextImplNoCache(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  UDFunctionCallIteratorState* lState;
+  DEFAULT_STACK_INIT(UDFunctionCallIteratorState, lState, aPlanState);
+
+  // Open the plan, if not done already. This cannot be done in the openImpl
+  // method because in the case of recursive functions, we will get into an
+  // infinite loop.
+  if (!lState->thePlanOpen)
+  {
+    uint32_t planOffset = 0;
+    lState->thePlan->open(*lState->thePlanState, planOffset);
+    lState->thePlanOpen = true;
+  }
+
+  bindArguments(lState, false);
+
+  DEBUGGER_PUSH_FRAME;
+
+  while (consumeNext(aResult, lState->thePlan, *lState->thePlanState))
+  {
+    DEBUGGER_POP_FRAME;
+    STACK_PUSH(true, lState);
+    DEBUGGER_PUSH_FRAME;
+  }
+
+  DEBUGGER_POP_FRAME;
+
+  STACK_END(lState);
+}
+
+/*******************************************************************************
+********************************************************************************/
+void UDFunctionCallIterator::bindArguments(UDFunctionCallIteratorState* aState, bool aReset) const
+{
+  const std::vector<ArgVarRefs>& lArgsRefs = theUDF->getArgVarsRefs();
+  const std::vector<store::Iterator_t>& lArgWraps = aState->theArgWrappers;
+
+  for (csize i = 0; i < lArgsRefs.size(); ++i)
+  {
+    if (lArgWraps[i] != NULL)
+    {
+      const ArgVarRefs& lArgVarRefs = lArgsRefs[i];
+      store::Iterator_t lArgWrapper;
+
+      if (i < lArgWraps.size())
+      {
+        lArgWrapper = lArgWraps[i];
+        if (aReset)
+          lArgWrapper->reset();
+      }
+
+      ArgVarRefs::const_iterator lArgVarRefsIte = lArgVarRefs.begin();
+      ArgVarRefs::const_iterator lArgVarRefsEnd = lArgVarRefs.end();
+
+      for (; lArgVarRefsIte != lArgVarRefsEnd; ++lArgVarRefsIte)
+      {
+        const LetVarIter_t& lArgRef = (*lArgVarRefsIte);
+        assert(lArgRef != NULL);
+
+        if (lArgRef != NULL)
+        {
+          lArgRef->bind(lArgWrapper, *aState->thePlanState);
+        }
+      }
+    }
+  }
+}
+
 //
 // We specialize accept() to descend into the separate plan for the UDF, but
 // only for a PrinterVisitor and no other kind of visitor.
@@ -678,7 +709,6 @@ void UDFunctionCallIterator::accept( PlanIterVisitor &v ) const {
   }
   v.endVisit( *this );
 }
-#endif
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -689,7 +719,6 @@ void UDFunctionCallIterator::accept( PlanIterVisitor &v ) const {
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 class ExtFuncArgItemSequence : public ItemSequence
 {
@@ -767,14 +796,20 @@ public:
 
     return new InternalIterator(this);
   }
+
+  virtual void reset()
+  {
+    theChild->reset(thePlanState);
+  }
 };
 
 
 /*******************************************************************************
-
 ********************************************************************************/
-ExtFunctionCallIteratorState::ExtFunctionCallIteratorState():
-  theIsEvaluated(false)
+ExtFunctionCallIteratorState::ExtFunctionCallIteratorState() :
+    theIsEvaluated(false),
+    theCache(0),
+    theCacheKeySnapshot(0)
 {
 }
 
@@ -802,32 +837,39 @@ void ExtFunctionCallIteratorState::reset(PlanState& planState)
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 ExtFunctionCallIterator::ExtFunctionCallIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& args,
+    const external_function* functionDef,
     const ExternalFunction* function,
     bool isUpdating,
+    bool isSequential,
     const zstring& ns,
     static_context* moduleSctx)
   :
   NaryBaseIterator<ExtFunctionCallIterator,
                    ExtFunctionCallIteratorState>(sctx, loc, args),
+  theFunctionDef(const_cast<external_function*>(functionDef)),
   theFunction(function),
   theIsUpdating(isUpdating),
+  theIsSequential(isSequential),
   theNamespace(ns),
   theModuleSctx(moduleSctx)
 {
 }
 
 
+/*******************************************************************************
+********************************************************************************/
 ExtFunctionCallIterator::~ExtFunctionCallIterator()
 {
 }
 
 
+/*******************************************************************************
+********************************************************************************/
 zstring ExtFunctionCallIterator::getNameAsString() const {
   String const uri( theFunction->getURI() );
   String const local( theFunction->getLocalName() );
@@ -836,7 +878,8 @@ zstring ExtFunctionCallIterator::getNameAsString() const {
   return name;
 }
 
-
+/*******************************************************************************
+********************************************************************************/
 void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
 {
   ar.dont_allow_delay_for_plan_sctx = true;
@@ -845,6 +888,9 @@ void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
                                   ExtFunctionCallIterator,
                                   ExtFunctionCallIteratorState>*>(this));
   ar.dont_allow_delay_for_plan_sctx = false;
+
+  ar & theFunctionDef;
+
   if (ar.is_serializing_out())
   {
     // serialize out: serialize prefix and localname of the function
@@ -888,9 +934,12 @@ void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
   }
 
   ar & theIsUpdating;
+  ar & theIsSequential;
 }
 
 
+/*******************************************************************************
+********************************************************************************/
 void ExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   NaryBaseIterator<ExtFunctionCallIterator,
@@ -899,80 +948,72 @@ void ExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   ExtFunctionCallIteratorState* state =
   StateTraitsImpl<ExtFunctionCallIteratorState>::getState(planState,
                                                           theStateOffset);
+
+  initCache(planState, state);
+
   ulong n = (ulong)theChildren.size();
   state->m_extArgs.resize(n);
   for(ulong i = 0; i < n; ++i)
   {
     state->m_extArgs[i] = new ExtFuncArgItemSequence(theChildren[i], planState);
-    // the iterator does not have exlcusive ownership over the sequences
+    // the iterator does not have exclusive ownership over the sequences
     state->m_extArgs[i]->addReference();
   }
 }
 
 bool ExtFunctionCallIterator::count( store::Item_t &result,
                                      PlanState &planState ) const {
-  ItemSequence_t api_seq;
+  int64_t count = 0;
 
   ExtFunctionCallIteratorState *state;
   DEFAULT_STACK_INIT( ExtFunctionCallIteratorState, state, planState );
 
-  try {
-    if ( theFunction->isContextual() ) {
-      ContextualExternalFunction const *const f =
-        dynamic_cast<ContextualExternalFunction const*>( theFunction );
-      ZORBA_ASSERT( f );
-      StaticContextImpl sctx(
-        theModuleSctx,
-        planState.theQuery ?
-          planState.theQuery->getRegisteredDiagnosticHandlerNoSync() :
-          nullptr
-      );
-      DynamicContextImpl dctx(
-        nullptr, planState.theGlobalDynCtx, theModuleSctx
-      );
-      api_seq = f->evaluate( state->m_extArgs, &sctx, &dctx );
-    } else {
-      NonContextualExternalFunction const *const f =
-        dynamic_cast<NonContextualExternalFunction const*>( theFunction );
-      ZORBA_ASSERT( f );
-      api_seq = f->evaluate( state->m_extArgs );
-    }
-    if ( !!api_seq ) {
-      Iterator_t api_iter( api_seq->getIterator() );
-      api_iter->open();
-      int64_t const count = api_iter->count();
-      api_iter->close();
-      GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) );
+  try
+  {
+    evaluate(planState, state, state->m_extArgs);
+
+    if (!state->theResult.isNull())
+    {
+      count = state->theResultIter->count();
+      state->theResultIter->close();
     }
   }
-  catch ( ZorbaException &e ) {
+  catch ( ZorbaException &e )
+  {
     set_source( e, loc );
     throw;
   }
+  catch (std::exception const& e)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
+      ERROR_PARAMS(e.what()),
+      ERROR_LOC(loc));
+  }
+
+  GENV_ITEMFACTORY->createInteger(result, xs_integer(count));
   STACK_PUSH( true, state );
   STACK_END( state );
 }
 
-bool ExtFunctionCallIterator::skip(int64_t count, PlanState &planState) const
+bool ExtFunctionCallIterator::skip( int64_t count, PlanState &planState ) const
 {
   if (count == 0)
     return true;
 
-  ItemSequence_t api_seq;
-  bool more_items;
+  bool more_items = false;
+
   ExtFunctionCallIteratorState *state =
       StateTraitsImpl<ExtFunctionCallIteratorState>::getState(planState, this->theStateOffset);
 
   try
   {
     ZORBA_ASSERT(!state->theIsEvaluated);
-    evaluate(state, planState);
+    evaluate(planState, state, state->m_extArgs);
 
-    if ( !state->theResult.isNull() )
+    if (!state->theResult.isNull())
     {
-      state->theResultIter = state->theResult->getIterator();
-      state->theResultIter->open();
-      more_items = state->theResultIter->skip( count );
+      more_items = state->theResultIter->skip(count);
       if (!more_items)
         state->theResultIter->close();
     }
@@ -992,103 +1033,252 @@ bool ExtFunctionCallIterator::skip(int64_t count, PlanState &planState) const
   return more_items;
 }
 
+/*******************************************************************************
+********************************************************************************/
 bool ExtFunctionCallIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& planState) const
+   store::Item_t& aResult,
+   PlanState& aPlanState) const
+{
+  try
+  {
+    if (isCached())
+      return nextImplCache(aResult, aPlanState);
+    else
+      return nextImplNoCache(aResult, aPlanState);
+  }
+  catch (ZorbaException& e)
+  {
+    set_source( e, loc );
+    throw;
+  }
+  catch (std::exception const& e)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
+      ERROR_PARAMS(e.what()),
+      ERROR_LOC(loc));
+  }
+}
+
+
+/*******************************************************************************
+ ********************************************************************************/
+bool ExtFunctionCallIterator::nextImplCache(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
   Item lOutsideItem;
+  std::vector<zorba::VectorItemSequence> lArgValues;
+  bool lCacheHit = false;
+  bool lSkipCache = false;
+  ExtFunctionCallIteratorState* lState;
 
-  ExtFunctionCallIteratorState* state;
-  DEFAULT_STACK_INIT(ExtFunctionCallIteratorState, state, planState);
+  DEFAULT_STACK_INIT(ExtFunctionCallIteratorState, lState, aPlanState);
 
-  if (!state->theIsEvaluated)
+  if (!lState->theIsEvaluated)
   {
     try
     {
-      evaluate(state, planState);
+      // check if the result is already in the cache
+      lCacheHit = probeCache(aPlanState, lState, lArgValues);
+    }
+    catch (ZorbaException& err)
+    {
+      lSkipCache = true;
+    }
 
-      if (state->theResult.get() != NULL)
+    if (lSkipCache)
+    {
+      //Pulling the argument iterators eagerly raised an error
+      //Disable automatic caching
+      //Try to evaluate the function as if no cache is present
+      theFunctionDef->disableAutomaticCaching();
+
+      for (unsigned int i=0; i< lState->m_extArgs.size(); ++i)
       {
-        state->theResultIter = state->theResult->getIterator();
-        state->theResultIter->open();
+        static_cast<ExtFuncArgItemSequence*>(lState->m_extArgs[i])->reset();
       }
-    }
-    catch (ZorbaException& e)
-    {
-      set_source( e, loc );
-      throw;
-    }
-    catch (std::exception const& e)
-    {
-      throw XQUERY_EXCEPTION(
-          zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
-          ERROR_PARAMS(e.what()),
-          ERROR_LOC(loc));
-    }
-  }
 
-  if (!state->theResult.isNull() && //The external function returns zorba::ItemSequence_t(NULL)
-      state->theResultIter->isOpen()) //The iterator has not been skipped past its end
-  {
-    while (true)
-    {
-      try
       {
-        if (!state->theResultIter->next(lOutsideItem))
+        evaluate(aPlanState, lState, lState->m_extArgs);
+
+        if (!lState->theResult.isNull()) //The external function returns zorba::ItemSequence_t(NULL)
         {
-          state->theResultIter->close();
-          break;
+          while (lState->theResultIter->next(lOutsideItem))
+          {
+            aResult = Unmarshaller::getInternalItem(lOutsideItem);
+
+            if (theIsUpdating && !aResult->isPul())
+              throw XQUERY_EXCEPTION(err::XUDY0019, ERROR_LOC(loc));
+            else if (!theIsUpdating && aResult->isPul())
+              throw XQUERY_EXCEPTION(err::XUDY0018, ERROR_LOC(loc));
+
+            if (isSequential())
+              aPlanState.theGlobalDynCtx->changeSnapshot();
+
+            STACK_PUSH(true, lState);
+          }
+          lState->theResultIter->close();
         }
       }
-      catch (XQueryException& e)
+
+      if (isSequential())
+        aPlanState.theGlobalDynCtx->changeSnapshot();
+    }
+    else
+    {
+      if (!lCacheHit) //The result is not in the cache, evaluate
       {
-        set_source( e, loc );
-        throw;
-      }
-      catch (std::exception const& e)
-      {
-        throw XQUERY_EXCEPTION(
-            zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
-            ERROR_PARAMS(e.what()),
-            ERROR_LOC(loc));
+        std::vector<zorba::ItemSequence*> lArgs;
+        lArgs.resize(lArgValues.size());
+        for (unsigned int i = 0; i< lArgValues.size(); ++i)
+          lArgs[i] = (&lArgValues[i]);
+
+        evaluate(aPlanState, lState, lArgs);
       }
 
-      result = Unmarshaller::getInternalItem(lOutsideItem);
+      if (!lCacheHit) //The result is not in the cache, iterate and save
+      {
+        if (lState->theResult.get() != NULL) //The external function returns zorba::ItemSequence_t(NULL)
+        {
+          while (lState->theResultIter->next(lOutsideItem))
+          {
+            aResult = Unmarshaller::getInternalItem(lOutsideItem);
 
-      if (theIsUpdating)
-      {
-        if (!result->isPul())
-          throw XQUERY_EXCEPTION(err::XUDY0019, ERROR_LOC(loc));
+            if (theIsUpdating && !aResult->isPul())
+              throw XQUERY_EXCEPTION(err::XUDY0019, ERROR_LOC(loc));
+            else if (!theIsUpdating && aResult->isPul())
+              throw XQUERY_EXCEPTION(err::XUDY0018, ERROR_LOC(loc));
+
+            if (!aResult.isNull())
+            {
+              aResult->ensureSeekable();
+              lState->theCachedResult.push_back(aResult);
+            }
+
+            if (isSequential())
+              aPlanState.theGlobalDynCtx->changeSnapshot();
+
+            STACK_PUSH(true, lState);
+          }
+          lState->theResultIter->close();
+
+          insertCacheEntry(aPlanState, lState, lState->theCachedResult);
+
+          if (isSequential())
+            aPlanState.theGlobalDynCtx->changeSnapshot();
+        }
+        else //The result is zorba::ItemSequence_t(NULL)
+        {
+          insertCacheEntry(aPlanState, lState, lState->theCachedResult);
+        }
       }
-      else
+      else //The result is in the cache
       {
-        if (result->isPul())
-          throw XQUERY_EXCEPTION(err::XUDY0018, ERROR_LOC(loc));
+        lState->theCachedResultIterator = lState->theCachedResult.begin();
+        while (lState->theCachedResultIterator != lState->theCachedResult.end())
+        {
+          aResult = *(lState->theCachedResultIterator++);
+          STACK_PUSH(true, lState);
+        }
       }
-      STACK_PUSH(true, state);
     }
   }
-  STACK_END (state);
+  else //The function has already been partly evaluated by skip, we cannot cache
+       //some items of the return iterator have already been consumed
+  {
+    if (!lState->theResult.isNull() && //The external function returns zorba::ItemSequence_t(NULL)
+        lState->theResultIter->isOpen()) //The iterator has not been skipped past its end
+    {
+      while (lState->theResultIter->next(lOutsideItem))
+      {
+        aResult = Unmarshaller::getInternalItem(lOutsideItem);
+
+        if (theIsUpdating && !aResult->isPul())
+          throw XQUERY_EXCEPTION(err::XUDY0019, ERROR_LOC(loc));
+        else if (!theIsUpdating && aResult->isPul())
+          throw XQUERY_EXCEPTION(err::XUDY0018, ERROR_LOC(loc));
+
+        if (isSequential())
+          aPlanState.theGlobalDynCtx->changeSnapshot();
+
+        STACK_PUSH(true, lState);
+      }
+      lState->theResultIter->close();
+
+      if (isSequential())
+        aPlanState.theGlobalDynCtx->changeSnapshot();
+    }
+
+
+  }
+  STACK_END(lState);
 }
 
-void ExtFunctionCallIterator::evaluate(ExtFunctionCallIteratorState* state, PlanState& planState) const
+
+/*******************************************************************************
+********************************************************************************/
+bool ExtFunctionCallIterator::nextImplNoCache(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
-  if ( theFunction->isContextual() )
+  Item lOutsideItem;
+  ExtFunctionCallIteratorState* lState;
+
+  DEFAULT_STACK_INIT(ExtFunctionCallIteratorState, lState, aPlanState);
+
+  {
+    if (!lState->theIsEvaluated)
+      evaluate(aPlanState, lState, lState->m_extArgs);
+
+    if (!lState->theResult.isNull() && //The external function returns zorba::ItemSequence_t(NULL)
+        lState->theResultIter->isOpen()) //The iterator has not been skipped past its end
+    {
+      while (lState->theResultIter->next(lOutsideItem))
+      {
+        aResult = Unmarshaller::getInternalItem(lOutsideItem);
+
+        if (theIsUpdating && !aResult->isPul())
+          throw XQUERY_EXCEPTION(err::XUDY0019, ERROR_LOC(loc));
+        else if (!theIsUpdating && aResult->isPul())
+          throw XQUERY_EXCEPTION(err::XUDY0018, ERROR_LOC(loc));
+
+        if (isSequential())
+          aPlanState.theGlobalDynCtx->changeSnapshot();
+
+        STACK_PUSH(true, lState);
+      }
+      lState->theResultIter->close();
+    }
+  }
+
+  if (isSequential())
+    aPlanState.theGlobalDynCtx->changeSnapshot();
+
+  STACK_END(lState);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+void ExtFunctionCallIterator::evaluate(PlanState& aPlanState, ExtFunctionCallIteratorState* aState, std::vector<zorba::ItemSequence*>& aArguments) const
+{
+  if (theFunction->isContextual())
   {
     ContextualExternalFunction const *const lFunction =
       dynamic_cast<ContextualExternalFunction const*>( theFunction );
     ZORBA_ASSERT( lFunction );
 
     StaticContextImpl lSctx(theModuleSctx,
-                            planState.theQuery ?
-                              planState.theQuery->getRegisteredDiagnosticHandlerNoSync():
+                            aPlanState.theQuery ?
+                              aPlanState.theQuery->getRegisteredDiagnosticHandlerNoSync():
                               nullptr);
 
     DynamicContextImpl lDctx(nullptr,
-                            planState.theGlobalDynCtx,
-                            theModuleSctx);
+                             aPlanState.theGlobalDynCtx,
+                             theModuleSctx);
 
-    state->theResult = lFunction->evaluate( state->m_extArgs, &lSctx, &lDctx );
+    aState->theResult = lFunction->evaluate(aArguments, &lSctx, &lDctx);
   }
   else
   {
@@ -1096,13 +1286,115 @@ void ExtFunctionCallIterator::evaluate(ExtFunctionCallIteratorState* state, Plan
       dynamic_cast<NonContextualExternalFunction const*>( theFunction );
     ZORBA_ASSERT( lFunction );
 
-    state->theResult = lFunction->evaluate( state->m_extArgs );
+    aState->theResult = lFunction->evaluate( aArguments );
   }
-  state->theIsEvaluated = true;
+
+  aState->theIsEvaluated = true;
+  if (!aState->theResult.isNull())
+  {
+    aState->theResultIter = aState->theResult->getIterator();
+    aState->theResultIter->open();
+  }
+
+  if (isSequential())
+    aPlanState.theGlobalDynCtx->changeSnapshot();
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool ExtFunctionCallIterator::isCached() const
+{
+  return theFunctionDef->hasCache();
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool ExtFunctionCallIterator::isCacheAcrossSnapshots() const
+{
+  return theFunctionDef->cacheAcrossSnapshots();
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+void ExtFunctionCallIterator::initCache(
+    PlanState& aPlanState,
+    ExtFunctionCallIteratorState* aState)
+{
+  if (!aState->theCache && isCached())
+  {
+    aState->theCache = theFunctionDef->getCache();
+  }
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool ExtFunctionCallIterator::probeCache(
+    PlanState& aPlanState,
+    ExtFunctionCallIteratorState* aState,
+    std::vector<zorba::VectorItemSequence>& aArguments) const
+{
+  assert(aState->theCache);
+
+  std::vector<store::Item_t> probeKeys;
+  for (unsigned int i=0; i< aState->m_extArgs.size(); ++i)
+  {
+    zorba::ItemSequence* lArgWrapper = aState->m_extArgs[i];
+    zorba::Iterator_t lIterator = lArgWrapper->getIterator();
+    std::vector<zorba::Item> lArgSeq;
+    std::vector<store::Item_t> lIntArgSeq;
+
+    zorba::Item lArgItem;
+    store::Item_t lIntArgItem;
+    lIterator->open();
+    while (lIterator->next(lArgItem))
+    {
+      lIntArgItem = Unmarshaller::getInternalItem(lArgItem);
+      lIntArgItem->ensureSeekable();
+
+      lArgSeq.push_back(lArgItem);
+      lIntArgSeq.push_back(lIntArgItem);
+    }
+    lIterator->close();
+
+    aArguments.push_back(zorba::VectorItemSequence(lArgSeq));
+    probeKeys.push_back(new simplestore::ItemVector(lIntArgSeq));
+  }
+
+  aState->theCacheKey = store::Item_t(new simplestore::ItemVector(probeKeys));
+  if (!isCacheAcrossSnapshots())
+    aState->theCacheKeySnapshot = aPlanState.theGlobalDynCtx->getSnapshotID();
+
+  FunctionCache::iterator lIt = aState->theCache->find(aState->theCacheKey, aPlanState);
+  if (lIt == aState->theCache->end())
+  {
+    aState->theCachedResult.clear();
+    return false;
+  }
+
+  aState->theCachedResult = lIt.getValue();
+  return true;
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+void ExtFunctionCallIterator::insertCacheEntry(
+    PlanState& aPlanState,
+    ExtFunctionCallIteratorState* aState,
+    std::vector<store::Item_t>& aResult) const
+{
+  assert(aState->theCache);
+  if (isCacheAcrossSnapshots() || aState->theCacheKeySnapshot == aPlanState.theGlobalDynCtx->getSnapshotID())
+  {
+    aState->theCache->insert(aState->theCacheKey, aResult, aPlanState);
+  }
 }
 
 NARY_ACCEPT(ExtFunctionCallIterator);
-
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

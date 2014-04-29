@@ -251,7 +251,8 @@ bool GroupTupleCmp::equal(const GroupTuple* t1, const GroupTuple* t2) const
                                            tmp2,
                                            theTypeManager,
                                            theTimezone,
-                                           (*iter3).theCollator))
+                                           (*iter3).theCollator,
+                                           true))
           {
             return false;                                 
           }

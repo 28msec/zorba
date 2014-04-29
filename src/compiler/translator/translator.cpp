@@ -1740,6 +1740,7 @@ expr* wrap_in_coercion(
   // Create the inline udf obj.
   std::unique_ptr<user_function> inlineUDF( 
   new user_function(loc,
+                    theRootSctx,
                     signature(function_item_expr::create_inline_fname(loc),
                               funcType->get_param_types(),
                               returnType),
@@ -3962,7 +3963,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         if (theAnnotations.get())
         {
           theAnnotations->
-          checkConflictingDeclarations(AnnotationList::var_decl, loc);
+          checkDeclarations(AnnotationList::var_decl, loc);
 
           if (ZANN_CONTAINS(fn_private))
           {
@@ -4025,7 +4026,7 @@ void preprocessVFOList(const VFO_DeclList& v)
       annotations->accept(*this);
 
       theAnnotations->
-      checkConflictingDeclarations(AnnotationList::func_decl, loc);
+      checkDeclarations(AnnotationList::func_decl, loc);
     }
 
     const QueryLoc& loc = func_decl->get_location();
@@ -4204,13 +4205,14 @@ void preprocessVFOList(const VFO_DeclList& v)
                                    qnameItem->getNamespace(),
                                    sig,
                                    scriptKind,
-                                   ef);
+                                   ef,
+                                   theCCB->theXQueryDiagnostics);
     }
     else
     {
       // It's a UDF (non-external) function declaration. Create a user_function
       // obj with no body for now.
-      func = new user_function(loc, sig, NULL, scriptKind, theCCB);
+      func = new user_function(loc, theRootSctx, sig, NULL, scriptKind, theCCB);
     }
 
     func->setAnnotations(theAnnotations.get());
@@ -5104,7 +5106,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   }
 
   theAnnotations->
-  checkConflictingDeclarations(AnnotationList::collection_decl, loc);
+  checkDeclarations(AnnotationList::collection_decl, loc);
 
   // compute (redundant) enum values and assign
   // default annotations if no annotation for a group
@@ -5260,7 +5262,7 @@ void* begin_visit(const AST_IndexDecl& v)
   if (theAnnotations.get())
   {
     theAnnotations->
-    checkConflictingDeclarations(AnnotationList::index_decl, loc);
+    checkDeclarations(AnnotationList::index_decl, loc);
 
     if (ZANN_CONTAINS(zann_general_equality) ||
         ZANN_CONTAINS(zann_general_range))
@@ -6626,7 +6628,7 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
   if (theAnnotations.get())
   {
     theAnnotations->
-    checkConflictingDeclarations(AnnotationList::var_decl, loc);
+    checkDeclarations(AnnotationList::var_decl, loc);
 
     if (ZANN_CONTAINS(zann_assignable))
     {
@@ -12720,6 +12722,7 @@ expr* generate_literal_function(
     expr* body = CREATE(cast)(theRootSctx, theUDF, loc, argVar, type, false);
 
     udf.reset(new user_function(loc,
+                                theRootSctx,
                                 signature(qnameItem, theRTM.ITEM_TYPE_QUESTION, type),
                                 body,
                                 SIMPLE_EXPR,
@@ -12754,6 +12757,7 @@ expr* generate_literal_function(
       FunctionConsts::FunctionKind fkind = func->getKind();
 
       udf.reset(new user_function(loc,
+                                  theRootSctx,
                                   func->getSignature(),
                                   NULL, // no body for now
                                   func->getScriptingKind(),
@@ -13132,6 +13136,7 @@ void generate_inline_function(
   // Create the udf obj.
   std::unique_ptr<user_function> udf( 
   new user_function(loc,
+                    theRootSctx,
                     signature(function_item_expr::create_inline_fname(loc),
                               paramTypes,
                               returnType),

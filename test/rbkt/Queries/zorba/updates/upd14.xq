@@ -2,7 +2,7 @@ import schema namespace f = "http://www.evaluescience.com/schemas/forms" at "for
 
 declare namespace an = "http://zorba.io/annotations";
 
-declare %an:no-cache %an:sequential function local:test2() 
+declare %an:sequential function local:test2() 
 {
    variable $form := validate strict {
      <f:form>

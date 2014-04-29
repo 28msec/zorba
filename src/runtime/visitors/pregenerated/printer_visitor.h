@@ -242,6 +242,9 @@ namespace zorba {
     void beginVisit( const UTCOffset& );
     void endVisit  ( const UTCOffset& );
 
+    void beginVisit( const DctxSnapshotIdIterator& );
+    void endVisit  ( const DctxSnapshotIdIterator& );
+
 #ifdef ZORBA_WITH_DEBUGGER
     void beginVisit( const DebugIterator& );
     void endVisit  ( const DebugIterator& );

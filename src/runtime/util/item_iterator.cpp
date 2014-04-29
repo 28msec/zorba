@@ -27,13 +27,13 @@ ItemIterator::ItemIterator(const std::vector<store::Item_t>& aItems)
 }
 
 
-ItemIterator::ItemIterator(store::Item_t aItem) 
+ItemIterator::ItemIterator(store::Item_t aItem)
 {
   theItems.push_back(aItem);
 }
 
 
-ItemIterator::ItemIterator() 
+ItemIterator::ItemIterator()
 {
 }
 
@@ -42,6 +42,12 @@ void
 ItemIterator::open() 
 {
   theIterator = theItems.begin();
+}
+
+void ItemIterator::init(const std::vector<store::Item_t>& aItems)
+{
+  theItems = aItems;
+  reset();
 }
 
 

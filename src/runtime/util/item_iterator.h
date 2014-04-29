@@ -37,6 +37,7 @@ public:
 
   virtual ~ItemIterator(){}
 
+  virtual void init(const std::vector<store::Item_t>& aItems);
   virtual void open();
   virtual bool next(store::Item_t&);
   virtual void reset();

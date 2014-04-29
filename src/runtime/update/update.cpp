@@ -835,7 +835,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
-  pul = GENV_ITEMFACTORY->createPendingUpdateList();
+  pul = GENV_ITEMFACTORY->createPendingUpdateList(true);
 
   typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);

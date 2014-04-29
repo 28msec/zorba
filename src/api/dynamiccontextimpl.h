@@ -66,6 +66,8 @@ protected:
 
   static_context            * theStaticContext;
 
+  long                        theSnapshotID;
+
 protected:
   static void checkItem(const store::Item_t& aItem);
 
@@ -78,7 +80,10 @@ protected:
       dynamic_context* aDctx,
       static_context* aSctx)
     :
-    theQuery(aQuery), theCtx(aDctx), theStaticContext(aSctx)
+    theQuery(aQuery),
+    theCtx(aDctx),
+    theStaticContext(aSctx),
+    theSnapshotID(0)
   {
   }
 

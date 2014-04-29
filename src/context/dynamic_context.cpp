@@ -128,6 +128,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   theAvailableIndices(NULL),
   theAvailableMaps(NULL),
   theEnvironmentVariables(NULL),
+  theSnapshotID(0),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0)
 {
@@ -1018,6 +1019,16 @@ std::string dynamic_context::toString()
   return ss.str();
 }
 #endif
+
+uint64_t dynamic_context::getSnapshotID() const
+{
+  return theSnapshotID;
+}
+
+void dynamic_context::changeSnapshot()
+{
+  ++theSnapshotID;
+}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

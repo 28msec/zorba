@@ -59,6 +59,9 @@ public:
   {
     fn_public = 0,
     fn_private,
+    zann_strictlydeterministic,
+    zann_exclude_from_cache_key,
+    zann_compare_with_deep_equal,
     zann_deterministic,
     zann_nondeterministic,
     zann_assignable,
@@ -68,7 +71,6 @@ public:
     zann_propagates_input_nodes,
     zann_must_copy_input_nodes,
     zann_cache,
-    zann_nocache,
     zann_variadic,
     zann_streamable,
     zann_unique,
@@ -94,13 +96,20 @@ public:
 
 protected:
   typedef std::bitset<static_cast<int>(zann_end) + 1> RuleBitSet;
+  typedef std::pair<AnnotationId, RuleBitSet> AnnotationRequirement;
 
 protected:
-  static std::vector<store::Item_t>      theAnnotId2NameMap;
+  static std::vector<store::Item_t>             theAnnotId2NameMap;
+  static ItemHandleHashMap<AnnotationId>        theAnnotName2IdMap;
 
-  static ItemHandleHashMap<AnnotationId> theAnnotName2IdMap;
+  //A conflict is present if for a rule (bitset) 2 or more annotations
+  //are declared
+  static std::vector<RuleBitSet>                theConflictRuleSet;
 
-  static std::vector<RuleBitSet>         theRuleSet;
+  //A conflict is present if for a rule (pair of annotation and bitset)
+  //the annotation is present and none of the annotations in the bitset
+  //are declared
+  static std::vector<AnnotationRequirement>     theRequiredRuleSet;
 
 protected:
   AnnotationId                   theId;
@@ -159,11 +168,10 @@ public:
 
 public:
   typedef AnnotationInternal::RuleBitSet RuleBitSet;
-
+  typedef AnnotationInternal::AnnotationRequirement AnnotationRequirement;
   typedef AnnotationInternal::AnnotationId AnnotationId;
 
   typedef std::vector<AnnotationInternal*> Annotations;
-
   typedef Annotations::size_type size_type;
 
 protected:
@@ -191,7 +199,12 @@ public:
       const store::Item_t& qname,
       const std::vector<const_expr*>& literals);
 
-  void checkConflictingDeclarations(DeclarationKind k, const QueryLoc& loc) const;
+  void checkDeclarations(DeclarationKind k, const QueryLoc& loc) const;
+
+private:
+  RuleBitSet checkDuplicateDeclarations(DeclarationKind k, const QueryLoc& loc) const;
+  void checkConflictingDeclarations(RuleBitSet bs, DeclarationKind k, const QueryLoc& loc) const;
+  void checkRequiredDeclarations(RuleBitSet bs, DeclarationKind k, const QueryLoc& loc) const;
 };
 
 

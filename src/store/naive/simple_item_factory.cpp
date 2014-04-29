@@ -2146,9 +2146,9 @@ bool BasicItemFactory::createNamespaceNode(
 /*******************************************************************************
 
 ********************************************************************************/
-store::PUL* BasicItemFactory::createPendingUpdateList()
+store::PUL* BasicItemFactory::createPendingUpdateList(bool isTransform)
 {
-  return new PULImpl();
+  return new PULImpl(isTransform);
 }
 
 #if 0
