@@ -107,13 +107,16 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @param aQName the QName that identifies the external variable.
    * @param aIterator the Iterator producing the sequence that is assigned
    *        to the variable.
+   * @param cast If \c true, attempt to cast \a each item to the type (if any)
+   * that the external variable was declared as.
    * @return true if the variable has been set successfully, false otherwise.
    * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
    */
   virtual bool
   setVariable( 
       const String& aQName,
-      const Iterator_t& aIterator) = 0;
+      const Iterator_t& aIterator,
+      bool cast = false) = 0;
 
   /** 
    * \brief Defines the external variable identified by an expanded QName and
@@ -126,6 +129,8 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @param aLocalname the local name of the variable's expanded QName
    * @param aIterator the Iterator producing the sequence that is assigned
    *        to the variable.
+   * @param cast If \c true, attempt to cast \a each item to the type (if any)
+   * that the external variable was declared as.
    * @return true if the variable has been set successfully, false otherwise.
    * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
    */
@@ -133,7 +138,8 @@ class ZORBA_DLL_PUBLIC DynamicContext
   setVariable( 
       const String& aNamespace,
       const String& aLocalname,
-      const Iterator_t& aIterator) = 0;
+      const Iterator_t& aIterator,
+      bool cast = false) = 0;
 
   /** \brief Returns the current value of an external
    * variable. Exactly one of the two return values (aItem or

@@ -24,16 +24,21 @@
 
 // Zorba
 #include <zorba/config.h>
+#include <zorba/zorba_string.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 
 struct external_var {
-  std::string var_name;
-  std::string var_value;
-  bool        inline_file;
+  zorba::String var_name;
+  zorba::String var_value;
+  bool          inline_file;
 
   external_var() : inline_file( false ) { }
 };
+
+inline bool operator<( external_var const &i, external_var const &j ) {
+  return i.var_name < j.var_name;
+}
 
 typedef std::vector<external_var> external_vars;
 
