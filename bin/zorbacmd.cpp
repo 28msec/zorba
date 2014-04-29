@@ -34,12 +34,12 @@
 #include <zorba/document_manager.h>
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/item_sequence.h>
-#include <zorba/iterator.h>
 #include <zorba/properties.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/util/fs_util.h>
+#include <zorba/vector_item_sequence.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/zorba.h>
@@ -67,63 +67,6 @@ using namespace zorba;
 extern char const* get_help_msg();
 extern int  parse_args( int argc, char const *argv[] );
 static void set_paths_on_sctx( StaticContext_t& );
-
-///////////////////////////////////////////////////////////////////////////////
-
-class VarSeqIterator : public Iterator {
-public:
-  void push_back( Item const &item ) {
-    items_.push_back( item );
-  }
-
-  // inherited
-  void    close();
-  int64_t count();
-  bool    isOpen() const;
-  bool    next( Item& );
-  void    open();
-  void    reset();
-  bool    skip( int64_t );
-
-private:
-  typedef vector<Item> items_type;
-  items_type items_;
-  bool is_open_;
-  items_type::size_type pos_;
-};
-
-void VarSeqIterator::close() {
-  is_open_ = false;
-}
-
-int64_t VarSeqIterator::count() {
-  return items_.size();
-}
-
-bool VarSeqIterator::isOpen() const {
-  return is_open_;
-}
-
-bool VarSeqIterator::next( Item &result ) {
-  if ( pos_ < items_.size() ) {
-    result = items_[ pos_++ ];
-    return true;
-  }
-  return false;
-}
-
-void VarSeqIterator::open() {
-  pos_ = 0;
-  is_open_ = true;
-}
-
-void VarSeqIterator::reset() {
-  pos_ = 0;
-}
-
-bool VarSeqIterator::skip( int64_t count ) {
-  return (pos_ += count) < items_.size();
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -329,18 +272,17 @@ bool populateDynamicContext( Zorba *zorba, DynamicContext *dctx ) {
           dctx->setVariable( i->var_name, item, true );
         } else {
           // hard case: multiple values -- construct an Iterator
-          auto_ptr<VarSeqIterator> var_seq_iter( new VarSeqIterator );
+          vector<Item> vars;
           String const var_name( i->var_name );
           while ( true ) {
             Item item( zorba->getItemFactory()->createString( i->var_value ) );
-            var_seq_iter->push_back( item );
+            vars.push_back( item );
             if ( !--count )
               break;
             ++i;
           } // while
-          Iterator_t iter( var_seq_iter.get() );
-          var_seq_iter.release();
-          dctx->setVariable( var_name, iter, true );
+          VectorItemSequence var_seq( vars );
+          dctx->setVariable( var_name, var_seq.getIterator(), true );
         }
       }
     }
