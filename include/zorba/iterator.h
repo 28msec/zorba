@@ -16,11 +16,16 @@
 #ifndef ZORBA_ITERATOR_API_H
 #define ZORBA_ITERATOR_API_H
 
-#include <zorba/config.h>
+// standard
+#include <cassert>
+
+// Zorba
 #include <zorba/api_shared_types.h>
-#include <zorba/item_sequence.h>
+#include <zorba/internal/type_traits.h>
 
 namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * \brief Interface for an Iterator over a sequence of items.
@@ -96,7 +101,64 @@ class ZORBA_DLL_PUBLIC Iterator : virtual public SmartObject
   skip(int64_t count);
 };
 
+///////////////////////////////////////////////////////////////////////////////
 
-} /* namespace zorba */
+/**
+ * Creates an \c Iterator over some container type of \c Item, e.g.,
+ * <code>vector&lt;Item&gt;</code>.
+ *
+ * @param container The container to create the \c Iterator over.
+ * @param copy If \c false, \a container is swapped with an internal one thus
+ * clearing \a container; if \c true, a copy of \a container is made instead.
+ * @return Returns a new \c Iterator over \a container.
+ */
+template<class ContainerType>
+typename std::enable_if<
+  std::is_same<typename ContainerType::value_type,Item>::value,Iterator_t>::type
+make_iterator( ContainerType &container, bool copy = false ) {
+
+  struct iterator_impl : Iterator {
+    iterator_impl( ContainerType &container, bool copy ) : open_( false ) {
+      if ( copy )
+        container_ = container;
+      else
+        container_.swap( container );
+    }
+
+    void close() {
+      assert( open_ );
+      open_ = false;
+    }
+
+    bool isOpen() const {
+      return open_;
+    }
+
+    bool next( Item &result ) {
+      assert( open_ );
+      if ( pos_ == container_.end() )
+        return false;
+      result = *pos_;
+      ++pos_;
+      return true;
+    }
+
+    void open() {
+      assert( !open_ );
+      pos_ = container_.begin();
+      open_ = true;
+    }
+
+    ContainerType container_;
+    bool open_;
+    typename ContainerType::const_iterator pos_;
+  };
+
+  return Iterator_t( new iterator_impl( container, copy ) );
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace zorba
 #endif
 /* vim:set et sw=2 ts=2: */
