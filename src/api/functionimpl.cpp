@@ -16,6 +16,9 @@
 #include "stdafx.h"
 
 #include <cstddef>
+
+#include <zorba/item_sequence.h>
+
 #include "api/functionimpl.h"
 #include "api/zorbaimpl.h"
 #include "api/unmarshaller.h"
