@@ -16,7 +16,6 @@
 #ifndef ZORBA_ITEM_SEQUENCE_API_H
 #define ZORBA_ITEM_SEQUENCE_API_H
 
-#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 
 namespace zorba
