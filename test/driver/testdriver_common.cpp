@@ -18,6 +18,7 @@
 
 #include <zorba/diagnostic_list.h>
 #include <zorba/iterator.h>
+#include <zorba/item_sequence.h>
 #include <zorba/properties.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/store_consts.h>
