@@ -21,6 +21,7 @@
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
 #include <zorba/iterator.h>
+#include <zorba/item_sequence.h>
 #include <zorba/function.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
