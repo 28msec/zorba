@@ -127,6 +127,7 @@ typedef __int64 int64_t;
 
 // C++11 types
 #cmakedefine ZORBA_HAVE_ENABLE_IF
+#cmakedefine ZORBA_HAVE_IS_SAME
 #cmakedefine ZORBA_HAVE_UNIQUE_PTR
 #cmakedefine ZORBA_HAVE_UNORDERED_MAP
 #cmakedefine ZORBA_HAVE_UNORDERED_SET
