@@ -228,13 +228,62 @@ bool DynamicContextImpl::getVariable(
   return false;
 }
 
+/**
+ * A %VarCastIterator adapts another iterator by casting each of the elements
+ * to some atomic type.
+ */
+class VarCastIterator : public store::Iterator {
+public:
+  VarCastIterator( store::Iterator_t &source, xqtref_t const &type,
+                   TypeManager const *type_mgr ) :
+    source_( source ),
+    type_( TypeOps::prime_type( type_mgr, *type ) ),
+    type_mgr_( type_mgr )
+  {
+  }
+
+  // inherited
+  void open();
+  bool next( store::Item_t& );
+  void close();
+  void reset();
+
+private:
+  store::Iterator_t source_;
+  xqtref_t const type_;
+  TypeManager const *const type_mgr_;
+};
+
+void VarCastIterator::open() {
+  source_->open();
+}
+
+bool VarCastIterator::next( store::Item_t &result ) {
+  store::Item_t temp;
+  if ( source_->next( temp ) ) {
+    GenericCast::castToAtomic(
+      result, temp, type_, type_mgr_, /*nsCtx*/ nullptr, QueryLoc::null
+    );
+    return true;
+  }
+  return false;
+}
+
+void VarCastIterator::close() {
+  source_->close();
+}
+
+void VarCastIterator::reset() {
+  source_->reset();
+}
 
 /****************************************************************************//**
 
 ********************************************************************************/
 bool DynamicContextImpl::setVariable(
     const String& inVarName,
-    const Iterator_t& inValue)
+    const Iterator_t& inValue,
+    bool cast)
 {
   ZORBA_DCTX_TRY
   {
@@ -267,6 +316,11 @@ bool DynamicContextImpl::setVariable(
       throw;
     }
 
+    if ( cast && var->getType() )
+      value = new VarCastIterator(
+        value, var->getType(), var->getVar()->get_type_manager()
+      );
+
     ulong varId = var->getId();
 
     theCtx->add_variable(varId, value);
@@ -284,7 +338,8 @@ bool DynamicContextImpl::setVariable(
 bool DynamicContextImpl::setVariable(
     const String& inNamespace,
     const String& inLocalname,
-    const Iterator_t& inValue)
+    const Iterator_t& inValue,
+    bool cast)
 {
   ZORBA_DCTX_TRY
   {
@@ -320,6 +375,11 @@ bool DynamicContextImpl::setVariable(
     }
 
     ulong varId = var->getId();
+
+    if ( cast && var->getType() )
+      value = new VarCastIterator(
+        value, var->getType(), var->getVar()->get_type_manager()
+      );
 
     theCtx->add_variable(varId, value);
 

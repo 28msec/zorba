@@ -114,13 +114,15 @@ public:
   virtual bool
   setVariable(
       const String& inVarName,
-      const Iterator_t& inValue);
+      const Iterator_t& inValue,
+      bool cast = false);
 
   virtual bool
   setVariable(
       const String& inNamespace,
       const String& inLocalname,
-      const Iterator_t& inValue);
+      const Iterator_t& inValue,
+      bool cast = false);
 
   virtual bool
   setContextItem(const Item& inValue);
