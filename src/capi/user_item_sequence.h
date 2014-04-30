@@ -19,6 +19,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/iterator.h>
+#include <zorba/item_sequence.h>
 #include <zorba/zorbac.h>
 
 using namespace zorba;
