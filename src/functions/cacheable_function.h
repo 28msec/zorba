@@ -20,22 +20,22 @@
 #include "functions/function.h"
 #include "zorbautils/hashmap_itemh_cache.h"
 #include "store/api/item_handle.h"
-#include <boost/dynamic_bitset.hpp>
+#include <vector>
 
 namespace zorba
 {
 class expr;
 
-typedef typename zorba::ItemHandleCacheHashMap< std::vector<store::Item_t> > FunctionCacheBaseMap;
+typedef zorba::ItemHandleCacheHashMap< std::vector<store::Item_t> > FunctionCacheBaseMap;
 
 class FunctionCache : public FunctionCacheBaseMap
 {
 public:
-  typedef typename FunctionCacheBaseMap::iterator iterator;
+  typedef FunctionCacheBaseMap::iterator iterator;
 
   FunctionCache(static_context* aSctx,
-      boost::dynamic_bitset<>& aExcludeFromCacheKey,
-      boost::dynamic_bitset<>& aCompareWithDeepEqual,
+      std::vector<bool>& aExcludeFromCacheKey,
+      std::vector<bool>& aCompareWithDeepEqual,
       bool aAcrossSnapshots);
 
   FunctionCache::iterator find(const store::Item_t& aKey, PlanState& aPlanState);
@@ -87,8 +87,8 @@ protected:
   bool theCacheAcrossSnapshots;
   bool theIsCacheAutomatic;
   bool theAreCacheSettingsComputed;
-  boost::dynamic_bitset<> theExcludeFromCacheKey;
-  boost::dynamic_bitset<> theCompareWithDeepEqual;
+  std::vector<bool> theExcludeFromCacheKey;
+  std::vector<bool> theCompareWithDeepEqual;
 
 public:
   SERIALIZABLE_CLASS(cacheable_function)
@@ -114,8 +114,8 @@ protected:
   virtual void useDefaultCachingSettings();
   virtual void useLegacyCache(XQueryDiagnostics* aDiag);
   virtual void useStrictlyDeterministicCache(XQueryDiagnostics* aDiag);
-  void saveDynamicBitset(const boost::dynamic_bitset<>& aBitset, ::zorba::serialization::Archiver& ar);
-  void loadDynamicBitset(boost::dynamic_bitset<>& aBitset, ::zorba::serialization::Archiver& ar);
+  void saveFlags(const std::vector<bool>& aFlags, ::zorba::serialization::Archiver& ar);
+  void loadFlags(std::vector<bool>& aFlags, ::zorba::serialization::Archiver& ar);
 
 private:
   virtual bool haveAtomicArgumentsAndReturnType() const;
@@ -123,7 +123,7 @@ private:
   virtual bool haveAllArgumentOneCardinality() const;
   virtual void parseCachingAnnotations(XQueryDiagnostics* aDiag);
   virtual void parseCachingAnnotation(AnnotationInternal* aAnnotation,
-      boost::dynamic_bitset<>& aBitSet,
+      std::vector<bool>& aFlags,
       XQueryDiagnostics* aDiag);
 
   virtual TypeManager* getTypeManager();

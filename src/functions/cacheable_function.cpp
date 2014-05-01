@@ -41,8 +41,8 @@ namespace zorba
 ********************************************************************************/
 FunctionCache::FunctionCache(
     static_context* aSctx,
-    boost::dynamic_bitset<>& aExcludeFromCacheKey,
-    boost::dynamic_bitset<>& aCompareWithDeepEqual,
+    std::vector<bool>& aExcludeFromCacheKey,
+    std::vector<bool>& aCompareWithDeepEqual,
     bool aAcrossSnapshots):
       FunctionCacheBaseMap(aSctx, aExcludeFromCacheKey, aCompareWithDeepEqual),
       theAcrossSnapshots(aAcrossSnapshots),
@@ -172,9 +172,6 @@ void cacheable_function::computeCacheSettings(XQueryDiagnostics* aDiag)
 {
   if (theAreCacheSettingsComputed)
     return;
-
-  theExcludeFromCacheKey = boost::dynamic_bitset<>(theSignature.paramCount());
-  theCompareWithDeepEqual = boost::dynamic_bitset<>(theSignature.paramCount());
 
   if (!theTypeManager)
     theTypeManager = getTypeManager();
@@ -368,13 +365,14 @@ void cacheable_function::parseCachingAnnotations(XQueryDiagnostics* aDiag)
 /*******************************************************************************
 ********************************************************************************/
 void cacheable_function::parseCachingAnnotation(AnnotationInternal* aAnnotation,
-    boost::dynamic_bitset<>& aBitset,
+    std::vector<bool>& aFlags,
     XQueryDiagnostics* aDiag)
 {
   if (!aAnnotation)
     return;
 
-  aBitset = boost::dynamic_bitset<>(theSignature.paramCount());
+  aFlags.resize(theSignature.paramCount(), false);
+
   csize lNum = aAnnotation->getNumLiterals();
   if (lNum)
   {
@@ -418,7 +416,7 @@ void cacheable_function::parseCachingAnnotation(AnnotationInternal* aAnnotation,
         }
         else
         {
-          aBitset[lIndex-1] = 1;
+          aFlags[lIndex-1] = true;
         }
       }
     }
@@ -432,30 +430,30 @@ void cacheable_function::parseCachingAnnotation(AnnotationInternal* aAnnotation,
 
 /*******************************************************************************
 ********************************************************************************/
-void cacheable_function::saveDynamicBitset(const boost::dynamic_bitset<>& aBitset, ::zorba::serialization::Archiver& ar)
+void cacheable_function::saveFlags(const std::vector<bool>& aFlags, ::zorba::serialization::Archiver& ar)
 {
-  size_t lSize = aBitset.size();
+  std::vector<bool>::size_type lSize = aFlags.size();
   ar & lSize;
   bool lValue;
-  for (boost::dynamic_bitset<>::size_type i = 0; i<lSize; ++i)
+  for (std::vector<bool>::size_type i = 0; i<lSize; ++i)
   {
-    lValue = (bool)aBitset[i];
+    lValue = aFlags[i];
     ar & lValue;
   }
 }
 
 /*******************************************************************************
 ********************************************************************************/
-void cacheable_function::loadDynamicBitset(boost::dynamic_bitset<>& aBitset, ::zorba::serialization::Archiver& ar)
+void cacheable_function::loadFlags(std::vector<bool>& aFlags, ::zorba::serialization::Archiver& ar)
 {
-  size_t lSize = 0;
+  std::vector<bool>::size_type lSize = 0;
   ar & lSize;
-  aBitset.resize(lSize);
+  aFlags.resize(lSize, false);
   bool lValue;
-  for (boost::dynamic_bitset<>::size_type i = 0; i<lSize; ++i)
+  for (std::vector<bool>::size_type i = 0; i<lSize; ++i)
   {
     ar & lValue;
-    aBitset[i] = lValue;
+    aFlags[i] = lValue;
   }
 }
 

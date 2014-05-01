@@ -100,18 +100,16 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theLoc;
   ar & theHasCache;
   ar & theCacheAcrossSnapshots;
-
   if (ar.is_serializing_out())
   {
-    saveDynamicBitset(theExcludeFromCacheKey, ar);
-    saveDynamicBitset(theCompareWithDeepEqual, ar);
+    saveFlags(theExcludeFromCacheKey, ar);
+    saveFlags(theCompareWithDeepEqual, ar);
   }
   else
   {
-    loadDynamicBitset(theExcludeFromCacheKey, ar);
-    loadDynamicBitset(theCompareWithDeepEqual, ar);
+    loadFlags(theExcludeFromCacheKey, ar);
+    loadFlags(theCompareWithDeepEqual, ar);
   }
-
   ar & theAreCacheSettingsComputed;
   ar & theIsCacheAutomatic;
 
