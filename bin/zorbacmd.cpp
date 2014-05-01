@@ -39,7 +39,6 @@
 #include <zorba/store_manager.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/util/fs_util.h>
-#include <zorba/vector_item_sequence.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/zorba.h>
@@ -281,8 +280,7 @@ bool populateDynamicContext( Zorba *zorba, DynamicContext *dctx ) {
               break;
             ++i;
           } // while
-          VectorItemSequence var_seq( vars );
-          dctx->setVariable( var_name, var_seq.getIterator(), true );
+          dctx->setVariable( var_name, make_iterator( vars ), true );
         }
       }
     }

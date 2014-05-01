@@ -27,13 +27,13 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ZORBA_HAVE_ENABLE_IF
 namespace std {
 
+#ifndef ZORBA_HAVE_ENABLE_IF
 /**
  * \internal
- * Define our own version of \c enable_if since g++ 4.2.1 (the version that
- * comes with Xcode 3.x) doesn't have \c enable_if.
+ * Define our own version of \c enable_if since the current C++ compiler
+ * doesn't have it.
  */
 template<bool,typename T = void>
 struct enable_if {
@@ -47,9 +47,30 @@ template<typename T>
 struct enable_if<true,T> {
   typedef T type;
 };
+#endif /* ZORBA_HAVE_ENABLE_IF */
+
+#ifndef ZORBA_HAVE_IS_SAME
+/**
+ * \internal
+ * Define our own version of \c is_same since the current C++ compiler doesn't
+ * have it.
+ */
+template<typename,typename>
+struct is_same {
+  static const bool value = false;
+};
+
+/**
+ * \internal
+ * Specialization of \c is_same for the \c true case.
+ */
+template<typename T>
+struct is_same<T,T> {
+  static const bool value = true;
+};
+#endif /* ZORBA_HAVE_IS_SAME */
 
 } // namespace std
-#endif /* ZORBA_HAVE_ENABLE_IF */
 
 ///////////////////////////////////////////////////////////////////////////////
 

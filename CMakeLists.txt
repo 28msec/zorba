@@ -562,6 +562,9 @@ CHECK_CXX_SOURCE_COMPILES("
   #include <type_traits>
   int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
 CHECK_CXX_SOURCE_COMPILES("
+  #include <type_traits>
+  int main() { std::is_same<int,int> x; }" ZORBA_HAVE_IS_SAME)
+CHECK_CXX_SOURCE_COMPILES("
   #include <memory>
   int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
 CHECK_CXX_SOURCE_COMPILES("
