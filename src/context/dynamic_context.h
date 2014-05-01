@@ -145,6 +145,8 @@ protected:
   locale::iso3166_1::type      theCountry;
   time::calendar::type         theCalendar;
 
+  uint64_t                     theSnapshotID;
+
 public:
   double                       theDocLoadingUserTime;
   double                       theDocLoadingTime;
@@ -283,6 +285,9 @@ public:
    */ 
   std::string toString();
 #endif  
+
+  uint64_t getSnapshotID() const;
+  void changeSnapshot();
 
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const

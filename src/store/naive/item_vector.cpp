@@ -104,10 +104,14 @@ zstring ItemVector::show() const
 {
   std::ostringstream res;
   res << "ItemVector size: " << size() << " [";
-	for ( ulong i = 0; i < size(); i++)
-		res << getItem(i)->show() << ", ";
-	res << "]";
-
+  for ( ulong i = 0; i < size(); i++)
+  {
+    if (getItem(i))
+      res << getItem(i)->show() << ", ";
+    else
+      res << "NULL" << ",";
+  }
+  res << "]";
   return res.str();
 }
 

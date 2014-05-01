@@ -44,6 +44,7 @@
 #include "runtime/context/context.h"
 #include "runtime/csv/csv.h"
 #include "runtime/datetime/datetime.h"
+#include "runtime/dctx/dctx.h"
 #include "runtime/debug/debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/errors_and_diagnostics/errors_and_diagnostics.h"
@@ -820,6 +821,20 @@ void PrinterVisitor::endVisit( const UTCOffset& ) {
   thePrinter.endEndVisit();
 }
 // </UTCOffset>
+
+
+// <DctxSnapshotIdIterator>
+void PrinterVisitor::beginVisit( const DctxSnapshotIdIterator& a) {
+  thePrinter.startBeginVisit("DctxSnapshotIdIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit( const DctxSnapshotIdIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DctxSnapshotIdIterator>
 
 #ifdef ZORBA_WITH_DEBUGGER
 // <DebugIterator>

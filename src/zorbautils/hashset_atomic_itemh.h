@@ -83,7 +83,8 @@ public:
                                            t2,
                                            theCompareParam->theTypeManager,
                                            theCompareParam->theTimezone,
-                                           theCompareParam->theCollator);
+                                           theCompareParam->theCollator,
+                                           true);
       }
       catch(ZorbaException const& e)
       {

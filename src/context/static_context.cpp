@@ -446,6 +446,10 @@ static_context::ZORBA_SCTX_FN_NS =
 "http://zorba.io/modules/sctx";
 
 const char*
+static_context::ZORBA_DCTX_FN_NS =
+"http://zorba.io/modules/dctx";
+
+const char*
 static_context::ZORBA_REFLECTION_FN_NS =
 "http://zorba.io/modules/reflection";
 
@@ -565,6 +569,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
             ns == ZORBA_SCTX_FN_NS ||
+            ns == ZORBA_DCTX_FN_NS ||
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||

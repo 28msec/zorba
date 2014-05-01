@@ -226,8 +226,9 @@ enum TypeCode
   TYPE_GroupingSpec,
   TYPE_GroupByIterator,
 
-  TYPE_user_function,
   TYPE_function,
+  TYPE_cacheable_function,
+  TYPE_user_function,
   TYPE_external_function,
   TYPE_signature,
   TYPE_AnnotationInternal,

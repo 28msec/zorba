@@ -59,9 +59,11 @@ declare variable $zwarn:ZWST0004 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0
 (:~
  :
  : This warning is raised if the user explicitly enables caching
- : of function results (using the %an:cache annotation) but the function
- : is updating or its parameter and return types are not subtypes of
- : xs:anyAtomicType.
+ : of function results (using the %an:cache or %an:strictlydeterministic 
+ : annotation) but the function cannot be cached. 
+ : For %an:cache this happens if the function is updating or variadic.
+ : For %an:strictlydeterministic this happens if the function is updating, 
+ : variadic or sequential.
  : 
 :)
 declare variable $zwarn:ZWST0005 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0005");

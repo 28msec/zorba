@@ -29,7 +29,7 @@ class XmlNode;
 
 
 /***************************************************************************//**
-  Class to privide the equality and hash functions for the NodePointerHashMap
+  Class to provide the equality and hash functions for the NodePointerHashMap
   class defined below.
 *******************************************************************************/
 class NodePointerHashMapCmp
@@ -66,7 +66,7 @@ public:
 
 
 /***************************************************************************//**
-  Class to privide the equality and hash functions for the NodePointerHashMap
+  Class to provide the equality and hash functions for the ItemPointerHashMap
   class defined below.
 *******************************************************************************/
 class ItemPointerHashMapCmp

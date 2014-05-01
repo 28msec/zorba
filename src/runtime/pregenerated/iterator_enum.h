@@ -84,6 +84,7 @@
   TYPE_ParseTime,
   TYPE_Timestamp,
   TYPE_UTCOffset,
+  TYPE_DctxSnapshotIdIterator,
   TYPE_DebugIterator,
   TYPE_YearsFromDurationIterator,
   TYPE_MonthsFromDurationIterator,

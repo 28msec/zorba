@@ -106,14 +106,16 @@ NodeToUpdatesMap::~NodeToUpdatesMap()
 /*******************************************************************************
 
 ********************************************************************************/
-PULImpl::PULImpl() 
+PULImpl::PULImpl(bool isTransform)
   :
   PUL(),
   theNoCollectionPul(NULL),
   theLastPul(NULL),
   theLastCollection(NULL),
+  theICChecker(NULL),
   theValidator(NULL),
-  theInheritNSBindings(false)
+  theInheritNSBindings(false),
+  theIsTransform(isTransform)
 {
 }
 

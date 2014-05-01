@@ -15,9 +15,11 @@
  */
 
 // standard
+#include <algorithm>
 #include <cassert>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -32,7 +34,6 @@
 #include <zorba/document_manager.h>
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/item_sequence.h>
-#include <zorba/iterator.h>
 #include <zorba/properties.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
@@ -228,7 +229,7 @@ static bool populateStaticContext( Zorba *zorba, StaticContext_t &sctx ) {
 }
 
 bool populateDynamicContext( Zorba *zorba, DynamicContext *dctx ) {
-  ZorbaCmdProperties const &zc_props = ZorbaCmdProperties::instance();
+  ZorbaCmdProperties &zc_props = ZorbaCmdProperties::instance();
 
   XmlDataManager_t xmlMgr;
   if ( !zc_props.ctx_item_.empty() ) {
@@ -238,9 +239,23 @@ bool populateDynamicContext( Zorba *zorba, DynamicContext *dctx ) {
     dctx->setContextItem( doc );
   }
 
-  external_vars::const_iterator i = zc_props.external_vars_.begin();
-  external_vars::const_iterator const end = zc_props.external_vars_.end();
-  for ( ; i != end; ++i ) {
+  // sort vars: x:=1 y:=foo x:=2 --> x:=1 x:=2 y:=foo
+  stable_sort( zc_props.external_vars_.begin(), zc_props.external_vars_.end() );
+
+  external_vars::const_iterator i;
+  external_vars::const_iterator const end( zc_props.external_vars_.end() );
+
+  //
+  // Count how many of each variable there are to know whether there are
+  // multiple values for the same variable.  If there are, we have to create an
+  // Iterator for them later.
+  //
+  typedef map<String,int> var_count_type;
+  var_count_type var_count;
+  for ( i = zc_props.external_vars_.begin(); i != end; ++i )
+    ++var_count[ i->var_name ];
+
+  for ( i = zc_props.external_vars_.begin(); i != end; ++i ) {
     try {
       if ( i->inline_file ) {
         ifstream is( i->var_value.c_str() );
@@ -249,8 +264,24 @@ bool populateDynamicContext( Zorba *zorba, DynamicContext *dctx ) {
         Item doc( xmlMgr->parseXML( is ) );
         dctx->setVariable( i->var_name, doc );
       } else {
-        Item item( zorba->getItemFactory()->createString( i->var_value ) );
-        dctx->setVariable( i->var_name, item );
+        int count = var_count[ i->var_name ];
+        if ( count == 1 ) {
+          // easy case: only a single value
+          Item item( zorba->getItemFactory()->createString( i->var_value ) );
+          dctx->setVariable( i->var_name, item, true );
+        } else {
+          // hard case: multiple values -- construct an Iterator
+          vector<Item> vars;
+          String const var_name( i->var_name );
+          while ( true ) {
+            Item item( zorba->getItemFactory()->createString( i->var_value ) );
+            vars.push_back( item );
+            if ( !--count )
+              break;
+            ++i;
+          } // while
+          dctx->setVariable( var_name, make_iterator( vars ), true );
+        }
       }
     }
     catch ( ... ) {

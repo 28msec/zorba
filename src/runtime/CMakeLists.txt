@@ -136,6 +136,7 @@ LIST(APPEND RUNTIME_SRCS
   numerics/format_integer.cpp
   numerics/format_number.cpp
   sequences/SequencesImpl.cpp
+  sequences/deep_equality.cpp
   visitors/iterprinter.cpp
   update/update.cpp
   util/item_iterator.cpp

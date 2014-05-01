@@ -23,7 +23,7 @@ namespace zorba { namespace simplestore {
 
 /***************************************************************************//**
   ItemVector is just internal to the store and implements a list/sequence of 
-  Items. It doesn't have a type assignet to it, the type is on the ellement
+  Items. It doesn't have a type assigned to it, the type is on the element
   or attribute parent node.
 ********************************************************************************/
 class ItemVector : public store::Item

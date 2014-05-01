@@ -975,6 +975,11 @@ public:
    */
   virtual bool isSeekable() const;
 
+  /*
+   * Ensures that the underlying stream is seekable.
+   */
+  virtual void ensureSeekable();
+
   /**
    * Gets an istream for the item's content.
    *

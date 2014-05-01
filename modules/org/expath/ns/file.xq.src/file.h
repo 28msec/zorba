@@ -16,6 +16,7 @@
 #ifndef ZORBA_FILEMODULE_FILE_H
 #define ZORBA_FILEMODULE_FILE_H
 
+#include <zorba/item_sequence.h>
 #include <zorba/util/fs_util.h>
 #include <zorba/zorba_string.h>
 

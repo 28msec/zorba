@@ -25,6 +25,8 @@
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
 
+#include "context/dynamic_context.h"
+
 #include "system/globalenv.h"
 #include "diagnostics/util_macros.h"
 
@@ -306,6 +308,8 @@ bool ExitCatcherIterator::nextImpl(store::Item_t& result, PlanState& planState) 
     }
   }
   
+  planState.theGlobalDynCtx->changeSnapshot();
+
   STACK_END(state);
 }
 

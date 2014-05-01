@@ -61,6 +61,7 @@ ENDFOREACH(SPEC_FILE)
 
 LIST(APPEND FUNCTIONS_SRCS
     function.cpp
+    cacheable_function.cpp
     udf.cpp
     external_function.cpp
     library.cpp

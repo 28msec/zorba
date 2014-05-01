@@ -43,7 +43,7 @@ struct Item_value_equal : std::binary_function<store::Item*,store::Item*,bool> {
 
   bool operator()( store::Item *i, store::Item *j ) const {
     store::Item_t it( i ), jt( j );
-    return CompareIterator::valueEqual( loc_, it, jt, tm_, tz_, coll_ );
+    return CompareIterator::valueEqual( loc_, it, jt, tm_, tz_, coll_, true );
   }
 
 private:

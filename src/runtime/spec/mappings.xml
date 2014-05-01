@@ -97,6 +97,9 @@
     <zorba:namespace uri="http://zorba.io/modules/sctx"
                      define="ZORBA_SCTX_FN_NS" 
                      prefix="fn-zorba-sctx"/>
+    <zorba:namespace uri="http://zorba.io/modules/dctx"
+                     define="ZORBA_DCTX_FN_NS" 
+                     prefix="fn-zorba-dctx"/>
 
     <zorba:namespace uri="http://zorba.io/modules/reflection"
                      define="ZORBA_REFLECTION_FN_NS"
@@ -129,7 +132,7 @@
     <zorba:namespace uri="http://zorba.io/modules/fetch"
                      define="ZORBA_FETCH_FN_NS"
                      prefix="fn-zorba-fetch"/>
-
+                     
     <zorba:namespace uri="http://zorba.io/modules/node"
                      define="ZORBA_NODE_FN_NS"
                      prefix="fn-zorba-node"/>

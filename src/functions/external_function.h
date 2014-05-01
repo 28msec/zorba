@@ -22,7 +22,7 @@
 
 #include "common/shared_types.h"
 
-#include "functions/function.h"
+#include "functions/cacheable_function.h"
 
 namespace zorba 
 {
@@ -35,17 +35,18 @@ namespace zorba
   theImpl          : The user-provided c++ class that implements the external
                      function.
 ********************************************************************************/
-class external_function : public function 
+class external_function : public cacheable_function
 {
 protected:
-  QueryLoc           theLoc;
-  zstring            theNamespace;
-  unsigned short     theScriptingKind;
+  QueryLoc theLoc;
+  zstring  theNamespace;
+  unsigned short theScriptingKind;
   ExternalFunction * theImpl;
+
 
 public:
   SERIALIZABLE_CLASS(external_function)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(external_function, function)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(external_function, cacheable_function)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -55,9 +56,10 @@ public:
         const zstring& ns,
         const signature& sig,
         unsigned short scriptingType,
-        ExternalFunction* internal);
+        ExternalFunction* internal,
+        XQueryDiagnostics* diag);
 
-  ~external_function() { }
+  ~external_function() {}
 
   unsigned short getScriptingKind() const { return theScriptingKind; }
 

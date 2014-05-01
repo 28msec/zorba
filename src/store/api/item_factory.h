@@ -786,7 +786,7 @@ public:
   /**
    * Create a pending updates list.
    */
-  virtual PUL* createPendingUpdateList() = 0;
+  virtual PUL* createPendingUpdateList(bool isTransform = false) = 0;
 
   /**
    * Create an ErrorItem encapsulating a pointer to a ZorbaException obj (or to
