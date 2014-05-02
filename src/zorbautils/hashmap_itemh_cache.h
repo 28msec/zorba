@@ -27,7 +27,7 @@
 
 #include "system/globalenv.h"
 
-#include <boost/dynamic_bitset.hpp>
+#include <vector>
 
 namespace zorba 
 { 
@@ -39,14 +39,14 @@ protected:
   long theTimeZone;
   XQPCollator* theCollator;
   static_context* theSctx;
-  boost::dynamic_bitset<> theExcludeFromCacheKey;
-  boost::dynamic_bitset<> theCompareWithDeepEqual;
+  std::vector<bool> theExcludeFromCacheKey;
+  std::vector<bool> theCompareWithDeepEqual;
 
 public:
   ItemHandleCacheHashMapCmp(
       static_context* aSctx,
-      boost::dynamic_bitset<>& aExcludeFromCacheKey,
-      boost::dynamic_bitset<>& aCompareWithDeepEqual)
+      std::vector<bool>& aExcludeFromCacheKey,
+      std::vector<bool>& aCompareWithDeepEqual)
     :
     theTimeZone(0),
     theCollator(NULL),
@@ -54,14 +54,12 @@ public:
     theExcludeFromCacheKey(aExcludeFromCacheKey),
     theCompareWithDeepEqual(aCompareWithDeepEqual)
   {
-    /*if (theSctx->get_local_typemanager() == NULL)
-      theSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));*/
   }
 
   ItemHandleCacheHashMapCmp(
       static_context* aSctx,
-      boost::dynamic_bitset<>& aExcludeFromCacheKey,
-      boost::dynamic_bitset<>& aCompareWithDeepEqual,
+      std::vector<bool>& aExcludeFromCacheKey,
+      std::vector<bool>& aCompareWithDeepEqual,
       long aTimezone,
       XQPCollator* aCollator)
     :
@@ -71,8 +69,6 @@ public:
     theExcludeFromCacheKey(aExcludeFromCacheKey),
     theCompareWithDeepEqual(aCompareWithDeepEqual)
   {
-    /*if (theSctx->get_local_typemanager() == NULL)
-      theSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));*/
   }
 
   bool id_equal(const store::Item* t1, const store::Item* t2) const
@@ -200,16 +196,16 @@ public:
 
     for (unsigned int i=0; i<lVector1->size(); ++i)
     {
-      if (!theExcludeFromCacheKey[i])
+      if (!theExcludeFromCacheKey.size() || !theExcludeFromCacheKey[i])
       {
-        if (theCompareWithDeepEqual[i])
+        if (!theCompareWithDeepEqual.size() || !theCompareWithDeepEqual[i])
         {
-          if (!deep_equal(lVector1->getItem(i), lVector2->getItem(i)))
+          if (!id_equal(lVector1->getItem(i), lVector2->getItem(i)))
             return false;
         }
         else
         {
-          if (!id_equal(lVector1->getItem(i), lVector2->getItem(i)))
+          if (!deep_equal(lVector1->getItem(i), lVector2->getItem(i)))
             return false;
         }
       }
@@ -327,12 +323,12 @@ public:
 
     for (unsigned int i=0; i<lVector->size(); ++i)
     {
-      if (!theExcludeFromCacheKey[i])
+      if (!theExcludeFromCacheKey.size() || !theExcludeFromCacheKey[i])
       {
-        if (theCompareWithDeepEqual[i])
-          lInnerHash = deep_hash(lVector->getItem(i));
-        else
+        if (!theCompareWithDeepEqual.size() || !theCompareWithDeepEqual[i])
           lInnerHash = id_hash(lVector->getItem(i));
+        else
+          lInnerHash = deep_hash(lVector->getItem(i));
       }
       lHash = hashfun::h32(&lInnerHash, sizeof(lInnerHash), lHash);
     }
@@ -368,8 +364,8 @@ private:
 public:
   ItemHandleCacheHashMap(
       static_context* aSctx,
-      boost::dynamic_bitset<>& aExcludeFromCacheKey,
-      boost::dynamic_bitset<>& aCompareWithDeepEqual)
+      std::vector<bool>& aExcludeFromCacheKey,
+      std::vector<bool>& aCompareWithDeepEqual)
 :
   theMap(
     ItemHandleCacheHashMapCmp(aSctx, aExcludeFromCacheKey, aCompareWithDeepEqual),
@@ -380,8 +376,8 @@ public:
 
   ItemHandleCacheHashMap(
       static_context* aSctx,
-      boost::dynamic_bitset<>& aExcludeFromCacheKey,
-      boost::dynamic_bitset<>& aCompareWithDeepEqual,
+      std::vector<bool>& aExcludeFromCacheKey,
+      std::vector<bool>& aCompareWithDeepEqual,
       ulong aSize,
       bool aSync)
   :
@@ -394,8 +390,8 @@ public:
 
   ItemHandleCacheHashMap(
       static_context* aSctx,
-      boost::dynamic_bitset<>& aExcludeFromCacheKey,
-      boost::dynamic_bitset<>& aCompareWithDeepEqual,
+      std::vector<bool>& aExcludeFromCacheKey,
+      std::vector<bool>& aCompareWithDeepEqual,
       long aTimezone,
       XQPCollator* aCollation,
       ulong aSize,
