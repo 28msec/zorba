@@ -141,7 +141,6 @@ declare option ver:module-version "1.0";
  : character.
  : @error csv:INVALID_CSV_VALUE if a value of some key is not castable to
  : string.
- : <code>field-names</code> option is not a string.
  : @error csv:MISSING_VALUE if a missing value is detected and the
  : <code>missing-value</code> option is "<code>error</code>".
  : @error csv:EXTRA_VALUE if an extra value is detected and the
