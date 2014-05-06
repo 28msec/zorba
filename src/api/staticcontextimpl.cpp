@@ -1806,7 +1806,8 @@ bool StaticContextImpl::
 getExternalVariableAnnotations( Item const &api_qname,
                                 std::vector<Annotation_t> &result ) const {
   store::Item const *const qname = Unmarshaller::getInternalItem( api_qname );
-  if ( VarInfo const *const var_info = theCtx->lookup_var( qname ) ) {
+  VarInfo const *const var_info = theCtx->lookup_var( qname );
+  if ( var_info && var_info->isExternal() ) {
     if ( var_expr const *const var_expr = var_info->getVar() ) {
       AnnotationList const &annotation_list = var_expr->get_annotations();
       AnnotationList::size_type const n = annotation_list.size();

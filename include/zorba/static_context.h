@@ -656,8 +656,8 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    * @param var_name The QName of the variable.
    * @param result The vector into which to put all of the variable's
    * annotations.
-   * @return Returns \c true only if the given variable exists and has at least
-   * one annotation.
+   * @return Returns \c true only if the given external variable exists and has
+   * at least one annotation.
    */
   virtual bool
   getExternalVariableAnnotations( Item const &var_name,
