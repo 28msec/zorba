@@ -651,6 +651,18 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   virtual void
 	getExternalVariables(Iterator_t& aVarsIter) const = 0;
 
+  /** \brief Gets the Annotations (if any) for the given external variable.
+   *
+   * @param var_name The QName of the variable.
+   * @param result The vector into which to put all of the variable's
+   * annotations.
+   * @return Returns \c true only if the given variable exists and has at least
+   * one annotation.
+   */
+  virtual bool
+  getExternalVariableAnnotations( Item const &var_name,
+                                  std::vector<Annotation_t> &result ) const = 0;
+
   /**
    * @brief Set the URI lookup path (list of filesystem directories) for this
    * static context.

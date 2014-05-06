@@ -3993,6 +3993,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         ve->set_mutable(theSctx->is_feature_set(feature::scripting));
       }
 
+      ve->swap_annotations( *theAnnotations.get() );
       theAnnotations.reset(NULL);
 
       // Put a mapping between the var name and the var_expr in the local sctx.
