@@ -189,6 +189,10 @@ public:
 
   size_type size() const { return theAnnotationList.size(); }
 
+  void swap( AnnotationList &a ) {
+    theAnnotationList.swap( a.theAnnotationList );
+  }
+
   AnnotationInternal* get(size_type index) const;
 
   AnnotationInternal* get(AnnotationInternal::AnnotationId id) const;

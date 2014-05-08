@@ -17,6 +17,7 @@
 #ifndef ZORBA_COMPILER_VAR_EXPR
 #define ZORBA_COMPILER_VAR_EXPR
 
+#include "annotations/annotations.h"
 #include "compiler/expression/expr_base.h"
 
 namespace zorba
@@ -178,6 +179,8 @@ protected:
 
   VarInfo             * theVarInfo;
 
+  AnnotationList        theAnnotations;
+
   csize                 theNumRefs;
 
   bool                  theIsExternal;
@@ -206,6 +209,14 @@ protected:
 
 public:
   void set_var_info(VarInfo* v);
+
+  AnnotationList const& get_annotations() const {
+    return theAnnotations;
+  }
+
+  void swap_annotations( AnnotationList &a ) {
+    theAnnotations.swap( a );
+  }
 
   VarInfo* get_var_info() const { return theVarInfo; }
 

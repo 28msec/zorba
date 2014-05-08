@@ -55,6 +55,9 @@ class ZORBA_DLL_PUBLIC Annotation : public SmartObject
    */
   virtual Item
   getLiteral(unsigned int i) const = 0;
+
+protected:
+  Annotation() { }
 };
 
 } /* namespace zorba */
