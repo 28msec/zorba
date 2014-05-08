@@ -198,7 +198,6 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
           case store::JS_NULL:
             ADD_TYPE_ATTRIBUTE( "null" );
             ADD_ITEM_ELEMENT( "null" );
-            POP_ITEM_ELEMENT();
             break;
 
           case store::XS_BOOLEAN:
@@ -206,7 +205,6 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
             ADD_ITEM_ELEMENT( "boolean" );
             value_str = value_item->getBooleanValue() ? "true" : "false";
             GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
-            POP_ITEM_ELEMENT();
             break;
 
           case store::XS_BYTE:
@@ -229,7 +227,6 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
             ADD_ITEM_ELEMENT( "number" );
             value_str = value_item->getStringValue();
             GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
-            POP_ITEM_ELEMENT();
             break;
 
           default:
@@ -237,8 +234,8 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
             ADD_ITEM_ELEMENT( "string" );
             value_str = value_item->getStringValue();
             GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
-            POP_ITEM_ELEMENT();
         } // switch
+        POP_ITEM_ELEMENT();
         break;
 
       case store::Item::ARRAY:
