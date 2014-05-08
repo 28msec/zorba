@@ -176,10 +176,9 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
       POP_ITERATOR();
       POP_STATE();
       POP_ITEM_ELEMENT();
-      if ( IN_STATE( in_object ) ) {
+      if ( IN_STATE( in_object ) )
         POP_ITEM( xml );
-        POP_ITEM( json );
-      }
+      POP_ITEM( json );
       continue;
     }
     if ( IN_STATE( in_object ) ) {
