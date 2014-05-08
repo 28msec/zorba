@@ -307,6 +307,10 @@ public:
   virtual void
   getExternalVariables(Iterator_t& aVarsIter) const;  
 
+  virtual bool
+  getExternalVariableAnnotations( Item const&,
+                                  std::vector<Annotation_t>& ) const;
+
   virtual void
   setURIPath(const std::vector<String>& aURIPath);
 
