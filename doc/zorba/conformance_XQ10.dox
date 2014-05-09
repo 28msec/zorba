@@ -2,7 +2,7 @@
 
 In generating the report we used:
 <ul>
-  <li> Zorba version 2.9.1 that can be downloaded from https://launchpad.net/zorba/trunk/2.9
+  <li> Zorba version 3.0.0 that can be downloaded from https://github.com/28msec/zorba/releases/tag/3.0
   <li> FOTS version 'current' (<a href="http://dev.w3.org/2011/QT3-test-suite/">XQuery/XPath/XSLT 3.* Test Suite</a> taken from W3C CVS as of 2013-05-08)
 </ul>
 
