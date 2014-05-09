@@ -35,6 +35,10 @@ FIND_PROGRAM(svn svn DOC "subversion command line client")
 
 # Find BZR
 FIND_PROGRAM(bzr bzr DOC "bazaar command line client" PATH ${BZR_PATH})
+
+# Find GIT
+FIND_PROGRAM(git git DOC "git command line client" PATH ${GIT_PATH})
+
 # Check parameters
 if (NOT outdir)
   message (FATAL_ERROR "Please pass -Doutdir.")
@@ -130,7 +134,29 @@ foreach (modline ${modlines})
               ${_modtagargs} WORKING_DIRECTORY "${outdir}/${_modname}" TIMEOUT 120
               RESULT_VARIABLE _status)
           endif (overwrite)
-	    
+	   
+
+	elseif (${_modvc} STREQUAL "git")
+          if (NOT git)
+            message (FATAL_ERROR
+              "Git client not found - required for ${_modname} module!")
+          endif (NOT git)
+
+          set (_modtagargs)
+          if (_modtag AND NOT notags)
+            set (_modtagargs "clone" "${_modtag}")
+          endif (_modtag AND NOT notags)
+          if (overwrite)
+            execute_process (COMMAND "${git}" clone "${_modurl}" "${_modname}"
+              ${_modtagargs} WORKING_DIRECTORY "${outdir}" TIMEOUT 120
+              RESULT_VARIABLE _status)
+          else (overwrite)
+            execute_process (COMMAND "${git}" clone
+              ${_modtagargs} WORKING_DIRECTORY "${outdir}/${_modname}" TIMEOUT 120
+              RESULT_VARIABLE _status)
+          endif (overwrite)
+	   
+
 
 	else (${_modvc} STREQUAL "svn")
           message (FATAL_ERROR "Unknown vc-type '${_modvc}' for module "
