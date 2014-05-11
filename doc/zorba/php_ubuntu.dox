@@ -67,17 +67,17 @@ Passing the php test means that PHP5 is instlled corectly and there is a succesf
 
 \section enable_zorba_extension Enable Zorba extension in PHP
 
-Copy Zorba extension library files to /usr/local/lib/php/.
+Copy Zorba extension library files to /usr/lib/php5/.
 
 \code
-zorba/build$ cp swig/php/zorba_api.so swig/php/zorba_api_wrapper.php /usr/local/lib/php/
+zorba/build$ cp swig/php/libzorba_api.so swig/php/zorba_api.php /usr/lib/php5/
 \endcode
 
 Add the following lines to /etc/php5/apache2/php.ini file.
 
 \code
-include_path="/usr/local/lib/php/"
-extension=/usr/local/lib/php/zorba_api.so
+include_path="/usr/lib/php5/"
+extension=/usr/lib/php5/libzorba_api.so
 \endcode
 
 Restart Apache Http server
@@ -100,7 +100,7 @@ Add the following content to /var/www/zorba.php:
 <body>
 <?php
     // include Zorba API
-    require_once 'zorba_api_wrapper.php';
+    require_once 'zorba_api.php';
     // create Zorba instance in memory
     $ms = InMemoryStore::getInstance();
     $zorba = Zorba::getInstance($ms);
