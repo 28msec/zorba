@@ -26,7 +26,7 @@ name = itemFactory.createQName("http://www.zorba-xquery.com/", "aaa")
 collectionManager.createCollection(name)
 isAdded = collectionManager.isAvailableCollection(name)
 
-if isAdded :
+if isAdded
   collection = collectionManager.getCollection(name)
   data = xmlManager.parseXMLtoItem("<books><book>Book 1</book><book>Book 2</book></books>")
   itemSequence = Zorba_api::ItemSequence.new(data)
