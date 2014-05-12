@@ -74,10 +74,12 @@ template<bool> struct zorba_static_assert;  // intentionally undefined
 template<>     struct zorba_static_assert<true> { };
 template<int>  struct zorba_static_assert_type { };
 
-#define static_assert_helper_2(EXPR,MSG,LINE)     \
-  typedef ::zorba_static_assert_type<             \
-    sizeof( ::zorba_static_assert<(EXPR) != 0> )  \
-  > zorba_static_assert_type_##LINE
+#define static_assert_helper_2(EXPR,MSG,LINE)                             \
+  typedef ::zorba_static_assert_type<                                     \
+    sizeof( ::zorba_static_assert<(EXPR) != 0> )                          \
+  > zorba_static_assert_type_##LINE;                                      \
+  zorba_static_assert_type_##LINE zorba_static_assert_no_warning_##LINE;  \
+  (void)zorba_static_assert_no_warning_##LINE
 
 // See: http://stackoverflow.com/a/1597129/99089
 #define static_assert_helper_1(EXPR,MSG,LINE) \
