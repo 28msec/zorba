@@ -15,10 +15,10 @@ To install the gcc compiler and CMake:
 sudo apt-get install build-essential cmake
 \endcode
 
-To install Bazaar (for building the latest Zorba source, or for
+To install Git (for building the latest Zorba source, or for
 building non-core modules):
 \code
-sudo apt-get install bzr
+sudo apt-get install git
 \endcode
 
 \subsection ubuntu_libs Core Zorba Library Dependencies
