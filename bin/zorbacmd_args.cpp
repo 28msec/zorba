@@ -384,7 +384,7 @@ static bool bool_of( char const *s ) {
 #define IS_OPT(LOPT,SOPT) (IS_LONG_OPT(LOPT) || IS_SHORT_OPT(SOPT))
 
 #define PARSE_ARG(ARG)                                                    \
-  int offset = 2;                                                         \
+  int offset = 2; (void)offset;                                           \
   if ( (*argv)[1] == '-' || !(*argv)[2] ) { offset = 0; ++argv; }         \
   if ( !*argv ) { error = "No value given for " #ARG " option"; break; }
 

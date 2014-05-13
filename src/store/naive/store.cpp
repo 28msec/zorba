@@ -96,6 +96,8 @@ const ulong Store::XML_URI_LEN = sizeof(Store::XML_URI);
 ********************************************************************************/
 Store::Store()
   :
+  theEmptyNs(NULL),
+  theXmlSchemaNs(NULL),
   theNumUsers(0),
   theNamespacePool(NULL),
   theQNamePool(NULL),
@@ -123,6 +125,8 @@ Store::Store()
 ********************************************************************************/
 Store::~Store()
 {
+  delete theEmptyNs;
+  delete theXmlSchemaNs;
 }
 
 
@@ -144,8 +148,11 @@ void Store::init()
 
     theNamespacePool = new StringPool(NAMESPACE_POOL_SIZE);
 
-    theNamespacePool->insertc("", theEmptyNs);
-    theNamespacePool->insertc(XS_URI, theXmlSchemaNs);
+    theEmptyNs = new zstring;
+    theXmlSchemaNs = new zstring;
+
+    theNamespacePool->insertc("", *theEmptyNs);
+    theNamespacePool->insertc(XS_URI, *theXmlSchemaNs);
 
     theQNamePool = new QNamePool(QNamePool::MAX_CACHE_SIZE, theNamespacePool);
 
@@ -328,9 +335,9 @@ void Store::shutdown(bool soft)
 
     if (theNamespacePool != NULL)
     {
-      theEmptyNs.~zstring();
-      theXmlSchemaNs.~zstring();
-
+      delete theEmptyNs;
+      delete theXmlSchemaNs;
+      theEmptyNs = theXmlSchemaNs = NULL;
       delete theNamespacePool;
       theNamespacePool = NULL;
     }

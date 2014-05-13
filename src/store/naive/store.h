@@ -148,8 +148,8 @@ protected:
   static const ulong DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE;
 
 public:
-  zstring                       theEmptyNs;
-  zstring                       theXmlSchemaNs;
+  zstring                     * theEmptyNs;
+  zstring                     * theXmlSchemaNs;
 
   std::vector<store::Item_t>    theSchemaTypeNames;
   std::map<store::Item*, store::SchemaTypeCode> theSchemaTypeCodes;
@@ -450,4 +450,4 @@ protected:
 } // namespace zorba
 
 #endif /* ZORBA_SIMPLESTORE_STORE_H */
-
+/* vim:set et sw=2 ts=2: */
