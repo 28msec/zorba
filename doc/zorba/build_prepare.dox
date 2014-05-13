@@ -15,28 +15,20 @@ into will be referred to as \c {ZORBASRC} in later instructions.
 
 You may download the latest Zorba release source code as either a
 <b>.zip</b> or <b>.tar.gz</b> file from Launchpad:
-https://launchpad.net/zorba/+download .
+https://github.com/28msec/zorba/releases .
 
-\subsection checkout_source Getting the Latest Code from Launchpad
+\subsection checkout_source Getting the Latest Code from Github
 
 If you want the very latest and greatest Zorba source, you can check
-out our source code trunk from our Launchpad repository. This is
+out our source code trunk from our github repository https://github.com/28msec/zorba. This is
 actually a pretty "safe" option, compared to many projects, as Zorba
 attempts to enforce a "trunk is always releasable" policy through
 extensive regression testing on every trunk checkin.
 
-Launchpad uses the Bazaar distributed version control system from
-Canonical, the producers of Ubuntu Linux and Launchpad. So you will
-need to install Bazaar in order to check out our code
-repositories. Installers are available from Canonical's website,
-http://bazaar.canonical.com/ . Bazaar packages are also available for
-all Linux distributions (the package name may be "bazaar" or "bzr"),
-and in Macports for MacOS X.
-
-Once you have Bazaar installed, check out the Zorba trunk:
+Once you have git installed, check out the Zorba repository:
 
 \code
-bzr checkout --lightweight lp:zorba
+git clone git@github.com:28msec/zorba.git 
 \endcode
 
 \section noncore_download Downloading source code for non-core modules

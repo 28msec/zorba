@@ -44,7 +44,7 @@ sudo port install boost curl icu libiconv libxml2 libxslt xerces3 tidy fop geos 
 
 \b Note: Use MacPorts installation of the libraries, do not modify the libraries that ships with OSX. Modifying OXS libraries usualy renders your OSX installation unusable.
 
-Download the zorba .pkg file (aproximately 12MB) : <a href="http://launchpad.net/zorba/+download">zorba-x.pkg</a>.
+Download the zorba .pkg file (aproximately 12MB) : <a href="https://github.com/28msec/zorba/releases/">zorba-x.pkg</a>.
 
 Install it by running it, a MacPorts gui installer will guide you.
 
@@ -60,7 +60,7 @@ This is the easies way to install Zorba since it doesn't require installation of
 - The Zorba .mpkg file contains both the Zorba installation files and also all it's MacPorts dependecies. This makes the zorba-2.9.1.mpkg a 175MB file.
 - Similar to .pkg file, the .mpkg file contains the Zorba runtime, core modules and most of the external modules. It does not contain the folowing external modules: image, schema-tools, read-pdf and email, due to lack of macports of these modules dependencies. If one of these modules is required, then Zorba must be installed from source.
 
-Download the zorba .mpkg file (aproximately 175MB) : <a href="http://launchpad.net/zorba/+download">zorba-x.mpkg</a>.
+Download the zorba .mpkg file (aproximately 175MB) : <a href="https://github.com/28msec/zorba/releases/">zorba-x.mpkg</a>.
 
 Install it by running it, a MacPorts gui installer will guide you.
 
@@ -115,9 +115,7 @@ Since the installer is done by MacPorts, the MacPorts python needs to be used. T
 /opt/local/bin/python2.7 test.py
 \endcode
 
-A list of other python examples can be found in <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/doc/python/examples/">doc/python/examples</a> and <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/swig/python/tests/">swig/python/tests/</a>.
-
-
+A list of other python examples can be found in <a href="https://github.com/28msec/zorba/tree/master/doc/python/examples">doc/python/examples</a> and <a href="https://github.com/28msec/zorba/tree/master/swig/python/tests">swig/python/tests/</a>.
 
 \section zosx_php Working with PHP
 
@@ -150,7 +148,7 @@ To run the script use:
 php -c path/to/php.ini/ test.php
 \endcode
 
-A list of other PHP examples can be found in <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/doc/php/examples/">doc/php/examples</a> and <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/swig/php/tests/">swig/php/tests/</a>.
+A list of other PHP examples can be found in <a href="https://github.com/28msec/zorba/tree/master/doc/php/examples">doc/php/examples</a> and <a href="https://github.com/28msec/zorba/tree/master/swig/php/tests">swig/php/tests/</a>.
 
 
 
@@ -179,7 +177,7 @@ To run the script execute:
 ruby test.rb
 \endcode
 
-A list of other Ruby examples can be found in <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/doc/ruby/examples/">doc/ruby/examples</a> and <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/swig/ruby/tests/">swig/ruby/tests/</a>.
+A list of other Ruby examples can be found in <a href="https://github.com/28msec/zorba/tree/master/doc/ruby/examples">doc/ruby/examples</a> and <a href="https://github.com/28msec/zorba/tree/master/swig/ruby/tests">swig/ruby/tests/</a>.
 
 
 
@@ -232,6 +230,5 @@ class Test
 }
 \endcode
  
-A list of other Ruby examples can be found in <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/doc/xqj/examples/">doc/xqj/examples</a> and <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/swig/xqj/managers/">swig/xqj/managers/</a>.
-
+A list of other Java examples can be found in <a href="https://github.com/28msec/zorba/tree/master/doc/xqj/examples">doc/ruby/examples</a> and <a href="https://github.com/28msec/zorba/tree/master/swig/xqj/tests">swig/xqj/tests/</a>.
 */

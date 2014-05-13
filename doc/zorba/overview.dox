@@ -114,17 +114,6 @@ that allows side-effecting operations,
 assignable variables,
 and other similar procedural extensions to XQuery.
 
-\section overview_conformance Conformance
-
-Please check the summary and the detailed XQuery W3C Test Suite results below:
-<ul>
-  <li> \ref conformance
-  <li> \ref conformance_XQ10
-  <li> \ref conformance_XQ30
-  <li> \ref conformanceXQUTS
-  <li> \ref conformanceXQFTTS
-</ul>
-
 Please also see our page about \ref known_issues.
 
 */
