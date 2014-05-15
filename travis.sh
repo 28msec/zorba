@@ -1,3 +1,5 @@
+set -e
+
 echo ====== Download External Modules ====
 mkdir ../zorba_modules
 cmake -Doutdir=../zorba_modules -Dallmodules=1 -P modules/DownloadModules.cmake
