@@ -1,5 +1,4 @@
 language: cpp
-rvm: 1.8.7
 before_script:
   - sudo add-apt-repository ppa:juan457/zorba --yes
   - sudo apt-get update -qq
