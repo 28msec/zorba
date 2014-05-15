@@ -247,6 +247,8 @@ void ExitCatcherIteratorState::reset(PlanState& planState)
 
   if (theExitValue)
     theExitValue->reset();
+
+  theExitValue = NULL;
 }
 
 
