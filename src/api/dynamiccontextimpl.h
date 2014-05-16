@@ -125,6 +125,18 @@ public:
       bool cast = false);
 
   virtual bool
+  setVariable(
+      const Item& inQName,
+      const Item& inValue,
+      bool cast = false);
+
+  virtual bool
+  setVariable(
+      const Item& inQName,
+      const Iterator_t& inValue,
+      bool cast = false);
+
+  virtual bool
   setContextItem(const Item& inValue);
 
   virtual bool 

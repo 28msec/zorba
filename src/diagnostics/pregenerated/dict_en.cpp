@@ -1037,6 +1037,7 @@ extern entry const dict_en[] = {
   { "~XUST0001_UDF_2", "\"$2\": function declared simple but body is updating" },
   { "~XUST0002_Transform", "transform expression witn non-updating or vacuous modify clause" },
   { "~XUST0002_UDF_2", "\"$2\": function declared updating but body is not updating or vacuous" },
+  { "~ZAPI0014_BadType_3", "invalid type: must be $3" },
   { "~ZDST0027_MULTI_VALUED_KEY_TYPE_DECL", "value index can not have a key type declaration with * or + quantifier" },
   { "~ZDST0027_NON_ATOMIC_KEY_TYPE", "index has non-atomic key type declaration" },
   { "~ZDST0027_NON_ORDERED_KEY_TYPE", "range index can not have type $3 in key type declaration" },
