@@ -7,6 +7,6 @@ before_script:
   - sudo apt-get install --force-yes libicu-dev libxml2-dev uuid-dev libxerces-c-dev graphviz libboost-filesystem-dev libgeos-dev imagemagick libmagick++-dev libmagickwand-dev libfop-java libpdfbox-java libtidy-dev libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev swig python-dev php5-dev ruby-dev openjdk-6-jdk libaccess-bridge-java-jni libxslt-dev libcurl4-openssl-dev libxerces-c-dev php5-dev doxygen libedit-dev php5 python-dev libkvutils-dev libcouchbase-dev
   - sudo apt-get remove bison flex
   - sudo locale-gen de_DE && sudo locale-gen de_DE.UTF-8 && sudo locale-gen fr_FR && sudo locale-gen fr_FR.UTF-8 && sudo update-locale
-  - couchbase-server –-noinput --detached
+  - couchbase-server --noinput --detached
 script: sh travis.sh
 cache: apt
