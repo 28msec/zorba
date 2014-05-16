@@ -506,6 +506,51 @@ bool DynamicContextImpl::setVariable(
 /****************************************************************************//**
 
 ********************************************************************************/
+bool DynamicContextImpl::setVariable(
+    const Item& aQName,
+    const Item& aValue,
+    bool cast)
+{
+  if ( aQName.getTypeCode() != store::XS_QNAME )
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0014_INVALID_ARGUMENT,
+      ERROR_PARAMS(
+        aQName.getTypeCode(),
+        ZED( ZAPI0014_BadType_3 ),
+        store::XS_QNAME
+      )
+    );
+  return setVariable(
+    aQName.getNamespace(), aQName.getLocalName(), aValue, cast
+  );
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariable(
+    const Item& aQName,
+    const Iterator_t& aIterator,
+    bool cast)
+{
+  if ( aQName.getTypeCode() != store::XS_QNAME )
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0014_INVALID_ARGUMENT,
+      ERROR_PARAMS(
+        aQName.getTypeCode(),
+        ZED( ZAPI0014_BadType_3 ),
+        store::XS_QNAME
+      )
+    );
+  return setVariable(
+    aQName.getNamespace(), aQName.getLocalName(), aIterator, cast
+  );
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
 void DynamicContextImpl::checkItem(const store::Item_t& item)
 {
   if (!item)

@@ -141,6 +141,49 @@ class ZORBA_DLL_PUBLIC DynamicContext
       const Iterator_t& aIterator,
       bool cast = false) = 0;
 
+  /** 
+   * \brief Defines the external variable identified by an expanded QName and
+   * assigns it the value of aItem.
+   *
+   * The named external variable may be located in the main query or in any
+   * modules imported directly or indirectly by the query.
+   *
+   * @param aQName the QName that identifies the external variable.
+   * @param aItem the Item that is used as value for the variable.
+   * @param cast If \c true, attempt to cast \a aItem to the type (if any) that
+   * the external variable was declared as.
+   * @return true if the variable has been set successfully, false otherwise.
+   * @throw ZorbaException if an error occured (e.g. the given Item is not
+   * valid).
+   */
+  virtual bool
+  setVariable(
+      const Item& aQName,
+      const Item& aItem,
+      bool cast = false) = 0;
+
+  /** 
+   * \brief Defines the external variable identified by an expanded QName and
+   * assigns it the value of aItem.
+   *
+   * The named external variable may be located in the main query or in any
+   * modules imported directly or indirectly by the query.
+   *
+   * @param aQName the QName that identifies the external variable.
+   * @param aIterator the Iterator producing the sequence that is assigned
+   *        to the variable.
+   * @param cast If \c true, attempt to cast \a each item to the type (if any)
+   * that the external variable was declared as.
+   * @return true if the variable has been set successfully, false otherwise.
+   * @throw ZorbaException if an error occured (e.g. the given Item is not
+   * valid).
+   */
+  virtual bool
+  setVariable(
+      const Item& aQName,
+      const Iterator_t& aIterator,
+      bool cast = false) = 0;
+
   /** \brief Returns the current value of an external
    * variable. Exactly one of the two return values (aItem or
    * aIterator) will be non-null; that is, have isNull() == false.

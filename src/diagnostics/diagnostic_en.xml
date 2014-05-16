@@ -2558,6 +2558,9 @@
 
     <diagnostic code="ZAPI0014" name="INVALID_ARGUMENT">
       <value>"$1": invalid argument${: 2}</value>
+      <entry key="BadType_3">
+        <value>invalid type: must be $3</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ZAPI0015" name="CREATEMODULE_NOT_FOUND">
