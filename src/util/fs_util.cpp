@@ -108,7 +108,12 @@ static void canonicalize( string *path ) {
       path->erase( 0, 3 );
     else {
       string::size_type const prev_pos = path->rfind( dir_separator, pos - 1 );
-      if ( prev_pos != string::npos ) {
+      if ( prev_pos == string::npos ) {
+        // "y/../z" => "z"
+        path->erase( 0, pos + 4 );
+        break;
+      } else {
+        // "x/y/../z" => "x/z"
         path->erase( prev_pos, pos - prev_pos + 3 );
         pos = prev_pos;
       }
