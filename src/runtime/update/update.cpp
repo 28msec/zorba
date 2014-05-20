@@ -846,7 +846,8 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   {
     csize numCopyClauses = theCopyClauses.size(); 
-    std::vector<store::Item*> copyNodes(numCopyClauses);
+    std::vector<store::Item*> copyNodes;
+    copyNodes.reserve(numCopyClauses);
 
     // For each copy var compute the target node and bind that node to all
     // references of the copy var.
