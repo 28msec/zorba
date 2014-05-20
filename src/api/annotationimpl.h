@@ -46,9 +46,9 @@ public:
 
   Item getQName() const;
 
-  unsigned int getLiteralsCount() const; 
+  size_type getLiteralsCount() const; 
 
-  Item getLiteral(unsigned int i) const;
+  Item getLiteral(size_type) const;
 };
 
 } /* namespace zorba */

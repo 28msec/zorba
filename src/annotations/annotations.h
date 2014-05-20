@@ -21,9 +21,6 @@
 #include <bitset>
 
 #include "common/shared_types.h"
-
-//#include "compiler/parsetree/parsenodes.h"
-
 #include "zorbautils/hashmap_itemh.h"
 
 namespace zorba
