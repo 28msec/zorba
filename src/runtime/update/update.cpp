@@ -846,7 +846,8 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   {
     csize numCopyClauses = theCopyClauses.size(); 
-    std::vector<store::Item*> copyNodes(numCopyClauses);
+    std::vector<store::Item*> copyNodes;
+    copyNodes.reserve(numCopyClauses);
 
     // For each copy var compute the target node and bind that node to all
     // references of the copy var.
@@ -869,18 +870,14 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
       if (!copyClause.theCopyVars.empty())
       {
-        copyNodes[i] = copyNode->copy(NULL, copymode);
+        copyNodes.push_back(copyNode->copy(NULL, copymode));
 
         varRefIte = copyClause.theCopyVars.begin();
         varRefEnd = copyClause.theCopyVars.end();
         for(; varRefIte != varRefEnd; ++varRefIte)
         {
-          (*varRefIte)->bind(copyNodes[i], aPlanState);
+          (*varRefIte)->bind(copyNodes.back(), aPlanState);
         }
-      }
-      else
-      {
-        copyNodes.resize(copyNodes.size() - 1);
       }
     }
 
