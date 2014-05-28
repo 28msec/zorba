@@ -3274,6 +3274,10 @@
       <value>"$1": illegal $2?{child }element/node${ of JSON type "2"}${; must be "3"}</value>
     </diagnostic>
 
+    <diagnostic code="ZJSE0005" name="BAD_PREFIX">
+      <value>"$1": illegal XML prefix (must be NCName)</value>
+    </diagnostic>
+
     <diagnostic code="ZJSE0007" name="ELEMENT_MISSING_VALUE">
       <value>"$1" element missing required "$2" value</value>
     </diagnostic>

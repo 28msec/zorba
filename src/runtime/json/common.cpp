@@ -46,6 +46,15 @@ bool get_attribute_value( store::Item_t const &element, char const *att_name,
   return found;
 }
 
+zstring name_of( store::Item_t const &node, char const *ns ) {
+  store::Item_t const name( node->getNodeName() );
+  zstring const z_ns( name->getNamespace() );
+  zstring const z_local( name->getLocalName() );
+  if ( z_ns.empty() || (ns && z_ns == ns) )
+    return z_local;
+  return '{' + z_ns + '}' + z_local;
+}
+
 bool x2j_map_atomic( store::Item_t const &xml_item, store::Item_t *json_item ) {
   if ( xml_item->isAtomic() ) {
     switch ( xml_item->getTypeCode() ) {
