@@ -29,7 +29,9 @@ namespace snelson {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void json_to_xml( store::Item_t const &json_item, store::Item_t *xml_item );
+void json_to_xml( store::Item_t const &json_item, store::Item_t *xml_item,
+                  zstring const &prefix );
+
 void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item );
 
 ///////////////////////////////////////////////////////////////////////////////
