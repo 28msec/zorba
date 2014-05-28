@@ -34,6 +34,54 @@ char const *const version_string_of[] = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool is_NameChar( unicode::code_point c ) {
+  //
+  // It's faster to duplicate the code so the common cases are always tested
+  // first.
+  //
+  return  (c >= 'a' && c <= 'z')
+      ||  (c >= 'A' && c <= 'Z')
+      ||  (c >= '0' && c <= '9')
+      ||   c == '_'
+      ||   c == '-'
+      ||   c == '.'
+      ||   c == 0x0000B7
+      ||  (c >= 0x0000C0 && c <= 0x0000D6)
+      ||  (c >= 0x0000D8 && c <= 0x0000F6)
+      ||  (c >= 0x0000F8 && c <= 0x0002FF)
+      ||  (c >= 0x000300 && c <= 0x00036F)
+      ||  (c >= 0x000370 && c <= 0x00037D)
+      ||  (c >= 0x00037F && c <= 0x001FFF)
+      ||  (c >= 0x00200C && c <= 0x00200D)
+      ||  (c >= 0x00203F && c <= 0x002040)
+      ||  (c >= 0x002070 && c <= 0x00218F)
+      ||  (c >= 0x002C00 && c <= 0x002FEF)
+      ||  (c >= 0x003001 && c <= 0x00D7FF)
+      ||  (c >= 0x00F900 && c <= 0x00FDCF)
+      ||  (c >= 0x00FDF0 && c <= 0x00FFFD)
+      ||  (c >= 0x010000 && c <= 0x10FFFF);
+}
+
+bool is_NameStartChar( unicode::code_point c ) {
+  return  (c >= 'a' && c <= 'z')
+      ||  (c >= 'A' && c <= 'Z')
+      ||   c == '_'
+      ||  (c >= 0x0000C0 && c <= 0x0000D6)
+      ||  (c >= 0x0000D8 && c <= 0x0000F6)
+      ||  (c >= 0x0000F8 && c <= 0x0002FF)
+      ||  (c >= 0x000370 && c <= 0x00037D)
+      ||  (c >= 0x00037F && c <= 0x001FFF)
+      ||  (c >= 0x00200C && c <= 0x00200D)
+      ||  (c >= 0x002070 && c <= 0x00218F)
+      ||  (c >= 0x002C00 && c <= 0x002FEF)
+      ||  (c >= 0x003001 && c <= 0x00D7FF)
+      ||  (c >= 0x00F900 && c <= 0x00FDCF)
+      ||  (c >= 0x00FDF0 && c <= 0x00FFFD)
+      ||  (c >= 0x010000 && c <= 0x10FFFF);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 int parse_entity( char const *s, unicode::code_point *c ) {
   char const *const s0 = s;
   if ( *s == '&' && !*++s )

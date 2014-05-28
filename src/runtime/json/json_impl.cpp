@@ -73,9 +73,8 @@ bool JSONtoXMLInternal::nextImpl( store::Item_t& result,
 
   { // local scope
   options_type::mapped_type const &format_opt = options[ "json-format" ];
-  ZORBA_ASSERT( !format_opt.empty() );
-  if ( format_opt == "Snelson" )
-    snelson::json_to_xml( item, &result );
+  if ( format_opt.empty() || format_opt == "Snelson" )
+    snelson::json_to_xml( item, &result, options[ "prefix" ] );
   else if ( format_opt == "JsonML" || format_opt == "JsonML-array" )
     jsonml_array::json_to_xml( item, &result );
   else if ( format_opt == "JsonML-object" )

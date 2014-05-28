@@ -23,6 +23,7 @@
 #include <zorba/store_consts.h>
 #include <zorba/util/mem_streambuf.h>
 
+#include "api/serialization/serializer.h"
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
@@ -30,9 +31,11 @@
 #include "types/typeops.h"
 #include "util/json_parser.h"
 #include "util/stl_util.h"
+#include "util/xml_util.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
+#include "zorbautils/store_util.h"
 
 #include "snelson.h"
 
@@ -66,12 +69,13 @@ static void add_type_attribute( store::Item *parent, char const *value ) {
 
 static void add_item_element( item_stack_type &xml_item_stack,
                               store::Item_t &xml_item,
-                              char const *type ) {
+                              char const *type,
+                              zstring const &prefix ) {
   zstring base_uri;
   store::Item_t element_name;
   store::NsBindings ns_bindings;
 
-  GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "item" );
+  GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, prefix, "item" );
   store::Item_t type_name( GENV_TYPESYSTEM.XS_UNTYPED_QNAME );
   GENV_ITEMFACTORY->createElementNode(
     xml_item, xml_item_stack.top(),
@@ -81,10 +85,10 @@ static void add_item_element( item_stack_type &xml_item_stack,
   PUSH_ITEM( xml );
 }
 
-#define ADD_ITEM_ELEMENT(T)                               \
-  do {                                                    \
-    if ( IN_STATE( in_array ) )                           \
-      add_item_element( xml_item_stack, xml_item, (T) );  \
+#define ADD_ITEM_ELEMENT(T)                                       \
+  do {                                                            \
+    if ( IN_STATE( in_array ) )                                   \
+      add_item_element( xml_item_stack, xml_item, (T), prefix );  \
   } while (0)
 
 #define POP_ITEM_ELEMENT()      \
@@ -95,12 +99,13 @@ static void add_item_element( item_stack_type &xml_item_stack,
 
 static void add_pair_element( item_stack_type &xml_item_stack,
                               store::Item_t &xml_item,
-                              zstring const &name ) {
+                              zstring const &name,
+                              zstring const &prefix ) {
   zstring base_uri;
   store::Item_t att_name, element_name, junk_item, name_item, type_name;
   store::NsBindings ns_bindings;
 
-  GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "pair" );
+  GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, prefix, "pair" );
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   GENV_ITEMFACTORY->createElementNode(
     xml_item, xml_item_stack.top(),
@@ -116,16 +121,24 @@ static void add_pair_element( item_stack_type &xml_item_stack,
   );
 }
 
-#define ADD_PAIR_ELEMENT(NAME)                            \
-  do {                                                    \
-    add_pair_element( xml_item_stack, xml_item, (NAME) ); \
-    needs_type_attribute = true;                          \
+#define ADD_PAIR_ELEMENT(NAME)                                    \
+  do {                                                            \
+    add_pair_element( xml_item_stack, xml_item, (NAME), prefix ); \
+    needs_type_attribute = true;                                  \
   } while (0)
+
+#define NAME_OF(ITEM) name_of( ITEM, SNELSON_NS )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
+void json_to_xml( store::Item_t const &item, store::Item_t *result,
+                  zstring const &prefix ) {
   ZORBA_ASSERT( result );
+  if ( !prefix.empty() && !xml::is_NCName( prefix ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0005_BAD_PREFIX,
+      ERROR_PARAMS( prefix )
+    );
 
   store::Item_t element_name, xml_item, junk_item, value_item;
 
@@ -135,7 +148,7 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
   store::NsBindings ns_bindings;
   state_stack_type state_stack;
 
-  GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "json" );
+  GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, prefix, "json" );
   store::Item_t type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   GENV_ITEMFACTORY->createElementNode(
     xml_item, nullptr,
@@ -282,7 +295,7 @@ static void x2j_type( store::Item_t const &item, store::Item_t *value );
 
 static void assert_element_name( store::Item_t const &element,
                                  char const *required_name ) {
-  zstring const element_name( name_of( element ) );
+  zstring const element_name( NAME_OF( element ) );
   if ( element_name != required_name ) {
     zstring parent_type;
     if ( ::strcmp( required_name, "item" ) == 0 )
@@ -329,7 +342,7 @@ static void require_attribute_value( store::Item_t const &element,
   if ( !get_attribute_value( element, att_name, att_value ) )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
-      ERROR_PARAMS( name_of( element ), att_name )
+      ERROR_PARAMS( NAME_OF( element ), att_name )
     );
 }
 
@@ -460,7 +473,7 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
   if ( !got_value )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0007_ELEMENT_MISSING_VALUE,
-      ERROR_PARAMS( name_of( parent ), json::boolean )
+      ERROR_PARAMS( NAME_OF( parent ), json::boolean )
     );
 }
 
@@ -580,7 +593,7 @@ static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
   if ( !got_value )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0007_ELEMENT_MISSING_VALUE,
-      ERROR_PARAMS( name_of( parent ), json::number )
+      ERROR_PARAMS( NAME_OF( parent ), json::number )
     );
 }
 
@@ -630,7 +643,6 @@ static void x2j_pair_element( store::Item_t const &pair, store::Item_t *key,
 static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
   ZORBA_ASSERT( string );
 
-  bool got_value = false;
   store::Iterator_t i( parent->getChildren() );
   store::Item_t child;
   zstring value;
@@ -641,17 +653,19 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
 
       case store::Item::NODE:
         switch ( child->getNodeKind() ) {
-          case store::StoreConsts::textNode: {
-            child->getStringValue2( value );
-            if ( got_value )
-              throw XQUERY_EXCEPTION(
-                zerr::ZJSE0009_MULTIPLE_CHILDREN,
-                ERROR_PARAMS( name_of( parent ), json::string )
-              );
-            GENV_ITEMFACTORY->createString( *string, value );
-            got_value = true;
+          case store::StoreConsts::elementNode: {
+            serializer ser( nullptr );
+            ser.setParameter( "method", "xml" );
+            ser.setParameter( "omit-xml-declaration", "yes" );
+            store::Iterator_t j( new store::SingletonIterator( child ) );
+            ostringstream oss;
+            ser.serialize( j, oss, true );
+            value += oss.str().c_str();
             break;
           }
+          case store::StoreConsts::textNode:
+            value += child->getStringValue();
+            break;
           case store::StoreConsts::commentNode:
           case store::StoreConsts::piNode:
             // ignore
@@ -665,18 +679,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
         break;
 
       case store::Item::ATOMIC:
-        if ( got_value )
-          throw XQUERY_EXCEPTION(
-            zerr::ZJSE0009_MULTIPLE_CHILDREN,
-            ERROR_PARAMS( name_of( parent ), json::string )
-          );
-        if ( TypeOps::is_subtype( child->getTypeCode(), store::XS_STRING ) )
-          *string = child;
-        else {
-          child->getStringValue2( value );
-          GENV_ITEMFACTORY->createString( *string, value );
-        }
-        got_value = true;
+        value += child->getStringValue();
         break;
 
       default:
@@ -687,8 +690,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
     } // switch
   } // while
   i->close();
-  if ( !got_value )                     // empty string
-    GENV_ITEMFACTORY->createString( *string, value );
+  GENV_ITEMFACTORY->createString( *string, value );
 }
 
 static void x2j_type( store::Item_t const &xml_item,
