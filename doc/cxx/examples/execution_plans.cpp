@@ -260,6 +260,46 @@ execution_plan_example_3(Zorba* aZorba)
 	return false;
 }
 
+bool
+execution_plan_example_4(Zorba* aZorba)
+{
+  StaticContext_t lContext = aZorba->createStaticContext();
+
+  Zorba_CompilerHints_t lHints;
+  std::stringstream lPredeclaredModules;
+  lPredeclaredModules
+    << "import module namespace libjn = "
+    << "'http://jsoniq.org/function-library';"
+    << std::endl;
+
+    lContext->loadProlog(lPredeclaredModules.str(), lHints);
+
+  std::vector<zorba::String> lDefaultNS;
+  lDefaultNS.push_back("http://jsoniq.org/functions");
+  lContext->setDefaultFunctionNamespaces(lDefaultNS);
+
+  // the stringstream used for query materialization
+  std::stringstream lExecutionPlan;
+
+  // materialize a compiled query to a binary format
+  {
+    XQuery_t lQuery = aZorba->compileQuery("jn:encode-for-roundtrip(xs:dateTime('2014-05-21T00:00:01'))", lContext);
+    lQuery->saveExecutionPlan(lExecutionPlan);
+    std::cout << lQuery << std::endl;
+  }
+
+  // read a compiled query from an input stream
+  // and execute it
+  {
+    XQuery_t lQuery = aZorba->createQuery();
+    lQuery->loadExecutionPlan(lExecutionPlan);
+
+    std::cout << lQuery << std::endl;
+  }
+
+  return true;
+}
+
 int
 execution_plans(int argc, char* argv[])
 {
@@ -281,6 +321,11 @@ execution_plans(int argc, char* argv[])
   std::cout << "executing example 3" << std::endl;
   res = execution_plan_example_3(lZorba);
   if (!res) return 3; 
+  std::cout << std::endl;
+
+  std::cout << "executing example 4" << std::endl;
+  res = execution_plan_example_4(lZorba);
+  if (!res) return 4;
   std::cout << std::endl;
 
   lZorba->shutdown();
