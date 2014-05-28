@@ -23,6 +23,7 @@
 #include <zorba/store_consts.h>
 #include <zorba/util/mem_streambuf.h>
 
+#include "api/serialization/serializer.h"
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
@@ -34,6 +35,7 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
+#include "zorbautils/store_util.h"
 
 #include "snelson.h"
 
@@ -641,7 +643,6 @@ static void x2j_pair_element( store::Item_t const &pair, store::Item_t *key,
 static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
   ZORBA_ASSERT( string );
 
-  bool got_value = false;
   store::Iterator_t i( parent->getChildren() );
   store::Item_t child;
   zstring value;
@@ -652,17 +653,19 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
 
       case store::Item::NODE:
         switch ( child->getNodeKind() ) {
-          case store::StoreConsts::textNode: {
-            child->getStringValue2( value );
-            if ( got_value )
-              throw XQUERY_EXCEPTION(
-                zerr::ZJSE0009_MULTIPLE_CHILDREN,
-                ERROR_PARAMS( NAME_OF( parent ), json::string )
-              );
-            GENV_ITEMFACTORY->createString( *string, value );
-            got_value = true;
+          case store::StoreConsts::elementNode: {
+            serializer ser( nullptr );
+            ser.setParameter( "method", "xml" );
+            ser.setParameter( "omit-xml-declaration", "yes" );
+            store::Iterator_t j( new store::SingletonIterator( child ) );
+            ostringstream oss;
+            ser.serialize( j, oss, true );
+            value += oss.str().c_str();
             break;
           }
+          case store::StoreConsts::textNode:
+            value += child->getStringValue();
+            break;
           case store::StoreConsts::commentNode:
           case store::StoreConsts::piNode:
             // ignore
@@ -676,18 +679,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
         break;
 
       case store::Item::ATOMIC:
-        if ( got_value )
-          throw XQUERY_EXCEPTION(
-            zerr::ZJSE0009_MULTIPLE_CHILDREN,
-            ERROR_PARAMS( NAME_OF( parent ), json::string )
-          );
-        if ( TypeOps::is_subtype( child->getTypeCode(), store::XS_STRING ) )
-          *string = child;
-        else {
-          child->getStringValue2( value );
-          GENV_ITEMFACTORY->createString( *string, value );
-        }
-        got_value = true;
+        value += child->getStringValue();
         break;
 
       default:
@@ -698,8 +690,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
     } // switch
   } // while
   i->close();
-  if ( !got_value )                     // empty string
-    GENV_ITEMFACTORY->createString( *string, value );
+  GENV_ITEMFACTORY->createString( *string, value );
 }
 
 static void x2j_type( store::Item_t const &xml_item,
