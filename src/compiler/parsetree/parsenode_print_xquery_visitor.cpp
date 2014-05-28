@@ -1199,6 +1199,24 @@ DEFAULT_END_VISIT (ReverseAxis);
     }
     DEFAULT_END_VISIT (WhereClause)
 
+    void* begin_visit(const OffsetClause& n)
+    {
+      os << "offset ";
+      n.get_offset()->accept(*this);
+      return 0;
+    }
+    DEFAULT_END_VISIT (OffsetClause)
+
+
+    void* begin_visit(const LimitClause& n)
+    {
+      os << "limit ";
+      n.get_limit()->accept(*this);
+      return 0;
+    }
+    DEFAULT_END_VISIT (LimitClause)
+
+
     void* begin_visit(const CountClause& n)
     {
       os << "count $" << n.get_varname();

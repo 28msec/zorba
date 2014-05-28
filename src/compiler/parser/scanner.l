@@ -557,6 +557,8 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "by" { return token::BY; }
 "stable" { return token::STABLE; }
 "or" { return token::OR; }
+"limit" { return token::LIMIT; }
+"offset" { return token::OFFSET; }
 "return" { return token::RETURN; }
 #ifdef JSONIQ_SCANNER
 "select" { return token::SELECT; }

@@ -178,6 +178,8 @@ class LetClause;
 class VarGetsDeclList;
 class VarGetsDecl;
 class WhereClause;
+class OffsetClause;
+class LimitClause;
 class GroupByClause;
 class GroupSpecList;
 class GroupSpec;
@@ -2233,6 +2235,31 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+class OffsetClause : public FLWORClause
+{
+protected:
+  rchandle<exprnode> offset_h;
+
+public:
+  OffsetClause(const QueryLoc&, rchandle<exprnode>);
+
+  rchandle<exprnode> get_offset() const { return offset_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+class LimitClause : public FLWORClause
+{
+protected:
+  rchandle<exprnode> limit_h;
+
+public:
+  LimitClause(const QueryLoc&, rchandle<exprnode>);
+
+  rchandle<exprnode> get_limit() const { return limit_h; }
+
+  void accept(parsenode_visitor&) const;
+};
 
 /*******************************************************************************
   GroupByClause ::= "group" "by" GroupingSpecList

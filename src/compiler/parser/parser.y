@@ -325,6 +325,8 @@
 %token QUOTE                            "'\"'"
 %token RBRACE                           "'}'"
 %token RBRACK                           "']'"
+%token OFFSET                           "'offset'"
+%token LIMIT                            "'limit'"
 %token RETURN                           "'return'"
 %token RPAR                             "')'"
 %token SATISFIES                        "'satisfies'"
@@ -636,6 +638,8 @@
 %type <node> BlockVarDecl
 %type <node> WhereClause
 %type <node> CountClause
+%type <node> OffsetClause
+%type <node> LimitClause
 %type <node> Wildcard
 
 /* left-hand sides: expressions */
@@ -875,7 +879,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest NamespaceTest TypeDeclaration TypeName TypeName_WITH_HOOK 
 %destructor { release_hack( $$ ); } URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 
 %destructor { release_hack( $$ ); } CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond 
-%destructor { release_hack( $$ ); } VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList 
+%destructor { release_hack( $$ ); } VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause LimitClause OffsetClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList 
 %destructor { release_hack( $$ ); } SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList VoidStatement NodeComp
 
 #ifdef JSONIQ_PARSER
@@ -1000,6 +1004,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %right SATISFIES TREAT WHERE START  BEFORE INTO
 %right AT MODIFY WITH CONTAINS END LEVELS PARAGRAPHS RENAME SENTENCES TIMES
 %right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
+%right OFFSET LIMIT
 
 
 %left COMMA
@@ -2808,8 +2813,23 @@ FLWORClause :
   | OrderByClause
   | GroupByClause
   | CountClause
+  | OffsetClause
+  | LimitClause
 ;
 
+OffsetClause :
+  OFFSET ExprSingle
+  {
+    $$ = new OffsetClause(LOC (@$), $2);
+  }
+;
+
+LimitClause :
+  LIMIT ExprSingle
+  {
+    $$ = new LimitClause(LOC (@$), $2);
+  }
+;
 
 FLWORClauseList :
     ForLetWinClause
@@ -7205,6 +7225,8 @@ FUNCTION_NAME :
     |   _IN                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("in"))); }
     |   LET                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("let"))); }
     |   WHERE                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("where"))); }
+    |   OFFSET                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("offset"))); }
+    |   LIMIT                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("limit"))); }
     |   BY                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("by"))); }
     |   GROUP                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("group"))); }
     |   ORDER                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("order"))); }

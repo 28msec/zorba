@@ -31,18 +31,18 @@
    version 2.2 of Bison.  */
 
 /**
- ** \file /Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.hpp
+ ** \file /Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.hpp
  ** Define the zorba::parser class.
  */
 
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP_INCLUDED
-# define YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP_INCLUDED
+#ifndef YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_SKIPLIMIT_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP_INCLUDED
+# define YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_SKIPLIMIT_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP_INCLUDED
 
 /* "%code requires" blocks.  */
 /* Line 267 of lalr1.cc  */
-#line 5 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.y"
+#line 5 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -89,7 +89,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 267 of lalr1.cc  */
-#line 93 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 93 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -105,7 +105,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 namespace zorba {
 /* Line 267 of lalr1.cc  */
-#line 109 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 109 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -116,7 +116,7 @@ namespace zorba {
     union semantic_type
     {
 /* Line 267 of lalr1.cc  */
-#line 148 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.y"
+#line 148 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -139,7 +139,7 @@ namespace zorba {
 
 
 /* Line 267 of lalr1.cc  */
-#line 143 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 143 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -333,154 +333,156 @@ namespace zorba {
      QUOTE = 438,
      RBRACE = 439,
      RBRACK = 440,
-     RETURN = 441,
-     RPAR = 442,
-     SATISFIES = 443,
-     SELF = 444,
-     SEMI = 445,
-     SLASH = 446,
-     SLASH_SLASH = 447,
-     BANG = 448,
-     STAR = 449,
-     START_TAG_END = 450,
-     STRIP = 451,
-     TAG_END = 452,
-     THEN = 453,
-     TO = 454,
-     TREAT = 455,
-     UNION = 456,
-     UNORDERED = 457,
-     VAL_EQ = 458,
-     VAL_GE = 459,
-     VAL_GT = 460,
-     VAL_LE = 461,
-     VAL_LT = 462,
-     VAL_NE = 463,
-     VALUECOMP = 464,
-     VBAR = 465,
-     EMPTY_SEQUENCE = 466,
-     WHERE = 467,
-     XML_COMMENT_BEGIN = 468,
-     XML_COMMENT_END = 469,
-     XQUERY = 470,
-     VERSION = 471,
-     START = 472,
-     AFTER = 473,
-     BEFORE = 474,
-     REVALIDATION = 475,
-     _STRICT = 476,
-     LAX = 477,
-     SKIP = 478,
-     _DELETE = 479,
-     NODE = 480,
-     INSERT = 481,
-     NODES = 482,
-     RENAME = 483,
-     REPLACE = 484,
-     VALUE = 485,
-     OF = 486,
-     FIRST = 487,
-     INTO = 488,
-     LAST = 489,
-     MODIFY = 490,
-     COPY = 491,
-     WITH = 492,
-     BREAK = 493,
-     CONTINUE = 494,
-     EXIT = 495,
-     LOOP = 496,
-     RETURNING = 497,
-     WHILE = 498,
-     TRY = 499,
-     CATCH = 500,
-     USING = 501,
-     ALL = 502,
-     ANY = 503,
-     CONTAINS = 504,
-     CONTENT = 505,
-     DIACRITICS = 506,
-     DIFFERENT = 507,
-     DISTANCE = 508,
-     END = 509,
-     ENTIRE = 510,
-     EXACTLY = 511,
-     FROM = 512,
-     FTAND = 513,
-     FTNOT = 514,
-     NOT = 515,
-     FT_OPTION = 516,
-     FTOR = 517,
-     INSENSITIVE = 518,
-     LANGUAGE = 519,
-     LEVELS = 520,
-     LOWERCASE = 521,
-     OCCURS = 522,
-     PARAGRAPH = 523,
-     PARAGRAPHS = 524,
-     PHRASE = 525,
-     RELATIONSHIP = 526,
-     SAME = 527,
-     SCORE = 528,
-     SENSITIVE = 529,
-     SENTENCE = 530,
-     SENTENCES = 531,
-     STEMMING = 532,
-     STOP = 533,
-     THESAURUS = 534,
-     TIMES = 535,
-     UPPERCASE = 536,
-     WEIGHT = 537,
-     WILDCARDS = 538,
-     WINDOW = 539,
-     WITHOUT = 540,
-     WORDS = 541,
-     COLLECTION = 542,
-     CONSTOPT = 543,
-     APPEND_ONLY = 544,
-     QUEUE = 545,
-     MUTABLE = 546,
-     READ_ONLY = 547,
-     UNIQUE = 548,
-     NON = 549,
-     INDEX = 550,
-     MANUALLY = 551,
-     AUTOMATICALLY = 552,
-     MAINTAINED = 553,
-     ON = 554,
-     RANGE = 555,
-     EQUALITY = 556,
-     GENERAL = 557,
-     INTEGRITY = 558,
-     CONSTRAINT = 559,
-     CHECK = 560,
-     KEY = 561,
-     FOREACH = 562,
-     FOREIGN = 563,
-     KEYS = 564,
-     L_SIMPLE_OBJ_UNION = 565,
-     R_SIMPLE_OBJ_UNION = 566,
-     L_ACCUMULATOR_OBJ_UNION = 567,
-     R_ACCUMULATOR_OBJ_UNION = 568,
-     JSON = 569,
-     APPEND = 570,
-     POSITION = 571,
-     OBJECT = 572,
-     ARRAY = 573,
-     JSON_ITEM = 574,
-     STRUCTURED_ITEM = 575,
-     BYTE_ORDER_MARK_UTF8 = 576,
-     SHEBANG = 577,
-     RANGE_REDUCE = 578,
-     SEQUENCE_TYPE_REDUCE = 579,
-     ADDITIVE_REDUCE = 580,
-     UNION_REDUCE = 581,
-     INTERSECT_EXCEPT_REDUCE = 582,
-     QVARINDECLLIST_REDUCE = 583,
-     UNARY_PREC = 584,
-     STEP_REDUCE = 585,
-     SIMPLEMAPEXPR_REDUCE = 586,
-     MULTIPLICATIVE_REDUCE = 587,
-     SELECT = 588
+     OFFSET = 441,
+     LIMIT = 442,
+     RETURN = 443,
+     RPAR = 444,
+     SATISFIES = 445,
+     SELF = 446,
+     SEMI = 447,
+     SLASH = 448,
+     SLASH_SLASH = 449,
+     BANG = 450,
+     STAR = 451,
+     START_TAG_END = 452,
+     STRIP = 453,
+     TAG_END = 454,
+     THEN = 455,
+     TO = 456,
+     TREAT = 457,
+     UNION = 458,
+     UNORDERED = 459,
+     VAL_EQ = 460,
+     VAL_GE = 461,
+     VAL_GT = 462,
+     VAL_LE = 463,
+     VAL_LT = 464,
+     VAL_NE = 465,
+     VALUECOMP = 466,
+     VBAR = 467,
+     EMPTY_SEQUENCE = 468,
+     WHERE = 469,
+     XML_COMMENT_BEGIN = 470,
+     XML_COMMENT_END = 471,
+     XQUERY = 472,
+     VERSION = 473,
+     START = 474,
+     AFTER = 475,
+     BEFORE = 476,
+     REVALIDATION = 477,
+     _STRICT = 478,
+     LAX = 479,
+     SKIP = 480,
+     _DELETE = 481,
+     NODE = 482,
+     INSERT = 483,
+     NODES = 484,
+     RENAME = 485,
+     REPLACE = 486,
+     VALUE = 487,
+     OF = 488,
+     FIRST = 489,
+     INTO = 490,
+     LAST = 491,
+     MODIFY = 492,
+     COPY = 493,
+     WITH = 494,
+     BREAK = 495,
+     CONTINUE = 496,
+     EXIT = 497,
+     LOOP = 498,
+     RETURNING = 499,
+     WHILE = 500,
+     TRY = 501,
+     CATCH = 502,
+     USING = 503,
+     ALL = 504,
+     ANY = 505,
+     CONTAINS = 506,
+     CONTENT = 507,
+     DIACRITICS = 508,
+     DIFFERENT = 509,
+     DISTANCE = 510,
+     END = 511,
+     ENTIRE = 512,
+     EXACTLY = 513,
+     FROM = 514,
+     FTAND = 515,
+     FTNOT = 516,
+     NOT = 517,
+     FT_OPTION = 518,
+     FTOR = 519,
+     INSENSITIVE = 520,
+     LANGUAGE = 521,
+     LEVELS = 522,
+     LOWERCASE = 523,
+     OCCURS = 524,
+     PARAGRAPH = 525,
+     PARAGRAPHS = 526,
+     PHRASE = 527,
+     RELATIONSHIP = 528,
+     SAME = 529,
+     SCORE = 530,
+     SENSITIVE = 531,
+     SENTENCE = 532,
+     SENTENCES = 533,
+     STEMMING = 534,
+     STOP = 535,
+     THESAURUS = 536,
+     TIMES = 537,
+     UPPERCASE = 538,
+     WEIGHT = 539,
+     WILDCARDS = 540,
+     WINDOW = 541,
+     WITHOUT = 542,
+     WORDS = 543,
+     COLLECTION = 544,
+     CONSTOPT = 545,
+     APPEND_ONLY = 546,
+     QUEUE = 547,
+     MUTABLE = 548,
+     READ_ONLY = 549,
+     UNIQUE = 550,
+     NON = 551,
+     INDEX = 552,
+     MANUALLY = 553,
+     AUTOMATICALLY = 554,
+     MAINTAINED = 555,
+     ON = 556,
+     RANGE = 557,
+     EQUALITY = 558,
+     GENERAL = 559,
+     INTEGRITY = 560,
+     CONSTRAINT = 561,
+     CHECK = 562,
+     KEY = 563,
+     FOREACH = 564,
+     FOREIGN = 565,
+     KEYS = 566,
+     L_SIMPLE_OBJ_UNION = 567,
+     R_SIMPLE_OBJ_UNION = 568,
+     L_ACCUMULATOR_OBJ_UNION = 569,
+     R_ACCUMULATOR_OBJ_UNION = 570,
+     JSON = 571,
+     APPEND = 572,
+     POSITION = 573,
+     OBJECT = 574,
+     ARRAY = 575,
+     JSON_ITEM = 576,
+     STRUCTURED_ITEM = 577,
+     BYTE_ORDER_MARK_UTF8 = 578,
+     SHEBANG = 579,
+     RANGE_REDUCE = 580,
+     SEQUENCE_TYPE_REDUCE = 581,
+     ADDITIVE_REDUCE = 582,
+     UNION_REDUCE = 583,
+     INTERSECT_EXCEPT_REDUCE = 584,
+     QVARINDECLLIST_REDUCE = 585,
+     UNARY_PREC = 586,
+     STEP_REDUCE = 587,
+     SIMPLEMAPEXPR_REDUCE = 588,
+     MULTIPLICATIVE_REDUCE = 589,
+     SELECT = 590
    };
 
     };
@@ -657,8 +659,8 @@ namespace zorba {
 
 } // zorba
 /* Line 267 of lalr1.cc  */
-#line 661 "/Users/pjl/src/flwor/zorba/repo/pjl-misc/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 663 "/Users/pjl/src/flwor/zorba/repo/skiplimit/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
-#endif /* !YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_PJL_MISC_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP_INCLUDED  */
+#endif /* !YY_ZORBA_USERS_PJL_SRC_FLWOR_ZORBA_REPO_SKIPLIMIT_ZORBA_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP_INCLUDED  */
