@@ -373,6 +373,10 @@ static void x2j_array( store::Item_t const &parent, store::Item_t *array ) {
       case store::StoreConsts::piNode:
         // ignore
         break;
+      case store::StoreConsts::textNode:
+        if ( ascii::is_space( child->getStringValue() ) )
+          break;
+        // no break;
       default:
         throw XQUERY_EXCEPTION(
           zerr::ZJSE0004_BAD_NODE,
@@ -598,6 +602,10 @@ static void x2j_object( store::Item_t const &parent, store::Item_t *object ) {
       case store::StoreConsts::piNode:
         // ignore
         break;
+      case store::StoreConsts::textNode:
+        if ( ascii::is_space( child->getStringValue() ) )
+          break;
+        // no break;
       default:
         throw XQUERY_EXCEPTION(
           zerr::ZJSE0004_BAD_NODE,
@@ -621,17 +629,20 @@ static void x2j_pair_element( store::Item_t const &pair, store::Item_t *key,
 
 static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
   ZORBA_ASSERT( string );
+
   bool got_value = false;
   store::Iterator_t i( parent->getChildren() );
-  i->open();
   store::Item_t child;
+  zstring value;
+
+  i->open();
   while ( i->next( child ) ) {
     switch ( child->getKind() ) {
 
       case store::Item::NODE:
         switch ( child->getNodeKind() ) {
           case store::StoreConsts::textNode: {
-            zstring value( child->getStringValue() );
+            child->getStringValue2( value );
             if ( got_value )
               throw XQUERY_EXCEPTION(
                 zerr::ZJSE0009_MULTIPLE_CHILDREN,
@@ -662,7 +673,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
         if ( TypeOps::is_subtype( child->getTypeCode(), store::XS_STRING ) )
           *string = child;
         else {
-          zstring value( child->getStringValue() );
+          child->getStringValue2( value );
           GENV_ITEMFACTORY->createString( *string, value );
         }
         got_value = true;
@@ -676,11 +687,8 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
     } // switch
   } // while
   i->close();
-  if ( !got_value )
-    throw XQUERY_EXCEPTION(
-      zerr::ZJSE0007_ELEMENT_MISSING_VALUE,
-      ERROR_PARAMS( name_of( parent ), json::boolean )
-    );
+  if ( !got_value )                     // empty string
+    GENV_ITEMFACTORY->createString( *string, value );
 }
 
 static void x2j_type( store::Item_t const &xml_item,
