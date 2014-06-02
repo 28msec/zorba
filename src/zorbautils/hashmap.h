@@ -214,6 +214,8 @@ public:
 template <class T, class V, class C>
 class HashMap
 {
+  HashMap( HashMap const& );
+  HashMap& operator=( HashMap const& );
 public:
   typedef T key_type;
   typedef V value_type;
