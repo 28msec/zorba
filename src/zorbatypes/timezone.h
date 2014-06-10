@@ -116,7 +116,9 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-inline TimeZone::TimeZone() : timezone_not_set_( true ) {
+inline TimeZone::TimeZone() : 
+  gmtoff_(0),
+  timezone_not_set_( true ) {
 }
 
 inline int TimeZone::getHours() const {
