@@ -176,7 +176,7 @@ public:
 
 protected:
   IndexDelta() {}
-  virtual ~IndexDelta();
+  ~IndexDelta();
 };
 
 
