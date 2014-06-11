@@ -43,24 +43,19 @@ namespace serialiazation
 /*******************************************************************************
 
 ********************************************************************************/
-template <class T, class V>
+template <class K, class V>
 class HashEntry
 {
-  struct KeyHolder
-  {
-    char theKey[sizeof(T)];
-  };
-
-  struct ValueHolder
-  {
-    char theValue[sizeof(V)];
+  template<typename T>
+  struct mem_buf {
+    char buf[ sizeof(T) ];
   };
 
 public:
-  bool         theIsFree;
-  KeyHolder    theKey;
-  ValueHolder  theValue;
+  mem_buf<K>   theKey;
+  mem_buf<V>   theValue;
   ptrdiff_t    theNext;  // offset from "this" to the next entry.
+  bool         theIsFree;
 
   HashEntry() 
     :
@@ -69,13 +64,13 @@ public:
   {
   }
 
-  HashEntry(const HashEntry<T, V>& other)
+  HashEntry(const HashEntry<K, V>& other)
   {
     theIsFree = other.theIsFree;
     theNext = other.theNext;
     if (!theIsFree)
     {
-      new (&theKey) T(other.key());
+      new (&theKey) K(other.key());
       new (&theValue) V(other.value());
     }
   }
@@ -84,12 +79,12 @@ public:
   {
     if (!theIsFree)
     {
-      key().~T();
+      key().~K();
       value().~V();
     }
   }
 
-  HashEntry<T, V>& operator = (const HashEntry<T, V>& other)
+  HashEntry<K, V>& operator = (const HashEntry<K, V>& other)
   {
     if (theIsFree)
     {
@@ -97,7 +92,7 @@ public:
 
       if (!other.theIsFree)
       {
-        new (&theKey) T(other.key());
+        new (&theKey) K(other.key());
         new (&theValue) V(other.value());
       }
     }
@@ -112,7 +107,7 @@ public:
       {
         assert(false);
 
-        key().~T();
+        key().~K();
         value().~V();
       }
     }
@@ -130,7 +125,7 @@ public:
 
   void setFree()
   {
-    key().~T();
+    key().~K();
     value().~V();
     theIsFree = true;
     theNext = 0;
@@ -138,19 +133,19 @@ public:
 
   void unsetFree()
   {
-    new (&theKey) T;
+    new (&theKey) K;
     new (&theValue) V;
     theIsFree = false;
   }
 
-  T& key()
+  K& key()
   {
-    return *reinterpret_cast<T*>(&theKey);
+    return *reinterpret_cast<K*>(&theKey);
   }
 
-  const T& key() const
+  const K& key() const
   {
-    return *reinterpret_cast<const T*>(&theKey);
+    return *reinterpret_cast<const K*>(&theKey);
   }
 
   const V& value() const
@@ -183,14 +178,14 @@ public:
 
 /*******************************************************************************
 
-  This template class implements a hash-based map from items of type T to items
+  This template class implements a hash-based map from items of type K to items
   of type V.
 
   C is the template parameter that implements the hashing and equality functions.
 
   C must have two methods with the following signatures:
-    uint32_t hash(const T&);
-    bool equal(const T&, const T&);
+    uint32_t hash(const K&);
+    bool equal(const K&, const K&);
 
   theNumEntries  : The total number of mappings stored in the map.
 
@@ -211,13 +206,13 @@ public:
                    hash table is doubled in size.
 
 ********************************************************************************/
-template <class T, class V, class C>
+template <class K, class V, class C>
 class HashMap
 {
   HashMap( HashMap const& );
   HashMap& operator=( HashMap const& );
 public:
-  typedef T key_type;
+  typedef K key_type;
   typedef V value_type;
   typedef C key_equal;
 
@@ -226,11 +221,11 @@ public:
     friend class HashMap;
 
   protected:
-    std::vector<HashEntry<T, V> >*  theHashTab;
+    std::vector<HashEntry<K, V> >*  theHashTab;
     csize                           thePos;
 
   protected:
-    iterator(std::vector<HashEntry<T, V> >* ht, csize pos)
+    iterator(std::vector<HashEntry<K, V> >* ht, csize pos)
       :
       theHashTab(ht),
       thePos(pos)
@@ -240,11 +235,11 @@ public:
         thePos++;
     }
 
-    T& getKeyNonConst() const
+    K& getKeyNonConst() const
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
 
-      HashEntry<T, V>& entry = (*theHashTab)[thePos];
+      HashEntry<K, V>& entry = (*theHashTab)[thePos];
 
       return entry.key();
     }
@@ -284,20 +279,20 @@ public:
       return *this;
     }
 
-    std::pair<T, V> operator*() const
+    std::pair<K, V> operator*() const
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
 
-      const HashEntry<T, V>& entry = (*theHashTab)[thePos];
+      const HashEntry<K, V>& entry = (*theHashTab)[thePos];
 
-      return std::pair<T, V>(entry.key(), entry.value());
+      return std::pair<K, V>(entry.key(), entry.value());
     }
 
-    const T& getKey() const
+    const K& getKey() const
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
 
-      const HashEntry<T, V>& entry = (*theHashTab)[thePos];
+      const HashEntry<K, V>& entry = (*theHashTab)[thePos];
 
       return entry.key();
     }
@@ -306,7 +301,7 @@ public:
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
 
-      HashEntry<T, V>& entry = (*theHashTab)[thePos];
+      HashEntry<K, V>& entry = (*theHashTab)[thePos];
 
       return entry.value();
     }
@@ -315,7 +310,7 @@ public:
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
 
-      HashEntry<T, V>& entry = (*theHashTab)[thePos];
+      HashEntry<K, V>& entry = (*theHashTab)[thePos];
 
       return entry.value();
     }
@@ -324,7 +319,7 @@ public:
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
 
-      HashEntry<T, V>& entry = (*theHashTab)[thePos];
+      HashEntry<K, V>& entry = (*theHashTab)[thePos];
 
       entry.value() = val;
     }
@@ -335,11 +330,11 @@ public:
     friend class HashMap;
 
   protected:
-    checked_vector<HashEntry<T, V> > const* theHashTab;
+    checked_vector<HashEntry<K, V> > const* theHashTab;
     size_t                                  thePos;
 
   protected:
-    const_iterator(checked_vector<HashEntry<T, V> > const* ht, size_t pos)
+    const_iterator(checked_vector<HashEntry<K, V> > const* ht, size_t pos)
       :
       theHashTab(ht),
       thePos(pos)
@@ -384,20 +379,20 @@ public:
       return *this;
     }
 
-    std::pair<T, V> operator*() const
+    std::pair<K, V> operator*() const
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
 
-      const HashEntry<T, V>& entry = (*theHashTab)[thePos];
+      const HashEntry<K, V>& entry = (*theHashTab)[thePos];
 
-      return std::pair<T, V>(entry.theItem, entry.theValue);
+      return std::pair<K, V>(entry.theItem, entry.theValue);
     }
 
-    const T& getKey() const
+    const K& getKey() const
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
 
-      const HashEntry<T, V>& entry = (*theHashTab)[thePos];
+      const HashEntry<K, V>& entry = (*theHashTab)[thePos];
 
       return entry.theItem;
     }
@@ -406,7 +401,7 @@ public:
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
 
-      HashEntry<T, V> const& entry = (*theHashTab)[thePos];
+      HashEntry<K, V> const& entry = (*theHashTab)[thePos];
 
       return entry.theValue;
     }
@@ -417,7 +412,7 @@ public:
   static const double DEFAULT_LOAD_FACTOR;
 
 protected:
-  std::vector<HashEntry<T, V> >  theHashTab;
+  std::vector<HashEntry<K, V> >  theHashTab;
 
   csize                          theNumBuckets;
 
@@ -601,8 +596,8 @@ void clearNoSync()
 
   csize n = theHashTab.size();
 
-  HashEntry<T, V>* entry = &theHashTab[0];
-  HashEntry<T, V>* lastentry = &theHashTab[n-1];
+  HashEntry<K, V>* entry = &theHashTab[0];
+  HashEntry<K, V>* lastentry = &theHashTab[n-1];
 
   for (; entry <= lastentry; ++entry)
   {
@@ -619,13 +614,13 @@ void clearNoSync()
 ********************************************************************************/
 iterator begin() const
 {
-  return iterator(const_cast<std::vector<HashEntry<T, V> >*>(&theHashTab), 0);
+  return iterator(const_cast<std::vector<HashEntry<K, V> >*>(&theHashTab), 0);
 }
 
 
 iterator end() const
 {
-  return iterator(const_cast<std::vector<HashEntry<T, V> >*>(&theHashTab),
+  return iterator(const_cast<std::vector<HashEntry<K, V> >*>(&theHashTab),
                   theHashTab.size());
 }
 
@@ -646,7 +641,7 @@ const_iterator cend() const
   Return true if the set already contains an item that is "equal" to the given
   item; otherwise return false.
 ********************************************************************************/
-bool exists(const T& item) const
+bool exists(const K& item) const
 {
   ulong hval = hash(item);
 
@@ -655,7 +650,7 @@ bool exists(const T& item) const
   if (empty())
     return false;
 
-  const HashEntry<T, V>* entry = bucket(hval);
+  const HashEntry<K, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
@@ -677,7 +672,7 @@ bool exists(const T& item) const
   If the given item is already in the set, return an iterator positioned at the
   associated hash entry; otherwise return the end iterator.
 ********************************************************************************/
-iterator find(const T& item)
+iterator find(const K& item)
 {
   ulong hval = hash(item);
 
@@ -686,7 +681,7 @@ iterator find(const T& item)
   if (empty())
     return end();
 
-  const HashEntry<T, V>* entry = bucket(hval);
+  const HashEntry<K, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return end();
@@ -707,7 +702,7 @@ iterator find(const T& item)
   If the given item is already in the set, return true and a copy of the value
   associated with the item; otherwise return false.
 ********************************************************************************/
-bool get(const T& item, V& value) const
+bool get(const K& item, V& value) const
 {
   ulong hval = hash(item);
 
@@ -716,7 +711,7 @@ bool get(const T& item, V& value) const
   if (empty())
     return false;
 
-  const HashEntry<T, V>* entry = bucket(hval);
+  const HashEntry<K, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
@@ -741,14 +736,14 @@ bool get(const T& item, V& value) const
   item, make a copy of the given item and its associated value and place the
   new (item, value) pair in the map; then return true. Otherwise, return false.
 ********************************************************************************/
-bool insert(const std::pair<const T, V>& pair)
+bool insert(const std::pair<const K, V>& pair)
 {
   bool found;
   ulong hval = hash(pair.first);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HashEntry<T, V>* entry = hashInsert(pair.first, hval, found);
+  HashEntry<K, V>* entry = hashInsert(pair.first, hval, found);
 
   if (!found)
   {
@@ -766,14 +761,14 @@ bool insert(const std::pair<const T, V>& pair)
   new (item, value) pair in the map; then return true. Otherwise, return false,
   as well as a copy of the value associated with the found item I.
 ********************************************************************************/
-bool insert(const T& item, V& value)
+bool insert(const K& item, V& value)
 {
   bool found;
   ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HashEntry<T, V>* entry = hashInsert(item, hval, found);
+  HashEntry<K, V>* entry = hashInsert(item, hval, found);
 
   if (!found)
   {
@@ -794,15 +789,15 @@ bool insert(const T& item, V& value)
   item, return false. Otherwise, set the value associated with I to the given
   value and return true,
 ********************************************************************************/
-bool update(const T& item, const V& value)
+bool update(const K& item, const V& value)
 {
   bool found = false;
   ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HashEntry<T, V>* headEntry = bucket(hval);
-  HashEntry<T, V>* entry;
+  HashEntry<K, V>* headEntry = bucket(hval);
+  HashEntry<K, V>* entry;
 
   if (! headEntry->isFree())
   {
@@ -847,7 +842,7 @@ void erase(iterator& ite)
   }
   else
   {
-    const T& item = theHashTab[ite.thePos].key();
+    const K& item = theHashTab[ite.thePos].key();
 
     ulong hval = hash(item);
 
@@ -862,7 +857,7 @@ void erase(iterator& ite)
   If the set contains an item that is "equal" to the given item, remove that
   item from the set and return true. Otherwise, return false.
 ********************************************************************************/
-bool erase(const T& item)
+bool erase(const K& item)
 {
   ulong hval = hash(item);
 
@@ -872,7 +867,7 @@ bool erase(const T& item)
 }
 
 
-bool eraseNoSync(const T& item)
+bool eraseNoSync(const K& item)
 {
   ulong hval = hash(item);
 
@@ -880,9 +875,9 @@ bool eraseNoSync(const T& item)
 }
 
 
-bool eraseNoSync(const T& item, ulong hval)
+bool eraseNoSync(const K& item, ulong hval)
 {
-  HashEntry<T, V>* entry = bucket(hval);
+  HashEntry<K, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
@@ -898,7 +893,7 @@ bool eraseNoSync(const T& item, ulong hval)
 
   // The item to remove is not in the 1st entry of a bucket.
 
-  HashEntry<T, V>* preventry = entry;
+  HashEntry<K, V>* preventry = entry;
   entry = entry->getNext();
 
   while (entry != NULL)
@@ -932,13 +927,13 @@ csize computeCapacity(csize size) const
 /*******************************************************************************
 
 ********************************************************************************/
-ulong hash(const T& item) const
+ulong hash(const K& item) const
 {
   return theCompareFunction.hash(item);
 }
 
 
-bool equal(const T& item1, const T& item2) const
+bool equal(const K& item1, const K& item2) const
 {
   return theCompareFunction.equal(item1, item2);
 }
@@ -947,7 +942,7 @@ bool equal(const T& item1, const T& item2) const
 /*******************************************************************************
 
 ********************************************************************************/
-HashEntry<T, V>* bucket(ulong hvalue)
+HashEntry<K, V>* bucket(ulong hvalue)
 {
   return &theHashTab[hvalue % theNumBuckets];
 }
@@ -956,7 +951,7 @@ HashEntry<T, V>* bucket(ulong hvalue)
 /*******************************************************************************
 
 ********************************************************************************/
-const HashEntry<T, V>* bucket(ulong hvalue) const
+const HashEntry<K, V>* bucket(ulong hvalue) const
 {
   return &theHashTab[hvalue % theNumBuckets];
 }
@@ -965,7 +960,7 @@ const HashEntry<T, V>* bucket(ulong hvalue) const
 /*******************************************************************************
 
 ********************************************************************************/
-HashEntry<T, V>* freelist()
+HashEntry<K, V>* freelist()
 {
   return &theHashTab[theNumBuckets];
 }
@@ -974,7 +969,7 @@ HashEntry<T, V>* freelist()
 /*******************************************************************************
 
 ********************************************************************************/
-void eraseEntry(HashEntry<T, V>* entry, HashEntry<T, V>* preventry)
+void eraseEntry(HashEntry<K, V>* entry, HashEntry<K, V>* preventry)
 {
   if (preventry == NULL)
   {
@@ -984,7 +979,7 @@ void eraseEntry(HashEntry<T, V>* entry, HashEntry<T, V>* preventry)
     }
     else
     {
-      HashEntry<T, V>* nextEntry = entry->getNext();
+      HashEntry<K, V>* nextEntry = entry->getNext();
       *entry = *nextEntry;
       entry->setNext(nextEntry->getNext());
       nextEntry->setFree();
@@ -1020,8 +1015,8 @@ void eraseEntry(HashEntry<T, V>* entry, HashEntry<T, V>* preventry)
 /*******************************************************************************
 
 ********************************************************************************/
-HashEntry<T, V>* hashInsert(
-    const T&   item,
+HashEntry<K, V>* hashInsert(
+    const K&   item,
     ulong      hvalue,
     bool&      found)
 {
@@ -1029,7 +1024,7 @@ retry:
   found = false;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given item.
-  HashEntry<T, V>* headEntry = bucket(hvalue);
+  HashEntry<K, V>* headEntry = bucket(hvalue);
 
   // If the hash bucket is empty, its 1st entry is used to store the new string.
   if (headEntry->isFree())
@@ -1040,7 +1035,7 @@ retry:
   }
 
   // Search the hash bucket looking for the given item.
-  HashEntry<T, V>* currEntry = headEntry;
+  HashEntry<K, V>* currEntry = headEntry;
 
   while (currEntry != NULL)
   {
@@ -1130,14 +1125,14 @@ void extendCollisionArea()
 /*******************************************************************************
 
 ********************************************************************************/
-void formatCollisionArea(HashEntry<T, V>* firstentry = NULL)
+void formatCollisionArea(HashEntry<K, V>* firstentry = NULL)
 {
   if (firstentry == NULL)
     firstentry = freelist();
 
-  HashEntry<T, V>* lastentry = &theHashTab[theHashTab.size() - 1];
+  HashEntry<K, V>* lastentry = &theHashTab[theHashTab.size() - 1];
 
-  for (HashEntry<T, V>* entry = firstentry; entry < lastentry; ++entry)
+  for (HashEntry<K, V>* entry = firstentry; entry < lastentry; ++entry)
     entry->theNext = 1;
 
   lastentry->theNext = 0;
@@ -1156,7 +1151,7 @@ void resizeHashTab(csize newSize)
   csize newcap = computeCapacity(newSize);
 
   // Create a new vector of new size and swap theHashTab with this new vector
-  std::vector<HashEntry<T, V> > oldTab(newcap);
+  std::vector<HashEntry<K, V> > oldTab(newcap);
   theHashTab.swap(oldTab);
 
   theNumBuckets = newSize;
@@ -1164,9 +1159,9 @@ void resizeHashTab(csize newSize)
 
   formatCollisionArea();
 
-  HashEntry<T, V>* entry;
-  HashEntry<T, V>* oldentry = &oldTab[0];
-  HashEntry<T, V>* lastentry = &oldTab[oldcap-1];
+  HashEntry<K, V>* entry;
+  HashEntry<K, V>* oldentry = &oldTab[0];
+  HashEntry<K, V>* lastentry = &oldTab[oldcap-1];
 
   // Now rehash every entry
   for (; oldentry <= lastentry; ++oldentry)
@@ -1178,7 +1173,7 @@ void resizeHashTab(csize newSize)
 
     if (!entry->isFree())
     {
-      HashEntry<T, V>* headEntry = entry;
+      HashEntry<K, V>* headEntry = entry;
 
       // Get an entry from the free list in the collision section of the hash
       // table. If no free entry exists, extend the collision area.
@@ -1212,8 +1207,8 @@ virtual void garbageCollect()
 
 };
 
-template <class T, class V, class C>
-const double HashMap<T, V, C>::DEFAULT_LOAD_FACTOR = 0.7;
+template <class K, class V, class C>
+const double HashMap<K, V, C>::DEFAULT_LOAD_FACTOR = 0.7;
 
 } // namespace zorba
 
