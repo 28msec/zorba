@@ -59,8 +59,8 @@ public:
 
   HashEntry() 
     :
-    theIsFree(true),
-    theNext(0)
+    theNext(0),
+    theIsFree(true)
   {
   }
 
