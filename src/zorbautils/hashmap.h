@@ -86,35 +86,11 @@ public:
 
   HashEntry<K, V>& operator = (const HashEntry<K, V>& other)
   {
-    if (theIsFree)
-    {
-      assert(false);
-
-      if (!other.theIsFree)
-      {
-        new (&theKey) K(other.key());
-        new (&theValue) V(other.value());
-      }
-    }
-    else
-    {
-      if (!other.theIsFree)
-      {
-        key() = other.key();
-        value() = other.value();
-      }
-      else
-      {
-        assert(false);
-
-        key().~K();
-        value().~V();
-      }
-    }
-
-    theIsFree = other.theIsFree;
+    assert( !theIsFree );
+    assert( !other.theIsFree );
+    key() = other.key();
+    value() = other.value();
     theNext = other.theNext;
-
     return *this;
   }
 
@@ -125,6 +101,7 @@ public:
 
   void setFree()
   {
+    assert( !theIsFree );
     key().~K();
     value().~V();
     theIsFree = true;
@@ -133,28 +110,33 @@ public:
 
   void unsetFree()
   {
+    assert( theIsFree );
+    theIsFree = false;
     new (&theKey) K;
     new (&theValue) V;
-    theIsFree = false;
   }
 
   K& key()
   {
+    assert( !theIsFree );
     return *reinterpret_cast<K*>(&theKey);
   }
 
   const K& key() const
   {
+    assert( !theIsFree );
     return *reinterpret_cast<const K*>(&theKey);
   }
 
   const V& value() const
   {
+    assert( !theIsFree );
     return *reinterpret_cast<const V*>(&theValue);
   }
 
   V& value()
   {
+    assert( !theIsFree );
     return *reinterpret_cast<V*>(&theValue);
   }
 

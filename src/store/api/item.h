@@ -99,7 +99,7 @@ protected:
 
 public:
 
-  virtual ~Item() {}
+  virtual ~Item();
 
   virtual void free();
 
