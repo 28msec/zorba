@@ -306,7 +306,7 @@ public:
 
   static void reset(PlanState& planState, uint32_t stateOffset)
   {
-    (reinterpret_cast<T*>(planState.theBlock+ stateOffset))->reset(planState);
+    getState( planState, stateOffset )->reset( planState );
   }
 
   static void destroyState(PlanState& planState, uint32_t stateOffset)
