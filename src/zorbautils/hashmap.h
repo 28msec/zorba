@@ -193,6 +193,9 @@ class HashMap
 {
   HashMap( HashMap const& );
   HashMap& operator=( HashMap const& );
+
+  typedef std::vector<HashEntry<K,V> > hash_tab_type;
+
 public:
   typedef K key_type;
   typedef V value_type;
@@ -203,11 +206,11 @@ public:
     friend class HashMap;
 
   protected:
-    std::vector<HashEntry<K, V> >*  theHashTab;
+    hash_tab_type                 * theHashTab;
     csize                           thePos;
 
   protected:
-    iterator(std::vector<HashEntry<K, V> >* ht, csize pos)
+    iterator(hash_tab_type* ht, csize pos)
       :
       theHashTab(ht),
       thePos(pos)
@@ -394,7 +397,7 @@ public:
   static const double DEFAULT_LOAD_FACTOR;
 
 protected:
-  std::vector<HashEntry<K, V> >  theHashTab;
+  hash_tab_type                  theHashTab;
 
   csize                          theNumBuckets;
 
@@ -576,17 +579,11 @@ void clearNoSync()
   theNumEntries = 0;
   theNumCollisions = 0;
 
-  csize n = theHashTab.size();
-
-  HashEntry<K, V>* entry = &theHashTab[0];
-  HashEntry<K, V>* lastentry = &theHashTab[n-1];
-
-  for (; entry <= lastentry; ++entry)
-  {
-    if (!entry->isFree())
-      entry->setFree();
+  for ( typename hash_tab_type::iterator
+        i = theHashTab.begin(); i != theHashTab.end(); ++i ) {
+    if ( !i->isFree() )
+      i->setFree();
   }
-
   formatCollisionArea();
 }
 
@@ -596,14 +593,13 @@ void clearNoSync()
 ********************************************************************************/
 iterator begin() const
 {
-  return iterator(const_cast<std::vector<HashEntry<K, V> >*>(&theHashTab), 0);
+  return iterator(const_cast<hash_tab_type*>(&theHashTab), 0);
 }
 
 
 iterator end() const
 {
-  return iterator(const_cast<std::vector<HashEntry<K, V> >*>(&theHashTab),
-                  theHashTab.size());
+  return iterator(const_cast<hash_tab_type*>(&theHashTab), theHashTab.size());
 }
 
 const_iterator cbegin() const
@@ -1133,7 +1129,7 @@ void resizeHashTab(csize newSize)
   csize newcap = computeCapacity(newSize);
 
   // Create a new vector of new size and swap theHashTab with this new vector
-  std::vector<HashEntry<K, V> > oldTab(newcap);
+  hash_tab_type oldTab(newcap);
   theHashTab.swap(oldTab);
 
   theNumBuckets = newSize;
