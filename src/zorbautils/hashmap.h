@@ -66,12 +66,16 @@ public:
 
   HashEntry(const HashEntry<K, V>& other)
   {
-    theIsFree = other.theIsFree;
-    theNext = other.theNext;
-    if (!theIsFree)
-    {
-      new (&theKey) K(other.key());
-      new (&theValue) V(other.value());
+    if ( &other != this ) {
+      theNext = other.theNext;
+      theIsFree = other.theIsFree;
+      if ( !theIsFree ) {
+        new (&theKey) K(other.key());
+        new (&theValue) V(other.value());
+      }
+    } else {
+      theNext = 0;
+      theIsFree = true;
     }
   }
 
@@ -86,11 +90,13 @@ public:
 
   HashEntry<K, V>& operator = (const HashEntry<K, V>& other)
   {
-    assert( !theIsFree );
-    assert( !other.theIsFree );
-    key() = other.key();
-    value() = other.value();
-    theNext = other.theNext;
+    if ( &other != this ) {
+      assert( !theIsFree );
+      assert( !other.theIsFree );
+      key() = other.key();
+      value() = other.value();
+      theNext = other.theNext;
+    }
     return *this;
   }
 
