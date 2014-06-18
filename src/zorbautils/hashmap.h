@@ -51,6 +51,19 @@ class HashEntry
     char buf[ sizeof(T) ];
   };
 
+  void destroy() {
+#ifndef NDEBUG
+    uint32_t &dead = *(uint32_t*)&theKey;
+    if ( dead != 0xDEADBEEF ) {
+#endif
+      reinterpret_cast<K*>(&theKey)->~K();
+      reinterpret_cast<V*>(&theValue)->~V();
+#ifndef NDEBUG
+      dead = 0xDEADBEEF;
+    }
+#endif
+  }
+
 public:
   mem_buf<K>   theKey;
   mem_buf<V>   theValue;
@@ -83,8 +96,7 @@ public:
   {
     if (!theIsFree)
     {
-      key().~K();
-      value().~V();
+      destroy();
     }
   }
 
@@ -108,10 +120,9 @@ public:
   void setFree()
   {
     assert( !theIsFree );
-    key().~K();
-    value().~V();
     theIsFree = true;
     theNext = 0;
+    destroy();
   }
 
   void unsetFree()
