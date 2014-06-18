@@ -119,8 +119,9 @@ void XmlTree::destroy() throw()
 
   if (theRootNode != 0)
   {
-    theRootNode->destroy(false);
-    theRootNode = NULL;
+    XmlNode *const root = theRootNode;
+    theRootNode = nullptr;
+    root->destroy(false);
   }
 
 #ifdef DATAGUIDE
@@ -489,13 +490,19 @@ XmlNode::XmlNode(
 /*******************************************************************************
 
 ********************************************************************************/
-#ifndef NDEBUG
 XmlNode::~XmlNode()
 {
+#ifndef NDEBUG
   STORE_TRACE1("Deleted " << store::StoreConsts::toString(getNodeKind()) << this);
-}
 #endif
+}
 
+void XmlNode::free() {
+  if ( XmlTree *const t = getTree() ) {
+    theUnion.treeRCPtr = nullptr;
+    t->free();
+  }
+}
 
 /*******************************************************************************
 
