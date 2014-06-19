@@ -119,9 +119,8 @@ void XmlTree::destroy() throw()
 
   if (theRootNode != 0)
   {
-    XmlNode *const root = theRootNode;
-    theRootNode = nullptr;
-    root->destroy(false);
+    theRootNode->destroy(false);
+    theRootNode = NULL;
   }
 
 #ifdef DATAGUIDE
@@ -498,10 +497,8 @@ XmlNode::~XmlNode()
 }
 
 void XmlNode::free() {
-  if ( XmlTree *const t = getTree() ) {
-    theUnion.treeRCPtr = nullptr;
+  if ( XmlTree *const t = getTree() )
     t->free();
-  }
 }
 
 /*******************************************************************************

@@ -93,6 +93,13 @@ forletwin_clause::forletwin_clause(
 }
 
 
+forletwin_clause::~forletwin_clause()
+{
+  if (theVarExpr != NULL)
+    theVarExpr->set_flwor_clause(NULL);
+}
+
+
 void forletwin_clause::set_expr(expr* v)
 {
   theDomainExpr = v;

@@ -157,6 +157,8 @@ protected:
         expr* domainExpr);
 
 public:
+  ~forletwin_clause();
+
   void set_expr(expr* v);
 
   expr* get_expr() const { return theDomainExpr; }
