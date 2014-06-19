@@ -30,5 +30,5 @@ declare %an:sequential function local:func($a, $b) {
 }
 catch err:XPST0003
 {
-  $err:description eq 'invalid expression: syntax error, unexpected statement'
+  $err:description eq 'invalid expression: syntax error, unexpected statement (missing semicolon ";" between statements?)'
 }

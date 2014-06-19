@@ -140,7 +140,12 @@ declare option ver:module-version "1.1";
  :        <code>Snelson</code>.
  :        Additionally,
  :        <code>JsonML</code> is a synonym for <code>JsonML-array</code>.
- :        default: <code>Snelson</code>.
+ :        Default: <code>Snelson</code>.
+ :      </dd>
+ :    <dt><code>prefix</code></dt>
+ :      <dd>
+ :        Specifies the XML prefix to use.
+ :        Default: none.
  :      </dd>
  :  </dl>
  : @return said XDM instance.
@@ -194,7 +199,7 @@ declare function jx:json-to-xml( $json as json-item()? )
  :        <code>Snelson</code>.
  :        Additionally,
  :        <code>JsonML</code> is a synonym for <code>JsonML-array</code>.
- :        default: <code>JsonML-array</code>.
+ :        Default: <code>JsonML-array</code>.
  :      </dd>
  :  </dl>
  : @return said JSON items.

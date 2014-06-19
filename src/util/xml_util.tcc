@@ -46,6 +46,24 @@ back_xml_insert_iterator<StringType>::operator=( value_type c ) {
   return *this;
 }
 
+template<class StringType>
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+is_NCName( StringType const &s ) {
+  typedef typename utf8_stringify<StringType const>::type U_StringType;
+  typedef typename U_StringType::const_iterator const_iterator;
+
+  U_StringType const u( s );
+  const_iterator i( u.begin() );
+  const_iterator const end( u.end() );
+
+  if ( i == end || !is_NameStartChar( *i ) )
+    return false;
+  while ( ++i != end )
+    if ( !is_NameChar( *i ) )
+      return false;
+  return true;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace xml

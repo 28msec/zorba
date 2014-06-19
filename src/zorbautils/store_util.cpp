@@ -25,6 +25,32 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+namespace store {
+
+void SingletonIterator::close() {
+  // do nothing
+}
+
+bool SingletonIterator::next( Item_t &result ) {
+  if ( exhausted_ )
+    return false;
+  result = item_;
+  exhausted_ = true;
+  return true;
+}
+
+void SingletonIterator::open() {
+  reset();
+}
+
+void SingletonIterator::reset() {
+  exhausted_ = false;
+}
+
+} // namespace store
+
+///////////////////////////////////////////////////////////////////////////////
+
 store::Item_t get_json_value( store::Item_t const &object,
                               char const *key ) {
   zstring key_str( key );
