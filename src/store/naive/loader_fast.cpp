@@ -264,7 +264,6 @@ void FastXmlLoader::abortload()
   if (theTree != NULL)
   {
     delete theTree;
-    //theTree->destroy();
     theTree = NULL;
   }
 
