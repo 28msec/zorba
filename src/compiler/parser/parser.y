@@ -5397,39 +5397,44 @@ OccurrenceIndicator :
 ItemType :
         GeneralizedAtomicType
         {
-            GeneralizedAtomicType* gat = static_cast<GeneralizedAtomicType*>($1);
-            QName* q = gat->get_qname();
 // The JSONiq parser recognizes certain keywords as builtin types.
 #ifdef JSONIQ_PARSER            
+            GeneralizedAtomicType* gat = static_cast<GeneralizedAtomicType*>($1);
+            QName* q = gat->get_qname();
             if (q->get_qname() == "item")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new ItemType( LOC(@$), true );
+              delete gat;
             }
             else if (q->get_qname() == "array")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
+              delete gat;
             }
             else if (q->get_qname() == "object")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
+              delete gat;
             }
             else if (q->get_qname() == "json-item")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
+              delete gat;
             }
             else if (q->get_qname() == "structured-item")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new StructuredItemType(LOC(@$));
+              delete gat;
             }
             else
             {

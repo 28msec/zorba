@@ -440,6 +440,7 @@ extern entry const dict_en[] = {
   { "zerr:ZJSE0002", "\"$1\" element missing required \"$2\" attribute" },
   { "zerr:ZJSE0003", "\"$1\": illegal value for attribute \"$2\"" },
   { "zerr:ZJSE0004", "\"$1\": illegal $2?{child }element/node${ of JSON type \"2\"}${; must be \"3\"}" },
+  { "zerr:ZJSE0005", "\"$1\": illegal XML prefix (must be NCName)" },
   { "zerr:ZJSE0007", "\"$1\" element missing required \"$2\" value" },
   { "zerr:ZJSE0008", "\"$1\": illegal value for JSON type \"$2\"" },
   { "zerr:ZJSE0009", "\"$1\": JSON type \"$2\" can not have multiple child nodes" },

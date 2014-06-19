@@ -23,6 +23,7 @@
 #include <zorba/internal/ztd.h>
 
 #include "store/api/item.h"
+#include "store/api/iterator.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba { 
@@ -42,6 +43,31 @@ inline zstring to_string( store::Item_t const &i ) {
 }
 
 } // namespace ztd
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace store {
+
+class SingletonIterator : public Iterator {
+public:
+  SingletonIterator( Item_t const &item ) :
+    item_( item ),
+    exhausted_( false )
+  {
+  }
+
+  // inherited
+  void open();
+  bool next( Item_t& );
+  void reset();
+  void close();
+
+private:
+  Item_t item_;
+  bool exhausted_;
+};
+
+} // namespace store
 
 ///////////////////////////////////////////////////////////////////////////////
 

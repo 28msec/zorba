@@ -247,8 +247,8 @@ void FastXmlLoader::setRoot(XmlNode* root)
 ********************************************************************************/
 void FastXmlLoader::abortload()
 {
-  theBaseUri.~zstring();
-  theDocUri.~zstring();
+  theBaseUri.clear();
+  theDocUri.clear();
 
   theOrdPath.init();
   theRootNode = NULL;
@@ -264,6 +264,7 @@ void FastXmlLoader::abortload()
   if (theTree != NULL)
   {
     delete theTree;
+    //theTree->destroy();
     theTree = NULL;
   }
 
@@ -301,8 +302,8 @@ void FastXmlLoader::abortload()
 ********************************************************************************/
 void FastXmlLoader::reset()
 {
-  theBaseUri.~zstring();
-  theDocUri.~zstring();
+  theBaseUri.clear();
+  theDocUri.clear();
 
   theTree = NULL;
   theOrdPath.init();

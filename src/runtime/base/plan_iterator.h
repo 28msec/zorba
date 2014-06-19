@@ -306,12 +306,17 @@ public:
 
   static void reset(PlanState& planState, uint32_t stateOffset)
   {
-    (reinterpret_cast<T*>(planState.theBlock+ stateOffset))->reset(planState);
+    getState( planState, stateOffset )->reset( planState );
   }
 
   static void destroyState(PlanState& planState, uint32_t stateOffset)
   {
-    (reinterpret_cast<T*>(planState.theBlock + stateOffset))->~T();
+    uint32_t *const dead =
+      reinterpret_cast<uint32_t*>( planState.theBlock + stateOffset );
+    if ( *dead != 0xDEADBEEF ) {
+      reinterpret_cast<T*>( dead )->~T();
+      *dead = 0xDEADBEEF;
+    }
   }
 };
 

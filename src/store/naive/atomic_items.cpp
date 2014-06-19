@@ -678,6 +678,9 @@ QNameItem::QNameItem(
   initializeAsQNameNotInPool(ns, prefix, local);
 }
 
+QNameItem::~QNameItem() {
+  // out-of-line since it's virtual
+}
 
 void QNameItem::initializeAsQNameNotInPool(
     const zstring& aNamespace,

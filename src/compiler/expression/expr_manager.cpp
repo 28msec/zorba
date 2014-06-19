@@ -49,8 +49,8 @@ ExprManager::ExprManager(CompilerCB* ccb)
 //calls on the destructors and also keeps tracks of certain numbers
 ExprManager::~ExprManager()
 {
-  for(std::vector<expr*>::iterator iter = theExprs.begin();
-      iter != theExprs.end();
+  for(std::vector<expr*>::reverse_iterator iter = theExprs.rbegin();
+      iter != theExprs.rend();
       ++iter)
   {
     //We assume that the exprs being deleted they may be "held"
@@ -66,8 +66,8 @@ ExprManager::~ExprManager()
     //new (exp) NullExpr();
   }
 
-  for(std::vector<flwor_clause*>::iterator iter = theFlworClauses.begin();
-      iter != theFlworClauses.end();
+  for(std::vector<flwor_clause*>::reverse_iterator iter = theFlworClauses.rbegin();
+      iter != theFlworClauses.rend();
       ++iter)
   {
     flwor_clause* clause = *iter;
@@ -75,8 +75,8 @@ ExprManager::~ExprManager()
     // new (clause) NullFlworClause();
   }
 
-  for(std::vector<flwor_wincond*>::iterator iter = theWinconds.begin();
-      iter != theWinconds.end();
+  for(std::vector<flwor_wincond*>::reverse_iterator iter = theWinconds.rbegin();
+      iter != theWinconds.rend();
       ++iter)
   {
     flwor_wincond* wincond = *iter;
@@ -84,8 +84,8 @@ ExprManager::~ExprManager()
     // new (wincond) NullWincond();
   }
 
-  for(std::vector<catch_clause*>::iterator iter = theCatchClauses.begin();
-      iter != theCatchClauses.end();
+  for(std::vector<catch_clause*>::reverse_iterator iter = theCatchClauses.rbegin();
+      iter != theCatchClauses.rend();
       ++iter)
   {
     catch_clause* clause = *iter;
@@ -93,8 +93,8 @@ ExprManager::~ExprManager()
     // new (clause) NullCatchClause();
   }
 
-  for(std::vector<copy_clause*>::iterator iter = theCopyClauses.begin();
-      iter != theCopyClauses.end();
+  for(std::vector<copy_clause*>::reverse_iterator iter = theCopyClauses.rbegin();
+      iter != theCopyClauses.rend();
       ++iter)
   {
     copy_clause* clause = *iter;
@@ -102,8 +102,8 @@ ExprManager::~ExprManager()
     // new (clause) NullCopyClause();
   }
 
-  for(std::vector<pragma*>::iterator iter = thePragmas.begin();
-      iter != thePragmas.end();
+  for(std::vector<pragma*>::reverse_iterator iter = thePragmas.rbegin();
+      iter != thePragmas.rend();
       ++iter)
   {
     pragma* pragma = *iter;

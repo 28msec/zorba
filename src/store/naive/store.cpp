@@ -984,13 +984,8 @@ store::Item_t Store::loadDocument(
     std::istream& stream,
     const store::LoadProperties& loadProperties)
 {
-  zstring_b urib;
-
-  if (!docUri.empty())
-    urib.wrap_memory(docUri.data(), docUri.size());
-
   XmlNode_t root;
-  bool found = theDocuments.get(urib, root);
+  bool found = theDocuments.get(docUri, root);
 
   if (found && loadProperties.getUseCachedDocument())
   {
@@ -1008,7 +1003,7 @@ store::Item_t Store::loadDocument(
   }
 
   if (root != NULL && loadProperties.getStoreDocument())
-    theDocuments.insert(urib, root);
+    theDocuments.insert(docUri, root);
 
   return root.getp();
 }

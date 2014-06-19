@@ -149,13 +149,6 @@ copy_clause::copy_clause(CompilerCB* ccb, var_expr* aVar, expr* aExpr)
 }
 
 
-copy_clause::~copy_clause()
-{
-  if (theVar)
-    theVar->set_copy_clause(NULL);
-}
-
-
 copy_clause* copy_clause::clone(
     user_function* udf,
     expr::substitution_t& subst) const
