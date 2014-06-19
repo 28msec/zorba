@@ -313,10 +313,14 @@ public:
   {
     uint32_t *const dead =
       reinterpret_cast<uint32_t*>( planState.theBlock + stateOffset );
+#ifndef NDEBUG
     if ( *dead != 0xDEADBEEF ) {
+#endif
       reinterpret_cast<T*>( dead )->~T();
+#ifndef NDEBUG
       *dead = 0xDEADBEEF;
     }
+#endif
   }
 };
 
