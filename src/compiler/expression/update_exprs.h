@@ -201,6 +201,8 @@ protected:
   copy_clause(CompilerCB* ccb, var_expr* aVar, expr* aExpr);
 
 public:
+  ~copy_clause();
+
   void free() {}
 
   var_expr* getVar()  const { return theVar; }
