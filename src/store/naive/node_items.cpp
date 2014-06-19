@@ -497,10 +497,8 @@ XmlNode::~XmlNode()
 }
 
 void XmlNode::free() {
-  if ( XmlTree *const t = getTree() ) {
-    theUnion.treeRCPtr = nullptr;
+  if ( XmlTree *const t = getTree() )
     t->free();
-  }
 }
 
 /*******************************************************************************
