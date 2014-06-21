@@ -309,18 +309,19 @@ public:
     getState( planState, stateOffset )->reset( planState );
   }
 
-  static void destroyState(PlanState& planState, uint32_t stateOffset)
-  {
+  static void destroyState( PlanState &planState, uint32_t stateOffset ) {
+    //
+    // A bug elsewhere causes destroyState() to be called more than once on the
+    // same state.  To work around that as-of-yet unfound bug, write a sentinel
+    // into the raw memory after destruction and never call the destructor
+    // again if the sentinal value is there.
+    //
     uint32_t *const dead =
       reinterpret_cast<uint32_t*>( planState.theBlock + stateOffset );
-#ifndef NDEBUG
     if ( *dead != 0xDEADBEEF ) {
-#endif
       reinterpret_cast<T*>( dead )->~T();
-#ifndef NDEBUG
       *dead = 0xDEADBEEF;
     }
-#endif
   }
 };
 
