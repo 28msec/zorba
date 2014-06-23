@@ -19,6 +19,8 @@
 
 #include <iostream>
 
+#include <zorba/internal/ztd.h>
+
 #include "iso2788.h"
 #include "zorbatypes/zstring.h"
 #include "diagnostics/assert.h"
@@ -108,8 +110,7 @@ public:
 private:
   union {
     iso2788::rel_type iso2788_value_;
-    // Using a struct guarantees correct struct/class alignment.
-    struct { char buf[ sizeof( string_t ) ]; } rel_string_;
+    internal::ztd::raw_buf<string_t> rel_string_;
   };
 
   bool is_string_;
