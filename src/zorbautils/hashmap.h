@@ -21,6 +21,7 @@
 #include <vector>
 
 #include <zorba/config.h>
+#include <zorba/internal/ztd.h>
 
 #include "common/common.h"
 
@@ -46,11 +47,6 @@ namespace serialiazation
 template <class K, class V>
 class HashEntry
 {
-  template<typename T>
-  struct mem_buf {
-    char buf[ sizeof(T) ];
-  };
-
   void destroy() {
 #ifndef NDEBUG
     uint32_t &dead = *(uint32_t*)&theKey;
@@ -65,10 +61,10 @@ class HashEntry
   }
 
 public:
-  mem_buf<K>   theKey;
-  mem_buf<V>   theValue;
-  ptrdiff_t    theNext;  // offset from "this" to the next entry.
-  bool         theIsFree;
+  internal::ztd::raw_buf<K> theKey;
+  internal::ztd::raw_buf<V> theValue;
+  ptrdiff_t theNext;                    // offset from "this" to the next entry
+  bool      theIsFree;
 
   HashEntry() 
     :
