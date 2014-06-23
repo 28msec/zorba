@@ -110,7 +110,6 @@ public:
 private:
   union {
     iso2788::rel_type iso2788_value_;
-    // Using a struct guarantees correct struct/class alignment.
     internal::ztd::raw_buf<string_t> rel_string_;
   };
 
