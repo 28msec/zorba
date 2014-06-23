@@ -636,6 +636,10 @@ void CtxVarIterator::accept(PlanIterVisitor& v) const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+ForVarState::~ForVarState() {
+  // out-of-line since it's virtual
+}
+
 
 ForVarIterator::ForVarIterator(
     static_context* sctx,

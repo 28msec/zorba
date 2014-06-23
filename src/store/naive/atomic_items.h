@@ -393,7 +393,7 @@ private:
   uint16_t          thePrevFree;
 
 public:
-  virtual ~QNameItem() {}
+  virtual ~QNameItem();
 
   size_t alloc_size() const;
   size_t dynamic_size() const;

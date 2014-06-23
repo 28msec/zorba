@@ -445,19 +445,11 @@ private:
 
 public:
 
-#ifndef NDEBUG
   virtual ~XmlNode();
-#else
-  virtual ~XmlNode() {}
-#endif
 
   SYNC_CODE(RCLock* getRCLock() const { return getTree()->getRCLock(); })
 
-  void free()
-  {
-    if (getTree() != NULL)
-      getTree()->free();
-  }
+  void free();
 
   size_t alloc_size() const;
 
