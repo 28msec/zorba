@@ -1022,12 +1022,19 @@ std::string dynamic_context::toString()
 
 uint64_t dynamic_context::getSnapshotID() const
 {
-  return theSnapshotID;
+  if (theParent)
+    return theParent->getSnapshotID();
+  else
+    return theSnapshotID;
 }
 
 void dynamic_context::changeSnapshot()
 {
-  ++theSnapshotID;
+  if (theParent)
+    theParent->changeSnapshot();
+  else
+    ++theSnapshotID;
+
 }
 
 } // namespace zorba
