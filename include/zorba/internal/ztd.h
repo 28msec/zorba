@@ -170,6 +170,66 @@ struct has_insertion_operator :
 {
 };
 
+////////// alignment ///////////////////////////////////////////////////////////
+
+// See: http://stackoverflow.com/a/6959582/99089
+
+namespace align_impl {
+
+template<typename T,bool smaller>
+struct align_type_impl;
+
+template<typename T>
+struct align_type_impl<T,false> {
+  typedef T type;
+};
+
+template<typename T>
+struct align_type_impl<T,true> {
+  typedef char type;
+};
+
+template<typename T,typename U>
+struct align_type {
+  typedef typename align_type_impl<U,(sizeof(T) < sizeof(U))>::type type;
+};
+
+} // namespace align_impl
+
+/**
+ * An %aligner can be used inside a \c union to align it properly for type
+ * \c T.
+ *
+ * @tparam T The type to align properly.
+ */
+template<typename T>
+union aligner {
+  typename align_impl::align_type<T,char>::type c;
+  typename align_impl::align_type<T,short>::type s;
+  typename align_impl::align_type<T,int>::type i;
+  typename align_impl::align_type<T,long>::type l;
+  typename align_impl::align_type<T,long long>::type ll;
+  typename align_impl::align_type<T,float>::type f;
+  typename align_impl::align_type<T,double>::type d;
+  typename align_impl::align_type<T,long double>::type ld;
+  typename align_impl::align_type<T,void*>::type p;
+  typename align_impl::align_type<T,void (*)()>::type pf;
+  typename align_impl::align_type<T,aligner*>::type ps;
+  typename align_impl::align_type<T,void (aligner::*)()>::type pmf;
+};
+
+/**
+ * A %raw_buf is a properly aligned chunk of raw memory for an object of type
+ * \c T.
+ *
+ * @tparam T The type to hold an object of.
+ */
+template<typename T>
+union raw_buf {
+  aligner<T> dummy_for_alignment;
+  char buf[ sizeof(T) ];
+};
+
 ////////// c_str() /////////////////////////////////////////////////////////////
 
 /**

@@ -489,13 +489,17 @@ XmlNode::XmlNode(
 /*******************************************************************************
 
 ********************************************************************************/
-#ifndef NDEBUG
 XmlNode::~XmlNode()
 {
+#ifndef NDEBUG
   STORE_TRACE1("Deleted " << store::StoreConsts::toString(getNodeKind()) << this);
-}
 #endif
+}
 
+void XmlNode::free() {
+  if ( XmlTree *const t = getTree() )
+    t->free();
+}
 
 /*******************************************************************************
 

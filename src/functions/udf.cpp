@@ -150,12 +150,20 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   }
   else
   {
+    theCCB = NULL;
     thePlan = NULL;
     theBodyExpr = NULL;
   }
 
   serialize_baseclass(ar, (function*)this);
-  ar & theCCB;
+  //ar & theCCB;
+  /*
+   * Serializing the CCB here causes a memory leak due to this reference cycle:
+   * CCB -> static context (map) -> user function (map) -> CCB
+   * When serializing compute_cache_settings(), optimize(), and getPlan() have
+   * already been called, so the CCB is not needed inside this class
+   */
+
   //ar & theLoc;
   ar & theScriptingKind;
   //ar & theBodyExpr;
@@ -470,6 +478,7 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 void user_function::optimize()
 {
   ZORBA_ASSERT(theBodyExpr);
+  ZORBA_ASSERT(theCCB);
 
   if (!theIsOptimized &&
       theCCB->theConfig.opt_level > CompilerCB::config::O0)
@@ -549,6 +558,7 @@ PlanIter_t user_function::getPlan(uint32_t& planStateSize,  ulong nextVarId)
 {
   if (thePlan == NULL)
   {
+    ZORBA_ASSERT(theCCB);
     optimize();
 
     csize numArgs = theArgVars.size();
