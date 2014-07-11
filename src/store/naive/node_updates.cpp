@@ -1243,7 +1243,6 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
     XmlTree* oldTree = newChild->getTree();
     XmlTree* newTree = getTree();
     
-    oldTree->setRoot(NULL);
     delete oldTree;
     
     SYNC_CODE(newTree->getRCLock()->acquire());

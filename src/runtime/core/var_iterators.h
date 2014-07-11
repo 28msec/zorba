@@ -323,17 +323,8 @@ public:
 class ForVarState : public PlanIteratorState
 {
 public:
+  ~ForVarState();
   store::Item_t theValue;
-
-  void init(PlanState& planState)
-  {
-    PlanIteratorState::init(planState);
-  }
-
-  void reset(PlanState& planState)
-  {
-    PlanIteratorState::reset(planState);
-  }
 };
 
 

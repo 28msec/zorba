@@ -630,8 +630,8 @@ void DtdXmlLoader::setRoot(XmlNode* root)
 ********************************************************************************/
 void DtdXmlLoader::abortload()
 {
-  theBaseUri.~zstring();
-  theDocUri.~zstring();
+  theBaseUri.clear();
+  theDocUri.clear();
 
   if (theTree != NULL)
   {
@@ -685,8 +685,8 @@ void DtdXmlLoader::abortload()
 ********************************************************************************/
 void DtdXmlLoader::reset()
 {
-  theBaseUri.~zstring();
-  theDocUri.~zstring();
+  theBaseUri.clear();
+  theDocUri.clear();
 
   theTree = NULL;
   theOrdPath.init();
