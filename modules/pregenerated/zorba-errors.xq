@@ -221,6 +221,10 @@ declare variable $zerr:ZXQP0064 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP0064
 declare variable $zerr:ZXQP0065 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP0065");
 
 (:~
+:)
+declare variable $zerr:ZXQP0066 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP0066");
+
+(:~
  :
  : The version of the thesaurus is not the expected version.
  : 
