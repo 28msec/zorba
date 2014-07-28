@@ -288,22 +288,22 @@ public:
     print_translated_ = b;
   }
 
-  /**
-   * Gets whether profiling has been enabled.
-   *
-   * @return Returns whether profiling has been enabled.
-   */
-  bool getProfile() const {
-    return profile_;
+  bool getCollectProfile() const {
+    return collect_profile_;
   }
 
-  /**
-   * Enables or disables profiling.
-   *
-   * @param profile If \c true, profiling is enabled.
-   */
-  void setProfile( bool profile ) {
-    profile_ = profile;
+  void setCollectProfile( bool profile ) {
+    collect_profile_ = profile;
+    profile_format_ = profile ? profile_format_ : PROFILE_FORMAT_NONE;
+  }
+
+  Zorba_profile_format_t getProfileFormat() const {
+      return profile_format_;
+  }
+
+  void setProfileFormat( Zorba_profile_format_t format ) {
+    profile_format_ = format;
+    collect_profile_ = format != PROFILE_FORMAT_NONE ? true : collect_profile_;
   }
 
   bool getStableIteratorIDs() const {
@@ -371,38 +371,39 @@ private:
   ~Properties();
 
 #ifndef NDEBUG
-  bool                abort_;
+  bool                   abort_;
 #endif /* NDEBUG */
-  std::string         classpath_;
-  stream_ptr          debug_stream_;
-  bool                owns_debug_stream_;
-  bool                dump_lib_;
-  bool                force_gflwor_;
-  bool                infer_joins_;
-  bool                inline_udf_;
-  bool                loop_hoisting_;
-  uint32_t            max_udf_call_depth_;
-  bool                no_copy_optim_;
-  bool                no_tree_ids_;
-  unsigned            optimization_level_;
-  Zorba_plan_format_t plan_format_;
-  bool                print_ast_;
-  bool                print_intermediate_opt_;
-  bool                print_item_flow_;
-  bool                print_locations_;
-  bool                print_optimized_;
-  bool                print_static_types_;
-  bool                print_translated_;
-  bool                profile_;
-  bool                stable_iterator_ids_;
-  bool                trace_codegen_;
+  std::string            classpath_;
+  bool                   collect_profile_;
+  stream_ptr             debug_stream_;
+  bool                   owns_debug_stream_;
+  bool                   dump_lib_;
+  bool                   force_gflwor_;
+  bool                   infer_joins_;
+  bool                   inline_udf_;
+  bool                   loop_hoisting_;
+  uint32_t               max_udf_call_depth_;
+  bool                   no_copy_optim_;
+  bool                   no_tree_ids_;
+  unsigned               optimization_level_;
+  Zorba_plan_format_t    plan_format_;
+  bool                   print_ast_;
+  bool                   print_intermediate_opt_;
+  bool                   print_item_flow_;
+  bool                   print_locations_;
+  bool                   print_optimized_;
+  bool                   print_static_types_;
+  bool                   print_translated_;
+  Zorba_profile_format_t profile_format_;
+  bool                   stable_iterator_ids_;
+  bool                   trace_codegen_;
 #ifndef ZORBA_NO_FULL_TEXT
-  bool                trace_fulltext_;
+  bool                   trace_fulltext_;
 #endif /* ZORBA_NO_FULL_TEXT */
-  bool                trace_parsing_;
-  bool                trace_scanning_;
-  bool                trace_translator_;
-  bool                use_indexes_;
+  bool                   trace_parsing_;
+  bool                   trace_scanning_;
+  bool                   trace_translator_;
+  bool                   use_indexes_;
 };
 
 // deprecated name

@@ -1,8 +1,8 @@
 <iterator-tree description="main query">
   <SequentialIterator>
     <CtxVarDeclareIterator varid="4" varname="input">
-      <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="0">
-        <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="0">
+      <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="false">
+        <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="false">
           <FnDocIterator>
             <SingletonIterator value="xs:string(books.xml)"/>
           </FnDocIterator>
@@ -35,14 +35,14 @@
         </CtxVarDeclareIterator>
         <CtxVarDeclareIterator varid="3" varname="a">
           <NodeSortIterator distinct="true" ascending="true">
-            <AttributeAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="false">
               <LetVarIterator varname="x"/>
             </AttributeAxisIterator>
           </NodeSortIterator>
         </CtxVarDeclareIterator>
         <CtxVarDeclareIterator varid="4" varname="c">
           <NodeSortIterator distinct="true" ascending="true">
-            <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="false">
               <LetVarIterator varname="x"/>
             </ChildAxisIterator>
           </NodeSortIterator>

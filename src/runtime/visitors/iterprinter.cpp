@@ -22,6 +22,7 @@
 // Zorba
 #include "runtime/visitors/iterprinter.h"
 #include "util/ascii_util.h"
+#include "util/json_util.h"
 #include "util/indent.h"
 #include "util/xml_util.h"
 
@@ -74,12 +75,22 @@ void XMLIterPrinter::startBeginVisit( char const *name, int ) {
 void XMLIterPrinter::endBeginVisit( int ) {
 }
 
+void XMLIterPrinter::addBoolAttribute( char const *name, bool value ) {
+  assert( theOpenStart );
+  os_ << ' ' << name << "=\"" << (value ? "true" : "false") << "\"";
+}
+
 void XMLIterPrinter::addAttribute( char const *name, char const *value ) {
   assert( theOpenStart );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
 
-void XMLIterPrinter::addAttribute( char const *name, xs_long value ) {
+void XMLIterPrinter::addNumAttribute( char const *name, xs_long value ) {
+  assert( theOpenStart );
+  os_ << ' ' << name << "=\"" << value << "\"";
+}
+
+void XMLIterPrinter::addNumAttribute( char const *name, xs_integer value ) {
   assert( theOpenStart );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
@@ -128,6 +139,10 @@ void DOTIterPrinter::endBeginVisit( int addr ) {
   theNameStack.push( addr );
 }
 
+void DOTIterPrinter::addBoolAttribute( char const *name, bool value ) {
+  os_ << "\\n" << name << '=' << (value ? "true" : "false");
+}
+
 void DOTIterPrinter::addAttribute( char const *name, char const *value ) {
   string temp( value );
   ascii::replace_all( temp, "\"", "\\\"" );
@@ -135,7 +150,11 @@ void DOTIterPrinter::addAttribute( char const *name, char const *value ) {
   os_ << "\\n" << name << '=' << temp;
 }
 
-void DOTIterPrinter::addAttribute( char const *name, xs_long value ) {
+void DOTIterPrinter::addNumAttribute( char const *name, xs_long value ) {
+  os_ << indent << "\\n" << name << '=' << value;
+}
+
+void DOTIterPrinter::addNumAttribute( char const *name, xs_integer value ) {
   os_ << indent << "\\n" << name << '=' << value;
 }
 
@@ -177,19 +196,31 @@ void JSONIterPrinter::startBeginVisit( char const *name, int ) {
     theListStack.push( true );
   }
   os_ << indent << "{\n" << inc_indent
-      << indent << "\"kind\": \"" << name << "\"";
+      << indent << "\"kind\": \"" << zorba::json::serialize(name) << "\"";
   theListStack.push( false );
 }
 
 void JSONIterPrinter::endBeginVisit( int ) {
 }
 
-void JSONIterPrinter::addAttribute( char const *name, char const *value ) {
-  os_ << ",\n" << indent << "\"" << name << "\": \"" << value << "\"";
+void JSONIterPrinter::addBoolAttribute( char const *name, bool value ) {
+  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": "
+      << (value ? "true" : "false");
 }
 
-void JSONIterPrinter::addAttribute( char const *name, xs_long value ) {
-  os_ << ",\n" << indent << "\"" << name << "\": " << value;
+void JSONIterPrinter::addAttribute( char const *name, char const *value ) {
+  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": \""
+      << zorba::json::serialize(value) << "\"";
+}
+
+void JSONIterPrinter::addNumAttribute( char const *name, xs_long value ) {
+  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": "
+      << value;
+}
+
+void JSONIterPrinter::addNumAttribute( char const *name, xs_integer value ) {
+  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": "
+      << value;
 }
 
 void JSONIterPrinter::startEndVisit() {

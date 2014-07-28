@@ -140,7 +140,7 @@ char const* get_help_msg() {
       "Do not compile the query; instead load the execution plan from the file specified by the -f -q options (or by any file specified without any other argument), and execute the loaded plan.\n\n"
 
     HELP_OPT( "--external-variable, -e <name>{=<file>|:=<value>}" )
-      "Set the value for an externsl variable.\n\n"
+      "Set the value for an external variable.\n\n"
 
     ////////// f //////////////////////////////////////////////////////////////
 
@@ -163,7 +163,7 @@ char const* get_help_msg() {
     HELP_OPT( "--inline-udf" )
       "Inline user-defined functions.\n\n"
 
-    HELP_OPT( "--iterator-tree {dot|json|xml}>" )
+    HELP_OPT( "--iterator-tree {dot|json|xml}" )
       "Print the iterator tree in the given format.\n\n"
 
     ////////// j //////////////////////////////////////////////////////////////
@@ -261,8 +261,8 @@ char const* get_help_msg() {
     HELP_OPT( "--print-translated" )
       "Print the normalized expression tree.\n\n"
 
-    HELP_OPT( "--profile" )
-      "Enable profiling.\n\n"
+    HELP_OPT( "--profile {dot|json|xml}" )
+      "Print profiling information in the given format.\n\n"
 
     ////////// q //////////////////////////////////////////////////////////////
 
@@ -689,7 +689,28 @@ int parse_args( int argc, char const *argv[] ) {
     else if ( IS_LONG_OPT( "--print-translated" ) )
       z_props.setPrintTranslated( true );
     else if ( IS_LONG_OPT( "--profile" ) )
-      z_props.setProfile( true );
+    {
+      PARSE_ARG( "--profile" );
+      string val( ARG_VAL );
+      to_lower( val );
+      if ( val == "none" )
+        z_props.setProfileFormat( PROFILE_FORMAT_NONE );
+      else
+      {
+        if ( val == "dot" )
+          z_props.setProfileFormat( PROFILE_FORMAT_DOT );
+        else if ( val == "json" )
+          z_props.setProfileFormat( PROFILE_FORMAT_JSON );
+        else if ( val == "xml" )
+          z_props.setProfileFormat( PROFILE_FORMAT_XML );
+        else
+        {
+          error = "--profile argument must be one of: none, dot, json, or xml.\n";
+          break;
+        }
+        z_props.setCollectProfile(true);
+      }
+    }
 
     ////////// q //////////////////////////////////////////////////////////////
 

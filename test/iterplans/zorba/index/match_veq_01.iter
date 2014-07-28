@@ -8,7 +8,7 @@
         <ForVarIterator varname="$$context-item"/>
         <CastIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,email)" typename="*" nill-allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,email)" typename="*" nill-allowed="false">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
@@ -29,7 +29,7 @@
         <ForVarIterator varname="$$context-item"/>
         <CastIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,email)" typename="*" nill-allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,email)" typename="*" nill-allowed="false">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
@@ -94,7 +94,7 @@
       </ApplyIterator>
       <FLWORIterator>
         <ForVariable name="acc">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,account)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,account)" typename="*" nill-allowed="false">
             <CtxVarIterator varid="4" varname="doc" varkind="global"/>
           </ChildAxisIterator>
         </ForVariable>
