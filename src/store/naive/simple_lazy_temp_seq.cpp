@@ -180,7 +180,7 @@ void SimpleLazyTempSeq::purgeUpTo(xs_integer position)
   }
 
   ZORBA_ASSERT(pos >= thePurgedUpTo);
-  ZORBA_ASSERT(pos - thePurgedUpTo <= theItems.size());
+  ZORBA_ASSERT(static_cast<std::vector<store::Item*>::size_type>(pos - thePurgedUpTo) <= theItems.size());
 
   std::vector<store::Item*>::iterator ite = theItems.begin();
   std::vector<store::Item*>::iterator end = theItems.begin() + static_cast<std::vector<store::Item*>::size_type>(pos - thePurgedUpTo);
@@ -213,7 +213,7 @@ void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
 
   ZORBA_ASSERT(pos > thePurgedUpTo);
 
-  xs_long numItemsToBuffer = pos - thePurgedUpTo;
+  std::vector<store::Item*>::size_type numItemsToBuffer = pos - thePurgedUpTo;
 
   while (!theMatFinished && theItems.size() <  numItemsToBuffer) 
   {
@@ -267,7 +267,7 @@ inline bool SimpleLazyTempSeq::containsItem(xs_integer position)
 
   ZORBA_ASSERT(pos > thePurgedUpTo);
 
-  xs_long numItemsToBuffer = pos - thePurgedUpTo;
+  std::vector<store::Item*>::size_type numItemsToBuffer = pos - thePurgedUpTo;
 
   while (!theMatFinished && theItems.size() <  numItemsToBuffer) 
   {

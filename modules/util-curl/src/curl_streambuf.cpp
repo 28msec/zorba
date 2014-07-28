@@ -368,7 +368,6 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   }
 
   while ( size > 0 ) {
-    streamsize const get = min( (streamsize)gbuf_.capacity_, size );
     curl_io( &gbuf_.len_ );
     if ( !gbuf_.len_ )
       break;

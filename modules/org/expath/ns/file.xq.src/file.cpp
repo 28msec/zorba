@@ -153,8 +153,10 @@ CreateDirectoryFunction::evaluate(
     }
   } else if ( fs_type != fs::directory )
     raiseFileError( "FOFL0002", "file already exists", path );
-  else
-    /* directory already exists: do nothing */;
+  else {
+    /* directory already exists: do nothing */
+  }
+
 
   return ItemSequence_t( new EmptySequence() );
 }

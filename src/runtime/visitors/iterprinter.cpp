@@ -32,7 +32,8 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 IterPrinter::IterPrinter( ostream &os, char const *descr ) :
-  os_( os ), descr_( descr )
+  descr_( descr ),
+  os_( os )
 {
 }
 

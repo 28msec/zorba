@@ -69,7 +69,7 @@ public:
    *
    * @param s A pointer to the string to append to.
    */
-  string_appender( value_type *s ) : s_( s ), buf_size_( 0 ) { }
+  string_appender( value_type *s ) : buf_size_( 0 ),  s_( s ) { }
 
   /**
    * Destroys the appender and appends any unappended characters to the string.
