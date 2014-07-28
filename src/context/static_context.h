@@ -680,6 +680,8 @@ protected:
 
   uint32_t                                   theFeatures;
 
+  uint32_t                                   theTempIndexCounter;
+
 public:
   static bool is_builtin_module(const zstring& ns);
 
@@ -1117,6 +1119,8 @@ public:
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
   
+  uint32_t create_temporary_index_id();
+
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options const* get_match_options() const { return theFTMatchOptions; }
 
