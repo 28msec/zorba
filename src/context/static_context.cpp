@@ -210,8 +210,10 @@ VarInfo::VarInfo(var_expr* v)
   theType(v->get_type()),
   theIsExternal(v->is_external()),
   theHasInitializer(v->has_initializer()),
-  theVarExpr(v)
+  theVarExpr(v),
+  theSctx(v->get_sctx())
 {
+  theAnnotations.swap(v->theAnnotations);
 }
 
 
@@ -226,6 +228,8 @@ void VarInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theType;
   ar & theIsExternal;
   ar & theHasInitializer;
+  ar & theAnnotations;
+  ar & theSctx;
 }
 
 
@@ -237,6 +241,13 @@ void VarInfo::setType(const xqtref_t& t)
   theType = t;
 }
 
+/**************************************************************************//**
+
+*******************************************************************************/
+TypeManager* VarInfo::getTypeManager() const
+{
+  return theSctx->get_typemanager();
+}
 
 /**************************************************************************//**
 

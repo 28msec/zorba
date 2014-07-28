@@ -373,58 +373,37 @@ void cacheable_function::parseCachingAnnotation(AnnotationInternal* aAnnotation,
 
   aFlags.resize(theSignature.paramCount(), false);
 
-  csize lNum = aAnnotation->getNumLiterals();
-  if (lNum)
+  for (csize i=0; i<aAnnotation->getNumLiterals(); ++i)
   {
-    for (csize i=0; i<lNum; ++i)
+    zorba::store::Item* lLiteral = aAnnotation->getLiteral(i);
+    int lIndex = atoi(lLiteral->getStringValue().c_str());
+    if (lIndex <1 || lIndex>(int)theSignature.paramCount())
     {
-      zorba::store::Item* lLiteral = aAnnotation->getLiteral(i);
-      if (lLiteral->getTypeCode() != store::XS_INTEGER)
-      {
-        RAISE_ERROR(zerr::ZXQP0063_INVALID_ANNOTATION_LITERAL_TYPE, theLoc,
-          ERROR_PARAMS(
-            lLiteral->getStringValue(),
-            lLiteral->getType()->getLocalName(),
-            AnnotationInternal::lookup(aAnnotation->getId())->getStringValue(),
-            "integer"));
-      }
-      else
-      {
-        int lIndex = atoi(lLiteral->getStringValue().c_str());
-        if (lIndex <1 || lIndex>(int)theSignature.paramCount())
-        {
-          std::string lFunctionName = "anonymous";
-          if (theSignature.getName())
-            lFunctionName = theSignature.getName()->getStringValue().str();
+      std::string lFunctionName = "anonymous";
+      if (theSignature.getName())
+        lFunctionName = theSignature.getName()->getStringValue().str();
 
-          if (theSignature.paramCount())
-          {
-            RAISE_ERROR(zerr::ZXQP0064_INVALID_ARGUMENT_INDEX, theLoc,
-              ERROR_PARAMS(
+      if (theSignature.paramCount())
+      {
+        RAISE_ERROR(zerr::ZXQP0064_INVALID_ARGUMENT_INDEX, theLoc,
+            ERROR_PARAMS(
                 lLiteral->getStringValue(),
                 lFunctionName,
                 theSignature.paramCount()));
-          }
-          else
-          {
-            RAISE_ERROR(zerr::ZXQP0065_INVALID_ANNOTATION, theLoc,
-              ERROR_PARAMS(
+      }
+      else
+      {
+        RAISE_ERROR(zerr::ZXQP0065_INVALID_ANNOTATION, theLoc,
+            ERROR_PARAMS(
                 lLiteral->getStringValue(),
                 lFunctionName,
                 ZED(ZXQP0065_NO_ARGUMENTS)));
-          }
-        }
-        else
-        {
-          aFlags[lIndex-1] = true;
-        }
       }
     }
-  }
-  else
-  {
-    RAISE_ERROR(zerr::ZXQP0062_MISSING_ANNOTATION_LITERALS, theLoc,
-      ERROR_PARAMS(AnnotationInternal::lookup(aAnnotation->getId())->getStringValue()));
+    else
+    {
+      aFlags[lIndex-1] = true;
+    }
   }
 }
 

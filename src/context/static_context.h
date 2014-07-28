@@ -40,6 +40,8 @@
 #include "context/uri_resolver.h"
 #include "context/features.h"
 
+#include "annotations/annotations.h"
+
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/hashmap_itemp.h"
 #include "zorbautils/checked_vector.h"
@@ -157,19 +159,23 @@ public:
 class VarInfo : public SimpleRCObject
 {
 protected:
-  store::Item_t  theName;
+  store::Item_t    theName;
 
-  ulong          theId;
+  ulong            theId;
 
-  int            theKind;
+  int              theKind;
 
-  xqtref_t       theType;
+  xqtref_t         theType;
 
-  bool           theIsExternal;
+  bool             theIsExternal;
 
-  bool           theHasInitializer;
+  bool             theHasInitializer;
 
-  var_expr     * theVarExpr;
+  var_expr       * theVarExpr;
+
+  AnnotationList   theAnnotations;
+
+  static_context * theSctx;
 
 public:
   SERIALIZABLE_CLASS(VarInfo)
@@ -206,6 +212,19 @@ public:
   var_expr* getVar() const { return theVarExpr; }
 
   void clearVar() { theVarExpr = NULL; }
+
+  AnnotationList const& getAnnotations() const
+  {
+    return theAnnotations;
+  }
+
+  void swapAnnotations(AnnotationList &a)
+  {
+    theAnnotations.swap(a);
+  }
+
+  TypeManager* getTypeManager() const;
+
 };
 
 
