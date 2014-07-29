@@ -193,7 +193,6 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
 
     // (6) make sure the node was deleted
     lIter->close();
-    lIter = lColl->contents()->getIterator();
     lIter->open();
     while (lIter->next(lDoc)) {
       return false;
