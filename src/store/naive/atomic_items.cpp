@@ -50,8 +50,6 @@
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
-#include "zorbautils/debug.h"
-
 #define CREATE_XS_TYPE(aType) \
   GET_STORE().getItemFactory()->createQName(Store::XS_URI, "xs", aType);
 
@@ -2444,8 +2442,6 @@ long DateTimeItem::compare(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  DEBUG_SS("Comparing");
-
   try
   {
     return theValue.compare(&other->getDateTimeValue(), timezone);
