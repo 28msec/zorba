@@ -115,14 +115,16 @@ public:
   setVariable(
       const String& inVarName,
       const Iterator_t& inValue,
-      bool cast = false);
+      bool cast = false,
+      bool distinct = false);
 
   virtual bool
   setVariable(
       const String& inNamespace,
       const String& inLocalname,
       const Iterator_t& inValue,
-      bool cast = false);
+      bool cast = false,
+      bool distinct = false);
 
   virtual bool
   setVariable(
@@ -134,7 +136,8 @@ public:
   setVariable(
       const Item& inQName,
       const Iterator_t& inValue,
-      bool cast = false);
+      bool cast = false,
+      bool distinct = false);
 
   virtual bool
   setContextItem(const Item& inValue);

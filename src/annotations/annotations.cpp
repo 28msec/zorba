@@ -145,7 +145,7 @@ void AnnotationInternal::createBuiltIn()
 #undef ZANN
 
 #define ZANN(a) \
-  ( 1 << static_cast<uint64_t>(AnnotationInternal::a) )
+  ( uint64_t(1) << static_cast<uint64_t>(AnnotationInternal::a) )
 
   // create a set of rules to detect conflicts between annotations
   theConflictRuleSet.push_back(
@@ -436,6 +436,7 @@ void AnnotationList::checkDeclarations(
   RuleBitSet lDeclaredAnnotations = checkDuplicateDeclarations(declKind, loc);
   checkConflictingDeclarations(lDeclaredAnnotations, declKind, loc);
   checkRequiredDeclarations(lDeclaredAnnotations, declKind, loc);
+  checkLiterals(declKind, loc);
 }
 
 AnnotationList::RuleBitSet AnnotationList::checkDuplicateDeclarations(
@@ -495,7 +496,7 @@ void AnnotationList::checkConflictingDeclarations(
           AnnotationId id = static_cast<AnnotationId>(i);
 
           lProblems << AnnotationInternal::lookup(id)->getStringValue()
-                    << ((j == lCurrSet.count() - 1) ? "" : ", ");
+                    << ((j == (currAnn & lCurrSet).count() - 1) ? "" : ", ");
           ++j;
         }
       }
@@ -558,6 +559,50 @@ void AnnotationList::checkRequiredDeclarations(
             lProblems.str()));
       }
     }
+  }
+}
+
+void AnnotationList::checkLiterals(DeclarationKind k, const QueryLoc& loc) const
+{
+  for (Annotations::const_iterator ite = theAnnotationList.begin();
+       ite != theAnnotationList.end();
+       ++ite)
+  {
+    AnnotationInternal* lAnn = *ite;
+    switch (lAnn->getId())
+    {
+      case AnnotationInternal::zann_exclude_from_cache_key:
+      case AnnotationInternal::zann_compare_with_deep_equal:
+        //One or more integers
+        if (!lAnn->getNumLiterals())
+        {
+          RAISE_ERROR(zerr::ZXQP0062_INVALID_ANNOTATION_LITERALS_NUMBER, loc,
+              ERROR_PARAMS(
+                  AnnotationInternal::lookup(lAnn->getId())->getStringValue(),
+                  ZED(ZXQP0062_ONE_OR_MORE_LITERALS)));
+        }
+        for (csize i=0; i<lAnn->getNumLiterals(); ++i)
+          checkLiteralType(lAnn, lAnn->getLiteral(i), store::XS_INTEGER, loc);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+void AnnotationList::checkLiteralType(AnnotationInternal* ann, zorba::store::Item* literal,
+    zorba::store::SchemaTypeCode type, const QueryLoc& loc) const
+{
+  if (literal->getTypeCode() != type)
+  {
+    std::ostringstream oss;
+    oss << type;
+    RAISE_ERROR(zerr::ZXQP0063_INVALID_ANNOTATION_LITERAL_TYPE, loc,
+        ERROR_PARAMS(
+            literal->getStringValue(),
+            literal->getType()->getLocalName(),
+            AnnotationInternal::lookup(ann->getId())->getStringValue(),
+            oss.str()));
   }
 }
 

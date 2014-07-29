@@ -108,6 +108,8 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @param aIterator the Iterator producing the sequence that is assigned
    *        to the variable.
    * @param cast If \c true, attempt to cast \a each item to the type (if any)
+   * @param distinct If \c true, assign distinct values of aIterator to the
+   *        variable
    * that the external variable was declared as.
    * @return true if the variable has been set successfully, false otherwise.
    * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
@@ -116,7 +118,8 @@ class ZORBA_DLL_PUBLIC DynamicContext
   setVariable( 
       const String& aQName,
       const Iterator_t& aIterator,
-      bool cast = false) = 0;
+      bool cast = false,
+      bool distinct = false) = 0;
 
   /** 
    * \brief Defines the external variable identified by an expanded QName and
@@ -130,6 +133,8 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @param aIterator the Iterator producing the sequence that is assigned
    *        to the variable.
    * @param cast If \c true, attempt to cast \a each item to the type (if any)
+   * @param distinct If \c true, assign distinct values of aIterator to the
+   *        variable
    * that the external variable was declared as.
    * @return true if the variable has been set successfully, false otherwise.
    * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
@@ -139,7 +144,8 @@ class ZORBA_DLL_PUBLIC DynamicContext
       const String& aNamespace,
       const String& aLocalname,
       const Iterator_t& aIterator,
-      bool cast = false) = 0;
+      bool cast = false,
+      bool distinct = false) = 0;
 
   /** 
    * \brief Defines the external variable identified by an expanded QName and
@@ -173,6 +179,8 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @param aIterator the Iterator producing the sequence that is assigned
    *        to the variable.
    * @param cast If \c true, attempt to cast \a each item to the type (if any)
+   * @param distinct If \c true, assign distinct values of aIterator to the
+   *        variable
    * that the external variable was declared as.
    * @return true if the variable has been set successfully, false otherwise.
    * @throw ZorbaException if an error occured (e.g. the given Item is not
@@ -182,7 +190,8 @@ class ZORBA_DLL_PUBLIC DynamicContext
   setVariable(
       const Item& aQName,
       const Iterator_t& aIterator,
-      bool cast = false) = 0;
+      bool cast = false,
+      bool distinct = false) = 0;
 
   /** \brief Returns the current value of an external
    * variable. Exactly one of the two return values (aItem or

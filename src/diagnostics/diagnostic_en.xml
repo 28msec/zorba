@@ -2445,8 +2445,20 @@
       <value>"$1": this option cannot be specified in a query, it must be set via C++ API or command-line parameter</value>
     </diagnostic>
     
-    <diagnostic code="ZXQP0062" name="MISSING_ANNOTATION_LITERALS">
-      <value>"$1": annotation requires at least one literal</value>
+    <diagnostic code="ZXQP0062" name="INVALID_ANNOTATION_LITERALS_NUMBER">
+      <value>"$1": annotation $2</value>
+      <entry key="NO_LITERALS">
+        <value>allows no literals</value>
+      </entry>
+      <entry key="ZERO_OR_ONE_LITERALS">
+        <value>allows at most one literal</value>
+      </entry>
+      <entry key="ONE_LITERAL">
+        <value>requires exactly one literal</value>
+      </entry>
+      <entry key="ONE_OR_MORE_LITERALS">
+        <value>requires one or more literals</value>
+      </entry>
     </diagnostic>
     
     <diagnostic code="ZXQP0063" name="INVALID_ANNOTATION_LITERAL_TYPE">
@@ -2462,6 +2474,10 @@
       <entry key="NO_ARGUMENTS">
         <value>function has no arguments</value>
       </entry>
+    </diagnostic>
+    
+    <diagnostic code="ZXQP0066" name="INVALID_ANNOTATION_LITERAL_VALUE">
+      <value>"$1": is not a valid annotation literal for annotation "$2", $3</value>
     </diagnostic>
       
     <diagnostic code="ZXQP8401" name="THESAURUS_VERSION_MISMATCH"
