@@ -72,7 +72,7 @@ PlanState::PlanState(
   theGlobalDynCtx(globalDctx),
   theLocalDynCtx(localDctx),
   theHasToQuit(false),
-  profile_( Properties::instance().getProfile() ),
+  theProfile( Properties::instance().getProfile() ),
   theBlockOwned(true)
 {
   assert(globalDctx != NULL && localDctx != NULL);
@@ -91,7 +91,7 @@ PlanState::PlanState(PlanState& aPlanState):
       theNodeConstuctionPath(aPlanState.theNodeConstuctionPath),
       theDebuggerCommons(aPlanState.theDebuggerCommons),
       theHasToQuit(aPlanState.theHasToQuit),
-      profile_(aPlanState.profile_),
+      theProfile(aPlanState.theProfile),
       theBlockOwned(false)
 {
 }
