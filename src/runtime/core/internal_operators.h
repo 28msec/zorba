@@ -25,11 +25,13 @@ namespace zorba {
 class HoistIteratorState : public PlanIteratorState 
 {
 public:
-  bool theDone;
+  bool       theDone;
+  PlanState* theInnerPlanState;
 
 public:
   void init(PlanState& planState);
   void reset(PlanState& planState);
+  ~HoistIteratorState();
 };
 
 

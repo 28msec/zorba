@@ -139,7 +139,9 @@ public:
 
   bool                      theHasToQuit;
 
-  bool const                profile_;   // cache Properties::getProfile()
+  bool                      profile_;   // cache Properties::getProfile()
+
+  bool                      theBlockOwned;
 
 public:
   PlanState(
@@ -148,6 +150,8 @@ public:
       uint32_t blockSize,
       uint32_t aStackDepth = 0,
       uint32_t aMaxStackDepth = 1024);
+
+  PlanState(PlanState& aPlanState);
 
   ~PlanState();
 

@@ -1206,6 +1206,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   EnclosedIteratorState* state;
   DEFAULT_STACK_INIT(EnclosedIteratorState, state, planState);
 
+
   if (theAttrContent || theTextContent)
   {
     if (consumeNext(result, theChild, planState))

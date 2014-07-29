@@ -72,10 +72,28 @@ PlanState::PlanState(
   theGlobalDynCtx(globalDctx),
   theLocalDynCtx(localDctx),
   theHasToQuit(false),
-  profile_( Properties::instance().getProfile() )
+  profile_( Properties::instance().getProfile() ),
+  theBlockOwned(true)
 {
   assert(globalDctx != NULL && localDctx != NULL);
   theBlock = new int8_t[theBlockSize];
+}
+
+PlanState::PlanState(PlanState& aPlanState):
+      theBlock(aPlanState.theBlock),
+      theBlockSize(aPlanState.theBlockSize),
+      theStackDepth(aPlanState.theStackDepth),
+      theMaxStackDepth(aPlanState.theMaxStackDepth),
+      theCompilerCB(aPlanState.theCompilerCB),
+      theQuery(aPlanState.theQuery),
+      theGlobalDynCtx(aPlanState.theGlobalDynCtx),
+      theLocalDynCtx(aPlanState.theLocalDynCtx),
+      theNodeConstuctionPath(aPlanState.theNodeConstuctionPath),
+      theDebuggerCommons(aPlanState.theDebuggerCommons),
+      theHasToQuit(aPlanState.theHasToQuit),
+      profile_(aPlanState.profile_),
+      theBlockOwned(false)
+{
 }
 
 
@@ -88,7 +106,8 @@ void PlanState::checkDepth(const QueryLoc& loc)
 
 PlanState::~PlanState()
 {
-  delete[] theBlock;
+  if (theBlockOwned)
+    delete[] theBlock;
   theBlock = 0;
 }
 
