@@ -99,6 +99,9 @@ ResultIteratorImpl::~ResultIteratorImpl()
   {
     if (theIsOpen && thePlan)
     {
+      //WAS
+      //thePlan->close();
+      //NOW
       theQuery->dispose(thePlan);
     }
 
@@ -195,8 +198,15 @@ void ResultIteratorImpl::close()
     if (!theIsOpen)  
       throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
 
+    //WAS
+    //thePlan->close();
+    //NOW(0)
+
     theIsOpen = false;
 
+    //WAS
+    //theQuery->theExecuting = false;
+    //NOW(2)
     theQuery->dispose(thePlan);
     thePlan = NULL;
 
@@ -218,6 +228,10 @@ void ResultIteratorImpl::closeInternal()
 {
   if (theIsOpen)
   {
+    //WAS(2)
+    //thePlan->close();
+    //thePlan = NULL;
+    //NOW(5)
     if (thePlan)
     {
       theQuery->dispose(thePlan);
