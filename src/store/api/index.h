@@ -113,7 +113,8 @@ public:
     theIsUnique(false),
     theIsSorted(false),
     theIsTemp(false),
-    theIsThreadSafe(false)
+    theIsThreadSafe(false),
+    theIsAutomatic(false)
   {
   }
 
@@ -123,7 +124,7 @@ public:
     theKeyTypes.clear();
     theCollations.clear();
     theTimezone = 0;
-    theIsGeneral = theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
+    theIsAutomatic = theIsGeneral = theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
   }
 
   void resize(csize numColumns)
