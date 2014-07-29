@@ -150,7 +150,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   }
 
   // Loop Hoisting
-  ///*
   if (Properties::instance().getLoopHoisting())
   {
     HoistRule rule;
@@ -176,7 +175,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       driverMarkExpr.rewrite(rCtx);
     }
   }
-   //*/
 
   // index matching
   if (Properties::instance().getUseIndexes())
