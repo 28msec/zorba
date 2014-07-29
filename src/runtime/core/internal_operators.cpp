@@ -77,7 +77,7 @@ HoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     try 
     {
-      state->theDone = !consumeNext(result, theChildren[0].getp(), *state->theInnerPlanState);
+      state->theDone = !consumeNext(result, theChildren[0].getp(), planState/**state->theInnerPlanState*/);
     }
     catch(ZorbaException const& e) 
     {

@@ -33,6 +33,7 @@
 #include <zorba/properties.h>
 
 #include "context/static_context.h"
+#include "zorbautils/debug.h"
 
 
 
@@ -155,6 +156,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     HoistRule rule;
     bool local_modified = false;
 
+    DEBUG_SS("Applying hosting rules");
     expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);
 
     if (e != rCtx.getRoot())
