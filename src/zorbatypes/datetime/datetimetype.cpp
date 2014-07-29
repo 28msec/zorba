@@ -1051,31 +1051,13 @@ int DateTime::compare(const DateTime* dt, long timezone_seconds) const
   d1_t.reset(normalizeTimeZone(timezone_seconds));
   d2_t.reset(dt->normalizeTimeZone(timezone_seconds));
 
-  if (d1_t->data[YEAR_DATA] < d2_t->data[YEAR_DATA])
-    return -1;
-  else if (d1_t->data[YEAR_DATA] > d2_t->data[YEAR_DATA])
-    return 1;
-
   // compare the rest of the data
-  if (d1_t->data[YEAR_DATA] < 0 && d2_t->data[YEAR_DATA] < 0)
+  for (int i=0; i<7; i++)
   {
-    for (int i=1; i<7; i++)
-    {
-      if (d1_t->data[i] > d2_t->data[i])
-        return -1;
-      else if (d1_t->data[i] < d2_t->data[i])
-        return 1;
-    }
-  }
-  else
-  {
-    for (int i=1; i<7; i++)
-    {
-      if (d1_t->data[i] < d2_t->data[i])
-        return -1;
-      else if (d1_t->data[i] > d2_t->data[i])
-        return 1;
-    }
+    if (d1_t->data[i] < d2_t->data[i])
+      return -1;
+    else if (d1_t->data[i] > d2_t->data[i])
+      return 1;
   }
 
   return 0;
