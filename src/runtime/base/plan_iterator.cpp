@@ -72,7 +72,7 @@ PlanState::PlanState(
   theGlobalDynCtx(globalDctx),
   theLocalDynCtx(localDctx),
   theHasToQuit(false),
-  profile_( Properties::instance().getProfile() )
+  profile_( Properties::instance().getCollectProfile() )
 {
   assert(globalDctx != NULL && localDctx != NULL);
   theBlock = new int8_t[theBlockSize];

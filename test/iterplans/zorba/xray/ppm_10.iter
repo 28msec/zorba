@@ -158,7 +158,7 @@
     <CtxVarDeclareIterator varid="6" varname="scene">
       <UDFunctionCallIterator function="scene:prepare-scene">
         <TreatIterator quant="">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill-allowed="false">
             <FnDocIterator>
               <SingletonIterator value="xs:string(scene.xml)"/>
             </FnDocIterator>
@@ -279,7 +279,7 @@
     <EnclosedIterator attr_cont="false">
       <FLWORIterator>
         <ForVariable name="node">
-          <ChildAxisIterator test-kind="match_anykind_test" qname="*" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_anykind_test" qname="*" typename="*" nill-allowed="false">
             <LetVarIterator varname="scene"/>
           </ChildAxisIterator>
         </ForVariable>
@@ -313,8 +313,8 @@
             <FLWORIterator>
               <ForVariable name="a">
                 <TreatIterator quant="">
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill-allowed="0">
-                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill-allowed="false">
+                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
                       <ForVarIterator varname="scene"/>
                     </ChildAxisIterator>
                   </ChildAxisIterator>
@@ -324,21 +324,21 @@
                 <FnConcatIterator>
                   <CastIterator type="xs:double">
                     <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="a"/>
                       </AttributeAxisIterator>
                     </FnDataIterator>
                   </CastIterator>
                   <CastIterator type="xs:double">
                     <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="a"/>
                       </AttributeAxisIterator>
                     </FnDataIterator>
                   </CastIterator>
                   <CastIterator type="xs:double">
                     <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="a"/>
                       </AttributeAxisIterator>
                     </FnDataIterator>
@@ -364,8 +364,8 @@
                                 <FLWORIterator>
                                   <ForVariable name="a">
                                     <TreatIterator quant="">
-                                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,up)" typename="*" nill-allowed="0">
-                                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="0">
+                                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,up)" typename="*" nill-allowed="false">
+                                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
                                           <ForVarIterator varname="scene"/>
                                         </ChildAxisIterator>
                                       </ChildAxisIterator>
@@ -375,21 +375,21 @@
                                     <FnConcatIterator>
                                       <CastIterator type="xs:double">
                                         <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                                             <ForVarIterator varname="a"/>
                                           </AttributeAxisIterator>
                                         </FnDataIterator>
                                       </CastIterator>
                                       <CastIterator type="xs:double">
                                         <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                                             <ForVarIterator varname="a"/>
                                           </AttributeAxisIterator>
                                         </FnDataIterator>
                                       </CastIterator>
                                       <CastIterator type="xs:double">
                                         <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                                             <ForVarIterator varname="a"/>
                                           </AttributeAxisIterator>
                                         </FnDataIterator>
@@ -419,8 +419,8 @@
                                 <FLWORIterator>
                                   <ForVariable name="a">
                                     <TreatIterator quant="">
-                                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,right)" typename="*" nill-allowed="0">
-                                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="0">
+                                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,right)" typename="*" nill-allowed="false">
+                                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
                                           <ForVarIterator varname="scene"/>
                                         </ChildAxisIterator>
                                       </ChildAxisIterator>
@@ -430,21 +430,21 @@
                                     <FnConcatIterator>
                                       <CastIterator type="xs:double">
                                         <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                                             <ForVarIterator varname="a"/>
                                           </AttributeAxisIterator>
                                         </FnDataIterator>
                                       </CastIterator>
                                       <CastIterator type="xs:double">
                                         <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                                             <ForVarIterator varname="a"/>
                                           </AttributeAxisIterator>
                                         </FnDataIterator>
                                       </CastIterator>
                                       <CastIterator type="xs:double">
                                         <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                                             <ForVarIterator varname="a"/>
                                           </AttributeAxisIterator>
                                         </FnDataIterator>
@@ -479,8 +479,8 @@
                     <FLWORIterator>
                       <ForVariable name="a">
                         <TreatIterator quant="">
-                          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,forward)" typename="*" nill-allowed="0">
-                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="0">
+                          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,forward)" typename="*" nill-allowed="false">
+                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
                               <ForVarIterator varname="scene"/>
                             </ChildAxisIterator>
                           </ChildAxisIterator>
@@ -490,21 +490,21 @@
                         <FnConcatIterator>
                           <CastIterator type="xs:double">
                             <FnDataIterator>
-                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                                 <ForVarIterator varname="a"/>
                               </AttributeAxisIterator>
                             </FnDataIterator>
                           </CastIterator>
                           <CastIterator type="xs:double">
                             <FnDataIterator>
-                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                                 <ForVarIterator varname="a"/>
                               </AttributeAxisIterator>
                             </FnDataIterator>
                           </CastIterator>
                           <CastIterator type="xs:double">
                             <FnDataIterator>
-                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                                 <ForVarIterator varname="a"/>
                               </AttributeAxisIterator>
                             </FnDataIterator>
@@ -559,7 +559,7 @@
         <FLWORIterator>
           <ForVariable name="a">
             <TreatIterator quant="">
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill-allowed="false">
                 <ForVarIterator varname="camera"/>
               </ChildAxisIterator>
             </TreatIterator>
@@ -568,21 +568,21 @@
             <FnConcatIterator>
               <CastIterator type="xs:double">
                 <FnDataIterator>
-                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="a"/>
                   </AttributeAxisIterator>
                 </FnDataIterator>
               </CastIterator>
               <CastIterator type="xs:double">
                 <FnDataIterator>
-                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="a"/>
                   </AttributeAxisIterator>
                 </FnDataIterator>
               </CastIterator>
               <CastIterator type="xs:double">
                 <FnDataIterator>
-                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="a"/>
                   </AttributeAxisIterator>
                 </FnDataIterator>
@@ -601,7 +601,7 @@
                 <FLWORIterator>
                   <ForVariable name="a">
                     <TreatIterator quant="">
-                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,look-at)" typename="*" nill-allowed="0">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,look-at)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="camera"/>
                       </ChildAxisIterator>
                     </TreatIterator>
@@ -610,21 +610,21 @@
                     <FnConcatIterator>
                       <CastIterator type="xs:double">
                         <FnDataIterator>
-                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                             <ForVarIterator varname="a"/>
                           </AttributeAxisIterator>
                         </FnDataIterator>
                       </CastIterator>
                       <CastIterator type="xs:double">
                         <FnDataIterator>
-                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                             <ForVarIterator varname="a"/>
                           </AttributeAxisIterator>
                         </FnDataIterator>
                       </CastIterator>
                       <CastIterator type="xs:double">
                         <FnDataIterator>
-                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                             <ForVarIterator varname="a"/>
                           </AttributeAxisIterator>
                         </FnDataIterator>
@@ -951,11 +951,11 @@
                       <ForIterator>
                         <ForVariable name="$$context-item"/>
                         <TupleSourceIterator/>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,shapes)" typename="*" nill-allowed="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,shapes)" typename="*" nill-allowed="false">
                           <ForVarIterator varname="scene"/>
                         </ChildAxisIterator>
                       </ForIterator>
-                      <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="0">
+                      <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="false">
                         <ForVarIterator varname="$$context-item"/>
                       </ChildAxisIterator>
                     </ForIterator>
@@ -1018,7 +1018,7 @@
             <FLWORIterator>
               <ForVariable name="a">
                 <TreatIterator quant="">
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,background)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,background)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="scene"/>
                   </ChildAxisIterator>
                 </TreatIterator>
@@ -1027,21 +1027,21 @@
                 <FnConcatIterator>
                   <CastIterator type="xs:double">
                     <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,r)" typename="*" nill-allowed="0">
+                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,r)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="a"/>
                       </AttributeAxisIterator>
                     </FnDataIterator>
                   </CastIterator>
                   <CastIterator type="xs:double">
                     <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,g)" typename="*" nill-allowed="0">
+                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,g)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="a"/>
                       </AttributeAxisIterator>
                     </FnDataIterator>
                   </CastIterator>
                   <CastIterator type="xs:double">
                     <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="0">
+                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="a"/>
                       </AttributeAxisIterator>
                     </FnDataIterator>
@@ -1108,7 +1108,7 @@
             <ForVariable name="name">
               <PromoteIterator type="xs:string">
                 <FnDataIterator>
-                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,surface)" typename="*" nill-allowed="0">
+                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,surface)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="shape"/>
                   </AttributeAxisIterator>
                 </FnDataIterator>
@@ -1337,7 +1337,7 @@
                 <FLWORIterator>
                   <ForVariable name="a">
                     <TreatIterator quant="">
-                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,normal)" typename="*" nill-allowed="0">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,normal)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="plane"/>
                       </ChildAxisIterator>
                     </TreatIterator>
@@ -1346,21 +1346,21 @@
                     <FnConcatIterator>
                       <CastIterator type="xs:double">
                         <FnDataIterator>
-                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                             <ForVarIterator varname="a"/>
                           </AttributeAxisIterator>
                         </FnDataIterator>
                       </CastIterator>
                       <CastIterator type="xs:double">
                         <FnDataIterator>
-                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                             <ForVarIterator varname="a"/>
                           </AttributeAxisIterator>
                         </FnDataIterator>
                       </CastIterator>
                       <CastIterator type="xs:double">
                         <FnDataIterator>
-                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                             <ForVarIterator varname="a"/>
                           </AttributeAxisIterator>
                         </FnDataIterator>
@@ -1396,7 +1396,7 @@
         <SpecificNumArithIterator_SubtractOperation_DOUBLE>
           <CastIterator type="xs:double">
             <FnDataIterator>
-              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,offset)" typename="*" nill-allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,offset)" typename="*" nill-allowed="false">
                 <ForVarIterator varname="plane"/>
               </AttributeAxisIterator>
             </FnDataIterator>
@@ -1451,7 +1451,7 @@
                 </ForIterator>
                 <CastIterator type="xs:double">
                   <FnDataIterator>
-                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,radius)" typename="*" nill-allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,radius)" typename="*" nill-allowed="false">
                       <ForVarIterator varname="sphere"/>
                     </AttributeAxisIterator>
                   </FnDataIterator>
@@ -1464,7 +1464,7 @@
                       <FLWORIterator>
                         <ForVariable name="a">
                           <TreatIterator quant="">
-                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,center)" typename="*" nill-allowed="0">
+                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,center)" typename="*" nill-allowed="false">
                               <ForVarIterator varname="sphere"/>
                             </ChildAxisIterator>
                           </TreatIterator>
@@ -1473,21 +1473,21 @@
                           <FnConcatIterator>
                             <CastIterator type="xs:double">
                               <FnDataIterator>
-                                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                                   <ForVarIterator varname="a"/>
                                 </AttributeAxisIterator>
                               </FnDataIterator>
                             </CastIterator>
                             <CastIterator type="xs:double">
                               <FnDataIterator>
-                                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                                   <ForVarIterator varname="a"/>
                                 </AttributeAxisIterator>
                               </FnDataIterator>
                             </CastIterator>
                             <CastIterator type="xs:double">
                               <FnDataIterator>
-                                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                                   <ForVarIterator varname="a"/>
                                 </AttributeAxisIterator>
                               </FnDataIterator>
@@ -1614,7 +1614,7 @@
           <FLWORIterator>
             <ForVariable name="a">
               <TreatIterator quant="">
-                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,normal)" typename="*" nill-allowed="0">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,normal)" typename="*" nill-allowed="false">
                   <ForVarIterator varname="shape"/>
                 </ChildAxisIterator>
               </TreatIterator>
@@ -1623,21 +1623,21 @@
               <FnConcatIterator>
                 <CastIterator type="xs:double">
                   <FnDataIterator>
-                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                       <ForVarIterator varname="a"/>
                     </AttributeAxisIterator>
                   </FnDataIterator>
                 </CastIterator>
                 <CastIterator type="xs:double">
                   <FnDataIterator>
-                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                       <ForVarIterator varname="a"/>
                     </AttributeAxisIterator>
                   </FnDataIterator>
                 </CastIterator>
                 <CastIterator type="xs:double">
                   <FnDataIterator>
-                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                       <ForVarIterator varname="a"/>
                     </AttributeAxisIterator>
                   </FnDataIterator>
@@ -1700,7 +1700,7 @@
       <UDFunctionCallIterator function="vector:sum">
         <FLWORIterator>
           <ForVariable name="light">
-            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,light)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,light)" typename="*" nill-allowed="false">
               <ForVarIterator varname="scene"/>
             </ChildAxisIterator>
           </ForVariable>
@@ -1709,7 +1709,7 @@
               <FLWORIterator>
                 <ForVariable name="a">
                   <TreatIterator quant="">
-                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,color)" typename="*" nill-allowed="0">
+                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,color)" typename="*" nill-allowed="false">
                       <ForVarIterator varname="light"/>
                     </ChildAxisIterator>
                   </TreatIterator>
@@ -1718,21 +1718,21 @@
                   <FnConcatIterator>
                     <CastIterator type="xs:double">
                       <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,r)" typename="*" nill-allowed="0">
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,r)" typename="*" nill-allowed="false">
                           <ForVarIterator varname="a"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
                     </CastIterator>
                     <CastIterator type="xs:double">
                       <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,g)" typename="*" nill-allowed="0">
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,g)" typename="*" nill-allowed="false">
                           <ForVarIterator varname="a"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
                     </CastIterator>
                     <CastIterator type="xs:double">
                       <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="0">
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="false">
                           <ForVarIterator varname="a"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
@@ -1747,7 +1747,7 @@
               <FLWORIterator>
                 <ForVariable name="a">
                   <TreatIterator quant="">
-                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill-allowed="0">
+                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill-allowed="false">
                       <ForVarIterator varname="light"/>
                     </ChildAxisIterator>
                   </TreatIterator>
@@ -1756,21 +1756,21 @@
                   <FnConcatIterator>
                     <CastIterator type="xs:double">
                       <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                           <ForVarIterator varname="a"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
                     </CastIterator>
                     <CastIterator type="xs:double">
                       <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                           <ForVarIterator varname="a"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
                     </CastIterator>
                     <CastIterator type="xs:double">
                       <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                           <ForVarIterator varname="a"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
@@ -2007,7 +2007,7 @@
               <SingletonIterator value="xs:double(1)"/>
               <CastIterator type="xs:double">
                 <FnDataIterator>
-                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,radius)" typename="*" nill-allowed="0">
+                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,radius)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="sphere"/>
                   </AttributeAxisIterator>
                 </FnDataIterator>
@@ -2022,7 +2022,7 @@
                     <FLWORIterator>
                       <ForVariable name="a">
                         <TreatIterator quant="">
-                          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,center)" typename="*" nill-allowed="0">
+                          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,center)" typename="*" nill-allowed="false">
                             <ForVarIterator varname="sphere"/>
                           </ChildAxisIterator>
                         </TreatIterator>
@@ -2031,21 +2031,21 @@
                         <FnConcatIterator>
                           <CastIterator type="xs:double">
                             <FnDataIterator>
-                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="0">
+                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
                                 <ForVarIterator varname="a"/>
                               </AttributeAxisIterator>
                             </FnDataIterator>
                           </CastIterator>
                           <CastIterator type="xs:double">
                             <FnDataIterator>
-                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="0">
+                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
                                 <ForVarIterator varname="a"/>
                               </AttributeAxisIterator>
                             </FnDataIterator>
                           </CastIterator>
                           <CastIterator type="xs:double">
                             <FnDataIterator>
-                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="0">
+                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
                                 <ForVarIterator varname="a"/>
                               </AttributeAxisIterator>
                             </FnDataIterator>
@@ -2149,12 +2149,12 @@
       <LetVarIterator varname="ignore"/>
     </ForVariable>
     <ForVariable name="$$context-item">
-      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,shapes)" typename="*" nill-allowed="0">
+      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,shapes)" typename="*" nill-allowed="false">
         <LetVarIterator varname="scene"/>
       </ChildAxisIterator>
     </ForVariable>
     <ForVariable name="$$context-item">
-      <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="0">
+      <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="false">
         <ForVarIterator varname="$$context-item"/>
       </ChildAxisIterator>
     </ForVariable>

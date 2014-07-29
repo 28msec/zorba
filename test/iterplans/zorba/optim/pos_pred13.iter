@@ -54,7 +54,7 @@
       <ForVariable name="$$context-item">
         <SubsequenceIntIterator>
           <NodeSortIterator distinct="true" ascending="true">
-            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
               <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                 <CtxVarIterator varid="4" varname="doc" varkind="local"/>
               </TreatIterator>
@@ -68,7 +68,7 @@
         <CompareIterator>
           <PromoteIterator type="xs:anyAtomicType">
             <FnDataIterator>
-              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,i)" typename="*" nill-allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,i)" typename="*" nill-allowed="false">
                 <ForVarIterator varname="$$context-item"/>
               </AttributeAxisIterator>
             </FnDataIterator>

@@ -179,6 +179,14 @@ typedef enum {
   PLAN_FORMAT_JSON
 } Zorba_plan_format_t;
 
+typedef enum {
+  PROFILE_FORMAT_NONE,
+  PROFILE_FORMAT_XML,
+  PROFILE_FORMAT_DOT,
+  PROFILE_FORMAT_JSON
+} Zorba_profile_format_t;
+
+
 /*****************************************************************************/
 
 /**

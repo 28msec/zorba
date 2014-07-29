@@ -96,19 +96,18 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
     QueryLoc const &loc = pi->getLocation();
     ostringstream oss;
     oss << loc.getFilename() << ':' << loc.getLineno();
-    thePrinter.addAttribute( "location", oss.str() );
+    thePrinter.addAttribute( "location", oss.str().c_str() );
   }
 
-  if ( props.getProfile() && thePlanState ) {
+  if ( props.getCollectProfile() && thePlanState ) {
     PlanIteratorState const *const pi_state =
       StateTraitsImpl<PlanIteratorState>::getState(
         *thePlanState, pi->getStateOffset()
       );
     profile_data const &pd = pi_state->get_profile_data();
-    ascii::itoa_buf_type buf;
-    thePrinter.addAttribute( "prof-calls", ascii::itoa( pd.next_.call_count_, buf ) );
-    thePrinter.addAttribute( "prof-cpu", ascii::itoa( pd.next_.cpu_time_, buf ) );
-    thePrinter.addAttribute( "prof-wall", ascii::itoa( pd.next_.wall_time_, buf ) );
+    thePrinter.addNumAttribute( "prof-calls", pd.next_.call_count_);
+    thePrinter.addNumAttribute( "prof-cpu", pd.next_.cpu_time_);
+    thePrinter.addNumAttribute( "prof-wall", pd.next_.wall_time_);
     thePrinter.addAttribute( "prof-name", pi->getNameAsString().str() );
   }
 }
@@ -122,19 +121,17 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
   if (a->getQName() != 0)
     thePrinter.addAttribute("qname", a->getQName()->show().str());
   else
-    thePrinter.addAttribute("qname","*");
+    thePrinter.addAttribute("qname", "*");
 
   if (a->getType() != 0)
     thePrinter.addAttribute("typename", a->getType()->toString());
   else
-    thePrinter.addAttribute("typename","*");
+    thePrinter.addAttribute("typename", "*");
 
-  ostringstream oss;
-  oss << a->nilledAllowed();
-  thePrinter.addAttribute("nill-allowed", oss.str());
+  thePrinter.addBoolAttribute("nill-allowed", a->nilledAllowed());
 
   if (a->getTargetPos() >= 0)
-    thePrinter.addAttribute("target_position", ztd::to_string(a->getTargetPos()));
+    thePrinter.addNumAttribute("target_position", a->getTargetPos());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -319,7 +316,7 @@ DEF_OP_T_VISIT( SpecificNumArithIterator, SubtractOperation, INTEGER )
   void PrinterVisitor::beginVisit( CLASS const &i ) { \
     thePrinter.startBeginVisit( #CLASS, ++theId );    \
     if ( i.hasSkip() )                                \
-      thePrinter.addAttribute( "skip", "true" );      \
+      thePrinter.addBoolAttribute( "skip", true );    \
     printCommons( &i, theId );                        \
     thePrinter.endBeginVisit( theId );                \
   }                                                   \
@@ -332,9 +329,9 @@ DEF_INDEX_PROBE_VISIT( ProbeIndexRangeValueIterator )
   void PrinterVisitor::beginVisit( CLASS const &i ) {     \
     thePrinter.startBeginVisit( #CLASS, ++theId );        \
     if ( i.isDynamic() )                                  \
-      thePrinter.addAttribute( "is-dynamic", "true" );    \
+      thePrinter.addBoolAttribute( "is-dynamic", true );  \
     if ( i.needToCopy() )                                 \
-      thePrinter.addAttribute( "need-to-copy", "true" );  \
+      thePrinter.addBoolAttribute( "need-to-copy", true );\
     printCommons( &i, theId );                            \
     thePrinter.endBeginVisit( theId );                    \
   }                                                       \
@@ -392,7 +389,7 @@ DEF_END_VISIT( CreateInternalIndexIterator )
 
 void PrinterVisitor::beginVisit( CtxVarAssignIterator const &i ) {
   thePrinter.startBeginVisit( "CtxVarAssignIterator", ++theId );
-  thePrinter.addAttribute( "varid", i.getVarId() );
+  thePrinter.addNumAttribute( "varid", i.getVarId() );
   thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
   thePrinter.addAttribute( "varkind", i.isLocal() ? "local" : "global" );
   printCommons( &i, theId );
@@ -402,7 +399,7 @@ DEF_END_VISIT( CtxVarAssignIterator )
 
 void PrinterVisitor::beginVisit( CtxVarDeclareIterator const &i ) {
   thePrinter.startBeginVisit( "CtxVarDeclareIterator", ++theId );
-  thePrinter.addAttribute( "varid", i.getVarId() );
+  thePrinter.addNumAttribute( "varid", i.getVarId() );
   thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
@@ -411,7 +408,7 @@ DEF_END_VISIT( CtxVarDeclareIterator )
 
 void PrinterVisitor::beginVisit( CtxVarIsSetIterator const &i ) {
   thePrinter.startBeginVisit( "CtxVarIsSetIterator", ++theId );
-  thePrinter.addAttribute( "varid", i.getVarId() );
+  thePrinter.addNumAttribute( "varid", i.getVarId() );
   thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
@@ -420,7 +417,7 @@ DEF_END_VISIT( CtxVarIsSetIterator )
 
 void PrinterVisitor::beginVisit( CtxVarIterator const &i ) {
   thePrinter.startBeginVisit( "CtxVarIterator", ++theId );
-  thePrinter.addAttribute( "varid", i.getVarId() );
+  thePrinter.addNumAttribute( "varid", i.getVarId() );
   thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
   thePrinter.addAttribute( "varkind", i.isLocal() ? "local" : "global" );
   printCommons( &i, theId );
@@ -431,7 +428,7 @@ DEF_END_VISIT( CtxVarIterator )
 void PrinterVisitor::beginVisit( DocumentIterator const &i ) {
   thePrinter.startBeginVisit( "DocumentIterator", ++theId );
   if ( !i.copyInputNodes() )
-    thePrinter.addAttribute( "copyInputNodes", "false" );
+    thePrinter.addBoolAttribute( "copyInputNodes", false );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
 }
@@ -440,7 +437,7 @@ DEF_END_VISIT( DocumentIterator  )
 void PrinterVisitor::beginVisit( ElementIterator const &i ) {
   thePrinter.startBeginVisit( "ElementIterator", ++theId );
   if ( !i.copyInputNodes() )
-    thePrinter.addAttribute( "copyInputNodes", "false" );
+    thePrinter.addBoolAttribute( "copyInputNodes", false );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
 }
@@ -448,7 +445,7 @@ void PrinterVisitor::beginVisit( ElementIterator const &i ) {
 DEF_END_VISIT( ElementIterator )
 void PrinterVisitor::beginVisit( EnclosedIterator const &i ) {
   thePrinter.startBeginVisit( "EnclosedIterator", ++theId );
-  thePrinter.addAttribute( "attr_cont", i.getAttrContent() ? "true" : "false" );
+  thePrinter.addBoolAttribute( "attr_cont", i.getAttrContent() ? true : false );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
 }
@@ -502,7 +499,7 @@ void PrinterVisitor::beginVisit( LetVarIterator const &i ) {
   if ( i.getVarName() )
     thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().c_str() );
   if ( i.getTargetPos() > numeric_consts<xs_integer>::zero() )
-    thePrinter.addAttribute( "targetPos", i.getTargetPos().toString().c_str() );
+    thePrinter.addNumAttribute( "targetPos", i.getTargetPos() );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
 }
@@ -511,8 +508,8 @@ DEF_END_VISIT( LetVarIterator )
 void PrinterVisitor::beginVisit( NodeDistinctIterator const &i ) {
   thePrinter.startBeginVisit( "NodeDistinctIterator", ++theId );
   printCommons( &i, theId );
-  thePrinter.addAttribute( "allow-atomics", i.getAtomics() ? "true" : "false" );
-  thePrinter.addAttribute( "check-only", i.getCheckDistinct() ? "true" : "false" );
+  thePrinter.addBoolAttribute( "allow-atomics", i.getAtomics() ? true : false );
+  thePrinter.addBoolAttribute( "check-only", i.getCheckDistinct() ? true : false );
   thePrinter.endBeginVisit( theId );
 }
 DEF_END_VISIT( NodeDistinctIterator )
@@ -520,8 +517,8 @@ DEF_END_VISIT( NodeDistinctIterator )
 void PrinterVisitor::beginVisit( NodeSortIterator const &i ) {
   thePrinter.startBeginVisit( "NodeSortIterator", ++theId );
   printCommons( &i, theId );
-  thePrinter.addAttribute( "distinct", i.getDistinct() ? "true" : "false" );
-  thePrinter.addAttribute( "ascending", i.getAscending() ? "true" : "false" );
+  thePrinter.addBoolAttribute( "distinct", i.getDistinct() ? true : false );
+  thePrinter.addBoolAttribute( "ascending", i.getAscending() ? true : false );
   thePrinter.endBeginVisit( theId );
 }
 DEF_END_VISIT( NodeSortIterator )
@@ -569,9 +566,9 @@ void PrinterVisitor::beginVisit( UDFunctionCallIterator const &i ) {
   if ( i.isCached() )
   {
     if (i.isCacheAcrossSnapshots())
-      thePrinter.addAttribute("cached-across-snapshots", "true");
+      thePrinter.addBoolAttribute("cached-across-snapshots", true);
     else
-      thePrinter.addAttribute("cached", "true");
+      thePrinter.addBoolAttribute("cached", true);
   }
   if ( i.theUDF->getSignature().getName() )
     thePrinter.addAttribute( "function", i.theUDF->getSignature().getName()->getStringValue().str() );
@@ -587,9 +584,9 @@ void PrinterVisitor::beginVisit( ExtFunctionCallIterator const &i ) {
   if ( i.isCached() )
   {
     if (i.isCacheAcrossSnapshots())
-      thePrinter.addAttribute("cached-across-snapshots", "true");
+      thePrinter.addBoolAttribute("cached-across-snapshots", true);
     else
-      thePrinter.addAttribute("cached", "true");
+      thePrinter.addBoolAttribute("cached", true);
   }
   printCommons(  &i, theId );
   thePrinter.endBeginVisit( theId );
@@ -616,7 +613,7 @@ beginVisitFlworLetVariable( bool materialize, zstring const &varName,
   thePrinter.startBeginVisit( "LetVariable", ++theId );
 
   thePrinter.addAttribute( "name", varName.str() );
-  thePrinter.addAttribute( "materialize", materialize ? "true" : "false");
+  thePrinter.addBoolAttribute( "materialize", materialize ? true : false);
 
   ostringstream str;
   vector<PlanIter_t>::size_type const numRefs = varRefs.size();

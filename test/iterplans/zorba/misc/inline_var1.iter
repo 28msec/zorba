@@ -26,15 +26,15 @@
       <ReturnClause>
         <IfThenElseIterator>
           <FnBooleanIterator>
-            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill-allowed="false">
               <ForVarIterator varname="x"/>
             </ChildAxisIterator>
           </FnBooleanIterator>
           <GenericArithIterator_AddOperation>
             <PromoteIterator type="xs:anyAtomicType">
               <FnDataIterator>
-                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,att1)" typename="*" nill-allowed="0">
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="0">
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,att1)" typename="*" nill-allowed="false">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="x"/>
                   </ChildAxisIterator>
                 </AttributeAxisIterator>
@@ -45,10 +45,10 @@
           <GenericArithIterator_AddOperation>
             <PromoteIterator type="xs:anyAtomicType">
               <FnDataIterator>
-                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,att2)" typename="*" nill-allowed="0">
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,att2)" typename="*" nill-allowed="false">
                   <FunctionTraceIterator>
                     <TreatIterator quant="">
-                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="0">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="x"/>
                       </ChildAxisIterator>
                     </TreatIterator>

@@ -693,7 +693,7 @@ void UDFunctionCallIterator::accept( PlanIterVisitor &v ) const {
     (*i)->accept( v );
   if ( PrinterVisitor *const pv = dynamic_cast<PrinterVisitor*>( &v ) ) {
     PlanState *const state = pv->getPlanState();
-    if ( state && Properties::instance().getProfile() ) {
+    if ( state && Properties::instance().getCollectProfile() ) {
       UDFunctionCallIteratorState *const udf_state =
         StateTraitsImpl<UDFunctionCallIteratorState>::getState(
           *state, getStateOffset()

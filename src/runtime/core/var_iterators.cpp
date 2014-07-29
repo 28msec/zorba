@@ -655,7 +655,7 @@ ForVarIterator::ForVarIterator(
 void ForVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (NoaryBaseIterator<ForVarIterator, ForVarState>*)this);
-  //ar & theVarName;
+  ar & theVarName;
 }
 
 
@@ -738,7 +738,7 @@ LetVarIterator::LetVarIterator(
 void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (NoaryBaseIterator<LetVarIterator, LetVarState>*)this);
-  // ar & theVarName;
+  ar & theVarName;
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;
