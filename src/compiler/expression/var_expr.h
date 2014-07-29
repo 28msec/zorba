@@ -124,6 +124,7 @@ class var_expr : public expr
 {
   friend class expr;
   friend class ExprManager;
+  friend class VarInfo;
 
 public:
   typedef std::vector<var_set_expr*> VarSetExprs;

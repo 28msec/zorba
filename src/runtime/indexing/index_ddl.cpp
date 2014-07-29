@@ -167,6 +167,7 @@ static void checkKeyType(
 ********************************************************************************/
 static void createIndexSpec(
     IndexDecl* indexDecl,
+    long timezone,
     store::IndexSpecification& spec)
 {
   const std::vector<xqtref_t>& keyTypes(indexDecl->getKeyTypes());
@@ -191,6 +192,7 @@ static void createIndexSpec(
   spec.theIsTemp = indexDecl->isTemp();
   spec.theIsThreadSafe = true;
   spec.theIsAutomatic = indexDecl->getMaintenanceMode() != IndexDecl::MANUAL;
+  spec.theTimezone = timezone;
 
   csize numSources = indexDecl->numSources();
 
@@ -229,7 +231,7 @@ bool CreateInternalIndexIterator::nextImpl(
 
   planIteratorWrapper = new PlanIteratorWrapper(theChild, planState);
 
-  createIndexSpec(indexDecl, spec);
+  createIndexSpec(indexDecl, planState.theLocalDynCtx->get_implicit_timezone(), spec);
 
   try
   {
@@ -302,7 +304,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL, 0, false, 0); 
 
-  createIndexSpec(indexDecl, spec);
+  createIndexSpec(indexDecl, planState.theLocalDynCtx->get_implicit_timezone(), spec);
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 

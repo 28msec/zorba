@@ -2500,7 +2500,7 @@ bool StringAnalyzeStringIterator::nextImpl( store::Item_t& result,
     array_items.push_back( item );
     m_end_prev = m_end;
   }
-  if ( m_end < u_size ) {
+  if ( (utf8_string<zstring const>::size_type)m_end < u_size ) {
     add_json_non_match( u_input, m_end, u_size, &item );
     array_items.push_back( item );
   }

@@ -518,10 +518,11 @@ extern entry const dict_en[] = {
   { "zerr:ZXQP0050", "\"$1\": feature not available" },
   { "zerr:ZXQP0060", "\"$1\": unknown option" },
   { "zerr:ZXQP0061", "\"$1\": this option cannot be specified in a query, it must be set via C++ API or command-line parameter" },
-  { "zerr:ZXQP0062", "\"$1\": annotation requires at least one literal" },
+  { "zerr:ZXQP0062", "\"$1\": annotation $2" },
   { "zerr:ZXQP0063", "\"$1\": is not a valid annotation literal for annotation \"$2\", literal has type $3, whereas the allowed types are: $4" },
   { "zerr:ZXQP0064", "\"$1\": is not a valid argument index for function \"$2\", valid indexes are in the range [1-$3]" },
   { "zerr:ZXQP0065", "\"$1\": is not a valid annotation for function \"$2\", $3" },
+  { "zerr:ZXQP0066", "\"$1\": is not a valid annotation literal for annotation \"$2\", $3" },
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "zerr:ZXQP8401", "\"$1\": wrong WordNet file version; should be \"$2\"" },
 #endif
@@ -1080,6 +1081,10 @@ extern entry const dict_en[] = {
   { "~ZXQD0004_NOT_WITHIN_RANGE", "not within allowed range ($2)" },
   { "~ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes", "TypeOps::is_in_scope() for function-item types" },
   { "~ZXQP0025_RESOURCE_NOT_FOUND", "resource not found" },
+  { "~ZXQP0062_NO_LITERALS", "allows no literals" },
+  { "~ZXQP0062_ONE_LITERAL", "requires exactly one literal" },
+  { "~ZXQP0062_ONE_OR_MORE_LITERALS", "requires one or more literals" },
+  { "~ZXQP0062_ZERO_OR_ONE_LITERALS", "allows at most one literal" },
   { "~ZXQP0065_NO_ARGUMENTS", "function has no arguments" },
   { "~ZeroLenURI", "zero-length URI (and no base URI given)" },
   { "~dynamic error", "dynamic error" },
