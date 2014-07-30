@@ -205,7 +205,10 @@ char const* get_help_msg() {
       "Do not serialize (discard) result.\n\n"
 
     HELP_OPT( "--no-tree-ids" )
-      "Suppress IDs and locations from compiler tree dumps.\n\n"
+      "Suppress IDs and locations in printed iterator trees and profiles.\n\n"
+
+    HELP_OPT( "--no-uncalled-iterators" )
+      "Suppress uncalled iterators in printed profiles.\n\n"
 
     ////////// o //////////////////////////////////////////////////////////////
 
@@ -625,6 +628,8 @@ int parse_args( int argc, char const *argv[] ) {
       zc_props.no_serializer_ = true;
     else if ( IS_LONG_OPT( "--no-tree-ids" ) )
       z_props.setNoTreeIDs( true );
+    else if ( IS_LONG_OPT( "--no-uncalled-iterators" ) )
+      z_props.setNoUncalledIterators( true );
 
     ////////// o //////////////////////////////////////////////////////////////
 

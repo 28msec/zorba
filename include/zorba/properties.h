@@ -218,6 +218,14 @@ public:
     no_tree_ids_ = b;
   }
 
+  bool getNoUncalledIterators() const {
+    return no_uncalled_iterators_;
+  }
+
+  void setNoUncalledIterators( bool b ) {
+    no_uncalled_iterators_ = b;
+  }
+
   unsigned getOptimizationLevel() const {
     return optimization_level_;
   }
@@ -385,6 +393,7 @@ private:
   uint32_t               max_udf_call_depth_;
   bool                   no_copy_optim_;
   bool                   no_tree_ids_;
+  bool                   no_uncalled_iterators_;
   unsigned               optimization_level_;
   Zorba_plan_format_t    plan_format_;
   bool                   print_ast_;

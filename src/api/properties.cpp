@@ -47,6 +47,7 @@ Properties::Properties() {
   max_udf_call_depth_ = 1024;
   no_copy_optim_ = true;
   no_tree_ids_ = false;
+  no_uncalled_iterators_ = false;
   optimization_level_ = 1;
   plan_format_ = PLAN_FORMAT_NONE;
   print_ast_ = false;

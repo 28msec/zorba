@@ -114,11 +114,10 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
 
 bool PrinterVisitor::hasToVisit(PlanIterator const *pi)
 {
-  if (thePlanState && Properties::instance().getCollectProfile())
+  if (thePlanState &&
+      Properties::instance().getCollectProfile() &&
+      Properties::instance().getNoUncalledIterators())
   {
-    /*
-     * We are printing profiling information.
-     */
     PlanIteratorState const *const pi_state =
       StateTraitsImpl<PlanIteratorState>::getState(
         *thePlanState, pi->getStateOffset()
