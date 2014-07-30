@@ -895,8 +895,9 @@ static bool non_hoistable(const expr* e)
         fkind == FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_3)
     {
       DEBUG_SS("is NOT hoistable(2)" <<std::endl<<std::endl );
-    }
       return true;
+    }
+
   }
 
   DEBUG_SS("is hoistable" <<std::endl<<std::endl );

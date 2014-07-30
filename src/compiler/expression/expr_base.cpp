@@ -592,8 +592,6 @@ void expr::setConstructsNodes(BoolAnnotationValue v)
 
 bool expr::constructsNodes() const
 {
-
-
   BoolAnnotationValue v = getConstructsNodes();
   if (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED)
   {

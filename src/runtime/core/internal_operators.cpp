@@ -40,9 +40,11 @@ DEF_GET_NAME_AS_STRING(UnhoistIterator)
 void HoistIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
+  /*
   theInnerPlanState = new PlanState(planState);
   while (!theInnerPlanState->theNodeConstuctionPath.empty())
     theInnerPlanState->theNodeConstuctionPath.pop();
+  */
   theDone = false;
 }
 
@@ -50,18 +52,19 @@ void HoistIteratorState::init(PlanState& planState)
 void HoistIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
+  /*
   delete theInnerPlanState;
 
   theInnerPlanState = new PlanState(planState);
   while (!theInnerPlanState->theNodeConstuctionPath.empty())
     theInnerPlanState->theNodeConstuctionPath.pop();
-
+  */
   theDone = false;
 }
 
 HoistIteratorState::~HoistIteratorState()
 {
-  delete theInnerPlanState;
+  //delete theInnerPlanState;
 }
 
 
