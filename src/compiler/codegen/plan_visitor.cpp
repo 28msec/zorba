@@ -2501,7 +2501,7 @@ void end_visit(fo_expr& v)
 
   if (func->validate_args(argv))
   {
-    DEBUG_SS("Plan_Visitor is checking the enclosed context stack");
+    //DEBUG_SS("Plan_Visitor is checking the enclosed context stack");
     PlanIter_t iter = func->codegen(theCCB, sctx, loc, argv, v);
     ZORBA_ASSERT(iter != NULL);
     push_itstack(iter);
@@ -2518,7 +2518,7 @@ void end_visit(fo_expr& v)
         if (ctx == ATTRIBUTE_CONTENT)
         {
           dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
-          DEBUG_SS("Setting attribute content")
+          //DEBUG_SS("Setting attribute content")
         }
         else if (ctx == TEXT_CONTENT)
           dynamic_cast<EnclosedIterator*>(iter.getp())->setTextContent();

@@ -32,6 +32,7 @@
 #include "util/dynamic_bitset.h"
 
 #include "diagnostics/assert.h"
+#include "zorbautils/debug.h"
 
 
 namespace zorba
@@ -853,6 +854,7 @@ bool HoistRule::contains_var(var_expr* v, const DynamicBitset& varset)
 ********************************************************************************/
 static bool non_hoistable(const expr* e)
 {
+  DEBUG_SS(e->toString());
   expr_kind_t k = e->get_expr_kind();
 
   if (k == var_expr_kind ||
@@ -869,6 +871,7 @@ static bool non_hoistable(const expr* e)
       e->is_sequential() ||
       e->is_updating())
   {
+    DEBUG_SS("is NOT hoistable(0)" <<std::endl<<std::endl );
     return true;
   }
 
@@ -879,7 +882,10 @@ static bool non_hoistable(const expr* e)
     FunctionConsts::FunctionKind fkind = f->getKind();
 
     if (fkind == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
+    {
+      DEBUG_SS("is NOT hoistable(1)" <<std::endl<<std::endl );
       return true;
+    }
 
     if (fkind == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1 ||
         fkind == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_2 ||
@@ -887,9 +893,13 @@ static bool non_hoistable(const expr* e)
         fkind == FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_1 ||
         fkind == FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_2 ||
         fkind == FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_3)
+    {
+      DEBUG_SS("is NOT hoistable(2)" <<std::endl<<std::endl );
+    }
       return true;
   }
 
+  DEBUG_SS("is hoistable" <<std::endl<<std::endl );
   return false;
 }
 
@@ -915,10 +925,16 @@ static bool is_already_hoisted(const expr* e)
 ********************************************************************************/
 static bool is_enclosed_expr(const expr* e)
 {
+  //DEBUG_SS("IS_ENCLOSED_EXPR " << e->toString());
   if (e->get_expr_kind() != fo_expr_kind)
+  {
+    //DEBUG_SS("false");
     return false;
+  }
 
   const function* fn = static_cast<const fo_expr *>(e)->get_func();
+  bool lRes = fn->getKind() == FunctionConsts::OP_ENCLOSED_1;
+  //DEBUG_SS(lRes);
   return (fn->getKind() == FunctionConsts::OP_ENCLOSED_1);
 }
 
