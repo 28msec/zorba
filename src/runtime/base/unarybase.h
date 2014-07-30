@@ -133,6 +133,9 @@ UnaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 #define UNARY_ACCEPT(IterType)                  \
 void IterType::accept(PlanIterVisitor& v) const \
 {                                               \
+  if (!v.hasToVisit(this))                      \
+    return;                                     \
+                                                \
   v.beginVisit(*this);                          \
   theChild->accept(v);                          \
   v.endVisit(*this);                            \

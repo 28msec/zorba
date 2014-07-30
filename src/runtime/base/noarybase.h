@@ -113,6 +113,9 @@ NoaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 #define NOARY_ACCEPT(IterType)                  \
 void IterType::accept(PlanIterVisitor& v) const \
 {                                               \
+  if (!v.hasToVisit(this))                      \
+    return;                                     \
+                                                \
   v.beginVisit(*this);                          \
   v.endVisit(*this);                            \
 }

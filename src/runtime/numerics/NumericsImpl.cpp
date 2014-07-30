@@ -856,6 +856,9 @@ SpecificNumArithIterator<Operations, Type>::SpecificNumArithIterator(
 template < class Operation, store::SchemaTypeCode Type >
 void SpecificNumArithIterator<Operation, Type>::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   this->theChild0->accept(v);
