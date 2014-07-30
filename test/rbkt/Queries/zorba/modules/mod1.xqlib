@@ -1,0 +1,11 @@
+module namespace mod1 = "foo:mod1";
+
+import module namespace mod2 = "foo:mod2" at "mod2.xqlib";
+
+declare function mod1:foo()
+{
+  let $j := { "foo" : 42 }
+  return (
+    mod2:bar(), $bar
+  )
+};

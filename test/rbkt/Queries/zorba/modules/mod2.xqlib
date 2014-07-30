@@ -1,0 +1,13 @@
+module namespace mod2 = "foo:mod2";
+
+import module namespace mod1 = "foo:mod1" at "mod1.xqlib";
+
+declare function mod2:bar()
+{
+  1
+};
+
+declare function mod2:blub()
+{
+  mod1:foo()
+};
