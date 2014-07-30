@@ -47,6 +47,8 @@ static bool is_enclosed_expr(const expr*);
 
 static bool containsUpdates(const expr*);
 
+static bool containsUnhoistableExpression(expr*);
+
 
 /*******************************************************************************
   Used to implement a stack of "intersting" exprs that appear in the path from
@@ -864,12 +866,13 @@ bool HoistRule::contains_var(var_expr* v, const DynamicBitset& varset)
 /*******************************************************************************
 
 ********************************************************************************/
-static bool non_hoistable_rec(expr* e)
+static bool containsUnhoistableExpression(expr* e)
 {
   DEBUG_SS("Visiting: " << e->toString())
   if (is_enclosed_expr(e))
   {
-    e->setConstructsNodes(ANNOTATION_TRUE);
+    //e->setConstructsNodes(ANNOTATION_TRUE);
+    e->setUnhoistable(ANNOTATION_TRUE);
     DEBUG_SS("Would mark : " << e->toString() << " as non hoistable");
     return true;
   }
@@ -880,9 +883,10 @@ static bool non_hoistable_rec(expr* e)
     expr* ce = **iter;
     if (ce)
     {
-      if (non_hoistable_rec(ce))
+      if (containsUnhoistableExpression(ce))
       {
-        e->setConstructsNodes(ANNOTATION_TRUE);
+        //e->setConstructsNodes(ANNOTATION_TRUE);
+        e->setUnhoistable(ANNOTATION_TRUE);
         DEBUG_SS("Would mark : " << e->toString() << " as non hoistable");
         return true;
       }
@@ -906,6 +910,7 @@ static bool non_hoistable(expr* e)
        non_hoistable(static_cast<const wrapper_expr*>(e)->get_input())) ||
       is_already_hoisted(e) ||
       is_enclosed_expr(e) ||
+      e->isUnhoistable() ||
       e->containsRecursiveCall() ||
       e->is_nondeterministic() ||
       e->is_sequential() ||
@@ -917,7 +922,7 @@ static bool non_hoistable(expr* e)
 
   if (k == attr_expr_kind)
   {
-    if (non_hoistable_rec(e))
+    if (containsUnhoistableExpression(e))
     {
       DEBUG_SS("NON HOISTABLE REC")
       return true;
