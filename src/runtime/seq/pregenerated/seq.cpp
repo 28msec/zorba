@@ -46,6 +46,9 @@ void SeqValueIntersectIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SeqValueIntersectIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -90,6 +93,9 @@ void SeqValueUnionIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SeqValueUnionIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -134,6 +140,9 @@ void SeqValueExceptIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SeqValueExceptIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

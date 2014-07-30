@@ -109,6 +109,9 @@ void IfThenElseIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void IfThenElseIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
   theCondIter->accept(v);
   theThenIter->accept(v);

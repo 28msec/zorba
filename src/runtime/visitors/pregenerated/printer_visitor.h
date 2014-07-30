@@ -49,7 +49,11 @@ namespace zorba {
     PlanState* getPlanState() const { return thePlanState; }
     void setPlanState( PlanState *s ) { thePlanState = s; }
     void print();
+    bool hasToVisit(PlanIterator const *pi);
+  private:
     void printCommons(const PlanIterator* aIter, int theId);
+
+  public:
 
 #include "runtime/visitors/plan_iter_visitor_impl.h"
 

@@ -46,6 +46,9 @@ void NodeNameIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void NodeNameIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -78,6 +81,9 @@ void NilledIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void NilledIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -112,6 +118,9 @@ void FnStringIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnStringIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -158,6 +167,9 @@ void FnDataIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnDataIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -204,6 +216,9 @@ void BaseUriIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void BaseUriIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -236,6 +251,9 @@ void DocumentUriIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void DocumentUriIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -268,6 +286,9 @@ void RootIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void RootIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

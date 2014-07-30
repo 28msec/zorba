@@ -45,6 +45,9 @@ void AbsIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void AbsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -77,6 +80,9 @@ void CeilingIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void CeilingIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -109,6 +115,9 @@ void FloorIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FloorIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -141,6 +150,9 @@ void RoundIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void RoundIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -173,6 +185,9 @@ void RoundHalfToEvenIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void RoundHalfToEvenIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -205,6 +220,9 @@ void FormatNumberIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FormatNumberIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -237,6 +255,9 @@ void FormatIntegerIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FormatIntegerIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

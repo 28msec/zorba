@@ -45,6 +45,9 @@ void IsSameNodeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void IsSameNodeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -77,6 +80,9 @@ void NodeBeforeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void NodeBeforeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -109,6 +115,9 @@ void NodeAfterIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void NodeAfterIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

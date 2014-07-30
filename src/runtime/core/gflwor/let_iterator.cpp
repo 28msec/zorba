@@ -70,6 +70,9 @@ void LetIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void LetIterator::accept(PlanIterVisitor& v) const 
 { 
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this); 
 
   v.beginVisitFlworLetVariable(theNeedsMat, 

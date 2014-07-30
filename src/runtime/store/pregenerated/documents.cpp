@@ -46,6 +46,9 @@ void AvailableDocumentsIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void AvailableDocumentsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -80,6 +83,9 @@ void IsAvailableDocumentIterator::serialize(::zorba::serialization::Archiver& ar
 
 void IsAvailableDocumentIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -112,6 +118,9 @@ void PutDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void PutDocumentIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -144,6 +153,9 @@ void RemoveDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void RemoveDocumentIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -176,6 +188,9 @@ void RetrieveDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void RetrieveDocumentIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

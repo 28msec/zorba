@@ -1849,6 +1849,9 @@ uint32_t FLWORIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 void FLWORIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<ForLetClause>::const_iterator iter = theForLetClauses.begin();

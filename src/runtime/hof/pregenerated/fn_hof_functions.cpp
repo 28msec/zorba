@@ -49,6 +49,9 @@ void FunctionLookupIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FunctionLookupIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -81,6 +84,9 @@ void FunctionNameIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FunctionNameIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -113,6 +119,9 @@ void FunctionArityIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FunctionArityIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -145,6 +154,9 @@ void FnForEachPairIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnForEachPairIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -181,6 +193,9 @@ void FnFoldLeftIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnFoldLeftIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
