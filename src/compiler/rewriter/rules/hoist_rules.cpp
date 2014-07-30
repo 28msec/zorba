@@ -905,7 +905,7 @@ static bool non_hoistable(expr* e)
   }
 
   if (k == attr_expr_kind && containsUnhoistableExpression(e))
-      return true;
+    return true;
 
   if (k == fo_expr_kind)
   {
