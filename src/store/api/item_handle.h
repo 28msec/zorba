@@ -16,6 +16,10 @@
 #ifndef ZORBA_STORE_ITEM_HANDLE_H
 #define ZORBA_STORE_ITEM_HANDLE_H
 
+#include <string>
+#include <sstream>
+
+
 namespace zorba 
 {
 
