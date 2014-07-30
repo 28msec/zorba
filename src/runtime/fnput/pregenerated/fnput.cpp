@@ -45,6 +45,9 @@ void FnPutIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnPutIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

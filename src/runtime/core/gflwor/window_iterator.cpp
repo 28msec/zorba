@@ -703,6 +703,9 @@ uint32_t WindowIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 void WindowIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   v.beginVisitWindowVariable(theVarName->getStringValue().str(), theVarRefs);

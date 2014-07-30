@@ -75,7 +75,10 @@ declare function local:create-class() as xs:string
     gen:indent(2),'PlanState* getPlanState() const { return thePlanState; }',$gen:newline,
     gen:indent(2),'void setPlanState( PlanState *s ) { thePlanState = s; }',$gen:newline,
     gen:indent(2),'void print();',$gen:newline,
+    gen:indent(2),'bool hasToVisit(PlanIterator const *pi);',$gen:newline,
+    $gen:indent,'private:',$gen:newline,
     gen:indent(2),'void printCommons(const PlanIterator* aIter, int theId);',$gen:newline, $gen:newline,
+    $gen:indent,'public:',$gen:newline, $gen:newline,
     (: temporarily included until all iterators are generated :)
     '#include "runtime/visitors/plan_iter_visitor_impl.h"'
   )
@@ -85,8 +88,8 @@ declare function local:create-fwd-decl() as xs:string
 {
   concat(
     $gen:indent, 'class PlanIterator;', $gen:newline,
-    $gen:indent, 'class PlanState;', $gen:newline,
-    $gen:indent,'class IterPrinter;', $gen:newline
+    $gen:indent, 'class PlanState;',    $gen:newline,
+    $gen:indent, 'class IterPrinter;',  $gen:newline
   )
 };
 

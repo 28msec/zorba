@@ -112,6 +112,22 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
   }
 }
 
+bool PrinterVisitor::hasToVisit(PlanIterator const *pi)
+{
+  if (thePlanState && Properties::instance().getCollectProfile())
+  {
+    /*
+     * We are printing profiling information.
+     */
+    PlanIteratorState const *const pi_state =
+      StateTraitsImpl<PlanIteratorState>::getState(
+        *thePlanState, pi->getStateOffset()
+      );
+    profile_data const &pd = pi_state->get_profile_data();
+    return pd.next_.call_count_;
+  }
+  return true;
+}
 void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
   thePrinter.addAttribute("test-kind", toString(a->getTestKind()));
 

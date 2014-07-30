@@ -255,6 +255,9 @@ bool CreateInternalIndexIterator::nextImpl(
 
 void CreateInternalIndexIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -319,6 +322,9 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
 void CreateIndexIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -376,6 +382,9 @@ bool DeleteIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
 void DeleteIndexIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -446,6 +455,9 @@ bool RefreshIndexIterator::nextImpl(
 
 void RefreshIndexIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -813,6 +825,9 @@ store::IndexCondition_t ProbeIndexPointValueIterator::createCondition(
 
 void ProbeIndexPointValueIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -985,6 +1000,9 @@ void ProbeIndexPointGeneralIterator::createCondition(
 
 void ProbeIndexPointGeneralIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1322,6 +1340,9 @@ store::IndexCondition_t ProbeIndexRangeValueIterator::createCondition(
 
 void ProbeIndexRangeValueIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1724,6 +1745,9 @@ bool ProbeIndexRangeGeneralIterator::getSearchItems(
 
 void ProbeIndexRangeGeneralIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

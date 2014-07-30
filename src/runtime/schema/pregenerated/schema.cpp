@@ -43,6 +43,9 @@ SERIALIZABLE_CLASS_VERSIONS(ValidateIterator)
 
 void ValidateIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -71,6 +74,9 @@ void ZorbaValidateInPlaceIterator::serialize(::zorba::serialization::Archiver& a
 
 void ZorbaValidateInPlaceIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -99,6 +105,9 @@ void ZorbaSchemaTypeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ZorbaSchemaTypeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -131,6 +140,9 @@ void ZorbaIsValidatedIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ZorbaIsValidatedIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

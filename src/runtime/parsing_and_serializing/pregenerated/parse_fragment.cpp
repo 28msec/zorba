@@ -45,6 +45,9 @@ void FnZorbaParseXmlFragmentIterator::serialize(::zorba::serialization::Archiver
 
 void FnZorbaParseXmlFragmentIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -85,6 +88,9 @@ void FnZorbaCanonicalizeIterator::serialize(::zorba::serialization::Archiver& ar
 
 void FnZorbaCanonicalizeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -125,6 +131,9 @@ void FnParseXmlFragmentIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnParseXmlFragmentIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

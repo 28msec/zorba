@@ -617,6 +617,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 void CtxVarIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   if (theTargetPosIter != NULL)
@@ -1093,6 +1096,9 @@ uint32_t LetVarIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 void LetVarIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   if (theTargetPosIter != NULL)

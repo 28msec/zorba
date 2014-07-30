@@ -46,6 +46,9 @@ void FnConcatIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnConcatIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -84,6 +87,9 @@ void FnIndexOfIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnIndexOfIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -134,6 +140,9 @@ void FnEmptyIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnEmptyIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -166,6 +175,9 @@ void FnExistsIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnExistsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -198,6 +210,9 @@ void FnDistinctValuesIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnDistinctValuesIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -239,6 +254,9 @@ void FnInsertBeforeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnInsertBeforeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -289,6 +307,9 @@ void FnRemoveIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnRemoveIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -339,6 +360,9 @@ void FnReverseIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnReverseIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -375,6 +399,9 @@ void FnSubsequenceIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnSubsequenceIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -423,6 +450,9 @@ void SubsequenceIntIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SubsequenceIntIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -471,6 +501,9 @@ void SequencePointAccessIterator::serialize(::zorba::serialization::Archiver& ar
 
 void SequencePointAccessIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -519,6 +552,9 @@ void FnZeroOrOneIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnZeroOrOneIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -551,6 +587,9 @@ void FnOneOrMoreIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnOneOrMoreIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -586,6 +625,9 @@ void FnExactlyOneIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnExactlyOneIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -618,6 +660,9 @@ void FnDeepEqualIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnDeepEqualIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -652,6 +697,9 @@ void HashSemiJoinIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void HashSemiJoinIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -684,6 +732,9 @@ void SortSemiJoinIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SortSemiJoinIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -716,6 +767,9 @@ void FnCountIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnCountIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -748,6 +802,9 @@ void FnAvgIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnAvgIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -780,6 +837,9 @@ void FnSumIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnSumIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -812,6 +872,9 @@ void FnSumDoubleIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnSumDoubleIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -844,6 +907,9 @@ void FnSumFloatIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnSumFloatIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -876,6 +942,9 @@ void FnSumDecimalIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnSumDecimalIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -908,6 +977,9 @@ void FnSumIntegerIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnSumIntegerIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -940,6 +1012,9 @@ void OpToIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void OpToIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -990,6 +1065,9 @@ void FnIdIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnIdIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1026,6 +1104,9 @@ void FnElementWithIdIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnElementWithIdIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1062,6 +1143,9 @@ void FnIdRefIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnIdRefIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1098,6 +1182,9 @@ void FnDocIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnDocIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1130,6 +1217,9 @@ void FnDocAvailableIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnDocAvailableIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1162,6 +1252,9 @@ void FnAvailableEnvironmentVariablesIterator::serialize(::zorba::serialization::
 
 void FnAvailableEnvironmentVariablesIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1198,6 +1291,9 @@ void FnEnvironmentVariableIterator::serialize(::zorba::serialization::Archiver& 
 
 void FnEnvironmentVariableIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1230,6 +1326,9 @@ void FnUnparsedTextIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FnUnparsedTextIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1262,6 +1361,9 @@ void FnUnparsedTextAvailableIterator::serialize(::zorba::serialization::Archiver
 
 void FnUnparsedTextAvailableIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -1294,6 +1396,9 @@ void FnUnparsedTextLinesIterator::serialize(::zorba::serialization::Archiver& ar
 
 void FnUnparsedTextLinesIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

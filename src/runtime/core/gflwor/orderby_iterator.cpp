@@ -244,6 +244,9 @@ uint32_t OrderByIterator::getStateSizeOfSubtree() const
   
 void OrderByIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   ulong numVars = (ulong)theInputForVars.size();

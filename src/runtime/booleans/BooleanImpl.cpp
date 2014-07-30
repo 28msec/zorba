@@ -1071,6 +1071,9 @@ void TypedValueCompareIterator<ATC>::serialize(::zorba::serialization::Archiver&
 template <store::SchemaTypeCode ATC>
 void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator iter =  this->theChildren.begin();

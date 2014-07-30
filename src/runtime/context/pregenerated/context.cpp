@@ -45,6 +45,9 @@ void CurrentDateTimeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void CurrentDateTimeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -77,6 +80,9 @@ void CurrentDateIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void CurrentDateIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -109,6 +115,9 @@ void CurrentTimeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void CurrentTimeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -141,6 +150,9 @@ void ImplicitTimezoneIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ImplicitTimezoneIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -173,6 +185,9 @@ void DefaultCollationIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void DefaultCollationIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

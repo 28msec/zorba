@@ -720,6 +720,9 @@ bool NumArithIterator<Operation>::nextImpl(
 template <class Operation>
 void NumArithIterator<Operation>::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   this->theChild0->accept(v);

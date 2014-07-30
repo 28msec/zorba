@@ -42,7 +42,8 @@ declare function local:create-class() as xs:string
     ' */', $gen:newline,
     'class PlanIterVisitor {', $gen:newline,
     'public:', $gen:newline,
-    '  virtual ~PlanIterVisitor() { }', $gen:newline, $gen:newline,
+    '  virtual ~PlanIterVisitor() { }', $gen:newline, 
+    '  virtual bool hasToVisit(PlanIterator const *) { return true; }', $gen:newline, $gen:newline,
     '#include "runtime/visitors/plan_iter_visitor_decl.h"', $gen:newline
   )
 };

@@ -47,6 +47,9 @@ void CurrentCompareOptionsIterator::serialize(::zorba::serialization::Archiver& 
 
 void CurrentCompareOptionsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -80,6 +83,9 @@ void CurrentLangIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void CurrentLangIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -113,6 +119,9 @@ void HostLangIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void HostLangIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -146,6 +155,9 @@ void IsStemLangSupportedIterator::serialize(::zorba::serialization::Archiver& ar
 
 void IsStemLangSupportedIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -179,6 +191,9 @@ void IsStopWordIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void IsStopWordIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -212,6 +227,9 @@ void IsStopWordLangSupportedIterator::serialize(::zorba::serialization::Archiver
 
 void IsStopWordLangSupportedIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -245,6 +263,9 @@ void IsThesaurusLangSupportedIterator::serialize(::zorba::serialization::Archive
 
 void IsThesaurusLangSupportedIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -278,6 +299,9 @@ void IsTokenizerLangSupportedIterator::serialize(::zorba::serialization::Archive
 
 void IsTokenizerLangSupportedIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -311,6 +335,9 @@ void StemIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void StemIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -344,6 +371,9 @@ void StripDiacriticsIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void StripDiacriticsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -377,6 +407,9 @@ void ThesaurusLookupIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ThesaurusLookupIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -418,6 +451,9 @@ void TokenizeNodeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void TokenizeNodeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -459,6 +495,9 @@ void TokenizeNodesIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void TokenizeNodesIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -500,6 +539,9 @@ void TokenizerPropertiesIterator::serialize(::zorba::serialization::Archiver& ar
 
 void TokenizerPropertiesIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -533,6 +575,9 @@ void TokenizeStringIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void TokenizeStringIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

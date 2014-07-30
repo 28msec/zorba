@@ -202,6 +202,9 @@ uint32_t GroupByIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 void GroupByIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
       
   theTupleIter->accept(v);
