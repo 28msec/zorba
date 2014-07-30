@@ -861,6 +861,7 @@ static bool containsUnhoistableExpression(expr* e)
     return true;
   }
 
+  bool containsUnhoistable = false;
   ExprIterator iter(e);
   while(!iter.done())
   {
@@ -870,12 +871,12 @@ static bool containsUnhoistableExpression(expr* e)
       if (containsUnhoistableExpression(ce))
       {
         e->setUnhoistable(ANNOTATION_TRUE);
-        return true;
+        containsUnhoistable = true;
       }
     }
     iter.next();
   }
-  return false;
+  return containsUnhoistable;
 }
 
 
