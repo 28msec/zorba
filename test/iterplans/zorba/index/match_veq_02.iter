@@ -8,7 +8,7 @@
         <ForVarIterator varname="$$context-item"/>
         <CastIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="false">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
@@ -29,7 +29,7 @@
         <ForVarIterator varname="$$context-item"/>
         <CastIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="false">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
@@ -102,7 +102,7 @@
       </ApplyIterator>
       <FLWORIterator>
         <ForVariable name="s">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill-allowed="false">
             <CtxVarIterator varid="6" varname="doc" varkind="global"/>
           </ChildAxisIterator>
         </ForVariable>
@@ -158,7 +158,7 @@
                 <LetVarIterator varname="id"/>
                 <SingletonIterator value="xs:string(no session with the given uuid)"/>
               </TraceIterator>
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill-allowed="false">
                 <LetVarIterator varname="session"/>
               </ChildAxisIterator>
             </IfThenElseIterator>

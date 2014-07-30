@@ -1807,15 +1807,30 @@ getExternalVariableAnnotations( Item const &api_qname,
                                 std::vector<Annotation_t> &result ) const {
   store::Item const *const qname = Unmarshaller::getInternalItem( api_qname );
   VarInfo const *const var_info = theCtx->lookup_var( qname );
-  if ( var_info && var_info->isExternal() ) {
-    if ( var_expr const *const var_expr = var_info->getVar() ) {
-      AnnotationList const &annotation_list = var_expr->get_annotations();
-      AnnotationList::size_type const n = annotation_list.size();
-      result.clear();
-      for ( AnnotationList::size_type i = 0; i < n; ++i )
-        result.push_back( new AnnotationImpl( annotation_list.get( i ) ) );
-      return !!n;
-    }
+  if ( var_info && var_info->isExternal() )
+  {
+    AnnotationList const &annotation_list = var_info->getAnnotations();
+    AnnotationList::size_type const n = annotation_list.size();
+    result.clear();
+    for ( AnnotationList::size_type i = 0; i < n; ++i )
+      result.push_back( new AnnotationImpl( annotation_list.get( i ) ) );
+    return !!n;
+  }
+  return false;
+}
+
+bool StaticContextImpl::
+getExternalVariableQuantifier(Item const& var_name, SequenceType::Quantifier& result) const
+{
+  store::Item const *const qname = Unmarshaller::getInternalItem(var_name);
+  VarInfo const *const var_info = theCtx->lookup_var(qname);
+  if (var_info && var_info->isExternal())
+  {
+    if (!var_info->getType())
+      result = SequenceType::QUANT_STAR;
+    else
+      result = var_info->getType()->get_quantifier();
+    return true;
   }
   return false;
 }

@@ -649,7 +649,7 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    * @throw ZorbaException if an error occured.
    */
   virtual void
-	getExternalVariables(Iterator_t& aVarsIter) const = 0;
+  getExternalVariables(Iterator_t& aVarsIter) const = 0;
 
   /** \brief Gets the Annotations (if any) for the given external variable.
    *
@@ -662,6 +662,15 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   virtual bool
   getExternalVariableAnnotations( Item const &var_name,
                                   std::vector<Annotation_t> &result ) const = 0;
+
+  /** \brief Gets the given external variable quantifier.
+   *
+   * @param var_name The QName of the variable.
+   * @return Returns \c true only if the given external variable exists.
+   */
+  virtual bool
+  getExternalVariableQuantifier(Item const & var_name,
+      SequenceType::Quantifier& result) const = 0;
 
   /**
    * @brief Set the URI lookup path (list of filesystem directories) for this

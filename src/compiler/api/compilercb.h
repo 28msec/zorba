@@ -218,8 +218,6 @@ public:
 
   uint32_t                  theTimeout;
 
-  uint32_t                  theTempIndexCounter;
-
   uint8_t                   theNextVisitId;
 
   config                    theConfig;

@@ -20,6 +20,8 @@
 #include <cassert>
 #include <cstring>                      /* for memset(3) */
 
+#include <zorba/internal/ztd.h>
+
 #include "shared_types.h"
 
 #include "store/api/item.h"
@@ -39,14 +41,14 @@ class TextNodeContent
 private:
   union
   {
-    char        text[ sizeof( zstring ) ];
+    internal::ztd::raw_buf<zstring> text;
     store::Item *value;
   }
   theContent;
 
   static zstring* string_of( TextNodeContent const &tnc ) {
     return const_cast<zstring*>(
-      reinterpret_cast<zstring const*>( tnc.theContent.text )
+      reinterpret_cast<zstring const*>( &tnc.theContent.text )
     );
   }
 

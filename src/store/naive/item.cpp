@@ -40,6 +40,10 @@ namespace store
 {
 
 
+Item::~Item() {
+  // out-of-line since it's virtual
+}
+
 void Item::free()
 {
   delete this;

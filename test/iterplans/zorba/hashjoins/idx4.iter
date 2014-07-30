@@ -2,7 +2,7 @@
   <FunctionTraceIterator>
     <FLWORIterator>
       <LetVariable name="e" materialize="true">
-        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,r2)" typename="*" nill-allowed="0" target_position="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,r2)" typename="*" nill-allowed="false" target_position="0">
           <ElementIterator>
             <SingletonIterator value="xs:QName(,,r1)"/>
             <FnConcatIterator/>
@@ -34,7 +34,7 @@
         </HoistIterator>
       </ForVariable>
       <LetVariable name="parent" materialize="true">
-        <ParentAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="0">
+        <ParentAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="false">
           <LetVarIterator varname="e"/>
         </ParentAxisIterator>
       </LetVariable>

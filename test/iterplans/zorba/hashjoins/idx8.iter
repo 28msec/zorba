@@ -16,9 +16,9 @@
       </HoistIterator>
     </LetVariable>
     <LetVariable name="fs" materialize="true">
-      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,function)" typename="*" nill-allowed="0">
-        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,functions)" typename="*" nill-allowed="0">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,xqdoc)" typename="*" nill-allowed="0">
+      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,function)" typename="*" nill-allowed="false">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,functions)" typename="*" nill-allowed="false">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,xqdoc)" typename="*" nill-allowed="false">
             <FnDocIterator>
               <SingletonIterator value="xs:string(xqdoc.xml)"/>
             </FnDocIterator>
@@ -34,7 +34,7 @@
     </ForVariable>
     <LetVariable name="$$opt_temp_2" materialize="true">
       <HoistIterator>
-        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,invoked)" typename="*" nill-allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,invoked)" typename="*" nill-allowed="false">
           <ForVarIterator varname="function"/>
         </ChildAxisIterator>
       </HoistIterator>
@@ -52,7 +52,7 @@
               <ForVarIterator varname="$$opt_temp_3"/>
               <FnStringIterator>
                 <TreatIterator quant="?">
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,uri)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,uri)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="$$opt_temp_3"/>
                   </ChildAxisIterator>
                 </TreatIterator>
@@ -64,8 +64,8 @@
     </LetVariable>
     <LetVariable name="$$opt_temp_1" materialize="true">
       <HoistIterator>
-        <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="0">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,name)" typename="*" nill-allowed="0">
+        <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="false">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.xqdoc.org/1.0,xqdoc,name)" typename="*" nill-allowed="false">
             <ForVarIterator varname="function"/>
           </ChildAxisIterator>
         </ChildAxisIterator>

@@ -7,7 +7,7 @@
           <FLWORIterator>
             <ForVariable name="f">
               <NodeDistinctIterator allow-atomics="false" check-only="false">
-                <DescendantAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="0">
+                <DescendantAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="false">
                   <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                     <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
                   </TreatIterator>
@@ -16,13 +16,13 @@
             </ForVariable>
             <WhereClause>
               <FnBooleanIterator>
-                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="0">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="false">
                   <ForVarIterator varname="f"/>
                 </ChildAxisIterator>
               </FnBooleanIterator>
             </WhereClause>
             <ReturnClause>
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="0" target_position="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="false" target_position="0">
                 <ForVarIterator varname="f"/>
               </ChildAxisIterator>
             </ReturnClause>
@@ -33,7 +33,7 @@
             <FLWORIterator>
               <ForVariable name="$$context-item">
                 <NodeDistinctIterator allow-atomics="false" check-only="false">
-                  <DescendantSelfAxisIterator test-kind="match_anykind_test" qname="*" typename="*" nill-allowed="0">
+                  <DescendantSelfAxisIterator test-kind="match_anykind_test" qname="*" typename="*" nill-allowed="false">
                     <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                       <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
                     </TreatIterator>
@@ -41,7 +41,7 @@
                 </NodeDistinctIterator>
               </ForVariable>
               <ReturnClause>
-                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="0" target_position="0">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="false" target_position="0">
                   <ForVarIterator varname="$$context-item"/>
                 </ChildAxisIterator>
               </ReturnClause>

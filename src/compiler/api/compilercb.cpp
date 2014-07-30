@@ -120,7 +120,6 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theIsSequential(false),
   theHaveTimeout(false),
   theTimeout(timeout),
-  theTempIndexCounter(0),
   theNextVisitId(1),
   theEM(new ExprManager(this)),
   theCommonLanguageEnabled(false)
@@ -150,7 +149,6 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theIsSequential(false),
   theHaveTimeout(cb.theHaveTimeout),
   theTimeout(cb.theTimeout),
-  theTempIndexCounter(0),
   theNextVisitId(cb.theNextVisitId+1),
   theConfig(cb.theConfig),
   theEM(new ExprManager(this)),
@@ -213,7 +211,6 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
   ar & theConfig;
   ar & theHaveTimeout;
   ar & theTimeout;
-  ar & theTempIndexCounter;
   ar & theCommonLanguageEnabled;
 }
 

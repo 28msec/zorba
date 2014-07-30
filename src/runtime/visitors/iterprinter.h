@@ -25,6 +25,7 @@
 // Zorba
 #include <zorba/internal/ztd.h>
 #include "common/common.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/schema_types.h"
 
 namespace zorba {
@@ -42,9 +43,11 @@ public:
   virtual void startBeginVisit( char const *name, int addr ) = 0;
   virtual void endBeginVisit( int addr ) = 0;
 
-  virtual void addAttribute( char const *name, char const *value ) = 0;
-  virtual void addAttribute( char const *name, xs_long value ) = 0;
+  virtual void addBoolAttribute( char const *name, bool value ) = 0;
+  virtual void addNumAttribute( char const *name, xs_long value ) = 0;
+  virtual void addNumAttribute( char const *name, xs_integer value ) = 0;
 
+  virtual void addAttribute( char const *name, char const *value ) = 0;
   template<class ValueType>
   typename std::enable_if<ZORBA_HAS_C_STR(ValueType),void>::type
   addAttribute( char const *name, ValueType const &value ) {
@@ -72,8 +75,11 @@ public:
   void startBeginVisit( char const *name, int addr );
   void endBeginVisit( int addr );
 
+  void addBoolAttribute( char const *name, bool value );
+  void addNumAttribute( char const *name, xs_long value );
+  void addNumAttribute( char const *name, xs_integer value );
   void addAttribute( char const *name, char const *value );
-  void addAttribute( char const *name, xs_long value );
+
 
   void startEndVisit();
   void endEndVisit();
@@ -96,8 +102,10 @@ public:
   void startBeginVisit( char const *name, int addr );
   void endBeginVisit( int addr );
 
+  void addBoolAttribute( char const *name, bool value );
+  void addNumAttribute( char const *name, xs_long value );
+  void addNumAttribute( char const *name, xs_integer value );
   void addAttribute( char const *name, char const *value );
-  void addAttribute( char const *name, xs_long value );
 
   void startEndVisit();
   void endEndVisit();
@@ -119,8 +127,11 @@ public:
   void startBeginVisit( char const *name, int addr );
   void endBeginVisit( int addr );
 
+  void addBoolAttribute( char const *name, bool value );
+  void addNumAttribute( char const *name, xs_long value );
+  void addNumAttribute( char const *name, xs_integer value );
   void addAttribute( char const *name, char const *value );
-  void addAttribute( char const *name, xs_long value );
+
 
   void startEndVisit();
   void endEndVisit();

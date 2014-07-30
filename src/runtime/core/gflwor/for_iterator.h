@@ -79,7 +79,7 @@ public:
     ar & theHasPosVars;
     ar & theVarRefs;
     ar & thePosVarRefs;
-	}
+  }
 
 public:
   ForIterator(

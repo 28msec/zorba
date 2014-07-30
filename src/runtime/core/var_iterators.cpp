@@ -636,6 +636,10 @@ void CtxVarIterator::accept(PlanIterVisitor& v) const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+ForVarState::~ForVarState() {
+  // out-of-line since it's virtual
+}
+
 
 ForVarIterator::ForVarIterator(
     static_context* sctx,
@@ -651,7 +655,7 @@ ForVarIterator::ForVarIterator(
 void ForVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (NoaryBaseIterator<ForVarIterator, ForVarState>*)this);
-  //ar & theVarName;
+  ar & theVarName;
 }
 
 
@@ -734,7 +738,7 @@ LetVarIterator::LetVarIterator(
 void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (NoaryBaseIterator<LetVarIterator, LetVarState>*)this);
-  // ar & theVarName;
+  ar & theVarName;
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;

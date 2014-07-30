@@ -1,6 +1,6 @@
 <iterator-tree description="main query">
   <NodeSortIterator distinct="true" ascending="true">
-    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="0">
+    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="false">
       <FLWORIterator>
         <ForVariable name="x">
           <ElementIterator>

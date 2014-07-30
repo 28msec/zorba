@@ -7,17 +7,17 @@
     </LetVariable>
     <LetVariable name="$$opt_temp_0" materialize="true">
       <HoistIterator>
-        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill-allowed="0">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill-allowed="false">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="false">
             <LetVarIterator varname="auction"/>
           </ChildAxisIterator>
         </ChildAxisIterator>
       </HoistIterator>
     </LetVariable>
     <ForVariable name="p">
-      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill-allowed="0">
-        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill-allowed="0">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="0">
+      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill-allowed="false">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill-allowed="false">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="false">
             <LetVarIterator varname="auction"/>
           </ChildAxisIterator>
         </ChildAxisIterator>
@@ -26,8 +26,8 @@
     <LetVariable name="$$opt_temp_2" materialize="true">
       <HoistIterator>
         <FnDataIterator>
-          <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="0">
-            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="false">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="false">
               <ForVarIterator varname="p"/>
             </ChildAxisIterator>
           </ChildAxisIterator>
@@ -37,7 +37,7 @@
     <LetVariable name="$$opt_temp_1" materialize="true">
       <HoistIterator>
         <FnDataIterator>
-          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
+          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="false">
             <ForVarIterator varname="p"/>
           </AttributeAxisIterator>
         </FnDataIterator>
@@ -49,7 +49,7 @@
       </UnhoistIterator>
     </ForVariable>
     <ForVariable name="t">
-      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill-allowed="0">
+      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill-allowed="false">
         <ForVarIterator varname="a"/>
       </ChildAxisIterator>
     </ForVariable>
@@ -58,8 +58,8 @@
         <TypedValueCompareIterator_STRING>
           <PromoteIterator type="xs:anyAtomicType">
             <FnDataIterator>
-              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill-allowed="0">
-                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,buyer)" typename="*" nill-allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill-allowed="false">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,buyer)" typename="*" nill-allowed="false">
                   <ForVarIterator varname="t"/>
                 </ChildAxisIterator>
               </AttributeAxisIterator>

@@ -721,9 +721,12 @@ XQuery_t XQueryImpl::clone() const
 
 void XQueryImpl::dispose( PlanWrapper_t const &plan ) {
   theExecuting = false;
-  if ( Properties::instance().getProfile() )
-    plan->profile();
-  plan->close();
+  if (plan->isOpen())
+  {
+    if ( Properties::instance().getProfileFormat() != PROFILE_FORMAT_NONE )
+      plan->profile();
+    plan->close();
+  }
 }
 
 /*******************************************************************************
@@ -1557,7 +1560,7 @@ void XQueryImpl::printPlan(std::ostream& aStream, bool aDotFormat) const
     else
       lPrinter.reset(new XMLIterPrinter(aStream));
     print_iter_plan(*(lPrinter.get()),
-                    static_cast<PlanIterator*>(thePlanProxy->theRootIter.getp()));
+        static_cast<PlanIterator*>(thePlanProxy->theRootIter.getp()));
   }
   QUERY_CATCH
 }
@@ -1659,7 +1662,6 @@ void XQueryImpl::printPlan(std::ostream& aStream, Zorba_plan_format_t format) co
   }
   QUERY_CATCH
 }
-
 
 /*******************************************************************************
 

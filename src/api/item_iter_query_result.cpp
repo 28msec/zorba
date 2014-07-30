@@ -99,7 +99,7 @@ ResultIteratorImpl::~ResultIteratorImpl()
   {
     if (theIsOpen && thePlan)
     {
-      thePlan->close();
+      theQuery->dispose(thePlan);
     }
 
     SYNC_CODE(
@@ -195,11 +195,9 @@ void ResultIteratorImpl::close()
     if (!theIsOpen)  
       throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
 
-    thePlan->close();
-
     theIsOpen = false;
 
-    theQuery->theExecuting = false;
+    theQuery->dispose(thePlan);
 
     SYNC_CODE(
     if (theHaveLock)
@@ -219,8 +217,11 @@ void ResultIteratorImpl::closeInternal()
 {
   if (theIsOpen)
   {
-    thePlan->close();
-    thePlan = NULL;
+    if (thePlan)
+    {
+      theQuery->dispose(thePlan);
+      thePlan = NULL;
+    }
 
     theIsOpen = false;
   }

@@ -185,12 +185,12 @@ void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
     );
   }
 
-  if (0 < pos && pos <= theItems.size())
-	{
+  if (0 < pos && static_cast<unsigned int>(pos) <= theItems.size())
+  {
     res = theItems[static_cast<unsigned int>(pos) - 1];
   }
   else
-	{
+  {
     res = NULL;
   }
 }
@@ -214,7 +214,7 @@ bool SimpleTempSeq::containsItem(xs_integer position)
     );
   }
 
-  return 0 < pos && pos <= theItems.size();
+  return 0 < pos && static_cast<unsigned int>(pos) <= theItems.size();
 }
 
 
