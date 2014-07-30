@@ -31,8 +31,7 @@
 %skeleton "lalr1.cc"  /*  -*- C++ -*- */
 %require "2.4"
 %defines
-%name-prefix="zorba"
-%pure-parser
+%name-prefix "zorba"
 %error-verbose
 
 
@@ -45,9 +44,9 @@
 
 
 #ifdef XQUERY_PARSER
-%define "parser_class_name" "xquery_parser"
+%define "parser_class_name" { xquery_parser }
 #else
-%define "parser_class_name" "jsoniq_parser"
+%define "parser_class_name" { jsoniq_parser }
 #endif
 
 
@@ -4635,21 +4634,21 @@ NumericLiteral :
             $$ = NumericLiteral::new_literal(
                 LOC(@$), ParseConstants::num_decimal, *$1
             );
-            delete yylval.decval;
+            delete yylhs.value.decval;
         }
     |   INTEGER_LITERAL
         {
             $$ = NumericLiteral::new_literal(
                 LOC(@$), ParseConstants::num_integer, *$1
             );
-            delete yylval.ival;
+            delete yylhs.value.ival;
         }
     |   DOUBLE_LITERAL
         {
             $$ = NumericLiteral::new_literal(
                 LOC(@$), ParseConstants::num_double, *$1
             );
-            delete yylval.dval;
+            delete yylhs.value.dval;
         }
     ;
 
