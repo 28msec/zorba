@@ -170,9 +170,12 @@ void NaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 }
 
 
-#define NARY_ACCEPT(IterType)                   \
-void IterType::accept(PlanIterVisitor& v) const \
-{                                               \
+#define NARY_ACCEPT(IterType)                                          \
+void IterType::accept(PlanIterVisitor& v) const                        \
+{                                                                       \
+  if (!v.hasToVisit(this))                                              \
+    return;                                                             \
+                                                                         \
   v.beginVisit(*this);                                                  \
                                                                         \
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();  \

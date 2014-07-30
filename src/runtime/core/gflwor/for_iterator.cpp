@@ -94,7 +94,10 @@ ForIterator::~ForIterator()
 
 
 void ForIterator::accept(PlanIterVisitor& v) const 
-{ 
+{
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this); 
 
   v.beginVisitFlworForVariable(theVarName->getStringValue(),
