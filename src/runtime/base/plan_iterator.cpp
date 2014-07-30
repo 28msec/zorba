@@ -72,7 +72,7 @@ PlanState::PlanState(
   theGlobalDynCtx(globalDctx),
   theLocalDynCtx(localDctx),
   theHasToQuit(false),
-  theProfile( Properties::instance().getProfile() ),
+  profile_( Properties::instance().getCollectProfile() ),
   theBlockOwned(true)
 {
   assert(globalDctx != NULL && localDctx != NULL);

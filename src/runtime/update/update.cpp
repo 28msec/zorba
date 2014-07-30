@@ -803,6 +803,9 @@ TransformIterator::getStateSizeOfSubtree() const
 
 void TransformIterator::accept(PlanIterVisitor &v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
   CopyClause::const_iter_t lIter = theCopyClauses.begin();
   CopyClause::const_iter_t lEnd = theCopyClauses.end();

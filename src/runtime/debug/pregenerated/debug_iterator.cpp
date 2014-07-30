@@ -52,6 +52,9 @@ void DebugIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void DebugIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

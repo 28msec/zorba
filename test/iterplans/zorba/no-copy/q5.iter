@@ -4,9 +4,9 @@
     <FnCountIterator>
       <FLWORIterator>
         <ForVariable name="i">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill-allowed="0">
-            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill-allowed="0">
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill-allowed="false">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill-allowed="false">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="false">
                 <FnDocIterator>
                   <PromoteIterator type="xs:string">
                     <FnDataIterator>
@@ -21,8 +21,8 @@
         <WhereClause>
           <CompareIterator>
             <FnDataIterator>
-              <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="0">
-                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="false">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill-allowed="false">
                   <ForVarIterator varname="i"/>
                 </ChildAxisIterator>
               </ChildAxisIterator>
@@ -31,7 +31,7 @@
           </CompareIterator>
         </WhereClause>
         <ReturnClause>
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill-allowed="false">
             <ForVarIterator varname="i"/>
           </ChildAxisIterator>
         </ReturnClause>

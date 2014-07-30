@@ -45,6 +45,9 @@ void ResolveQNameIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ResolveQNameIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -74,6 +77,9 @@ void QNameIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void QNameIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -103,6 +109,9 @@ void QNameEqualIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void QNameEqualIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -132,6 +141,9 @@ void PrefixFromQNameIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void PrefixFromQNameIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -160,6 +172,9 @@ void LocalNameFromQNameIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void LocalNameFromQNameIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -188,6 +203,9 @@ void NamespaceUriFromQNameIterator::serialize(::zorba::serialization::Archiver& 
 
 void NamespaceUriFromQNameIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -216,6 +234,9 @@ void NamespaceUriForPrefixIterator::serialize(::zorba::serialization::Archiver& 
 
 void NamespaceUriForPrefixIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -248,6 +269,9 @@ void InScopePrefixesIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void InScopePrefixesIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);

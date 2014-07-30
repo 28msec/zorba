@@ -22,7 +22,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -30,7 +30,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="0">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -38,7 +38,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -62,7 +62,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -70,7 +70,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="0">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -78,7 +78,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -104,7 +104,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -112,7 +112,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="1">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="1">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -120,7 +120,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -144,7 +144,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -152,7 +152,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="1">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="1">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -160,7 +160,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -186,7 +186,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -194,7 +194,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="2">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="2">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -202,7 +202,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -226,7 +226,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -234,7 +234,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="2">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="2">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -242,7 +242,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -270,7 +270,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -278,7 +278,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="0">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -286,7 +286,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -310,7 +310,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -318,7 +318,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="0">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -326,7 +326,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -352,7 +352,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -360,7 +360,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="1">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="1">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -368,7 +368,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -392,7 +392,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -400,7 +400,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="1">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="1">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -408,7 +408,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -434,7 +434,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -442,7 +442,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="2">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="2">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -450,7 +450,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>
@@ -474,7 +474,7 @@
                               </NodeDistinctIterator>
                             </ForVariable>
                             <ReturnClause>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="0" target_position="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </ReturnClause>
@@ -482,7 +482,7 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="0" target_position="2">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="2">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ReturnClause>
@@ -490,7 +490,7 @@
                   </NodeDistinctIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="0" target_position="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ReturnClause>

@@ -46,6 +46,9 @@ void SctxBaseUriIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SctxBaseUriIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -78,6 +81,9 @@ void SctxBoundarySpacePolicyIterator::serialize(::zorba::serialization::Archiver
 
 void SctxBoundarySpacePolicyIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -110,6 +116,9 @@ void SctxConstructionModeIterator::serialize(::zorba::serialization::Archiver& a
 
 void SctxConstructionModeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -142,6 +151,9 @@ void SctxCopyNamespacesModeIterator::serialize(::zorba::serialization::Archiver&
 
 void SctxCopyNamespacesModeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -174,6 +186,9 @@ void SctxDefaultCollationIterator::serialize(::zorba::serialization::Archiver& a
 
 void SctxDefaultCollationIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -206,6 +221,9 @@ void SctxDefaultCollectionTypeIterator::serialize(::zorba::serialization::Archiv
 
 void SctxDefaultCollectionTypeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -238,6 +256,9 @@ void SctxDefaultFunctionNamespaceIterator::serialize(::zorba::serialization::Arc
 
 void SctxDefaultFunctionNamespaceIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -270,6 +291,9 @@ void SctxDefaultOrderIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SctxDefaultOrderIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -302,6 +326,9 @@ void SctxFunctionAnnotationsIterator::serialize(::zorba::serialization::Archiver
 
 void SctxFunctionAnnotationsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -342,6 +369,9 @@ void SctxFunctionArgumentsCountIterator::serialize(::zorba::serialization::Archi
 
 void SctxFunctionArgumentsCountIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -382,6 +412,9 @@ void SctxFunctionNamesIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SctxFunctionNamesIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -422,6 +455,9 @@ void SctxFunctionsIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SctxFunctionsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -462,6 +498,9 @@ void SctxInScopeAttributeDeclarationsIterator::serialize(::zorba::serialization:
 
 void SctxInScopeAttributeDeclarationsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -502,6 +541,9 @@ void SctxInScopeAttributeGroupsIterator::serialize(::zorba::serialization::Archi
 
 void SctxInScopeAttributeGroupsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -542,6 +584,9 @@ void SctxInScopeElementDeclarationsIterator::serialize(::zorba::serialization::A
 
 void SctxInScopeElementDeclarationsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -582,6 +627,9 @@ void SctxInScopeElementGroupsIterator::serialize(::zorba::serialization::Archive
 
 void SctxInScopeElementGroupsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -622,6 +670,9 @@ void SctxInScopeSchemaTypesIterator::serialize(::zorba::serialization::Archiver&
 
 void SctxInScopeSchemaTypesIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -662,6 +713,9 @@ void SctxInscopeVariablesIterator::serialize(::zorba::serialization::Archiver& a
 
 void SctxInscopeVariablesIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -702,6 +756,9 @@ void SctxOptionIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SctxOptionIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -734,6 +791,9 @@ void SctxOrderingModeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SctxOrderingModeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -766,6 +826,9 @@ void SctxStaticallyKnownCollationsIterator::serialize(::zorba::serialization::Ar
 
 void SctxStaticallyKnownCollationsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -806,6 +869,9 @@ void SctxStaticallyKnownDocumentsIterator::serialize(::zorba::serialization::Arc
 
 void SctxStaticallyKnownDocumentsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -846,6 +912,9 @@ void SctxStaticallyKnownDocumentTypeIterator::serialize(::zorba::serialization::
 
 void SctxStaticallyKnownDocumentTypeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -878,6 +947,9 @@ void SctxStaticallyKnownNamespaceBindingIterator::serialize(::zorba::serializati
 
 void SctxStaticallyKnownNamespaceBindingIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -910,6 +982,9 @@ void SctxStaticallyKnownNamespacesIterator::serialize(::zorba::serialization::Ar
 
 void SctxStaticallyKnownNamespacesIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -950,6 +1025,9 @@ void SctxXPath10CompatModeIterator::serialize(::zorba::serialization::Archiver& 
 
 void SctxXPath10CompatModeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

@@ -770,6 +770,9 @@ TryCatchIterator::closeImpl(PlanState& planState)
 
 void TryCatchIterator::accept(PlanIterVisitor &v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
   theChild->accept ( v );
   std::vector<CatchClause>::const_iterator lIter = theCatchClauses.begin();

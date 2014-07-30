@@ -36,7 +36,11 @@ namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(FTContainsIterator)
 
 
-void FTContainsIterator::accept( PlanIterVisitor &v ) const {
+void FTContainsIterator::accept( PlanIterVisitor &v ) const
+{
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit( *this );
   theChild0->accept( v );
   if ( theChild1 )                      // optional ftignore

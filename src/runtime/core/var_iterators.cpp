@@ -617,6 +617,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 void CtxVarIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   if (theTargetPosIter != NULL)
@@ -655,7 +658,7 @@ ForVarIterator::ForVarIterator(
 void ForVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (NoaryBaseIterator<ForVarIterator, ForVarState>*)this);
-  //ar & theVarName;
+  ar & theVarName;
 }
 
 
@@ -738,7 +741,7 @@ LetVarIterator::LetVarIterator(
 void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (NoaryBaseIterator<LetVarIterator, LetVarState>*)this);
-  // ar & theVarName;
+  ar & theVarName;
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;
@@ -1093,6 +1096,9 @@ uint32_t LetVarIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 void LetVarIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   if (theTargetPosIter != NULL)

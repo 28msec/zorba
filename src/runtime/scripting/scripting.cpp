@@ -78,6 +78,9 @@ void SequentialIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SequentialIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -349,6 +352,9 @@ void FlowCtlIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FlowCtlIterator::accept(PlanIterVisitor& v) const 
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
   v.endVisit(*this);
 }

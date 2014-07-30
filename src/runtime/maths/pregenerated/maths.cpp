@@ -45,6 +45,9 @@ void SqrtIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SqrtIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -73,6 +76,9 @@ void ExpIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ExpIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -101,6 +107,9 @@ void Exp10Iterator::serialize(::zorba::serialization::Archiver& ar)
 
 void Exp10Iterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -129,6 +138,9 @@ void LogIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void LogIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -157,6 +169,9 @@ void Log10Iterator::serialize(::zorba::serialization::Archiver& ar)
 
 void Log10Iterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -185,6 +200,9 @@ void SinIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SinIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -213,6 +231,9 @@ void CosIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void CosIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -241,6 +262,9 @@ void TanIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void TanIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -269,6 +293,9 @@ void ArcSinIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ArcSinIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -297,6 +324,9 @@ void ArcCosIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ArcCosIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -325,6 +355,9 @@ void ArcTanIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ArcTanIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -353,6 +386,9 @@ void Atan2Iterator::serialize(::zorba::serialization::Archiver& ar)
 
 void Atan2Iterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -382,6 +418,9 @@ void CoshIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void CoshIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -410,6 +449,9 @@ void AcoshIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void AcoshIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -438,6 +480,9 @@ void FmodIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FmodIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -467,6 +512,9 @@ void LdexpIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void LdexpIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -496,6 +544,9 @@ void PowIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void PowIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -525,6 +576,9 @@ void SinhIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SinhIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -553,6 +607,9 @@ void AsinhIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void AsinhIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -581,6 +638,9 @@ void TanhIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void TanhIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -609,6 +669,9 @@ void AtanhIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void AtanhIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -637,6 +700,9 @@ void PiNumberIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void PiNumberIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   
@@ -665,6 +731,9 @@ void IsInfIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void IsInfIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -693,6 +762,9 @@ void IsNaNIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void IsNaNIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -721,6 +793,9 @@ void ModfIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ModfIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -763,6 +838,9 @@ void FrexpIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FrexpIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);

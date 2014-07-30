@@ -46,6 +46,9 @@ void JSoundAnnotateIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSoundAnnotateIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -78,6 +81,9 @@ void JSoundValidateIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSoundValidateIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

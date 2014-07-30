@@ -262,6 +262,9 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
 
 void ElementIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   if (theQNameIter != 0)

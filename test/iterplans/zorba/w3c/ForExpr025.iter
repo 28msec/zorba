@@ -4,10 +4,10 @@
     <FLWORIterator>
       <LetVariable name="$$opt_temp_0" materialize="true">
         <HoistIterator>
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="false">
             <SequencePointAccessIterator>
               <NodeSortIterator distinct="true" ascending="true">
-                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,Folder)" typename="*" nill-allowed="0">
+                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,Folder)" typename="*" nill-allowed="false">
                   <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                     <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
                   </TreatIterator>
@@ -19,10 +19,10 @@
         </HoistIterator>
       </LetVariable>
       <ForVariable name="file">
-        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="false">
           <SequencePointAccessIterator>
             <NodeSortIterator distinct="true" ascending="true">
-              <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,Folder)" typename="*" nill-allowed="0">
+              <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,Folder)" typename="*" nill-allowed="false">
                 <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                   <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
                 </TreatIterator>
@@ -38,7 +38,7 @@
         </UnhoistIterator>
       </ForVariable>
       <ReturnClause>
-        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,FileName)" typename="*" nill-allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,FileName)" typename="*" nill-allowed="false">
           <ForVarIterator varname="file"/>
         </ChildAxisIterator>
       </ReturnClause>

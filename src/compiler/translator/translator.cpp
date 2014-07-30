@@ -11387,9 +11387,6 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
       std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
 
-      --end;
-      assert((*end).second == theModuleNamespace);
-
       for (; ite != end; ++ite)
       {
         if ((*ite).second == var_ns)
@@ -11782,9 +11779,6 @@ expr* generate_fncall(
 
       std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
       std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
-
-      --end;
-      assert((*end).second == theModuleNamespace);
 
       for (; ite != end; ++ite)
       {

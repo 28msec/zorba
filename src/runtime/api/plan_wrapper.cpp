@@ -214,8 +214,26 @@ void PlanWrapper::checkDepth(const QueryLoc& loc)
  ******************************************************************************/
 
 void PlanWrapper::profile() const {
-  XMLIterPrinter p( Properties::instance().getDebugStream() );
-  print_iter_plan( p, theIterator, thePlanState );
+  Zorba_profile_format_t const format = Properties::instance().getProfileFormat();
+  if ( format )
+  {
+    std::ostream &os = Properties::instance().getDebugStream();
+    unique_ptr<IterPrinter> printer;
+    switch ( format ) {
+      case PROFILE_FORMAT_DOT:
+        printer.reset( new DOTIterPrinter( os ) );
+        break;
+      case PROFILE_FORMAT_JSON:
+        printer.reset( new JSONIterPrinter( os ) );
+        break;
+      case PROFILE_FORMAT_XML:
+        printer.reset( new XMLIterPrinter( os ) );
+        break;
+      default: // to silence warning
+        break;
+    } // switch
+  print_iter_plan( *printer, theIterator, thePlanState );
+  }
 }
 
 /*******************************************************************************

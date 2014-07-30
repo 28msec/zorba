@@ -45,6 +45,9 @@ void JSONtoXMLInternal::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONtoXMLInternal::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -77,6 +80,9 @@ void XMLtoJSONInternal::serialize(::zorba::serialization::Archiver& ar)
 
 void XMLtoJSONInternal::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

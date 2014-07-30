@@ -45,6 +45,9 @@ void ReferenceIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ReferenceIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -77,6 +80,9 @@ void HasReferenceIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void HasReferenceIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -109,6 +115,9 @@ void AssignReferenceIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void AssignReferenceIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -141,6 +150,9 @@ void DereferenceIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void DereferenceIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
