@@ -170,12 +170,12 @@ void NaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 }
 
 
-#define NARY_ACCEPT(IterType)                                          \
-void IterType::accept(PlanIterVisitor& v) const                        \
+#define NARY_ACCEPT(IterType)                                           \
+void IterType::accept(PlanIterVisitor& v) const                         \
 {                                                                       \
   if (!v.hasToVisit(this))                                              \
     return;                                                             \
-                                                                         \
+                                                                        \
   v.beginVisit(*this);                                                  \
                                                                         \
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();  \
@@ -193,32 +193,32 @@ void IterType::accept(PlanIterVisitor& v) const                        \
   Macro for defining iterators with N children and their own additional state
 ********************************************************************************/
 
-#define NARY_ITER_STATE(iterName, stateName)                            \
-class iterName : public NaryBaseIterator<iterName, stateName>           \
-{                                                                       \
-public:                                                                 \
-  SERIALIZABLE_CLASS(iterName);                                         \
-                                                                        \
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(                                     \
-  iterName, NaryBaseIterator<iterName, stateName>);                     \
-                                                                        \
-  void serialize(::zorba::serialization::Archiver& ar)                  \
-  {                                                                     \
+#define NARY_ITER_STATE(iterName, stateName)                               \
+class iterName : public NaryBaseIterator<iterName, stateName>              \
+{                                                                          \
+public:                                                                    \
+  SERIALIZABLE_CLASS(iterName);                                            \
+                                                                           \
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(                                        \
+  iterName, NaryBaseIterator<iterName, stateName>);                        \
+                                                                           \
+  void serialize(::zorba::serialization::Archiver& ar)                     \
+  {                                                                        \
     serialize_baseclass(ar, (NaryBaseIterator<iterName, stateName>*)this); \
-  }                                                                     \
-                                                                        \
-public:                                                                 \
-  iterName(                                                             \
-        static_context* sctx,                                           \
-        const QueryLoc& loc,                                            \
-        std::vector<PlanIter_t>& aChildren)                             \
-    :                                                                   \
-    NaryBaseIterator<iterName, stateName >(sctx, loc, aChildren)        \
-  { }                                                                   \
-                                                                        \
-  void accept(PlanIterVisitor& v) const;                                \
-  zstring getNameAsString() const;                                      \
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
+  }                                                                        \
+                                                                           \
+public:                                                                    \
+  iterName(                                                                \
+        static_context* sctx,                                              \
+        const QueryLoc& loc,                                               \
+        std::vector<PlanIter_t>& aChildren)                                \
+    :                                                                      \
+    NaryBaseIterator<iterName, stateName >(sctx, loc, aChildren)           \
+  { }                                                                      \
+                                                                           \
+  void accept(PlanIterVisitor& v) const;                                   \
+  zstring getNameAsString() const;                                         \
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;       \
 };
 
 
