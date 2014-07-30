@@ -32,7 +32,6 @@
 #include "util/dynamic_bitset.h"
 
 #include "diagnostics/assert.h"
-#include "zorbautils/debug.h"
 
 
 namespace zorba
@@ -546,22 +545,10 @@ expr* HoistRule::hoistExpr(
     expr* e,
     struct PathHolder* path)
 {
-  bool lNonHoistable = non_hoistable(e);
-  bool lConstructNodes = e->constructsNodes();
-
-  if (!lNonHoistable && lConstructNodes)
+  if (non_hoistable(e) || e->constructsNodes())
   {
-    DEBUG_SS("CONSTRUCT NODES");
-  }
-
-  if (lNonHoistable || lConstructNodes)
-  {
-    DEBUG_SS("NON HOISTABLE\n\n");
     return NULL;
   }
-
-  DEBUG_SS("HOISTABLE\n\n");
-
 
   const QueryLoc& loc = e->get_loc();
   static_context* sctx = e->get_sctx();
@@ -868,12 +855,9 @@ bool HoistRule::contains_var(var_expr* v, const DynamicBitset& varset)
 ********************************************************************************/
 static bool containsUnhoistableExpression(expr* e)
 {
-  DEBUG_SS("Visiting: " << e->toString())
   if (is_enclosed_expr(e))
   {
-    //e->setConstructsNodes(ANNOTATION_TRUE);
     e->setUnhoistable(ANNOTATION_TRUE);
-    DEBUG_SS("Would mark : " << e->toString() << " as non hoistable");
     return true;
   }
 
@@ -885,9 +869,7 @@ static bool containsUnhoistableExpression(expr* e)
     {
       if (containsUnhoistableExpression(ce))
       {
-        //e->setConstructsNodes(ANNOTATION_TRUE);
         e->setUnhoistable(ANNOTATION_TRUE);
-        DEBUG_SS("Would mark : " << e->toString() << " as non hoistable");
         return true;
       }
     }
@@ -896,9 +878,12 @@ static bool containsUnhoistableExpression(expr* e)
   return false;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 static bool non_hoistable(expr* e)
 {
-  DEBUG_SS(e->toString());
   expr_kind_t k = e->get_expr_kind();
 
   if (k == var_expr_kind ||
@@ -916,23 +901,11 @@ static bool non_hoistable(expr* e)
       e->is_sequential() ||
       e->is_updating())
   {
-    DEBUG_SS("is NOT hoistable(0)" <<std::endl<<std::endl );
     return true;
   }
 
-  if (k == attr_expr_kind)
-  {
-    if (containsUnhoistableExpression(e))
-    {
-      DEBUG_SS("NON HOISTABLE REC")
+  if (k == attr_expr_kind && containsUnhoistableExpression(e))
       return true;
-    }
-    else
-    {
-      DEBUG_SS("HOISTABLE REC");
-    }
-  }
-
 
   if (k == fo_expr_kind)
   {
@@ -940,17 +913,8 @@ static bool non_hoistable(expr* e)
     const function* f = fo->get_func();
     FunctionConsts::FunctionKind fkind = f->getKind();
 
-    if (fkind == FunctionConsts::FN_DATA_1)
-    {
-      DEBUG_SS("I HAVE A FN_DATA_1");
-      //return true;
-    }
-
     if (fkind == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
-    {
-      DEBUG_SS("is NOT hoistable(1)" <<std::endl<<std::endl );
       return true;
-    }
 
     if (fkind == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1 ||
         fkind == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_2 ||
@@ -958,15 +922,9 @@ static bool non_hoistable(expr* e)
         fkind == FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_1 ||
         fkind == FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_2 ||
         fkind == FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_3)
-    {
-      DEBUG_SS("is NOT hoistable(2)" <<std::endl<<std::endl );
       return true;
-    }
-
   }
 
-
-  DEBUG_SS("is hoistable" <<std::endl<<std::endl );
   return false;
 }
 
@@ -992,16 +950,10 @@ static bool is_already_hoisted(const expr* e)
 ********************************************************************************/
 static bool is_enclosed_expr(const expr* e)
 {
-  //DEBUG_SS("IS_ENCLOSED_EXPR " << e->toString());
   if (e->get_expr_kind() != fo_expr_kind)
-  {
-    //DEBUG_SS("false");
     return false;
-  }
 
   const function* fn = static_cast<const fo_expr *>(e)->get_func();
-  bool lRes = fn->getKind() == FunctionConsts::OP_ENCLOSED_1;
-  //DEBUG_SS(lRes);
   return (fn->getKind() == FunctionConsts::OP_ENCLOSED_1);
 }
 

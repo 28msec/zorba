@@ -52,7 +52,6 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
-#include "zorbautils/debug.h"
 
 
 namespace zorba
@@ -612,10 +611,6 @@ attr_expr::attr_expr(
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
   setConstructsNodes(ANNOTATION_TRUE_FIXED);
-
-  DEBUG_SS("theValueExpr: " << theValueExpr);
-  if (theValueExpr)
-    theValueExpr->setConstructsNodes(ANNOTATION_TRUE);
 }
 
 

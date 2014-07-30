@@ -78,7 +78,7 @@ PlanState::PlanState(
   assert(globalDctx != NULL && localDctx != NULL);
   theBlock = new int8_t[theBlockSize];
 }
-/*
+
 PlanState::PlanState(PlanState& aPlanState):
       theBlock(aPlanState.theBlock),
       theBlockSize(aPlanState.theBlockSize),
@@ -95,7 +95,6 @@ PlanState::PlanState(PlanState& aPlanState):
       theBlockOwned(false)
 {
 }
-*/
 
 void PlanState::checkDepth(const QueryLoc& loc)
 {
@@ -106,7 +105,7 @@ void PlanState::checkDepth(const QueryLoc& loc)
 
 PlanState::~PlanState()
 {
-  //if (theBlockOwned)
+  if (theBlockOwned)
     delete[] theBlock;
   theBlock = 0;
 }

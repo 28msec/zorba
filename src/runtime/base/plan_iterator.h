@@ -139,7 +139,7 @@ public:
 
   bool                      theHasToQuit;
 
-  bool const               theProfile;   // cache Properties::getProfile()
+  bool const                theProfile;   // cache Properties::getProfile()
 
   bool                      theBlockOwned;
 

@@ -16,7 +16,6 @@
 #include "stdafx.h"
 
 #include "zorbautils/fatal.h"
-#include "zorbautils/debug.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -1210,8 +1209,6 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   EnclosedIteratorState* state;
   DEFAULT_STACK_INIT(EnclosedIteratorState, state, planState);
 
-  //DEBUG_SS(theAttrContent << " " << theTextContent << " " << theIsInUpdateExpr);
-
   if (theAttrContent || theTextContent)
   {
     if (consumeNext(result, theChild, planState))
@@ -1518,4 +1515,3 @@ UNARY_ACCEPT(NameCastIterator);
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
-

@@ -40,8 +40,6 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
-#include "zorbautils/debug.h"
-
 
 namespace zorba
 {

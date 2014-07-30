@@ -20,7 +20,6 @@
 #include <stack>
 #include <vector>
 
-#include <zorbautils/debug.h>
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
 #include <zorba/internal/unique_ptr.h>
@@ -2501,7 +2500,6 @@ void end_visit(fo_expr& v)
 
   if (func->validate_args(argv))
   {
-    //DEBUG_SS("Plan_Visitor is checking the enclosed context stack");
     PlanIter_t iter = func->codegen(theCCB, sctx, loc, argv, v);
     ZORBA_ASSERT(iter != NULL);
     push_itstack(iter);
@@ -2516,10 +2514,7 @@ void end_visit(fo_expr& v)
         EnclosedExprContext ctx = theEnclosedContextStack.top();
 
         if (ctx == ATTRIBUTE_CONTENT)
-        {
           dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
-          //DEBUG_SS("Setting attribute content")
-        }
         else if (ctx == TEXT_CONTENT)
           dynamic_cast<EnclosedIterator*>(iter.getp())->setTextContent();
         else if (ctx == UPDATE_CONTEXT)
