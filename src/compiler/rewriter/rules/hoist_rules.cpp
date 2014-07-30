@@ -39,7 +39,7 @@ namespace zorba
 {
 
 
-static bool non_hoistable(const expr*);
+static bool non_hoistable(expr*);
 
 static bool is_already_hoisted(const expr*);
 
@@ -544,10 +544,22 @@ expr* HoistRule::hoistExpr(
     expr* e,
     struct PathHolder* path)
 {
-  if (non_hoistable(e) || e->constructsNodes())
+  bool lNonHoistable = non_hoistable(e);
+  bool lConstructNodes = e->constructsNodes();
+
+  if (!lNonHoistable && lConstructNodes)
   {
+    DEBUG_SS("CONSTRUCT NODES");
+  }
+
+  if (lNonHoistable || lConstructNodes)
+  {
+    DEBUG_SS("NON HOISTABLE\n\n");
     return NULL;
   }
+
+  DEBUG_SS("HOISTABLE\n\n");
+
 
   const QueryLoc& loc = e->get_loc();
   static_context* sctx = e->get_sctx();
@@ -852,7 +864,35 @@ bool HoistRule::contains_var(var_expr* v, const DynamicBitset& varset)
 /*******************************************************************************
 
 ********************************************************************************/
-static bool non_hoistable(const expr* e)
+static bool non_hoistable_rec(expr* e)
+{
+  DEBUG_SS("Visiting: " << e->toString())
+  if (is_enclosed_expr(e))
+  {
+    e->setConstructsNodes(ANNOTATION_TRUE);
+    DEBUG_SS("Would mark : " << e->toString() << " as non hoistable");
+    return true;
+  }
+
+  ExprIterator iter(e);
+  while(!iter.done())
+  {
+    expr* ce = **iter;
+    if (ce)
+    {
+      if (non_hoistable_rec(ce))
+      {
+        e->setConstructsNodes(ANNOTATION_TRUE);
+        DEBUG_SS("Would mark : " << e->toString() << " as non hoistable");
+        return true;
+      }
+    }
+    iter.next();
+  }
+  return false;
+}
+
+static bool non_hoistable(expr* e)
 {
   DEBUG_SS(e->toString());
   expr_kind_t k = e->get_expr_kind();
@@ -875,11 +915,31 @@ static bool non_hoistable(const expr* e)
     return true;
   }
 
+  if (k == attr_expr_kind)
+  {
+    if (non_hoistable_rec(e))
+    {
+      DEBUG_SS("NON HOISTABLE REC")
+      return true;
+    }
+    else
+    {
+      DEBUG_SS("HOISTABLE REC");
+    }
+  }
+
+
   if (k == fo_expr_kind)
   {
     const fo_expr* fo = static_cast<const fo_expr*>(e);
     const function* f = fo->get_func();
     FunctionConsts::FunctionKind fkind = f->getKind();
+
+    if (fkind == FunctionConsts::FN_DATA_1)
+    {
+      DEBUG_SS("I HAVE A FN_DATA_1");
+      //return true;
+    }
 
     if (fkind == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
     {
@@ -899,6 +959,7 @@ static bool non_hoistable(const expr* e)
     }
 
   }
+
 
   DEBUG_SS("is hoistable" <<std::endl<<std::endl );
   return false;

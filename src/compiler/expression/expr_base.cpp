@@ -593,14 +593,6 @@ void expr::setConstructsNodes(BoolAnnotationValue v)
 bool expr::constructsNodes() const
 {
   BoolAnnotationValue v = getConstructsNodes();
-  if (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED)
-  {
-    DEBUG_SS(toString() << " construct nodes");
-  }
-  else
-  {
-    DEBUG_SS(toString() << " can be hoisted");
-  }
   return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
 }
 

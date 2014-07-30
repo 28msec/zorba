@@ -98,6 +98,20 @@ static inline ostream& put_qname(store::Item_t qname, ostream& os)
 }
 
 
+static inline string expr_addr(const expr* e)
+{
+  if (Properties::instance().getNoTreeIDs())
+  {
+    return "";
+  }
+  else
+  {
+    ostringstream os;
+    os << " (" << e << " - Constr: " << e->constructsNodes() << ")";
+    return os.str ();
+  }
+}
+
 static inline string expr_addr(const void* e)
 {
   if (Properties::instance().getNoTreeIDs())
@@ -507,6 +521,7 @@ ostream& fo_expr::put(ostream& os) const
 {
   const store::Item* qname = theFunction->getName();
   BEGIN_PUT_MSG( qname->getStringValue() << "#" << num_args() );
+
   csize numArgs = num_args();
 
   for (csize i = 0; i < numArgs; ++i)
