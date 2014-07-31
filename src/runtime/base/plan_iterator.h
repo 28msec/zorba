@@ -139,7 +139,9 @@ public:
 
   bool                      theHasToQuit;
 
-  bool const                profile_;   // cache Properties::getProfile()
+  bool const                theProfile;   // cache Properties::getProfile()
+
+  bool                      theBlockOwned;
 
 public:
   PlanState(
@@ -148,6 +150,8 @@ public:
       uint32_t blockSize,
       uint32_t aStackDepth = 0,
       uint32_t aMaxStackDepth = 1024);
+
+  PlanState(PlanState& aPlanState);
 
   ~PlanState();
 
@@ -245,7 +249,7 @@ public:
   void init(PlanState &planState)
   {
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
-    if ( planState.profile_ )
+    if ( planState.theProfile )
       profile_data_.init();
   }
 
@@ -493,12 +497,12 @@ public:
 #endif
     time::cpu::timer c;
     time::wall::timer w;
-    if ( planState.profile_ ) {
+    if ( planState.theProfile ) {
       c.start();
       w.start();
     }
     bool const ret_val = nextImpl(result, planState);
-    if ( planState.profile_ ) {
+    if ( planState.theProfile ) {
       //
       // Temporaries are used here to guarantee the order in which the timers
       // are stopped.  (If the expressions were passed as function arguments,
