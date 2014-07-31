@@ -481,6 +481,14 @@ public:
    */
   virtual bool skip(int64_t count, PlanState &planState) const;
 
+
+  inline void updateProfile(time::cpu::timer& c, time::wall::timer& w, PlanIteratorState *const state) const
+  {
+    time::msec_type const ce( c.elapsed() );
+    time::msec_type const we( w.elapsed() );
+    state->profile_data_.next_.add( ce, we );
+  }
+
   /**
    * Produce the next item and return it to the caller. Implicitly, the first
    * call of 'producNext' initializes the iterator and allocates resources
