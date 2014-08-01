@@ -918,6 +918,7 @@ void
 TransformIterator::openImpl(PlanState& planState, uint32_t& offset) 
 {
   StateTraitsImpl<PlanIteratorState>::createState(planState, theStateOffset, offset);
+  StateTraitsImpl<PlanIteratorState>::initState(planState, this->theStateOffset);
 
   CopyClause::iter_t lIter = theCopyClauses.begin();
   CopyClause::iter_t lEnd = theCopyClauses.end();
