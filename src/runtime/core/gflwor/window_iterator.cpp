@@ -732,6 +732,7 @@ void WindowIterator::accept(PlanIterVisitor& v) const
 void WindowIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<WindowState>::createState(planState, theStateOffset, offset);
+  StateTraitsImpl<WindowState>::initState(planState, theStateOffset);
 
   theTupleIter->open(planState, offset);
   theInputIter->open(planState, offset);
