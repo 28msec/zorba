@@ -105,7 +105,6 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
         *thePlanState, pi->getStateOffset()
       );
     profile_data const &pd = pi_state->get_profile_data();
-    thePrinter.addNumAttribute( "state-address", (long)pi_state);
     thePrinter.addNumAttribute( "prof-calls", pd.next_.call_count_);
     thePrinter.addNumAttribute( "prof-cpu", pd.next_.cpu_time_);
     thePrinter.addNumAttribute( "prof-wall", pd.next_.wall_time_);
