@@ -187,13 +187,15 @@ UNARY_ACCEPT(DocumentIterator);
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementIteratorState::init(PlanState&)
+void ElementIteratorState::init(PlanState& planState)
 {
+  PlanIteratorState::init(planState);
 }
 
 
-void ElementIteratorState::reset(PlanState&)
+void ElementIteratorState::reset(PlanState& planState)
 {
+  PlanIteratorState::reset(planState);
   baseUri.clear();
 }
 

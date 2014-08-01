@@ -905,6 +905,7 @@ bool JSONParseIterator::nextImpl(
 ********************************************************************************/
 void MultiObjectKeysIteratorState::init(PlanState& planState)
 {
+  PlanIteratorState::init(planState);
   theUniqueKeys.reset(new HashSet<zstring, HashMapZStringCmp>(64, false));
 }
 
