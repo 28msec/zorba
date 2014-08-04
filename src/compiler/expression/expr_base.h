@@ -147,7 +147,8 @@ public:
     MUST_COPY_NODES         = 16,
     CONTAINS_PRAGMA         = 18,
     CONSTRUCTS_NODES        = 20,
-    DEREFERENCES_NODES      = 22
+    DEREFERENCES_NODES      = 22,
+    UNHOISTABLE             = 24
   } Annotationkey;
 
   typedef enum
@@ -163,7 +164,8 @@ public:
     MUST_COPY_NODES_MASK          = 0x30000,
     CONTAINS_PRAGMA_MASK          = 0xC0000,
     CONSTRUCTS_NODES_MASK         = 0x300000,
-    DEREFERENCES_NODES_MASK       = 0xC00000
+    DEREFERENCES_NODES_MASK       = 0xC00000,
+    UNHOISTABLE_MASK              = 0x3000000
   } AnnotationMask;
 
   typedef enum
@@ -362,6 +364,13 @@ public:
   void setDereferencesNodes(BoolAnnotationValue v);
 
   bool dereferencesNodes() const;
+
+  // Annotation : unhoistable
+  BoolAnnotationValue getUnhoistable() const;
+
+  void setUnhoistable(BoolAnnotationValue v);
+
+  bool isUnhoistable() const;
 
   // Annotation : free vars
   const FreeVars& getFreeVars() const { return theFreeVars; }

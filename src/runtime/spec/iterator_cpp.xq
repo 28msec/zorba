@@ -153,14 +153,14 @@ declare function local:generate-init($iter, $baseClassName as xs:string) as xs:s
 declare function local:generate-accept($iter) as xs:string
 {
   string-join(( $gen:newline,
-    'void ',$iter/@name,'::accept(PlanIterVisitor&amp; v) const',
-    $gen:newline,
-    '{',
-    $gen:newline,
-    $gen:indent,'v.beginVisit(*this);',
-    $gen:newline,$gen:newline,
+    'void ',$iter/@name,'::accept(PlanIterVisitor&amp; v) const', $gen:newline,
+    '{', $gen:newline,
+    $gen:indent,'if (!v.hasToVisit(this))', $gen:newline,
+    $gen:indent,$gen:indent,'return;', $gen:newline,$gen:newline,
+    
+    $gen:indent,'v.beginVisit(*this);', $gen:newline,$gen:newline,
+    
     $gen:indent,
-
     let $arity := lower-case($iter/@arity)
     return (
       if ( $arity eq "unary" )

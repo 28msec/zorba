@@ -17,7 +17,7 @@
           <LetVariable name="$$opt_temp_2" materialize="true">
             <HoistIterator>
               <NodeSortIterator distinct="true" ascending="true">
-                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,bid_tuple)" typename="*" nill-allowed="0">
+                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,bid_tuple)" typename="*" nill-allowed="false">
                   <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                     <CtxVarIterator varid="6" varname="input-context3" varkind="global"/>
                   </TreatIterator>
@@ -37,7 +37,7 @@
                   <GeneralIndexEntryBuilderIterator>
                     <ForVarIterator varname="$$opt_temp_12"/>
                     <FnDataIterator>
-                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill-allowed="0">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="$$opt_temp_12"/>
                       </ChildAxisIterator>
                     </FnDataIterator>
@@ -49,7 +49,7 @@
           <LetVariable name="$$opt_temp_1" materialize="true">
             <HoistIterator>
               <NodeSortIterator distinct="true" ascending="true">
-                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,item_tuple)" typename="*" nill-allowed="0">
+                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,item_tuple)" typename="*" nill-allowed="false">
                   <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                     <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
                   </TreatIterator>
@@ -60,7 +60,7 @@
           <LetVariable name="$$opt_temp_0" materialize="true">
             <HoistIterator>
               <NodeSortIterator distinct="true" ascending="true">
-                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,user_tuple)" typename="*" nill-allowed="0">
+                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,user_tuple)" typename="*" nill-allowed="false">
                   <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                     <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
                   </TreatIterator>
@@ -70,7 +70,7 @@
           </LetVariable>
           <ForVariable name="seller">
             <NodeSortIterator distinct="true" ascending="true">
-              <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,user_tuple)" typename="*" nill-allowed="0">
+              <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,user_tuple)" typename="*" nill-allowed="false">
                 <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                   <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
                 </TreatIterator>
@@ -81,7 +81,7 @@
             <HoistIterator>
               <CompareIterator>
                 <FnDataIterator>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="seller"/>
                   </ChildAxisIterator>
                 </FnDataIterator>
@@ -96,7 +96,7 @@
           </ForVariable>
           <LetVariable name="$$opt_temp_11" materialize="true">
             <HoistIterator>
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="false">
                 <ForVarIterator varname="buyer"/>
               </ChildAxisIterator>
             </HoistIterator>
@@ -104,7 +104,7 @@
           <LetVariable name="$$opt_temp_7" materialize="true">
             <HoistIterator>
               <FnDataIterator>
-                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,userid)" typename="*" nill-allowed="0">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,userid)" typename="*" nill-allowed="false">
                   <ForVarIterator varname="buyer"/>
                 </ChildAxisIterator>
               </FnDataIterator>
@@ -117,14 +117,14 @@
           </ForVariable>
           <LetVariable name="$$opt_temp_10" materialize="true">
             <HoistIterator>
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill-allowed="false">
                 <ForVarIterator varname="item"/>
               </ChildAxisIterator>
             </HoistIterator>
           </LetVariable>
           <LetVariable name="$$opt_temp_9" materialize="true">
             <HoistIterator>
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill-allowed="false">
                 <ForVarIterator varname="item"/>
               </ChildAxisIterator>
             </HoistIterator>
@@ -133,11 +133,11 @@
             <HoistIterator>
               <FnMinMaxIterator type="max">
                 <FnDataIterator>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill-allowed="false">
                     <FLWORIterator>
                       <ForVariable name="$$context-item">
                         <NodeDistinctIterator allow-atomics="false" check-only="false">
-                          <DescendantSelfAxisIterator test-kind="match_anykind_test" qname="*" typename="*" nill-allowed="0">
+                          <DescendantSelfAxisIterator test-kind="match_anykind_test" qname="*" typename="*" nill-allowed="false">
                             <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                               <CtxVarIterator varid="6" varname="input-context3" varkind="global"/>
                             </TreatIterator>
@@ -145,19 +145,19 @@
                         </NodeDistinctIterator>
                       </ForVariable>
                       <ForVariable name="$$context-item">
-                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bid_tuple)" typename="*" nill-allowed="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bid_tuple)" typename="*" nill-allowed="false">
                           <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </ForVariable>
                       <WhereClause>
                         <CompareIterator>
                           <FnDataIterator>
-                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill-allowed="0">
+                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill-allowed="false">
                               <ForVarIterator varname="$$context-item"/>
                             </ChildAxisIterator>
                           </FnDataIterator>
                           <FnDataIterator>
-                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill-allowed="0">
+                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill-allowed="false">
                               <ForVarIterator varname="item"/>
                             </ChildAxisIterator>
                           </FnDataIterator>
@@ -175,7 +175,7 @@
           <LetVariable name="$$opt_temp_6" materialize="true">
             <HoistIterator>
               <FnDataIterator>
-                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill-allowed="0">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,itemno)" typename="*" nill-allowed="false">
                   <ForVarIterator varname="item"/>
                 </ChildAxisIterator>
               </FnDataIterator>
@@ -187,7 +187,7 @@
                 <PromoteIterator type="xs:string">
                   <FnDataIterator>
                     <FnExactlyOneIterator>
-                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill-allowed="0">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="item"/>
                       </ChildAxisIterator>
                     </FnExactlyOneIterator>
@@ -201,12 +201,12 @@
             <HoistIterator>
               <CompareIterator>
                 <FnDataIterator>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,userid)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,userid)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="seller"/>
                   </ChildAxisIterator>
                 </FnDataIterator>
                 <FnDataIterator>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,offered_by)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,offered_by)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="item"/>
                   </ChildAxisIterator>
                 </FnDataIterator>
@@ -237,7 +237,7 @@
               <SingletonIterator value="xs:boolean(true)"/>
               <CompareIterator>
                 <FnDataIterator>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,userid)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,userid)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="highbid"/>
                   </ChildAxisIterator>
                 </FnDataIterator>
@@ -247,7 +247,7 @@
               </CompareIterator>
               <CompareIterator>
                 <FnDataIterator>
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="highbid"/>
                   </ChildAxisIterator>
                 </FnDataIterator>
@@ -274,7 +274,7 @@
                 <ElementIterator>
                   <SingletonIterator value="xs:QName(,,high_bid)"/>
                   <EnclosedIterator attr_cont="false">
-                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill-allowed="0">
+                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill-allowed="false">
                       <ForVarIterator varname="highbid"/>
                     </ChildAxisIterator>
                   </EnclosedIterator>

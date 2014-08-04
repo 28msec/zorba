@@ -45,6 +45,9 @@ void JSONDecodeFromRoundtripIterator::serialize(::zorba::serialization::Archiver
 
 void JSONDecodeFromRoundtripIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -89,6 +92,9 @@ void JSONEncodeForRoundtripIterator::serialize(::zorba::serialization::Archiver&
 
 void JSONEncodeForRoundtripIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -135,6 +141,9 @@ void JSONParseIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONParseIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -169,6 +178,9 @@ void MultiObjectKeysIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MultiObjectKeysIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -201,6 +213,9 @@ void SingleObjectKeysIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SingleObjectKeysIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -241,6 +256,9 @@ void MultiObjectLookupIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MultiObjectLookupIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -282,6 +300,9 @@ void SingleObjectLookupIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SingleObjectLookupIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -311,6 +332,9 @@ void JSONObjectProjectIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONObjectProjectIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -352,6 +376,9 @@ void JSONObjectTrimIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONObjectTrimIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -393,6 +420,9 @@ void MultiArrayMembersIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MultiArrayMembersIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -433,6 +463,9 @@ void SingleArrayMembersIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SingleArrayMembersIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -473,6 +506,9 @@ void MultiArrayLookupIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MultiArrayLookupIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -514,6 +550,9 @@ void SingleArrayLookupIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SingleArrayLookupIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -543,6 +582,9 @@ void JSONArraySizeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONArraySizeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -571,6 +613,9 @@ void JSONArrayFlattenIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONArrayFlattenIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -607,6 +652,9 @@ void JSONNullIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONNullIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   
@@ -635,6 +683,9 @@ void JSONObjectInsertIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONObjectInsertIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -667,6 +718,9 @@ void JSONArrayInsertIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONArrayInsertIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -699,6 +753,9 @@ void JSONDeleteIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONDeleteIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild0->accept(v);
@@ -730,6 +787,9 @@ void JSONReplaceValueIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONReplaceValueIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -762,6 +822,9 @@ void JSONRenameIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONRenameIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -794,6 +857,9 @@ void JSONArrayAppendIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONArrayAppendIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -826,6 +892,9 @@ void JSONBoxIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void JSONBoxIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);

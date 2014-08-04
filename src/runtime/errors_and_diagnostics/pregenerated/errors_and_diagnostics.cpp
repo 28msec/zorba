@@ -46,6 +46,9 @@ void ErrorIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ErrorIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -78,6 +81,9 @@ void TraceIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void TraceIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

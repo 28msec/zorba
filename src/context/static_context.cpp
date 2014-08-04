@@ -210,8 +210,10 @@ VarInfo::VarInfo(var_expr* v)
   theType(v->get_type()),
   theIsExternal(v->is_external()),
   theHasInitializer(v->has_initializer()),
-  theVarExpr(v)
+  theVarExpr(v),
+  theSctx(v->get_sctx())
 {
+  theAnnotations.swap(v->theAnnotations);
 }
 
 
@@ -226,6 +228,8 @@ void VarInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theType;
   ar & theIsExternal;
   ar & theHasInitializer;
+  ar & theAnnotations;
+  ar & theSctx;
 }
 
 
@@ -237,6 +241,13 @@ void VarInfo::setType(const xqtref_t& t)
   theType = t;
 }
 
+/**************************************************************************//**
+
+*******************************************************************************/
+TypeManager* VarInfo::getTypeManager() const
+{
+  return theSctx->get_typemanager();
+}
 
 /**************************************************************************//**
 
@@ -739,7 +750,8 @@ static_context::static_context()
   theValidationMode(StaticContextConsts::validation_unknown),
   theAllWarningsDisabled(false),
   theAllWarningsErrors(false),
-  theFeatures(0)
+  theFeatures(0),
+  theTempIndexCounter(0)
 {
 #if 0
   std::cout << "Allocating SCTX : " << this << std::endl;
@@ -792,7 +804,8 @@ static_context::static_context(static_context* parent)
   theAllWarningsErrors(false),
   // we copy features from the parent such that it's
   // easy to set and unset them
-  theFeatures(parent->theFeatures)
+  theFeatures(parent->theFeatures),
+  theTempIndexCounter(0)
 {
 #if 0
   std::cout << "Allocating SCTX : " << this << " under parent SCTX : "
@@ -848,7 +861,8 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theValidationMode(StaticContextConsts::validation_unknown),
   theAllWarningsDisabled(false),
   theAllWarningsErrors(false),
-  theFeatures(0)
+  theFeatures(0),
+  theTempIndexCounter(0)
 {
 }
 
@@ -1200,6 +1214,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theAllWarningsErrors;
 
   ar & theFeatures;
+
+  ar & theTempIndexCounter;
 }
 
 
@@ -4239,6 +4255,19 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t& qname)
   }
 
   return (theParent == NULL ? NULL : theParent->get_decimal_format(qname));
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
+uint32_t static_context::create_temporary_index_id()
+{
+  static_context* lSctx = this;
+
+  while (lSctx->theParent)
+    lSctx = lSctx->theParent;
+
+  return lSctx->theTempIndexCounter++;
 }
 
 

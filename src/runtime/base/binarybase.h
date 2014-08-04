@@ -151,6 +151,9 @@ BinaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 #define BINARY_ACCEPT(IterType)                 \
 void IterType::accept(PlanIterVisitor& v) const \
 {                                               \
+  if (!v.hasToVisit(this))                      \
+    return;                                     \
+                                                \
   v.beginVisit(*this);                          \
   if (theChild0)                                \
     theChild0->accept(v);                       \

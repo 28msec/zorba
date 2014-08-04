@@ -45,6 +45,8 @@ std::string toString(match_test_t a)
     return "match_text_test";
   case match_anykind_test:
     return "match_anykind_test";
+  case match_namespace_test:
+    return "match_namespace_test";
   }
   return "";
 }

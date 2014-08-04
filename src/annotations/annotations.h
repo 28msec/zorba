@@ -56,9 +56,10 @@ public:
   {
     fn_public = 0,
     fn_private,
+
     zann_strictlydeterministic,
-    zann_exclude_from_cache_key,
-    zann_compare_with_deep_equal,
+    zann_exclude_from_cache_key, //int+
+    zann_compare_with_deep_equal, //int+
     zann_deterministic,
     zann_nondeterministic,
     zann_assignable,
@@ -92,7 +93,7 @@ public:
   };
 
 protected:
-  typedef std::bitset<static_cast<int>(zann_end) + 1> RuleBitSet;
+  typedef std::bitset<static_cast<uint64_t>(zann_end) + 1> RuleBitSet;
   typedef std::pair<AnnotationId, RuleBitSet> AnnotationRequirement;
 
 protected:
@@ -203,9 +204,21 @@ public:
   void checkDeclarations(DeclarationKind k, const QueryLoc& loc) const;
 
 private:
-  RuleBitSet checkDuplicateDeclarations(DeclarationKind k, const QueryLoc& loc) const;
-  void checkConflictingDeclarations(RuleBitSet bs, DeclarationKind k, const QueryLoc& loc) const;
-  void checkRequiredDeclarations(RuleBitSet bs, DeclarationKind k, const QueryLoc& loc) const;
+  RuleBitSet checkDuplicateDeclarations(DeclarationKind k,
+      const QueryLoc& loc) const;
+
+  void checkConflictingDeclarations(RuleBitSet bs, DeclarationKind k,
+      const QueryLoc& loc) const;
+
+  void checkRequiredDeclarations(RuleBitSet bs, DeclarationKind k,
+      const QueryLoc& loc) const;
+
+  void checkLiterals(DeclarationKind k, const QueryLoc& loc) const;
+
+  void checkLiteralType(AnnotationInternal* ann, zorba::store::Item* literal,
+      zorba::store::SchemaTypeCode type, const QueryLoc& loc) const;
+
+  bool isHttpMetaVariable(char const *name) const;
 };
 
 

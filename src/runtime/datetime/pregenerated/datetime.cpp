@@ -45,6 +45,9 @@ void CurrentDate::serialize(::zorba::serialization::Archiver& ar)
 
 void CurrentDate::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -77,6 +80,9 @@ void CurrentDateTime::serialize(::zorba::serialization::Archiver& ar)
 
 void CurrentDateTime::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -109,6 +115,9 @@ void CurrentTime::serialize(::zorba::serialization::Archiver& ar)
 
 void CurrentTime::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -141,6 +150,9 @@ void MillisToDateTime::serialize(::zorba::serialization::Archiver& ar)
 
 void MillisToDateTime::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -173,6 +185,9 @@ void ParseDate::serialize(::zorba::serialization::Archiver& ar)
 
 void ParseDate::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -205,6 +220,9 @@ void ParseDateTime::serialize(::zorba::serialization::Archiver& ar)
 
 void ParseDateTime::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -237,6 +255,9 @@ void ParseTime::serialize(::zorba::serialization::Archiver& ar)
 
 void ParseTime::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -269,6 +290,9 @@ void Timestamp::serialize(::zorba::serialization::Archiver& ar)
 
 void Timestamp::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -301,6 +325,9 @@ void UTCOffset::serialize(::zorba::serialization::Archiver& ar)
 
 void UTCOffset::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

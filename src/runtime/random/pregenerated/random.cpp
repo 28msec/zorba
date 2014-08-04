@@ -45,6 +45,9 @@ void SeededRandomIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void SeededRandomIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -89,6 +92,9 @@ void RandomIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void RandomIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -133,6 +139,9 @@ void UuidIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void UuidIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

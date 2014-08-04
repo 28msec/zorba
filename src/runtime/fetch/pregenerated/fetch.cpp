@@ -45,6 +45,9 @@ void FetchContentIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FetchContentIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -77,6 +80,9 @@ void FetchContentBinaryIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FetchContentBinaryIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -109,6 +115,9 @@ void FetchContentTypeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FetchContentTypeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

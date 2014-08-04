@@ -187,13 +187,15 @@ UNARY_ACCEPT(DocumentIterator);
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementIteratorState::init(PlanState&)
+void ElementIteratorState::init(PlanState& planState)
 {
+  PlanIteratorState::init(planState);
 }
 
 
-void ElementIteratorState::reset(PlanState&)
+void ElementIteratorState::reset(PlanState& planState)
 {
+  PlanIteratorState::reset(planState);
   baseUri.clear();
 }
 
@@ -261,6 +263,9 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
 
 void ElementIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   if (theQNameIter != 0)

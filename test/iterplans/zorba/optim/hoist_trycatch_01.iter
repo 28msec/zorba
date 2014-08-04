@@ -136,7 +136,7 @@
     <FLWORIterator>
       <LetVariable name="$$opt_temp_0" materialize="true">
         <HoistIterator>
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,loc)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,loc)" typename="*" nill-allowed="false">
             <CtxVarIterator varid="6" varname="locations" varkind="global"/>
           </ChildAxisIterator>
         </HoistIterator>
@@ -157,7 +157,7 @@
           </GenericArithIterator_MultiplyOperation>
           <FLWORIterator>
             <ForVariable name="s">
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sale)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sale)" typename="*" nill-allowed="false">
                 <CtxVarIterator varid="5" varname="sales" varkind="global"/>
               </ChildAxisIterator>
             </ForVariable>
@@ -165,7 +165,7 @@
               <HoistIterator>
                 <PromoteIterator type="xs:anyAtomicType">
                   <FnDataIterator>
-                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,locid)" typename="*" nill-allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,locid)" typename="*" nill-allowed="false">
                       <ForVarIterator varname="s"/>
                     </AttributeAxisIterator>
                   </FnDataIterator>
@@ -185,7 +185,7 @@
                   </UnhoistIterator>
                   <PromoteIterator type="xs:anyAtomicType">
                     <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
+                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="l"/>
                       </AttributeAxisIterator>
                     </FnDataIterator>
@@ -197,7 +197,7 @@
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,sale)"/>
                 <EnclosedIterator attr_cont="false">
-                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,city)" typename="*" nill-allowed="0">
+                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,city)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="l"/>
                   </AttributeAxisIterator>
                 </EnclosedIterator>

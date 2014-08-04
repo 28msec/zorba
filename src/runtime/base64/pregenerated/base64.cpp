@@ -45,6 +45,9 @@ void Base64DecodeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void Base64DecodeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -77,6 +80,9 @@ void Base64EncodeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void Base64EncodeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

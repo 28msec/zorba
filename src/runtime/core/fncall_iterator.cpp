@@ -685,7 +685,11 @@ void UDFunctionCallIterator::bindArguments(UDFunctionCallIteratorState* aState, 
 // We specialize accept() to descend into the separate plan for the UDF, but
 // only for a PrinterVisitor and no other kind of visitor.
 //
-void UDFunctionCallIterator::accept( PlanIterVisitor &v ) const {
+void UDFunctionCallIterator::accept( PlanIterVisitor &v ) const
+{
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit( *this );
   std::vector<PlanIter_t>::const_iterator i( theChildren.begin() );
   std::vector<PlanIter_t>::const_iterator const end( theChildren.end() );
@@ -693,7 +697,7 @@ void UDFunctionCallIterator::accept( PlanIterVisitor &v ) const {
     (*i)->accept( v );
   if ( PrinterVisitor *const pv = dynamic_cast<PrinterVisitor*>( &v ) ) {
     PlanState *const state = pv->getPlanState();
-    if ( state && Properties::instance().getProfile() ) {
+    if ( state && Properties::instance().getCollectProfile() ) {
       UDFunctionCallIteratorState *const udf_state =
         StateTraitsImpl<UDFunctionCallIteratorState>::getState(
           *state, getStateOffset()

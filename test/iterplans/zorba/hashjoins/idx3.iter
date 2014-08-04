@@ -31,7 +31,7 @@
       </LetVariable>
       <ForVariable name="rec">
         <NodeSortIterator distinct="true" ascending="true">
-          <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="*" typename="*" nill-allowed="false">
             <FnConcatIterator>
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,a)"/>

@@ -776,6 +776,7 @@ namespace zorba{
 class PlanIterVisitor {
 public:
   virtual ~PlanIterVisitor() { }
+  virtual bool hasToVisit(PlanIterator const *) { return true; }
 
 #include "runtime/visitors/plan_iter_visitor_decl.h"
 

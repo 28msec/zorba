@@ -3,9 +3,9 @@
     <CtxVarDeclareIterator varid="4" varname="input-context"/>
     <FLWORIterator>
       <ForVariable name="b">
-        <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill-allowed="0">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,regions)" typename="*" nill-allowed="0">
-            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="0">
+        <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill-allowed="false">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,regions)" typename="*" nill-allowed="false">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="false">
               <FnDocIterator>
                 <PromoteIterator type="xs:string">
                   <FnDataIterator>
@@ -20,7 +20,7 @@
       <OrderBySpec>
         <FnDataIterator>
           <FnZeroOrOneIterator>
-            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,location)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,location)" typename="*" nill-allowed="false">
               <ForVarIterator varname="b"/>
             </ChildAxisIterator>
           </FnZeroOrOneIterator>
@@ -32,8 +32,8 @@
           <AttributeIterator qname="xs:QName(,,name)">
             <EnclosedIterator attr_cont="true">
               <FnDataIterator>
-                <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="0">
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="0">
+                <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="false">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="false">
                     <ForVarIterator varname="b"/>
                   </ChildAxisIterator>
                 </ChildAxisIterator>
@@ -41,8 +41,8 @@
             </EnclosedIterator>
           </AttributeIterator>
           <EnclosedIterator attr_cont="false">
-            <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="0">
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,location)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="false">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,location)" typename="*" nill-allowed="false">
                 <ForVarIterator varname="b"/>
               </ChildAxisIterator>
             </ChildAxisIterator>

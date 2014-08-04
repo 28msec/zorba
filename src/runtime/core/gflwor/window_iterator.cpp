@@ -703,6 +703,9 @@ uint32_t WindowIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 void WindowIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   v.beginVisitWindowVariable(theVarName->getStringValue().str(), theVarRefs);
@@ -729,6 +732,7 @@ void WindowIterator::accept(PlanIterVisitor& v) const
 void WindowIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<WindowState>::createState(planState, theStateOffset, offset);
+  StateTraitsImpl<WindowState>::initState(planState, theStateOffset);
 
   theTupleIter->open(planState, offset);
   theInputIter->open(planState, offset);

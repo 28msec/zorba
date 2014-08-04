@@ -4,7 +4,7 @@
     <FLWORIterator>
       <ForVariable name="folder">
         <NodeSortIterator distinct="true" ascending="true">
-          <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,Folder)" typename="*" nill-allowed="0">
+          <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,Folder)" typename="*" nill-allowed="false">
             <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
               <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
             </TreatIterator>
@@ -14,14 +14,14 @@
       <LetVariable name="$$opt_temp_0" materialize="true">
         <HoistIterator>
           <FnDataIterator>
-            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,FolderName)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,FolderName)" typename="*" nill-allowed="false">
               <ForVarIterator varname="folder"/>
             </ChildAxisIterator>
           </FnDataIterator>
         </HoistIterator>
       </LetVariable>
       <ForVariable name="file">
-        <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="0">
+        <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="false">
           <ForVarIterator varname="folder"/>
         </DescendantAxisIterator>
       </ForVariable>
@@ -37,7 +37,7 @@
           </AttributeIterator>
           <EnclosedIterator attr_cont="false">
             <FnStringIterator>
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,FileName)" typename="*" nill-allowed="0" target_position="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,FileName)" typename="*" nill-allowed="false" target_position="0">
                 <ForVarIterator varname="file"/>
               </ChildAxisIterator>
             </FnStringIterator>

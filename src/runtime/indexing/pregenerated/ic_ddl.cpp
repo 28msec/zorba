@@ -46,6 +46,9 @@ void ActivateICIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ActivateICIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -74,6 +77,9 @@ void DeactivateICIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void DeactivateICIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);
@@ -102,6 +108,9 @@ void CheckICIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void CheckICIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   theChild->accept(v);

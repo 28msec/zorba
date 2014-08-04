@@ -205,7 +205,7 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
     return false;
   }
 
-	return true;
+  return true;
 }
 
 /*

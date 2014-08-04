@@ -1,7 +1,7 @@
 <iterator-tree description="main query">
   <FLWORIterator>
     <ForVariable name="a">
-      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,foo)" typename="*" nill-allowed="0">
+      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,foo)" typename="*" nill-allowed="false">
         <ElementIterator copyInputNodes="false">
           <SingletonIterator value="xs:QName(,,root)"/>
           <FnConcatIterator>
@@ -50,14 +50,14 @@
       </ChildAxisIterator>
     </ForVariable>
     <ForVariable name="b">
-      <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,boo)" typename="*" nill-allowed="0">
+      <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,boo)" typename="*" nill-allowed="false">
         <ForVarIterator varname="a"/>
       </DescendantAxisIterator>
     </ForVariable>
     <ReturnClause>
       <SequentialIterator>
         <CtxVarDeclareIterator varid="4" varname="x">
-          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
+          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="false">
             <ForVarIterator varname="b"/>
           </AttributeAxisIterator>
         </CtxVarDeclareIterator>
@@ -67,7 +67,7 @@
               <GenericArithIterator_AddOperation>
                 <PromoteIterator type="xs:anyAtomicType">
                   <FnDataIterator>
-                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="false">
                       <ForVarIterator varname="a"/>
                     </AttributeAxisIterator>
                   </FnDataIterator>

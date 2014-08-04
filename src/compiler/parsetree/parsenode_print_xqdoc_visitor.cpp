@@ -516,10 +516,10 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult,
   theBaseURI("http://www.xqdoc.org/1.0"),
   theXQDOCVersion("1.0"),
   theFactory(GENV_ITEMFACTORY),
+  theLanguageKind(false), // set the default language to XQuery
   theOptions(aOptions),
   theIsIndexDecl(false),
-  theWaitForIndexSourceLiteral(false),
-  theLanguageKind(false) // set the default language to XQuery
+  theWaitForIndexSourceLiteral(false)
 {
   theNamespaceMap["fn"] = static_context::W3C_FN_NS;
   theNamespaceMap[""] = static_context::W3C_FN_NS;

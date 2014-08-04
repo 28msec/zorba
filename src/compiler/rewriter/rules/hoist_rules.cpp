@@ -38,13 +38,15 @@ namespace zorba
 {
 
 
-static bool non_hoistable(const expr*);
+static bool non_hoistable(expr*);
 
 static bool is_already_hoisted(const expr*);
 
 static bool is_enclosed_expr(const expr*);
 
 static bool containsUpdates(const expr*);
+
+static bool containsUnhoistableExpression(expr*);
 
 
 /*******************************************************************************
@@ -851,7 +853,37 @@ bool HoistRule::contains_var(var_expr* v, const DynamicBitset& varset)
 /*******************************************************************************
 
 ********************************************************************************/
-static bool non_hoistable(const expr* e)
+static bool containsUnhoistableExpression(expr* e)
+{
+  if (is_enclosed_expr(e))
+  {
+    e->setUnhoistable(ANNOTATION_TRUE);
+    return true;
+  }
+
+  bool containsUnhoistable = false;
+  ExprIterator iter(e);
+  while(!iter.done())
+  {
+    expr* ce = **iter;
+    if (ce)
+    {
+      if (containsUnhoistableExpression(ce))
+      {
+        e->setUnhoistable(ANNOTATION_TRUE);
+        containsUnhoistable = true;
+      }
+    }
+    iter.next();
+  }
+  return containsUnhoistable;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+static bool non_hoistable(expr* e)
 {
   expr_kind_t k = e->get_expr_kind();
 
@@ -864,6 +896,7 @@ static bool non_hoistable(const expr* e)
        non_hoistable(static_cast<const wrapper_expr*>(e)->get_input())) ||
       is_already_hoisted(e) ||
       is_enclosed_expr(e) ||
+      e->isUnhoistable() ||
       e->containsRecursiveCall() ||
       e->is_nondeterministic() ||
       e->is_sequential() ||
@@ -871,6 +904,9 @@ static bool non_hoistable(const expr* e)
   {
     return true;
   }
+
+  if (k == attr_expr_kind && containsUnhoistableExpression(e))
+    return true;
 
   if (k == fo_expr_kind)
   {

@@ -32,12 +32,12 @@
                 <NodeSortIterator distinct="true" ascending="true">
                   <FLWORIterator>
                     <ForVariable name="$$context-item">
-                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill-allowed="0">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill-allowed="false">
                         <CtxVarIterator varid="4" varname="seq" varkind="global"/>
                       </ChildAxisIterator>
                     </ForVariable>
                     <ForVariable name="$$context-item">
-                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill-allowed="0">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="$$context-item"/>
                       </ChildAxisIterator>
                     </ForVariable>
@@ -46,7 +46,7 @@
                         <TypedValueCompareIterator_STRING>
                           <PromoteIterator type="xs:anyAtomicType">
                             <FnDataIterator>
-                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill-allowed="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill-allowed="false">
                                 <ForVarIterator varname="$$context-item"/>
                               </ChildAxisIterator>
                             </FnDataIterator>
@@ -70,7 +70,7 @@
                   <CastIterator type="xs:date">
                     <CastIterator type="xs:dateTime">
                       <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="0">
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="false">
                           <ForVarIterator varname="s"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
@@ -79,7 +79,7 @@
                   <CastIterator type="xs:date">
                     <CastIterator type="xs:dateTime">
                       <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="0">
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="false">
                           <ForVarIterator varname="e"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
@@ -99,7 +99,7 @@
                     <TypedValueCompareIterator_STRING>
                       <PromoteIterator type="xs:anyAtomicType">
                         <FnDataIterator>
-                          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill-allowed="0">
+                          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill-allowed="false">
                             <ForVarIterator varname="$$context-item"/>
                           </ChildAxisIterator>
                         </FnDataIterator>
@@ -121,7 +121,7 @@
                 <CastIterator type="xs:date">
                   <CastIterator type="xs:dateTime">
                     <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="0">
+                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="false">
                         <ForVarIterator varname="s"/>
                       </AttributeAxisIterator>
                     </FnDataIterator>

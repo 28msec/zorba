@@ -8,9 +8,9 @@
     <ForVariable name="$$opt_temp_0">
       <HoistIterator>
         <FnCountIterator>
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill-allowed="0">
-            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill-allowed="0">
-              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bib)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill-allowed="false">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill-allowed="false">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bib)" typename="*" nill-allowed="false">
                 <ForVarIterator varname="b"/>
               </ChildAxisIterator>
             </ChildAxisIterator>

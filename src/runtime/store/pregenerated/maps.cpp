@@ -47,6 +47,9 @@ void MapCreateIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MapCreateIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -79,6 +82,9 @@ void MapDropIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MapDropIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -111,6 +117,9 @@ void MapGetIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MapGetIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -155,6 +164,9 @@ void MapInsertIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MapInsertIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -187,6 +199,9 @@ void MapDeleteIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MapDeleteIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -219,6 +234,9 @@ void MapKeysIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MapKeysIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -263,6 +281,9 @@ void MapSizeIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MapSizeIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -295,6 +316,9 @@ void AvailableMapsIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void AvailableMapsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -329,6 +353,9 @@ void MapOptionsIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void MapOptionsIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

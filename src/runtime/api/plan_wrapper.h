@@ -73,7 +73,7 @@ protected:
 
   PlanState          * thePlanState;
 
-  bool		             theIsOpen;
+  bool                 theIsOpen;
 
   Timeout            * theTimeout;
   Mutex                theTimeoutMutex;
@@ -108,6 +108,8 @@ public:
   dynamic_context* dctx() { return theDynamicContext; }
 
   void profile() const;
+
+  bool isOpen() { return theIsOpen; }
 
 #ifndef NDEBUG
   virtual std::string toString() const;

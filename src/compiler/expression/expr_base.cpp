@@ -621,6 +621,30 @@ bool expr::dereferencesNodes() const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue expr::getUnhoistable() const
+{
+  return (BoolAnnotationValue)
+         ((theAnnotationFlags & UNHOISTABLE_MASK) >> UNHOISTABLE);
+}
+
+
+void expr::setUnhoistable(BoolAnnotationValue v)
+{
+  theAnnotationFlags &= ~UNHOISTABLE_MASK;
+  theAnnotationFlags |= (v << UNHOISTABLE);
+}
+
+
+bool expr::isUnhoistable() const
+{
+  BoolAnnotationValue v = getUnhoistable();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
   This annotation tells whether the expr must produce nodes that belong to
   "standalone" trees or not. A tree is standalone if it does not contain
   references to other trees. Such references are created when the optimizer

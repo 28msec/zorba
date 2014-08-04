@@ -311,6 +311,10 @@ public:
   getExternalVariableAnnotations( Item const&,
                                   std::vector<Annotation_t>& ) const;
 
+  virtual bool
+  getExternalVariableQuantifier(Item const & var_name,
+      SequenceType::Quantifier& result) const;
+
   virtual void
   setURIPath(const std::vector<String>& aURIPath);
 

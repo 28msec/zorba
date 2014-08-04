@@ -139,7 +139,9 @@ public:
 
   bool                      theHasToQuit;
 
-  bool const                profile_;   // cache Properties::getProfile()
+  bool const                theProfile;   // cache Properties::getProfile()
+
+  bool                      theBlockOwned;
 
 public:
   PlanState(
@@ -148,6 +150,8 @@ public:
       uint32_t blockSize,
       uint32_t aStackDepth = 0,
       uint32_t aMaxStackDepth = 1024);
+
+  PlanState(PlanState& aPlanState);
 
   ~PlanState();
 
@@ -245,7 +249,7 @@ public:
   void init(PlanState &planState)
   {
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
-    if ( planState.profile_ )
+    if ( planState.theProfile )
       profile_data_.init();
   }
 
@@ -477,6 +481,14 @@ public:
    */
   virtual bool skip(int64_t count, PlanState &planState) const;
 
+
+  inline void updateProfile(time::cpu::timer& c, time::wall::timer& w, PlanIteratorState *const state) const
+  {
+    time::msec_type const ce( c.elapsed() );
+    time::msec_type const we( w.elapsed() );
+    state->profile_data_.next_.add( ce, we );
+  }
+
   /**
    * Produce the next item and return it to the caller. Implicitly, the first
    * call of 'producNext' initializes the iterator and allocates resources
@@ -491,24 +503,31 @@ public:
 #ifndef NDEBUG
     ZORBA_ASSERT(state->theIsOpened);
 #endif
-    time::cpu::timer c;
-    time::wall::timer w;
-    if ( planState.profile_ ) {
-      c.start();
-      w.start();
-    }
-    bool const ret_val = nextImpl(result, planState);
-    if ( planState.profile_ ) {
+    if ( planState.theProfile )
+    {
       //
       // Temporaries are used here to guarantee the order in which the timers
       // are stopped.  (If the expressions were passed as function arguments,
       // the order is platform/compiler-dependent.)
       //
-      time::msec_type const ce( c.elapsed() );
-      time::msec_type const we( w.elapsed() );
-      state->profile_data_.next_.add( ce, we );
+      time::cpu::timer c;
+      time::wall::timer w;
+      c.start();
+      w.start();
+      try
+      {
+        bool const ret_val = nextImpl(result, planState);
+        updateProfile(c, w, state);
+        return ret_val;
+      }
+      catch (const ZorbaException&)
+      {
+        updateProfile(c, w, state);
+        throw;
+      }
     }
-    return ret_val;
+    else
+      return nextImpl(result, planState);
   }
 
   virtual bool nextImpl(store::Item_t& result, PlanState& planState) const = 0;

@@ -46,6 +46,9 @@ void ReadLineIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void ReadLineIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -80,6 +83,9 @@ void PrintIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void PrintIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -117,6 +123,9 @@ void FunctionTraceIterator::serialize(::zorba::serialization::Archiver& ar)
 
 void FunctionTraceIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

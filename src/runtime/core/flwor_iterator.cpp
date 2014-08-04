@@ -147,7 +147,7 @@ ForLetClause::ForLetClause(
 ********************************************************************************/
 void ForLetClause::serialize(::zorba::serialization::Archiver& ar)
 {
-  //ar & theVarName;
+  ar & theVarName;
   bool isFor;
   
   if (ar.is_serializing_out())
@@ -1849,6 +1849,9 @@ uint32_t FLWORIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 void FLWORIterator::accept(PlanIterVisitor& v) const
 {
+  if (!v.hasToVisit(this))
+    return;
+
   v.beginVisit(*this);
 
   std::vector<ForLetClause>::const_iterator iter = theForLetClauses.begin();

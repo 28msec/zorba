@@ -118,7 +118,7 @@
     <FnConcatIterator>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
             <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
               <CtxVarIterator varid="4" varname="doc" varkind="local"/>
             </TreatIterator>
@@ -131,7 +131,7 @@
 )"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
             <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
               <CtxVarIterator varid="4" varname="doc" varkind="local"/>
             </TreatIterator>
@@ -144,7 +144,7 @@
 )"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
             <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
               <CtxVarIterator varid="4" varname="doc" varkind="local"/>
             </TreatIterator>
@@ -157,7 +157,7 @@
 )"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
             <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
               <CtxVarIterator varid="4" varname="doc" varkind="local"/>
             </TreatIterator>
@@ -170,7 +170,7 @@
 )"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
             <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
               <CtxVarIterator varid="4" varname="doc" varkind="local"/>
             </TreatIterator>
@@ -183,7 +183,7 @@
 )"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
             <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
               <CtxVarIterator varid="4" varname="doc" varkind="local"/>
             </TreatIterator>
@@ -195,7 +195,7 @@
 )"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
             <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
               <CtxVarIterator varid="4" varname="doc" varkind="local"/>
             </TreatIterator>

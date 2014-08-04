@@ -37,6 +37,7 @@ Properties::Properties() {
   abort_ = false;
 #endif /* NDEBUG */
   owns_debug_stream_ = false;
+  collect_profile_ = false;
   debug_stream_.reset( &cout );
   dump_lib_ = false;
   force_gflwor_ = false;
@@ -46,6 +47,7 @@ Properties::Properties() {
   max_udf_call_depth_ = 1024;
   no_copy_optim_ = true;
   no_tree_ids_ = false;
+  no_uncalled_iterators_ = false;
   optimization_level_ = 1;
   plan_format_ = PLAN_FORMAT_NONE;
   print_ast_ = false;
@@ -55,7 +57,7 @@ Properties::Properties() {
   print_optimized_ = false;
   print_static_types_ = true;
   print_translated_ = false;
-  profile_ = false;
+  profile_format_ = PROFILE_FORMAT_NONE;
   stable_iterator_ids_ = false;
   trace_codegen_ = false;
 #ifndef ZORBA_NO_FULL_TEXT

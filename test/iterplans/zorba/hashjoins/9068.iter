@@ -26,7 +26,7 @@
       </CreateInternalIndexIterator>
     </LetVariable>
     <ForVariable name="b">
-      <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill-allowed="0">
+      <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill-allowed="false">
         <FnDocIterator>
           <SingletonIterator value="xs:string(books.xml)"/>
         </FnDocIterator>
@@ -34,7 +34,7 @@
     </ForVariable>
     <LetVariable name="$$opt_temp_2" materialize="true">
       <HoistIterator>
-        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,title)" typename="*" nill-allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,title)" typename="*" nill-allowed="false">
           <ForVarIterator varname="b"/>
         </ChildAxisIterator>
       </HoistIterator>
@@ -42,7 +42,7 @@
     <ForVariable name="$$opt_temp_1">
       <HoistIterator>
         <FnCountIterator>
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill-allowed="false">
             <ForVarIterator varname="b"/>
           </ChildAxisIterator>
         </FnCountIterator>
