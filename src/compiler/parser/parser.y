@@ -44,9 +44,9 @@
 
 
 #ifdef XQUERY_PARSER
-%define "parser_class_name" { xquery_parser }
+%define "parser_class_name" "xquery_parser"
 #else
-%define "parser_class_name" { jsoniq_parser }
+%define "parser_class_name" "jsoniq_parser"
 #endif
 
 
@@ -4634,21 +4634,21 @@ NumericLiteral :
             $$ = NumericLiteral::new_literal(
                 LOC(@$), ParseConstants::num_decimal, *$1
             );
-            delete yylhs.value.decval;
+            delete yylval.decval;
         }
     |   INTEGER_LITERAL
         {
             $$ = NumericLiteral::new_literal(
                 LOC(@$), ParseConstants::num_integer, *$1
             );
-            delete yylhs.value.ival;
+            delete yylval.ival;
         }
     |   DOUBLE_LITERAL
         {
             $$ = NumericLiteral::new_literal(
                 LOC(@$), ParseConstants::num_double, *$1
             );
-            delete yylhs.value.dval;
+            delete yylval.dval;
         }
     ;
 
