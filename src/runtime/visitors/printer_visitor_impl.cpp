@@ -495,7 +495,6 @@ DEF_END_VISIT( ForVarIterator )
 
 void PrinterVisitor::beginVisit( FTContainsIterator const &i ) {
   thePrinter.startBeginVisit( "FTContainsIterator", ++theId );
-  printCommons( &i, theId );
   // TODO
   thePrinter.endBeginVisit( theId );
 }
