@@ -14,7 +14,7 @@ echo "ZORBA_MODULE_DIR ${ZORBA_MODULE_DIR}"
 
 echo "================================================================================"
 mkdir -p "${ZORBA_MODULE_DIR}"
-cmake -Doutdir="${ZORBA_MODULE_DIR}" -Dallmodules=1 -Doverwrite=true -P "${ZORBA_SRC_DIR}/modules/DownloadModules.cmake"
+cmake -Doutdir="${ZORBA_MODULE_DIR}" -Dallmodules=1 -P "${ZORBA_SRC_DIR}/modules/DownloadModules.cmake"
 
 echo "================================================================================"
 mkdir -p "${ZORBA_BUILD_DIR}"
