@@ -178,17 +178,23 @@ struct profile_data {
    */
   struct mbr_fn {
     unsigned call_count_;
+    unsigned next_count_;
     time::msec_type cpu_time_;
     time::msec_type wall_time_;
 
     void init() {
       call_count_ = 0;
+      next_count_ = 0;
       cpu_time_ = 0;
       wall_time_ = 0;
     }
 
-    void add( time::msec_type cpu, time::msec_type wall ) {
+    void addCall() {
       ++call_count_;
+    }
+
+    void addNext( time::msec_type cpu, time::msec_type wall ) {
+      ++next_count_;
       cpu_time_ += cpu;
       wall_time_ += wall;
     }
@@ -408,6 +414,14 @@ public:
   void open(PlanState& planState, uint32_t& offset)
   {
     openImpl(planState, offset);
+
+    if (planState.theProfile)
+    {
+      PlanIteratorState *const state =
+          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+      state->profile_data_.next_.addCall();
+    }
+
 #ifndef NDEBUG
     // do this after openImpl because the state is created there
     PlanIteratorState* state =
@@ -427,6 +441,13 @@ public:
    */
   void reset(PlanState& planState) const
   {
+    if (planState.theProfile)
+    {
+      PlanIteratorState *const state =
+          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+      state->profile_data_.next_.addCall();
+    }
+
 #ifndef NDEBUG
     PlanIteratorState* state =
     StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
@@ -486,7 +507,7 @@ public:
   {
     time::msec_type const ce( c.elapsed() );
     time::msec_type const we( w.elapsed() );
-    state->profile_data_.next_.add( ce, we );
+    state->profile_data_.next_.addNext( ce, we );
   }
 
   /**
