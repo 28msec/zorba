@@ -86,12 +86,17 @@ void XMLIterPrinter::addAttribute( char const *name, char const *value ) {
   os_ << ' ' << name << "=\"" << value << "\"";
 }
 
-void XMLIterPrinter::addNumAttribute( char const *name, xs_long value ) {
+void XMLIterPrinter::addIntAttribute( char const *name, xs_long value ) {
   assert( theOpenStart );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
 
-void XMLIterPrinter::addNumAttribute( char const *name, xs_integer value ) {
+void XMLIterPrinter::addIntAttribute( char const *name, xs_integer value ) {
+  assert( theOpenStart );
+  os_ << ' ' << name << "=\"" << value << "\"";
+}
+
+void XMLIterPrinter::addDecAttribute( char const *name, double value ) {
   assert( theOpenStart );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
@@ -151,11 +156,15 @@ void DOTIterPrinter::addAttribute( char const *name, char const *value ) {
   os_ << "\\n" << name << '=' << temp;
 }
 
-void DOTIterPrinter::addNumAttribute( char const *name, xs_long value ) {
+void DOTIterPrinter::addIntAttribute( char const *name, xs_long value ) {
   os_ << indent << "\\n" << name << '=' << value;
 }
 
-void DOTIterPrinter::addNumAttribute( char const *name, xs_integer value ) {
+void DOTIterPrinter::addIntAttribute( char const *name, xs_integer value ) {
+  os_ << indent << "\\n" << name << '=' << value;
+}
+
+void DOTIterPrinter::addDecAttribute( char const *name, double value ) {
   os_ << indent << "\\n" << name << '=' << value;
 }
 
@@ -214,12 +223,17 @@ void JSONIterPrinter::addAttribute( char const *name, char const *value ) {
       << zorba::json::serialize(value) << "\"";
 }
 
-void JSONIterPrinter::addNumAttribute( char const *name, xs_long value ) {
+void JSONIterPrinter::addIntAttribute( char const *name, xs_long value ) {
   os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": "
       << value;
 }
 
-void JSONIterPrinter::addNumAttribute( char const *name, xs_integer value ) {
+void JSONIterPrinter::addIntAttribute( char const *name, xs_integer value ) {
+  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": "
+      << value;
+}
+
+void JSONIterPrinter::addDecAttribute( char const *name, double value ) {
   os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": "
       << value;
 }

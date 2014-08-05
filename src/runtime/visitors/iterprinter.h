@@ -44,8 +44,9 @@ public:
   virtual void endBeginVisit( int addr ) = 0;
 
   virtual void addBoolAttribute( char const *name, bool value ) = 0;
-  virtual void addNumAttribute( char const *name, xs_long value ) = 0;
-  virtual void addNumAttribute( char const *name, xs_integer value ) = 0;
+  virtual void addIntAttribute( char const *name, xs_long value ) = 0;
+  virtual void addIntAttribute( char const *name, xs_integer value ) = 0;
+  virtual void addDecAttribute( char const *name, double value ) = 0;
 
   virtual void addAttribute( char const *name, char const *value ) = 0;
   template<class ValueType>
@@ -76,8 +77,9 @@ public:
   void endBeginVisit( int addr );
 
   void addBoolAttribute( char const *name, bool value );
-  void addNumAttribute( char const *name, xs_long value );
-  void addNumAttribute( char const *name, xs_integer value );
+  void addIntAttribute( char const *name, xs_long value );
+  void addIntAttribute( char const *name, xs_integer value );
+  void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
 
 
@@ -103,8 +105,9 @@ public:
   void endBeginVisit( int addr );
 
   void addBoolAttribute( char const *name, bool value );
-  void addNumAttribute( char const *name, xs_long value );
-  void addNumAttribute( char const *name, xs_integer value );
+  void addIntAttribute( char const *name, xs_long value );
+  void addIntAttribute( char const *name, xs_integer value );
+  void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
 
   void startEndVisit();
@@ -128,8 +131,9 @@ public:
   void endBeginVisit( int addr );
 
   void addBoolAttribute( char const *name, bool value );
-  void addNumAttribute( char const *name, xs_long value );
-  void addNumAttribute( char const *name, xs_integer value );
+  void addIntAttribute( char const *name, xs_long value );
+  void addIntAttribute( char const *name, xs_integer value );
+  void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
 
 

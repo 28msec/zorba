@@ -179,8 +179,8 @@ struct profile_data {
   struct mbr_fn {
     unsigned call_count_;
     unsigned next_count_;
-    time::msec_type cpu_time_;
-    time::msec_type wall_time_;
+    double cpu_time_;
+    double wall_time_;
 
     void init() {
       call_count_ = 0;
@@ -193,17 +193,17 @@ struct profile_data {
       ++call_count_;
     }
 
-    void addNext( time::msec_type cpu, time::msec_type wall ) {
+    void addNext( double cpu, double wall ) {
       ++next_count_;
       cpu_time_ += cpu;
       wall_time_ += wall;
     }
   };
 
-  mbr_fn next_;                         // for nextImpl()
+  mbr_fn data_;
 
   void init() {
-    next_.init();
+    data_.init();
   }
 };
 
@@ -419,7 +419,7 @@ public:
     {
       PlanIteratorState *const state =
           StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-      state->profile_data_.next_.addCall();
+      state->profile_data_.data_.addCall();
     }
 
 #ifndef NDEBUG
@@ -445,7 +445,7 @@ public:
     {
       PlanIteratorState *const state =
           StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-      state->profile_data_.next_.addCall();
+      state->profile_data_.data_.addCall();
     }
 
 #ifndef NDEBUG
@@ -505,9 +505,9 @@ public:
 
   inline void updateProfile(time::cpu::timer& c, time::wall::timer& w, PlanIteratorState *const state) const
   {
-    time::msec_type const ce( c.elapsed() );
-    time::msec_type const we( w.elapsed() );
-    state->profile_data_.next_.addNext( ce, we );
+    double const ce( c.elapsed() );
+    double const we( w.elapsed() );
+    state->profile_data_.data_.addNext( ce, we );
   }
 
   /**
