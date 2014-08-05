@@ -94,9 +94,9 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
 
   if ( props.getPrintLocations() ) {
     QueryLoc const &loc = pi->getLocation();
-    std::string locStr = loc.toString(true);
-    if (!locStr.empty())
-      thePrinter.addAttribute( "location", locStr );
+    std::stringstream locStr;
+    locStr << loc;
+    thePrinter.addAttribute( "location", locStr.str() );    
   }
 
   if ( props.getCollectProfile() && thePlanState ) {

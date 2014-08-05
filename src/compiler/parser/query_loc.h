@@ -83,8 +83,6 @@ public:
  
   bool equals(const QueryLoc& loc) const;
 
-  std::string toString(bool aPrintInterval) const;
-
   operator explicit_bool::type() const {
     return explicit_bool::value_of( !equals( null ) );
   }

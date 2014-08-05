@@ -51,45 +51,29 @@ QueryLoc::QueryLoc( zstring const &filename, line_type lineBegin,
 
 std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc) 
 {
-  if ( !aQueryLoc.getFilename().empty() ) 
+  std::stringstream lLoc;
+
+  if (!aQueryLoc.theFilename.empty())
   {
-    aOstr << aQueryLoc.getFilename() << ":";
+    lLoc << aQueryLoc.theFilename;
   }
 
-  aOstr << aQueryLoc.getLineBegin() << "."
-        << aQueryLoc.getColumnBegin() << "-"
-        << aQueryLoc.getColumnEnd();
+  bool lPrintLines = aQueryLoc.theLineBegin;
+  bool lPrintColumns = aQueryLoc.theLineBegin && aQueryLoc.theLineEnd &&
+      aQueryLoc.theColumnBegin && aQueryLoc.theColumnEnd;
+
+  if (lPrintLines)
+  {
+    lLoc << ":" << aQueryLoc.theLineBegin;
+    if (lPrintColumns)
+      lLoc << "." << aQueryLoc.theColumnBegin;
+
+    lLoc << "-" << (aQueryLoc.theLineEnd ? aQueryLoc.theLineEnd : aQueryLoc.theLineBegin);
+    if (lPrintColumns)
+      lLoc << "." << aQueryLoc.theColumnEnd;
+  }
 
   return aOstr;
-}
-
-std::string QueryLoc::toString(bool aPrintInterval) const
-{
-  if (!theFilename.empty())
-  {
-    std::stringstream lLoc;
-    lLoc << theFilename;
-
-    bool lPrintLines = theLineBegin;
-    bool lPrintColumns = theLineBegin && theLineEnd && theColumnBegin && theColumnEnd;
-
-    if (lPrintLines)
-    {
-      lLoc << ":" << theLineBegin;
-      if (lPrintColumns)
-        lLoc << "." << theColumnBegin;
-
-      if (aPrintInterval)
-      {
-        lLoc << "-" << (theLineEnd ? theLineEnd : theLineBegin);
-        if (lPrintColumns)
-          lLoc << "." << theColumnEnd;
-      }
-    }
-    return lLoc.str();
-  }
-  else
-    return std::string();
 }
 
 
