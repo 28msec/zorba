@@ -517,8 +517,7 @@ public:
       try
       {
         bool const ret_val = nextImpl(result, planState);
-        if (ret_val)
-          updateProfile(c, w, state);
+        updateProfile(c, w, state);
         return ret_val;
       }
       catch (const ZorbaException&)
