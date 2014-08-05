@@ -59,7 +59,7 @@ MACRO(BISON_VERSION_LESS a b)
 ENDMACRO(BISON_VERSION_LESS)
 
 # Bison lowest and highest supported versions
-BISON_VERSION_GREATER("${BISON_VERSION_FULL}" "2.4")
+BISON_VERSION_GREATER("${BISON_VERSION_FULL}" "2.6")
 BISON_VERSION_LESS("${BISON_VERSION_FULL}" "3.0")
 
 # Bison 3.0 removed yylval, yylhs.value should be used instead

@@ -116,7 +116,7 @@ namespace zorba {
     union semantic_type
     {
 /* Line 36 of lalr1.cc  */
-#line 133 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y"
+#line 132 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
