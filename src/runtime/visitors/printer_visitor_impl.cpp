@@ -691,6 +691,7 @@ void PrinterVisitor::endVisitFlworForVariable() {
 
 void PrinterVisitor::beginVisitFlworReturn( PlanIterator const &i ) {
   thePrinter.startBeginVisit( "ReturnClause", ++theId );
+  printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
   i.accept( *this );
 }
@@ -702,6 +703,7 @@ void PrinterVisitor::endVisitFlworReturn( PlanIterator const& ) {
 
 void PrinterVisitor::beginVisitFlworWhereClause( PlanIterator const &i ) {
   thePrinter.startBeginVisit( "WhereClause", ++theId );
+  printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
   i.accept( *this );
 }
