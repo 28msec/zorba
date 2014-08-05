@@ -63,6 +63,35 @@ std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc)
   return aOstr;
 }
 
+std::string QueryLoc::toString(bool aPrintInterval) const
+{
+  if (!theFilename.empty())
+  {
+    std::stringstream lLoc;
+    lLoc << theFilename;
+
+    bool lPrintLines = theLineBegin;
+    bool lPrintColumns = theLineBegin && theLineEnd && theColumnBegin && theColumnEnd;
+
+    if (lPrintLines)
+    {
+      lLoc << ":" << theLineBegin;
+      if (lPrintColumns)
+        lLoc << "." << theColumnBegin;
+
+      if (aPrintInterval)
+      {
+        lLoc << "-" << (theLineEnd ? theLineEnd : theLineBegin);
+        if (lPrintColumns)
+          lLoc << "." << theColumnEnd;
+      }
+    }
+    return lLoc.str();
+  }
+  else
+    return std::string();
+}
+
 
 bool QueryLoc::equals(const QueryLoc& loc) const
 {

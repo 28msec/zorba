@@ -94,9 +94,9 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
 
   if ( props.getPrintLocations() ) {
     QueryLoc const &loc = pi->getLocation();
-    ostringstream oss;
-    oss << loc.getFilename() << ':' << loc.getLineno();
-    thePrinter.addAttribute( "location", oss.str().c_str() );
+    std::string locStr = loc.toString(true);
+    if (!locStr.empty())
+      thePrinter.addAttribute( "location", locStr );
   }
 
   if ( props.getCollectProfile() && thePlanState ) {
@@ -106,6 +106,7 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
       );
     profile_data const &pd = pi_state->get_profile_data();
     thePrinter.addNumAttribute( "prof-calls", pd.next_.call_count_);
+    thePrinter.addNumAttribute( "prof-next-calls", pd.next_.next_count_);
     thePrinter.addNumAttribute( "prof-cpu", pd.next_.cpu_time_);
     thePrinter.addNumAttribute( "prof-wall", pd.next_.wall_time_);
     thePrinter.addAttribute( "prof-name", pi->getNameAsString().str() );
@@ -123,7 +124,7 @@ bool PrinterVisitor::hasToVisit(PlanIterator const *pi)
         *thePlanState, pi->getStateOffset()
       );
     profile_data const &pd = pi_state->get_profile_data();
-    return pd.next_.call_count_;
+    return pd.next_.next_count_;
   }
   return true;
 }
