@@ -32,6 +32,7 @@
 %require "2.4"
 %defines
 %name-prefix "zorba"
+%pure-parser
 %error-verbose
 
 
