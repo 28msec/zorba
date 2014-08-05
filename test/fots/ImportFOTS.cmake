@@ -61,7 +61,7 @@ ENDIF (NOT _unpackstat EQUAL 0)
 # of test sets. We assume that the FOTS driver is in a sibling directory
 # named fots_driver.
 MESSAGE (STATUS "Creating CTest scripts...")
-EXECUTE_PROCESS (COMMAND "${ZORBA}" --omit-xml-declaration -f -q
+EXECUTE_PROCESS (COMMAND "${BUILDDIR}/bin/zorba" --omit-xml-declaration -f -q
   "${CMAKE_CURRENT_LIST_DIR}/../fots_driver/cli.xq"
   -e "fotsPath:=${_outdir}/2011/QT3-test-suite/catalog.xml"
   -e mode:=list-test-sets
