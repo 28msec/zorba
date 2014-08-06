@@ -20,7 +20,7 @@ echo "==========================================================================
 mkdir -p "${ZORBA_BUILD_DIR}"
 cd "${ZORBA_BUILD_DIR}"
 cmake -DZORBA_XQUERYX:BOOL=1 -DZORBA_TEST_XQUERYX:BOOL=1 -DZORBA_WITH_BIG_INTEGER=1 -DCMAKE_BUILD_TYPE=Release -DZORBA_TEST_PLAN_SERIALIZATION:BOOL=1 -DZORBATEST_USE_MT_XQTS:BOOL=1 "${ZORBA_SRC_DIR}"
-make -j8
+make -j2
 
 echo "================================================================================"
 "${ZORBA_SRC_DIR}/test/rbkt/Scripts/w3c/import_w3c_testsuite.sh" "${ZORBA_SRC_DIR}" &
