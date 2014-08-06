@@ -27,7 +27,7 @@ FILE (MAKE_DIRECTORY ${APITEST_OUT_DIRPATH})
 EXECUTE_PROCESS (
   COMMAND
     ${APITEST_PATH}
-    --iter-plan-test
+    --serialize-plan
     --print-iterator-tree
     --no-tree-ids 
     ${CMAKE_ZORBA_SOURCE_DIR}/test/rbkt/Queries/${testname}.xq
