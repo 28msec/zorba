@@ -79,7 +79,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
   unique_ptr<istream> qstream;
   string path;
 
-  if ( at_props.as_file_ ) {
+  if ( at_props.as_files_ ) {
     path = at_props.query_;
     fs::make_absolute( &path );
     qstream.reset( new ifstream( path.c_str() ) );
