@@ -1,5 +1,5 @@
 <iterator-tree description="const-folded expr">
-  <UDFunctionCallIterator cached="true" function="local:get-request-id2">
+  <UDFunctionCallIterator function="local:get-request-id2" cached="true">
     <SingletonIterator value="xs:integer(4)"/>
   </UDFunctionCallIterator>
 </iterator-tree>
@@ -9,7 +9,7 @@
       <LetVarIterator varname="p"/>
     </ForVariable>
     <ReturnClause>
-      <UDFunctionCallIterator cached="true" function="local:get-request-id1">
+      <UDFunctionCallIterator function="local:get-request-id1" cached="true">
         <SingletonIterator value="xs:integer(4)"/>
       </UDFunctionCallIterator>
     </ReturnClause>
@@ -30,7 +30,7 @@
             </OpToIterator>
           </ForVariable>
           <ReturnClause>
-            <UDFunctionCallIterator cached="true" function="local:get-request-id2">
+            <UDFunctionCallIterator function="local:get-request-id2" cached="true">
               <SingletonIterator value="xs:integer(4)"/>
             </UDFunctionCallIterator>
           </ReturnClause>
@@ -40,7 +40,7 @@
   </PromoteIterator>
 </iterator-tree>
 <iterator-tree description="main query">
-  <UDFunctionCallIterator cached="true" function="local:get-request-id1">
+  <UDFunctionCallIterator function="local:get-request-id1" cached="true">
     <SingletonIterator value="xs:integer(1)"/>
   </UDFunctionCallIterator>
 </iterator-tree>
@@ -54,7 +54,7 @@
         </OpToIterator>
       </ForVariable>
       <ReturnClause>
-        <UDFunctionCallIterator cached="true" function="local:get-request-id2">
+        <UDFunctionCallIterator function="local:get-request-id2" cached="true">
           <SingletonIterator value="xs:integer(4)"/>
         </UDFunctionCallIterator>
       </ReturnClause>
@@ -62,7 +62,7 @@
   </PromoteIterator>
 </iterator-tree>
 <iterator-tree description="local:get-request-id2">
-  <UDFunctionCallIterator cached="true" function="local:get-request-id1">
+  <UDFunctionCallIterator function="local:get-request-id1" cached="true">
     <SingletonIterator value="xs:integer(4)"/>
   </UDFunctionCallIterator>
 </iterator-tree>
