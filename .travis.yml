@@ -10,10 +10,8 @@ matrix:
   fast_finish: true
 env:
   matrix:
-    - CTEST_ARGS="-R FOTS/ -E FOTS/app-Demo"
+    - CTEST_ARGS="-R FOTS/"
     - CTEST_ARGS="-R test/update/"
-    - CTEST_ARGS="-R zorba_.*_module/"
     - CTEST_ARGS="-R xqts-xquery"
     - CTEST_ARGS="-R xqts-xqx"
-    - CTEST_ARGS="-R FOTS/app-Demos"
-    - CTEST_ARGS="-E FOTS/|test/update/|zorba_.*_module/|xqts-xquery|xqts-xqx|FOTS/app-Demos"
+    - CTEST_ARGS="-E FOTS/|test/update/|xqts-xquery|xqts-xqx"
