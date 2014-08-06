@@ -16,8 +16,8 @@
 
 // standard
 #include <algorithm>
-#include <cctype>
 #include <cstdlib>
+#include <cctype>
 #include <iostream>
 
 // Zorba
@@ -30,7 +30,34 @@
 using namespace std;
 using namespace zorba;
 
-static char const* check_args();
+///////////////////////////////////////////////////////////////////////////////
+
+static char const* check_args() {
+  APITestProperties const &at_props = APITestProperties::instance();
+
+  if ( !( at_props.boundary_space_.empty() ||
+          at_props.boundary_space_ == "preserve" ||
+          at_props.boundary_space_ == "strip" ) )
+    return "Only strip and preserve are allowed as values for the option boundary-space";
+
+  if ( !( at_props.construction_mode_.empty() ||
+          at_props.construction_mode_ == "preserve" ||
+          at_props.construction_mode_ == "strip" ) )
+    return "Only strip and preserve are allowed as values for the option construction-mode";
+
+  if ( at_props.optimization_level_ > 2 )
+    return "only 0, 1 and 2 are allowed as values for the option --optimization-level";
+
+  if ( !( at_props.ordering_mode_.empty() ||
+          at_props.ordering_mode_ == "ordered" ||
+          at_props.ordering_mode_ == "unordered" ) )
+    return "Only ordered and unordered are allowed as values for the option ordering-mode";
+
+  if ( at_props.queries_or_files_.empty() )
+    return "No queries submitted\nUsage: zorba -q '1 + 1' execute an inline query \n zorba file.xq execute a query from a file";
+
+  return 0;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -46,10 +73,36 @@ char const* get_help_msg() {
       "Call abort(3) when a ZorbaException is thrown.\n\n"
 #endif /* NDEBUG */
 
+    HELP_OPT( "--as-files, -f" )
+      "Treat all -q arguments as file paths instead of URIs or inline queries. This option is deprecated and will be defaulted to true in the future, so any entry in the command line is going to be treated as files.\n\n"
+
+    ////////// b //////////////////////////////////////////////////////////////
+
+    HELP_OPT( "--base-uri <uri>" )
+      "Set the base URI property of the static context.\n\n"
+
+    HELP_OPT( "--boundary-space {strip|preserve}" )
+      "Set the boundary-space policy in the static context.\n\n"
+
+    HELP_OPT( "--byte-order-mark" )
+      "Set the byte-order-mark for the serializer.\n\n"
+
     ////////// c //////////////////////////////////////////////////////////////
+
+    HELP_OPT( "--classpath <path>" )
+      "Set the JVM classpath to be used by modules using Java implementations.\n\n"
 
     HELP_OPT( "--compile-only" )
       "Only compile (don't execute).\n\n"
+
+    HELP_OPT( "--compile-plan" )
+      "Do not execute the query; just compile it and save the execution plan in the file specified with the -o option.\n\n"
+
+    HELP_OPT( "--construction-mode {strip|preserve}" )
+      "Set the construction mode in the static context.\n\n"
+
+    HELP_OPT( "--context-item <item>" )
+      "Set the context item to the XML document in a given file.\n\n"
 
     ////////// d //////////////////////////////////////////////////////////////
 
@@ -58,7 +111,7 @@ char const* get_help_msg() {
       "Launch the Zorba debugger server and connect to a DBGP-enabled debugger client.\n\n"
 #endif /* ZORBA_WITH_DEBUGGER */
 
-    HELP_OPT( "--debug-file <file>" ) 
+    HELP_OPT( "--debug-file <file>" )
       "Sets the file to write developer debugging information to.\n\n"
 
     HELP_OPT( "--debug-stream {1|cout|stdout|2|cerr|stderr}" )
@@ -69,24 +122,49 @@ char const* get_help_msg() {
       "The host where the DBGP-enabled debugger client listens for connections; default: 127.0.0.1.\n\n"
 
     HELP_OPT( "--debug-port, -p <port>" )
-      "The port on which the DBGP-enabled debugger client listens for connections; default: 28028.\n\n"
+      "The port on which the DBGP-enabled debugger client listens for connections; defaults: 28028.\n\n"
 #endif /* ZORBA_WITH_DEBUGGER */
+
+    HELP_OPT( "--default-collation <collation>" )
+      "Add the given collation and set the value of the default collation in the static context to the given collation.\n\n"
+
+    HELP_OPT( "--disable-http-resolution" )
+      "Do not use HTTP to resolve URIs.\n\n"
+
+    HELP_OPT( "--dump-lib" )
+      "Dump function library.\n\n"
 
     ////////// e //////////////////////////////////////////////////////////////
 
     HELP_OPT( "--execute-plan" )
       "Do not compile the query; instead load the execution plan from the file specified by the -f -q options (or by any file specified without any other argument), and execute the loaded plan.\n\n"
 
-    HELP_OPT( "--external-var, -x <name>{=<file>|:=<value>}" )
-      "Sets the value of an external variable.\n\n"
+    HELP_OPT( "--external-variable, -e <name>{=<file>|:=<value>}" )
+      "Set the value for an external variable.\n\n"
+
+    ////////// f //////////////////////////////////////////////////////////////
+
+    HELP_OPT( "--force-gflwor" )
+      "Force the compiler to generate GFLWOR iterators.\n\n"
+
+    ////////// h //////////////////////////////////////////////////////////////
+
+    HELP_OPT( "--help" )
+      "Print this help message.\n\n"
 
     ////////// i //////////////////////////////////////////////////////////////
+
+    HELP_OPT( "--indent, -i" )
+      "Indent output.\n\n"
 
     HELP_OPT( "--infer-joins" )
       "Infer joins.\n\n"
 
     HELP_OPT( "--inline-udf" )
       "Inline user-defined functions.\n\n"
+
+    HELP_OPT( "--iterator-tree {dot|json|xml}" )
+      "Print the iterator tree in the given format.\n\n"
 
     ////////// j //////////////////////////////////////////////////////////////
 
@@ -112,21 +190,39 @@ char const* get_help_msg() {
     HELP_OPT( "--module-path <path>" )
       "Path (list of directories) to add to both the URI and Library paths.\n\n"
 
+    HELP_OPT( "--multiple, -m" )
+      "Execute the given queries multiple times.\n\n"
+
     ////////// n //////////////////////////////////////////////////////////////
 
     HELP_OPT( "--no-copy-optim" )
       "Apply the no-copy optimization.\n\n"
 
+    HELP_OPT( "--no-logo" )
+      "Print no logo when starting.\n\n"
+
     HELP_OPT( "--no-serializer" )
       "Do not serialize (discard) result.\n\n"
 
     HELP_OPT( "--no-tree-ids" )
-      "Suppress IDs and locations from compiler tree dumps.\n\n"
+      "Suppress IDs and locations in printed iterator trees and profiles.\n\n"
+
+    HELP_OPT( "--no-uncalled-iterators" )
+      "Suppress uncalled iterators in printed profiles.\n\n"
 
     ////////// o //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--optimization-level, -O {0|1|2}" )
-      "Optimization level for the query compiler; default: 1.\n\n"
+    HELP_OPT( "--omit-xml-declaration, -r" )
+      "Omit the XML declaration from the result.\n\n"
+
+    HELP_OPT( "--optimization-level, -O {0|1|2}>" )
+      "Optimization level for the query compiler, default: 1.\n\n"
+
+    HELP_OPT( "--option <option>=<value>" )
+      "Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://zorba.io/}option=value\n\n"
+
+    HELP_OPT( "--ordering-mode {ordered|unordered}" )
+      "Set the ordering mode in the static context.\n\n"
 
 #ifdef ZORBA_WITH_FILE_ACCESS
     HELP_OPT( "--output-file, -o <file>" )
@@ -138,11 +234,11 @@ char const* get_help_msg() {
     HELP_OPT( "--parse-only" )
       "Stop after parsing the query.\n\n"
 
-    HELP_OPT( "--plan" )
-      "Test plan serialization.\n\n"
-
     HELP_OPT( "--print-ast" )
       "Print the abstract syntax tree.\n\n"
+
+    HELP_OPT( "--print-errors-as-xml, -x" )
+      "Print the errors as XML.\n\n"
 
     HELP_OPT( "--print-intermediate-opt" )
       "Print intermediate optimizations.\n\n"
@@ -168,17 +264,52 @@ char const* get_help_msg() {
     HELP_OPT( "--print-translated" )
       "Print the normalized expression tree.\n\n"
 
+    HELP_OPT( "--profile {dot|json|xml}" )
+      "Print profiling information in the given format.\n\n"
+
     ////////// q //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--query, -q <query>" )
-      "Query test or file URI (file://...).\n\n"
+    HELP_OPT( "--query, -q" )
+      "Query test or file URI (file://...)\n\n"
 
     ////////// s //////////////////////////////////////////////////////////////
 
     HELP_OPT( "--serialization-parameter, -z <name>=<value>" )
       "Set serialization parameter (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).\n\n"
 
+    HELP_OPT( "--serialize-html" )
+      "Serialize the result as HTML.\n\n"
+
+    HELP_OPT( "--serialize-plan, -s" )
+      "Serialize and then load the query execution plan.\n\n"
+
+    HELP_OPT( "--serialize-only-query" )
+      "Serialize only query.\n\n"
+
+    HELP_OPT( "--serialize-plan, s" )
+      "Serialize and then load the query execution plan.\n\n"
+
+    HELP_OPT( "--serialize-text" )
+      "Serialize the result as text.\n\n"
+
+    HELP_OPT( "--stable-iterator-ids" )
+      "Print the iterator plan with stable IDs.\n\n"
+
+#ifndef ZORBA_NO_FULL_TEXT
+    HELP_OPT( "--stop-words <uri>:=<value>" )
+      "Mapping specifying a stop-words URI to another.\n\n"
+
     ////////// t //////////////////////////////////////////////////////////////
+
+    HELP_OPT( "--thesaurus <uri>:=<value>" )
+      "Mapping specifying a thesaurus URI to another.\n\n"
+#endif /* ZORBA_NO_FULL_TEXT */
+
+    HELP_OPT( "--timing, -t" )
+      "Print timing information. In case of multiple queries, the timing information is provided per query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
+
+    HELP_OPT( "--timeout <seconds>" )
+      "Specify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
 
     HELP_OPT( "--trace-parsing" )
       "Trace parsing.\n\n"
@@ -197,13 +328,16 @@ char const* get_help_msg() {
       "Trace the translator.\n\n"
 #endif /* NDEBUG */
 
-    HELP_OPT( "--tz <minutes>" )
+    HELP_OPT( "--trailing-nl, -n" )
+      "Print a trailing newline after the result of the query.\n\n"
+
+    HELP_OPT( "--timezone <minutes>" )
       "Set implicit time zone (in minutes).\n\n"
 
     ////////// u //////////////////////////////////////////////////////////////
 
-    HELP_OPT( "--use-serializer" )
-      "Use serializer.\n\n"
+    HELP_OPT( "--uri-path <path>" )
+      "URI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.\n\n"
 
     ////////// v //////////////////////////////////////////////////////////////
 
@@ -256,7 +390,7 @@ static bool bool_of( char const *s ) {
 #define IS_OPT(LOPT,SOPT) (IS_LONG_OPT(LOPT) || IS_SHORT_OPT(SOPT))
 
 #define PARSE_ARG(ARG)                                                    \
-  int offset = 2;                                                         \
+  int offset = 2; (void)offset;                                           \
   if ( (*argv)[1] == '-' || !(*argv)[2] ) { offset = 0; ++argv; }         \
   if ( !*argv ) { error = "No value given for " #ARG " option"; break; }
 
@@ -282,6 +416,7 @@ void atoi( char const *s, C &c, void (C::*f)( T ), int offset = 0 ) {
   atoi( *argv, z_props, &Properties::set##PROP, offset )
 
 int parse_args( int argc, char const *argv[] ) {
+  bool got_as_files = false;
   char const *error = 0;
   Properties &z_props = Properties::instance();
   APITestProperties &at_props = APITestProperties::instance();
@@ -296,21 +431,48 @@ int parse_args( int argc, char const *argv[] ) {
       z_props.setAbort( true );
     else
 #endif /* NDEBUG */
+    if ( IS_OPT( "--as-files", "-f" ) ) {
+      at_props.as_files_ = true;
+      got_as_files = true;
+    }
+
+    ////////// b //////////////////////////////////////////////////////////////
+
+    else if ( IS_LONG_OPT( "--base-uri" ) ) {
+      PARSE_ARG( "--base-uri" );
+      at_props.base_uri_ = ARG_VAL;
+    }
+    else if ( IS_LONG_OPT( "--boundary-space" ) ) {
+      PARSE_ARG( "--boundary-space" );
+      at_props.boundary_space_ = ARG_VAL;
+    }
+    else if ( IS_LONG_OPT( "--byte-order-mark" ) )
+      at_props.byte_order_mark_ = true;
 
     ////////// c //////////////////////////////////////////////////////////////
 
-    if ( IS_LONG_OPT( "--compile-only" ) )
+    else if ( IS_LONG_OPT( "--classpath" ) ) {
+      PARSE_ARG( "--classpath" );
+      z_props.setJVMClassPath( ARG_VAL );
+    }
+    else if ( IS_LONG_OPT( "--compile-only" ) )
       at_props.compile_only_ = true;
+    else if ( IS_LONG_OPT( "--compile-plan" ) )
+      at_props.save_plan_ = true;
+    else if ( IS_LONG_OPT( "--construction-mode" ) ) {
+      PARSE_ARG( "--construction-mode" );
+      at_props.construction_mode_ = ARG_VAL;
+    }
+    else if ( IS_LONG_OPT( "--context-item" ) ) {
+      PARSE_ARG( "--context-item" );
+      at_props.ctx_item_ = ARG_VAL;
+    }
 
     ////////// d //////////////////////////////////////////////////////////////
 
 #ifdef ZORBA_WITH_DEBUGGER
     else if ( IS_OPT( "--debug", "-d" ) )
       at_props.debug_ = true;
-    else if ( IS_OPT( "--debug-host", "-h" ) ) {
-      PARSE_ARG( "--debug-host" );
-      at_props.debug_host_ = ARG_VAL;
-    }
 #endif /* ZORBA_WITH_DEBUGGER */
     else if ( IS_LONG_OPT( "--debug-file" ) ) {
       PARSE_ARG( "--debug-file" );
@@ -320,23 +482,35 @@ int parse_args( int argc, char const *argv[] ) {
       PARSE_ARG( "--debug-stream" );
       string val( ARG_VAL );
       to_lower( val );
-      if ( val == "1" || val == "stdout" || val == "cout" )
+      if ( val == "1" || val == "cout" || val == "stdout" )
         z_props.setDebugStream( cout );
-      else if ( val == "2" || val == "stderr" || val == "cerr" )
+      else if ( val == "2" || val == "cerr" || val == "stderr" )
         z_props.setDebugStream( cerr );
       else {
-        error = "--debug-stream argument must be one of: 1, stdout, cout, 2, stderr, or cerr.\n";
+        error = "--debug-stream argument must be one of: 1, cout, stdout, 2, cerr, or stderr.\n";
         break;
       }
     }
 #ifdef ZORBA_WITH_DEBUGGER
+    else if ( IS_OPT( "--debug-host", "-h" ) ) {
+      PARSE_ARG( "--debug-host" );
+      at_props.debug_host_ = ARG_VAL;
+    }
     else if ( IS_OPT( "--debug-port", "-p" ) ) {
       PARSE_ARG( "--debug-port" );
       SET_ATPROP( debug_port_ );
     }
 #endif /* ZORBA_WITH_DEBUGGER */
-    else if ( IS_LONG_OPT( "--dot-plan-file" ) )
-      at_props.dot_plan_file_ = true;
+    else if ( IS_LONG_OPT( "--default-collation" ) ) {
+      PARSE_ARG( "--default-collation" );
+      at_props.default_collation_ = ARG_VAL;
+    }
+    else if ( IS_LONG_OPT( "--disable-http-resolution" ) ) {
+      sctx_opt opt;
+      opt.clark_qname = "{http://zorba.io/options/features}disable";
+      opt.value = "http-uri-resolution";
+      at_props.sctx_opts_.push_back( opt );
+    }
     else if ( IS_LONG_OPT( "--dump-lib" ) )
       z_props.setDumpLib( true );
 
@@ -344,18 +518,18 @@ int parse_args( int argc, char const *argv[] ) {
 
     else if ( IS_LONG_OPT( "--execute-plan" ) )
       at_props.load_plan_ = true;
-    else if ( IS_OPT( "--external-var", "-x" ) ) {
-      PARSE_ARG( "--external-var" );
+    else if ( IS_OPT( "--external-variable", "-e" ) ) {
+      PARSE_ARG( "--external-variable" );
       string key, value;
       if ( !split_key_value( ARG_VAL, "=", &key, &value ) ) {
-        error = "--external-var argument must be of the form name=file or name:=value";
+        error = "--external-variable argument must be of the form name=file or name:=value\n";
         break;
       }
       external_var ev;
       ev.var_value = value;
 
       if ( key[0] == ':' ) {
-        error = "--external-var argument must be of the form name=file or name:=value";
+        error = "--external-variable argument must be of the form name=file or name:=value\n";
         break;
       }
       if ( key[ key.size() - 1 ] == ':' )
@@ -384,6 +558,8 @@ int parse_args( int argc, char const *argv[] ) {
 
     ////////// i //////////////////////////////////////////////////////////////
 
+    else if ( IS_OPT( "--indent", "-i" ) )
+      at_props.indent_ = true;
     else if ( IS_LONG_OPT( "--infer-joins" ) ) {
       PARSE_ARG( "--infer-joins" );
       z_props.setInferJoins( bool_of( ARG_VAL ) );
@@ -392,8 +568,23 @@ int parse_args( int argc, char const *argv[] ) {
       PARSE_ARG( "--inline-udf" );
       z_props.setInlineUDF( bool_of( ARG_VAL ) );
     }
-    else if ( IS_LONG_OPT( "--iter-plan-test" ) )
-      at_props.iter_plan_test_ = true;
+    else if ( IS_LONG_OPT( "--iterator-tree" ) ) {
+      PARSE_ARG( "--iterator-tree" );
+      string val( ARG_VAL );
+      to_lower( val );
+      if ( val == "none" )
+        z_props.setPlanFormat( PLAN_FORMAT_NONE );
+      else if ( val == "dot" )
+        z_props.setPlanFormat( PLAN_FORMAT_DOT );
+      else if ( val == "json" )
+        z_props.setPlanFormat( PLAN_FORMAT_JSON );
+      else if ( val == "xml" )
+        z_props.setPlanFormat( PLAN_FORMAT_XML );
+      else {
+        error = "--iterator-tree argument must be one of: none, dot, json, or xml.\n";
+        break;
+      }
+    }
 
     ////////// j //////////////////////////////////////////////////////////////
 
@@ -413,19 +604,41 @@ int parse_args( int argc, char const *argv[] ) {
       z_props.setLoopHoisting( bool_of( ARG_VAL ) );
     }
 
+    ////////// m //////////////////////////////////////////////////////////////
+
+    else if ( IS_LONG_OPT( "--max-udf-call-depth" ) ) {
+      PARSE_ARG( "--max-udf-call-depth" );
+      SET_ZPROP( MaxUDFCallDepth );
+    }
+    else if ( IS_LONG_OPT( "--module-path" ) ) {
+      PARSE_ARG( "--module-path" );
+      at_props.module_path_ = ARG_VAL;
+    }
+    else if ( IS_OPT( "--multiple", "-m" ) ) {
+      PARSE_ARG( "--multiple" );
+      SET_ATPROP( multiple_ );
+    }
+
     ////////// n //////////////////////////////////////////////////////////////
 
     else if ( IS_LONG_OPT( "--no-copy-optim" ) ) {
       PARSE_ARG( "--no-copy-optim" );
       z_props.setNoCopyOptim( bool_of( ARG_VAL ) );
     }
+    else if ( IS_LONG_OPT( "--no-logo" ) )
+      at_props.no_logo_ = true;
+    else if ( IS_LONG_OPT( "--no-serializer" ) )
+      at_props.no_serializer_ = true;
     else if ( IS_LONG_OPT( "--no-tree-ids" ) )
       z_props.setNoTreeIDs( true );
+    else if ( IS_LONG_OPT( "--no-uncalled-iterators" ) )
+      z_props.setNoUncalledIterators( true );
 
     ////////// o //////////////////////////////////////////////////////////////
 
-    else if ( IS_OPT( "--optimization-level", "-O" ) ||
-              IS_LONG_OPT( "--optimizer" ) ) {
+    else if ( IS_OPT( "--omit-xml-declaration", "-r" ) )
+      at_props.omit_xml_declaration_ = true;
+    else if ( IS_OPT( "--optimization-level", "-O" ) ) {
       PARSE_ARG( "--optimization-level" );
       unsigned opt_level;
       atoi( ARG_VAL, &opt_level );
@@ -434,6 +647,23 @@ int parse_args( int argc, char const *argv[] ) {
         break;
       }
       z_props.setOptimizationLevel( opt_level );
+    }
+    else if ( IS_LONG_OPT( "--option" ) ) {
+      PARSE_ARG( "--option" );
+      string key, value;
+      if ( !split_key_value( ARG_VAL, "=", &key, &value ) ) {
+        error = "--option argument must be of the form {namespace}localname=value\n";
+        break;
+      }
+      // TODO: check key is of the form {ns}local
+      sctx_opt opt;
+      opt.clark_qname = key;
+      opt.value = value;
+      at_props.sctx_opts_.push_back( opt );
+    }
+    else if ( IS_LONG_OPT( "--ordering-mode" ) ) {
+      PARSE_ARG( "--ordering-mode" );
+      at_props.ordering_mode_ = ARG_VAL;
     }
 #ifdef ZORBA_WITH_FILE_ACCESS
     else if ( IS_OPT( "--output-file", "-o" ) ) {
@@ -446,10 +676,10 @@ int parse_args( int argc, char const *argv[] ) {
 
     else if ( IS_LONG_OPT( "--parse-only" ) )
       at_props.parse_only_ = true;
-    else if ( IS_LONG_OPT( "--plan" ) )
-      at_props.test_plan_serialization_ = true;
     else if ( IS_OPT( "--print-ast", "-a" ) )
       z_props.setPrintAST( true );
+    else if ( IS_OPT( "--print-errors-as-xml", "-x" ) )
+      at_props.print_errors_as_xml_ = true;
     else if ( IS_LONG_OPT( "--print-intermediate-opt" ) )
       z_props.setPrintIntermediateOpt( true );
     else if ( IS_LONG_OPT( "--print-item-flow" ) )
@@ -466,20 +696,43 @@ int parse_args( int argc, char const *argv[] ) {
       z_props.setPrintStaticTypes( true );
     else if ( IS_LONG_OPT( "--print-translated" ) )
       z_props.setPrintTranslated( true );
+    else if ( IS_LONG_OPT( "--profile" ) )
+    {
+      PARSE_ARG( "--profile" );
+      string val( ARG_VAL );
+      to_lower( val );
+      if ( val == "none" )
+        z_props.setProfileFormat( PROFILE_FORMAT_NONE );
+      else
+      {
+        if ( val == "dot" )
+          z_props.setProfileFormat( PROFILE_FORMAT_DOT );
+        else if ( val == "json" )
+          z_props.setProfileFormat( PROFILE_FORMAT_JSON );
+        else if ( val == "xml" )
+          z_props.setProfileFormat( PROFILE_FORMAT_XML );
+        else
+        {
+          error = "--profile argument must be one of: none, dot, json, or xml.\n";
+          break;
+        }
+        z_props.setCollectProfile(true);
+      }
+    }
 
     ////////// q //////////////////////////////////////////////////////////////
 
-    else if ( IS_OPT( "--query", "-e" ) ) {
+    else if ( IS_OPT( "--query", "-q" ) ) {
+      if ( !got_as_files )
+        at_props.as_files_ = false;
+      if ( *(argv+1) && !strncmp( *(argv+1), "-f", 2 ) )
+        break; // is it "-q -f <filename>" perhaps?
       PARSE_ARG( "--query" );
-      at_props.query_ = ARG_VAL;
+      at_props.queries_or_files_.push_back( ARG_VAL );
     }
 
     ////////// s //////////////////////////////////////////////////////////////
 
-    else if ( IS_LONG_OPT( "--serialize-only-query" ) ) {
-      PARSE_ARG( "--serialize-only-query" );
-      at_props.serialize_only_query_ = bool_of( ARG_VAL );
-    }
     else if ( IS_OPT( "--serialization-parameter", "-z" ) ) {
       PARSE_ARG( "--serialization-parameter" );
       string key, value;
@@ -491,11 +744,55 @@ int parse_args( int argc, char const *argv[] ) {
         sp.first = ARG_VAL;
       at_props.serialization_params_.push_back( sp );
     }
+    else if ( IS_LONG_OPT( "--serialize-html" ) )
+      at_props.serialize_html_ = true;
+    else if ( IS_LONG_OPT( "--serialize-only-query" ) ) {
+      PARSE_ARG( "--serialize-only-query" );
+      at_props.serialize_only_query_ = bool_of( ARG_VAL );
+    }
+    else if ( IS_OPT( "--serialize-plan", "-s" ) )
+      at_props.serialize_plan_ = true;
+    else if ( IS_LONG_OPT( "--serialize-text" ) )
+      at_props.serialize_text_ = true;
     else if ( IS_LONG_OPT( "--stable-iterator-ids" ) )
       z_props.setStableIteratorIDs( true );
+#ifndef ZORBA_NO_FULL_TEXT
+    else if ( IS_LONG_OPT( "--stop-words" ) ) {
+      PARSE_ARG( "--stop-words" );
+      string uri, value;
+      if ( !split_key_value( ARG_VAL, ":=", &uri, &value ) ) {
+        error = "--stop-words argument must be of the form URI:=value\n";
+        break;
+      }
+      ft_mapping ft;
+      ft.uri = uri;
+      ft.value = value;
+      at_props.stop_words_mapping_.push_back( ft );
+    }
 
     ////////// t //////////////////////////////////////////////////////////////
 
+    else if ( IS_LONG_OPT( "--thesaurus" ) ) {
+      PARSE_ARG( "--thesaurus" );
+      string uri, value;
+      if ( !split_key_value( ARG_VAL, ":=", &uri, &value ) ) {
+        error = "--thesaurus argument must be of the form URI:=value\n";
+        break;
+      }
+      if ( uri == "default" )
+        uri = "##default";
+      ft_mapping ft;
+      ft.uri = uri;
+      ft.value = value;
+      at_props.thesaurus_mapping_.push_back( ft );
+    }
+#endif /* ZORBA_NO_FULL_TEXT */
+    else if ( IS_OPT( "--timing", "-t" ) )
+      at_props.timing_ = true;
+    else if ( IS_LONG_OPT( "--timeout" ) ) {
+      PARSE_ARG( "--timeout" );
+      SET_ATPROP( timeout_ );
+    }
     else if ( IS_LONG_OPT( "--trace-parsing" ) )
       z_props.setTraceParsing( true );
     else if ( IS_LONG_OPT( "--trace-scanning" ) )
@@ -508,17 +805,23 @@ int parse_args( int argc, char const *argv[] ) {
     else if ( IS_LONG_OPT( "--trace-translator" ) )
       z_props.setTraceTranslator( true );
 #endif /* NDEBUG */
-    else if ( IS_LONG_OPT( "--tz" ) ) {
-      PARSE_ARG( "--tz" );
-      SET_ATPROP( tz_ );
+    else if ( IS_OPT( "--trailing-nl", "-n" ) )
+      at_props.trailing_nl_ = true;
+    else if ( IS_LONG_OPT( "--timezone" ) ) {
+      PARSE_ARG( "--timezone" );
+      SET_ATPROP( timezone_ );
     }
 
     ////////// u //////////////////////////////////////////////////////////////
 
-    else if ( IS_LONG_OPT( "--use-indexes" ) )
+    else if ( IS_LONG_OPT( "--uri-path" ) ) {
+      PARSE_ARG( "--uri-path" );
+      at_props.uri_path_ = ARG_VAL;
+    }
+    else if ( IS_LONG_OPT( "--use-indexes" ) ) {
+      PARSE_ARG( "--use-indexes" );
       z_props.setUseIndexes( true );
-    else if ( IS_LONG_OPT( "--use-serializer" ) )
-      at_props.use_serializer_ = true;
+    }
 
     ////////// v //////////////////////////////////////////////////////////////
 
@@ -536,12 +839,7 @@ int parse_args( int argc, char const *argv[] ) {
       cerr << "unknown command line option " << *argv << endl;
       exit( 1 );
     } else {
-      if ( !at_props.query_.empty() ) {
-        error = "exactly one inline query or query file must be specified";
-        break;
-      }
-      at_props.as_file_ = true;
-      at_props.query_ = *argv;
+      at_props.queries_or_files_.push_back( *argv );
     }
   } // for
 
@@ -552,17 +850,6 @@ int parse_args( int argc, char const *argv[] ) {
     exit( 1 );
   }
   return argv - argv_orig;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-static char const* check_args() {
-  APITestProperties const &at_props = APITestProperties::instance();
-
-  if ( at_props.optimization_level_ > 2 )
-    return "only 0, 1 and 2 are allowed as values for the option --optimization-level";
-
-  return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

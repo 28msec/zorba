@@ -20,24 +20,35 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 APITestProperties::APITestProperties() {
-  as_file_ = false;
+  as_files_ = true;
+  byte_order_mark_ = false;
   compile_only_ = false;
 #ifdef ZORBA_WITH_DEBUGGER
   debug_ = false;
   debug_host_ = "127.0.0.1";
   debug_port_ = 28028;
 #endif /* ZORBA_WITH_DEBUGGER */
-  iter_plan_test_ = false;
+  indent_ = false;
   jsoniq_ = false;
   lib_module_ = false;
   load_plan_ = false;
+  multiple_ = 1;
+  no_logo_ = false;
+  no_serializer_ = false;
+  omit_xml_declaration_ = false;
   optimization_level_ = 1;
   parse_only_ = false;
+  print_errors_as_xml_ = false;
   print_query_ = false;
+  save_plan_ = false;
+  serialize_html_ = false;
   serialize_only_query_ = false;
-  test_plan_serialization_ = false;
-  tz_ = 0;
-  use_serializer_ = false;
+  serialize_plan_ = false;
+  serialize_text_ = false;
+  timeout_ = -1;
+  timing_ = false;
+  trailing_nl_ = false;
+  timezone_ = 0;
 }
 
 APITestProperties& APITestProperties::instance() {
