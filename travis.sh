@@ -43,7 +43,7 @@ make fots-activate-sets
 
 echo "================================================================================"
 #export CLOUDANT_CREDENTIALS=/home/jenkins/rq/dbs/cloudant/credentials.json
-env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure --no-compress-output &
+env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' `echo $CTEST_ARGS` --output-on-failure --no-compress-output &
 wait $! || FAIL=1
 #cmake -D zorba="${ZORB_BUILD_DIR}/bin/zorba" -P "${ZORBA_SRC_DIR}/ctest2junit.cmake"
 exit ${FAIL}
