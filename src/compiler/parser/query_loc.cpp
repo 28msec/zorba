@@ -51,11 +51,9 @@ QueryLoc::QueryLoc( zstring const &filename, line_type lineBegin,
 
 std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc) 
 {
-  std::stringstream lLoc;
-
   if (!aQueryLoc.theFilename.empty())
   {
-    lLoc << aQueryLoc.theFilename;
+    aOstr << aQueryLoc.theFilename;
   }
 
   bool lPrintLines = aQueryLoc.theLineBegin;
@@ -64,13 +62,13 @@ std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc)
 
   if (lPrintLines)
   {
-    lLoc << ":" << aQueryLoc.theLineBegin;
+    aOstr << ":" << aQueryLoc.theLineBegin;
     if (lPrintColumns)
-      lLoc << "." << aQueryLoc.theColumnBegin;
+      aOstr << "." << aQueryLoc.theColumnBegin;
 
-    lLoc << "-" << (aQueryLoc.theLineEnd ? aQueryLoc.theLineEnd : aQueryLoc.theLineBegin);
+    aOstr << "-" << (aQueryLoc.theLineEnd ? aQueryLoc.theLineEnd : aQueryLoc.theLineBegin);
     if (lPrintColumns)
-      lLoc << "." << aQueryLoc.theColumnEnd;
+      aOstr << "." << aQueryLoc.theColumnEnd;
   }
 
   return aOstr;
