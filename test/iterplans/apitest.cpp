@@ -80,7 +80,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
   string path;
 
   if ( at_props.as_files_ ) {
-    path = at_props.query_;
+    path = at_props.queries_or_files_[0];
     fs::make_absolute( &path );
     qstream.reset( new ifstream( path.c_str() ) );
     if ( !qstream->good() || qstream->eof() ) {
@@ -88,7 +88,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
       return 3;
     }
   } else
-    qstream.reset( new istringstream( at_props.query_ ) );
+    qstream.reset( new istringstream( at_props.queries_or_files_[0] ) );
 
   // print the query if requested
   if ( at_props.print_query_ ) {
@@ -130,7 +130,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
     return 1;
   }
 
-  if ( at_props.test_plan_serialization_ ) {
+  if ( at_props.serialize_plan_ ) {
     try {
       string binary_path;
       if ( path.empty() )
@@ -143,7 +143,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
         printf( "save execution plan FAILED\n" );
         return 0x0badc0de;
       }
-      printf( "saved execution plan at: %s\n", binary_path.c_str() );
+      //printf( "saved execution plan at: %s\n", binary_path.c_str() ); //FIXME
     }
     catch( ZorbaException const &e ) {
       cout << e << endl;
@@ -169,7 +169,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
         cout << "cannot load plan " << binary_path << endl;
         return 16;
       }
-      printf( "load execution plan: %s\n", binary_path.c_str() );
+      //printf( "load execution plan: %s\n", binary_path.c_str() ); //FIXME
     }
     catch ( ZorbaException const &e ) {
       cout << e << endl;
@@ -180,7 +180,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
   // set external variables
   external_vars const &ext_vars = at_props.external_vars_;
   DynamicContext *const dctx = query->getDynamicContext();
-  dctx->setImplicitTimezone( at_props.tz_ );
+  dctx->setImplicitTimezone( at_props.timezone_ );
   for ( external_vars::const_iterator
         i = ext_vars.begin(); i != ext_vars.end(); ++i ) {
     Item item;
@@ -205,19 +205,13 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
       dctx->setVariable( i->var_name, item );
   }
 
-  // if you want to print the plan into a file
-  if ( !at_props.dot_plan_file_.empty() ) {
-    ofstream plan_file( at_props.dot_plan_file_.c_str() );
-    query->printPlan( plan_file, true );
-  }
-
   int return_code = 0;
   if ( !at_props.compile_only_ && !at_props.lib_module_ ) {
 
     // output the result (either using xml serialization or using show)
 
     try {
-      if ( at_props.use_serializer_ ) {
+      if ( at_props.serialize_only_query_ ) {//FIXME
         Zorba_SerializerOptions const opts( at_props.serialization_params_ );
         query->execute( *output_file, &opts );
       } else {
