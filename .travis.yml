@@ -5,3 +5,6 @@ cache: apt
 env:
   - TESTFOLDER=rbkt
   - TESTFOLDER=FOTS
+  - TESTFOLDER=w3c_update_testsuite
+  - TESTFOLDER=zorba_excel_module
+  - TESTFOLDER=zorba_image_module
