@@ -138,6 +138,19 @@ public:
   }
 };
 
+class MySimpleExternalFunction5 : public NonContextualExternalFunction
+{
+public:
+  String getURI() const { return "http://www.zorba-xquery.com/m"; }
+
+  String getLocalName() const { return "bar5"; }
+
+  ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args) const
+  {
+    throw std::exception();
+  }
+};
+
 class MyExternalModule : public ExternalModule
 {
 protected:
@@ -145,6 +158,7 @@ protected:
   MySimpleExternalFunction2          bar2;
   MySimpleExternalFunction3          bar3;
   MySimpleExternalFunction4          bar4;
+  MySimpleExternalFunction5          bar5;
 
 public:
   String getURI() const { return "http://www.zorba-xquery.com/m"; }
@@ -157,6 +171,8 @@ public:
         return const_cast<MySimpleExternalFunction3*>(&bar3);
     else if (aLocalname == "bar4")
         return const_cast<MySimpleExternalFunction4*>(&bar4);
+    else if (aLocalname == "bar5")
+        return const_cast<MySimpleExternalFunction5*>(&bar5);
     else
         return const_cast<MySimpleExternalFunction2*>(&bar2);
   }
@@ -378,6 +394,42 @@ external_function_test_4(Zorba* aZorba)
   return true;
 }
 
+bool
+external_function_test_5(Zorba* aZorba)
+{
+  try 
+  {
+    std::ifstream lIn("ext_main4.xq");
+    assert(lIn.good());
+    std::ostringstream lOut;
+    MyExternalModule lMod;
+
+    StaticContext_t lSctx = aZorba->createStaticContext();
+    lSctx->registerModule(&lMod);
+
+    {
+      XQuery_t lQuery = aZorba->compileQuery(lIn, lSctx);
+
+      std::cout << lQuery << std::endl;
+    }
+  } 
+  catch (XQueryException& qe) 
+  {
+    if (std::string("ZXQP0001") == qe.diagnostic().qname().localname())
+    {
+      std::cerr << qe << std::endl;
+      return true;
+    } else {
+      std::cerr << qe << std::endl;
+      return false;
+    }
+  }
+  catch (...)
+  {
+    return false;
+  }
+  return false;
+}
 
 int
 external_function(int argc, char* argv[]) 
@@ -405,6 +457,12 @@ external_function(int argc, char* argv[])
 
   std::cout << "executing external_function_test_4" << std::endl;
   if (!external_function_test_4(lZorba))
+  {
+    return 4;
+  }
+
+  std::cout << "executing external_function_test_5" << std::endl;
+  if (!external_function_test_5(lZorba))
   {
     return 4;
   }

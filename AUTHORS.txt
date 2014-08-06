@@ -22,6 +22,7 @@ The primary authors are:
   * Matthias Brantner
   * Nicolae Brinza
   * William Candillon
+  * Federico Cavalieri
   * Dana Florescu
   * David Graf
   * Chris Hillery

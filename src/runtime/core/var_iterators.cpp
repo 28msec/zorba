@@ -41,16 +41,22 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarIterator)
+DEF_GET_NAME_AS_STRING(CtxVarIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarDeclareIterator)
+DEF_GET_NAME_AS_STRING(CtxVarDeclareIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarAssignIterator)
+DEF_GET_NAME_AS_STRING(CtxVarAssignIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarIsSetIterator)
+DEF_GET_NAME_AS_STRING(CtxVarIsSetIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ForVarIterator)
+DEF_GET_NAME_AS_STRING(ForVarIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(LetVarIterator)
+DEF_GET_NAME_AS_STRING(LetVarIterator)
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +118,7 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         if (! consumeNext(item, theChildren[0], planState))
         {
           RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName->getStringValue()));
         }
 
         dctx->set_variable(theVarId, theVarName, loc, item);
@@ -120,7 +126,7 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         if (consumeNext(item, theChildren[0], planState))
         {
           RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName->getStringValue()));
         }
       }
       else
@@ -171,7 +177,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (! consumeNext(item, theChild, planState))
     {
       RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName->getStringValue()));
     }
 
     if (theIsLocal)
@@ -182,7 +188,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (consumeNext(item, theChild, planState))
     {
       RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName->getStringValue()));
     }
   }
   else
@@ -194,6 +200,8 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     else
       planState.theGlobalDynCtx->set_variable(theVarId, theVarName, loc, planIter);
   }
+
+  planState.theGlobalDynCtx->changeSnapshot();
 
   STACK_END (state);
 }
@@ -627,6 +635,10 @@ void CtxVarIterator::accept(PlanIterVisitor& v) const
 //  ForVarIterator                                                             //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
+ForVarState::~ForVarState() {
+  // out-of-line since it's virtual
+}
 
 
 ForVarIterator::ForVarIterator(

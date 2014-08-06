@@ -14,30 +14,47 @@
  * limitations under the License.
  */
 
+// Zorba
+#include "util/string_util.h"
+
+// local
 #include "csv_parser.h"
+
+using namespace std;
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+inline bool peek( istream &is, char &c ) {
+  char const temp = is.peek();
+  bool const peeked = is.good();
+  if ( peeked )
+    c = temp;
+  return peeked;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 bool csv_parser::next_value( zstring *value, bool *eol, bool *quoted ) const {
-  value->clear();
+  ztd::string_appender<zstring,128> appender( value );
   char c;
   bool in_quote = false;
   bool is_quoted = false;
+
+  value->clear();
 
   while ( is_->get( c ) ) {
     if ( in_quote ) {
       if ( quote_esc_ == quote_ ) {     // ""
         if ( c == quote_ ) {
-          c = is_->peek();
-          if ( is_->good() ) {
-            if ( c != quote_ ) {
-              in_quote = false;
-              continue;
-            }
-            is_->get();
+          if ( !peek( *is_, c ) )
+            break;
+          if ( c != quote_ ) {
+            in_quote = false;
+            continue;
           }
+          is_->get();
         }
       } else {                          // \"
         if ( c == quote_ ) {
@@ -58,7 +75,7 @@ bool csv_parser::next_value( zstring *value, bool *eol, bool *quoted ) const {
       }
       switch ( c ) {
         case '\r':
-          if ( ((c = is_->peek()), is_->good()) && c == '\n' )
+          if ( peek( *is_, c ) && c == '\n' )
             is_->get();
           // no break;
         case '\n':
@@ -66,9 +83,10 @@ bool csv_parser::next_value( zstring *value, bool *eol, bool *quoted ) const {
           goto return_true;
       } // switch
     } // else
-    *value += c;
+    appender += c;
   } // while
 
+  appender.flush();
   if ( value->empty() )
     return false;
 

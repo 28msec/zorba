@@ -4560,6 +4560,10 @@ PostfixExpr :
      {
         $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, $3);
      }
+  |  PostfixExpr DOT ContextItemExpr
+     {
+        $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, $3);
+     }
   |  PostfixExpr DOT StringLiteral
      {
        $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, $3);
@@ -5393,39 +5397,44 @@ OccurrenceIndicator :
 ItemType :
         GeneralizedAtomicType
         {
-            GeneralizedAtomicType* gat = static_cast<GeneralizedAtomicType*>($1);
-            QName* q = gat->get_qname();
 // The JSONiq parser recognizes certain keywords as builtin types.
 #ifdef JSONIQ_PARSER            
+            GeneralizedAtomicType* gat = static_cast<GeneralizedAtomicType*>($1);
+            QName* q = gat->get_qname();
             if (q->get_qname() == "item")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new ItemType( LOC(@$), true );
+              delete gat;
             }
             else if (q->get_qname() == "array")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
+              delete gat;
             }
             else if (q->get_qname() == "object")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
+              delete gat;
             }
             else if (q->get_qname() == "json-item")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
+              delete gat;
             }
             else if (q->get_qname() == "structured-item")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new StructuredItemType(LOC(@$));
+              delete gat;
             }
             else
             {
@@ -7407,7 +7416,7 @@ void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string
       // Error message heuristics: if the current error message has the "(missing comma "," between expressions?)" text,
       // and the old message has a "','" text, then replace the old message with the new one. Unfortunately this 
       // makes the parser error messages harder to internationalize.
-      if ((msg.find("(missing comma \",\" between expressions?)") != string::npos &&
+      if ((msg.find("unexpected expression") != string::npos &&
             ! contains(prevErr->msg, "expecting", ","))
           ||
           (msg.find("missing semicolon \";\" after") != string::npos &&
@@ -7431,3 +7440,4 @@ void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string
 }
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

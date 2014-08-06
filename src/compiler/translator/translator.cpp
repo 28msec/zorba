@@ -25,7 +25,7 @@
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
 #include <zorba/internal/unique_ptr.h>
-
+#include <zorba/properties.h>
 
 #include "common/common.h"
 
@@ -67,7 +67,6 @@
 #include "compiler/xqddf/collection_decl.h"
 
 #include "system/globalenv.h"
-#include "system/properties.h"
 
 #include "functions/library.h"
 #include "functions/signature.h"
@@ -143,7 +142,7 @@ static expr* translate_aux(
 #define TRACE_VISIT()                                                   \
   const QueryLoc& loc = v.get_location(); (void)loc;                    \
                                                                         \
-  if (Properties::instance()->traceTranslator())                        \
+  if (Properties::instance().getTraceTranslator())                      \
     std::cout << std::string(++thePrintDepth, ' ') << TRACE << ", stk size "   \
               << theNodeStack.size() << ", tstk size: " << theTypeStack.size() \
               << ", scope depth " << theScopeDepth << std::endl;
@@ -152,7 +151,7 @@ static expr* translate_aux(
 #define TRACE_VISIT_OUT()                                               \
   const QueryLoc& loc = v.get_location(); (void)loc;                    \
                                                                         \
-  if (Properties::instance()->traceTranslator())                        \
+  if (Properties::instance().getTraceTranslator())                      \
     std::cout << std::string(thePrintDepth--, ' ') << TRACE << ", stk size: "  \
               << theNodeStack.size() << ", tstk size: " << theTypeStack.size() \
               << ", scope depth " << theScopeDepth << std::endl;
@@ -823,7 +822,7 @@ expr* pop_nodestack(int n = 1)
     theNodeStack.pop();
 
 #ifndef NDEBUG
-    if (Properties::instance()->traceTranslator())
+    if (Properties::instance().getTraceTranslator())
     {
       std::cout << "Popped from nodestack:\n";
       if (e_h != NULL)
@@ -845,7 +844,7 @@ inline void push_nodestack(expr* e)
   theNodeStack.push(e);
 
 #ifndef NDEBUG
-  if (Properties::instance()->traceTranslator())
+  if (Properties::instance().getTraceTranslator())
   {
     std::cout << "Pushed to nodestack: \n";
     if (e != NULL)
@@ -937,7 +936,7 @@ ftnode* pop_ftstack(int count = 1)
     theFTNodeStack.pop();
 
 #ifndef NDEBUG
-    if ( Properties::instance()->traceTranslator() )
+    if ( Properties::instance().getTraceTranslator() )
     {
       std::cout << "Popped from ftnode stack:\n";
       if ( n )
@@ -1741,6 +1740,7 @@ expr* wrap_in_coercion(
   // Create the inline udf obj.
   std::unique_ptr<user_function> inlineUDF( 
   new user_function(loc,
+                    theRootSctx,
                     signature(function_item_expr::create_inline_fname(loc),
                               funcType->get_param_types(),
                               returnType),
@@ -1788,7 +1788,8 @@ expr* wrap_in_coercion(
   inlineUDF->setArgVars(argVars);
   inlineUDF->setOptimized(true);
 
-  inlineFuncExpr->set_function(inlineUDF.release(), inlineUDF->numArgs());
+  inlineFuncExpr->set_function(inlineUDF.get(), inlineUDF->numArgs());
+  inlineUDF.release();
 
   // pop the scope.
   pop_scope();
@@ -3458,6 +3459,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     bindModuleImportPrefix(targetNS, pfx, loc);
 
+  // All functions need to be serialized, so we mark the query as having eval
+  if (targetNS == static_context::ZORBA_SCTX_FN_NS)
+    theCCB->theHasEval = true;
+
   const URILiteralList* atlist = v.get_at_list();
 
   // If the imported module X is a "pure builtin" one (i.e., contains
@@ -3958,7 +3963,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         if (theAnnotations.get())
         {
           theAnnotations->
-          checkConflictingDeclarations(AnnotationList::var_decl, loc);
+          checkDeclarations(AnnotationList::var_decl, loc);
 
           if (ZANN_CONTAINS(fn_private))
           {
@@ -3988,7 +3993,10 @@ void preprocessVFOList(const VFO_DeclList& v)
         ve->set_mutable(theSctx->is_feature_set(feature::scripting));
       }
 
-      theAnnotations.reset(NULL);
+      if ( theAnnotations.get() ) {
+        ve->swap_annotations( *theAnnotations.get() );
+        theAnnotations.reset(NULL);
+      }
 
       // Put a mapping between the var name and the var_expr in the local sctx.
       // Raise error if var name exists already in local sctx obj.
@@ -4021,7 +4029,7 @@ void preprocessVFOList(const VFO_DeclList& v)
       annotations->accept(*this);
 
       theAnnotations->
-      checkConflictingDeclarations(AnnotationList::func_decl, loc);
+      checkDeclarations(AnnotationList::func_decl, loc);
     }
 
     const QueryLoc& loc = func_decl->get_location();
@@ -4200,13 +4208,14 @@ void preprocessVFOList(const VFO_DeclList& v)
                                    qnameItem->getNamespace(),
                                    sig,
                                    scriptKind,
-                                   ef);
+                                   ef,
+                                   theCCB->theXQueryDiagnostics);
     }
     else
     {
       // It's a UDF (non-external) function declaration. Create a user_function
       // obj with no body for now.
-      func = new user_function(loc, sig, NULL, scriptKind, theCCB);
+      func = new user_function(loc, theRootSctx, sig, NULL, scriptKind, theCCB);
     }
 
     func->setAnnotations(theAnnotations.get());
@@ -5100,7 +5109,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   }
 
   theAnnotations->
-  checkConflictingDeclarations(AnnotationList::collection_decl, loc);
+  checkDeclarations(AnnotationList::collection_decl, loc);
 
   // compute (redundant) enum values and assign
   // default annotations if no annotation for a group
@@ -5256,7 +5265,7 @@ void* begin_visit(const AST_IndexDecl& v)
   if (theAnnotations.get())
   {
     theAnnotations->
-    checkConflictingDeclarations(AnnotationList::index_decl, loc);
+    checkDeclarations(AnnotationList::index_decl, loc);
 
     if (ZANN_CONTAINS(zann_general_equality) ||
         ZANN_CONTAINS(zann_general_range))
@@ -5671,7 +5680,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    qnameStrExpr);
 
     // dc:collection(xs:QName("example:coll1"))
-    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5751,7 +5760,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5840,7 +5849,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    qnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5917,7 +5926,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    toQnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* toFnCollection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* toFnCollection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(toFnCollection != NULL);
     std::vector<expr*> toArgColl;
     toArgColl.push_back(toQnameExpr);
@@ -5965,7 +5974,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    fromQnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fromFnCollection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fromFnCollection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fromFnCollection != NULL);
     std::vector<expr*> fromArgColl;
     fromArgColl.push_back(fromQnameExpr);
@@ -6622,7 +6631,7 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
   if (theAnnotations.get())
   {
     theAnnotations->
-    checkConflictingDeclarations(AnnotationList::var_decl, loc);
+    checkDeclarations(AnnotationList::var_decl, loc);
 
     if (ZANN_CONTAINS(zann_assignable))
     {
@@ -10903,17 +10912,15 @@ void pre_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
   // for each predicate in the list, before calling accept() on the predicate
   // expression itself.
 
-  // get the predicate input seq
-  expr* inputSeqExpr = pop_nodestack();
-
   if (dynamic_cast<const JSONArrayConstructor*>(pred) != NULL)
   {
-    // for $$dot in predInputSeq
-    flwor_expr* flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
-    push_nodestack(flworExpr);
+    return;
   }
   else
   {
+    // get the predicate input seq
+    expr* inputSeqExpr = pop_nodestack();
+
     // let $$temp := predInputSeq
     // let $$last-idx := count($$temp)
     // for $$dot at $$pos in $$temp
@@ -10937,18 +10944,9 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
   const QueryLoc& loc = predExpr->get_loc();
   xqtref_t predType = predExpr->get_return_type();
 
-  expr* f = pop_nodestack();
-  ZORBA_ASSERT(f->get_expr_kind() == flwor_expr_kind);
-  flwor_expr* flworExpr = static_cast<flwor_expr*>(f);
-
   if (dynamic_cast<const JSONArrayConstructor*>(pred) != NULL)
   {
-    assert(flworExpr->num_clauses() == 1);
-    assert(flworExpr->get_clause(0)->get_kind() == flwor_clause::for_clause);
-
-    for_clause* sourceClause = static_cast<for_clause*>(flworExpr->get_clause(0));
-
-    expr* arrayExpr = sourceClause->get_expr();
+    expr* arrayExpr = pop_nodestack();
     expr* selectorExpr = static_cast<json_array_expr*>(predExpr)->get_expr();
     expr* accessorExpr;
 
@@ -10969,12 +10967,14 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
       generate_fn_body(BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2), args, loc);
     }
 
-    pop_scope();
-
     push_nodestack(accessorExpr);
 
     return;
   }
+
+  expr* f = pop_nodestack();
+  ZORBA_ASSERT(f->get_expr_kind() == flwor_expr_kind);
+  flwor_expr* flworExpr = static_cast<flwor_expr*>(f);
 
   ZORBA_ASSERT(flworExpr->num_clauses() == 3);
 
@@ -12725,6 +12725,7 @@ expr* generate_literal_function(
     expr* body = CREATE(cast)(theRootSctx, theUDF, loc, argVar, type, false);
 
     udf.reset(new user_function(loc,
+                                theRootSctx,
                                 signature(qnameItem, theRTM.ITEM_TYPE_QUESTION, type),
                                 body,
                                 SIMPLE_EXPR,
@@ -12759,6 +12760,7 @@ expr* generate_literal_function(
       FunctionConsts::FunctionKind fkind = func->getKind();
 
       udf.reset(new user_function(loc,
+                                  theRootSctx,
                                   func->getSignature(),
                                   NULL, // no body for now
                                   func->getScriptingKind(),
@@ -12981,7 +12983,8 @@ expr* generate_literal_function(
   // because the function item expression may be a forward refereence to a real
   // UDF, in which case udf->numArgs() returns 0 since the UDF declaration has
   // not been fully processed yet.  
-  fiExpr->set_function(udf.release(), arity);
+  fiExpr->set_function(udf.get(), arity);
+  udf.release();
 
   return fiExpr;
 }
@@ -13136,6 +13139,7 @@ void generate_inline_function(
   // Create the udf obj.
   std::unique_ptr<user_function> udf( 
   new user_function(loc,
+                    theRootSctx,
                     signature(function_item_expr::create_inline_fname(loc),
                               paramTypes,
                               returnType),
@@ -13439,7 +13443,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
   nameExpr = CREATE(const)(theRootSctx, theUDF, loc, qnameItem);
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
-                    !Properties::instance()->noCopyOptim());
+                    !Properties::instance().getNoCopyOptim());
 
   push_nodestack(CREATE(elem)(theRootSctx,
                               theUDF,
@@ -14134,7 +14138,7 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
   fo_expr* enclosed = wrap_in_enclosed_expr(content, loc);
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
-                    !Properties::instance()->noCopyOptim());
+                    !Properties::instance().getNoCopyOptim());
 
   push_nodestack(CREATE(doc)(theRootSctx, theUDF, loc, enclosed, copyNodes));
 }
@@ -14183,7 +14187,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
   }
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
-                    !Properties::instance()->noCopyOptim());
+                    !Properties::instance().getNoCopyOptim());
 
   push_nodestack(CREATE(elem)(theRootSctx,
                               theUDF,
@@ -16376,7 +16380,7 @@ expr* result()
 #ifndef NDEBUG
       expr* e_h = pop_nodestack();
 
-      if (! Properties::instance()->traceTranslator())
+      if (! Properties::instance().getTraceTranslator())
       {
         if (e_h != NULL)
           e_h->put(std::cout) << std::endl;

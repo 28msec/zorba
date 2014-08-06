@@ -1,5 +1,5 @@
-import module namespace db = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+import module namespace db = "http://zorba.io/modules/store/dynamic/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/dynamic/collections/ddl";
 
 declare namespace ext = "http://zorba.io/extensions";
 

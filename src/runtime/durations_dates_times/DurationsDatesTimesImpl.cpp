@@ -52,10 +52,13 @@ SERIALIZABLE_CLASS_VERSIONS(FnAdjustToTimeZoneIterator_2)
 
 
 BINARY_ACCEPT(FnDateTimeConstructorIterator);
+DEF_GET_NAME_AS_STRING(FnDateTimeConstructorIterator)
 
 UNARY_ACCEPT(FnAdjustToTimeZoneIterator_1);
+DEF_GET_NAME_AS_STRING(FnAdjustToTimeZoneIterator_1)
 
 BINARY_ACCEPT(FnAdjustToTimeZoneIterator_2);
+DEF_GET_NAME_AS_STRING(FnAdjustToTimeZoneIterator_2)
 
 
 bool FnDateTimeConstructorIterator::nextImpl(store::Item_t& result, PlanState& planState) const

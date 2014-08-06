@@ -36,9 +36,10 @@
 #include <zorba/xquery_functions.h>
 #include <zorba/internal/unique_ptr.h>
 
+#include "util/curl_streambuf.h"
+
 #include "http_response_parser.h"
 #include "http_request_handler.h"
-#include "curl_stream_buffer.h"
 
 namespace zorba {
 
@@ -94,10 +95,10 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       if (!t.empty())
       {
         if (t[0] == '"' && t[t.length()-1] == '"')
-	{
+        {
           t.erase( 0, 1 );
-          t.erase(t.length() -1, 1);	  
-	}
+          t.erase(t.length() -1, 1);    
+        }
         *charset = t;
       }
     }
@@ -127,38 +128,42 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     delete theStreamBuffer;
   }
 
-  int HttpResponseParser::parse()
+  CURLcode HttpResponseParser::parse()
   {
-    theStreamBuffer->setInformer(this);
+    theStreamBuffer->set_listener(this);
     theHandler.begin();
     bool lStatusAndMesssageParsed = false;
-    int lCode = 0;
-    lCode = theStreamBuffer->multi_perform();
-    if (lCode)
-      return lCode; 
-    if (!theStatusOnly) {
+    CURLcode lCurlCode = theStreamBuffer->curl_multi_info_read(false);
+    if (lCurlCode)
+      return lCurlCode;
 
-      if (!theOverridenContentType.empty()) {
+    if (!theStatusOnly)
+    {
+      if (!theOverridenContentType.empty())
+      {
         parse_content_type(
           theOverridenContentType, &theCurrentContentType, &theCurrentCharset
         );
       }
 
       std::unique_ptr<std::istream> lStream;
-      try {
+      try
+      {
         if ( !theCurrentCharset.empty() &&
-             transcode::is_necessary( theCurrentCharset.c_str() ) ) {
+             transcode::is_necessary( theCurrentCharset.c_str() ) )
+        {
           lStream.reset(
             new transcode::stream<std::istream>(
               theCurrentCharset.c_str(), theStreamBuffer
             )
           );
-        } else
+        }
+        else
           lStream.reset(new std::istream(theStreamBuffer));
       }
-      catch ( std::invalid_argument const &e ) {
-        theErrorThrower.raiseException("http://www.zorba-xquery.com/errors", "ZXQP0006", e.what()
-        );
+      catch ( std::invalid_argument const &e )
+      {
+        theErrorThrower.raiseException("http://www.zorba-xquery.com/errors", "ZXQP0006", e.what());
       }
 
       Item lItem;
@@ -169,7 +174,11 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
           theCurrentContentType == "text/javascript" ||
           theCurrentContentType == "text/x-javascript" ||
           theCurrentContentType == "text/x-json" ||
-          theCurrentContentType.find("+xml") == theCurrentContentType.size()-4 ||
+          (
+            theCurrentContentType.length() > 5 &&
+              (theCurrentContentType.find("+xml") == theCurrentContentType.size()-4 ||
+              theCurrentContentType.find("+json") == theCurrentContentType.size()-5)
+          ) ||
           theCurrentContentType.find("text/") == 0)
       {
         lItem = createTextItem(lStream.release());
@@ -179,31 +188,38 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
         lItem = createBase64Item(*lStream.get());
       }
 
-      if (!lItem.isNull()) {
+      if (!lItem.isNull())
+      {
         std::string empty;
         theHandler.any(lItem, empty);
       }
-      if (!theInsideRead) {
+
+      if (!theInsideRead)
+      {
         theHandler.beginResponse(theStatus, theMessage);
         lStatusAndMesssageParsed = true;
-      } else {
-        theHandler.endBody();
       }
+      else
+        theHandler.endBody();
     }
-    if (!theInsideRead) {
+
+    if (!theInsideRead)
+    {
       if (!lStatusAndMesssageParsed)
         theHandler.beginResponse(theStatus, theMessage);
+
       for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
           i != theHeaders.end(); ++i) {
         theHandler.header(i->first, i->second);
       }
     }
+
     theHandler.endResponse();
     theHandler.end();
-    return lCode;
+    return lCurlCode;
   }
 
-  void HttpResponseParser::beforeRead()
+  void HttpResponseParser::curl_read(void*,size_t)
   {
     if (theInsideRead) {
       return;
@@ -216,10 +232,6 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     }
     if (!theStatusOnly)
       theHandler.beginBody(theCurrentContentType, "", NULL);
-  }
-
-  void HttpResponseParser::afterRead()
-  {
   }
 
   void HttpResponseParser::registerHandler()
@@ -311,7 +323,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     lStream >> theStatus;
     // everything that is not a valid http status is an error
     if (theStatus < 100) {
-      theErrorThrower.raiseException("HTTP", "An HTTP error occurred");
+      theErrorThrower.raiseException("HTTP", "An HTTP error occurred. The returned status is: " + lStatus);
     }
   }
 
@@ -343,7 +355,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     // theStreamBuffer. Therefore, this HttpResponseParser object is no longer
     // "self-contained". We delegate ownership of ourself to theStreamBuffer
     // and mark ourselves as no longer being self-contained.
-    theStreamBuffer->setOwnInformer(true);
+    theStreamBuffer->set_listener(this, true);
     theSelfContained = false;
 
     // The ownership of theStreamBuffer, in turn, is delegated to the

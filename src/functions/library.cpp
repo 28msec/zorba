@@ -35,6 +35,7 @@
 #include "functions/func_context.h"
 #include "functions/func_csv.h"
 #include "functions/func_datetime.h"
+#include "functions/func_dctx.h"
 #include "functions/func_documents.h"
 #include "functions/func_durations_dates_times.h"
 #include "functions/func_durations_dates_times_impl.h"
@@ -49,6 +50,7 @@
 #include "functions/func_index_func.h"
 #include "functions/func_item.h"
 #include "functions/func_json.h"
+#include "functions/func_jsound.h"
 #include "functions/func_maps.h"
 #include "functions/func_maths.h"
 #include "functions/func_nodes.h"
@@ -67,6 +69,7 @@
 #include "functions/func_reflection.h"
 #include "functions/func_schema.h"
 #include "functions/func_sctx.h"
+#include "functions/func_seq.h"
 #include "functions/func_sequences.h"
 #include "functions/func_sequences_impl.h"
 #include "functions/func_strings.h"
@@ -121,6 +124,7 @@ void BuiltinFunctionLibrary::populate(static_context* sctx)
   populate_context_context(sctx);
   populate_context_csv(sctx);
   populate_context_datetime(sctx);
+  populate_context_dctx(sctx);
   populate_context_durations_dates_times(sctx);
   populate_context_durations_dates_times_impl(sctx);
   populate_context_errors_and_diagnostics(sctx);
@@ -129,6 +133,7 @@ void BuiltinFunctionLibrary::populate(static_context* sctx)
   populate_context_index_func(sctx);
   populate_context_ic_ddl(sctx);
   populate_context_json(sctx);
+  populate_context_jsound(sctx);
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
   populate_context_item(sctx);
@@ -143,6 +148,7 @@ void BuiltinFunctionLibrary::populate(static_context* sctx)
   populate_context_random(sctx);
   populate_context_schema(sctx);
   populate_context_sctx(sctx);
+  populate_context_seq(sctx);
   populate_context_strings(sctx);
   populate_context_strings_impl(sctx);
   populate_context_uris(sctx);

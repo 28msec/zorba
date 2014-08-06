@@ -29,7 +29,7 @@
 
 #include "types/typeops.h"
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #include "diagnostics/assert.h"
 
@@ -981,7 +981,7 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo)
   // Create the index declaration
   //
   std::ostringstream os;
-  os << "tempIndex" << ccb->theTempIndexCounter++;
+  os << "tempIndex" << GENV_ROOT_STATIC_CONTEXT.create_temporary_index_id();
 
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", os.str().c_str());
@@ -1124,7 +1124,7 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo)
 
   sctx->bind_index(idx, loc);
 
-  if (Properties::instance()->printIntermediateOpt())
+  if (Properties::instance().getPrintIntermediateOpt())
   {
     std::cout << std::endl << idx->toString() << std::endl;
   }

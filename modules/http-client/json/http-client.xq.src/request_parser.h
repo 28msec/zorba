@@ -17,6 +17,10 @@
 #define REQUEST_PARSER_H
 
 #include <string>
+#include <vector>
+#include "zorba/zorba_string.h"
+
+#include "structures.h"
 
 namespace zorba {
 class Item;
@@ -26,24 +30,25 @@ class ItemFactory;
 namespace http_client {
 class HttpRequestHandler;
 class ErrorThrower;
+struct Options;
 
 class RequestParser {
 protected:
-  HttpRequestHandler* theHandler;
-  ErrorThrower*   theThrower;
+  ErrorThrower* theThrower;
   ItemFactory* theFactory;
 
 public:
-  RequestParser(HttpRequestHandler* aHandler, ErrorThrower& aThrower, ItemFactory* aFactory) : theHandler(aHandler), theThrower(&aThrower), theFactory(aFactory) {}
-  void parseRequest(const Item& aItem);
+  RequestParser(ErrorThrower& aThrower, ItemFactory* aFactory) : theThrower(&aThrower), theFactory(aFactory) {}
+  void parseRequest(const Item& aItem, Request& aRequest);
 
 private:
-  void parseHeaders(const Item& aItem);
-  void parseOptions(const Item& aItem, bool& aStatusOnly, String& aOverrideContentType,bool& aFollowRedirect, bool& aUserDefinedFollowRedirect, String& aUserAgent, int& aTimeout);
-  void parseBody(const Item& aItem);
-  void parsePart(const Item& aItem);
-  void parseMultipart(const Item& aItem);
-  void parseAuthentication(const Item& aItem, String& aUserName, String& aPassword, String& aAuthMethod);
+  void parseHeaders(const Item& aItem, Headers& aHeaders);
+  void parseOptions(const Item& aItem, Options& aOptions);
+  void parseRetrySpecification(const Item& aItem, RetrySpecification& aRetrySpec);
+  void parseBody(const Item& aItem, Body& aBody);
+  void parsePart(const Item& aItem, Part& aPart);
+  void parseMultipart(const Item& aItem, MultiPart& aMultiPart);
+  void parseAuthentication(const Item& aItem, Authentication& aRequest);
 
   bool getString(const Item& aItem, const String& aName, const bool aMandatory, String& aResult);
   bool getInteger(const Item& aItem, const String& aName, const bool aMandatory, int& aResult);
@@ -51,6 +56,8 @@ private:
   bool getObject(const Item& aItem, const String& aName, const bool aMandatory, Item& aResult);
   bool getItem(const Item& aItem, const String& aName, const bool aMandatory, Item& aResult);
   bool getArray(const Item& aItem, const String& aName, const bool aMandatory, Item& aResult);
+
+  int parseInteger(const Item& aItem, const String& aName);
 
   void getCharset(const String& aMediaType, std::string& charset);
 
@@ -61,3 +68,4 @@ private:
 } //namespace http_request
 
 #endif // REQUEST_PARSER_H
+/* vim:set et sw=2 ts=2: */

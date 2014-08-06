@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (: This module has an illegal version specification :)
 
 module namespace vm = "http://zorba-tests.28msec.us/modules/bad-ver";

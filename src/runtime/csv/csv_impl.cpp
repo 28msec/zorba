@@ -38,6 +38,7 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
+#include "zorbautils/store_util.h"
 
 #include "csv_util.h"
 
@@ -53,25 +54,49 @@ namespace zorba {
 #define IS_JSON_NULL(ITEM) \
   ( (ITEM)->isAtomic() && (ITEM)->getTypeCode() == store::JS_NULL )
 
-static bool get_opt( store::Item_t const &object, char const *opt_name,
-                     store::Item_t *result ) {
-  store::Item_t key_item;
-  zstring s( opt_name );
-  GENV_ITEMFACTORY->createString( key_item, s );
-  *result = object->getObjectValue( key_item );
-  return !result->isNull();
+static bool is_stringable( store::Item_t const &item ) {
+  switch ( item->getKind() ) {
+    case store::Item::ATOMIC:
+    case store::Item::NODE:
+      return true;
+    default:
+      return false;
+  }
+}
+
+inline zstring get_string_value( store::Item_t const &item ) {
+  return is_stringable( item ) ? item->getStringValue() : "";
+}
+
+static bool get_array_opt( store::Item_t const &object,
+                           char const *opt_name, store::Item_t *result,
+                           QueryLoc const &loc ) {
+  if ( get_json_option( object, opt_name, result ) ) {
+    if ( (*result)->getKind() != store::Item::ARRAY )
+      throw XQUERY_EXCEPTION(
+        csv::INVALID_OPTION,
+        ERROR_PARAMS(
+          get_string_value( *result ),
+          opt_name,
+          ZED( INVALID_OPTION_MustBeArray )
+        ),
+        ERROR_LOC( loc )
+      );
+    return true;
+  }
+  return false;
 }
 
 static bool get_bool_opt( store::Item_t const &object,
                           char const *opt_name, bool *result,
                           QueryLoc const &loc ) {
   store::Item_t opt_item;
-  if ( get_opt( object, opt_name, &opt_item ) ) {
+  if ( get_json_option( object, opt_name, &opt_item ) ) {
     if ( !IS_ATOMIC_TYPE( opt_item, XS_BOOLEAN ) )
       throw XQUERY_EXCEPTION(
         csv::INVALID_OPTION,
         ERROR_PARAMS(
-          opt_item->getStringValue(),
+          get_string_value( opt_item ),
           opt_name,
           ZED( INVALID_OPTION_MustBeBoolean )
         ),
@@ -87,16 +112,24 @@ static bool get_char_opt( store::Item_t const &object,
                           char const *opt_name, char *result,
                           QueryLoc const &loc ) {
   store::Item_t opt_item;
-  if ( get_opt( object, opt_name, &opt_item ) ) {
+  if ( get_json_option( object, opt_name, &opt_item ) ) {
+    if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) )
+      throw XQUERY_EXCEPTION(
+        csv::INVALID_OPTION,
+        ERROR_PARAMS(
+          get_string_value( opt_item ),
+          opt_name,
+          ZED( INVALID_OPTION_MustBeASCIIChar )
+        ),
+        ERROR_LOC( loc )
+      );
     zstring const value( opt_item->getStringValue() );
-    if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) ||
-         value.size() != 1 || !ascii::is_ascii( value[0] ) ) {
+    if ( value.size() != 1 || !ascii::is_ascii( value[0] ) )
       throw XQUERY_EXCEPTION(
         csv::INVALID_OPTION,
         ERROR_PARAMS( value, opt_name, ZED( INVALID_OPTION_MustBeASCIIChar ) ),
         ERROR_LOC( loc )
       );
-    }
     *result = value[0];
     return true;
   }
@@ -107,12 +140,12 @@ static bool get_string_opt( store::Item_t const &object,
                             char const *opt_name, zstring *result,
                             QueryLoc const &loc ) {
   store::Item_t opt_item;
-  if ( get_opt( object, opt_name, &opt_item ) ) {
+  if ( get_json_option( object, opt_name, &opt_item ) ) {
     if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) )
       throw XQUERY_EXCEPTION(
         csv::INVALID_OPTION,
         ERROR_PARAMS(
-          opt_item->getStringValue(),
+          get_string_value( opt_item ),
           opt_name,
           ZED( INVALID_OPTION_MustBeString )
         ),
@@ -124,13 +157,59 @@ static bool get_string_opt( store::Item_t const &object,
   return false;
 }
 
-static json::type parse_json( zstring const &s, json::token *ptoken ) {
-  mem_streambuf buf( (char*)s.data(), s.size() );
-  istringstream iss;
-  iss.ios::rdbuf( &buf );
-  json::lexer lex( iss );
-  return lex.next( ptoken, false ) ?
-    json::map_type( ptoken->get_type() ) : json::none;
+static json::type parse_json( zstring const &s, csv_parse_json_state &state,
+                              json::token *ptoken ) {
+  state.set_data( s.data(), s.size() );
+  json::lexer lex( state.iss_ );
+  if ( !lex.next( ptoken, false ) )
+    return json::none;
+  json::token::type const tt = ptoken->get_type();
+  if ( tt == json::token::number ) {
+    //
+    // The JSON lexer will stop lex'ing as soon as it finds a valid token.  For
+    // strings that start with numbers, e.g., "870 Market St", the lexer will
+    // return "870" as a number token but we need to know the type of the whole
+    // string 's'; hence we need to do an extra check for number tokens.
+    //
+    // If the length(t) < length(s), remove trailing whitespace from 's' and
+    // check again.  If length(t) < length(s2), it means that that the token is
+    // really a string; if length(t) == length(s2), then the length difference
+    // was caused only by whitespace that can be ignored and the token is still
+    // a number.
+    //
+    json::token::value_type const &value = ptoken->get_value();
+    if ( value.size() < s.size() ) {
+      zstring s2;
+      ascii::trim_end_space( s, &s2 );
+      if ( value.size() < s2.size() )
+        return json::string;
+    }
+  }
+  return json::map_type( tt );
+}
+
+static void set_keys( store::Item_t const &item, vector<store::Item_t> *keys,
+                      QueryLoc const &loc ) {
+  store::Item_t opt_item;
+  if ( get_array_opt( item, "field-names", &opt_item, loc ) ) {
+    store::Iterator_t i( opt_item->getArrayValues() );
+    i->open();
+    store::Item_t name_item;
+    while ( i->next( name_item ) ) {
+      if ( !IS_ATOMIC_TYPE( name_item, XS_STRING ) )
+        throw XQUERY_EXCEPTION(
+          csv::INVALID_OPTION,
+          ERROR_PARAMS(
+            get_string_value( name_item ),
+            "field-names",
+            ZED( INVALID_OPTION_ArrayElementsMustBeString )
+          ),
+          ERROR_LOC( loc )
+        );
+      keys->push_back( name_item );
+    } // while
+    i->close();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -141,9 +220,9 @@ void CsvParseIterator::set_input( store::Item_t const &item,
     state->csv_.set_stream( item->getStream() );
   else {
     item->getStringValue2( state->string_ );
-    state->mem_streambuf_.set( state->string_.data(), state->string_.size() );
-    state->iss_.ios::rdbuf( &state->mem_streambuf_ );
-    state->csv_.set_stream( state->iss_ );
+    state->input_buf_.set( state->string_.data(), state->string_.size() );
+    state->input_iss_.ios::rdbuf( &state->input_buf_ );
+    state->csv_.set_stream( state->input_iss_ );
   }
 }
 
@@ -155,14 +234,7 @@ void CsvParseIterator::set_options( store::Item_t const &item,
 
   get_bool_opt( item, "cast-unquoted-values", &state->cast_unquoted_, loc );
   get_string_opt( item, "extra-name", &state->extra_name_, loc );
-  if ( get_opt( item, "field-names", &opt_item ) ) {
-    store::Iterator_t i( opt_item->getArrayValues() );
-    i->open();
-    store::Item_t name_item;
-    while ( i->next( name_item ) )
-      state->keys_.push_back( name_item );
-    i->close();
-  }
+  set_keys( item, &state->keys_, loc );
   if ( get_string_opt( item, "missing-value", &value, loc ) ) {
     if ( value == "error" )
       state->missing_ = missing::error;
@@ -215,10 +287,8 @@ bool CsvParseIterator::count( store::Item_t &result,
     --count;
   }
 
-  STACK_PUSH(
-    GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) ),
-    state
-  );
+  GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) );
+  STACK_PUSH( true, state );
   STACK_END( state );
 }
 
@@ -294,7 +364,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
   store::Item_t item;
   vector<store::Item_t> keys_copy, values;
   set<unsigned> keys_omit;
-  zstring value;
+  zstring *value;
   bool eol, quoted, swap_keys = false;
 
   CsvParseIteratorState *state;
@@ -310,7 +380,8 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
     set_options( item, state );
   }
 
-  while ( state->csv_.next_value( &value, &eol, &quoted ) ) {
+  while ( state->csv_.next_value( &state->value_, &eol, &quoted ) ) {
+    value = &state->value_;
     if ( state->keys_.size() && values.size() == state->keys_.size() &&
          state->extra_name_.empty() ) {
       //
@@ -319,13 +390,13 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
       //
       throw XQUERY_EXCEPTION(
         csv::EXTRA_VALUE,
-        ERROR_PARAMS( value, state->line_no_ ),
+        ERROR_PARAMS( *value, state->line_no_ ),
         ERROR_LOC( loc )
       );
     }
 
     item = nullptr;
-    if ( value.empty() ) {
+    if ( value->empty() ) {
       if ( state->keys_.empty() ) {
         //
         // Header field names can never be empty.
@@ -337,7 +408,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
         );
       }
       if ( quoted )
-        GENV_ITEMFACTORY->createString( item, value );
+        GENV_ITEMFACTORY->createString( item, *value );
       else
         switch ( state->missing_ ) {
           case missing::error:
@@ -350,15 +421,15 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
             break;
         }
     } else if ( state->cast_unquoted_ && !quoted && !state->keys_.empty() ) {
-      if ( value == "T" || value == "Y" )
+      if ( *value == "T" || *value == "Y" )
         GENV_ITEMFACTORY->createBoolean( item, true );
-      else if ( value == "F" || value == "N" )
+      else if ( *value == "F" || *value == "N" )
         GENV_ITEMFACTORY->createBoolean( item, false );
       else {
         json::token t;
-        switch ( parse_json( value, &t ) ) {
+        switch ( parse_json( *value, state->parse_json_state_, &t ) ) {
           case json::boolean:
-            GENV_ITEMFACTORY->createBoolean( item, value[0] == 't' );
+            GENV_ITEMFACTORY->createBoolean( item, (*value)[0] == 't' );
             break;
           case json::null:
             GENV_ITEMFACTORY->createJSONNull( item );
@@ -366,24 +437,24 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
           case json::number:
             switch ( t.get_numeric_type() ) {
               case json::token::integer:
-                GENV_ITEMFACTORY->createInteger( item, xs_integer( value ) );
+                GENV_ITEMFACTORY->createInteger( item, xs_integer( *value ) );
                 break;
               case json::token::decimal:
-                GENV_ITEMFACTORY->createDecimal( item, xs_decimal( value ) );
+                GENV_ITEMFACTORY->createDecimal( item, xs_decimal( *value ) );
                 break;
               case json::token::floating_point:
-                GENV_ITEMFACTORY->createDouble( item, xs_double( value ) );
+                GENV_ITEMFACTORY->createDouble( item, xs_double( *value ) );
                 break;
               default:
                 ZORBA_ASSERT( false );
             }
             break;
           default:
-            GENV_ITEMFACTORY->createString( item, value );
+            GENV_ITEMFACTORY->createString( item, *value );
         } // switch
       } // else
     } else {
-      GENV_ITEMFACTORY->createString( item, value );
+      GENV_ITEMFACTORY->createString( item, *value );
     }
 
     if ( !item.isNull() )
@@ -486,6 +557,18 @@ missing_error:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void CsvSerializeIteratorState::reset( PlanState &state ) {
+  PlanIteratorState::reset( state );
+  boolean_string_[0] = "false";
+  boolean_string_[1] = "true";
+  header_item_ = nullptr;
+  keys_.clear();
+  null_string_ = "null";
+  quote_ = '"';
+  quote_esc_ = "\"\"";
+  separator_ = ',';
+}
+
 bool CsvSerializeIterator::nextImpl( store::Item_t &result,
                                      PlanState &plan_state ) const {
   char char_opt;
@@ -498,14 +581,7 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
 
   // $options as object()
   consumeNext( item, theChildren[1], plan_state );
-  if ( get_opt( item, "field-names", &opt_item ) ) {
-    store::Iterator_t i( opt_item->getArrayValues() );
-    i->open();
-    store::Item_t name_item;
-    while ( i->next( name_item ) )
-      state->keys_.push_back( name_item );
-    i->close();
-  }
+  set_keys( item, &state->keys_, loc );
   if ( !get_char_opt( item, "quote-char", &state->quote_, loc ) )
     state->quote_ = '"';
   if ( get_char_opt( item, "quote-escape", &char_opt, loc ) ) {
@@ -519,13 +595,13 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
     state->separator_ = ',';
   if ( !get_string_opt( item, "serialize-null-as", &state->null_string_, loc ) )
     state->null_string_ = "null";
-  if ( get_opt( item, "serialize-boolean-as", &opt_item ) ) {
+  if ( get_json_option( item, "serialize-boolean-as", &opt_item ) ) {
     if ( !get_string_opt( opt_item, "false", &state->boolean_string_[0], loc )
       || !get_string_opt( opt_item, "true", &state->boolean_string_[1], loc ) )
       throw XQUERY_EXCEPTION(
         csv::INVALID_OPTION,
         ERROR_PARAMS(
-          "", "serialize-boolea-as",
+          "", "serialize-boolean-as",
           ZED( INVALID_OPTION_MustBeTrueFalse )
         ),
         ERROR_LOC( loc )
@@ -548,7 +624,8 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
       while ( i->next( item ) )
         state->keys_.push_back( item );
       i->close();
-    }
+    } else
+      goto end;                         // empty sequence: we're done
   }
 
   if ( do_header ) {
@@ -560,9 +637,11 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
         separator = true;
       line += (*key)->getStringValue();
     }
-    line += "\r\n";
-    GENV_ITEMFACTORY->createString( result, line );
-    STACK_PUSH( true, state );
+    if ( !line.empty() ) {
+      line += "\r\n";
+      GENV_ITEMFACTORY->createString( result, line );
+      STACK_PUSH( true, state );
+    }
   }
 
   if ( !state->header_item_.isNull() ) {
@@ -592,7 +671,7 @@ skip_consumeNext:
           line += state->boolean_string_[ value_item->getBooleanValue() ];
         else if ( IS_JSON_NULL( value_item ) )
           line += state->null_string_;
-        else {
+        else if ( is_stringable( value_item ) ) {
           value_item->getStringValue2( value );
           bool const quote =
             value.find_first_of( state->must_quote_ ) != zstring::npos;
@@ -602,7 +681,12 @@ skip_consumeNext:
           line += value;
           if ( quote )
             line += state->quote_;
-        }
+        } else
+          throw XQUERY_EXCEPTION(
+            csv::INVALID_VALUE,
+            ERROR_PARAMS( value_item->getKind(), (*key)->getStringValue() ),
+            ERROR_LOC( loc )
+          );
       }
     } // for
     line += "\r\n";
@@ -610,6 +694,7 @@ skip_consumeNext:
     STACK_PUSH( true, state );
   } // while
 
+end:
   STACK_END( state );
 }
 

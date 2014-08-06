@@ -30,8 +30,10 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(HoistIterator)
+DEF_GET_NAME_AS_STRING(HoistIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(UnhoistIterator)
+DEF_GET_NAME_AS_STRING(UnhoistIterator)
 
 
 
@@ -69,7 +71,8 @@ HoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       state->theDone = true;
       std::unique_ptr<ZorbaException> ze( clone( e ) );
 
-      GENV_ITEMFACTORY->createError(result, ze.release());
+      GENV_ITEMFACTORY->createError(result, ze.get());
+      ze.release();
     }
 
     STACK_PUSH(error || !state->theDone, state);

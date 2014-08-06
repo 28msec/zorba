@@ -1,1611 +1,1209 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
--->
 <zorba:iterators
   xmlns:zorba="http://www.zorba-xquery.com"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:source>
-    <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+  <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
 
 <zorba:header>
-    <zorba:fwd-decl ns="zorba">StaticallyKnownCollection</zorba:fwd-decl>
-    <zorba:include form="Quoted">runtime/collections/collections_base.h</zorba:include>
+  <zorba:fwd-decl ns="zorba">StaticallyKnownCollection</zorba:fwd-decl>
+  <zorba:include form="Quoted">runtime/collections/collections_base.h</zorba:include>
 </zorba:header>
 
+<!--========================================================================-->
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaCreateCollectionIterator" >
+<zorba:iterator name="ZorbaCreateCollectionIterator">
 
-    <zorba:description author="Zorba Team">
-      zorba:create
-    </zorba:description>
+  <zorba:function generateCodegen="false">
 
-    <zorba:function generateCodegen="false">
+    <zorba:signature localname="create"
+                     prefix="zorba-store-static-collections-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="create" prefix="static-collections-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
+    <zorba:signature localname="create"
+                     prefix="zorba-store-static-collections-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="create" prefix="static-collections-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
+    <zorba:signature localname="create"
+                     prefix="zorba-store-dynamic-collections-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="create" prefix="dynamic-collections-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
+    <zorba:signature localname="create"
+                     prefix="zorba-store-dynamic-collections-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="create" prefix="dynamic-collections-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes producer="1"/>
+    </zorba:methods>
 
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes producer="1"/>
-      </zorba:methods>
+  </zorba:function>
 
-    </zorba:function>
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" />
+  </zorba:constructor>
 
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" />
-    </zorba:constructor>
+  <zorba:method const="true"
+                name="getCollection"
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
 
-    <zorba:method const="true"
-                  name="getCollection"
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-    <zorba:member type="bool" name="theIsDynamic"/>
+  <zorba:member type="bool" name="theIsDynamic"/>
 
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaDeleteCollectionIterator" >
+<!--========================================================================-->
 
-    <zorba:description author="Zorba Team">
-      zorba:delete
-    </zorba:description>
+<zorba:iterator name="ZorbaDeleteCollectionIterator">
+  <zorba:function generateCodegen="false">
 
-    <zorba:function generateCodegen="false">
+    <zorba:signature localname="delete"
+                     prefix="zorba-store-static-collections-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="delete" prefix="static-collections-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
+    <zorba:signature localname="delete"
+                     prefix="zorba-store-dynamic-collections-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="delete" prefix="dynamic-collections-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
 
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-       <zorba:mustCopyInputNodes value="false"/>
-      </zorba:methods>
+  </zorba:function>
 
-    </zorba:function>
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" />
+  </zorba:constructor>
 
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" />
-    </zorba:constructor>
-
-    <zorba:member type="bool" name="theIsDynamic"/>
+  <zorba:member type="bool" name="theIsDynamic"/>
 
 </zorba:iterator>
 
+<!--========================================================================-->
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
 <zorba:iterator name="IsAvailableCollectionIterator">
+  <zorba:function generateCodegen="false">
 
-    <zorba:description author="Zorba Team">
-      dc:is-available-collection
-    </zorba:description>
+    <zorba:signature localname="is-available-collection" 
+                     prefix="zorba-store-static-collections-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
 
-    <zorba:function generateCodegen="false">
+    <zorba:signature localname="is-available-collection"
+                     prefix="zorba-store-dynamic-collections-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="is-available-collection" 
-                       prefix="static-collections-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+  </zorba:function>
 
-      <zorba:signature localname="is-available-collection"
-                       prefix="dynamic-collections-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic"/>
+  </zorba:constructor>
 
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic"/>
-    </zorba:constructor>
-
-    <zorba:member type="bool" name="theIsDynamic"/>
-
+  <zorba:member type="bool" name="theIsDynamic"/>
 </zorba:iterator>
 
+<!--========================================================================-->
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
 <zorba:iterator name="AvailableCollectionsIterator">
+  <zorba:function generateCodegen="false">
 
-    <zorba:description author="Zorba Team">
-      dc:available-collections
-    </zorba:description>
+    <zorba:signature localname="available-collections" 
+                     prefix="zorba-store-static-collections-ddl">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
 
-    <zorba:function generateCodegen="false">
+    <zorba:signature localname="available-collections"
+                     prefix="zorba-store-dynamic-collections-ddl">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="available-collections" 
-                       prefix="static-collections-ddl">
-        <zorba:output>xs:QName*</zorba:output>
-      </zorba:signature>
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+  </zorba:function>
 
-      <zorba:signature localname="available-collections"
-                       prefix="dynamic-collections-ddl">
-        <zorba:output>xs:QName*</zorba:output>
-      </zorba:signature>
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic"/>
+  </zorba:constructor>
 
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
-    </zorba:function>
+  <zorba:member type="bool" name="theIsDynamic"/>
 
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic"/>
-    </zorba:constructor>
-
-    <zorba:member type="bool" name="theIsDynamic"/>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState"/>
-    </zorba:state>
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="store::Iterator_t" name="nameItState"/>
+  </zorba:state>
 
 </zorba:iterator>
 
+<!--========================================================================-->
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
 <zorba:iterator name="FnCollectionIterator">
+  <zorba:function>
 
-    <zorba:description author="Zorba Team">
-      fn:collection
-    </zorba:description>
+    <zorba:signature localname="collection" prefix="fn">
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
 
-    <zorba:function>
+    <zorba:signature localname="collection" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="collection" prefix="fn">
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
 
-      <zorba:signature localname="collection" prefix="fn">
-        <zorba:param>xs:string?</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
+  </zorba:function>
 
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:isSource returnValue="true"/>
-      </zorba:methods>
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="store::Iterator_t" name="theIterator"/>
+    <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"/>
+  </zorba:state>
 
-    </zorba:function>
+  <zorba:method name="count" const="true" return="bool">
+      <zorba:param name="result" type="store::Item_t&amp;"/>
+      <zorba:param name="planState" type="PlanState&amp;"/>
+  </zorba:method>
 
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="theIterator"
-                    brief="the current iterator"/>
-      <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
-                    brief="flag indicating whether theIterator was opened"/>
-    </zorba:state>
-
-    <zorba:method name="count" const="true" return="bool">
-       <zorba:param name="result" type="store::Item_t&amp;"/>
-       <zorba:param name="planState" type="PlanState&amp;"/>
-    </zorba:method>
-
-    <zorba:method name="getCollection" const="true" return="store::Collection_t">
-       <zorba:param name="planState" type="PlanState&amp;"/>
-    </zorba:method>
+  <zorba:method name="getCollection" const="true" return="store::Collection_t">
+      <zorba:param name="planState" type="PlanState&amp;"/>
+  </zorba:method>
 
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
+<!--========================================================================-->
+
 <zorba:iterator name="ZorbaCollectionIterator">
-
-    <zorba:description author="Zorba Team">
-      zorba:collection
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="collection" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="collection" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="collection"
-                       prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:anyURI</zorba:param><!-- start ref -->
-        <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="collection" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="collection" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param><!-- start to skip -->
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="collection"
-                       prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:anyURI</zorba:param><!-- node ref-->
-        <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:getReturnType/>
-        <zorba:isSource returnValue="true"/>
-        <zorba:producesDistinctNodes returnValue="YES"/>
-        <zorba:producesSortedNodes returnValue="YES"/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic"/>
-    </zorba:constructor>
-
-    <zorba:member type="bool" name="theIsDynamic" getterName="isDynamic"/>
-
-    <zorba:method const="true" name="isCountOptimizable" return="bool" />
-    
-    <zorba:method name="count" const="true" return="bool">
-       <zorba:param name="result" type="store::Item_t&amp;"/>
-       <zorba:param name="planState" type="PlanState&amp;"/>
-    </zorba:method>
-    
-    <zorba:method name="skip" const="true" return="bool">
-      <zorba:param name="count" type="int64_t"/>
-      <zorba:param name="planState" type="PlanState&amp;"/>
-    </zorba:method>
-    
-    <zorba:method name="initCollection" const="true" return="void">
-      <zorba:param name="planState" type="PlanState&amp;"/>
-      <zorba:param name="skipCount" type="int64_t"/>
-    </zorba:method>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="theIterator"/>
-      <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"/>
-    </zorba:state>
-
-</zorba:iterator>
-
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaCollectionNameIterator" >
-
-    <zorba:description author="Zorba Team">
-      zorba:collection-name
-    </zorba:description>
-
-    <zorba:function>
-
-      <zorba:signature localname="collection-name" prefix="static-collections-dml">
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:output>xs:QName</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="collection-name" prefix="dynamic-collections-dml">
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:output>xs:QName</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes value="false"/>
-      </zorba:methods>
-
-    </zorba:function>
-
-</zorba:iterator>
-
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaIndexOfIterator" >
-
-    <zorba:description author="Zorba Team">
-      zorba:index-of
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="index-of" prefix="static-collections-dml">
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:output>xs:integer</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="index-of" prefix="dynamic-collections-dml">
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:output>xs:integer</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes value="false"/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic"/>
-    </zorba:constructor>
-
-    <zorba:member type="bool" name="theIsDynamic"/>
-
-</zorba:iterator>
-
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaInsertNodesIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesIterator, PlanIteratorState>"
-  generateVisitor="false">
-
-    <zorba:description author="Zorba Team">
-      zorba:insert-nodes
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="insert-nodes" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <!-- not available because dynamic collections are always ordered
-      <zorba:signature localname="insert-nodes" prefix="zorba-store-collections">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-      -->
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes producer="1"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaInsertNodesFirstIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesFirstIterator, PlanIteratorState>"
-  generateVisitor="false">
-
-    <zorba:description author="Zorba Team">
-      zorba:insert-nodes-first
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="insert-nodes-first" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-nodes-first" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-first" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-first" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes producer="1"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaInsertNodesLastIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesLastIterator, PlanIteratorState>"
-  generateVisitor="false">
-
-    <zorba:description author="Zorba Team">
-      zorba:insert-nodes-last
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="insert-nodes-last" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-nodes-last" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-last" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-last" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes producer="1"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaInsertNodesBeforeIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesBeforeIterator, PlanIteratorState>"
-  generateVisitor="false">
-
-    <zorba:description author="Zorba Team">
-      zorba:insert-nodes-before
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="insert-nodes-before" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-nodes-before" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-before" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-before" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes producer="2"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaInsertNodesAfterIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertNodesAfterIterator, PlanIteratorState>"
-  generateVisitor="false">
-
-    <zorba:description author="Zorba Team">
-      zorba:insert-nodes-after
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="insert-nodes-after" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-nodes-after" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-after" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="insert-after" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes producer="2"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-
-    <zorba:member type="bool" name="theIsDynamic"/>
-
-    <zorba:method const="true" name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaApplyInsertNodesIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>"
-  generateVisitor="false">
-
-    <zorba:description author="Zorba Team">
-      zorba:apply-insert-nodes
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="apply-insert-nodes" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <!-- not available because dynamic collections are always ordered
-      <zorba:signature localname="apply-insert-nodes" prefix="zorba-store-collections">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-      -->
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:propagatesInputNodes/>
-        <zorba:mustCopyInputNodes producer="1"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
-                    brief="the nodes that have been inserted"/>
-      <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
-          brief="iterator over the nodes"/>
-    </zorba:state>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaApplyInsertNodesFirstIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>"
-  generateVisitor="false">
-
-    <zorba:description author="Zorba Team">
-      zorba:apply-insertnodes-first
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="apply-insert-nodes-first" 
-                       prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-nodes-first" 
-                       prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-first" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-first" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:propagatesInputNodes/>
-        <zorba:mustCopyInputNodes producer="1"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
-                    brief="the nodes that have been inserted"/>
-      <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
-          brief="iterator over the nodes"/>
-    </zorba:state>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaApplyInsertNodesLastIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>"
-  generateVisitor="false">
-
-    <zorba:description author="Zorba Team">
-      zorba:apply-insertnodes-last
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="apply-insert-nodes-last" 
-                       prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-nodes-last" 
-                       prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-last" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-last" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:propagatesInputNodes/>
-        <zorba:mustCopyInputNodes producer="1"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
-                    brief="the nodes that have been inserted"/>
-      <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
-          brief="iterator over the nodes"/>
-    </zorba:state>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaApplyInsertNodesBeforeIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>"
-  generateVisitor="false">
-
-    <zorba:description author="Zorba Team">
-      zorba:apply-insert-nodes-before
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="apply-insert-nodes-before" 
-                       prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-nodes-before"  
-                       prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-before" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-before" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:propagatesInputNodes/>
-        <zorba:mustCopyInputNodes producer="2"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
-                    brief="the nodes that have been inserted"/>
-      <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
-          brief="iterator over the nodes"/>
-    </zorba:state>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaApplyInsertNodesAfterIterator"
-  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>"
-  generateVisitor="false">
-
-    <zorba:description author="Zorba Team">
-      zorba:apply-insertnodes-after
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="apply-insert-nodes-after" 
-                       prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-nodes-after" 
-                       prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-after" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="apply-insert-after" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>structured-item()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:propagatesInputNodes/>
-        <zorba:mustCopyInputNodes producer="2"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-
-    <zorba:method const="true" name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
-                    brief="the nodes that have been inserted"/>
-      <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
-          brief="iterator over the nodes"/>
-    </zorba:state>
-
-</zorba:iterator>
-
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaDeleteNodesIterator" >
-
-    <zorba:description author="Zorba Team">
-      zorba:delete-nodes
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="delete-nodes" prefix="static-collections-dml">
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-nodes" prefix="dynamic-collections-dml">
-        <zorba:param>node()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete" prefix="static-collections-dml">
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete" prefix="dynamic-collections-dml">
-        <zorba:param>structured-item()*</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:ignoresSortedNodes/>
-        <zorba:ignoresDuplicateNodes/>
-        <zorba:mustCopyInputNodes producer="0"/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic"/>
-    </zorba:constructor>
-
-    <zorba:member type="bool" name="theIsDynamic"/>
-
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaDeleteNodesFirstIterator" >
-
-    <zorba:description author="Zorba Team">
-      zorba:delete-node-first
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="delete-node-first" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-nodes-first" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-node-first" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-nodes-first" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-first" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-first" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-first" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-first" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes value="false"/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic"/>
-    </zorba:constructor>
-
-    <zorba:member type="bool" name="theIsDynamic"/>
-
-    <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaDeleteNodesLastIterator" >
-
-    <zorba:description author="Zorba Team">
-      zorba:delete-node-last
-    </zorba:description>
-
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="delete-node-last" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-nodes-last" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-node-last" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-nodes-last" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-last" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-last" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-last" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="delete-last" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:param>xs:integer</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes value="false"/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic"/>
-    </zorba:constructor>
-
-    <zorba:member type="bool" name="theIsDynamic"/>
-
-    <zorba:method const="true" 
-                  name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-  <zorba:iterator name="ZorbaEditNodesIterator">
-    
-    <zorba:description author="Zorba Team">
-      zorba:edit
-    </zorba:description>
-    
-    <zorba:function generateCodegen="false">
-      
-      <zorba:signature localname="edit" prefix="static-collections-dml">
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-      
-      <zorba:signature localname="edit" prefix="dynamic-collections-dml">
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:param>structured-item()</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-      
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes producer="1"/>
-        <zorba:processPragma/>
-      </zorba:methods>
-      
-    </zorba:function>
-    
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" base="true"/>
-      <zorba:parameter type="bool" name="needToCopy" base="true"/>
-    </zorba:constructor>
-    
-    <zorba:member type="bool" name="theIsDynamic"/>
-    <zorba:member type="bool" name="theNeedToCopy"/>
-    
-    <zorba:method
-        const="true" 
-        name="getCollection" 
-        return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
-  </zorba:iterator>
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="collection"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="collection"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="collection"
+                      prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>xs:anyURI</zorba:param><!-- start ref -->
+      <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="collection"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="collection"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>xs:integer</zorba:param><!-- start to skip -->
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="collection"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>xs:anyURI</zorba:param><!-- node ref-->
+      <zorba:param>xs:integer</zorba:param><!-- nodes to skip -->
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:getReturnType/>
+      <zorba:isSource returnValue="true"/>
+      <zorba:producesDistinctNodes returnValue="YES"/>
+      <zorba:producesSortedNodes returnValue="YES"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic"/>
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theIsDynamic" getterName="isDynamic"/>
+
+  <zorba:method const="true" name="isCountOptimizable" return="bool" />
   
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaTruncateCollectionIterator" >
+  <zorba:method name="count" const="true" return="bool">
+      <zorba:param name="result" type="store::Item_t&amp;"/>
+      <zorba:param name="planState" type="PlanState&amp;"/>
+  </zorba:method>
+  
+  <zorba:method name="skip" const="true" return="bool">
+    <zorba:param name="count" type="int64_t"/>
+    <zorba:param name="planState" type="PlanState&amp;"/>
+  </zorba:method>
+  
+  <zorba:method name="initCollection" const="true" return="void">
+    <zorba:param name="planState" type="PlanState&amp;"/>
+    <zorba:param name="skipCount" type="int64_t"/>
+  </zorba:method>
 
-    <zorba:description author="Zorba Team">
-      zorba:truncate
-    </zorba:description>
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="store::Iterator_t" name="theIterator"/>
+    <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"/>
+  </zorba:state>
 
-    <zorba:function generateCodegen="false">
-
-      <zorba:signature localname="truncate" prefix="static-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:signature localname="truncate" prefix="dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="isDynamic" />
-    </zorba:constructor>
-
-    <zorba:member type="bool" name="theIsDynamic"/>
-
-    <zorba:method const="true" 
-                  name="getCollection" 
-                  return="const StaticallyKnownCollection*">
-      <zorba:param type="const store::Item_t&amp;" name="name"/>
-      <zorba:param type="store::Collection_t&amp;" name="coll"/>
-    </zorba:method>
 </zorba:iterator>
 
+<!--========================================================================-->
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
+<zorba:iterator name="ZorbaCollectionNameIterator">
+  <zorba:function>
+
+    <zorba:signature localname="collection-name"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:output>xs:QName</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="collection-name"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:output>xs:QName</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaIndexOfIterator">
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="index-of"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="index-of"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic"/>
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theIsDynamic"/>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaApplyInsertIterator"
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertIterator, ZorbaApplyInsertIteratorState>"
+  generateVisitor="false">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="apply-insert"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:propagatesInputNodes/>
+      <zorba:mustCopyInputNodes producer="1"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+
+  <zorba:method const="true" name="getCollection"
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
+                  brief="the nodes that have been inserted"/>
+    <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
+        brief="iterator over the nodes"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaInsertAfterIterator"
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertAfterIterator, PlanIteratorState>"
+  generateVisitor="false">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="insert-after"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="insert-after"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes producer="2"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theIsDynamic"/>
+
+  <zorba:method const="true" name="getCollection" 
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaInsertBeforeIterator"
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertBeforeIterator, PlanIteratorState>"
+generateVisitor="false">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="insert-before"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="insert-before"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes producer="2"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+
+  <zorba:method const="true" name="getCollection" 
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaInsertFirstIterator"
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertFirstIterator,PlanIteratorState>"
+  generateVisitor="false">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="insert-first"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="insert-first"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes producer="1"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+
+  <zorba:method const="true" name="getCollection" 
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaInsertLastIterator"
+base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertLastIterator, PlanIteratorState>"
+generateVisitor="false">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="insert-last"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="insert-last"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes producer="1"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+
+  <zorba:method const="true" name="getCollection" 
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaApplyInsertFirstIterator"
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertFirstIterator, ZorbaApplyInsertFirstIteratorState>"
+  generateVisitor="false">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="apply-insert-first"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="apply-insert-first"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:propagatesInputNodes/>
+      <zorba:mustCopyInputNodes producer="1"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+
+  <zorba:method const="true" name="getCollection" 
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
+                  brief="the nodes that have been inserted"/>
+    <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
+        brief="iterator over the nodes"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaApplyInsertLastIterator"
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertLastIterator, ZorbaApplyInsertLastIteratorState>"
+  generateVisitor="false">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="apply-insert-last"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="apply-insert-last"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:propagatesInputNodes/>
+      <zorba:mustCopyInputNodes producer="1"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+
+  <zorba:method const="true" name="getCollection" 
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
+                  brief="the nodes that have been inserted"/>
+    <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
+        brief="iterator over the nodes"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaApplyInsertBeforeIterator"
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertBeforeIterator, ZorbaApplyInsertBeforeIteratorState>"
+  generateVisitor="false">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="apply-insert-before"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="apply-insert-before"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:propagatesInputNodes/>
+      <zorba:mustCopyInputNodes producer="2"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+
+  <zorba:method const="true" name="getCollection" 
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
+                  brief="the nodes that have been inserted"/>
+    <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
+        brief="iterator over the nodes"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaApplyInsertAfterIterator"
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertAfterIterator, ZorbaApplyInsertAfterIteratorState>"
+  generateVisitor="false">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="apply-insert-after"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="apply-insert-after"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>structured-item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:propagatesInputNodes/>
+      <zorba:mustCopyInputNodes producer="2"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+
+  <zorba:method const="true" name="getCollection" 
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="std::vector&lt;store::Item_t>" name="nodes"
+                  brief="the nodes that have been inserted"/>
+    <zorba:member type="std::vector&lt;store::Item_t>::const_iterator" name="iterator"
+        brief="iterator over the nodes"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaDeleteIterator">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="delete"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="delete"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/>
+      <zorba:mustCopyInputNodes producer="0"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic"/>
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theIsDynamic"/>
+
+  <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaDeleteFirstIterator">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="delete-first"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="delete-first"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="delete-first"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="delete-first"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic"/>
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theIsDynamic"/>
+
+  <zorba:method const="true" name="getCollection" return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaDeleteLastIterator">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="delete-last"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="delete-last"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="delete-last"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="delete-last"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes value="false"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic"/>
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theIsDynamic"/>
+
+  <zorba:method const="true" 
+                name="getCollection" 
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaEditIterator">
+  
+  <zorba:function generateCodegen="false">
+    
+    <zorba:signature localname="edit"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+    
+    <zorba:signature localname="edit"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:param>structured-item()</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+    
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes producer="1"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+    
+  </zorba:function>
+  
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+  
+  <zorba:member type="bool" name="theIsDynamic"/>
+  <zorba:member type="bool" name="theNeedToCopy"/>
+  
+  <zorba:method
+      const="true" 
+      name="getCollection" 
+      return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaInsertIterator"
+  base="ZorbaCollectionIteratorHelper&lt;ZorbaInsertIterator, PlanIteratorState>"
+  generateVisitor="false">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="insert"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>structured-item()*</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes producer="1"/>
+      <zorba:processPragma/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" base="true"/>
+    <zorba:parameter type="bool" name="needToCopy" base="true"/>
+  </zorba:constructor>
+
+  <zorba:method const="true" name="getCollection"
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="ZorbaTruncateCollectionIterator">
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="truncate"
+                     prefix="zorba-store-static-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="truncate"
+                     prefix="zorba-store-dynamic-collections-dml">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="isDynamic" />
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theIsDynamic"/>
+
+  <zorba:method const="true" 
+                name="getCollection" 
+                return="const StaticallyKnownCollection*">
+    <zorba:param type="const store::Item_t&amp;" name="name"/>
+    <zorba:param type="store::Collection_t&amp;" name="coll"/>
+  </zorba:method>
+</zorba:iterator>
+
+<!--========================================================================-->
+
 <zorba:iterator name="IsAvailableIndexIterator">
+  <zorba:function>
+    <zorba:signature localname="is-available-index"
+                     prefix="zorba-store-indexes-static-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
 
-    <zorba:description author="Zorba Team">
-      dc:is-available-index
-    </zorba:description>
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
 
-    <zorba:function>
-      <zorba:signature localname="is-available-index"
-        prefix="zorba-store-indexes-static-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
-
-    </zorba:function>
-
+  </zorba:function>
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
+<!--========================================================================-->
+
 <zorba:iterator name="AvailableIndexesIterator">
+  <zorba:function>
+    <zorba:signature localname="available-indexes"
+                     prefix="zorba-store-indexes-static-ddl">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
 
-    <zorba:description author="Zorba Team">
-      dc:available-indexes
-    </zorba:description>
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+  </zorba:function>
 
-    <zorba:function>
-      <zorba:signature localname="available-indexes"
-                       prefix="zorba-store-indexes-static-ddl">
-        <zorba:output>xs:QName*</zorba:output>
-      </zorba:signature>
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
-    </zorba:function>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState"
-                    brief="the current iterator"/>
-    </zorba:state>
-
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="store::Iterator_t" name="nameItState"
+                  brief="the current iterator"/>
+  </zorba:state>
 </zorba:iterator>
 
+<!--========================================================================-->
 
-<!--
-/*******************************************************************************
-*******************************************************************************/
--->
 <zorba:iterator name="IsActivatedICIterator">
-
-    <zorba:description author="Zorba Team">
-      dc:is-activated-integrity-constraint
-    </zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="is-activated-integrity-constraint"
-                       prefix="zorba-store-integrity_constraints-static-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
-    </zorba:function>
-
+  <zorba:function>
+    <zorba:signature localname="is-activated-integrity-constraint"
+                     prefix="zorba-store-static-integrity-constraints-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+  </zorba:function>
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-*******************************************************************************/
--->
+<!--========================================================================-->
+
 <zorba:iterator name="ActivatedICsIterator">
+  <zorba:function>
+    <zorba:signature localname="activated-integrity-constraints"
+                     prefix="zorba-store-static-integrity-constraints-ddl">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+  </zorba:function>
 
-    <zorba:description author="Zorba Team">
-      dc:activated-integrity-constraints
-    </zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="activated-integrity-constraints"
-                       prefix="zorba-store-integrity_constraints-static-ddl">
-        <zorba:output>xs:QName*</zorba:output>
-      </zorba:signature>
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
-    </zorba:function>
-
-    <zorba:state  generateInit="false"
-                  generateReset="false"
-                  generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState"/>
-    </zorba:state>
-
+  <zorba:state generateInit="false"
+               generateReset="false"
+               generateDestructor="false">
+    <zorba:member type="store::Iterator_t" name="nameItState"/>
+  </zorba:state>
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
+<!--========================================================================-->
+
 <zorba:iterator name="IsDeclaredCollectionIterator">
-
-    <zorba:description author="Zorba Team">
-      sc:is-declared-collection
-    </zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="is-declared-collection" prefix="static-collections-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
+  <zorba:function>
+    <zorba:signature localname="is-declared-collection"
+                     prefix="zorba-store-static-collections-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
+<!--========================================================================-->
+
 <zorba:iterator name="DeclaredCollectionsIterator">
-
-    <zorba:description author="Zorba Team">
-      sc:declared-collections
-    </zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="declared-collections" prefix="static-collections-ddl">
-        <zorba:output>xs:QName*</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState"/>
-    </zorba:state>
-
+  <zorba:function>
+    <zorba:signature localname="declared-collections"
+                     prefix="zorba-store-static-collections-ddl">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="store::Iterator_t" name="nameItState"/>
+  </zorba:state>
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
+<!--========================================================================-->
+
 <zorba:iterator name="IsDeclaredIndexIterator">
-
-    <zorba:description author="Zorba Team">
-      sc:is-declared-index
-    </zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="is-declared-index"
-                       prefix="zorba-store-indexes-static-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
+  <zorba:function>
+    <zorba:signature localname="is-declared-index"
+                     prefix="zorba-store-indexes-static-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
+<!--========================================================================-->
+
 <zorba:iterator name="DeclaredIndexesIterator">
-
-    <zorba:description author="Zorba Team">
-      sc:declared-indexes
-    </zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="declared-indexes"
-                       prefix="zorba-store-indexes-static-ddl">
-        <zorba:output>xs:QName*</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
-    <zorba:state generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState" defaultValue="NULL"
-                    brief="the current iterator"/>
-    </zorba:state>
-
+  <zorba:function>
+    <zorba:signature localname="declared-indexes"
+                     prefix="zorba-store-indexes-static-ddl">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state generateReset="false" generateDestructor="false">
+    <zorba:member type="store::Iterator_t" name="nameItState" defaultValue="NULL"/>
+  </zorba:state>
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-*******************************************************************************/
--->
+<!--========================================================================-->
+
 <zorba:iterator name="IsDeclaredICIterator">
-
-    <zorba:description author="Zorba Team">
-      sc:is-declared-integrity-constraint
-    </zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="is-declared-integrity-constraint"
-                       prefix="zorba-store-integrity_constraints-static-ddl">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
+  <zorba:function>
+    <zorba:signature localname="is-declared-integrity-constraint"
+                     prefix="zorba-store-static-integrity-constraints-ddl">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-*******************************************************************************/
--->
+<!--========================================================================-->
+
 <zorba:iterator name="DeclaredICsIterator">
+  <zorba:function>
+    <zorba:signature localname="declared-integrity-constraints"
+                     prefix="zorba-store-static-integrity-constraints-ddl">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 
-    <zorba:description author="Zorba Team">
-      sc:declared-integrity-constrints
-    </zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="declared-integrity-constraints"
-                       prefix="zorba-store-integrity_constraints-static-ddl">
-        <zorba:output>xs:QName*</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
-    <zorba:state generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState" defaultValue="NULL"/>
-    </zorba:state>
+  <zorba:state generateReset="false" generateDestructor="false">
+    <zorba:member type="store::Iterator_t" name="nameItState" defaultValue="NULL"/>
+  </zorba:state>
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-14.8.5 fn:uri-collection
-********************************************************************************/
--->
-<zorba:iterator name="FnURICollectionIterator">
-  <zorba:description author="Zorba Team">
-    Returns a sequence of xs:anyURI values representing the document URIs of the 
-    documents in a collection.
-  </zorba:description>
+<!--========================================================================-->
 
+<zorba:iterator name="FnURICollectionIterator">
   <zorba:function>
 
     <zorba:signature localname="uri-collection" prefix="fn" version="3.0">
@@ -1620,12 +1218,13 @@
   </zorba:function>
 
   <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-    <zorba:member type="store::Iterator_t" name="theIterator"
-                  brief="the current iterator"/>
-    <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
-                  brief="flag indicating whether theIterator was opened"/>
+    <zorba:member type="store::Iterator_t" name="theIterator"/>
+    <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"/>
   </zorba:state>
   
 </zorba:iterator>
 
+<!--========================================================================-->
+
 </zorba:iterators>
+<!-- vim:set et sw=2 ts=2: -->

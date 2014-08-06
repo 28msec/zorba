@@ -29,8 +29,6 @@
 #include <zorba/xquery_exception.h>
 #include <zorba/diagnostic_list.h>
 
-#include "system/properties.h"
-
 
 using namespace zorba;
 
@@ -104,8 +102,6 @@ ext_in_opt(int argc, char* argv[])
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool lCorrectError = false;
-
-  zorba::Properties::load(0, NULL);
 
   try 
   {

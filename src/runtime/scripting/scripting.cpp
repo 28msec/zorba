@@ -25,6 +25,8 @@
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
 
+#include "context/dynamic_context.h"
+
 #include "system/globalenv.h"
 #include "diagnostics/util_macros.h"
 
@@ -33,14 +35,19 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(FlowCtlIterator)
+DEF_GET_NAME_AS_STRING(FlowCtlIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(SequentialIterator)
+DEF_GET_NAME_AS_STRING(SequentialIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(LoopIterator)
+DEF_GET_NAME_AS_STRING(LoopIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ExitIterator)
+DEF_GET_NAME_AS_STRING(ExitIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ExitCatcherIterator)
+DEF_GET_NAME_AS_STRING(ExitCatcherIterator)
 
 
 
@@ -240,6 +247,8 @@ void ExitCatcherIteratorState::reset(PlanState& planState)
 
   if (theExitValue)
     theExitValue->reset();
+
+  theExitValue = NULL;
 }
 
 
@@ -301,6 +310,8 @@ bool ExitCatcherIterator::nextImpl(store::Item_t& result, PlanState& planState) 
     }
   }
   
+  planState.theGlobalDynCtx->changeSnapshot();
+
   STACK_END(state);
 }
 

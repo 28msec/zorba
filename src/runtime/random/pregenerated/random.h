@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_RANDOM_RANDOM_H
 #define ZORBA_RUNTIME_RANDOM_RANDOM_H
 
@@ -74,6 +75,8 @@ public:
 
   virtual ~SeededRandomIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -121,6 +124,8 @@ public:
 
   virtual ~RandomIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -150,6 +155,8 @@ public:
   {}
 
   virtual ~UuidIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

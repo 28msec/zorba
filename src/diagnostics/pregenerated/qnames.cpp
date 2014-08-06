@@ -40,6 +40,13 @@ zorba::diagnostic::kind JSONiqErrorQName::kind() const {
   return get_standard_error_kind( localname() );
 }
 
+char const JSoundErrorQName::NAMESPACE[] = JSOUND_ERR_NS;
+char const JSoundErrorQName::PREFIX[] = "jse";
+
+zorba::diagnostic::kind JSoundErrorQName::kind() const {
+  return zorba::diagnostic::UNKNOWN_KIND;
+}
+
 char const ZorbaErrorQName::NAMESPACE[] = ZORBA_ERR_NS;
 char const ZorbaErrorQName::PREFIX[] = "zerr";
 
@@ -58,6 +65,20 @@ char const ZorbaCSVErrorQName::NAMESPACE[] = "http://zorba.io/modules/json-csv";
 char const ZorbaCSVErrorQName::PREFIX[] = "csv";
 
 zorba::diagnostic::kind ZorbaCSVErrorQName::kind() const {
+  return zorba::diagnostic::UNKNOWN_KIND;
+}
+
+char const ZorbaDateTimeErrorQName::NAMESPACE[] = "http://zorba.io/modules/datetime";
+char const ZorbaDateTimeErrorQName::PREFIX[] = "dt";
+
+zorba::diagnostic::kind ZorbaDateTimeErrorQName::kind() const {
+  return zorba::diagnostic::UNKNOWN_KIND;
+}
+
+char const ZorbaURIErrorQName::NAMESPACE[] = "http://zorba.io/modules/uri";
+char const ZorbaURIErrorQName::PREFIX[] = "zuri";
+
+zorba::diagnostic::kind ZorbaURIErrorQName::kind() const {
   return zorba::diagnostic::UNKNOWN_KIND;
 }
 

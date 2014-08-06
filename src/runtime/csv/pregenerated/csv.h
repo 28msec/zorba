@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_CSV_CSV_H
 #define ZORBA_RUNTIME_CSV_CSV_H
 
@@ -31,9 +32,9 @@
 #include "runtime/base/narybase.h"
 #include <sstream>
 #include <vector>
+#include <zorba/util/mem_streambuf.h>
 #include "runtime/csv/csv_util.h"
 #include "util/csv_parser.h"
-#include "util/mem_streambuf.h"
 #include "zorbatypes/zstring.h"
 
 
@@ -49,13 +50,15 @@ public:
   bool cast_unquoted_; //
   csv_parser csv_; //
   zstring extra_name_; //
-  std::istringstream iss_; //
+  mem_streambuf input_buf_; //
+  std::istringstream input_iss_; //
   std::vector<store::Item_t> keys_; //
   unsigned line_no_; //
-  mem_streambuf mem_streambuf_; //
   missing::type missing_; //
+  csv_parse_json_state parse_json_state_; //
   bool skip_called_; //
   zstring string_; //
+  zstring value_; //
 
   CsvParseIteratorState();
 
@@ -84,6 +87,8 @@ public:
   {}
 
   virtual ~CsvParseIterator();
+
+  zstring getNameAsString() const;
 
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
@@ -138,6 +143,8 @@ public:
   {}
 
   virtual ~CsvSerializeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

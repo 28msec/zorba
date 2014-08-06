@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
  *
@@ -14,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "stdafx.h"
 
 #include "runtime/core/fncall_iterator.h"
@@ -43,9 +43,6 @@
 
 #include "util/hashmap32.h"
 
-#include "store/api/index.h" // needed for destruction of the cache
-
-
 namespace zorba
 {
 
@@ -57,24 +54,22 @@ SERIALIZABLE_CLASS_VERSIONS(user_function)
 ********************************************************************************/
 user_function::user_function(
     const QueryLoc& loc,
+    static_context* sctx,
     const signature& sig,
     expr* expr_body,
     unsigned short scriptingKind,
     CompilerCB* ccb)
   :
-function(sig, FunctionConsts::FN_UNKNOWN, false),
+cacheable_function(sig, FunctionConsts::FN_UNKNOWN, false, loc, NULL),
   theCCB(ccb),
-  theLoc(loc),
   theScriptingKind(scriptingKind),
   theBodyExpr(expr_body),
   theIsExiting(false),
   theIsLeaf(true),
   theIsOptimized(false),
-  thePlanStateSize(0),
-  theCache(0),
-  theCacheResults(false),
-  theCacheComputed(false)
+  thePlanStateSize(0)
 {
+  theModuleSctx = sctx;
   setFlag(FunctionConsts::isUDF);
   setPrivate(false);
 }
@@ -85,7 +80,7 @@ function(sig, FunctionConsts::FN_UNKNOWN, false),
 ********************************************************************************/
 user_function::user_function(::zorba::serialization::Archiver& ar)
   :
-  function(ar)
+    cacheable_function(ar)
 {
   setFlag(FunctionConsts::isUDF);
   resetFlag(FunctionConsts::isBuiltin);
@@ -113,7 +108,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
     getPlan(planStateSize, 1);
     ZORBA_ASSERT(thePlan != NULL);
 
-    computeResultCaching(theCCB->theXQueryDiagnostics);
+    computeCacheSettings(theCCB->theXQueryDiagnostics);
 
     if (theCCB->theHasEval)
     {
@@ -155,12 +150,20 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   }
   else
   {
+    theCCB = NULL;
     thePlan = NULL;
     theBodyExpr = NULL;
   }
 
   serialize_baseclass(ar, (function*)this);
-  ar & theCCB;
+  //ar & theCCB;
+  /*
+   * Serializing the CCB here causes a memory leak due to this reference cycle:
+   * CCB -> static context (map) -> user function (map) -> CCB
+   * When serializing compute_cache_settings(), optimize(), and getPlan() have
+   * already been called, so the CCB is not needed inside this class
+   */
+
   //ar & theLoc;
   ar & theScriptingKind;
   //ar & theBodyExpr;
@@ -181,8 +184,30 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & thePlanStateSize;
   ar & theArgVarsRefs;
 
-  ar & theCacheResults;
-  ar & theCacheComputed;
+  ar & theLoc;
+  ar & theHasCache;
+  ar & theCacheAcrossSnapshots;
+  if (ar.is_serializing_out())
+  {
+    saveFlags(theExcludeFromCacheKey, ar);
+    saveFlags(theCompareWithDeepEqual, ar);
+  }
+  else
+  {
+    loadFlags(theExcludeFromCacheKey, ar);
+    loadFlags(theCompareWithDeepEqual, ar);
+  }
+  ar & theAreCacheSettingsComputed;
+  ar & theIsCacheAutomatic;
+
+  if (!ar.is_serializing_out())
+  {
+    theCache.reset(new FunctionCache(
+      theModuleSctx,
+      theExcludeFromCacheKey,
+      theCompareWithDeepEqual,
+      theCacheAcrossSnapshots));
+  }
 }
 
 
@@ -231,8 +256,15 @@ void user_function::setScriptingKind(unsigned short k)
 void user_function::setBody(expr* body)
 {
   theBodyExpr = body;
+  if (body)
+    theTypeManager = body->get_sctx()->get_typemanager();
 }
 
+TypeManager* user_function::getTypeManager()
+{
+  ZORBA_ASSERT(theBodyExpr);
+  return theBodyExpr->get_sctx()->get_typemanager();
+}
 
 /*******************************************************************************
 
@@ -446,6 +478,7 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 void user_function::optimize()
 {
   ZORBA_ASSERT(theBodyExpr);
+  ZORBA_ASSERT(theCCB);
 
   if (!theIsOptimized &&
       theCCB->theConfig.opt_level > CompilerCB::config::O0)
@@ -525,6 +558,7 @@ PlanIter_t user_function::getPlan(uint32_t& planStateSize,  ulong nextVarId)
 {
   if (thePlan == NULL)
   {
+    ZORBA_ASSERT(theCCB);
     optimize();
 
     csize numArgs = theArgVars.size();
@@ -577,158 +611,13 @@ const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() co
   return theArgVarsRefs;
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Index* user_function::getCache() const
+void user_function::useDefaultCachingSettings()
 {
-  return theCache.getp();
+  if (isOptimized() && !isRecursive())
+    theHasCache = false;
+  else
+    cacheable_function::useDefaultCachingSettings();
 }
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void user_function::setCache(store::Index* aCache)
-{
-  theCache = aCache;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool user_function::cacheResults() const
-{
-  return theCacheResults;
-}
-
-
-/*******************************************************************************
- only cache recursive (non-sequential, non-updating, deterministic)
- functions with singleton atomic input and output
-********************************************************************************/
-void user_function::computeResultCaching(XQueryDiagnostics* diag)
-{
-  if (theCacheComputed)
-  {
-    return;
-  }
-
-  struct OnExit
-  {
-  private:
-    bool& theResult;
-    bool& theCacheComputed;
-
-  public:
-    OnExit(bool& aResult, bool& aCacheComputed)
-      :
-      theResult(aResult),
-      theCacheComputed(aCacheComputed) {}
-
-    void cache() { theResult = true; }
-
-    ~OnExit()
-    {
-      theCacheComputed = true;
-    }
-  };
-
-  // will be destroyed when the function is exited
-  // set caching to true if cache() is called
-  OnExit lExit(theCacheResults, theCacheComputed);
-
-  // check necessary conditions
-  // %ann:cache or not %ann:no-cache
-  if (theAnnotationList &&
-      theAnnotationList->contains(AnnotationInternal::zann_nocache))
-  {
-    return;
-  }
-
-  // was the %ann:cache annotation given explicitly by the user
-  bool explicitCacheRequest =
-    (theAnnotationList ?
-     theAnnotationList->contains(AnnotationInternal::zann_cache) :
-     false);
-
-  if (isVariadic())
-  {
-    if (explicitCacheRequest)
-    {
-      diag->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-      WARN_PARAMS(getName()->getStringValue(), ZED(ZWST0005_VARIADIC)),
-      WARN_LOC(theLoc)));
-    }
-    return;
-  }
-
-  TypeManager* tm = theBodyExpr->get_sctx()->get_typemanager();
-
-  // parameter and return types are subtype of xs:anyAtomicType
-  csize lArity = theSignature.paramCount();
-  for (csize i = 0; i < lArity; ++i)
-  {
-    const xqtref_t& lArg = theSignature[i];
-    if (!TypeOps::is_subtype(tm,
-                             *lArg,
-                             *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-                             theLoc))
-    {
-      if (explicitCacheRequest)
-      {
-        diag->add_warning(
-        NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-        WARN_PARAMS(getName()->getStringValue(),
-                    ZED(ZWST0005_PARAM_TYPE),
-                    i+1,
-                    lArg->toString()),
-        WARN_LOC(theLoc)));
-      }
-      return;
-    }
-  }
-
-  // function updating?
-  if (isUpdating())
-  {
-    if (explicitCacheRequest)
-    {
-      diag->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-      WARN_PARAMS(getName()->getStringValue(), ZED(ZWST0005_UPDATING)),
-      WARN_LOC(theLoc)));
-    }
-    return;
-  }
-
-  if (isSequential() || !isDeterministic())
-  {
-    if (explicitCacheRequest)
-    {
-      diag->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED,
-      WARN_PARAMS(getName()->getStringValue(),
-                  (isSequential()?"sequential":"non-deterministic")),
-      WARN_LOC(theLoc)));
-
-      lExit.cache();
-    }
-    return;
-  }
-
-  // optimization is prerequisite before invoking isRecursive
-  if (!explicitCacheRequest && isOptimized() && !isRecursive())
-  {
-    return;
-  }
-
-  lExit.cache();
-}
-
 
 }
 

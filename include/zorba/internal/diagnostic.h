@@ -262,9 +262,7 @@ bool operator==( location const &i, location const &j );
  * @param j The second location.
  * @return Returns \c true only if the two locations are not equal.
  */
-inline bool operator!=( location const &i, location const &j ) {
-  return !(i == j);
-}
+bool operator!=( location const &i, location const &j );
 
 ///////////////////////////////////////////////////////////////////////////////
 

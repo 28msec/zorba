@@ -14,7 +14,7 @@ The complete code can be found in the test directory of the html convertor modul
 
 \code
 import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
-import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+import module namespace map = "http://zorba.io/modules/store/data-structures/unordered-map";
 import module namespace html = "http://www.zorba-xquery.com/modules/converters/html";
 import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
 import module namespace file = "http://expath.org/ns/file";

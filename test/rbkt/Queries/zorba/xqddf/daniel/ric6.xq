@@ -1,7 +1,7 @@
 import module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test" at "xqddf_prolog.xqlib";
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace ic_ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace ic_ddl = "http://zorba.io/modules/store/static/integrity-constraints/ddl";
 
 ddl:create($xqddf-test:white-collection);
 ddl:create($xqddf-test:blue-collection);
@@ -29,13 +29,13 @@ return
   {
     { $i/name }
     ,
-    { dml:insert-nodes($xqddf-test:blue-collection,
-                       (copy $copyi := $i modify () return $copyi));
+    { dml:insert($xqddf-test:blue-collection,
+                 (copy $copyi := $i modify () return $copyi));
       ()
     }
     ,
-    { dml:insert-nodes($xqddf-test:white-collection,
-                       (copy $copyi := $i modify () return $copyi));
+    { dml:insert($xqddf-test:white-collection,
+                 (copy $copyi := $i modify () return $copyi));
       ()
     }
   }
@@ -45,10 +45,10 @@ return
 try
 {
   {
-    (dml:insert-nodes($xqddf-test:blue-collection,
-                      (fn:doc("auction.xml")//item)[@id="item0"]),
+    (dml:insert($xqddf-test:blue-collection,
+                (fn:doc("auction.xml")//item)[@id="item0"]),
 
-     dml:delete-nodes(dml:collection($xqddf-test:blue-collection)[@id="item0"]));
+     dml:delete(dml:collection($xqddf-test:blue-collection)[@id="item0"]));
      ()
    }
 }

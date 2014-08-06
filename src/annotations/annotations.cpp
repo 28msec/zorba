@@ -44,7 +44,10 @@ ItemHandleHashMap<AnnotationInternal::AnnotationId>
 AnnotationInternal::theAnnotName2IdMap(0, NULL, 64, false);
 
 std::vector<AnnotationInternal::RuleBitSet>
-AnnotationInternal::theRuleSet;
+AnnotationInternal::theConflictRuleSet;
+
+std::vector<AnnotationInternal::AnnotationRequirement>
+AnnotationInternal::theRequiredRuleSet;
 
 
 /*******************************************************************************
@@ -78,10 +81,17 @@ void AnnotationInternal::createBuiltIn()
 
 
   //
-  // Zorba annotations - deterministic/nondeterministic
+  // Zorba annotations - strictlydeterministic/deterministic/nondeterministic
   //
+  ZANN(strictlydeterministic, strictlydeterministic);
   ZANN(deterministic, deterministic);
   ZANN(nondeterministic, nondeterministic);
+
+  //
+  // Zorba annotations - caching behaviour
+  //
+  ZANN(exclude-from-cache-key, exclude_from_cache_key);
+  ZANN(compare-with-deep-equal, compare_with_deep_equal);
 
   //
   // Zorba annotations - xquery scripting
@@ -106,7 +116,6 @@ void AnnotationInternal::createBuiltIn()
   ZANN(streamable, streamable);
 
   ZANN(cache, cache);
-  ZANN(no-cache, nocache);
 
   //
   // Zorba annotations - xqddf
@@ -135,69 +144,82 @@ void AnnotationInternal::createBuiltIn()
 
 #undef ZANN
 
-  // create a set of rules to detect conflicts between annotations
 #define ZANN(a) \
-  ( 1 << static_cast<uint64_t>(AnnotationInternal::a) )
+  ( uint64_t(1) << static_cast<uint64_t>(AnnotationInternal::a) )
 
-  theRuleSet.push_back(
+  // create a set of rules to detect conflicts between annotations
+  theConflictRuleSet.push_back(
        ZANN(zann_unique) |
        ZANN(zann_nonunique));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
       ZANN(zann_value_equality) |
       ZANN(zann_general_equality) |
       ZANN(zann_value_range) |
       ZANN(zann_general_range));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
       ZANN(zann_automatic) |
       ZANN(zann_manual));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
       ZANN(zann_mutable) |
       ZANN(zann_queue) |
       ZANN(zann_append_only) |
       ZANN(zann_const));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
       ZANN(zann_ordered) |
       ZANN(zann_unordered));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
       ZANN(zann_assignable) |
       ZANN(zann_nonassignable));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
+      ZANN(zann_strictlydeterministic) |
       ZANN(zann_deterministic) |
       ZANN(zann_nondeterministic));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
+      ZANN(zann_strictlydeterministic) |
+      ZANN(zann_cache));
+
+  theConflictRuleSet.push_back(
       ZANN(zann_sequential) |
       ZANN(zann_nonsequential));
 
-  theRuleSet.push_back(
-      ZANN(zann_cache) |
-      ZANN(zann_nocache));
-
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
       ZANN(fn_private) |
       ZANN(fn_public));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
       ZANN(zann_unordered) |
       ZANN(zann_queue));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
       ZANN(zann_unordered) |
       ZANN(zann_append_only));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
       ZANN(zann_queue) |
       ZANN(zann_append_only));
 
-  theRuleSet.push_back(
+  theConflictRuleSet.push_back(
       ZANN(zann_read_only_nodes) |
       ZANN(zann_mutable_nodes));
+
+  // create a set of rules to detect missing requirements between annotations
+  theRequiredRuleSet.push_back(AnnotationRequirement(
+      zann_exclude_from_cache_key,
+      ZANN(zann_cache) | ZANN(zann_strictlydeterministic)
+    ));
+
+  theRequiredRuleSet.push_back(AnnotationRequirement(
+      zann_compare_with_deep_equal,
+      ZANN(zann_cache) | ZANN(zann_strictlydeterministic)
+    ));
+
 #undef ZANN
 }
 
@@ -346,7 +368,7 @@ void AnnotationList::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-AnnotationInternal* AnnotationList::get(csize index) const
+AnnotationInternal* AnnotationList::get(size_type index) const
 {
   if (index < theAnnotationList.size())
     return theAnnotationList[index];
@@ -404,13 +426,23 @@ void AnnotationList::push_back(
 /*******************************************************************************
   Called from translator to detect duplicates and conflicting declarations
 ********************************************************************************/
-void AnnotationList::checkConflictingDeclarations(
+void AnnotationList::checkDeclarations(
     DeclarationKind declKind,
     const QueryLoc& loc) const
 {
   // make sure we don't have more annotations then max 64 bit
   assert(AnnotationInternal::zann_end < 64);
 
+  RuleBitSet lDeclaredAnnotations = checkDuplicateDeclarations(declKind, loc);
+  checkConflictingDeclarations(lDeclaredAnnotations, declKind, loc);
+  checkRequiredDeclarations(lDeclaredAnnotations, declKind, loc);
+  checkLiterals(declKind, loc);
+}
+
+AnnotationList::RuleBitSet AnnotationList::checkDuplicateDeclarations(
+    DeclarationKind declKind,
+    const QueryLoc& loc) const
+{
   RuleBitSet lCurrAnn;
 
   // mark and detect duplicates
@@ -435,19 +467,25 @@ void AnnotationList::checkConflictingDeclarations(
         ERROR_PARAMS(ZED(XQST0106_Duplicate), qname->getStringValue()));
       }
     }
-
     lCurrAnn.set(id);
   }
+  return lCurrAnn;
+}
 
+void AnnotationList::checkConflictingDeclarations(
+    RuleBitSet currAnn,
+    DeclarationKind declKind,
+    const QueryLoc& loc) const
+{
   // check rules
-  std::vector<RuleBitSet>::const_iterator ite = AnnotationInternal::theRuleSet.begin();
-  std::vector<RuleBitSet>::const_iterator end = AnnotationInternal::theRuleSet.end();
+  std::vector<RuleBitSet>::const_iterator ite = AnnotationInternal::theConflictRuleSet.begin();
+  std::vector<RuleBitSet>::const_iterator end = AnnotationInternal::theConflictRuleSet.end();
 
   for (; ite != end; ++ite)
   {
     const RuleBitSet& lCurrSet = *ite;
 
-    if ((lCurrAnn & lCurrSet).count() > 1)
+    if ((currAnn & lCurrSet).count() > 1)
     {
       // build error string to return set of conflicting annotations
       std::ostringstream lProblems;
@@ -458,7 +496,7 @@ void AnnotationList::checkConflictingDeclarations(
           AnnotationId id = static_cast<AnnotationId>(i);
 
           lProblems << AnnotationInternal::lookup(id)->getStringValue()
-                    << ((j == lCurrSet.count() - 1) ? "" : ", ");
+                    << ((j == (currAnn & lCurrSet).count() - 1) ? "" : ", ");
           ++j;
         }
       }
@@ -477,6 +515,96 @@ void AnnotationList::checkConflictingDeclarations(
   }
 }
 
+void AnnotationList::checkRequiredDeclarations(
+    RuleBitSet declaredAnn,
+    DeclarationKind declKind,
+    const QueryLoc& loc) const
+{
+  // check rules
+  std::vector<AnnotationRequirement>::const_iterator ite = AnnotationInternal::theRequiredRuleSet.begin();
+  std::vector<AnnotationRequirement>::const_iterator end = AnnotationInternal::theRequiredRuleSet.end();
+
+  for (; ite != end; ++ite)
+  {
+    const AnnotationId& lCurrAnn = ite->first;
+    const RuleBitSet& lCurrSet = ite->second;
+
+    if (declaredAnn.test(lCurrAnn) && (declaredAnn & lCurrSet).count() == 0)
+    {
+      // build error string to return set of required annotations
+      std::ostringstream lProblems;
+      for (csize i = 0, j = 0; i < AnnotationInternal::zann_end; ++i)
+      {
+        if (lCurrSet.test(i))
+        {
+          AnnotationId id = static_cast<AnnotationId>(i);
+          lProblems << AnnotationInternal::lookup(id)->getStringValue()
+                    << ((j == lCurrSet.count() - 1) ? "" : ", ");
+          ++j;
+        }
+      }
+
+      if (declKind == var_decl)
+      {
+        RAISE_ERROR(err::XQST0116, loc,
+        ERROR_PARAMS(ZED(XQST0116_Requirement),
+            AnnotationInternal::lookup(lCurrAnn)->getStringValue(),
+            lProblems.str()));
+      }
+      else
+      {
+        RAISE_ERROR(err::XQST0106, loc,
+        ERROR_PARAMS(ZED(XQST0106_Requirement),
+            AnnotationInternal::lookup(lCurrAnn)->getStringValue(),
+            lProblems.str()));
+      }
+    }
+  }
+}
+
+void AnnotationList::checkLiterals(DeclarationKind k, const QueryLoc& loc) const
+{
+  for (Annotations::const_iterator ite = theAnnotationList.begin();
+       ite != theAnnotationList.end();
+       ++ite)
+  {
+    AnnotationInternal* lAnn = *ite;
+    switch (lAnn->getId())
+    {
+      case AnnotationInternal::zann_exclude_from_cache_key:
+      case AnnotationInternal::zann_compare_with_deep_equal:
+        //One or more integers
+        if (!lAnn->getNumLiterals())
+        {
+          RAISE_ERROR(zerr::ZXQP0062_INVALID_ANNOTATION_LITERALS_NUMBER, loc,
+              ERROR_PARAMS(
+                  AnnotationInternal::lookup(lAnn->getId())->getStringValue(),
+                  ZED(ZXQP0062_ONE_OR_MORE_LITERALS)));
+        }
+        for (csize i=0; i<lAnn->getNumLiterals(); ++i)
+          checkLiteralType(lAnn, lAnn->getLiteral(i), store::XS_INTEGER, loc);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+void AnnotationList::checkLiteralType(AnnotationInternal* ann, zorba::store::Item* literal,
+    zorba::store::SchemaTypeCode type, const QueryLoc& loc) const
+{
+  if (literal->getTypeCode() != type)
+  {
+    std::ostringstream oss;
+    oss << type;
+    RAISE_ERROR(zerr::ZXQP0063_INVALID_ANNOTATION_LITERAL_TYPE, loc,
+        ERROR_PARAMS(
+            literal->getStringValue(),
+            literal->getType()->getLocalName(),
+            AnnotationInternal::lookup(ann->getId())->getStringValue(),
+            oss.str()));
+  }
+}
 
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

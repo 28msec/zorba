@@ -18,11 +18,7 @@
 #ifndef ZORBA_RUNTIME_JSON_JSONML_ARRAY_H
 #define ZORBA_RUNTIME_JSON_JSONML_ARRAY_H
 
-#include <iostream>
-
 #include "store/api/item.h"
-
-#include "common.h"
 
 namespace zorba {
 namespace jsonml_array {

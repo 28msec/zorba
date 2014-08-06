@@ -127,7 +127,7 @@ var_expr::~var_expr()
   if (theVarInfo)
   {
     assert(theVarKind == prolog_var);
-    assert(theVarInfo->getName() != NULL);
+    //assert(theVarInfo->getName() != NULL);
     theVarInfo->clearVar();
   }
 }

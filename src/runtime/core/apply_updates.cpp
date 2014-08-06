@@ -41,11 +41,14 @@
 #include "diagnostics/util_macros.h"
 #include "zorba/internal/system_diagnostic.h"
 
+#include "context/dynamic_context.h"
+
 
 namespace zorba 
 {
 
 SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
+DEF_GET_NAME_AS_STRING(ApplyIterator)
 
 
 /*******************************************************************************
@@ -240,6 +243,8 @@ void apply_updates(
       set_source( e, loc );
     throw;
   }
+  if (!pul->isTransform())
+    gdctx->changeSnapshot();
 }
 
 

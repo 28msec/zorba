@@ -295,26 +295,6 @@ FloatImpl<F> FloatImpl<F>::roundHalfToEven( Integer const &precision ) const {
 
 ////////// miscellaneous //////////////////////////////////////////////////////
 
-template<>
-bool FloatImpl<double>::isNegZero() const {
-  if ( !value_ ) {
-    char const *const bytes = reinterpret_cast<char const*>( &value_ );
-    // test for little endian and big endian
-    return bytes[0] || bytes[7];        // TODO: depends on sizeof(double)
-  }
-  return false;
-}
-
-template<>
-bool FloatImpl<float>::isNegZero() const {
-  if ( !value_ ) {
-    char const *const bytes = reinterpret_cast<char const*>( &value_ );
-    // test for little endian and big endian
-    return bytes[0] || bytes[3];        // TODO: depends on sizeof(float)
-  }
-  return false;
-}
-
 template<typename F>
 FloatImpl<F> const& FloatImpl<F>::nan() {
   static FloatImpl<F> const value( std::sqrt( -1.0 ) );

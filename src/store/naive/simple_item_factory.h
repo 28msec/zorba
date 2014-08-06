@@ -394,7 +394,8 @@ public:
       zstring&       prefix,
       zstring&       uri);
 
-  store::PUL* createPendingUpdateList();
+  store::PUL* createPendingUpdateList(
+      bool isTransform = false);
 
   bool createError(
       store::Item_t& result,

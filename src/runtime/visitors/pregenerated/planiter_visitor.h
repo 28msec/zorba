@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_VISITORS_PLAN_ITER_VISITOR_H
 #define ZORBA_RUNTIME_VISITORS_PLAN_ITER_VISITOR_H
 #include <vector>
@@ -72,33 +73,33 @@ namespace zorba{
 
     class ZorbaIndexOfIterator;
 
-    class ZorbaInsertNodesIterator;
+    class ZorbaApplyInsertIterator;
 
-    class ZorbaInsertNodesFirstIterator;
+    class ZorbaInsertAfterIterator;
 
-    class ZorbaInsertNodesLastIterator;
+    class ZorbaInsertBeforeIterator;
 
-    class ZorbaInsertNodesBeforeIterator;
+    class ZorbaInsertFirstIterator;
 
-    class ZorbaInsertNodesAfterIterator;
+    class ZorbaInsertLastIterator;
 
-    class ZorbaApplyInsertNodesIterator;
+    class ZorbaApplyInsertFirstIterator;
 
-    class ZorbaApplyInsertNodesFirstIterator;
+    class ZorbaApplyInsertLastIterator;
 
-    class ZorbaApplyInsertNodesLastIterator;
+    class ZorbaApplyInsertBeforeIterator;
 
-    class ZorbaApplyInsertNodesBeforeIterator;
+    class ZorbaApplyInsertAfterIterator;
 
-    class ZorbaApplyInsertNodesAfterIterator;
+    class ZorbaDeleteIterator;
 
-    class ZorbaDeleteNodesIterator;
+    class ZorbaDeleteFirstIterator;
 
-    class ZorbaDeleteNodesFirstIterator;
+    class ZorbaDeleteLastIterator;
 
-    class ZorbaDeleteNodesLastIterator;
+    class ZorbaEditIterator;
 
-    class ZorbaEditNodesIterator;
+    class ZorbaInsertIterator;
 
     class ZorbaTruncateCollectionIterator;
 
@@ -155,6 +156,8 @@ namespace zorba{
     class Timestamp;
 
     class UTCOffset;
+
+    class DctxSnapshotIdIterator;
 
 #ifdef ZORBA_WITH_DEBUGGER
     class DebugIterator;
@@ -282,56 +285,6 @@ namespace zorba{
 
     class IndexKeysIterator;
 
-    class StaticNamespacesIterator;
-
-    class DefaultFunctionNamespaceIterator;
-
-    class SctxBaseUriIterator;
-
-    class SctxDefaultCollationIterator;
-
-    class StaticNamespaceBindingIterator;
-
-    class InscopeVariablesIterator;
-
-    class DefaultCollectionTypeIterator;
-
-    class XPath10CompatModeIterator;
-
-    class StaticallyKnownDocumentsIterator;
-
-    class StaticallyKnownDocumentTypeIterator;
-
-    class StaticallyKnownCollationsIterator;
-
-    class ConstructionModeIterator;
-
-    class OrderingModeIterator;
-
-    class DefaultOrderIterator;
-
-    class BoundarySpacePolicyIterator;
-
-    class CopyNamespacesModeIterator;
-
-    class FunctionNamesIterator;
-
-    class FunctionArgumentsCountIterator;
-
-    class InScopeSchemaTypesIterator;
-
-    class InScopeElementDeclarationsIterator;
-
-    class InScopeAttributeDeclarationsIterator;
-
-    class InScopeElementGroupsIterator;
-
-    class InScopeAttributeGroupsIterator;
-
-    class OptionIterator;
-
-    class FunctionAnnotationsIterator;
-
     class MemSizeIterator;
 
     class JSONtoXMLInternal;
@@ -383,6 +336,10 @@ namespace zorba{
     class JSONArrayAppendIterator;
 
     class JSONBoxIterator;
+
+    class JSoundAnnotateIterator;
+
+    class JSoundValidateIterator;
 
     class SqrtIterator;
 
@@ -585,6 +542,64 @@ namespace zorba{
 
     class ZorbaIsValidatedIterator;
 
+    class SctxBaseUriIterator;
+
+    class SctxBoundarySpacePolicyIterator;
+
+    class SctxConstructionModeIterator;
+
+    class SctxCopyNamespacesModeIterator;
+
+    class SctxDefaultCollationIterator;
+
+    class SctxDefaultCollectionTypeIterator;
+
+    class SctxDefaultFunctionNamespaceIterator;
+
+    class SctxDefaultOrderIterator;
+
+    class SctxFunctionAnnotationsIterator;
+
+    class SctxFunctionArgumentsCountIterator;
+
+    class SctxFunctionNamesIterator;
+
+    class SctxFunctionsIterator;
+
+    class SctxInScopeAttributeDeclarationsIterator;
+
+    class SctxInScopeAttributeGroupsIterator;
+
+    class SctxInScopeElementDeclarationsIterator;
+
+    class SctxInScopeElementGroupsIterator;
+
+    class SctxInScopeSchemaTypesIterator;
+
+    class SctxInscopeVariablesIterator;
+
+    class SctxOptionIterator;
+
+    class SctxOrderingModeIterator;
+
+    class SctxStaticallyKnownCollationsIterator;
+
+    class SctxStaticallyKnownDocumentsIterator;
+
+    class SctxStaticallyKnownDocumentTypeIterator;
+
+    class SctxStaticallyKnownNamespaceBindingIterator;
+
+    class SctxStaticallyKnownNamespacesIterator;
+
+    class SctxXPath10CompatModeIterator;
+
+    class SeqValueIntersectIterator;
+
+    class SeqValueUnionIterator;
+
+    class SeqValueExceptIterator;
+
     class FnConcatIterator;
 
     class FnIndexOfIterator;
@@ -655,15 +670,15 @@ namespace zorba{
 
     class FnUnparsedTextLinesIterator;
 
+    class AvailableDocumentsIterator;
+
+    class IsAvailableDocumentIterator;
+
     class PutDocumentIterator;
 
     class RemoveDocumentIterator;
 
     class RetrieveDocumentIterator;
-
-    class AvailableDocumentsIterator;
-
-    class IsAvailableDocumentIterator;
 
     class MapCreateIterator;
 
@@ -754,15 +769,16 @@ namespace zorba{
     class XQDocContentIterator;
 
 
-#include "runtime/visitors/planiter_visitor_impl_include.h"
+#include "runtime/visitors/plan_iter_visitor_types.h"
 /**
  * Visitor to visit a PlanIterator tree.
  */
 class PlanIterVisitor {
 public:
-  virtual ~PlanIterVisitor() {}
+  virtual ~PlanIterVisitor() { }
 
-#include "runtime/visitors/planiter_visitor_impl_code.h"
+#include "runtime/visitors/plan_iter_visitor_decl.h"
+
     virtual void beginVisit ( const NodeNameIterator& ) = 0;
     virtual void endVisit   ( const NodeNameIterator& ) = 0;
 
@@ -826,47 +842,47 @@ public:
     virtual void beginVisit ( const ZorbaIndexOfIterator& ) = 0;
     virtual void endVisit   ( const ZorbaIndexOfIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaApplyInsertIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesFirstIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesFirstIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaInsertAfterIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaInsertAfterIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesLastIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesLastIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaInsertBeforeIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaInsertBeforeIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesBeforeIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesBeforeIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaInsertFirstIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaInsertFirstIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesAfterIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesAfterIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaInsertLastIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaInsertLastIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaApplyInsertNodesIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaApplyInsertNodesIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaApplyInsertFirstIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertFirstIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaApplyInsertNodesFirstIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaApplyInsertNodesFirstIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaApplyInsertLastIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertLastIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaApplyInsertNodesLastIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaApplyInsertNodesLastIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaApplyInsertBeforeIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertBeforeIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaApplyInsertNodesBeforeIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaApplyInsertNodesBeforeIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaApplyInsertAfterIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertAfterIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaApplyInsertNodesAfterIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaApplyInsertNodesAfterIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaDeleteIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDeleteIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaDeleteNodesIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaDeleteNodesIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaDeleteFirstIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDeleteFirstIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaDeleteNodesFirstIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaDeleteNodesFirstIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaDeleteLastIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDeleteLastIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaDeleteNodesLastIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaDeleteNodesLastIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaEditIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaEditIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaEditNodesIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaEditNodesIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaInsertIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaInsertIterator& ) = 0;
 
     virtual void beginVisit ( const ZorbaTruncateCollectionIterator& ) = 0;
     virtual void endVisit   ( const ZorbaTruncateCollectionIterator& ) = 0;
@@ -951,6 +967,9 @@ public:
 
     virtual void beginVisit ( const UTCOffset& ) = 0;
     virtual void endVisit   ( const UTCOffset& ) = 0;
+
+    virtual void beginVisit ( const DctxSnapshotIdIterator& ) = 0;
+    virtual void endVisit   ( const DctxSnapshotIdIterator& ) = 0;
 
 #ifdef ZORBA_WITH_DEBUGGER
     virtual void beginVisit ( const DebugIterator& ) = 0;
@@ -1133,81 +1152,6 @@ public:
     virtual void beginVisit ( const IndexKeysIterator& ) = 0;
     virtual void endVisit   ( const IndexKeysIterator& ) = 0;
 
-    virtual void beginVisit ( const StaticNamespacesIterator& ) = 0;
-    virtual void endVisit   ( const StaticNamespacesIterator& ) = 0;
-
-    virtual void beginVisit ( const DefaultFunctionNamespaceIterator& ) = 0;
-    virtual void endVisit   ( const DefaultFunctionNamespaceIterator& ) = 0;
-
-    virtual void beginVisit ( const SctxBaseUriIterator& ) = 0;
-    virtual void endVisit   ( const SctxBaseUriIterator& ) = 0;
-
-    virtual void beginVisit ( const SctxDefaultCollationIterator& ) = 0;
-    virtual void endVisit   ( const SctxDefaultCollationIterator& ) = 0;
-
-    virtual void beginVisit ( const StaticNamespaceBindingIterator& ) = 0;
-    virtual void endVisit   ( const StaticNamespaceBindingIterator& ) = 0;
-
-    virtual void beginVisit ( const InscopeVariablesIterator& ) = 0;
-    virtual void endVisit   ( const InscopeVariablesIterator& ) = 0;
-
-    virtual void beginVisit ( const DefaultCollectionTypeIterator& ) = 0;
-    virtual void endVisit   ( const DefaultCollectionTypeIterator& ) = 0;
-
-    virtual void beginVisit ( const XPath10CompatModeIterator& ) = 0;
-    virtual void endVisit   ( const XPath10CompatModeIterator& ) = 0;
-
-    virtual void beginVisit ( const StaticallyKnownDocumentsIterator& ) = 0;
-    virtual void endVisit   ( const StaticallyKnownDocumentsIterator& ) = 0;
-
-    virtual void beginVisit ( const StaticallyKnownDocumentTypeIterator& ) = 0;
-    virtual void endVisit   ( const StaticallyKnownDocumentTypeIterator& ) = 0;
-
-    virtual void beginVisit ( const StaticallyKnownCollationsIterator& ) = 0;
-    virtual void endVisit   ( const StaticallyKnownCollationsIterator& ) = 0;
-
-    virtual void beginVisit ( const ConstructionModeIterator& ) = 0;
-    virtual void endVisit   ( const ConstructionModeIterator& ) = 0;
-
-    virtual void beginVisit ( const OrderingModeIterator& ) = 0;
-    virtual void endVisit   ( const OrderingModeIterator& ) = 0;
-
-    virtual void beginVisit ( const DefaultOrderIterator& ) = 0;
-    virtual void endVisit   ( const DefaultOrderIterator& ) = 0;
-
-    virtual void beginVisit ( const BoundarySpacePolicyIterator& ) = 0;
-    virtual void endVisit   ( const BoundarySpacePolicyIterator& ) = 0;
-
-    virtual void beginVisit ( const CopyNamespacesModeIterator& ) = 0;
-    virtual void endVisit   ( const CopyNamespacesModeIterator& ) = 0;
-
-    virtual void beginVisit ( const FunctionNamesIterator& ) = 0;
-    virtual void endVisit   ( const FunctionNamesIterator& ) = 0;
-
-    virtual void beginVisit ( const FunctionArgumentsCountIterator& ) = 0;
-    virtual void endVisit   ( const FunctionArgumentsCountIterator& ) = 0;
-
-    virtual void beginVisit ( const InScopeSchemaTypesIterator& ) = 0;
-    virtual void endVisit   ( const InScopeSchemaTypesIterator& ) = 0;
-
-    virtual void beginVisit ( const InScopeElementDeclarationsIterator& ) = 0;
-    virtual void endVisit   ( const InScopeElementDeclarationsIterator& ) = 0;
-
-    virtual void beginVisit ( const InScopeAttributeDeclarationsIterator& ) = 0;
-    virtual void endVisit   ( const InScopeAttributeDeclarationsIterator& ) = 0;
-
-    virtual void beginVisit ( const InScopeElementGroupsIterator& ) = 0;
-    virtual void endVisit   ( const InScopeElementGroupsIterator& ) = 0;
-
-    virtual void beginVisit ( const InScopeAttributeGroupsIterator& ) = 0;
-    virtual void endVisit   ( const InScopeAttributeGroupsIterator& ) = 0;
-
-    virtual void beginVisit ( const OptionIterator& ) = 0;
-    virtual void endVisit   ( const OptionIterator& ) = 0;
-
-    virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
-    virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
-
     virtual void beginVisit ( const MemSizeIterator& ) = 0;
     virtual void endVisit   ( const MemSizeIterator& ) = 0;
 
@@ -1285,6 +1229,12 @@ public:
 
     virtual void beginVisit ( const JSONBoxIterator& ) = 0;
     virtual void endVisit   ( const JSONBoxIterator& ) = 0;
+
+    virtual void beginVisit ( const JSoundAnnotateIterator& ) = 0;
+    virtual void endVisit   ( const JSoundAnnotateIterator& ) = 0;
+
+    virtual void beginVisit ( const JSoundValidateIterator& ) = 0;
+    virtual void endVisit   ( const JSoundValidateIterator& ) = 0;
 
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;
@@ -1587,6 +1537,93 @@ public:
     virtual void beginVisit ( const ZorbaIsValidatedIterator& ) = 0;
     virtual void endVisit   ( const ZorbaIsValidatedIterator& ) = 0;
 
+    virtual void beginVisit ( const SctxBaseUriIterator& ) = 0;
+    virtual void endVisit   ( const SctxBaseUriIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxBoundarySpacePolicyIterator& ) = 0;
+    virtual void endVisit   ( const SctxBoundarySpacePolicyIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxConstructionModeIterator& ) = 0;
+    virtual void endVisit   ( const SctxConstructionModeIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxCopyNamespacesModeIterator& ) = 0;
+    virtual void endVisit   ( const SctxCopyNamespacesModeIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxDefaultCollationIterator& ) = 0;
+    virtual void endVisit   ( const SctxDefaultCollationIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxDefaultCollectionTypeIterator& ) = 0;
+    virtual void endVisit   ( const SctxDefaultCollectionTypeIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxDefaultFunctionNamespaceIterator& ) = 0;
+    virtual void endVisit   ( const SctxDefaultFunctionNamespaceIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxDefaultOrderIterator& ) = 0;
+    virtual void endVisit   ( const SctxDefaultOrderIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxFunctionAnnotationsIterator& ) = 0;
+    virtual void endVisit   ( const SctxFunctionAnnotationsIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxFunctionArgumentsCountIterator& ) = 0;
+    virtual void endVisit   ( const SctxFunctionArgumentsCountIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxFunctionNamesIterator& ) = 0;
+    virtual void endVisit   ( const SctxFunctionNamesIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxFunctionsIterator& ) = 0;
+    virtual void endVisit   ( const SctxFunctionsIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxInScopeAttributeDeclarationsIterator& ) = 0;
+    virtual void endVisit   ( const SctxInScopeAttributeDeclarationsIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxInScopeAttributeGroupsIterator& ) = 0;
+    virtual void endVisit   ( const SctxInScopeAttributeGroupsIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxInScopeElementDeclarationsIterator& ) = 0;
+    virtual void endVisit   ( const SctxInScopeElementDeclarationsIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxInScopeElementGroupsIterator& ) = 0;
+    virtual void endVisit   ( const SctxInScopeElementGroupsIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxInScopeSchemaTypesIterator& ) = 0;
+    virtual void endVisit   ( const SctxInScopeSchemaTypesIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxInscopeVariablesIterator& ) = 0;
+    virtual void endVisit   ( const SctxInscopeVariablesIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxOptionIterator& ) = 0;
+    virtual void endVisit   ( const SctxOptionIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxOrderingModeIterator& ) = 0;
+    virtual void endVisit   ( const SctxOrderingModeIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxStaticallyKnownCollationsIterator& ) = 0;
+    virtual void endVisit   ( const SctxStaticallyKnownCollationsIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxStaticallyKnownDocumentsIterator& ) = 0;
+    virtual void endVisit   ( const SctxStaticallyKnownDocumentsIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxStaticallyKnownDocumentTypeIterator& ) = 0;
+    virtual void endVisit   ( const SctxStaticallyKnownDocumentTypeIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxStaticallyKnownNamespaceBindingIterator& ) = 0;
+    virtual void endVisit   ( const SctxStaticallyKnownNamespaceBindingIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxStaticallyKnownNamespacesIterator& ) = 0;
+    virtual void endVisit   ( const SctxStaticallyKnownNamespacesIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxXPath10CompatModeIterator& ) = 0;
+    virtual void endVisit   ( const SctxXPath10CompatModeIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqValueIntersectIterator& ) = 0;
+    virtual void endVisit   ( const SeqValueIntersectIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqValueUnionIterator& ) = 0;
+    virtual void endVisit   ( const SeqValueUnionIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqValueExceptIterator& ) = 0;
+    virtual void endVisit   ( const SeqValueExceptIterator& ) = 0;
+
     virtual void beginVisit ( const FnConcatIterator& ) = 0;
     virtual void endVisit   ( const FnConcatIterator& ) = 0;
 
@@ -1692,6 +1729,12 @@ public:
     virtual void beginVisit ( const FnUnparsedTextLinesIterator& ) = 0;
     virtual void endVisit   ( const FnUnparsedTextLinesIterator& ) = 0;
 
+    virtual void beginVisit ( const AvailableDocumentsIterator& ) = 0;
+    virtual void endVisit   ( const AvailableDocumentsIterator& ) = 0;
+
+    virtual void beginVisit ( const IsAvailableDocumentIterator& ) = 0;
+    virtual void endVisit   ( const IsAvailableDocumentIterator& ) = 0;
+
     virtual void beginVisit ( const PutDocumentIterator& ) = 0;
     virtual void endVisit   ( const PutDocumentIterator& ) = 0;
 
@@ -1700,12 +1743,6 @@ public:
 
     virtual void beginVisit ( const RetrieveDocumentIterator& ) = 0;
     virtual void endVisit   ( const RetrieveDocumentIterator& ) = 0;
-
-    virtual void beginVisit ( const AvailableDocumentsIterator& ) = 0;
-    virtual void endVisit   ( const AvailableDocumentsIterator& ) = 0;
-
-    virtual void beginVisit ( const IsAvailableDocumentIterator& ) = 0;
-    virtual void endVisit   ( const IsAvailableDocumentIterator& ) = 0;
 
     virtual void beginVisit ( const MapCreateIterator& ) = 0;
     virtual void endVisit   ( const MapCreateIterator& ) = 0;

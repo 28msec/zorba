@@ -49,14 +49,6 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
 {
  public:
   /** 
-   * \brief Destructor.
-   * 
-   * The destructor is called automatically when there are no more XQuery_t
-   * smart pointers pointing to this XQuery instance.
-   */
-  virtual ~XQuery() {}
-
-  /** 
    * \brief Set the filename of a query.
    *
    * This (after URI-encoding) becomes the encapsulating entity's retrieval URI
@@ -435,25 +427,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    */
   virtual bool
   isDebugMode() const = 0;
-#endif
   
-  /** 
-   * \brief Set the filename of the profile
-   *
-   * This file will contain the output of Zorba profiler.
-   */
-  virtual void
-  setProfileName(std::string aProfileName) = 0;
-  
-  /**
-   * \brief Get the filename of the profile
-   *
-   * This file will contain the output of Zorba profiler.
-   */
-  virtual std::string
-  getProfileName() const = 0;
-  
-#ifdef ZORBA_WITH_DEBUGGER
   /**
    * \brief Start a debugger server.
    *
@@ -503,7 +477,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
     Zorba_SerializerOptions& serOptions,
     const std::string& host,
     unsigned short port) = 0;
-#endif
+#endif /* ZORBA_WITH_DEBUGGER */
 
   /** \brief Returns a CollectionManager responsible for all collections
    * which are statically declared in the static context of this query
@@ -551,6 +525,23 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    */
   virtual void
   parse(std::istream& aQuery, ModuleInfo_t& aResult) = 0;
+
+  /**
+   * \brief Print the execution plan of this query to the given output stream.
+   *
+   * @param aStream the output stream to which the execution plan is printed
+   * @param aFormat specifies the format of the printed execution plan.
+   *    Current possible values are:
+   *      \li PLAN_FORMAT_XML (default)
+   *          To export the plan as an XML file
+   *                  \li PLAN_FORMAT_DOT
+   *          To export the plan as a DOT file
+   *                  \li PLAN_FORMAT_JSON
+   *          To export the plan as a JSON file
+   * @throw ZorbaException if the query has been closed or is not compiled.
+   */
+   virtual void
+   printPlan(std::ostream& aStream, Zorba_plan_format_t aFormat) const = 0;
 };
   
 

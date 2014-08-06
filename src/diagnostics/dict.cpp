@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 #include "stdafx.h"
+
+// standard
 #include <algorithm>
 #include <cstring>
 #include <functional>
 #include <utility>                      /* for pair */
-#include <cassert>
 
+// Zorba
+#include "system/globalenv.h"
 #include "util/locale.h"
 
+// local
+#include "assert.h"
 #include "dict.h"
 #include "dict_impl.h"
-
-#include "system/globalenv.h"
 
 using namespace std;
 using namespace zorba::locale;
@@ -68,9 +71,15 @@ static bool get_dict( iso639_1::type lang, entry const **begin,
 
 char const* lookup( char const *key ) {
   typedef pair<entry const*,entry const*> range_type;
+  //
+  // It's possible an exception was thrown after shutdown has already started
+  // in which case the GlobalEnvironment no longer exists.
+  //
+  GlobalEnvironment const *const genv = GENV_PTR;
+  iso639_1::type lang = genv ? genv->get_host_lang() : locale::get_host_lang();
 
   static entry const *begin, *end;
-  if ( !begin && !get_dict( GENV.get_host_lang(), &begin, &end ) )
+  if ( !begin && !get_dict( lang, &begin, &end ) )
     SET_DICT( en, begin, end );
 
   entry entry_to_find;
@@ -79,9 +88,8 @@ char const* lookup( char const *key ) {
   range_type const result =
     ::equal_range( begin, end, entry_to_find, less_entry() );
 
-  assert(result.first != result.second);
-
-  return result.first == result.second ? key : result.first->value;
+  ZORBA_ASSERT( result.first != result.second );
+  return result.first->value;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

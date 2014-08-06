@@ -513,8 +513,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           else {
             if ( !in_char_class )
               goto unbalanced_char;
-            if ( put_close_bracket )
+            if ( put_close_bracket ) {
               *icu_re += ']';
+              put_close_bracket = false;
+            }
             --in_char_class;
             in_char_range = 0;
           }

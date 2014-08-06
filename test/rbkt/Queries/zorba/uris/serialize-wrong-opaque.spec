@@ -1,1 +1,1 @@
-Error: http://zorba.io/errors:ZURI0001
+Error: http://zorba.io/modules/uri:OPAQUE_COMB_NOT_VALID

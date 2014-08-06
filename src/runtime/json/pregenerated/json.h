@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_JSON_JSON_H
 #define ZORBA_RUNTIME_JSON_JSON_H
 
@@ -59,6 +60,8 @@ public:
 
   virtual ~JSONtoXMLInternal();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -90,6 +93,8 @@ public:
   {}
 
   virtual ~XMLtoJSONInternal();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

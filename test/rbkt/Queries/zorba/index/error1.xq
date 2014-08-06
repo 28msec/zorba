@@ -1,6 +1,6 @@
 (: Declaration of index in main module :)
 
-import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_ddl = "http://zorba.io/modules/store/static/indexes/ddl";
 
 declare index foo 
 on nodes (<a i="1"/>, <b i="2"/>, <c i="1"/>)

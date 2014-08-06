@@ -9,9 +9,9 @@ import module namespace functx = "http://www.functx.com";
 import module namespace req = "http://www.28msec.com/modules/http/request";
 import module namespace resp = "http://www.28msec.com/modules/http/response";
 import module namespace cache = "http://www.28msec.com/modules/http/util/cache";
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace idml = "http://zorba.io/modules/store/static/indexes/dml";
 
 (:~ some comment :)
 declare %an:ordered collection cil:entries as element(el)*;

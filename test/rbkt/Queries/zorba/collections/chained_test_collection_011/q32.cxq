@@ -1,4 +1,4 @@
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 import module namespace ns = "http://example.org/datamodule/" at "../chained_test_collection.xqdata";
 
 dml:insert-nodes-before(xs:QName('ns:collection_333'), <a/>, <a/>)

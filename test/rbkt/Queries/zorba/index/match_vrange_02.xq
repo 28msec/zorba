@@ -1,17 +1,16 @@
-
 import module namespace d = "www.data.com" at "match_vrange_02.xqlib";
 
 import module namespace ddl = 
-"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+  "http://zorba.io/modules/store/static/collections/ddl";
 
 import module namespace dml = 
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  "http://zorba.io/modules/store/static/collections/dml";
 
 import module namespace iddl = 
-"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+  "http://zorba.io/modules/store/static/indexes/ddl";
 
 import module namespace idml = 
-"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+  "http://zorba.io/modules/store/static/indexes/dml";
 
 declare namespace an = "http://zorba.io/annotations";
 

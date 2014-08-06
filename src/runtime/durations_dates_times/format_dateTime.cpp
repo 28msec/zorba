@@ -57,6 +57,7 @@ namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(FnFormatDateTimeIterator)
 NARY_ACCEPT(FnFormatDateTimeIterator);
+DEF_GET_NAME_AS_STRING(FnFormatDateTimeIterator)
 
 ///////////////////////////////////////////////////////////////////////////////
 

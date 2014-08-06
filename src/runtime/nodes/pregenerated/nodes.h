@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_NODES_NODES_H
 #define ZORBA_RUNTIME_NODES_NODES_H
 
@@ -59,6 +60,8 @@ public:
 
   virtual ~FnLocalNameIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -90,6 +93,8 @@ public:
   {}
 
   virtual ~FnNamespaceUriIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -123,6 +128,8 @@ public:
 
   virtual ~FnLangIterator();
 
+  zstring getNameAsString() const;
+
 public:
   bool isLangAttr(const store::Item_t& aAttr) const;
   bool matchesReqLang(const store::Item_t& aLangAttr, const zstring& aRequestLang) const;
@@ -155,6 +162,8 @@ public:
   {}
 
   virtual ~FnHasChildrenIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -200,6 +209,8 @@ public:
 
   virtual ~FnInnermostIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -244,6 +255,8 @@ public:
 
   virtual ~FnOutermostIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -273,6 +286,8 @@ public:
   {}
 
   virtual ~FnGenerateIdIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -304,6 +319,8 @@ public:
 
   virtual ~IsAncestorIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -333,6 +350,8 @@ public:
   {}
 
   virtual ~IsDescendantIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -364,6 +383,8 @@ public:
 
   virtual ~IsParentIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -393,6 +414,8 @@ public:
   {}
 
   virtual ~IsChildIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -424,6 +447,8 @@ public:
 
   virtual ~IsFollowingIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -453,6 +478,8 @@ public:
   {}
 
   virtual ~IsPrecedingIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -484,6 +511,8 @@ public:
 
   virtual ~IsFollowingSiblingIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -513,6 +542,8 @@ public:
   {}
 
   virtual ~IsPrecedingSiblingIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -544,6 +575,8 @@ public:
 
   virtual ~LevelIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -573,6 +606,8 @@ public:
   {}
 
   virtual ~LeastCommonAncestor();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -604,6 +639,8 @@ public:
 
   virtual ~FnPathIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -633,6 +670,8 @@ public:
   {}
 
   virtual ~NodeCopyIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

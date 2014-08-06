@@ -21,6 +21,7 @@
 #include <zorba/diagnostic_list.h>
 #include <zorba/store_manager.h>
 #include <zorba/query_location.h>
+#include <zorba/properties.h>
 
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
@@ -35,7 +36,6 @@
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
-#include "system/properties.h"
 
 #include "context/static_context.h"
 
@@ -281,9 +281,9 @@ audit::Provider* ZorbaImpl::getAuditProvider()
 /*******************************************************************************
 
 ********************************************************************************/
-PropertiesGlobal* ZorbaImpl::getPropertiesGlobal()
+Properties* ZorbaImpl::getProperties()
 {
-  return Properties::instance();
+  return &Properties::instance();
 }
 
 

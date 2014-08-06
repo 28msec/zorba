@@ -50,6 +50,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
 protected:
@@ -82,6 +84,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -108,6 +112,8 @@ public:
   ~ExitIterator();
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
@@ -150,6 +156,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -178,6 +186,8 @@ public:
   ~FlowCtlIterator();
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };

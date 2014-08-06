@@ -317,7 +317,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
   {
     const fo_expr* e = static_cast<const fo_expr*>(this);
 
-    if (e->get_func()->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
+    if (e->get_func()->getKind() == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1)
     {
       expr::subst_iter_t i = subst.find(this);
 

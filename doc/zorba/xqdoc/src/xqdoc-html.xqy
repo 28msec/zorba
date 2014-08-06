@@ -18,7 +18,7 @@ module namespace xqdoc-html = "http://www.zorba-xquery.com/xqdoc-html";
 
 import module namespace file = "http://expath.org/ns/file";
 
-import module namespace xqdoc = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace xqdoc = "http://zorba.io/modules/xqdoc";
 import module namespace batch = "http://www.zorba-xquery.com/modules/xqdoc/batch";
 
 declare namespace xqd = "http://www.xqdoc.org/1.0";

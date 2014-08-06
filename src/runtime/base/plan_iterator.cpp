@@ -15,6 +15,10 @@
  */
 #include "stdafx.h"
 
+#include <typeinfo>
+
+#include <zorba/properties.h>
+
 #include "compiler/api/compilercb.h"
 
 #include "context/static_context.h"
@@ -31,9 +35,6 @@
 
 #include "diagnostics/util_macros.h"
 
-#ifndef NDEBUG
-#include "system/properties.h"
-#endif
 
 namespace zorba
 {
@@ -70,7 +71,8 @@ PlanState::PlanState(
   theQuery(0),
   theGlobalDynCtx(globalDctx),
   theLocalDynCtx(localDctx),
-  theHasToQuit(false)
+  theHasToQuit(false),
+  profile_( Properties::instance().getProfile() )
 {
   assert(globalDctx != NULL && localDctx != NULL);
   theBlock = new int8_t[theBlockSize];
@@ -132,9 +134,15 @@ PlanIterator::PlanIterator(const PlanIterator& it)
 {
 }
 
+PlanIterator::~PlanIterator() {
+  // out-of-line since it's virtual
+}
 
 SERIALIZE_INTERNAL_METHOD(PlanIterator)
 
+zstring PlanIterator::getNameAsString() const {
+  return typeid( *this ).name();        // default name (should be overridden)
+}
 
 void PlanIterator::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -186,7 +194,7 @@ bool PlanIterator::count(store::Item_t& result, PlanState& planState) const
     ++count;
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(count)), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, xs_integer(count)), state);
   STACK_END(state);
 }
 
@@ -219,12 +227,12 @@ bool PlanIterator::consumeNext(
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    if (Properties::instance()->stableIteratorIds())
+    if (Properties::instance().getStableIteratorIDs())
       std::cout << "next (" << iter->getId();
     else
       std::cout << "next (" << iter;
 
-    std::cout << " = " << typeid (*iter).name()
+    std::cout << " = " << iter->getNameAsString() // typeid (*iter).name()
               << ") -> "
               << "status: " << status << " -> "
               << ((status && result != NULL) ? result->show().c_str() : "null")

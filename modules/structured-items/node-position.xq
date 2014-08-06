@@ -28,7 +28,7 @@ xquery version "1.0";
  :
  : @author Federico Cavalieri, Markos Zaharioudakis 
  :
- : @project Zorba/XQuery Data Model/Node/Node Position
+ : @project Zorba/XML and JSON Data Model/Node/Node Position
  :)
 module namespace np = "http://zorba.io/modules/node-position";
 

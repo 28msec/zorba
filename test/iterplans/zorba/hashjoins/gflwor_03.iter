@@ -1,200 +1,200 @@
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for main query:
-<SequentialIterator>
-  <CtxVarDeclareIterator varid="4" varname="sales">
-    <ElementIterator>
-      <SingletonIterator value="xs:QName(,,sales)"/>
-      <FnConcatIterator>
-        <ElementIterator>
-          <SingletonIterator value="xs:QName(,,sale)"/>
-          <FnConcatIterator>
-            <AttributeIterator qname="xs:QName(,,pid)">
-              <SingletonIterator value="xs:string(3)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,locid)">
-              <SingletonIterator value="xs:string(5)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,qty)">
-              <SingletonIterator value="xs:string(3)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,date)">
-              <SingletonIterator value="xs:string(2013-01-01)"/>
-            </AttributeIterator>
-          </FnConcatIterator>
-        </ElementIterator>
-        <ElementIterator>
-          <SingletonIterator value="xs:QName(,,sale)"/>
-          <FnConcatIterator>
-            <AttributeIterator qname="xs:QName(,,pid)">
-              <SingletonIterator value="xs:string(3)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,locid)">
-              <SingletonIterator value="xs:string(5)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,qty)">
-              <SingletonIterator value="xs:string(5)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,date)">
-              <SingletonIterator value="xs:string(2013-01-02)"/>
-            </AttributeIterator>
-          </FnConcatIterator>
-        </ElementIterator>
-        <ElementIterator>
-          <SingletonIterator value="xs:QName(,,sale)"/>
-          <FnConcatIterator>
-            <AttributeIterator qname="xs:QName(,,pid)">
-              <SingletonIterator value="xs:string(2)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,locid)">
-              <SingletonIterator value="xs:string(4)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,qty)">
-              <SingletonIterator value="xs:string(1)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,date)">
-              <SingletonIterator value="xs:string(2013-01-01)"/>
-            </AttributeIterator>
-          </FnConcatIterator>
-        </ElementIterator>
-      </FnConcatIterator>
-    </ElementIterator>
-  </CtxVarDeclareIterator>
-  <CtxVarDeclareIterator varid="5" varname="locations">
-    <ElementIterator copyInputNodes="false">
-      <SingletonIterator value="xs:QName(,,locations)"/>
-      <FnConcatIterator>
-        <ElementIterator copyInputNodes="false">
-          <SingletonIterator value="xs:QName(,,loc)"/>
-          <FnConcatIterator>
-            <AttributeIterator qname="xs:QName(,,id)">
-              <SingletonIterator value="xs:string(5)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,city)">
-              <SingletonIterator value="xs:string(paris)"/>
-            </AttributeIterator>
-          </FnConcatIterator>
-        </ElementIterator>
-        <ElementIterator copyInputNodes="false">
-          <SingletonIterator value="xs:QName(,,loc)"/>
-          <FnConcatIterator>
-            <AttributeIterator qname="xs:QName(,,id)">
-              <SingletonIterator value="xs:string(4)"/>
-            </AttributeIterator>
-            <AttributeIterator qname="xs:QName(,,city)">
-              <SingletonIterator value="xs:string(san fransisco)"/>
-            </AttributeIterator>
-          </FnConcatIterator>
-        </ElementIterator>
-      </FnConcatIterator>
-    </ElementIterator>
-  </CtxVarDeclareIterator>
-  <flwor::TupleStreamIterator>
-    <flwor::ForIterator>
-      <ForVariable name="$$opt_temp_1"/>
-      <flwor::GroupByIterator>
-        <flwor::ForIterator>
-          <ForVariable name="s"/>
-          <flwor::LetIterator>
-            <LetVariable name="$$opt_temp_4" materialize="true"/>
-            <flwor::LetIterator>
-              <LetVariable name="$$opt_temp_0" materialize="true"/>
-              <flwor::TupleSourceIterator/>
-              <HoistIterator>
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,loc)" typename="*" nill allowed="0">
-                  <CtxVarIterator varid="5" varname="locations" varkind="global"/>
-                </ChildAxisIterator>
-              </HoistIterator>
-            </flwor::LetIterator>
-            <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-              <flwor::FLWORIterator>
-                <ForVariable name="$$opt_temp_2">
-                  <UnhoistIterator>
-                    <LetVarIterator varname="$$opt_temp_0"/>
-                  </UnhoistIterator>
-                </ForVariable>
-                <ReturnClause>
-                  <ValueIndexEntryBuilderIterator>
-                    <ForVarIterator varname="$$opt_temp_2"/>
-                    <FnStringIterator>
-                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="$$opt_temp_2"/>
-                      </AttributeAxisIterator>
-                    </FnStringIterator>
-                  </ValueIndexEntryBuilderIterator>
-                </ReturnClause>
-              </flwor::FLWORIterator>
-            </CreateInternalIndexIterator>
-          </flwor::LetIterator>
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,sale)" typename="*" nill allowed="0">
-            <CtxVarIterator varid="4" varname="sales" varkind="global"/>
-          </ChildAxisIterator>
-        </flwor::ForIterator>
-        <Spec>
-          <TreatIterator quant="?">
-            <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,locid)" typename="*" nill allowed="0">
-                <ForVarIterator varname="s"/>
-              </AttributeAxisIterator>
-            </FnDataIterator>
-          </TreatIterator>
-          <GroupVariable/>
-        </Spec>
-        <Spec>
-          <ForVarIterator varname="s"/>
-          <NonGroupVariable/>
-        </Spec>
-      </flwor::GroupByIterator>
-      <HoistIterator>
-        <FnStringIterator>
-          <ForVarIterator varname="loc"/>
-        </FnStringIterator>
-      </HoistIterator>
-    </flwor::ForIterator>
-    <ElementIterator>
-      <SingletonIterator value="xs:QName(,,sale)"/>
-      <FnConcatIterator>
-        <AttributeIterator qname="xs:QName(,,city)">
-          <EnclosedIterator attr_cont="true">
-            <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,city)" typename="*" nill allowed="0">
-                <flwor::FLWORIterator>
-                  <ForVariable name="$$context-item">
-                    <ProbeIndexPointValueIterator>
-                      <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-                      <UnhoistIterator>
-                        <ForVarIterator varname="$$opt_temp_1"/>
-                      </UnhoistIterator>
-                    </ProbeIndexPointValueIterator>
+<iterator-tree description="const-folded expr">
+  <OrIterator>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </OrIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="sales">
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,sales)"/>
+        <FnConcatIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,sale)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,pid)">
+                <SingletonIterator value="xs:string(3)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,locid)">
+                <SingletonIterator value="xs:string(5)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,qty)">
+                <SingletonIterator value="xs:string(3)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,date)">
+                <SingletonIterator value="xs:string(2013-01-01)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,sale)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,pid)">
+                <SingletonIterator value="xs:string(3)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,locid)">
+                <SingletonIterator value="xs:string(5)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,qty)">
+                <SingletonIterator value="xs:string(5)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,date)">
+                <SingletonIterator value="xs:string(2013-01-02)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,sale)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,pid)">
+                <SingletonIterator value="xs:string(2)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,locid)">
+                <SingletonIterator value="xs:string(4)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,qty)">
+                <SingletonIterator value="xs:string(1)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,date)">
+                <SingletonIterator value="xs:string(2013-01-01)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="5" varname="locations">
+      <ElementIterator copyInputNodes="false">
+        <SingletonIterator value="xs:QName(,,locations)"/>
+        <FnConcatIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,loc)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,id)">
+                <SingletonIterator value="xs:string(5)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,city)">
+                <SingletonIterator value="xs:string(paris)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,loc)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,id)">
+                <SingletonIterator value="xs:string(4)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,city)">
+                <SingletonIterator value="xs:string(san fransisco)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <TupleStreamIterator>
+      <ForIterator>
+        <ForVariable name="$$opt_temp_1"/>
+        <GroupByIterator>
+          <ForIterator>
+            <ForVariable name="s"/>
+            <LetIterator>
+              <LetVariable name="$$opt_temp_4" materialize="true"/>
+              <LetIterator>
+                <LetVariable name="$$opt_temp_0" materialize="true"/>
+                <TupleSourceIterator/>
+                <HoistIterator>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,loc)" typename="*" nill-allowed="0">
+                    <CtxVarIterator varid="5" varname="locations" varkind="global"/>
+                  </ChildAxisIterator>
+                </HoistIterator>
+              </LetIterator>
+              <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+                <FLWORIterator>
+                  <ForVariable name="$$opt_temp_2">
+                    <UnhoistIterator>
+                      <LetVarIterator varname="$$opt_temp_0"/>
+                    </UnhoistIterator>
                   </ForVariable>
                   <ReturnClause>
-                    <ForVarIterator varname="$$context-item"/>
+                    <ValueIndexEntryBuilderIterator>
+                      <ForVarIterator varname="$$opt_temp_2"/>
+                      <FnStringIterator>
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
+                          <ForVarIterator varname="$$opt_temp_2"/>
+                        </AttributeAxisIterator>
+                      </FnStringIterator>
+                    </ValueIndexEntryBuilderIterator>
                   </ReturnClause>
-                </flwor::FLWORIterator>
-              </AttributeAxisIterator>
-            </FnDataIterator>
-          </EnclosedIterator>
-        </AttributeIterator>
-        <AttributeIterator qname="xs:QName(,,qty)">
-          <EnclosedIterator attr_cont="true">
-            <FnSumIterator>
+                </FLWORIterator>
+              </CreateInternalIndexIterator>
+            </LetIterator>
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sale)" typename="*" nill-allowed="0">
+              <CtxVarIterator varid="4" varname="sales" varkind="global"/>
+            </ChildAxisIterator>
+          </ForIterator>
+          <Spec>
+            <TreatIterator quant="?">
               <FnDataIterator>
-                <NodeDistinctIterator allow-atomics="false" check-only="false">
-                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,qty)" typename="*" nill allowed="0">
-                    <LetVarIterator varname="s"/>
-                  </AttributeAxisIterator>
-                </NodeDistinctIterator>
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,locid)" typename="*" nill-allowed="0">
+                  <ForVarIterator varname="s"/>
+                </AttributeAxisIterator>
               </FnDataIterator>
-            </FnSumIterator>
-          </EnclosedIterator>
-        </AttributeIterator>
-      </FnConcatIterator>
-    </ElementIterator>
-  </flwor::TupleStreamIterator>
-</SequentialIterator>
-
+            </TreatIterator>
+            <GroupVariable/>
+          </Spec>
+          <Spec>
+            <ForVarIterator varname="s"/>
+            <NonGroupVariable/>
+          </Spec>
+        </GroupByIterator>
+        <HoistIterator>
+          <FnStringIterator>
+            <ForVarIterator varname="loc"/>
+          </FnStringIterator>
+        </HoistIterator>
+      </ForIterator>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,sale)"/>
+        <FnConcatIterator>
+          <AttributeIterator qname="xs:QName(,,city)">
+            <EnclosedIterator attr_cont="true">
+              <FnDataIterator>
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,city)" typename="*" nill-allowed="0">
+                  <FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <ProbeIndexPointValueIterator>
+                        <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+                        <UnhoistIterator>
+                          <ForVarIterator varname="$$opt_temp_1"/>
+                        </UnhoistIterator>
+                      </ProbeIndexPointValueIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ForVarIterator varname="$$context-item"/>
+                    </ReturnClause>
+                  </FLWORIterator>
+                </AttributeAxisIterator>
+              </FnDataIterator>
+            </EnclosedIterator>
+          </AttributeIterator>
+          <AttributeIterator qname="xs:QName(,,qty)">
+            <EnclosedIterator attr_cont="true">
+              <FnSumIterator>
+                <FnDataIterator>
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,qty)" typename="*" nill-allowed="0">
+                      <LetVarIterator varname="s"/>
+                    </AttributeAxisIterator>
+                  </NodeDistinctIterator>
+                </FnDataIterator>
+              </FnSumIterator>
+            </EnclosedIterator>
+          </AttributeIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </TupleStreamIterator>
+  </SequentialIterator>
+</iterator-tree>

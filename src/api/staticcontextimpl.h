@@ -76,8 +76,22 @@ protected:
 protected:
   static std::string createInvokeQuery(const function*, size_t aArity);
 
+  static std::string createHOFQuery(size_t aArity);
+
 private:
   StaticContextImpl(const StaticContextImpl&);
+
+  ItemSequence_t
+  invokeFunc(
+      const Item& aItem,
+      const store::Item_t& qname,
+      const std::vector<ItemSequence_t>& aArgs) const;
+
+  ItemSequence_t
+  invokeFuncItem(
+      const Item& aItem,
+      const store::Item_t& funItem,
+      const std::vector<ItemSequence_t>& aArgs) const;
 
 public:
   StaticContextImpl(DiagnosticHandler* = 0);
@@ -261,22 +275,25 @@ public:
   resolve(const String& aRelativeUri, const String& aBaseUri) const;
 
   virtual bool
-  validate(const Item& rootElement, Item& validatedResult,
-           validation_mode_t validationMode = validate_strict) const;
+  validate(
+      const Item& rootElement,
+      Item& validatedResult,
+      validation_mode_t validationMode = validate_strict) const;
 
   virtual bool
-  validate(const Item& rootElement, Item& validatedResult,
-           const String& targetNamespace,
-           validation_mode_t validationMode = validate_strict) const;
+  validate(
+      const Item& rootElement, Item& validatedResult,
+      const String& targetNamespace,
+      validation_mode_t validationMode = validate_strict) const;
 
   virtual bool
-  validateSimpleContent(const String& stringValue,
-          const Item& typeQName,
-          std::vector<Item>& resultList) const;
+  validateSimpleContent(
+      const String& stringValue,
+      const Item& typeQName,
+      std::vector<Item>& resultList) const;
 
   ItemSequence_t
-  invoke(const Item& aQName,
-         const std::vector<ItemSequence_t>& aArgs) const;
+  invoke(const Item& item, const std::vector<ItemSequence_t>& aArgs) const;
 
   virtual StaticCollectionManager*
   getStaticCollectionManager() const;
@@ -289,6 +306,14 @@ public:
 
   virtual void
   getExternalVariables(Iterator_t& aVarsIter) const;  
+
+  virtual bool
+  getExternalVariableAnnotations( Item const&,
+                                  std::vector<Annotation_t>& ) const;
+
+  virtual bool
+  getExternalVariableQuantifier(Item const & var_name,
+      SequenceType::Quantifier& result) const;
 
   virtual void
   setURIPath(const std::vector<String>& aURIPath);

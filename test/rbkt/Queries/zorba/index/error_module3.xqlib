@@ -1,11 +1,10 @@
-
 (:
   Check that index domain expr does not produce any atomic items
 :)
 
 module namespace idx = "http://www.w3.org/TestModules/idx";
 
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 
 declare namespace ann = "http://zorba.io/annotations";
 

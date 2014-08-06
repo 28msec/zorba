@@ -37,9 +37,9 @@
 #include "zorbamisc/ns_consts.h"
 
 #ifndef NDEBUG
-# include "system/properties.h"
-# define DOUT             Properties::instance()->debug_out()
-# define TRACE_FULL_TEXT  Properties::instance()->traceFulltext()
+# include <zorba/properties.h>
+# define DOUT             Properties::instance().getDebugStream()
+# define TRACE_FULL_TEXT  Properties::instance().getTraceFulltext()
 #endif /* NDEBUG */
 
 #include "apply.h"
@@ -66,7 +66,7 @@ namespace zorba {
 #ifndef NDEBUG
 
 /**
- * An instance of this class is ued to perform RAII (Resource Acquisition Is
+ * An instance of this class is used to perform RAII (Resource Acquisition Is
  * Initialization) to guarantee that the result is printed and that the proper
  * number of "dec_indent" calls are done regardless of how the enclosing
  * function exits.
@@ -1239,7 +1239,7 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
     throw XQUERY_EXCEPTION(
       err::FTST0009,
       ERROR_PARAMS(
-        iso639_1::string_of[ qt0.lang() ], ZED( FTST0009_BadThesaurusLang )
+        iso639_1::str( qt0.lang() ), ZED( FTST0009_BadThesaurusLang )
       )
     );
 
@@ -1262,7 +1262,7 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
     throw XQUERY_EXCEPTION(
       err::FTST0009,
       ERROR_PARAMS(
-        iso639_1::string_of[ qt0.lang() ], ZED( FTST0009_BadTokenizerLang )
+        iso639_1::str( qt0.lang() ), ZED( FTST0009_BadTokenizerLang )
       )
     );
 

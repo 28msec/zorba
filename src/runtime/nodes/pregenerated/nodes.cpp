@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -57,6 +58,10 @@ void FnLocalNameIterator::accept(PlanIterVisitor& v) const
 
 FnLocalNameIterator::~FnLocalNameIterator() {}
 
+
+zstring FnLocalNameIterator::getNameAsString() const {
+  return "fn:local-name";
+}
 // </FnLocalNameIterator>
 
 
@@ -85,6 +90,10 @@ void FnNamespaceUriIterator::accept(PlanIterVisitor& v) const
 
 FnNamespaceUriIterator::~FnNamespaceUriIterator() {}
 
+
+zstring FnNamespaceUriIterator::getNameAsString() const {
+  return "fn:namespace-uri";
+}
 // </FnNamespaceUriIterator>
 
 
@@ -113,6 +122,10 @@ void FnLangIterator::accept(PlanIterVisitor& v) const
 
 FnLangIterator::~FnLangIterator() {}
 
+
+zstring FnLangIterator::getNameAsString() const {
+  return "fn:lang";
+}
 // </FnLangIterator>
 
 
@@ -141,6 +154,10 @@ void FnHasChildrenIterator::accept(PlanIterVisitor& v) const
 
 FnHasChildrenIterator::~FnHasChildrenIterator() {}
 
+
+zstring FnHasChildrenIterator::getNameAsString() const {
+  return "fn:has-children";
+}
 // </FnHasChildrenIterator>
 
 
@@ -180,6 +197,10 @@ void FnInnermostIteratorState::init(PlanState& planState) {
 
 void FnInnermostIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
+}
+
+zstring FnInnermostIterator::getNameAsString() const {
+  return "fn:innermost";
 }
 // </FnInnermostIterator>
 
@@ -221,6 +242,10 @@ void FnOutermostIteratorState::init(PlanState& planState) {
 void FnOutermostIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring FnOutermostIterator::getNameAsString() const {
+  return "fn:outermost";
+}
 // </FnOutermostIterator>
 
 
@@ -249,6 +274,10 @@ void FnGenerateIdIterator::accept(PlanIterVisitor& v) const
 
 FnGenerateIdIterator::~FnGenerateIdIterator() {}
 
+
+zstring FnGenerateIdIterator::getNameAsString() const {
+  return "fn:generate-id";
+}
 // </FnGenerateIdIterator>
 
 
@@ -277,6 +306,10 @@ void IsAncestorIterator::accept(PlanIterVisitor& v) const
 
 IsAncestorIterator::~IsAncestorIterator() {}
 
+
+zstring IsAncestorIterator::getNameAsString() const {
+  return "fn-zorba-node:ancestor-of";
+}
 // </IsAncestorIterator>
 
 
@@ -305,6 +338,10 @@ void IsDescendantIterator::accept(PlanIterVisitor& v) const
 
 IsDescendantIterator::~IsDescendantIterator() {}
 
+
+zstring IsDescendantIterator::getNameAsString() const {
+  return "fn-zorba-node:descendant-of";
+}
 // </IsDescendantIterator>
 
 
@@ -333,6 +370,10 @@ void IsParentIterator::accept(PlanIterVisitor& v) const
 
 IsParentIterator::~IsParentIterator() {}
 
+
+zstring IsParentIterator::getNameAsString() const {
+  return "fn-zorba-node:parent-of";
+}
 // </IsParentIterator>
 
 
@@ -361,6 +402,10 @@ void IsChildIterator::accept(PlanIterVisitor& v) const
 
 IsChildIterator::~IsChildIterator() {}
 
+
+zstring IsChildIterator::getNameAsString() const {
+  return "fn-zorba-node:child-of";
+}
 // </IsChildIterator>
 
 
@@ -389,6 +434,10 @@ void IsFollowingIterator::accept(PlanIterVisitor& v) const
 
 IsFollowingIterator::~IsFollowingIterator() {}
 
+
+zstring IsFollowingIterator::getNameAsString() const {
+  return "fn-zorba-node:following-of";
+}
 // </IsFollowingIterator>
 
 
@@ -417,6 +466,10 @@ void IsPrecedingIterator::accept(PlanIterVisitor& v) const
 
 IsPrecedingIterator::~IsPrecedingIterator() {}
 
+
+zstring IsPrecedingIterator::getNameAsString() const {
+  return "fn-zorba-node:preceding-of";
+}
 // </IsPrecedingIterator>
 
 
@@ -445,6 +498,10 @@ void IsFollowingSiblingIterator::accept(PlanIterVisitor& v) const
 
 IsFollowingSiblingIterator::~IsFollowingSiblingIterator() {}
 
+
+zstring IsFollowingSiblingIterator::getNameAsString() const {
+  return "fn-zorba-node:following-sibling-of";
+}
 // </IsFollowingSiblingIterator>
 
 
@@ -473,6 +530,10 @@ void IsPrecedingSiblingIterator::accept(PlanIterVisitor& v) const
 
 IsPrecedingSiblingIterator::~IsPrecedingSiblingIterator() {}
 
+
+zstring IsPrecedingSiblingIterator::getNameAsString() const {
+  return "fn-zorba-node:preceding-sibling-of";
+}
 // </IsPrecedingSiblingIterator>
 
 
@@ -501,6 +562,10 @@ void LevelIterator::accept(PlanIterVisitor& v) const
 
 LevelIterator::~LevelIterator() {}
 
+
+zstring LevelIterator::getNameAsString() const {
+  return "fn-zorba-node:level";
+}
 // </LevelIterator>
 
 
@@ -529,6 +594,10 @@ void LeastCommonAncestor::accept(PlanIterVisitor& v) const
 
 LeastCommonAncestor::~LeastCommonAncestor() {}
 
+
+zstring LeastCommonAncestor::getNameAsString() const {
+  return "fn-zorba-node:least-common-ancestor";
+}
 // </LeastCommonAncestor>
 
 
@@ -557,6 +626,10 @@ void FnPathIterator::accept(PlanIterVisitor& v) const
 
 FnPathIterator::~FnPathIterator() {}
 
+
+zstring FnPathIterator::getNameAsString() const {
+  return "fn:path";
+}
 // </FnPathIterator>
 
 
@@ -585,6 +658,10 @@ void NodeCopyIterator::accept(PlanIterVisitor& v) const
 
 NodeCopyIterator::~NodeCopyIterator() {}
 
+
+zstring NodeCopyIterator::getNameAsString() const {
+  return "fn-zorba-node:copy";
+}
 // </NodeCopyIterator>
 
 

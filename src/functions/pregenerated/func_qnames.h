@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_QNAMES_H
 #define ZORBA_FUNCTIONS_QNAMES_H
 

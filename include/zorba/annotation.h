@@ -25,6 +25,8 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC Annotation : public SmartObject
 {
  public:
+  typedef unsigned size_type;
+
   /** \brief Destructor
    */
   virtual ~Annotation() {}
@@ -43,7 +45,7 @@ class ZORBA_DLL_PUBLIC Annotation : public SmartObject
    *
    *  the function will return N.
    */
-  virtual unsigned int
+  virtual size_type
   getLiteralsCount() const = 0;
   
   /**
@@ -54,7 +56,10 @@ class ZORBA_DLL_PUBLIC Annotation : public SmartObject
    *  the function will return the i-th literal.
    */
   virtual Item
-  getLiteral(unsigned int i) const = 0;
+  getLiteral(size_type i) const = 0;
+
+protected:
+  Annotation() { }
 };
 
 } /* namespace zorba */

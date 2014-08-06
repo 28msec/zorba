@@ -47,7 +47,6 @@ archive_field::archive_field(
     TypeCode type,
     const void* ptr,
     ArchiveFieldKind kind,
-    int only_for_eval,
     ENUM_ALLOW_DELAY allow_delay,
     unsigned int level)
   :
@@ -64,7 +63,6 @@ archive_field::archive_field(
   theFirstChild(NULL),
   theLastChild(NULL),
   theParent(NULL),
-  theOnlyForEval(only_for_eval),
   theAllowDelay2(allow_delay)
 {
   assert(theKind == ARCHIVE_FIELD_NORMAL || 
@@ -163,7 +161,6 @@ archive_field::archive_field(
     const void* ptr,
     ArchiveFieldKind kind,
     archive_field* refered,
-    int only_for_eval,
     ENUM_ALLOW_DELAY allow_delay,
     unsigned int level)
   :
@@ -180,7 +177,6 @@ archive_field::archive_field(
   theFirstChild(NULL),
   theLastChild(NULL),
   theParent(NULL),
-  theOnlyForEval(only_for_eval),
   theAllowDelay2(allow_delay)
 {
   assert(type != TYPE_ENUM);
@@ -228,7 +224,6 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
   theCurrentLevel(0),
   theNonClassFieldsMap(0),
   theClassFieldsMap(0),
-  theOnlyForEval(0),
   all_reference_list(0),
   internal_archive(internal_archive),
   theSerializeEverything(false),
@@ -246,7 +241,6 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
                                      NULL,  // ptr
                                      ARCHIVE_FIELD_NORMAL,
                                      NULL,  // referred
-                                     false, // only for eval
                                      ALLOW_DELAY,
                                      0);    // level
 
@@ -344,7 +338,6 @@ void Archiver::add_simple_temp_field(TypeCode type, const void* ptr)
   new_field = new archive_field(type,
                                 ptr,
                                 ARCHIVE_FIELD_NORMAL,
-                                get_serialize_only_for_eval(),
                                 theAllowDelay2,
                                 theCurrentLevel);
 
@@ -400,7 +393,6 @@ bool Archiver::add_simple_ptr_field(TypeCode type, const void* ptr)
                                   NULL,       // ptr
                                   ARCHIVE_FIELD_REFERENCING,
                                   ref_field,
-                                  get_serialize_only_for_eval(),
                                   theAllowDelay2,
                                   theCurrentLevel);
   }
@@ -409,7 +401,6 @@ bool Archiver::add_simple_ptr_field(TypeCode type, const void* ptr)
     new_field = new archive_field(type,
                                   ptr,
                                   ARCHIVE_FIELD_PTR,
-                                  get_serialize_only_for_eval(),
                                   theAllowDelay2,
                                   theCurrentLevel);
   }
@@ -421,7 +412,6 @@ bool Archiver::add_simple_ptr_field(TypeCode type, const void* ptr)
                                   NULL,       // ptr
                                   ARCHIVE_FIELD_NULL,
                                   NULL,
-                                  get_serialize_only_for_eval(),
                                   theAllowDelay2,
                                   theCurrentLevel);
   }
@@ -511,7 +501,6 @@ bool Archiver::add_compound_field(
                                 ptr,
                                 field_kind,
                                 ref_field,
-                                get_serialize_only_for_eval(), 
                                 theAllowDelay2,
                                 theCurrentLevel);
 
@@ -656,291 +645,13 @@ void Archiver::replace_field(archive_field* new_field, archive_field* ref_field)
 
 
 /*******************************************************************************
-  Return the left sibling of a given field (NULL if there is no left sibling).
-********************************************************************************/
-archive_field* Archiver::get_prev(archive_field* field)
-{
-  archive_field* temp;
-  temp = field->theParent->theFirstChild;
-
-  if (temp == field)
-    return NULL;
-
-  while (temp)
-  {
-    if (temp->theNextSibling == field)
-      return temp;
-
-    temp = temp->theNextSibling;
-  }
-
-  assert(false);
-  return NULL;
-}
-
-
-/*******************************************************************************
 
 ********************************************************************************/
 void Archiver::prepare_serialize_out()
 {
-  if (!is_serialize_everything())
-  {
-    check_compound_fields(theRootField);
-  }
-
   while(check_allowed_delays(theRootField))
   {
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void Archiver::check_compound_fields(archive_field* parent_field)
-{
-  //resolve all references first
-  //iterate: find the reference to the top most eval_only field and resolve it
-  archive_field* refering_field;
-
-  while (1)
-  {
-    refering_field = find_top_most_eval_only_field(parent_field);
-
-    if(!refering_field)
-      break;
-
-    if((refering_field->theReferredField->theAllowDelay2 != ALLOW_DELAY) ||
-      (refering_field->theReferredField->theKind == ARCHIVE_FIELD_NORMAL) ||
-      !refering_field->theReferredField->theOnlyForEval)
-    {
-      //must preserve this serialization
-      archive_field* temp_field = refering_field->theReferredField->theParent;
-      while(temp_field)
-      {
-        temp_field->theOnlyForEval = 0;
-        temp_field = temp_field->theParent;
-      }
-    }
-    else
-    {
-      exchange_mature_fields(refering_field, refering_field->theReferredField);
-      refering_field->theOnlyForEval = refering_field->theReferredField->theOnlyForEval;
-    }
-
-    clean_only_for_eval(refering_field->theReferredField,
-                        get_only_for_eval(refering_field->theReferredField));
-  }
-
-  while (check_only_for_eval_nondelay_referencing(parent_field))
-  {
-  }
-
-  replace_only_for_eval_with_null(parent_field);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-archive_field* Archiver::find_top_most_eval_only_field(archive_field* parent_field)
-{
-  int ref_depth = -1;
-  archive_field* refering_field = NULL;
-
-  archive_field* child = parent_field->theFirstChild;
-  
-  while (child)
-  {
-    if (child->theOnlyForEval)
-    {
-    }
-    else if (child->theKind == ARCHIVE_FIELD_REFERENCING &&
-             get_only_for_eval(child->theReferredField))
-    {
-      int new_depth = compute_field_depth(child->theReferredField);
-      if(!refering_field || (ref_depth > new_depth))
-      {
-        ref_depth = new_depth;
-        refering_field = child;
-      }
-    }
-    else if (!child->theIsSimple && !child->theReferredField)
-    {
-      archive_field* new_refering = find_top_most_eval_only_field(child);
-
-      if (new_refering)
-      {
-        int new_depth = compute_field_depth(new_refering->theReferredField);
-        if (!refering_field || (ref_depth > new_depth))
-        {
-          ref_depth = new_depth;
-          refering_field = new_refering;
-        }
-      }
-    }
-
-    child = child->theNextSibling;
-  }
-
-  return refering_field;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-int Archiver::compute_field_depth(archive_field* field)
-{
-  archive_field* temp;
-  int i = 0;
-  temp = field->theParent;
-  while(temp)
-  {
-    temp = temp->theParent;
-    i++;
-  }
-  return i;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-int Archiver::get_only_for_eval(archive_field* field)
-{
-  if (field->theOnlyForEval)
-    return field->theOnlyForEval;
-
-  archive_field* child;
-  for (child = field->theFirstChild; child; child = child->theNextSibling)
-  {
-    if (child->theOnlyForEval)
-      return child->theOnlyForEval;
-  }
-
-  return 0;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void Archiver::clean_only_for_eval(archive_field* field, int substract_value)
-{
-  if (field->theOnlyForEval >= substract_value)
-    field->theOnlyForEval -= substract_value;
-  else
-    field->theOnlyForEval = 0;
-
-  if (!field->theIsSimple)
-  {
-    archive_field* child = field->theFirstChild;
-    while (child)
-    {
-      clean_only_for_eval(child, substract_value);
-      child = child->theNextSibling;
-    }
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool Archiver::check_only_for_eval_nondelay_referencing(archive_field* parent_field)
-{
-  archive_field* current_field = parent_field->theFirstChild;
-
-  while (current_field)
-  {
-    if (current_field->theOnlyForEval && current_field->theKind != ARCHIVE_FIELD_NORMAL)
-    {
-      if (current_field->theKind == ARCHIVE_FIELD_REFERENCING &&
-          current_field->theAllowDelay2 != ALLOW_DELAY &&
-          !current_field->theReferredField->theOnlyForEval)
-      {
-        //must preserve this serialization
-        archive_field* temp_field = current_field->theParent;
-        while (temp_field)
-        {
-          temp_field->theOnlyForEval = 0;
-          temp_field = temp_field->theParent;
-        }
-        clean_only_for_eval(current_field, current_field->theOnlyForEval);
-        return true;
-      }
-    }
-
-    if (!current_field->theIsSimple)
-    {
-      if (check_only_for_eval_nondelay_referencing(current_field))
-        return true;
-    }
-
-    current_field = current_field->theNextSibling;
-  }
-  return false;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void Archiver::replace_only_for_eval_with_null(archive_field* parent_field)
-{
-  archive_field* current_field = parent_field->theFirstChild;
-
-  while (current_field)
-  {
-    if (current_field->theOnlyForEval &&
-        (current_field->theKind != ARCHIVE_FIELD_NORMAL) &&
-        (current_field->theKind != ARCHIVE_FIELD_BASECLASS))
-    {
-      //don't save it, replace it with NULL if possible
-      archive_field* null_field = replace_with_null(current_field);
-
-      orphan_fields.push_back(current_field);
-      current_field = null_field;
-    }
-
-    if (!current_field->theIsSimple)
-    {
-      replace_only_for_eval_with_null(current_field);
-    }
-
-    current_field = current_field->theNextSibling;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-archive_field* Archiver::replace_with_null(archive_field* current_field)
-{
-  if (current_field->theParent)
-  {
-    archive_field* null_field = new archive_field(TYPE_NULL,
-                                                  current_field->theIsSimple,
-                                                  current_field->theIsClass,
-                                                  NULL,
-                                                  ARCHIVE_FIELD_NULL,
-                                                  NULL,
-                                                  false,
-                                                  ALLOW_DELAY,
-                                                  current_field->theLevel);
-    null_field->theId = 0;
-    replace_field(null_field, current_field);
-    current_field->theParent = NULL;
-    current_field->theNextSibling = NULL;
-
-    return null_field;
-  }
-
-  //otherwise it is orphan
-  return NULL;
 }
 
 
@@ -962,9 +673,9 @@ bool Archiver::check_allowed_delays(archive_field* parent_field)
     }
 
     if (child->theKind == ARCHIVE_FIELD_REFERENCING &&
-       ((child->theAllowDelay2 == DONT_ALLOW_DELAY &&
-         check_order(child, child->theReferredField) < 1) ||
-        child->theAllowDelay2 == SERIALIZE_NOW))
+        ((child->theAllowDelay2 == DONT_ALLOW_DELAY &&
+          check_order(child, child->theReferredField) < 1) ||
+         child->theAllowDelay2 == SERIALIZE_NOW))
     {
       if (child->theReferredField->theKind == ARCHIVE_FIELD_NORMAL ||
           child->theReferredField->theAllowDelay2 == SERIALIZE_NOW)
@@ -1055,6 +766,30 @@ void Archiver::exchange_mature_fields(archive_field* field1, archive_field* fiel
   temp_order = field1->theOrder;
   field1->theOrder = field2->theOrder;
   field2->theOrder = temp_order;
+}
+
+
+/*******************************************************************************
+  Return the left sibling of a given field (NULL if there is no left sibling).
+********************************************************************************/
+archive_field* Archiver::get_prev(archive_field* field)
+{
+  archive_field* temp;
+  temp = field->theParent->theFirstChild;
+
+  if (temp == field)
+    return NULL;
+
+  while (temp)
+  {
+    if (temp->theNextSibling == field)
+      return temp;
+
+    temp = temp->theNextSibling;
+  }
+
+  assert(false);
+  return NULL;
 }
 
 

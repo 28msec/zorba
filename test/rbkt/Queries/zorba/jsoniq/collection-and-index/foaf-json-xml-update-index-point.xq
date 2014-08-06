@@ -1,7 +1,7 @@
 import module namespace foaf = "http://www.w3.org/TestModules/foaf" at
                                    "foaf_module-with-index-and-xml.xqlib";
 
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 

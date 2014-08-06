@@ -1,12 +1,11 @@
-
 import module namespace dml = 
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  "http://zorba.io/modules/store/static/collections/dml";
 
 import module namespace ddl = 
-"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+  "http://zorba.io/modules/store/static/collections/ddl";
 
 import module namespace iddl = 
-"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+  "http://zorba.io/modules/store/static/indexes/ddl";
 
 import module namespace ca = 
 'http://www.28msec.com/benchmark/lib/custacc' at 'match_veq_11.xqlib';

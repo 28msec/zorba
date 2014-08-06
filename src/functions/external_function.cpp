@@ -22,9 +22,10 @@
 
 #include "diagnostics/util_macros.h"
 
+#include "types/typeops.h"
+
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
-
 
 namespace zorba 
 {
@@ -41,10 +42,10 @@ external_function::external_function(
     const zstring& ns,
     const signature& sig,
     unsigned short scriptingType,
-    ExternalFunction* impl) 
+    ExternalFunction* impl,
+    XQueryDiagnostics* diag)
   :
-  function(sig, FunctionConsts::FN_UNKNOWN, false),
-  theLoc(loc),
+  cacheable_function(sig, FunctionConsts::FN_UNKNOWN, false, loc, modSctx->get_typemanager()),
   theNamespace(ns),
   theScriptingKind(scriptingType),
   theImpl(impl)
@@ -60,7 +61,6 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
 {
   zorba::serialization::serialize_baseclass(ar, (function*)this);
 
-  ar & theLoc;
   ar & theNamespace;
   ar & theScriptingKind;
 
@@ -68,6 +68,7 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
   zstring lLocalName;
   if (ar.is_serializing_out()) 
   {
+    computeCacheSettings(NULL);
     ZORBA_ASSERT(theImpl);
     lLocalName = Unmarshaller::getInternalString(theImpl->getLocalName());
   }
@@ -77,7 +78,7 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
 
   // if loaded, theImpl needs to be set immediately
   // this is covered by test/unit/external_function.cpp
-  if(!ar.is_serializing_out()) 
+  if (!ar.is_serializing_out()) 
   {
     try
     {
@@ -92,8 +93,33 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
     if (theImpl == NULL)
     {
       RAISE_ERROR(zerr::ZXQP0008_FUNCTION_IMPL_NOT_FOUND, theLoc,
-      ERROR_PARAMS(BUILD_STRING( '{', theNamespace, '}', lLocalName)));
+        ERROR_PARAMS(BUILD_STRING( '{', theNamespace, '}', lLocalName)));
     }
+  }
+
+  ar & theLoc;
+  ar & theHasCache;
+  ar & theCacheAcrossSnapshots;
+  if (ar.is_serializing_out())
+  {
+    saveFlags(theExcludeFromCacheKey, ar);
+    saveFlags(theCompareWithDeepEqual, ar);
+  }
+  else
+  {
+    loadFlags(theExcludeFromCacheKey, ar);
+    loadFlags(theCompareWithDeepEqual, ar);
+  }
+  ar & theAreCacheSettingsComputed;
+  ar & theIsCacheAutomatic;
+
+  if (!ar.is_serializing_out())
+  {
+    theCache.reset(new FunctionCache(
+      theModuleSctx,
+      theExcludeFromCacheKey,
+      theCompareWithDeepEqual,
+      theCacheAcrossSnapshots));
   }
 }
 
@@ -174,7 +200,6 @@ bool external_function::mustCopyInputNodes(
   return true;
 }
 
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -188,12 +213,13 @@ PlanIter_t external_function::codegen(
   return new ExtFunctionCallIterator(sctx,
                                      loc,
                                      argv,
+                                     this,
                                      theImpl,
                                      isUpdating(),
+                                     isSequential(),
                                      theNamespace,
                                      theModuleSctx);
 }
-
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

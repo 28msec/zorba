@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_STORE_MAPS_H
 #define ZORBA_RUNTIME_STORE_MAPS_H
 
@@ -60,6 +61,8 @@ public:
 
   virtual ~MapCreateIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -90,6 +93,8 @@ public:
   {}
 
   virtual ~MapDropIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -136,6 +141,8 @@ public:
 
   virtual ~MapGetIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -167,6 +174,8 @@ public:
 
   virtual ~MapInsertIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -197,6 +206,8 @@ public:
   {}
 
   virtual ~MapDeleteIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -242,6 +253,8 @@ public:
 
   virtual ~MapKeysIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -272,6 +285,8 @@ public:
   {}
 
   virtual ~MapSizeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -319,6 +334,8 @@ public:
 
   virtual ~AvailableMapsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -349,6 +366,8 @@ public:
   {}
 
   virtual ~MapOptionsIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

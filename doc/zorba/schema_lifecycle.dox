@@ -89,7 +89,7 @@ $ zorba --trailing-nl -i -f -q example.xq
 
 \section schema-type Schema type name
 
-Using the <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_schema.html">schema module</a>
+Using the <a href="/modules/latest/www.zorba-xquery.com/modules/schema">schema module</a>
 it is possible to find out the QName of a certain schema type.
 
 
@@ -98,7 +98,7 @@ it is possible to find out the QName of a certain schema type.
 import schema namespace r = "http://example" at "example.xsd";
 
 import module namespace file = "http://expath.org/ns/file";
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 
 let $untypeDoc := fn:parse-xml(file:read-text("example.xml"))

@@ -64,6 +64,8 @@ public:
   ~InstanceOfIterator();
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
   
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -114,6 +116,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
   
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -151,6 +155,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
@@ -192,6 +198,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
 protected:
@@ -213,6 +221,7 @@ class TreatIterator : public UnaryBaseIterator<TreatIterator,
                                                PlanIteratorState> 
 {
   friend class PrinterVisitor;
+  typedef UnaryBaseIterator<TreatIterator,PlanIteratorState> base_type;
 
 private:
   xqtref_t                  theTreatType;
@@ -240,7 +249,12 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  bool count(store::Item_t& result, PlanState& planState) const;
+  bool skip(int64_t count, PlanState &planState) const;
 
 protected:
   void raiseError(const zstring& valueType) const;

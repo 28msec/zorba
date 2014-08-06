@@ -131,8 +131,6 @@ class ModuleInfo;
 
   - theIsDebugMode :
 
-  - theProfileName :
-
   - theStaticCollectionMgr : 
   StaticCollectionManager object for all statically declared collections in this 
   query or any transitively imported module. It's created lazily upon request 
@@ -208,7 +206,6 @@ private:
 #ifdef ZORBA_WITH_DEBUGGER
   bool                               theIsDebugMode;
 #endif
-  std::string                        theProfileName;
 
   mutable StaticCollectionManagerSetImpl* theCollMgr;
 
@@ -237,10 +234,6 @@ public:
 
   bool isDebugMode() const;
 #endif
-
-  void setProfileName(std::string aProfileName);
-
-  std::string getProfileName() const;
 
   void registerDiagnosticHandler(DiagnosticHandler*);
 
@@ -290,6 +283,8 @@ public:
   bool loadExecutionPlan(std::istream& is, SerializationCallback* aCallback = 0);
 
   void printPlan(std::ostream& aStream, bool aDotFormat = false) const;
+
+  void printPlan(std::ostream& aStream, Zorba_plan_format_t format) const;
 
   DynamicContext* getDynamicContext() const;
 
@@ -374,6 +369,8 @@ protected:
         itemHandler aHandler,
         void* aHandlerData,
         const Zorba_SerializerOptions_t* = NULL);
+
+  void dispose( PlanWrapper_t const& );
 
   void removeResultIterator(const ResultIteratorImpl* iter);
 

@@ -75,14 +75,15 @@ protected:
 
   zstring              theFileName;
   zstring              theBaseURI;
-  zstring              theVersion;
+  zstring              theXQDOCVersion;
   store::NsBindings    theNSBindings;
 
   store::ItemFactory * theFactory;
 
   string               theQuery;
   zstring              theEncoding;
-  zstring              theXQueryVersion;
+  zstring              theVersion;
+  bool                 theLanguageKind;
 
   uint32_t             theOptions;
 
@@ -513,8 +514,9 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult,
   theXQDocPrefix("xqdoc"),
   theFileName(getFileName(aFileName)),
   theBaseURI("http://www.xqdoc.org/1.0"),
-  theVersion("1.0"),
+  theXQDOCVersion("1.0"),
   theFactory(GENV_ITEMFACTORY),
+  theLanguageKind(false), // set the default language to XQuery
   theOptions(aOptions),
   theIsIndexDecl(false),
   theWaitForIndexSourceLiteral(false)
@@ -622,7 +624,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
 
   theFactory->createTextNode(lDateText, lDateElem.getp(), lDate);
 
-  theFactory->createTextNode(lVersionText, lVersionElem, theVersion);
+  theFactory->createTextNode(lVersionText, lVersionElem, theXQDOCVersion);
 
   p->accept(*this);
 
@@ -692,8 +694,9 @@ void end_visit(const MainModule& n, void* /*visit_state*/)
 XQDOC_NO_BEGIN_TAG (VersionDecl)
 void end_visit(const VersionDecl& n, void* /*visit_state*/)
 {
-  theXQueryVersion = n.get_version();
+  theVersion = n.get_version();
   theEncoding = n.get_encoding();
+  theLanguageKind = n.get_language_kind();
 }
 
 void *begin_visit(const ModuleDecl& n) {
@@ -736,7 +739,8 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
   store::Item_t lCommentElem = print_comment(theModule, n.getComment());
 
   print_custom(lCommentElem, "project", n.getComment()->getProject());
-  print_custom(lCommentElem, "XQuery version", theXQueryVersion);
+  print_custom(lCommentElem, "language", (theLanguageKind)?"jsoniq":"xquery");
+  print_custom(lCommentElem, "version", theVersion);
   print_custom(lCommentElem, "encoding", theEncoding);
 }
 
@@ -977,8 +981,8 @@ bool is_collection_call(
   if (lLocalName != "collection")
     return false;
 
-  if (lNS != "http://www.zorba-xquery.com/modules/store/static/collections/dml"
-   && lNS != "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml"
+  if (lNS != "http://zorba.io/modules/store/static/collections/dml"
+   && lNS != "http://zorba.io/modules/store/dynamic/collections/dml"
    && lNS != "http://www.w3.org/2005/xpath-functions"
   )
     return false;

@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/indexing/index_func.h"
 #include "functions/func_index_func.h"
@@ -47,7 +48,7 @@ void populate_context_index_func(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_indexes_static_dml_keys,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/dml","","keys"), 
+        (createQName("http://zorba.io/modules/store/static/indexes/dml","","keys"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
         FunctionConsts::ZORBA_STORE_INDEXES_STATIC_DML_KEYS_1);

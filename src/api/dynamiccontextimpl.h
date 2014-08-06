@@ -66,6 +66,8 @@ protected:
 
   static_context            * theStaticContext;
 
+  long                        theSnapshotID;
+
 protected:
   static void checkItem(const store::Item_t& aItem);
 
@@ -78,7 +80,10 @@ protected:
       dynamic_context* aDctx,
       static_context* aSctx)
     :
-    theQuery(aQuery), theCtx(aDctx), theStaticContext(aSctx)
+    theQuery(aQuery),
+    theCtx(aDctx),
+    theStaticContext(aSctx),
+    theSnapshotID(0)
   {
   }
 
@@ -96,24 +101,43 @@ public:
   virtual bool
   setVariable(
       const String& inVarName,
-      const Item& inValue);
+      const Item& inValue,
+      bool cast = false);
 
   virtual bool
   setVariable(
       const String& inNamespace,
       const String& inLocalname,
-      const Item& inValue);
+      const Item& inValue,
+      bool cast = false);
 
   virtual bool
   setVariable(
       const String& inVarName,
-      const Iterator_t& inValue);
+      const Iterator_t& inValue,
+      bool cast = false,
+      bool distinct = false);
 
   virtual bool
   setVariable(
       const String& inNamespace,
       const String& inLocalname,
-      const Iterator_t& inValue);
+      const Iterator_t& inValue,
+      bool cast = false,
+      bool distinct = false);
+
+  virtual bool
+  setVariable(
+      const Item& inQName,
+      const Item& inValue,
+      bool cast = false);
+
+  virtual bool
+  setVariable(
+      const Item& inQName,
+      const Iterator_t& inValue,
+      bool cast = false,
+      bool distinct = false);
 
   virtual bool
   setContextItem(const Item& inValue);

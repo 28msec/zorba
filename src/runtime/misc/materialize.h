@@ -74,6 +74,8 @@ public:
 
   void openImpl(PlanState& planState, uint32_t& offset);
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 

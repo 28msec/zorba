@@ -17,6 +17,8 @@
 #ifndef ZORBA_RUNTIME_UNARY_ITERATOR
 #define ZORBA_RUNTIME_UNARY_ITERATOR
 
+#include <cassert>
+
 #include "common/shared_types.h"
 
 #include "runtime/base/plan_iterator.h"
@@ -128,12 +130,12 @@ UnaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 }
 
 
-#define UNARY_ACCEPT(IterType)                      \
-void IterType::accept(PlanIterVisitor& v) const     \
-{                                                   \
-  v.beginVisit(*this);                              \
-  theChild->accept(v);                              \
-  v.endVisit(*this);                                \
+#define UNARY_ACCEPT(IterType)                  \
+void IterType::accept(PlanIterVisitor& v) const \
+{                                               \
+  v.beginVisit(*this);                          \
+  theChild->accept(v);                          \
+  v.endVisit(*this);                            \
 }
 
 
@@ -162,7 +164,7 @@ public:                                                                 \
   { }                                                                   \
                                                                         \
   void accept(PlanIterVisitor& v) const;                                \
-                                                                        \
+  zstring getNameAsString() const;                                      \
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
 };
 

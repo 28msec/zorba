@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -62,6 +63,10 @@ FnConcatIteratorState::FnConcatIteratorState() {}
 
 FnConcatIteratorState::~FnConcatIteratorState() {}
 
+
+zstring FnConcatIterator::getNameAsString() const {
+  return "op:concatenate";
+}
 // </FnConcatIterator>
 
 
@@ -110,6 +115,10 @@ void FnIndexOfIteratorState::reset(PlanState& planState) {
   theSearchItem = NULL;
   theCollator = 0;
 }
+
+zstring FnIndexOfIterator::getNameAsString() const {
+  return "fn:index-of";
+}
 // </FnIndexOfIterator>
 
 
@@ -138,6 +147,10 @@ void FnEmptyIterator::accept(PlanIterVisitor& v) const
 
 FnEmptyIterator::~FnEmptyIterator() {}
 
+
+zstring FnEmptyIterator::getNameAsString() const {
+  return "fn:empty";
+}
 // </FnEmptyIterator>
 
 
@@ -166,6 +179,10 @@ void FnExistsIterator::accept(PlanIterVisitor& v) const
 
 FnExistsIterator::~FnExistsIterator() {}
 
+
+zstring FnExistsIterator::getNameAsString() const {
+  return "fn:exists";
+}
 // </FnExistsIterator>
 
 
@@ -202,6 +219,10 @@ FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState() {}
 void FnDistinctValuesIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
   theHasNaN = false;
+}
+
+zstring FnDistinctValuesIterator::getNameAsString() const {
+  return "fn:distinct-values";
 }
 // </FnDistinctValuesIterator>
 
@@ -249,6 +270,10 @@ void FnInsertBeforeIteratorState::reset(PlanState& planState) {
   thePosition = numeric_consts<xs_integer>::zero();
   theTargetItem = NULL;
 }
+
+zstring FnInsertBeforeIterator::getNameAsString() const {
+  return "fn:insert-before";
+}
 // </FnInsertBeforeIterator>
 
 
@@ -295,6 +320,10 @@ void FnRemoveIteratorState::reset(PlanState& planState) {
   thePosition = numeric_consts<xs_integer>::zero();
   theCollator = 0;
 }
+
+zstring FnRemoveIterator::getNameAsString() const {
+  return "fn:remove";
+}
 // </FnRemoveIterator>
 
 
@@ -327,6 +356,10 @@ FnReverseIteratorState::FnReverseIteratorState() {}
 
 FnReverseIteratorState::~FnReverseIteratorState() {}
 
+
+zstring FnReverseIterator::getNameAsString() const {
+  return "fn:reverse";
+}
 // </FnReverseIterator>
 
 
@@ -370,6 +403,10 @@ void FnSubsequenceIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theRemaining = 0;
   theIsChildReset = false;
+}
+
+zstring FnSubsequenceIterator::getNameAsString() const {
+  return "fn:subsequence";
 }
 // </FnSubsequenceIterator>
 
@@ -415,6 +452,10 @@ void SubsequenceIntIteratorState::reset(PlanState& planState) {
   theRemaining = 0;
   theIsChildReset = false;
 }
+
+zstring SubsequenceIntIterator::getNameAsString() const {
+  return "op-zorba:subsequence-int";
+}
 // </SubsequenceIntIterator>
 
 
@@ -457,6 +498,10 @@ void SequencePointAccessIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theIsChildReset = false;
 }
+
+zstring SequencePointAccessIterator::getNameAsString() const {
+  return "op-zorba:sequence-point-access";
+}
 // </SequencePointAccessIterator>
 
 
@@ -487,6 +532,10 @@ void FnZeroOrOneIterator::accept(PlanIterVisitor& v) const
 
 FnZeroOrOneIterator::~FnZeroOrOneIterator() {}
 
+
+zstring FnZeroOrOneIterator::getNameAsString() const {
+  return "fn:zero-or-one";
+}
 // </FnZeroOrOneIterator>
 
 
@@ -515,6 +564,10 @@ void FnOneOrMoreIterator::accept(PlanIterVisitor& v) const
 
 FnOneOrMoreIterator::~FnOneOrMoreIterator() {}
 
+
+zstring FnOneOrMoreIterator::getNameAsString() const {
+  return "fn:one-or-more";
+}
 // </FnOneOrMoreIterator>
 
 
@@ -546,6 +599,10 @@ void FnExactlyOneIterator::accept(PlanIterVisitor& v) const
 
 FnExactlyOneIterator::~FnExactlyOneIterator() {}
 
+
+zstring FnExactlyOneIterator::getNameAsString() const {
+  return "FnExactlyOneIterator";
+}
 // </FnExactlyOneIterator>
 
 
@@ -574,6 +631,10 @@ void FnDeepEqualIterator::accept(PlanIterVisitor& v) const
 
 FnDeepEqualIterator::~FnDeepEqualIterator() {}
 
+
+zstring FnDeepEqualIterator::getNameAsString() const {
+  return "fn:deep-equal";
+}
 // </FnDeepEqualIterator>
 
 
@@ -604,6 +665,10 @@ void HashSemiJoinIterator::accept(PlanIterVisitor& v) const
 
 HashSemiJoinIterator::~HashSemiJoinIterator() {}
 
+
+zstring HashSemiJoinIterator::getNameAsString() const {
+  return "HashSemiJoinIterator";
+}
 // </HashSemiJoinIterator>
 
 
@@ -632,6 +697,10 @@ void SortSemiJoinIterator::accept(PlanIterVisitor& v) const
 
 SortSemiJoinIterator::~SortSemiJoinIterator() {}
 
+
+zstring SortSemiJoinIterator::getNameAsString() const {
+  return "SortSemiJoinIterator";
+}
 // </SortSemiJoinIterator>
 
 
@@ -660,6 +729,10 @@ void FnCountIterator::accept(PlanIterVisitor& v) const
 
 FnCountIterator::~FnCountIterator() {}
 
+
+zstring FnCountIterator::getNameAsString() const {
+  return "fn:count";
+}
 // </FnCountIterator>
 
 
@@ -688,6 +761,10 @@ void FnAvgIterator::accept(PlanIterVisitor& v) const
 
 FnAvgIterator::~FnAvgIterator() {}
 
+
+zstring FnAvgIterator::getNameAsString() const {
+  return "fn:avg";
+}
 // </FnAvgIterator>
 
 
@@ -716,6 +793,10 @@ void FnSumIterator::accept(PlanIterVisitor& v) const
 
 FnSumIterator::~FnSumIterator() {}
 
+
+zstring FnSumIterator::getNameAsString() const {
+  return "fn:sum";
+}
 // </FnSumIterator>
 
 
@@ -744,6 +825,10 @@ void FnSumDoubleIterator::accept(PlanIterVisitor& v) const
 
 FnSumDoubleIterator::~FnSumDoubleIterator() {}
 
+
+zstring FnSumDoubleIterator::getNameAsString() const {
+  return "op:sum_double";
+}
 // </FnSumDoubleIterator>
 
 
@@ -772,6 +857,10 @@ void FnSumFloatIterator::accept(PlanIterVisitor& v) const
 
 FnSumFloatIterator::~FnSumFloatIterator() {}
 
+
+zstring FnSumFloatIterator::getNameAsString() const {
+  return "op:sum_float";
+}
 // </FnSumFloatIterator>
 
 
@@ -800,6 +889,10 @@ void FnSumDecimalIterator::accept(PlanIterVisitor& v) const
 
 FnSumDecimalIterator::~FnSumDecimalIterator() {}
 
+
+zstring FnSumDecimalIterator::getNameAsString() const {
+  return "op:sum_decimal";
+}
 // </FnSumDecimalIterator>
 
 
@@ -828,6 +921,10 @@ void FnSumIntegerIterator::accept(PlanIterVisitor& v) const
 
 FnSumIntegerIterator::~FnSumIntegerIterator() {}
 
+
+zstring FnSumIntegerIterator::getNameAsString() const {
+  return "op:sum_integer";
+}
 // </FnSumIntegerIterator>
 
 
@@ -874,6 +971,10 @@ void OpToIteratorState::reset(PlanState& planState) {
   theFirstVal = numeric_consts<xs_integer>::zero();
   theLastVal = numeric_consts<xs_integer>::zero();
 }
+
+zstring OpToIterator::getNameAsString() const {
+  return "op:to";
+}
 // </OpToIterator>
 
 
@@ -906,6 +1007,10 @@ FnIdIteratorState::FnIdIteratorState() {}
 
 FnIdIteratorState::~FnIdIteratorState() {}
 
+
+zstring FnIdIterator::getNameAsString() const {
+  return "fn:id";
+}
 // </FnIdIterator>
 
 
@@ -938,6 +1043,10 @@ FnElementWithIdIteratorState::FnElementWithIdIteratorState() {}
 
 FnElementWithIdIteratorState::~FnElementWithIdIteratorState() {}
 
+
+zstring FnElementWithIdIterator::getNameAsString() const {
+  return "fn:element-with-id";
+}
 // </FnElementWithIdIterator>
 
 
@@ -970,6 +1079,10 @@ FnIdRefIteratorState::FnIdRefIteratorState() {}
 
 FnIdRefIteratorState::~FnIdRefIteratorState() {}
 
+
+zstring FnIdRefIterator::getNameAsString() const {
+  return "fn:idref";
+}
 // </FnIdRefIterator>
 
 
@@ -998,6 +1111,10 @@ void FnDocIterator::accept(PlanIterVisitor& v) const
 
 FnDocIterator::~FnDocIterator() {}
 
+
+zstring FnDocIterator::getNameAsString() const {
+  return "fn:doc";
+}
 // </FnDocIterator>
 
 
@@ -1026,6 +1143,10 @@ void FnDocAvailableIterator::accept(PlanIterVisitor& v) const
 
 FnDocAvailableIterator::~FnDocAvailableIterator() {}
 
+
+zstring FnDocAvailableIterator::getNameAsString() const {
+  return "fn:doc-available";
+}
 // </FnDocAvailableIterator>
 
 
@@ -1058,6 +1179,10 @@ FnAvailableEnvironmentVariablesIteratorState::FnAvailableEnvironmentVariablesIte
 
 FnAvailableEnvironmentVariablesIteratorState::~FnAvailableEnvironmentVariablesIteratorState() {}
 
+
+zstring FnAvailableEnvironmentVariablesIterator::getNameAsString() const {
+  return "fn:available-environment-variables";
+}
 // </FnAvailableEnvironmentVariablesIterator>
 
 
@@ -1086,6 +1211,10 @@ void FnEnvironmentVariableIterator::accept(PlanIterVisitor& v) const
 
 FnEnvironmentVariableIterator::~FnEnvironmentVariableIterator() {}
 
+
+zstring FnEnvironmentVariableIterator::getNameAsString() const {
+  return "fn:environment-variable";
+}
 // </FnEnvironmentVariableIterator>
 
 
@@ -1114,6 +1243,10 @@ void FnUnparsedTextIterator::accept(PlanIterVisitor& v) const
 
 FnUnparsedTextIterator::~FnUnparsedTextIterator() {}
 
+
+zstring FnUnparsedTextIterator::getNameAsString() const {
+  return "fn:unparsed-text";
+}
 // </FnUnparsedTextIterator>
 
 
@@ -1142,6 +1275,10 @@ void FnUnparsedTextAvailableIterator::accept(PlanIterVisitor& v) const
 
 FnUnparsedTextAvailableIterator::~FnUnparsedTextAvailableIterator() {}
 
+
+zstring FnUnparsedTextAvailableIterator::getNameAsString() const {
+  return "fn:unparsed-text-available";
+}
 // </FnUnparsedTextAvailableIterator>
 
 
@@ -1172,6 +1309,10 @@ FnUnparsedTextLinesIterator::~FnUnparsedTextLinesIterator() {}
 
 FnUnparsedTextLinesIteratorState::FnUnparsedTextLinesIteratorState() {}
 
+
+zstring FnUnparsedTextLinesIterator::getNameAsString() const {
+  return "fn:unparsed-text-lines";
+}
 // </FnUnparsedTextLinesIterator>
 
 

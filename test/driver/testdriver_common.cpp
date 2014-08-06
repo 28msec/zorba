@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <iostream>
 
-#include <zorbatypes/URI.h>
-#include <zorba/static_context_consts.h>
-#include <zorba/iterator.h>
-#include <zorba/xmldatamanager.h>
-#include <zorba/store_consts.h>
 #include <zorba/diagnostic_list.h>
-#include <util/string_util.h>
-#include <util/ascii_util.h>
+#include <zorba/iterator.h>
+#include <zorba/item_sequence.h>
+#include <zorba/properties.h>
+#include <zorba/static_context_consts.h>
+#include <zorba/store_consts.h>
+#include <zorbatypes/URI.h>
+#include <zorba/xmldatamanager.h>
+
+#include "util/ascii_util.h"
+#include "util/string_util.h"
+
 #include "testdriverconfig.h"
 #include "testdriver_common.h"
 #include "specification.h"
-#include "system/properties.h"
 
 static void set_var(
     DriverContext& driverCtx,
@@ -209,10 +213,10 @@ Zorba_CompilerHints getCompilerHints()
 
   lHints.for_serialization_only = false;
 
-  if (zorba::Properties::instance()->serializeOnlyQuery() > 0)
-  {
+#if 0
+  if ( zorba::Properties::instance().getSerializeOnlyQuery() )
     lHints.for_serialization_only = true;
-  }
+#endif
 
   return lHints;
 }
@@ -425,19 +429,7 @@ void set_var(
     zorba::DocumentManager* lDocMgr = driverCtx.theXmlDataMgr->getDocumentManager();
 
     zorba::Item lDoc;
-
-    if (lDocMgr->isAvailableDocument(val)) 
-    {
-      try
-      {
-        lDocMgr->remove(val);
-      }
-      catch (const zorba::ZorbaException& e)
-      {
-        if (e.diagnostic() != zorba::zerr::ZXQD0002_DOCUMENT_NOT_VALID)
-          throw;
-      }
-    }
+    zorba::Item lValidatedDoc;
 
     {
       const char* val_fname = val.c_str();
@@ -466,17 +458,11 @@ void set_var(
       lIter->close();
 
       assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
-      zorba::Item lValidatedDoc;
 
       zorba::validation_mode_t validationMode =
       (enableDtd ? zorba::validate_lax_dtd : zorba::validate_lax);
 
       sctx->validate(lDoc, lValidatedDoc, validationMode);
-
-      if (lValidatedDoc.isNull())
-      {
-        std::cout << "NULL DOC: " << val_fname << std::endl;
-      }
 
       bool done;
 
@@ -492,22 +478,20 @@ void set_var(
         {
           if (e.diagnostic() != zorba::zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
             throw;
-        }
 
-        try
-        {
-          lDoc = lDocMgr->document(val);
-        }
-        catch (const zorba::ZorbaException& e)
-        {
-          if (e.diagnostic() == zorba::zerr::ZXQD0002_DOCUMENT_NOT_VALID)
+          // The doc exists already. Remove it and try again, because the current
+          // versionmay bea validated doc whereas the existing version may not be.
+          try
           {
-            done = false;
+            lDocMgr->remove(val);
           }
-          else
+          catch (const zorba::ZorbaException& e)
           {
-            throw;
+            if (e.diagnostic() != zorba::zerr::ZXQD0002_DOCUMENT_NOT_VALID)
+              throw;
           }
+
+          done = false;
         }
       }
       while (!done);
@@ -515,11 +499,11 @@ void set_var(
 
     if (name != ".")
     {
-      dctx->setVariable(name, lDoc);
+      dctx->setVariable(name, lValidatedDoc);
     }
     else
     {
-      dctx->setContextItem(lDoc);
+      dctx->setContextItem(lValidatedDoc);
     }
   }
 }

@@ -55,6 +55,9 @@
   <namespace prefix="jerr" uri="JSONIQ_ERR_NS"
              class-prefix="JSONiqError" kind-function="standard"/>
 
+  <namespace prefix="jse" uri="JSOUND_ERR_NS"
+             class-prefix="JSoundError" kind-function="unknown"/>
+
   <namespace prefix="zerr" uri="ZORBA_ERR_NS"
              class-prefix="ZorbaError" kind-function="unknown"/>
 
@@ -63,6 +66,12 @@
 
   <namespace prefix="csv" uri="http://zorba.io/modules/json-csv"
              class-prefix="ZorbaCSVError" kind-function="unknown"/>
+             
+  <namespace prefix="dt" uri="http://zorba.io/modules/datetime"
+             class-prefix="ZorbaDateTimeError" kind-function="unknown"/>
+             
+  <namespace prefix="zuri" uri="http://zorba.io/modules/uri"
+             class-prefix="ZorbaURIError" kind-function="unknown"/>
 
 </diagnostic-namespaces>
 <!-- vim:set et sw=2 ts=2: -->

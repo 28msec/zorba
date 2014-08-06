@@ -92,8 +92,9 @@ namespace has_insertion_operator_impl {
   typedef char yes[2];
 
   /**
-   * This dummy class is used to make the matching of the dummy operator<<()
-   * \e worse than the global \c operator<<(), if any.
+   * This dummy class is used to make the matching of the dummy
+   * \c operator&lt;&lt;() \e worse than the global \c operator&lt;&lt;(),
+   * if any.
    */
   struct any_t {
     template<typename T> any_t( T const& );
@@ -101,23 +102,24 @@ namespace has_insertion_operator_impl {
 
   /**
    * This dummy operator is matched only when there is \e no global
-   * operator<<() otherwise declared for type \c T.
+   * \c operator&lt;&lt;() otherwise declared for type \c T.
    *
    * @return Returns a \c no that selects defined(no).
    */
   no operator<<( std::ostream const&, any_t const& );
 
   /**
-   * This function is matched only when there \e is a global \c operator<<()
-   * declared for type \c T because \c operator<<()'s return type is
-   * \c std::ostream&.
+   * This function is matched only when there \e is a global
+   * \c operator&lt;&lt;() declared for type \c T because
+   * \c operator&lt;&lt;()'s return type is \c std::ostream&.
    *
    * @return Returns a yes& whose \c sizeof() equals \c sizeof(yes).
    */
   yes& defined( std::ostream& );
 
   /**
-   * This function is matched only when the dummy \c operator<<() is matched.
+   * This function is matched only when the dummy \c operator&lt;&lt;() is
+   * matched.
    *
    * @return Returns a no whose \c sizeof() equals \c sizeof(no).
    */
@@ -125,8 +127,10 @@ namespace has_insertion_operator_impl {
 
   /**
    * The implementation class that can be used to determine whether a given
-   * type \c T has a global <code>std::ostream& operator<<(std::ostream&,T
-   * const&)</code> defined for it.  However, do not use this class directly.
+   * type \c T has a global
+   * <code>std::ostream& operator&lt;&lt;(std::ostream&,T const&)</code>
+   * defined for it.
+   * However, do not use this class directly.
    *
    * @tparam T The type to check.
    */
@@ -136,8 +140,8 @@ namespace has_insertion_operator_impl {
     static T const &t;
   public:
     /**
-     * This is \c true only when the type \c T has a global \c operator<<()
-     * declared for it.
+     * This is \c true only when the type \c T has a global
+     * \c operator&lt;&lt;() declared for it.
      * \hideinitializer
      */
     static bool const value = sizeof( defined( s << t ) ) == sizeof( yes );
@@ -147,8 +151,8 @@ namespace has_insertion_operator_impl {
 /**
  * \internal
  * A class that can be used to determine whether a given type \c T has a global
- * <code>std::ostream& operator<<(std::ostream&,T const&)</code> defined for
- * it.
+ * <code>std::ostream& operator&lt;&lt;(std::ostream&,T const&)</code> defined
+ * for it.
  * For example:
  * \code
  * template<typename T> inline
@@ -166,13 +170,73 @@ struct has_insertion_operator :
 {
 };
 
+////////// alignment ///////////////////////////////////////////////////////////
+
+// See: http://stackoverflow.com/a/6959582/99089
+
+namespace align_impl {
+
+template<typename T,bool smaller>
+struct align_type_impl;
+
+template<typename T>
+struct align_type_impl<T,false> {
+  typedef T type;
+};
+
+template<typename T>
+struct align_type_impl<T,true> {
+  typedef char type;
+};
+
+template<typename T,typename U>
+struct align_type {
+  typedef typename align_type_impl<U,(sizeof(T) < sizeof(U))>::type type;
+};
+
+} // namespace align_impl
+
+/**
+ * An %aligner can be used inside a \c union to align it properly for type
+ * \c T.
+ *
+ * @tparam T The type to align properly.
+ */
+template<typename T>
+union aligner {
+  typename align_impl::align_type<T,char>::type c;
+  typename align_impl::align_type<T,short>::type s;
+  typename align_impl::align_type<T,int>::type i;
+  typename align_impl::align_type<T,long>::type l;
+  typename align_impl::align_type<T,long long>::type ll;
+  typename align_impl::align_type<T,float>::type f;
+  typename align_impl::align_type<T,double>::type d;
+  typename align_impl::align_type<T,long double>::type ld;
+  typename align_impl::align_type<T,void*>::type p;
+  typename align_impl::align_type<T,void (*)()>::type pf;
+  typename align_impl::align_type<T,aligner*>::type ps;
+  typename align_impl::align_type<T,void (aligner::*)()>::type pmf;
+};
+
+/**
+ * A %raw_buf is a properly aligned chunk of raw memory for an object of type
+ * \c T.
+ *
+ * @tparam T The type to hold an object of.
+ */
+template<typename T>
+union raw_buf {
+  aligner<T> dummy_for_alignment;
+  char buf[ sizeof(T) ];
+};
+
 ////////// c_str() /////////////////////////////////////////////////////////////
 
 /**
  * \internal
  * Gets the \c char* to the given string.
  * 
- * @tparam OutputStringType The string's type.
+ * @tparam StringType The string's type.
  * @param s The string to get the \c char* of.
  * @return Returns said \c char*.
  */

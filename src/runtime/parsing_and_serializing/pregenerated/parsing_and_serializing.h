@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_PARSING_AND_SERIALIZING_PARSING_AND_SERIALIZING_H
 #define ZORBA_RUNTIME_PARSING_AND_SERIALIZING_PARSING_AND_SERIALIZING_H
 
@@ -57,6 +58,8 @@ public:
 
   virtual ~FnParseXmlIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -86,6 +89,8 @@ public:
   {}
 
   virtual ~FnSerializeIterator();
+
+  zstring getNameAsString() const;
 
 public:
   static void streamReleaser(std::istream* stream);

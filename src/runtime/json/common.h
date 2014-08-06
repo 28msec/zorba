@@ -22,6 +22,7 @@
 #include <stack>
 
 // Zorba
+#include <zorba/internal/cxx_util.h>
 #include "diagnostics/xquery_exception.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -61,13 +62,13 @@ namespace whitespace {
 bool get_attribute_value( store::Item_t const &element, char const *att_name,
                           zstring *att_value );
 
-inline zstring name_of( store::Item_t const &node ) {
-  return node->getNodeName()->getStringValue();
-}
+zstring name_of( store::Item_t const &node, char const *ns = nullptr );
 
 inline void set_data( XQueryException *xe, json::exception const &je ) {
   set_data( *xe, je.get_loc() );
 }
+
+bool x2j_map_atomic( store::Item_t const &xml_item, store::Item_t *json_item );
 
 ///////////////////////////////////////////////////////////////////////////////
 

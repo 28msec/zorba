@@ -350,8 +350,10 @@ protected:
 
   bool                               theInheritNSBindings;
 
+  bool                               theIsTransform;
+
 public:
-  PULImpl();
+  PULImpl(bool isTransform);
 
   ~PULImpl();
 
@@ -664,6 +666,8 @@ public:
   void setICChecker(store::ICChecker* icChecker);
 
   void checkIC(const store::Item* collName);
+
+  bool isTransform() { return theIsTransform; }
 
 
 protected:

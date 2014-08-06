@@ -39,6 +39,7 @@
 #include "api/staticcollectionmanagerimpl.h"
 #include "api/item_iter_vector.h"
 
+#include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #ifndef ZORBA_NO_FULL_TEXT
@@ -1527,13 +1528,28 @@ StaticContextImpl::validateSimpleContent(
 
 ********************************************************************************/
 ItemSequence_t StaticContextImpl::invoke(
-    const Item& aQName,
+    const Item& aItem,
+    const std::vector<ItemSequence_t>& aArgs) const
+{
+  store::Item_t item = Unmarshaller::getInternalItem(aItem);
+
+  if (item->isAtomic())
+    return invokeFunc(aItem, item, aArgs);
+  else
+    return invokeFuncItem(aItem, item, aArgs);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ItemSequence_t StaticContextImpl::invokeFunc(
+    const Item& aItem,
+    const store::Item_t& qname,
     const std::vector<ItemSequence_t>& aArgs) const
 {
   try
   {
-    store::Item_t qname = Unmarshaller::getInternalItem(aQName);
-
     if (qname->getTypeCode() != store::XS_QNAME)
     {
       throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS(ZED(BadType_23o), "xs:QName"));
@@ -1563,7 +1579,7 @@ ItemSequence_t StaticContextImpl::invoke(
     // bind qname and params
     DynamicContext* queryDctx = query->getDynamicContext();
 
-    queryDctx->setVariable("", "xxx-func-name", aQName);
+    queryDctx->setVariable("", "xxx-func-name", aItem);
 
     for (csize i = 0; i < numArgs; ++i)
     {
@@ -1597,9 +1613,10 @@ std::string StaticContextImpl::createInvokeQuery(
 
   // prolog
   lOut
-    << "import module namespace ref = 'http://www.zorba-xquery.com/modules/reflection';"
-    << std::endl
-    << "declare variable $xxx-func-name as xs:QName" << " external;" << std::endl;
+    << "import module namespace ref = 'http://zorba.io/modules/reflection';"
+    << std::endl;
+
+  lOut << "declare variable $xxx-func-name as xs:QName external;" << std::endl;
 
   for (csize i = 0; i < arity; ++i)
   {
@@ -1620,6 +1637,7 @@ std::string StaticContextImpl::createInvokeQuery(
 
   // args
   lOut << "($xxx-func-name";
+
   for (csize i = 0; i < arity; ++i)
   {
     lOut << ", $arg" << i;
@@ -1627,6 +1645,92 @@ std::string StaticContextImpl::createInvokeQuery(
   lOut << ")";
   return lOut.str();
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ItemSequence_t StaticContextImpl::invokeFuncItem(
+    const Item& aItem,
+    const store::Item_t& funcItem,
+    const std::vector<ItemSequence_t>& aArgs) const
+{
+  try
+  {
+    if (!funcItem->isFunction())
+    {
+      throw XQUERY_EXCEPTION(err::XPTY0004,
+      ERROR_PARAMS(ZED(BadType_23o), "xs:function()"));
+    }
+
+    csize numArgs = aArgs.size();
+
+    String queryStr = createHOFQuery(numArgs);
+
+    XQuery_t query(new XQueryImpl());
+
+    // compile without any hints
+    Zorba_CompilerHints_t lHints;
+    StaticContext_t querySctx = new StaticContextImpl(*this);
+
+    query->compile(queryStr, querySctx, lHints);
+
+    // bind func item and params
+    DynamicContext* queryDctx = query->getDynamicContext();
+
+    queryDctx->setVariable("", "xxx-func-item", aItem);
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      std::ostringstream argName;
+      argName << "arg" << i;
+      queryDctx->setVariable("", argName.str(), aArgs[i]->getIterator());
+    }
+
+    // the XQueryImpl object needs to live as long as its iterator
+    // because the iterator returned as a result of the query
+    // contains a reference to the query in order to do cleanup work.
+    // The same is true for this sctx
+    return new InvokeItemSequence(query, const_cast<StaticContextImpl*>(this));
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+    return 0;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::string StaticContextImpl::createHOFQuery(csize arity)
+{
+  std::ostringstream lOut;
+
+  // prolog
+  lOut << "declare variable $xxx-func-item external;" << std::endl;
+
+  for (csize i = 0; i < arity; ++i)
+  {
+    lOut << "declare variable $arg" << i << " external;" << std::endl;
+  }
+
+  // body
+  lOut << "$xxx-func-item(";
+
+  for (csize i = 0; i < arity; ++i)
+  {
+    lOut << "$arg" << i;
+
+    if (i < arity-1)
+      lOut << ",";
+  }
+  lOut << ")";
+
+  return lOut.str();
+}
+
 
 
 StaticCollectionManager*
@@ -1693,9 +1797,42 @@ StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
     extVars.push_back((*ite)->getName());        
   }
 
-  Iterator_t vIter = new VectorIterator(extVars, theDiagnosticHandler);
-  aVarsIter = vIter; 
+  aVarsIter = new VectorIterator(extVars, theDiagnosticHandler);
   ZORBA_CATCH
+}
+
+
+bool StaticContextImpl::
+getExternalVariableAnnotations( Item const &api_qname,
+                                std::vector<Annotation_t> &result ) const {
+  store::Item const *const qname = Unmarshaller::getInternalItem( api_qname );
+  VarInfo const *const var_info = theCtx->lookup_var( qname );
+  if ( var_info && var_info->isExternal() )
+  {
+    AnnotationList const &annotation_list = var_info->getAnnotations();
+    AnnotationList::size_type const n = annotation_list.size();
+    result.clear();
+    for ( AnnotationList::size_type i = 0; i < n; ++i )
+      result.push_back( new AnnotationImpl( annotation_list.get( i ) ) );
+    return !!n;
+  }
+  return false;
+}
+
+bool StaticContextImpl::
+getExternalVariableQuantifier(Item const& var_name, SequenceType::Quantifier& result) const
+{
+  store::Item const *const qname = Unmarshaller::getInternalItem(var_name);
+  VarInfo const *const var_info = theCtx->lookup_var(qname);
+  if (var_info && var_info->isExternal())
+  {
+    if (!var_info->getType())
+      result = SequenceType::QUANT_STAR;
+    else
+      result = var_info->getType()->get_quantifier();
+    return true;
+  }
+  return false;
 }
 
 

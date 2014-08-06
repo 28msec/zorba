@@ -1,6 +1,6 @@
 (: test schema-type function with every node type :)
 
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 import schema namespace data = "http://www.zorba-xquery.com/schema/test/data" at "schema.xsd";
 

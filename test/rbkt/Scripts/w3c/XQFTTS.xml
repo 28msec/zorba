@@ -666,13 +666,13 @@
       spec="XQuery"
       name="Available documents" 
       context-type="dynamic" 
-      value="The URIs returned by the availale-documents function of module http://www.zorba-xquery.com/modules/store/dynamic/documents (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html)"/>
+      value="The URIs returned by the availale-documents function of module http://zorba.io/modules/store/documents (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/zorba.io_modules_store_documents.html)"/>
     
     <context-property
       spec="XQuery"    
       name="Available collections" 
       context-type="dynamic" 
-      value="The URIs returned by the available-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)"/>
+      value="The URIs returned by the available-collections function of module http://zorba.io/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/zorba.io_modules_store_dynamic_collections_w3c_ddl.html)"/>
     
     <context-property
       spec="XQuery"

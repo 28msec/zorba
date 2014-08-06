@@ -25,7 +25,7 @@ jsoniq version "1.0";
  : "Common Format and MIME Type for Comma-Separated Values (CSV) Files."
  :
  : @author Paul J. Lucas
- : @project Zorba/CSV
+ : @project Zorba/Data Converters/CSV
  :)
 
 module namespace csv = "http://zorba.io/modules/json-csv";
@@ -134,9 +134,13 @@ declare option ver:module-version "1.0";
  :  </dl>
  : @return a sequence of zero or more JSON objects where each key is a field
  : name and each value is a parsed value.
- : @error csv:INVALID_OPTION if the <code>quote-char</code>,
- : <code>quote-escape</code>, or <code>separator</code> option is given
- : and it's not a single ASCII character.
+ : @error csv:INVALID_OPTION if a value of <code>field-names</code> is not an
+ : array or one of the array values is not a string;
+ : if the <code>quote-char</code>, <code>quote-escape</code>, or
+ : <code>separator</code> option is given and it's not a single ASCII
+ : character.
+ : @error csv:INVALID_CSV_VALUE if a value of some key is not castable to
+ : string.
  : @error csv:MISSING_VALUE if a missing value is detected and the
  : <code>missing-value</code> option is "<code>error</code>".
  : @error csv:EXTRA_VALUE if an extra value is detected and the
@@ -241,7 +245,7 @@ declare function csv:parse( $csv as string )
  :        the field names are taken from the first JSON object
  :        and the order of the fields is implementation dependent.
  :        If this option is set,
- :        the fields are serielized in the order they are in the array.
+ :        the fields are serialized in the order they are in the array.
  :        In either case,
  :        every JSON object must have the same keys as the first object.
  :      </dd>
@@ -294,6 +298,11 @@ declare function csv:parse( $csv as string )
  :  </dl>
  : @return a sequence of strings where each string corresponds to a JSON
  : object, aka, "record."
+ : @error csv:INVALID_OPTION if a value of <code>field-names</code> is not an
+ : array or one of the array values is not a string;
+ : if the <code>quote-char</code>, <code>quote-escape</code>, or
+ : <code>separator</code> option is given and it's not a single ASCII
+ : character.
  :)
 declare function csv:serialize( $obj as object()*, $options as object() )
   as string* external;

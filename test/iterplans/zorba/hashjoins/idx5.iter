@@ -1,24 +1,24 @@
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for main query:
-<SequentialIterator>
-  <CtxVarDeclareIterator varid="4" varname="tests">
-    <ElementIterator copyInputNodes="false">
-      <SingletonIterator value="xs:QName(,,tests)"/>
-    </ElementIterator>
-  </CtxVarDeclareIterator>
-  <SingletonIterator value="xs:integer(1)"/>
-</SequentialIterator>
-
+<iterator-tree description="const-folded expr">
+  <OrIterator>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </OrIterator>
+</iterator-tree>
+<iterator-tree description="const-folded expr">
+  <OrIterator>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </OrIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="tests">
+      <ElementIterator copyInputNodes="false">
+        <SingletonIterator value="xs:QName(,,tests)"/>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <SingletonIterator value="xs:integer(1)"/>
+  </SequentialIterator>
+</iterator-tree>

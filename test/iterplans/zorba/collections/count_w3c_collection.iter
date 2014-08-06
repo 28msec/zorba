@@ -1,29 +1,29 @@
-Iterator tree for main query:
-<SequentialIterator>
-  <CtxVarDeclareIterator varid="4" varname="coll">
-    <SingletonIterator value="xs:string(http://www.zorba-xquery.com/collection)"/>
-  </CtxVarDeclareIterator>
+<iterator-tree description="main query">
   <SequentialIterator>
-    <ApplyIterator>
-      <UDFunctionCallIterator function="ddl:create">
-        <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-      </UDFunctionCallIterator>
-    </ApplyIterator>
-    <FnCountIterator>
-      <FnCollectionIterator>
-        <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-      </FnCollectionIterator>
-    </FnCountIterator>
+    <CtxVarDeclareIterator varid="4" varname="coll">
+      <SingletonIterator value="xs:string(http://zorba.io/collection)"/>
+    </CtxVarDeclareIterator>
+    <SequentialIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="ddl:create">
+          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <FnCountIterator>
+        <FnCollectionIterator>
+          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+        </FnCollectionIterator>
+      </FnCountIterator>
+    </SequentialIterator>
   </SequentialIterator>
-</SequentialIterator>
-
-Iterator tree for ddl:create:
-<ZorbaCreateCollectionIterator>
-  <FunctionTraceIterator>
-    <QNameIterator>
-      <LetVarIterator varname="coll-name"/>
-      <SingletonIterator value="xs:string(zorba-internal-name-for-w3c-collections)"/>
-    </QNameIterator>
-  </FunctionTraceIterator>
-</ZorbaCreateCollectionIterator>
-
+</iterator-tree>
+<iterator-tree description="ddl:create">
+  <ZorbaCreateCollectionIterator>
+    <FunctionTraceIterator>
+      <QNameIterator>
+        <LetVarIterator varname="uri"/>
+        <SingletonIterator value="xs:string(zorba-internal-name-for-w3c-collections)"/>
+      </QNameIterator>
+    </FunctionTraceIterator>
+  </ZorbaCreateCollectionIterator>
+</iterator-tree>

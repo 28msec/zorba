@@ -28,6 +28,7 @@
 #include "types/root_typemanager.h"
 #include "types/schema/validate.h"
 #include "zorbatypes/integer.h"
+#include "zorbautils/hashset_atomic_itemh.h"
 
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
@@ -36,6 +37,7 @@
 #include "api/item_iter_store.h"
 #include "api/dynamiccontextimpl.h"
 
+#include "compiler/expression/var_expr.h"
 #include "compiler/parser/query_loc.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/api/compilercb.h"
@@ -46,6 +48,7 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/temp_seq.h"
+#include "types/casting.h"
 
 #include "util/xml_util.h"
 
@@ -226,13 +229,117 @@ bool DynamicContextImpl::getVariable(
   return false;
 }
 
+/**
+ * A %VarCastIterator adapts another iterator by casting each of the elements
+ * to some atomic type.
+ */
+class VarCastIterator : public store::Iterator {
+public:
+  VarCastIterator( store::Iterator_t &source, xqtref_t const &type,
+                   TypeManager const *type_mgr ) :
+    source_( source ),
+    type_( TypeOps::prime_type( type_mgr, *type ) ),
+    type_mgr_( type_mgr )
+  {
+  }
+
+  // inherited
+  void open();
+  bool next( store::Item_t& );
+  void close();
+  void reset();
+
+private:
+  store::Iterator_t source_;
+  xqtref_t const type_;
+  TypeManager const *const type_mgr_;
+};
+
+void VarCastIterator::open() {
+  source_->open();
+}
+
+bool VarCastIterator::next( store::Item_t &result ) {
+  store::Item_t temp;
+  if ( source_->next( temp ) ) {
+    GenericCast::castToAtomic(
+      result, temp, type_, type_mgr_, /*nsCtx*/ nullptr, QueryLoc::null
+    );
+    return true;
+  }
+  return false;
+}
+
+void VarCastIterator::close() {
+  source_->close();
+}
+
+void VarCastIterator::reset() {
+  source_->reset();
+}
+
+class DistinctIterator : public store::Iterator {
+public:
+  DistinctIterator(store::Iterator_t &source,
+      dynamic_context* dctx,
+      static_context* sctx) :
+    source_(source),
+    hasNaN(false)
+  {
+    ValueCompareParam* valueCompare =
+        new ValueCompareParam(QueryLoc::null, dctx, sctx);
+    map_.reset(new AtomicItemHandleHashSet(valueCompare));
+  }
+
+  // inherited
+  void open();
+  bool next( store::Item_t& );
+  void close();
+  void reset();
+
+private:
+  store::Iterator_t source_;
+  std::auto_ptr<AtomicItemHandleHashSet> map_;
+  bool hasNaN;
+};
+
+void DistinctIterator::open() {
+  source_->open();
+}
+
+bool DistinctIterator::next( store::Item_t &result ) {
+  while(source_->next(result))
+  {
+    if (result->isNaN() && !hasNaN)
+    {
+      hasNaN = true;
+      return true;
+    }
+    else if (!map_->exists(result))
+    {
+      map_->insert(result);
+      return true;
+    }
+  }
+  return false;
+}
+
+void DistinctIterator::close() {
+  source_->close();
+}
+
+void DistinctIterator::reset() {
+  source_->reset();
+}
 
 /****************************************************************************//**
 
 ********************************************************************************/
 bool DynamicContextImpl::setVariable(
     const String& inVarName,
-    const Iterator_t& inValue)
+    const Iterator_t& inValue,
+    bool cast,
+    bool distinct)
 {
   ZORBA_DCTX_TRY
   {
@@ -265,6 +372,14 @@ bool DynamicContextImpl::setVariable(
       throw;
     }
 
+    if ( cast && var->getType() )
+      value = new VarCastIterator(
+        value, var->getType(), var->getTypeManager()
+      );
+
+    if (distinct)
+      value = new DistinctIterator(value, theCtx, theStaticContext);
+
     ulong varId = var->getId();
 
     theCtx->add_variable(varId, value);
@@ -282,7 +397,9 @@ bool DynamicContextImpl::setVariable(
 bool DynamicContextImpl::setVariable(
     const String& inNamespace,
     const String& inLocalname,
-    const Iterator_t& inValue)
+    const Iterator_t& inValue,
+    bool cast,
+    bool distinct)
 {
   ZORBA_DCTX_TRY
   {
@@ -319,6 +436,14 @@ bool DynamicContextImpl::setVariable(
 
     ulong varId = var->getId();
 
+    if ( cast && var->getType() )
+      value = new VarCastIterator(
+        value, var->getType(), var->getTypeManager()
+      );
+
+    if (distinct)
+      value = new DistinctIterator(value, theCtx, theStaticContext);
+
     theCtx->add_variable(varId, value);
 
     return true;
@@ -334,7 +459,8 @@ bool DynamicContextImpl::setVariable(
 bool DynamicContextImpl::setVariable(
     const String& inNamespace,
     const String& inLocalname,
-    const Item& inValue)
+    const Item& inValue,
+    bool cast)
 {
   ZORBA_DCTX_TRY
   {
@@ -364,6 +490,16 @@ bool DynamicContextImpl::setVariable(
       throw;
     }
 
+    if ( cast && var->getType() ) {
+      store::Item_t cast_value;
+      xqtref_t const &type = var->getType();
+      TypeManager const *const typeMgr = var->getTypeManager();
+      xqtref_t const castType( TypeOps::prime_type( typeMgr, *type ) );
+      GenericCast::castToAtomic(cast_value, value, castType, typeMgr,
+        /*nsCtx*/ nullptr, QueryLoc::null);
+      value = cast_value;
+    }
+
     ulong varId = var->getId();
 
     theCtx->add_variable(varId, value);
@@ -380,7 +516,8 @@ bool DynamicContextImpl::setVariable(
 ********************************************************************************/
 bool DynamicContextImpl::setVariable(
     const String& inVarName,
-    const Item& inValue)
+    const Item& inValue,
+    bool cast)
 {
   ZORBA_DCTX_TRY
   {
@@ -410,6 +547,16 @@ bool DynamicContextImpl::setVariable(
       throw;
     }
 
+    if ( cast && var->getType() ) {
+      store::Item_t cast_value;
+      xqtref_t const &type = var->getType();
+      TypeManager const *const typeMgr = var->getTypeManager();
+      xqtref_t const castType( TypeOps::prime_type( typeMgr, *type ) );
+      GenericCast::castToAtomic(cast_value, value, castType, typeMgr,
+          /*nsCtx*/ nullptr, QueryLoc::null);
+      value = cast_value;
+    }
+
     ulong varId = var->getId();
 
     theCtx->add_variable(varId, value);
@@ -420,6 +567,52 @@ bool DynamicContextImpl::setVariable(
   return false;
 }
 
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariable(
+    const Item& aQName,
+    const Item& aValue,
+    bool cast)
+{
+  if ( aQName.getTypeCode() != store::XS_QNAME )
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0014_INVALID_ARGUMENT,
+      ERROR_PARAMS(
+        aQName.getTypeCode(),
+        ZED( ZAPI0014_BadType_3 ),
+        store::XS_QNAME
+      )
+    );
+  return setVariable(
+    aQName.getNamespace(), aQName.getLocalName(), aValue, cast
+  );
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariable(
+    const Item& aQName,
+    const Iterator_t& aIterator,
+    bool cast,
+    bool distinct)
+{
+  if ( aQName.getTypeCode() != store::XS_QNAME )
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0014_INVALID_ARGUMENT,
+      ERROR_PARAMS(
+        aQName.getTypeCode(),
+        ZED( ZAPI0014_BadType_3 ),
+        store::XS_QNAME
+      )
+    );
+  return setVariable(
+    aQName.getNamespace(), aQName.getLocalName(), aIterator, cast, distinct
+  );
+}
 
 /****************************************************************************//**
 
@@ -883,8 +1076,6 @@ DynamicContextImpl::isBoundContextItem() const
   ZORBA_DCTX_CATCH
   return false;
 }
-
-
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

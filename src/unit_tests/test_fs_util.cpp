@@ -130,6 +130,7 @@ static test normalize_path_tests[] = {
   /*  9 */ { "file:///a/b"          , "/a/b" },
   /* 10 */ { "file://localhost/a/b" , "/a/b" },
   /* 11 */ { "\\a\\b"               , "/a/b" },
+  /* 12 */ { "a/../b"               , "b"    },
 #else
   /*  0 */ { "C:\\a\\\\b"                 , "C:\\a\\b" },
   /*  1 */ { "C:\\a\\\\\\b"               , "C:\\a\\b" },

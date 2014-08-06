@@ -16,7 +16,12 @@
 CONFIGURE_FILE(itertest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/itertest.xq)
 
 # apitest
-ZORBA_GENERATE_EXE("apitest" "apitest.cpp" "" "" "")
+SET(APITEST_SRCS
+  apitest_args.cpp
+  apitest_props.cpp
+  apitest.cpp
+)
+ZORBA_GENERATE_EXE("apitest" "${APITEST_SRCS}" "" "" "")
 
 MESSAGE (STATUS "Adding iterator plan tests")
 FILE (GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.iter)
@@ -49,3 +54,4 @@ FOREACH (TESTFILE ${TESTFILES})
     PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
 ENDFOREACH(TESTFILE)
 
+# vim:set et sw=2 ts=2:

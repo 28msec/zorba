@@ -1,7 +1,6 @@
+import module namespace ddl = "http://zorba.io/modules/store/dynamic/collections/ddl";
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
-
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+import module namespace dml = "http://zorba.io/modules/store/dynamic/collections/dml";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
@@ -79,7 +78,7 @@ dml:collection($coll1)[. instance of json-item()]
 XXX-10"]
 ,
 {
-dml:delete-nodes-last($coll1, 2);
+dml:delete-last($coll1, 2);
 ()
 }
 ,
@@ -90,6 +89,3 @@ dml:collection($coll1)[. instance of json-item()]
 ["
 "]
 )
-
-
-

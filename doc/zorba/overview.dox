@@ -7,7 +7,7 @@ For example:
 
 <ul>
   <li><a href="http://www.w3.org/TR/xpath/">XPath</a></li>
-  <li><a href="http://www.w3.org/TR/xquery/">XQuery</a></li>
+  <li><a href="http://www.w3.org/TR/xquery-30/">XQuery</a></li>
   <li><a href="http://www.w3.org/TR/xqueryx/">XQueryX</a></li>
   <li><a href="http://www.w3.org/TR/xslt">XSLT</a></li>
   <li><a href="http://www.w3.org/TR/xproc/">XProc</a></li>
@@ -34,7 +34,7 @@ that are supported by Zorba:
 
   <li>There are several XQuery features that can be enabled or disabled:
     <ul>
-      <li><a href="scripting_spec.html">Zorba's XQuery Scripting Extension</a></li>
+      <li><a href="/pages/latest/zorba/scripting_tutorial">Zorba's XQuery Scripting Extension</a></li>
       <li>\ref xqddf "Zorba's XQuery Data Definition Facility"</li>
       <li><a href="http://www.w3.org/TR/xpath-functions-30/#func-trace">fn:trace</a></li>
       <li><a href="http://www.w3.org/TR/xquery-30/#id-dynamic-function-invocation">Higher-order functions</a></li>
@@ -87,7 +87,7 @@ that are supported by Zorba:
 
   <li><a href="http://www.w3.org/TR/xslt">XSLT 1.0</a> is supported via the external library <a href="http://xmlsoft.org/XSLT/">LibXSLT</a>.
   For more information,
-  please check the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_languages_xslt.html">XSLT module</a>.
+  please check the <a href="/modules/latest/www.zorba-xquery.com/modules/languages/xslt">XSLT module</a>.
   Zorba has no support yet for the upcoming standard <a href="http://www.w3.org/XML/Group/qtspecs/specifications/xslt-30/html/">XSLT 3.0</a>.
   Please let us know if this is a language that Zorba should support.</li>
 
@@ -109,21 +109,10 @@ that allows the declaration of collections,
 indexes,
 and integrity constraints.
 The other one is a
-<a href="scripting_spec.html">XQuery Scripting Extension</a>
+<a href="/pages/latest/zorba/scripting_spec">XQuery Scripting Extension</a>
 that allows side-effecting operations,
 assignable variables,
 and other similar procedural extensions to XQuery.
-
-\section overview_conformance Conformance
-
-Please check the summary and the detailed XQuery W3C Test Suite results below:
-<ul>
-  <li> \ref conformance
-  <li> \ref conformance_XQ10
-  <li> \ref conformance_XQ30
-  <li> \ref conformanceXQUTS
-  <li> \ref conformanceXQFTTS
-</ul>
 
 Please also see our page about \ref known_issues.
 

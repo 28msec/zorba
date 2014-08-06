@@ -16,7 +16,8 @@
 #include "stdafx.h"
 
 #include <fstream>
-#include "system/properties.h"
+
+#include <zorba/properties.h>
 #include "compiler/parser/xquery_driver.h"
 
 #ifdef __GNUC__
@@ -94,31 +95,31 @@ ZorbaParserError* xquery_driver::unrecognizedCharErr(const char* _error_token, c
   else
     token = _error_token;
 
-  parserError = new ZorbaParserError("syntax error, unexpected character \"" + token + "\"", loc);
+  parserError = new ZorbaParserError("syntax error: unexpected character \"" + token + "\"", loc);
   return parserError;
 };
 
 ZorbaParserError* xquery_driver::unterminatedCommentErr(const location& loc)
 {
-  parserError = new ZorbaParserError("syntax error, unexpected end of file, unterminated comment", loc);
+  parserError = new ZorbaParserError("syntax error: unexpected end of file, unterminated comment", loc);
   return parserError;
 }
 
 ZorbaParserError* xquery_driver::unterminatedElementConstructor(const location& loc)
 {
-  parserError = new ZorbaParserError("syntax error, unexpected end of file, unterminated direct element constructor", loc);
+  parserError = new ZorbaParserError("syntax error: unexpected end of file, unterminated direct element constructor", loc);
   return parserError;
 }
 
 ZorbaParserError* xquery_driver::noClosingTagForElementConstructor(const location& loc)
 {
-  parserError = new ZorbaParserError("syntax error, unexpected end of file, no closing tag for direct element constructor", loc);
+  parserError = new ZorbaParserError("syntax error: unexpected end of file, no closing tag for direct element constructor", loc);
   return parserError;
 }
 
 ZorbaParserError* xquery_driver::unrecognizedToken(const char* _error_token, const location& loc)
 {
-  parserError = new ZorbaParserError(std::string("syntax error, unexpected \"") + _error_token + "\"", loc);
+  parserError = new ZorbaParserError(std::string("syntax error: unexpected \"") + _error_token + "\"", loc);
   return parserError;
 }
 
@@ -146,7 +147,7 @@ ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const loca
     ref += " ";
   }
 
-  parserError = new ZorbaParserError(std::string("syntax error, invalid character or entity reference "
+  parserError = new ZorbaParserError(std::string("syntax error: invalid character or entity reference "
       + ref + "in the string literal ") + _message + ".", loc);
   return parserError;
 }
@@ -197,12 +198,12 @@ bool xquery_driver::parse_stream(std::istream& in, const zstring& aFilename)
   if (grammar_type == XQUERY_GRAMMAR)
   {    
     xquery_scanner scanner(this, &in);
-    scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
+    scanner.set_yy_flex_debug(Properties::instance().getTraceScanning());
     this->xquery_lexer = &scanner;
     // scanner.set_yy_flex_debug(true); // debugging purposes
 
     xquery_parser parser(*this);
-    parser.set_debug_level(Properties::instance()->traceParsing());
+    parser.set_debug_level(Properties::instance().getTraceParsing());
     // parser.set_debug_level(true); // debugging purposes
     
     return (parser.parse() == 0);
@@ -210,12 +211,12 @@ bool xquery_driver::parse_stream(std::istream& in, const zstring& aFilename)
   else
   {
     jsoniq_scanner scanner(this, &in);
-    scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
+    scanner.set_yy_flex_debug(Properties::instance().getTraceScanning());
     this->jsoniq_lexer = &scanner;
     // scanner.set_yy_flex_debug(true); // debugging purposes
 
     jsoniq_parser parser(*this);
-    parser.set_debug_level(Properties::instance()->traceParsing());
+    parser.set_debug_level(Properties::instance().getTraceParsing());
     // parser.set_debug_level(true); // debugging purposes
     
     return (parser.parse() == 0);

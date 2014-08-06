@@ -3,7 +3,7 @@
   than dc:collection
 :)
 
-import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_ddl = "http://zorba.io/modules/store/static/indexes/ddl";
 
 import module namespace idx = "http://www.w3.org/TestModules/idx" at
                               "error_module1.xqlib";

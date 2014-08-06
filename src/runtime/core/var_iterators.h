@@ -93,6 +93,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -152,6 +154,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -195,6 +199,8 @@ public:
   const store::Item* getVarName() const { return theVarName.getp(); }
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -301,6 +307,8 @@ public:
 
   void closeImpl(PlanState& planState);
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -315,17 +323,8 @@ public:
 class ForVarState : public PlanIteratorState
 {
 public:
+  ~ForVarState();
   store::Item_t theValue;
-
-  void init(PlanState& planState)
-  {
-    PlanIteratorState::init(planState);
-  }
-
-  void reset(PlanState& planState)
-  {
-    PlanIteratorState::reset(planState);
-  }
 };
 
 
@@ -356,6 +355,8 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  zstring getNameAsString() const;
 
   void bind(store::Item* value, PlanState& planState);
 };
@@ -471,6 +472,8 @@ public:
   void resetImpl(PlanState& planState) const;
 
   void closeImpl(PlanState& planState);
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };

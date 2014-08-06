@@ -1,16 +1,16 @@
 module namespace data = "www.data.com";
 
 import module namespace ddl = 
-"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+  "http://zorba.io/modules/store/static/collections/ddl";
 
 import module namespace dml = 
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  "http://zorba.io/modules/store/static/collections/dml";
 
 import module namespace iddl = 
-"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+  "http://zorba.io/modules/store/static/indexes/ddl";
 
 import module namespace idml = 
-"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+  "http://zorba.io/modules/store/static/indexes/dml";
 
 declare namespace an = "http://zorba.io/annotations";
 
@@ -28,4 +28,3 @@ by substring-after(./doc/@base-uri, "www.foo.com/") as xs:string,
    string(.//sports-content/sports-metadata/@date-time) as xs:string;
 
 declare variable $data:idx as xs:QName := xs:QName('data:idx');
-

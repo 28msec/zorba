@@ -32,7 +32,6 @@
 
 #include "store/api/pul.h"
 
-#include "properties.h"
 #include "string_pool.h"
 #include "simple_store.h"
 #include "simple_temp_seq.h"
@@ -97,6 +96,8 @@ const ulong Store::XML_URI_LEN = sizeof(Store::XML_URI);
 ********************************************************************************/
 Store::Store()
   :
+  theEmptyNs(NULL),
+  theXmlSchemaNs(NULL),
   theNumUsers(0),
   theNamespacePool(NULL),
   theQNamePool(NULL),
@@ -124,6 +125,8 @@ Store::Store()
 ********************************************************************************/
 Store::~Store()
 {
+  delete theEmptyNs;
+  delete theXmlSchemaNs;
 }
 
 
@@ -143,12 +146,13 @@ void Store::init()
     LIBXML_TEST_VERSION
     xmlInitParser();
 
-    store::Properties::load(0, NULL);
-
     theNamespacePool = new StringPool(NAMESPACE_POOL_SIZE);
 
-    theNamespacePool->insertc("", theEmptyNs);
-    theNamespacePool->insertc(XS_URI, theXmlSchemaNs);
+    theEmptyNs = new zstring;
+    theXmlSchemaNs = new zstring;
+
+    theNamespacePool->insertc("", *theEmptyNs);
+    theNamespacePool->insertc(XS_URI, *theXmlSchemaNs);
 
     theQNamePool = new QNamePool(QNamePool::MAX_CACHE_SIZE, theNamespacePool);
 
@@ -165,8 +169,6 @@ void Store::init()
     thePULFactory = createPULFactory();
     
     theTreeIdGeneratorFactory = createTreeIdGeneratorFactory();
-
-    theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
     theCollections = createCollectionSet();
 
@@ -333,9 +335,9 @@ void Store::shutdown(bool soft)
 
     if (theNamespacePool != NULL)
     {
-      theEmptyNs.~zstring();
-      theXmlSchemaNs.~zstring();
-
+      delete theEmptyNs;
+      delete theXmlSchemaNs;
+      theEmptyNs = theXmlSchemaNs = NULL;
       delete theNamespacePool;
       theNamespacePool = NULL;
     }
@@ -376,18 +378,18 @@ XmlLoader* Store::getXmlLoader(
     return new FragmentXmlLoader(theItemFactory,
                                  aXQueryDiagnostics,
                                  loadProperties,
-                                 store::Properties::instance()->buildDataguide());
+                                 false);
 
   else if (loadProperties.getDTDValidate())
     return new DtdXmlLoader(theItemFactory,
                             aXQueryDiagnostics,
                             loadProperties,
-                            store::Properties::instance()->buildDataguide());
+                            false);
   else
     return new FastXmlLoader(theItemFactory,
                              aXQueryDiagnostics,
                              loadProperties,
-                             store::Properties::instance()->buildDataguide());
+                             false);
 }
 
 
@@ -982,15 +984,10 @@ store::Item_t Store::loadDocument(
     std::istream& stream,
     const store::LoadProperties& loadProperties)
 {
-  zstring_b urib;
-
-  if (!docUri.empty())
-    urib.wrap_memory(docUri.data(), docUri.size());
-
   XmlNode_t root;
-  bool found = theDocuments.get(urib, root);
+  bool found = theDocuments.get(docUri, root);
 
-  if (found)
+  if (found && loadProperties.getUseCachedDocument())
   {
     return root.getp();
   }
@@ -1006,7 +1003,7 @@ store::Item_t Store::loadDocument(
   }
 
   if (root != NULL && loadProperties.getStoreDocument())
-    theDocuments.insert(urib, root);
+    theDocuments.insert(docUri, root);
 
   return root.getp();
 }

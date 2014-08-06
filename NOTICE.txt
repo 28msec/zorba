@@ -1,5 +1,5 @@
 -----------
-Zorba 2.9.1
+Zorba 3.0.0
 -----------
 
 (Note: This file is generated automatically from NOTICE.xml.
@@ -473,6 +473,17 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================
+    
+----------------------------------------------------
+
+modules/ftp-client/ftp-client.xq.src/ftpparse.h
+modules/ftp-client/ftp-client.xq.src/ftpparse.c
+
+Copyright: 2000 D. J. Bernstein
+Website: http://cr.yp.to/ftpparse.html
+
+      Commercial use is fine, if you let me know what programs you're
+      using this in.
     
 
 External libraries used by this project:

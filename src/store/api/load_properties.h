@@ -37,6 +37,7 @@ class LoadProperties
 {
 private:
   bool theStoreDocument;
+  bool theUseCachedDocument;
   zstring theBaseUri;
   bool theNoError;
   bool theStripWhitespace;
@@ -69,6 +70,7 @@ public:
   LoadProperties()
     :
     theStoreDocument(true),
+    theUseCachedDocument(true),
     theBaseUri(""),
     theNoError(false),
     theStripWhitespace(false),
@@ -134,6 +136,20 @@ public:
   bool getStoreDocument() const
   {
     return theStoreDocument;
+  }
+
+  /**
+   * Set the property useCachedDocument, it specifies whether the loading
+   * should be skipped if the document exists in the store already.
+   */
+  void setUseCachedDocument(bool v)
+  {
+    theUseCachedDocument = v;
+  }
+
+  bool getUseCachedDocument() const
+  {
+    return theUseCachedDocument;
   }
 
   // theBaseUri

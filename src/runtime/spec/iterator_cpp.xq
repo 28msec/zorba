@@ -95,6 +95,8 @@ declare function local:process-iterator($iter) as xs:string
       )
     else (),
 
+    local:generate-getNameAsString($iter),
+
     (: finish iterator implementation with a closing comment :)
     '// &lt;/',$iter/@name,'&gt;',$gen:newline,$gen:newline,
 
@@ -186,6 +188,24 @@ declare function local:generate-accept($iter) as xs:string
   ), '')
 };
 
+declare function local:generate-getNameAsString($iter) as xs:string
+{
+  let $signature := $iter/zorba:function[1]/zorba:signature[1]
+  let $name :=
+    if ( $signature )
+    then
+      let $prefix := fn:data( $signature/@prefix )
+      let $localname := fn:data( $signature/@localname )
+      return concat( $prefix, ':', $localname )
+    else
+      fn:data( $iter/@name )
+  return concat(
+    $gen:newline,
+    "zstring ", fn:data( $iter/@name ), "::getNameAsString() const {", $gen:newline,
+    $gen:indent, 'return "', $name, '";', $gen:newline,
+    "}", $gen:newline
+  )
+};
 
 declare function local:generate-serialize($iter) as xs:string
 {
@@ -290,3 +310,5 @@ string-join
   ),
   string-join(($gen:newline,$gen:newline),'')
 )
+
+(: vim:set et sw=2 ts=2: :)

@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_ITEM_ITEM_H
 #define ZORBA_RUNTIME_ITEM_ITEM_H
 
@@ -56,6 +57,8 @@ public:
   {}
 
   virtual ~MemSizeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

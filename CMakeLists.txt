@@ -16,6 +16,13 @@ PROJECT(zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)
 
+INCLUDE(CheckCXXSourceCompiles)
+INCLUDE(CheckFunctionExists)
+INCLUDE(CheckLibraryExists)
+INCLUDE(CheckIncludeFileCXX)
+INCLUDE(CheckIncludeFiles)
+INCLUDE(CheckStructHasMember)
+INCLUDE(CheckTypeSize)
 
 # overwriting the source and binary directories with the current zorba ones
 # this is usefull for other projects reusing zorba as a subcomponent
@@ -76,16 +83,6 @@ ENDIF(ZORBA_USE_TARGET_FOLDERS)
 ###############################################################################
 # Check for system include files, features, etc.
 ###############################################################################
-INCLUDE(CheckCXXSourceCompiles)
-INCLUDE(CheckFunctionExists)
-INCLUDE(CheckIncludeFileCXX)
-INCLUDE(CheckIncludeFiles)
-INCLUDE(CheckLibraryExists)
-INCLUDE(CheckStructHasMember)
-INCLUDE(CheckSymbolExists)
-INCLUDE(CheckTypeSize)
-INCLUDE(CheckVariableExists)
-
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN( BIG_ENDIAN )
 IF (${BIG_ENDIAN})
@@ -126,8 +123,7 @@ CHECK_FUNCTION_EXISTS(pthread_spin_init           ZORBA_HAVE_PTHREAD_SPINLOCK)
 CHECK_FUNCTION_EXISTS(pthread_mutex_init          ZORBA_HAVE_PTHREAD_MUTEX)
 SET(CMAKE_REQUIRED_LIBRARIES)  
 
-CHECK_INCLUDE_FILES ("sys/time.h;sys/resource.h"  ZORBA_HAVE_RUSAGE_INCLUDES)
-CHECK_FUNCTION_EXISTS (getrusage                  ZORBA_HAVE_RUSAGE_FUNCTION)
+CHECK_FUNCTION_EXISTS (getrusage                  ZORBA_HAVE_GETRUSAGE)
 
 CHECK_TYPE_SIZE("int32_t" ZORBA_HAVE_INT32_T) 
 CHECK_TYPE_SIZE("uint32_t" ZORBA_HAVE_UINT32_T) 
@@ -150,26 +146,6 @@ CHECK_TYPE_SIZE("size_t" ZORBA_SIZEOF_SIZE_T)
 SET(CMAKE_EXTRA_INCLUDE_FILES wchar.h)
 CHECK_TYPE_SIZE("wchar_t" ZORBA_SIZEOF_WCHAR_T)
 SET(CMAKE_EXTRA_INCLUDE_FILES)
-
-# C++11 langauge features
-CHECK_CXX_SOURCE_COMPILES(
-  "int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
-CHECK_CXX_SOURCE_COMPILES(
-  "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
-
-# C++11 standard library types
-CHECK_CXX_SOURCE_COMPILES("
-  #include <type_traits>
-  int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <memory>
-  int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <unordered_map>
-  int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <unordered_set>
-  int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
 
 ################################################################################
 # Various cmake macros
@@ -252,9 +228,9 @@ SET(requiredlibs-store)
 CHECK_LIBRARY_EXISTS(rt clock_gettime ""  _clock_gettime_in_rt)
 IF(_clock_gettime_in_rt)
   SET(requiredlibs ${requiredlibs} rt)
-  SET(ZORBA_HAVE_CLOCKGETTIME_FUNCTION YES CACHE BOOL "Platform has clock_gettime (in librt)")
+  SET(ZORBA_HAVE_CLOCKGETTIME YES CACHE BOOL "Platform has clock_gettime (in librt)")
 ELSE(_clock_gettime_in_rt)
-  CHECK_FUNCTION_EXISTS(clock_gettime   ZORBA_HAVE_CLOCKGETTIME_FUNCTION)
+  CHECK_FUNCTION_EXISTS(clock_gettime ZORBA_HAVE_CLOCKGETTIME)
 ENDIF(_clock_gettime_in_rt)
 
 #
@@ -408,6 +384,8 @@ LIST(APPEND requiredlibs ${requiredlibs-store})
 INCLUDE(CMakeConfiguration.txt)
 INCLUDE(CMakeCompiler.txt)
 
+###############################################################################
+
 #
 #  LibXslt
 #
@@ -485,9 +463,9 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # zorba versioning
-SET(ZORBA_MAJOR_NUMBER "2")
-SET(ZORBA_MINOR_NUMBER "9")
-SET(ZORBA_PATCH_NUMBER "1")
+SET(ZORBA_MAJOR_NUMBER "3")
+SET(ZORBA_MINOR_NUMBER "0")
+SET(ZORBA_PATCH_NUMBER "0")
 SET(ZORBA_VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 MESSAGE(STATUS "Zorba version number: ${ZORBA_VERSION}")
 
@@ -556,6 +534,47 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 ################################################################################
+
+# C++11 TR1 header location & namespace
+CHECK_CXX_SOURCE_COMPILES("
+  #include <tr1/type_traits>
+  int main() { }" ZORBA_TR1_IN_TR1_SUBDIRECTORY)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <type_traits>
+  int main() { std::tr1::is_convertible<int,int> x; }" ZORBA_TR1_1)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <tr1/type_traits>
+  int main() { std::tr1::is_convertible<int,int> x; }" ZORBA_TR1_2)
+
+IF (ZORBA_TR1_1 OR ZORBA_TR1_2)
+  SET (ZORBA_TR1_NS_IS_STD_TR1 1)
+ENDIF (ZORBA_TR1_1 OR ZORBA_TR1_2)
+
+# C++11 langauge features
+CHECK_CXX_SOURCE_COMPILES("
+  #include <cstddef>
+  int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
+CHECK_CXX_SOURCE_COMPILES(
+  "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
+
+# C++11 standard library types
+CHECK_CXX_SOURCE_COMPILES("
+  #include <type_traits>
+  int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <type_traits>
+  int main() { std::is_same<int,int> x; }" ZORBA_HAVE_IS_SAME)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <memory>
+  int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <unordered_map>
+  int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <unordered_set>
+  int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
+
+################################################################################
 #                                                                              #
 # Tell CMake to process the sub-directories                                    #
 #                                                                              #
@@ -574,7 +593,6 @@ ADD_SUBDIRECTORY(cmake_modules)
 # non-core modules are available.
 
 ADD_SUBDIRECTORY(bin)
-
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(schemas)
@@ -630,3 +648,5 @@ DONE_DECLARING_ZORBA_URIS()
 # and not within zorba-modules, which is for general use in other
 # non-zorba modules.
 ADD_DEPENDENCIES(check_core_uris gen_diag_modules)
+
+# vim:set et sw=2 ts=2:

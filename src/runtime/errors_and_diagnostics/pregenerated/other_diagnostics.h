@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_ERRORS_AND_DIAGNOSTICS_OTHER_DIAGNOSTICS_H
 #define ZORBA_RUNTIME_ERRORS_AND_DIAGNOSTICS_OTHER_DIAGNOSTICS_H
 
@@ -57,6 +58,8 @@ public:
 
   virtual ~ReadLineIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -90,6 +93,8 @@ public:
   {}
 
   virtual ~PrintIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -134,6 +139,8 @@ public:
   {}
 
   virtual ~FunctionTraceIterator();
+
+  zstring getNameAsString() const;
 
 public:
   void setFunctionName(const store::Item_t& aFunctionName);

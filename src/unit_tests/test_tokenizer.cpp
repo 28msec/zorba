@@ -24,14 +24,13 @@
 #include <iostream>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/properties.h>
 #include <zorba/store_consts.h>
 #include <zorba/store_manager.h>
 #include <zorba/tokenizer.h>
 #include <zorba/user_exception.h>
 #include <zorba/zorba.h>
 #include <zorba/zorba_exception.h>
-
-#include "system/properties.h"
 
 using namespace std;
 using namespace zorba;
@@ -371,8 +370,6 @@ int test_tokenizer( int argc, char *argv[] ) {
   Zorba *const zorba = Zorba::getInstance( zstore );
 
   try {
-    Properties::load( 0, NULL );
-
     char const *const query_src =
       "let $x :="
       "  <content>"

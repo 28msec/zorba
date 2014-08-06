@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -69,6 +70,10 @@ void SeededRandomIteratorState::init(PlanState& planState) {
 void SeededRandomIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring SeededRandomIterator::getNameAsString() const {
+  return "fn-zorba-random:seeded-random";
+}
 // </SeededRandomIterator>
 
 
@@ -109,6 +114,10 @@ void RandomIteratorState::init(PlanState& planState) {
 void RandomIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring RandomIterator::getNameAsString() const {
+  return "fn-zorba-random:random";
+}
 // </RandomIterator>
 
 
@@ -137,6 +146,10 @@ void UuidIterator::accept(PlanIterVisitor& v) const
 
 UuidIterator::~UuidIterator() {}
 
+
+zstring UuidIterator::getNameAsString() const {
+  return "fn-zorba-util:uuid";
+}
 // </UuidIterator>
 
 

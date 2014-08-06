@@ -66,6 +66,7 @@ bool operator==( QName const &q1, QName const &q2 ) {
       && ztd::equals( q1.ns(), q2.ns() );
 }
 
+
 bool operator==( QName const &q1, char const *q2 ) {
   if ( q2 ) {
     if ( *q2 == '{' ) {
@@ -146,6 +147,10 @@ bool operator==( location const &i, location const &j ) {
       && i.column_     == j.column_
       && i.line_end_   == j.line_end_
       && i.column_end_ == j.column_end_;
+}
+
+bool operator!=( location const &i, location const &j ) {
+  return !(i == j);
 }
 
 parameters const parameters::empty;
@@ -388,7 +393,11 @@ diagnostic::kind Diagnostic::kind() const {
 }
 
 char const* Diagnostic::message() const {
-  return diagnostic::dict::lookup( qname().localname() );
+  diagnostic::QName const &q = qname();
+  zstring temp( q.prefix() );
+  temp += ':';
+  temp += q.localname();
+  return diagnostic::dict::lookup( temp );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

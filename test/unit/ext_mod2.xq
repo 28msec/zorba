@@ -17,3 +17,5 @@
 module namespace ext = "http://www.zorba-xquery.com/m";
 
 declare function ext:bar4($s as item()*) as item()* external;
+
+declare function ext:bar5() external;

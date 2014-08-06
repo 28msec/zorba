@@ -73,7 +73,7 @@ sctx_test_2(Zorba* const zorba)
 
   try
   {
-    Item lFetched = lSctx->fetch("http://www.zorba-xquery.com/modules/fetch", "MODULE");
+    Item lFetched = lSctx->fetch("http://zorba.io/modules/fetch", "MODULE");
 
     return !lFetched.isNull();
   }
@@ -109,7 +109,7 @@ bool sctx_test_3(Zorba* zorba)
     if (result.str() != "<hello>World!</hello>")
       return false;
   }
-  catch (XQueryException &e)
+  catch (ZorbaException const &e)
   {
     std::cerr << e << std::endl;
     return false;
@@ -128,7 +128,7 @@ sctx_test_4(Zorba* const zorba)
 
   try
   {
-    Item lFetched = lSctx->fetchBinary("http://www.zorba-xquery.com/modules/fetch", "MODULE");
+    Item lFetched = lSctx->fetchBinary("http://zorba.io/modules/fetch", "MODULE");
 
     size_t s;
     return !lFetched.isNull() && lFetched.getBase64BinaryValue(s);
@@ -149,16 +149,16 @@ sctx_test_5(Zorba* zorba)
 
   queryString1
     << "import module namespace ddl = "
-    << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl\";"
+    << "\"http://zorba.io/modules/store/dynamic/collections/ddl\";"
     << std::endl
     << "ddl:create(xs:QName(\"coll1\"));"
     << std::endl;
 
   queryString2
     << "import module namespace ddl = "
-    << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl\";"
+    << "\"http://zorba.io/modules/store/dynamic/collections/ddl\";"
     << "import module namespace dml = "
-    << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/dml\";"
+    << "\"http://zorba.io/modules/store/dynamic/collections/dml\";"
     << std::endl
     << "ddl:create(xs:QName(\"coll1\"), <a/>);"
     << "count(dml:collection(xs:QName(\"coll1\")))"
@@ -167,7 +167,7 @@ sctx_test_5(Zorba* zorba)
   ItemFactory* factory = zorba->getItemFactory();
 
   Item fname = factory->
-  createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl", 
+  createQName("http://zorba.io/modules/store/dynamic/collections/ddl", 
               "create");
 
   try

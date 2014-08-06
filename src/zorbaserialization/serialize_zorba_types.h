@@ -17,6 +17,10 @@
 #ifndef ZORBA_SPECIFIC_CLASS_SERIALIZATION
 #define ZORBA_SPECIFIC_CLASS_SERIALIZATION
 
+#include <cassert>
+#include <stdio.h>
+#include <map>
+
 #include <zorba/item.h>
 #include <zorba/xquery_exception.h>
 
@@ -31,9 +35,6 @@
 
 #include "store/api/shared_types.h"
 #include "diagnostics/assert.h"
-
-#include <stdio.h>
-#include <map>
 
 namespace zorba
 {

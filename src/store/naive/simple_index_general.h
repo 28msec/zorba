@@ -16,6 +16,7 @@
 #ifndef ZORBA_SIMPLE_STORE_INDEX_HASH_GENERAL
 #define ZORBA_SIMPLE_STORE_INDEX_HASH_GENERAL
 
+#include <cassert>
 #include <map>
 
 #include "simple_index.h"

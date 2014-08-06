@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -57,6 +58,10 @@ void CurrentDateTimeIterator::accept(PlanIterVisitor& v) const
 
 CurrentDateTimeIterator::~CurrentDateTimeIterator() {}
 
+
+zstring CurrentDateTimeIterator::getNameAsString() const {
+  return "fn:current-dateTime";
+}
 // </CurrentDateTimeIterator>
 
 
@@ -85,6 +90,10 @@ void CurrentDateIterator::accept(PlanIterVisitor& v) const
 
 CurrentDateIterator::~CurrentDateIterator() {}
 
+
+zstring CurrentDateIterator::getNameAsString() const {
+  return "fn:current-date";
+}
 // </CurrentDateIterator>
 
 
@@ -113,6 +122,10 @@ void CurrentTimeIterator::accept(PlanIterVisitor& v) const
 
 CurrentTimeIterator::~CurrentTimeIterator() {}
 
+
+zstring CurrentTimeIterator::getNameAsString() const {
+  return "fn:current-time";
+}
 // </CurrentTimeIterator>
 
 
@@ -141,6 +154,10 @@ void ImplicitTimezoneIterator::accept(PlanIterVisitor& v) const
 
 ImplicitTimezoneIterator::~ImplicitTimezoneIterator() {}
 
+
+zstring ImplicitTimezoneIterator::getNameAsString() const {
+  return "fn:implicit-timezone";
+}
 // </ImplicitTimezoneIterator>
 
 
@@ -169,6 +186,10 @@ void DefaultCollationIterator::accept(PlanIterVisitor& v) const
 
 DefaultCollationIterator::~DefaultCollationIterator() {}
 
+
+zstring DefaultCollationIterator::getNameAsString() const {
+  return "fn:default-collation";
+}
 // </DefaultCollationIterator>
 
 

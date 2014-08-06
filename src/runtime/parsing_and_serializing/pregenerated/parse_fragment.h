@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_PARSING_AND_SERIALIZING_PARSE_FRAGMENT_H
 #define ZORBA_RUNTIME_PARSING_AND_SERIALIZING_PARSE_FRAGMENT_H
 
@@ -75,6 +76,8 @@ public:
 
   virtual ~FnZorbaParseXmlFragmentIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -117,6 +120,8 @@ public:
   {}
 
   virtual ~FnZorbaCanonicalizeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -163,6 +168,8 @@ public:
   {}
 
   virtual ~FnParseXmlFragmentIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

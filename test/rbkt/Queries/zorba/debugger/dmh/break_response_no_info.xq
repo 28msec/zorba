@@ -1,4 +1,4 @@
-import module namespace dmh = "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler";
+import module namespace dmh = "http://zorba.io/modules/dbgp-message-handler";
 
 let $e :=
   <response command="status" status="break" reason="ok" transaction_id="5">

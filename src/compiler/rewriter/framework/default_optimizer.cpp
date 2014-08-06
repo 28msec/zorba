@@ -30,7 +30,7 @@
 
 #include "functions/udf.h"
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #include "context/static_context.h"
 
@@ -67,7 +67,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
 
   // InlineFunctions
 
-  if (Properties::instance()->inlineUdf())
+  if (Properties::instance().getInlineUDF())
   {
     SingletonRuleMajorDriver<InlineFunctions> driverInlineFunctions;
     if (driverInlineFunctions.rewrite(rCtx))
@@ -150,7 +150,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   }
 
   // Loop Hoisting
-  if (Properties::instance()->loopHoisting())
+  if (Properties::instance().getLoopHoisting())
   {
     HoistRule rule;
     bool local_modified = false;
@@ -165,7 +165,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     {
       modified = true;
 
-      if (Properties::instance()->printIntermediateOpt())
+      if (Properties::instance().getPrintIntermediateOpt())
       {
         std::cout << "After hoisting : " << std::endl;
         rCtx.getRoot()->put(std::cout) << std::endl;
@@ -177,7 +177,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   }
 
   // index matching
-  if (Properties::instance()->useIndexes())
+  if (Properties::instance().getUseIndexes())
   {
     static_context* sctx = rCtx.theRoot->get_sctx();
 
@@ -212,7 +212,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
 
       if (local_modified)
       {
-        if (Properties::instance()->printIntermediateOpt())
+        if (Properties::instance().getPrintIntermediateOpt())
         {
           std::cout << "After index matching : " << std::endl;
           rCtx.getRoot()->put(std::cout) << std::endl;
@@ -224,7 +224,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   }
 
   // Index Joins
-  if (Properties::instance()->inferJoins())
+  if (Properties::instance().getInferJoins())
   {
     bool local_modified = false;
 
@@ -243,7 +243,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       {
         modified = true;
 
-        if (Properties::instance()->printIntermediateOpt())
+        if (Properties::instance().getPrintIntermediateOpt())
         {
           std::cout << "After index join : " << std::endl;
           rCtx.getRoot()->put(std::cout) << std::endl;
@@ -258,7 +258,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   }
 
   // Mark node copy property
-  if (Properties::instance()->noCopyOptim())
+  if (Properties::instance().getNoCopyOptim())
   {
     if (rCtx.theUDF == NULL)
     {

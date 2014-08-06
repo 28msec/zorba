@@ -1,7 +1,7 @@
 module namespace ca = 'http://www.28msec.com/benchmark/lib/custacc';
 
 import module namespace db = 
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  "http://zorba.io/modules/store/static/collections/dml";
 
 declare namespace an = "http://zorba.io/annotations";
 
@@ -23,4 +23,3 @@ declare variable $ca:custaccs := xs:QName("ca:custaccs");
 declare variable $ca:orders := xs:QName("ca:orders");
 declare variable $ca:index-custaccs-str := xs:QName("ca:index-custaccs-str");
 declare variable $ca:index-custaccs-int := xs:QName("ca:index-custaccs-int");
-

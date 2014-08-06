@@ -27,7 +27,6 @@
 #include <zorba/zorba_string.h>
 #include <zorba/iterator.h>
 #include <zorba/store_consts.h>
-#include <zorba/vector_item_sequence.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/util/transcode_stream.h>
 #include <zorba/internal/unique_ptr.h>
@@ -50,7 +49,7 @@ bool RequestParser::getString(const Item& aItem, const String& aName, const bool
   {
     if (lOption.isJSONItem() ||
          (
-    	   lOption.getTypeCode() != store::XS_STRING &&
+           lOption.getTypeCode() != store::XS_STRING &&
            lOption.getTypeCode() != store::XS_NORMALIZED_STRING &&
            lOption.getTypeCode() != store::XS_NAME &&
            lOption.getTypeCode() != store::XS_NCNAME &&
@@ -74,18 +73,25 @@ bool RequestParser::getInteger(const Item& aItem, const String& aName, const boo
   }
   else
   {
-    if (lOption.isJSONItem() ||
-    	 (
-           lOption.getTypeCode() != store::XS_INTEGER &&
-           lOption.getTypeCode() != store::XS_INT &&
-           lOption.getTypeCode() != store::XS_NON_NEGATIVE_INTEGER &&
-           lOption.getTypeCode() != store::XS_POSITIVE_INTEGER
-         )
-       )
-      raiseTypeError(aName,lOption.getType().getLocalName(), "integer");
-    aResult = atoi(lOption.getStringValue().c_str());
+    aResult = parseInteger(lOption, aName);
     return true;
   }
+}
+
+int RequestParser::parseInteger(const Item& aItem, const String& aName)
+{
+  if (aItem.isJSONItem() ||
+       (
+         aItem.getTypeCode() != store::XS_INTEGER &&
+         aItem.getTypeCode() != store::XS_INT &&
+         aItem.getTypeCode() != store::XS_NON_NEGATIVE_INTEGER &&
+         aItem.getTypeCode() != store::XS_POSITIVE_INTEGER
+       )
+     )
+  {
+     raiseTypeError(aName, aItem.getType().getLocalName(), "integer");
+  }
+  return atoi(aItem.getStringValue().c_str());
 }
 
 bool RequestParser::getBoolean(const Item& aItem, const String& aName, const bool aMandatory, bool& aResult)
@@ -167,7 +173,7 @@ void RequestParser::raiseMissingError(const String& aName)
   theThrower->raiseException("REQUEST", lMsg.str());
 }
 
-void RequestParser::parseHeaders(const Item& aItem)
+void RequestParser::parseHeaders(const Item& aItem, Headers& aHeaders)
 {
   Item lKey;
   String lName;
@@ -179,66 +185,85 @@ void RequestParser::parseHeaders(const Item& aItem)
   while (lIterator->next(lKey))
   {
     lName = lKey.getStringValue();
-    getString(aItem,lName,true,lValue);
-    theHandler->header(lName, lValue);
+    getString(aItem, lName, true, lValue);
+    aHeaders.push_back(std::pair<String, String>(lName, lValue));
   }
-
   lIterator->close();
 }
 
-void RequestParser::parseOptions(const Item& aItem, bool& aStatusOnly, String& aOverrideContentType,bool& aFollowRedirect, bool& aUserDefinedFollowRedirect, String& aUserAgent, int& aTimeout)
+void RequestParser::parseOptions(const Item& aItem, Options& aOptions)
 {
-  getBoolean(aItem,"status-only",false,aStatusOnly);
-  getString(aItem,"override-media-type", false,aOverrideContentType);
-  aUserDefinedFollowRedirect = getBoolean(aItem,"follow-redirect", false,aFollowRedirect);
-  getInteger(aItem,"timeout",false,aTimeout);
-  getString(aItem,"user-agent",false,aUserAgent);
+  getBoolean(aItem, "status-only", false, aOptions.theStatusOnly);
+  getString(aItem, "override-media-type", false, aOptions.theOverrideContentType);
+  aOptions.theUserDefinedFollowRedirect = getBoolean(aItem, "follow-redirect", false, aOptions.theFollowRedirect);
+  getInteger(aItem, "timeout", false, aOptions.theTimeout);
+  getString(aItem, "user-agent", false, aOptions.theUserAgent);
+
+  Item lRetry;
+  if (getObject(aItem, "retry", false, lRetry))
+    parseRetrySpecification(lRetry, aOptions.theRetrySpec);
 }
 
-void RequestParser::parseBody(const Item& aItem)
+void RequestParser::parseRetrySpecification(const Item& aItem, RetrySpecification& aRetrySpec)
 {
-  String lMediaType;
-  String lSrc;
+  Item lDelay;
+  Item lStatuses;
 
-  getString(aItem,"media-type",true,lMediaType);
-  std::string charset;
-  getCharset(lMediaType, charset);
-  getString(aItem,"src",false,lSrc);
+  aRetrySpec.theRetry = true;
 
-  std::vector<Item> lItems;
-  std::unique_ptr<VectorItemSequence> lSequence(new VectorItemSequence(lItems));
-  theHandler->beginBody(lMediaType, lSrc, lSequence.get());
+  getArray(aItem, "delay", true, lDelay);
+  uint64_t lDelaySize = lDelay.getArraySize();
+  if (lDelaySize == 0)
+    theThrower->raiseException("REQUEST", "The specified request is not valid. The delay array is empty.");
+  for(uint64_t i = 1; i <= lDelaySize; ++i)
+  {
+    Item lMember = lDelay.getArrayValue(i);
+    int lValue = parseInteger(lMember, "entry of delay");
+    if (lValue <= 0)
+      theThrower->raiseException("REQUEST", "The specified delays are not valid: they must all be greater than 0.");
+    aRetrySpec.theRetryDelays.push_back(lValue);
+  }
 
-  Item lContentI;
-  getItem(aItem,"content",true,lContentI);
-  theHandler->any(lContentI,charset);
-  theHandler->endBody();
+  getBoolean(aItem, "on-connection-error", false, aRetrySpec.theRetryOnConnectionError);
+  getArray(aItem, "on-statuses", true, lDelay);
+  uint64_t lStatusesSize = lDelay.getArraySize();
+  if (!aRetrySpec.theRetryOnConnectionError && lStatusesSize == 0)
+    theThrower->raiseException("REQUEST", "The specified request is not valid. Retry on connection error is false, and the on-status array is empty.");
+  for(uint64_t i = 1; i <= lStatusesSize; ++i)
+  {
+    Item lMember = lDelay.getArrayValue(i);
+    aRetrySpec.theRetryStatuses.push_back(parseInteger(lMember, "entry of statuses"));
+  }
 }
 
-void RequestParser::parsePart(const Item& aItem)
+void RequestParser::parseBody(const Item& aItem, Body& aBody)
+{
+  getString(aItem, "media-type", true, aBody.theMediaType);
+  getCharset(aBody.theMediaType, aBody.theCharset);
+  getString(aItem, "src", false, aBody.theSrc);
+  getItem(aItem, "content", true, aBody.theContent);
+}
+
+void RequestParser::parsePart(const Item& aItem, Part& aPart)
 {
   Item lHeaders;
   Item lBody;
 
-  bool lHaveHeaders = getObject(aItem,"headers",false,lHeaders);
+  bool lHaveHeaders = getObject(aItem, "headers", false, lHeaders);
   if (lHaveHeaders)
-    parseHeaders(lHeaders);
+    parseHeaders(lHeaders, aPart.theHeaders);
 
-  getObject(aItem,"body",true,lBody);
-  parseBody(lBody);
+  getObject(aItem, "body", true, lBody);
+  parseBody(lBody, aPart.theBody);
 }
 
-void RequestParser::parseMultipart(const Item& aItem)
+void RequestParser::parseMultipart(const Item& aItem, MultiPart& aMultiPart)
 {
-  String lMediaType;
-  String lBoundary;
+  getString(aItem, "media-type", true, aMultiPart.theMediaType);
+  getCharset(aMultiPart.theMediaType, aMultiPart.theCharset);
+  getString(aItem, "boundary", false, aMultiPart.theBoundary);
 
-  std::string charset;
-  getString(aItem,"media-type",true,lMediaType);
-  getCharset(lMediaType,charset);
-  getString(aItem,"boundary",false,lBoundary);
 
-  theHandler->beginMultipart(lMediaType, lBoundary);
   Item lParts = aItem.getObjectValue("parts");
   if (!lParts.isNull())
   {
@@ -252,90 +277,72 @@ void RequestParser::parseMultipart(const Item& aItem)
         Item lMember = lParts.getArrayValue(i);
         if (lMember.isAtomic() || !lMember.isJSONItem() || lMember.getJSONItemKind() != store::StoreConsts::jsonObject)
           raiseTypeError("part",lMember.getType().getLocalName(), "object");
-        parsePart(lMember);
+
+        Part lPart;
+        parsePart(lMember, lPart);
+        aMultiPart.theParts.push_back(lPart);
       }
     }
   }
-  theHandler->endMultipart();
 }
 
-void RequestParser::parseAuthentication(const Item& aItem, String& aUserName, String& aPassword, String& aAuthMethod)
+void RequestParser::parseAuthentication(const Item& aItem, Authentication& aAuthentication)
 {
-  getString(aItem,"username",true,aUserName);
-  getString(aItem,"password",true,aPassword);
-  getString(aItem,"auth-method",true,aAuthMethod);
+  getString(aItem, "username", true, aAuthentication.theUserName);
+  getString(aItem, "password", true, aAuthentication.thePassword);
+  getString(aItem, "auth-method", true, aAuthentication.theAuthMethod);
 }
 
-void RequestParser::parseRequest(const Item& aItem)
+void RequestParser::parseRequest(const Item& aItem, Request& aRequest)
 {
-  theHandler->begin();
-  String lMethod;
-  String lHref;
-  bool lStatusOnly = false;
-  String lUsername;
-  String lPassword;
-  String lAuthMethod;
-  bool lSendAuthentication = false;
-  String lOverrideContentType;
-  bool lFollowRedirect = false;
-  bool lUserDefinedFollowRedirect = false;
-  int lTimeout = -1;
-  String lUserAgent;
+  if (!getString(aItem, "method", false, aRequest.theMethod))
+    aRequest.theMethod = "GET";
+  else
+    aRequest.theMethod = fn::upper_case(aRequest.theMethod);
 
-  if(!getString(aItem,"method",false,lMethod))
-    lMethod ="GET";
-  getString(aItem,"href",true,lHref);
+  getString(aItem, "href", true, aRequest.theHref);
 
   Item lAuthentication;
-  if ((lSendAuthentication = getObject(aItem,"authentication",false,lAuthentication)))
-    parseAuthentication(lAuthentication,lUsername,lPassword,lAuthMethod);
+  if ((aRequest.theAuthentication.theSendAuthentication = getObject(aItem, "authentication", false, lAuthentication)))
+    parseAuthentication(lAuthentication, aRequest.theAuthentication);
 
   Item lOptions;
-  if (getObject(aItem,"options",false,lOptions))
-    parseOptions(lOptions,lStatusOnly,lOverrideContentType,lFollowRedirect,lUserDefinedFollowRedirect,lUserAgent,lTimeout);
-
-  lMethod = fn::upper_case(lMethod);
+  if (getObject(aItem, "options", false, lOptions))
+    parseOptions(lOptions, aRequest.theOptions);
 
   // follow-redirect: take care of the default (if the user didn't provide one)
-  if (lMethod == "GET" || lMethod == "HEAD" || lMethod == "OPTIONS")
+  if (aRequest.theMethod == "GET" || aRequest.theMethod == "HEAD" || aRequest.theMethod == "OPTIONS")
   {
-    if (!lUserDefinedFollowRedirect)
-      lFollowRedirect = "true";
+    if (!aRequest.theOptions.theUserDefinedFollowRedirect)
+      aRequest.theOptions.theFollowRedirect = true;
   }
   else
   {
-    if (lFollowRedirect)
+    if (aRequest.theOptions.theFollowRedirect)
     {
       std::ostringstream lMsg;
-      lMsg << "cannot follow redirect, request method: " << lMethod;
+      lMsg << "cannot follow redirect, request method: " << aRequest.theMethod;
       theThrower->raiseException("FOLLOW", lMsg.str());
     }
   }
 
-  theHandler->beginRequest(lMethod, lHref, lStatusOnly, lUsername, lPassword,
-      lAuthMethod, lSendAuthentication, lOverrideContentType, lFollowRedirect,
-      lUserAgent, lTimeout);
-
   Item lHeaders;
-  bool haveHeaders = getObject(aItem,"headers",false,lHeaders);
-  if (haveHeaders)
-    parseHeaders(lHeaders);
+  bool lHaveHeaders = getObject(aItem, "headers", false, lHeaders);
+  if (lHaveHeaders)
+    parseHeaders(lHeaders, aRequest.theHeaders);
 
   Item lBody;
   Item lMultipart;
-  bool haveBody = getObject(aItem,"body",false,lBody);
-  bool haveMultipart = getObject(aItem,"multipart",false,lMultipart);
-  if (haveBody && haveMultipart)
+  aRequest.theHaveBody = getObject(aItem, "body", false, lBody);
+  aRequest.theHaveMultiPart = getObject(aItem, "multipart", false, lMultipart);
+  if (aRequest.theHaveBody && aRequest.theHaveMultiPart)
     theThrower->raiseException("REQUEST","The specified request is not valid. HTTP request cannot contain both body and multipart");
 
-  if (haveBody)
-    parseBody(lBody);
+  if (aRequest.theHaveBody)
+    parseBody(lBody, aRequest.theBody);
 
-  if (haveMultipart)
-    parseMultipart(lMultipart);
-
-  theHandler->endRequest();
-  theHandler->end();
+  if (aRequest.theHaveMultiPart)
+    parseMultipart(lMultipart, aRequest.theMultiPart);
 }
 
 void RequestParser::getCharset(const String& aMediaType, std::string& charset)
@@ -352,3 +359,4 @@ void RequestParser::getCharset(const String& aMediaType, std::string& charset)
 
 }
 }
+/* vim:set et sw=2 ts=2: */

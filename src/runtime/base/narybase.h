@@ -17,6 +17,7 @@
 #ifndef ZORBA_RUNTIME_NARY_ITERATOR
 #define ZORBA_RUNTIME_NARY_ITERATOR
 
+#include <cassert>
 #include <vector>
 
 #include "common/shared_types.h"
@@ -213,7 +214,7 @@ public:                                                                 \
   { }                                                                   \
                                                                         \
   void accept(PlanIterVisitor& v) const;                                \
-                                                                        \
+  zstring getNameAsString() const;                                      \
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
 };
 

@@ -504,10 +504,9 @@ private:
   bool get_char( char* );
   bool peek_char( char* );
   bool parse_codepoint( unicode::code_point *cp, bool throw_exceptions );
-  token::type parse_literal( char, token::value_type*, bool throw_exceptions );
-  token::numeric_type parse_number( char, token::value_type*,
-                                    bool throw_exceptions );
-  bool parse_string( token::value_type*, bool throw_exceptions );
+  token::type parse_literal( char, bool throw_exceptions );
+  token::numeric_type parse_number( char, bool throw_exceptions );
+  bool parse_string( bool throw_exceptions );
   void set_cur_loc();
   location& set_cur_loc_end( bool prev = true );
   void set_loc_range( location* );
@@ -518,6 +517,7 @@ private:
   column_type col_, prev_col_;
   location cur_loc_;
   bool throw_exceptions_;
+  token::value_type value_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

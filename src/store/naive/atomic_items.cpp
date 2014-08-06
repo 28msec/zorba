@@ -678,6 +678,9 @@ QNameItem::QNameItem(
   initializeAsQNameNotInPool(ns, prefix, local);
 }
 
+QNameItem::~QNameItem() {
+  // out-of-line since it's virtual
+}
 
 void QNameItem::initializeAsQNameNotInPool(
     const zstring& aNamespace,
@@ -882,6 +885,10 @@ NotationItem::NotationItem(store::SchemaTypeCode t, store::Item* qname)
   theQName = qname;
 }
 
+uint32_t NotationItem::hash(long timezone, const XQPCollator* aCollation) const
+{
+  return theQName->hash(timezone, aCollation);
+}
 
 bool NotationItem::equals(
     const store::Item* item,
@@ -1979,7 +1986,9 @@ FTTokenIterator_t StringItem::getTokens(
       theValue.data(), theValue.size(), lang, wildcards, callback
     );
 
-  return FTTokenIterator_t( new NaiveFTTokenIterator( tokens.release() ) );
+  FTTokenIterator *const temp = new NaiveFTTokenIterator( tokens.get() );
+  tokens.release();
+  return FTTokenIterator_t( temp );
 }
 #endif /* ZORBA_NO_FULL_TEXT */
 
@@ -1994,7 +2003,7 @@ StreamableStringItem::StreamableStringItem(
     bool seekable) 
   :
   StringItem(t),
-  theIstream(aStream),
+  theIstream(&aStream),
   theIsMaterialized(false),
   theIsConsumed(false),
   theIsSeekable(seekable),
@@ -2008,7 +2017,7 @@ StreamableStringItem::StreamableStringItem(
     store::Item_t& aStreamableDependent)
   :
   StringItem(t),
-  theIstream(aStreamableDependent->getStream()),
+  theIstream(&aStreamableDependent->getStream()),
   theIsMaterialized(false),
   theIsConsumed(false),
   theIsSeekable(aStreamableDependent->isSeekable()),
@@ -2144,6 +2153,31 @@ bool StreamableStringItem::isSeekable() const
   return theIsSeekable;
 }
 
+void StreamableStringItem::ensureSeekable()
+{
+  if (!theIsMaterialized && !theIsSeekable && theIsConsumed)
+  {
+    // a non-seekable stream can only be consumed once
+    // we raise an error if getStream is called twice
+    // if a query requires a stream to be consumed more than once,
+    // the query needs to make sure that the stream is explicitly
+    // materialized before
+    throw ZORBA_EXCEPTION( zerr::ZSTR0055_STREAMABLE_STRING_CONSUMED );
+  }
+  else if (!theIsMaterialized && !theIsSeekable)
+  {
+    std::stringstream* lStringStream = new std::stringstream();
+    (*lStringStream) << theIstream->rdbuf();
+    if (theStreamReleaser)
+      theStreamReleaser(theIstream);
+    if (!theStreamableDependent.isNull())
+      theStreamableDependent = nullptr;
+    theIstream = lStringStream;
+    theStreamReleaser = StreamableStringItem::streamReleaser;
+    theIsSeekable = true;
+    theIsConsumed = false;
+  }
+}
 
 std::istream& StreamableStringItem::getStream()
 {
@@ -2162,12 +2196,12 @@ std::istream& StreamableStringItem::getStream()
     // We are not using theIstream.seekg because the USER_ERROR that is thrown
     // by Zorba is lost possibly in an internal try/catch of the seekg
     std::streambuf * pbuf;
-    pbuf = theIstream.rdbuf();
+    pbuf = theIstream->rdbuf();
     pbuf->pubseekoff(0, std::ios::beg);
-    theIstream.clear();
+    theIstream->clear();
   }
   theIsConsumed = true;
-  return theIstream;
+  return *theIstream;
 }
 
 
@@ -2192,7 +2226,7 @@ void StreamableStringItem::materialize() const
   lSsi->theIsConsumed = true;
 
   char lBuf[4096];
-  while (theIstream) 
+  while (!theIstream->fail())
   {
     lStream.read(lBuf, sizeof(lBuf));
     lSsi->theValue.append(lBuf, static_cast<unsigned int>(lStream.gcount()));
@@ -3538,7 +3572,7 @@ zstring Base64BinaryItem::show() const
 
 
 /*******************************************************************************
-  class StreamableStringItem
+  class StreamableBase64BinaryItem
 ********************************************************************************/
 zstring StreamableBase64BinaryItem::getStringValue() const
 {
@@ -3593,6 +3627,18 @@ StreamableBase64BinaryItem::hash(long timezone, const XQPCollator* aCollation) c
   return Base64BinaryItem::hash(timezone, aCollation);
 }
 
+bool
+StreamableBase64BinaryItem::equals(store::Item const* aItem, long aTimezone,
+  XQPCollator const* aCollator) const
+{
+  if (!theIsMaterialized)
+  {
+    materialize();
+  }
+  return Base64BinaryItem::equals(aItem, aTimezone, aCollator);
+}
+
+
 
 const char*
 StreamableBase64BinaryItem::getBase64BinaryValue(size_t& s) const
@@ -3614,6 +3660,39 @@ bool StreamableBase64BinaryItem::isStreamable() const
 bool StreamableBase64BinaryItem::isSeekable() const
 {
   return theIsSeekable;
+}
+
+void StreamableBase64BinaryItem::ensureSeekable()
+{
+  if (!theIsMaterialized && !theIsSeekable && theIsConsumed)
+  {
+    // a non-seekable stream can only be consumed once
+    // we raise an error if getStream is called twice
+    // if a query requires a stream to be consumed more than once,
+    // the query needs to make sure that the stream is explicitly
+    // materialized before
+    throw ZORBA_EXCEPTION( zerr::ZSTR0055_STREAMABLE_STRING_CONSUMED );
+  }
+  else if (!theIsMaterialized && !theIsSeekable)
+  {
+    std::stringstream* lStringStream = new std::stringstream();
+    std::streambuf * pbuf;
+    pbuf = theIstream->rdbuf();
+    pbuf->pubseekoff(0, std::ios::beg);
+    theIstream->clear();
+
+    (*lStringStream) << pbuf;
+    if (theStreamReleaser)
+      theStreamReleaser(theIstream);
+    theIstream = lStringStream;
+    theStreamReleaser = StreamableBase64BinaryItem::streamReleaser;
+    theIsSeekable = true;
+    theIsConsumed = false;
+  }
+  else if (!theIsMaterialized)
+  {
+    materialize();
+  }
 }
 
 
@@ -3646,12 +3725,12 @@ std::istream& StreamableBase64BinaryItem::getStream()
     // We are not using theIstream.seekg because the USER_ERROR that is thrown
     // by Zorba is lost possibly in an internal try/catch of the seekg
     std::streambuf * pbuf;
-    pbuf = theIstream.rdbuf();
+    pbuf = theIstream->rdbuf();
     pbuf->pubseekoff(0, std::ios::beg);
-    theIstream.clear();
+    theIstream->clear();
   }
   theIsConsumed = true;
-  return theIstream;
+  return *theIstream;
 }
 
 
@@ -3660,6 +3739,7 @@ void StreamableBase64BinaryItem::materialize() const
   StreamableBase64BinaryItem* const s
     = const_cast<StreamableBase64BinaryItem*>(this);
   std::istream& lStream = s->getStream();
+  lStream.clear();
 
   s->theIsMaterialized = true;
   s->theIsConsumed = true;

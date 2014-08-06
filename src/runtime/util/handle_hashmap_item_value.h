@@ -16,6 +16,8 @@
 #ifndef ZORBA_STORE_HANDLE_HAHSET_ITEM_VALUE_H
 #define ZORBA_STORE_HANDLE_HAHSET_ITEM_VALUE_H
 
+#include <cassert>
+
 #include "zorbautils/hashmap.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/api/runtimecb.h"

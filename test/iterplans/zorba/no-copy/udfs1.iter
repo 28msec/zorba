@@ -1,71 +1,71 @@
-Iterator tree for const-folded expr:
-<FunctionTraceIterator>
-  <SingletonIterator value="xs:integer(2)"/>
-</FunctionTraceIterator>
-
-Iterator tree for main query:
-<SequentialIterator>
-  <CtxVarDeclareIterator varid="4" varname="d1">
-    <ElementIterator>
-      <SingletonIterator value="xs:QName(,,a)"/>
-      <ElementIterator>
-        <SingletonIterator value="xs:QName(,,b)"/>
-        <ElementIterator>
-          <SingletonIterator value="xs:QName(,,c)"/>
-        </ElementIterator>
-      </ElementIterator>
-    </ElementIterator>
-  </CtxVarDeclareIterator>
-  <CtxVarDeclareIterator varid="5" varname="d2">
-    <ElementIterator>
-      <SingletonIterator value="xs:QName(,,a)"/>
-      <ElementIterator>
-        <SingletonIterator value="xs:QName(,,b)"/>
-        <ElementIterator>
-          <SingletonIterator value="xs:QName(,,c)"/>
-        </ElementIterator>
-      </ElementIterator>
-    </ElementIterator>
-  </CtxVarDeclareIterator>
-  <FnConcatIterator>
-    <UDFunctionCallIterator function="local:foo">
-      <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-        <CtxVarIterator varid="4" varname="d1" varkind="local"/>
-      </TreatIterator>
-    </UDFunctionCallIterator>
-    <UDFunctionCallIterator function="local:foo">
-      <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-        <CtxVarIterator varid="5" varname="d2" varkind="local"/>
-      </TreatIterator>
-    </UDFunctionCallIterator>
-  </FnConcatIterator>
-</SequentialIterator>
-
-Iterator tree for local:foo:
-<TreatIterator quant="">
-  <flwor::FLWORIterator>
-    <ForVariable name="child">
-      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
-        <LetVarIterator varname="n"/>
-      </ChildAxisIterator>
-    </ForVariable>
-    <ReturnClause>
-      <UDFunctionCallIterator function="local:parent">
-        <ForVarIterator varname="child"/>
-      </UDFunctionCallIterator>
-    </ReturnClause>
-  </flwor::FLWORIterator>
-</TreatIterator>
-
-Iterator tree for local:parent:
-<TreatIterator quant="">
+<iterator-tree description="const-folded expr">
+  <FunctionTraceIterator>
+    <SingletonIterator value="xs:integer(2)"/>
+  </FunctionTraceIterator>
+</iterator-tree>
+<iterator-tree description="main query">
   <SequentialIterator>
-    <ApplyIterator>
-      <SingletonIterator value="xs:integer(2)"/>
-    </ApplyIterator>
-    <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
-      <LetVarIterator varname="n"/>
-    </ParentAxisIterator>
+    <CtxVarDeclareIterator varid="4" varname="d1">
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,a)"/>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,b)"/>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,c)"/>
+          </ElementIterator>
+        </ElementIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="5" varname="d2">
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,a)"/>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,b)"/>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,c)"/>
+          </ElementIterator>
+        </ElementIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <FnConcatIterator>
+      <UDFunctionCallIterator function="local:foo">
+        <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
+          <CtxVarIterator varid="4" varname="d1" varkind="local"/>
+        </TreatIterator>
+      </UDFunctionCallIterator>
+      <UDFunctionCallIterator function="local:foo">
+        <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
+          <CtxVarIterator varid="5" varname="d2" varkind="local"/>
+        </TreatIterator>
+      </UDFunctionCallIterator>
+    </FnConcatIterator>
   </SequentialIterator>
-</TreatIterator>
-
+</iterator-tree>
+<iterator-tree description="local:foo">
+  <TreatIterator quant="">
+    <FLWORIterator>
+      <ForVariable name="child">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="0">
+          <LetVarIterator varname="n"/>
+        </ChildAxisIterator>
+      </ForVariable>
+      <ReturnClause>
+        <UDFunctionCallIterator function="local:parent">
+          <ForVarIterator varname="child"/>
+        </UDFunctionCallIterator>
+      </ReturnClause>
+    </FLWORIterator>
+  </TreatIterator>
+</iterator-tree>
+<iterator-tree description="local:parent">
+  <TreatIterator quant="">
+    <SequentialIterator>
+      <ApplyIterator>
+        <SingletonIterator value="xs:integer(2)"/>
+      </ApplyIterator>
+      <ParentAxisIterator test-kind="match_anykind_test" qname="*" typename="*" nill-allowed="0">
+        <LetVarIterator varname="n"/>
+      </ParentAxisIterator>
+    </SequentialIterator>
+  </TreatIterator>
+</iterator-tree>

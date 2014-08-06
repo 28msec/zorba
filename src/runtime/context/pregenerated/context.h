@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_CONTEXT_CONTEXT_H
 #define ZORBA_RUNTIME_CONTEXT_CONTEXT_H
 
@@ -57,6 +58,8 @@ public:
 
   virtual ~CurrentDateTimeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -86,6 +89,8 @@ public:
   {}
 
   virtual ~CurrentDateIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -117,6 +122,8 @@ public:
 
   virtual ~CurrentTimeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -147,6 +154,8 @@ public:
 
   virtual ~ImplicitTimezoneIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -176,6 +185,8 @@ public:
   {}
 
   virtual ~DefaultCollationIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

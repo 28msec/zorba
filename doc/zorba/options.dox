@@ -285,7 +285,7 @@ annotations have the namespace <tt>http://zorba.io/annotations</tt>.
 
 A deterministic function is a function that always evaluates to the same result 
 if it is invoked multiple times with the same arguments during the evaluation 
-of a <a href="scripting_spec.html#id-snapshot-scope">snapshot</a>. In general, 
+of a <a href="/scripting-spec?anchor=id-snapshot-scope">snapshot</a>. In general, 
 all functions defined by XQuery are deterministic. However, a module developer 
 might develop a function (in a host language) which does not guarantee to be 
 deterministic. For example, a function generating random numbers is clearly 
@@ -348,7 +348,7 @@ If a value is assigned to a nonassignable variable, the error <tt>XSST0007</tt> 
 \paragraph variadic_annotation Variadic Functions
 A function annotated with the <tt>%an:variadic</tt> annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments.  
 
-For example, the function to create an unordered map with an arbitrary number of key types (see module <a href="/documentation/zorba/2.9/modules/www.zorba-xquery.com_modules_store_data-structures_unordered-map.html">http://www.zorba-xquery.com/modules/store/data-structures/unordered-map</a>) is declared as follow:
+For example, the function to create an unordered map with an arbitrary number of key types (see module <a href="/modules/latest/zorba.io/modules/store/data-structures/unordered-map">http://zorba.io/modules/store/data-structures/unordered-map</a>) is declared as follow:
 
 \code
 declare %an:variadic %an:sequential function map:create(
@@ -375,7 +375,7 @@ file:read-text("big_file.txt")
 
 However, the disadvantage is that a streamable string can only be consumed exactly once.
 If a streamable string is consumed more than once, an error is raised.
-In order to enable multiple consumers of a streamable string, the materialize function of the string module (<a href="../modules_zorba_xquery_data_model_atomic_String.html">http://zorba.io/modules/string</a>) should be used to materialize the entire contents in an (regular) xs:string item.
+In order to enable multiple consumers of a streamable string, the materialize function of the string module (<a href="/modules/latest/zorba.io/modules/string">http://zorba.io/modules/string</a>) should be used to materialize the entire contents in an (regular) xs:string item.
 
 \code
 import module namespace file = "http://expath.org/ns/file";
@@ -517,7 +517,7 @@ Specifically, Zorba recognizes the following pragmas:
 <ul>
   <li><b>no-copy</b> In order to indicate that a node that should be inserted into a collection does not need to be copied before inserting it. Not copying a node improves performance. However, the user needs to make sure that the node does not have a parent and is not modified in any other expression. For example, in the following example snippet, the node refered to by <tt>$n</tt> will not be copied before insertion into the collection.
 \code
-import module namespace db = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+import module namespace db = "http://zorba.io/modules/store/dynamic/collections/dml";
 
 declare namespace ext = "http://zorba.io/extensions";
 

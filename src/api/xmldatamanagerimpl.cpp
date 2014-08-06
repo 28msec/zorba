@@ -156,8 +156,8 @@ CollectionManager* XmlDataManagerImpl::getCollectionManager() const
         theContext,
         theFactory,
         theDiagnosticHandler,
-        "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl",
-        "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml");
+        "http://zorba.io/modules/store/dynamic/collections/ddl",
+        "http://zorba.io/modules/store/dynamic/collections/dml");
   }
   return theColManager;
 }
@@ -174,8 +174,8 @@ CollectionManager* XmlDataManagerImpl::getW3CCollectionManager() const
         theContext,
         theFactory,
         theDiagnosticHandler,
-        "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl",
-        "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml");
+        "http://zorba.io/modules/store/dynamic/collections/w3c/ddl",
+        "http://zorba.io/modules/store/dynamic/collections/w3c/dml");
   }
   return theW3CColManager;
 }
@@ -317,28 +317,44 @@ ItemSequence_t XmlDataManagerImpl::parseXML(
     Item empty_item;
     Item validated_options;
     NsBindings nsPairs;
-    Item untyped_type = theFactory->createQName(static_context::W3C_XML_SCHEMA_NS, "", "untyped");
-    Item options_node = theFactory->createElementNode(empty_item,
-        theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "options"),
-        untyped_type, false, false, nsPairs);
+
+    Item untyped_type = theFactory->createQName(static_context::W3C_XML_SCHEMA_NS,
+                                                "",
+                                                "untyped");
+
+    Item options_node =
+    theFactory->createElementNode(
+                empty_item,
+                theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS,
+                                        "options"),
+                untyped_type, false, false, nsPairs);
 
     if (aOptions.isDtdValidationEnabled())
-      theFactory->createElementNode(options_node,
-          theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "DTD-validate"),
-          untyped_type, false, false, nsPairs);
+      theFactory->createElementNode(
+                  options_node,
+                  theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS,
+                                          "DTD-validate"),
+                  untyped_type, false, false, nsPairs);
 
     if (aOptions.isExternalEntityProcessingEnabled())
-      theFactory->createElementNode(options_node,
-          theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "parse-external-parsed-entity"),
-          untyped_type, false, false, nsPairs);
+      theFactory->createElementNode(
+                  options_node,
+                  theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS,
+                                          "parse-external-parsed-entity"),
+                  untyped_type, false, false, nsPairs);
+    
+    Item base_uri_node = 
+    theFactory->createElementNode(
+                options_node,
+                theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS,
+                                        "base-uri"),
+                untyped_type, false, false, nsPairs);
 
-    Item base_uri_node = theFactory->createElementNode(options_node,
-        theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "base-uri"),
-        untyped_type, false, false, nsPairs);
-    theFactory->createAttributeNode(base_uri_node,
-        theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "value"),
-        Item(),
-        theFactory->createString(aBaseURI));
+    theFactory->createAttributeNode(
+                base_uri_node,
+                theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "value"),
+                Item(),
+                theFactory->createString(aBaseURI));
 
     theContext->validate(options_node, validated_options, validate_strict);
 

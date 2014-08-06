@@ -1,4 +1,4 @@
-import module namespace uri = "http://www.zorba-xquery.com/modules/uri";
+import module namespace uri = "http://zorba.io/modules/uri";
 
 let $xml-uri-test := { "uri-test" : 
  [

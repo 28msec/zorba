@@ -253,8 +253,9 @@ bool lexer::next( token *t, bool throw_exceptions ) {
         //
         location::line_type const quote_line = cur_loc_.line();
         location::column_type const quote_col = cur_loc_.column();
-        if ( !parse_string( &t->value_, throw_exceptions ) )
+        if ( !parse_string( throw_exceptions ) )
           return false;
+        t->value_ = value_;
         t->type_ = token::string;
         t->loc_.set(
           cur_loc_.file(), quote_line, quote_col, prev_line_, prev_col_
@@ -273,8 +274,9 @@ bool lexer::next( token *t, bool throw_exceptions ) {
       case '8':
       case '9': {
         token::numeric_type nt;
-        if ( !(nt = parse_number( c, &t->value_, throw_exceptions )) )
+        if ( !(nt = parse_number( c, throw_exceptions )) )
           return false;
+        t->value_ = value_;
         t->numeric_type_ = nt;
         t->type_ = token::number;
         set_loc_range( &t->loc_ );
@@ -284,8 +286,9 @@ bool lexer::next( token *t, bool throw_exceptions ) {
       case 'n':   // null
       case 't': { // true
         token::type tt;
-        if ( !(tt = parse_literal( c, &t->value_, throw_exceptions )) )
+        if ( !(tt = parse_literal( c, throw_exceptions )) )
           return false;
+        t->value_ = value_;
         t->type_ = tt;
         set_loc_range( &t->loc_ );
         return true;
@@ -372,22 +375,21 @@ error_set_cur_loc_end_false:
   return false;
 }
 
-token::type lexer::parse_literal( char first_c, token::value_type *value,
-                                  bool throw_exceptions ) {
+token::type lexer::parse_literal( char first_c, bool throw_exceptions ) {
   static token::value_type const false_value( "false" );
   static token::value_type const null_value ( "null"  );
   static token::value_type const true_value ( "true"  );
 
   token::type tt = token::none;
   switch ( first_c ) {
-    case 'f': *value = false_value; tt = token::json_false; break;
-    case 'n': *value = null_value ; tt = token::json_null ; break;
-    case 't': *value = true_value ; tt = token::json_true ; break;
+    case 'f': value_ = false_value; tt = token::json_false; break;
+    case 'n': value_ = null_value ; tt = token::json_null ; break;
+    case 't': value_ = true_value ; tt = token::json_true ; break;
     default : assert( false );
   }
 
   char c;
-  for ( char const *s = value->c_str(); *++s; ) {
+  for ( char const *s = value_.c_str(); *++s; ) {
     if ( !get_char( &c ) )
       goto error_set_cur_loc_end_false;
     if ( c != *s )
@@ -409,17 +411,16 @@ error_set_cur_loc_end_false:
   return token::none;
 }
 
-token::numeric_type lexer::parse_number( char first_c,
-                                         token::value_type *value,
-                                         bool throw_exceptions ) {
+token::numeric_type lexer::parse_number( char first_c, bool throw_exceptions ) {
   token::numeric_type numeric_type;
+  ztd::string_appender<token::value_type,64> value( &value_ );
 
-  value->clear();
+  value_.clear();
 
   // <number> ::= [-] <int> [<frac>] [<exp>]
   char c = first_c;
   if ( c == '-' ) {
-    *value += c;
+    value += c;
     if ( !get_char( &c ) )
       goto error_set_cur_loc_end_false;
   }
@@ -427,7 +428,7 @@ token::numeric_type lexer::parse_number( char first_c,
   // <int> := '0' | <1-9> <digit>*
   if ( !ascii::is_digit( c ) )
     goto error_set_cur_loc_end;
-  *value += c;
+  value += c;
   numeric_type = token::integer;
   if ( c == '0' ) {
     if ( !peek_char( &c ) )
@@ -443,19 +444,19 @@ token::numeric_type lexer::parse_number( char first_c,
       if ( !ascii::is_digit( c ) )
         break;
       get_char( &c );
-      *value += c;
+      value += c;
     }
   }
 
   // <frac> ::= '.' <digit>+
   if ( c == '.' ) {
     get_char( &c );
-    *value += c;
+    value += c;
     if ( !get_char( &c ) )
       goto error_set_cur_loc_end_false;
     if ( !ascii::is_digit( c ) )
       goto error_set_cur_loc_end;
-    *value += c;
+    value += c;
     numeric_type = token::decimal;
     while ( true ) {
       if ( !peek_char( &c ) )
@@ -465,7 +466,7 @@ token::numeric_type lexer::parse_number( char first_c,
       if ( !ascii::is_digit( c ) )
         break;
       get_char( &c );
-      *value += c;
+      value += c;
     }
   }
 
@@ -474,17 +475,17 @@ token::numeric_type lexer::parse_number( char first_c,
   // <sign> ::= '-' | '+'
   if ( c == 'e' || c == 'E' ) {
     get_char( &c );
-    *value += c;
+    value += c;
     if ( !get_char( &c ) )
       goto error_set_cur_loc_end_false;
     if ( c == '+' || c == '-' ) {
-      *value += c;
+      value += c;
       if ( !get_char( &c ) )
         goto error_set_cur_loc_end_false;
     }
     if ( !ascii::is_digit( c ) )
       goto error_set_cur_loc_end;
-    *value += c;
+    value += c;
     numeric_type = token::floating_point;
     while ( true ) {
       if ( !peek_char( &c ) )
@@ -494,7 +495,7 @@ token::numeric_type lexer::parse_number( char first_c,
       if ( !ascii::is_digit( c ) )
         break;
       get_char( &c );
-      *value += c;
+      value += c;
     }
   }
 
@@ -512,10 +513,12 @@ error_set_cur_loc_end_false:
   return token::non_numeric;
 }
 
-bool lexer::parse_string( token::value_type *value, bool throw_exceptions ) {
-  value->clear();
+bool lexer::parse_string( bool throw_exceptions ) {
   bool got_backslash = false;
   location start_loc( cur_loc_ );
+  ztd::string_appender<token::value_type,1024> value( &value_ );
+
+  value_.clear();
 
   while ( true ) {
     //
@@ -537,28 +540,29 @@ bool lexer::parse_string( token::value_type *value, bool throw_exceptions ) {
         case '"':
         case '/':
         case '\\':
-          *value += c;
+          value += c;
           break;
         case 'b':
-          *value += '\b';
+          value += '\b';
           break;
         case 'f':
-          *value += '\f';
+          value += '\f';
           break;
         case 'n':
-          *value += '\n';
+          value += '\n';
           break;
         case 'r':
-          *value += '\r';
+          value += '\r';
           break;
         case 't':
-          *value += '\t';
+          value += '\t';
           break;
         case 'u': {
           unicode::code_point cp;
           if ( !parse_codepoint( &cp, throw_exceptions ) )
             return false;
-          utf8::encode( cp, value );
+          value.flush();
+          utf8::encode( cp, &value_ );
           break;
         }
         default:
@@ -576,7 +580,7 @@ bool lexer::parse_string( token::value_type *value, bool throw_exceptions ) {
       case '"':
         return true;
       default:
-        *value += c;
+        value += c;
     }
   } // while
 }

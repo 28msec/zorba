@@ -94,7 +94,7 @@ protected:
   std::streamsize xsputn( char_type const*, std::streamsize );
 
 private:
-  std::streambuf *orig_buf_;
+  std::streambuf *const orig_buf_;
   char gbuf_[2];
 
   void clear();
@@ -294,6 +294,9 @@ class stream : public StreamType {
 public:
   /**
    * Constructs a %hexbinary::stream.
+   *
+   * Do not use this constructor when StreamType is std::ostream; see
+   * http://llvm.org/bugs/show_bug.cgi?id=15337
    */
   stream() :
 #ifdef WIN32

@@ -1535,7 +1535,8 @@ void FLWORIterator::materializeGroupTuple(
       nongroupingSpecs[i].reset(planState);
     }
 
-    groupMap->insert(groupTuple.release(), nongroupVarSequences);
+    groupMap->insert(groupTuple.get(), nongroupVarSequences);
+    groupTuple.release();
   }
 }
 
@@ -1800,6 +1801,11 @@ void FLWORIterator::closeImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
+zstring FLWORIterator::getNameAsString() const {
+  return "FLWORIterator";
+}
+
+
 uint32_t FLWORIterator::getStateSize() const  
 {
   return sizeof(FlworState); 

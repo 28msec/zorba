@@ -1,14 +1,13 @@
-
 import module namespace db28 = "http://28.io/collections" at "match_vrange_06.xqlib";
 
 import module namespace ddl =
-"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+  "http://zorba.io/modules/store/static/collections/ddl";
 
 import module namespace dml =
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  "http://zorba.io/modules/store/static/collections/dml";
 
 import module namespace iddl = 
-"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+  "http://zorba.io/modules/store/static/indexes/ddl";
 
 
 ddl:create(xs:QName("db28:foo"));

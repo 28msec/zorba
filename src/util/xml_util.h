@@ -160,6 +160,7 @@ split_uri_name( InputStringType const &uname, URIStringType *uri,
  * Checks whether the given code-point is valid for the given XML version.
  *
  * @tparam CodePointType The integral Unicode code-point type.
+ * @param c The code-point to check.
  * @param v The XML version to use.
  * @return Returns \c true only if the code-point is valid.
  */
@@ -178,6 +179,33 @@ is_valid( CodePointType c, version v = v1_0 ) {
       ||  (c >= 0x010000 && c <= 0x10FFFF)
       ||  (v == v1_1 && c >= 0x01 && c <= 0x1F);
 }
+
+/**
+ * Checks whether the given code-point is a valid NameChar.
+ *
+ * @param c The code-point to check.
+ * @return Returns \c true only if \a c is valid.
+ */
+bool is_NameChar( unicode::code_point c );
+
+/**
+ * Checks whether the given code-point is a valid NameStartChar.
+ *
+ * @param c The code-point to check.
+ * @return Returns \c true only if \a c is valid.
+ */
+bool is_NameStartChar( unicode::code_point c );
+
+/**
+ * Checks whether the given string is a valid NCName.
+ *
+ * @tparam StringType The string type.
+ * @param s The string to check.
+ * @return Returns \c true only if \a s is valid.
+ */
+template<class StringType>
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+is_NCName( StringType const &s );
 
 ////////// XML character escaping /////////////////////////////////////////////
 

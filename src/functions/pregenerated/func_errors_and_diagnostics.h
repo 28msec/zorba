@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_ERRORS_AND_DIAGNOSTICS_H
 #define ZORBA_FUNCTIONS_ERRORS_AND_DIAGNOSTICS_H
 

@@ -16,6 +16,8 @@
 #ifndef ZORBA_ZORBAUTILS_HAHSET_ATOMIC_ITEMH
 #define ZORBA_ZORBAUTILS_HAHSET_ATOMIC_ITEMH
 
+#include <cassert>
+
 #include "zorbautils/hashset.h"
 
 #include "runtime/booleans/BooleanImpl.h"
@@ -81,16 +83,17 @@ public:
                                            t2,
                                            theCompareParam->theTypeManager,
                                            theCompareParam->theTimezone,
-                                           theCompareParam->theCollator);
+                                           theCompareParam->theCollator,
+                                           true);
       }
-      catch(ZorbaException& e)
+      catch(ZorbaException const& e)
       {
         if (e.diagnostic() == err::XPTY0004)
         {
           return false;
         }
 
-        throw e;
+        throw;
       }
     }
 

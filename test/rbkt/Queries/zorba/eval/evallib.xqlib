@@ -1,7 +1,7 @@
 
 module namespace evaltest = "www.zorba-xquery.com/Test/eval";
 
-import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://zorba.io/modules/reflection";
 
 declare variable $evaltest:x := 10;
 

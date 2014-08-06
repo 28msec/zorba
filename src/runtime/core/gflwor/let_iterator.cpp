@@ -84,6 +84,10 @@ void LetIterator::accept(PlanIterVisitor& v) const
 }
 
 
+zstring LetIterator::getNameAsString() const {
+  return "LetIterator";
+}
+
 
 bool LetIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {

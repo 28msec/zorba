@@ -686,7 +686,10 @@ void URI::initialize(const zstring& uri, bool have_base)
         {
           throw XQUERY_EXCEPTION(
             err::XQST0046,
-            ERROR_PARAMS( lTrimmedURI, ZED( BadFileURIAuthority_2 ), lAuthUri )
+            ERROR_PARAMS(
+              lTrimmedURI, ZED( XQST0046_BadFileURIAuthority_3 ),
+              lAuthUri
+            )
           );
         }
 
@@ -1099,6 +1102,7 @@ void URI::set_scheme(const zstring& new_scheme)
 
   theScheme = new_scheme;
   set_state(Scheme);
+  invalidate_text();
 }
 
 
@@ -1109,6 +1113,7 @@ void URI::set_host(const zstring& new_host)
 {
   theHost = new_host;
   set_state(Host);
+  invalidate_text();
 }
 
 
@@ -1119,6 +1124,7 @@ void URI::set_port(int new_port)
 {
   thePort = new_port;
   set_state(Port);
+  invalidate_text();
 }
 
 
@@ -1130,6 +1136,7 @@ void URI::set_user_info(const zstring& new_user_info)
   uri::encode(new_user_info, &theUserInfo, false);
 
   set_state(UserInfo);
+  invalidate_text();
 }
 
 
@@ -1149,6 +1156,7 @@ void URI::set_reg_based_authority(const zstring& new_authority)
   set_state(RegBasedAuthority);
 
   unset_state(Host);
+  invalidate_text();
 }
 
 
@@ -1170,6 +1178,7 @@ void URI::set_path(const zstring& new_path)
   {
     initializePath(new_path);
   }
+  invalidate_text();
 }
 
 /*******************************************************************************
@@ -1179,6 +1188,7 @@ void URI::set_query(const zstring& new_query)
 {
   theQueryString = new_query;
   set_state(QueryString);
+  invalidate_text();
 }
 
 void URI::set_opaque_part(const zstring& new_scheme_specific)
@@ -1193,6 +1203,7 @@ void URI::set_opaque_part(const zstring& new_scheme_specific)
     theOpaquePart = new_scheme_specific;
     set_state(OpaquePart);
   }
+  invalidate_text();
 }
 
 /*******************************************************************************
@@ -1406,7 +1417,7 @@ void URI::resolve(const URI* base_uri)
 
   // 6d If the buffer string ends with "." as a complete path segment,
   //  that "." is removed.
-  if (ascii::ends_with(path, "/.", 2)) 
+  if (ZA_ENDS_WITH(path, "/.")) 
   {
     path = path.substr(0, path.size() - 1);
   }
@@ -1462,7 +1473,7 @@ void URI::resolve(const URI* base_uri)
   // 6f) If the buffer string ends with "<segment>/..", where <segment>
   // is a complete path segment not equal to "..", that
   // "<segment>/.." is removed.
-  if (ascii::ends_with(path, "/..", 3))
+  if (ZA_ENDS_WITH(path, "/.."))
   {
     // Find start of <segment> within substring ending at found point.
     lIndex = path.size() - 3;

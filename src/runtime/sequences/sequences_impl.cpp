@@ -20,6 +20,7 @@
 #include <vector>
 #include <sstream>
 
+#include "deep_equality.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
@@ -157,7 +158,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(state->theSearchItem, theChildren[1].getp(), planState))
   {
-		RAISE_ERROR(err::FORG0006, loc, ERROR_PARAMS(ZED(EmptySeqNoSearchItem)));
+    RAISE_ERROR(err::FORG0006, loc, ERROR_PARAMS(ZED(EmptySeqNoSearchItem)));
   }
 
   if (theChildren.size() == 3)
@@ -191,7 +192,8 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                             searchItem,
                                             tm,
                                             timezone,
-                                            state->theCollator);
+                                            state->theCollator,
+                                            true);
       }
     }
     catch (ZorbaException const& e)
@@ -384,11 +386,11 @@ FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(lPositionItem, theChildren[1].getp(), planState))
   {
-		throw XQUERY_EXCEPTION(
-			err::FORG0006,
-			ERROR_PARAMS( ZED( EmptySeqNoFnRemoveArg ) ),
-			ERROR_LOC( loc )
-		);
+    throw XQUERY_EXCEPTION(
+      err::FORG0006,
+      ERROR_PARAMS( ZED( EmptySeqNoFnRemoveArg ) ),
+      ERROR_LOC( loc )
+    );
   }
   state->thePosition = lPositionItem->getIntegerValue();
 
@@ -729,12 +731,12 @@ FnZeroOrOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         if (!lNextItem->equals(result))
         {
-					throw XQUERY_EXCEPTION( err::FORG0003, ERROR_LOC( loc ) );
+          throw XQUERY_EXCEPTION( err::FORG0003, ERROR_LOC( loc ) );
         }
       }
       else
       {
-				throw XQUERY_EXCEPTION( err::FORG0003, ERROR_LOC( loc ) );
+        throw XQUERY_EXCEPTION( err::FORG0003, ERROR_LOC( loc ) );
       }
     }
 
@@ -755,7 +757,7 @@ FnOneOrMoreIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(result, theChildren[0].getp(), planState))
   {
-		throw XQUERY_EXCEPTION( err::FORG0004, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FORG0004, ERROR_LOC( loc ) );
   }
   do
   {
@@ -801,7 +803,7 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   else
   {
     if (theRaiseError)
-			throw XQUERY_EXCEPTION( err::FORG0005, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::FORG0005, ERROR_LOC( loc ) );
     else
       GENV_ITEMFACTORY->createBoolean(result, false);
   }
@@ -813,433 +815,13 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  15.3 Deepe Equal, Union, Intersection, and Except                          //
+//  15.3 Deep Equal, Union, Intersection, and Except                          //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 /*******************************************************************************
   15.3.1 fn:deep-equal
 ********************************************************************************/
-
-static bool DeepEqual(
-    const QueryLoc& loc,
-    static_context* sctx,
-    store::Item_t& item1,
-    store::Item_t& item2,
-    XQPCollator* collator,
-    int timezone);
-
-
-static bool DeepEqualChildren(
-    const QueryLoc& loc,
-    static_context* sctx,
-    const store::Iterator_t& it1,
-    const store::Iterator_t& it2,
-    XQPCollator* collator,
-    int timezone)
-{
-  store::Item_t child1, child2;
-  bool c1Valid, c2Valid;
-
-  it1->open();
-  it2->open();
-
-  while (1)
-  {
-    while ((c1Valid = it1->next(child1)) &&
-           (child1->getNodeKind() == store::StoreConsts::piNode ||
-            child1->getNodeKind() == store::StoreConsts::commentNode))
-      ;
-
-    while ((c2Valid = it2->next(child2)) &&
-            (child2->getNodeKind() == store::StoreConsts::piNode ||
-             child2->getNodeKind() == store::StoreConsts::commentNode))
-      ;
-
-    if (!c1Valid && !c2Valid)
-      return true;
-    else if (!c1Valid || !c2Valid)
-      return false;
-    else if (!DeepEqual(loc, sctx, child1, child2, collator, timezone))
-      return false;
-  }
-
-  return true;
-}
-
-
-static bool DeepEqualAttributes(
-  const QueryLoc& loc,
-  static_context* sctx,
-  const store::Iterator_t& it1,
-  const store::Iterator_t& it2,
-  XQPCollator* collator,
-  int timezone)
-{
-  store::Item_t child1, child2;
-  int c1count = 0, c2count = 0;
-
-  it1->open();
-  it2->open();
-
-  while (it1->next(child1))
-  {
-    c1count++;
-
-    it2->reset();
-
-    bool found = false;
-    while (it2->next(child2))
-    {
-      if (DeepEqual(loc, sctx, child1, child2, collator, timezone))
-      {
-        found = true;
-        break;
-      }
-    }
-
-    if (!found)
-      return false;
-  }
-
-  it2->reset();
-  while (it2->next(child2))
-    c2count++;
-
-  if (c1count != c2count)
-    return false;
-
-  return true;
-}
-
-
-static bool DeepEqualNodes(
-    const QueryLoc& loc,
-    static_context* sctx,
-    const store::Item_t& item1,
-    const store::Item_t& item2,
-    XQPCollator* collator,
-    int timezone)
-{
-  if (item1->getNodeKind() != item2->getNodeKind())
-    return false;
-
-  switch (item1->getNodeKind())
-  {
-  case store::StoreConsts::documentNode:
-  {
-    return DeepEqualChildren(loc,
-                             sctx,
-                             item1->getChildren(),
-                             item2->getChildren(),
-                             collator,
-                             timezone);
-    break;
-  }
-  case store::StoreConsts::elementNode:
-  {
-    if (! item1->getNodeName()->equals(item2->getNodeName()))
-      return false;
-
-    if (!DeepEqualAttributes(loc,
-                             sctx,
-                             item1->getAttributes(),
-                             item2->getAttributes(),
-                             collator,
-                             timezone))
-      return false;
-
-    if (item1->haveSimpleContent())
-    {
-      if (!item2->haveSimpleContent())
-        return false;
-
-      store::Item_t value1, value2;
-      store::Iterator_t ite1, ite2;
-      item1->getTypedValue(value1, ite1);
-      item2->getTypedValue(value2, ite2);
-
-      if (ite1 == NULL && ite2 == NULL)
-      {
-        return DeepEqual(loc, sctx, value1, value2, collator, timezone);
-      }
-      else if (ite1 != NULL && ite2 != NULL)
-      {
-        ite1->open();
-        ite2->open();
-        
-        while (1)
-        {
-          bool c1Valid = ite1->next(value1);
-          bool c2Valid = ite2->next(value2);
-          
-          if (!c1Valid && !c2Valid)
-            return true;
-          else if (!c1Valid || !c2Valid)
-            return false;
-          else if (!DeepEqual(loc, sctx, value1, value2, collator, timezone))
-            return false;
-        }
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else if (item2->haveSimpleContent())
-    {
-      return false;
-    }
-    else
-    {
-      store::Item* typename1 = item1->getType();
-      store::Item* typename2 = item2->getType();
-
-      if (typename1->equals(typename2))
-      {
-        return DeepEqualChildren(loc,
-                                 sctx,
-                                 item1->getChildren(),
-                                 item2->getChildren(),
-                                 collator,
-                                 timezone);
-      }
-      else
-      {
-        TypeManager* tm = sctx->get_typemanager();
-
-        xqtref_t type1 = 
-        tm->create_named_type(typename1, SequenceType::QUANT_ONE, loc, true);
-
-        xqtref_t type2 = 
-        tm->create_named_type(typename2, SequenceType::QUANT_ONE, loc, true);
-
-        ZORBA_ASSERT(type1->isComplex() && type2->isComplex());
-
-        if (type1->contentKind() != type2->contentKind())
-          return false;
-
-        return DeepEqualChildren(loc,
-                                 sctx,
-                                 item1->getChildren(),
-                                 item2->getChildren(),
-                                 collator,
-                                 timezone);
-      }
-    }
-  }
-  case store::StoreConsts::attributeNode:
-  {
-    if (! item1->getNodeName()->equals(item2->getNodeName()))
-      return false;
-
-    store::Item_t value1, value2;
-    store::Iterator_t ite1, ite2;
-    item1->getTypedValue(value1, ite1);
-    item2->getTypedValue(value2, ite2);
-
-    if (ite1 == NULL && ite2 == NULL)
-    {
-      return DeepEqual(loc, sctx, value1, value2, collator, timezone);
-    }
-    else if (ite1 != NULL && ite2 != NULL)
-    {
-      ite1->open();
-      ite2->open();
-
-      while (1)
-      {
-        bool c1Valid = ite1->next(value1);
-        bool c2Valid = ite2->next(value2);
-        
-        if (!c1Valid && !c2Valid)
-          return true;
-        else if (!c1Valid || !c2Valid)
-          return false;
-        else if (!DeepEqual(loc, sctx, value1, value2, collator, timezone))
-          return false;
-      }
-    }
-    else
-    {
-      return false;
-    }
-
-    break;
-  }
-  case store::StoreConsts::textNode:
-  case store::StoreConsts::commentNode:
-  {
-    return (0 == utf8::compare(item1->getStringValue(),
-                               item2->getStringValue(),
-                               collator));
-  }
-
-  case store::StoreConsts::piNode:
-  {
-    if (utf8::compare(item1->getNodeName()->getStringValue(),
-                      item2->getNodeName()->getStringValue(),
-                      collator))
-      return false;
-
-    return (0 == utf8::compare(item1->getStringValue(),
-                               item2->getStringValue(),
-                               collator));
-  }
-
-  case store::StoreConsts::namespaceNode:
-  {
-    if (utf8::compare(item1->getNamespacePrefix(),
-                      item2->getNamespacePrefix(),
-                      collator))
-      return false;
-    
-    return (0 == utf8::compare(item1->getStringValue(),
-                               item2->getStringValue(),
-                               collator));
-  }
-  default:
-    ZORBA_ASSERT(false);
-  }
-
-  return true;
-}
-
-
-static bool DeepEqualObjects(
-    const QueryLoc& loc,
-    static_context* sctx,
-    const store::Item_t& item1,
-    const store::Item_t& item2,
-    XQPCollator* collator,
-    int timezone)
-{
-  assert(item1->isObject());
-  assert(item2->isObject());
-
-  if (item1->getNumObjectPairs() != item2->getNumObjectPairs())
-    return false;
-
-  store::Iterator_t lKeys = item1->getObjectKeys();
-  lKeys->open();
-
-  store::Item_t lKey, lValue1, lValue2;
-
-  while (lKeys->next(lKey))
-  {
-    lValue2 = item2->getObjectValue(lKey);
-
-    if (lValue2 == NULL)
-      return false;
-
-    lValue1 = item1->getObjectValue(lKey);
-
-    if (!DeepEqual(loc, sctx, lValue1, lValue2, collator, timezone))
-      return false;
-  }
-
-  return true;
-}
-
-
-static bool DeepEqualArrays(
-    const QueryLoc& loc,
-    static_context* sctx,
-    const store::Item_t& item1,
-    const store::Item_t& item2,
-    XQPCollator* collator,
-    int timezone)
-{
-  assert(item1->isArray());
-  assert(item2->isArray());
-
-  if (item1->getArraySize() != item2->getArraySize())
-    return false;
-
-  store::Iterator_t lValues1 = item1->getArrayValues();
-  store::Iterator_t lValues2 = item2->getArrayValues();
-  lValues1->open();
-  lValues2->open();
-
-  store::Item_t lValue1, lValue2;
-
-  while (lValues1->next(lValue1) && lValues2->next(lValue2))
-  {
-    if (!DeepEqual(loc, sctx, lValue1, lValue2, collator, timezone))
-      return false;
-  }
-
-  return true;
-}
-
-
-static bool DeepEqual(
-    const QueryLoc& loc,
-    static_context* sctx,
-    store::Item_t& item1,
-    store::Item_t& item2,
-    XQPCollator* collator,
-    int timezone)
-{
-  if (item1->getKind() != item2->getKind())
-    return false;
-
-  switch (item1->getKind())
-  {
-  case store::Item::ATOMIC:
-  {
-    assert(item2->isAtomic());
-
-    store::SchemaTypeCode type1 = item1->getTypeCode();
-    store::SchemaTypeCode type2 = item2->getTypeCode();
-
-    // check if bot items are NaN
-    if (((type1 == store::XS_FLOAT && item1->getFloatValue().isNaN()) ||
-         (type1 == store::XS_DOUBLE && item1->getDoubleValue().isNaN()))
-        &&
-        ((type2 == store::XS_FLOAT && item2->getFloatValue().isNaN()) ||
-         (type2 == store::XS_DOUBLE && item2->getDoubleValue().isNaN())))
-    {
-      return true;
-    }
-
-    try
-    {
-      TypeManager* tm = sctx->get_typemanager();
-
-      return CompareIterator::valueEqual(loc, item1, item2, tm, timezone, collator);
-    }
-    catch (ZorbaException const& e)
-    {
-      if (e.diagnostic() == err::XPTY0004)
-        return false;
-      throw;
-    }
-
-    break;
-  }
-  case store::Item::NODE:
-  {
-    return DeepEqualNodes(loc, sctx, item1, item2, collator, timezone);
-  }
-  case store::Item::OBJECT:
-  {
-    return DeepEqualObjects(loc, sctx, item1, item2, collator, timezone);
-  }
-  case store::Item::ARRAY:
-  {
-    return DeepEqualArrays(loc, sctx, item1, item2, collator, timezone);
-  }
-  default:
-  {
-    ZORBA_ASSERT(false);  // should never reach here
-  }
-  }
-
-  return false;
-}
-
-
 bool FnDeepEqualIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -1279,11 +861,11 @@ bool FnDeepEqualIterator::nextImpl(
 
     if (arg1->isFunction() || arg2->isFunction())
     {
-			RAISE_ERROR(err::FOTY0015, loc,
+      RAISE_ERROR(err::FOTY0015, loc,
       ERROR_PARAMS((arg1->isFunction() ? arg1 : arg2)->getFunctionName()->getStringValue()));
     }
 
-    equal = equal && DeepEqual(loc, theSctx, arg1, arg2, collator, timezone);
+    equal = equal && equality::deepEqual(loc, theSctx, arg1, arg2, collator, timezone, true);
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, equal), state);
@@ -1453,7 +1035,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
-				ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
                      *type,
                      "fn:avg",
                      ZED(ExpectedType_5),
@@ -1524,8 +1106,8 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       xqtref_t type = tm->create_value_type(lRunningItem);
-			RAISE_ERROR(err::FORG0006, loc,
-			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+      RAISE_ERROR(err::FORG0006, loc,
+                   ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
                    *type,
                    "fn:avg",
                    ZED(ExpectedNumericOrDurationType)));
@@ -1597,7 +1179,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       xqtref_t type = tm->create_value_type(result);
       RAISE_ERROR(err::FORG0006, loc,
-			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:sum"));
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:sum"));
     }
 
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
@@ -1641,8 +1223,8 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         xqtref_t type1 = tm->create_value_type(result);
         xqtref_t type2 = tm->create_value_type(lRunningItem);
-				RAISE_ERROR(err::FORG0006, loc,
-				ERROR_PARAMS(ZED( SumImpossibleWithTypes_23 ), *type1, *type2));
+        RAISE_ERROR(err::FORG0006, loc,
+          ERROR_PARAMS(ZED( SumImpossibleWithTypes_23 ), *type1, *type2));
       }
     }
 
@@ -2174,9 +1756,10 @@ static void readDocument(
   //creates stream item
   GENV_ITEMFACTORY->createStreamableString(
     oResult,
-    *lStream.release(),
+    *lStream.get(),
     lStream.get_deleter()
-    );
+  );
+  lStream.release();
 
   if (oResult.isNull())
   {

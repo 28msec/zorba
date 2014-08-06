@@ -40,6 +40,8 @@
 #include "context/uri_resolver.h"
 #include "context/features.h"
 
+#include "annotations/annotations.h"
+
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/hashmap_itemp.h"
 #include "zorbautils/checked_vector.h"
@@ -157,19 +159,23 @@ public:
 class VarInfo : public SimpleRCObject
 {
 protected:
-  store::Item_t  theName;
+  store::Item_t    theName;
 
-  ulong          theId;
+  ulong            theId;
 
-  int            theKind;
+  int              theKind;
 
-  xqtref_t       theType;
+  xqtref_t         theType;
 
-  bool           theIsExternal;
+  bool             theIsExternal;
 
-  bool           theHasInitializer;
+  bool             theHasInitializer;
 
-  var_expr     * theVarExpr;
+  var_expr       * theVarExpr;
+
+  AnnotationList   theAnnotations;
+
+  static_context * theSctx;
 
 public:
   SERIALIZABLE_CLASS(VarInfo)
@@ -206,6 +212,19 @@ public:
   var_expr* getVar() const { return theVarExpr; }
 
   void clearVar() { theVarExpr = NULL; }
+
+  AnnotationList const& getAnnotations() const
+  {
+    return theAnnotations;
+  }
+
+  void swapAnnotations(AnnotationList &a)
+  {
+    theAnnotations.swap(a);
+  }
+
+  TypeManager* getTypeManager() const;
+
 };
 
 
@@ -514,6 +533,7 @@ public:
 
   static const char* ZORBA_NS_PREFIX; // http://www.zorba-xquery.com/
   static const char* ZORBA_IO_NS_PREFIX; // http://zorba.io/
+  static const char* JSOUND_IO_NS_PREFIX; // http://jsound.io/
 
   // Namespaces of external modules declaring zorba builtin functions
   static const char* ZORBA_MATH_FN_NS;
@@ -521,6 +541,7 @@ public:
 
   static const char* ZORBA_JSON_CSV_FN_NS;
   static const char* ZORBA_JSON_XML_FN_NS;
+  static const char* ZORBA_JSOUND_FN_NS;
 
   static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
@@ -532,16 +553,18 @@ public:
   static const char* ZORBA_STORE_STATIC_INDEXES_DML_FN_NS;
   static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS;
   static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
-  static const char* ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
+  static const char* ZORBA_STORE_DOCUMENTS_FN_NS;
   static const char* ZORBA_STORE_UNORDERED_MAPS_FN_NS;
 
   static const char* JSONIQ_DM_NS;
   static const char* JSONIQ_FN_NS;
 
   static const char* ZORBA_SCHEMA_FN_NS;
+  static const char* ZORBA_SEQ_FN_NS;
   static const char* ZORBA_XQDOC_FN_NS;
   static const char* ZORBA_RANDOM_FN_NS;
-  static const char* ZORBA_INTROSP_SCTX_FN_NS;
+  static const char* ZORBA_SCTX_FN_NS;
+  static const char* ZORBA_DCTX_FN_NS;
   static const char* ZORBA_REFLECTION_FN_NS;
   static const char* ZORBA_STRING_FN_NS;
 
@@ -675,6 +698,8 @@ protected:
   std::vector<store::Item_t>                 theDisabledWarnings;
 
   uint32_t                                   theFeatures;
+
+  uint32_t                                   theTempIndexCounter;
 
 public:
   static bool is_builtin_module(const zstring& ns);
@@ -1113,6 +1138,8 @@ public:
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
   
+  uint32_t create_temporary_index_id();
+
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options const* get_match_options() const { return theFTMatchOptions; }
 

@@ -29,7 +29,7 @@ xquery version "3.0";
  :
  : <h4>Simple GET Request</h4>
  :
- : <pre class="brush:xquery;">
+ : <pre class="ace-static" ace-mode="xquery">
  : import module namespace http="http://www.zorba-xquery.com/modules/http-client";
  : declare namespace svg="http://www.w3.org/2000/svg";
  : http:get("http://www.w3.org/Graphics/SVG/svglogo.svg")[2]/svg:svg/svg:title
@@ -45,7 +45,7 @@ xquery version "3.0";
  : 
  : <h4>Simple GET Request (retrieving XHTML)</h4>
  : 
- :   <pre class="brush: xquery;">
+ :   <pre class="ace-static" ace-mode="xquery">
  :   import module namespace http="http://www.zorba-xquery.com/modules/http-client";
  :   declare namespace xhtml="http://www.w3.org/1999/xhtml";
  : 
@@ -79,18 +79,18 @@ xquery version "3.0";
  : HTML to XHTML. The HTML module is supported by the Zorba team, but it is
  : not a "core module", meaning that it is not shipped with every Zorba
  : installation and may not be available. See
- : <a href="http://www.zorba-xquery.com/site2/html/downloads.html">the Zorba downloads
+ : <a href="http://zorba.io/download">the Zorba downloads
  : page</a> for information about obtaining this module if you do not
  : have it.</p>
  : 
- : <pre class="brush: xquery;">
+ : <pre class="ace-static" ace-mode="xquery">
  : import module namespace http="http://www.zorba-xquery.com/modules/http-client";
  : http:get("http://www.example.com")[2]
  : </pre>
  : 
  : returns
  : 
- :   <pre class="brush: xml;">
+ :   <pre class="ace-static" ace-mode="xml">
  :   &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
  :   &lt;html&gt;
  :     &lt;head&gt;
@@ -114,7 +114,7 @@ xquery version "3.0";
  : executed the above query using the Zorba command-line client, you would
  : have actually seen data like the following:</p>
  :
- : <pre class="brush: xml;">
+ : <pre class="ace-static" ace-mode="xml">
  :   &amp;lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&amp;gt;
  :   &amp;lt;html&amp;gt;
  :      ...
@@ -130,7 +130,7 @@ xquery version "3.0";
  : request.
  : </p>
  : 
- : <pre class="brush: xquery;">
+ : <pre class="ace-static" ace-mode="xquery">
  : import module namespace http="http://www.zorba-xquery.com/modules/http-client";
  : http:post( "...", "Hello World" )
  : </pre>
@@ -152,7 +152,7 @@ xquery version "3.0";
  : <p>The full schema of this &lt;http-schema:response&gt; element is
  : part of the <a href="http://expath.org/modules/http-client/">EXPath
  : HTTP Client module</a>. You can see the schema
- : <a href="schemas/expath.org_ns_http-client.html">here</a>.</p>
+ : <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/view/head:/modules/http-client/xml/http-client.xsd" target="_blank">here</a>.</p>
  : 
  : <p>Any items in function return values after the initial
  : &lt;http-schema:response&gt; element are the body/bodies of the HTTP

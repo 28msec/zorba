@@ -580,9 +580,11 @@
        is of nonzero length and is not in the lexical space of \c xs:anyURI.
       </comment>
       <value>${"1": }invalid URI literal${: 2}</value>
-
       <entry key="BadHexDigit_3">
         <value>'$3': invalid hexedecimal digit</value>
+      </entry>
+      <entry key="BadFileURIAuthority_3">
+        <value>"$3": invalid authority for "file" scheme</value>
       </entry>
     </diagnostic>
 
@@ -912,6 +914,10 @@
       <entry key="Conflicting">
         <value>$2: conflicting annotations in declaration</value>
       </entry>
+      
+      <entry key="Requirement">
+        <value>$2: annotation requires one of the following annotations: $3</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQST0111">
@@ -952,6 +958,10 @@
 
       <entry key="Conflicting">
         <value>$2: conflicting annotations in declaration</value>
+      </entry>
+      
+      <entry key="Requirement">
+        <value>$2: annotation requires one of the following annotations: $3</value>
       </entry>
     </diagnostic>
 
@@ -2434,7 +2444,42 @@
     <diagnostic code="ZXQP0061" name="DISABLE_HTTP_OPTION_IN_QUERY">
       <value>"$1": this option cannot be specified in a query, it must be set via C++ API or command-line parameter</value>
     </diagnostic>
-
+    
+    <diagnostic code="ZXQP0062" name="INVALID_ANNOTATION_LITERALS_NUMBER">
+      <value>"$1": annotation $2</value>
+      <entry key="NO_LITERALS">
+        <value>allows no literals</value>
+      </entry>
+      <entry key="ZERO_OR_ONE_LITERALS">
+        <value>allows at most one literal</value>
+      </entry>
+      <entry key="ONE_LITERAL">
+        <value>requires exactly one literal</value>
+      </entry>
+      <entry key="ONE_OR_MORE_LITERALS">
+        <value>requires one or more literals</value>
+      </entry>
+    </diagnostic>
+    
+    <diagnostic code="ZXQP0063" name="INVALID_ANNOTATION_LITERAL_TYPE">
+      <value>"$1": is not a valid annotation literal for annotation "$2", literal has type $3, whereas the allowed types are: $4</value>
+    </diagnostic>
+    
+    <diagnostic code="ZXQP0064" name="INVALID_ARGUMENT_INDEX">
+      <value>"$1": is not a valid argument index for function "$2", valid indexes are in the range [1-$3]</value>
+    </diagnostic>
+    
+    <diagnostic code="ZXQP0065" name="INVALID_ANNOTATION">
+      <value>"$1": is not a valid annotation for function "$2", $3</value>
+      <entry key="NO_ARGUMENTS">
+        <value>function has no arguments</value>
+      </entry>
+    </diagnostic>
+    
+    <diagnostic code="ZXQP0066" name="INVALID_ANNOTATION_LITERAL_VALUE">
+      <value>"$1": is not a valid annotation literal for annotation "$2", $3</value>
+    </diagnostic>
+      
     <diagnostic code="ZXQP8401" name="THESAURUS_VERSION_MISMATCH"
       if="!defined(ZORBA_NO_FULL_TEXT)">
       <comment>
@@ -2529,6 +2574,9 @@
 
     <diagnostic code="ZAPI0014" name="INVALID_ARGUMENT">
       <value>"$1": invalid argument${: 2}</value>
+      <entry key="BadType_3">
+        <value>invalid type: must be $3</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ZAPI0015" name="CREATEMODULE_NOT_FOUND">
@@ -3182,28 +3230,6 @@
       <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
-   <!--////////// dateTime Parse Errors ////////////////////////////////////-->
-
-    <diagnostic code="ZDTP0001" name="INVALID_SPECIFICATION">
-      <value>'$1': invalid % conversion specification</value>
-    </diagnostic>
-
-    <diagnostic code="ZDTP0002" name="INSUFFICIENT_BUFFER">
-      <value>"$1": insufficient value to parse for "$2"</value>
-    </diagnostic>
-
-    <diagnostic code="ZDTP0003" name="INVALID_VALUE">
-      <value>"$1": invalid value for conversion specification(s) %$2</value>
-    </diagnostic>
-
-    <diagnostic code="ZDTP0004" name="LITERAL_MISMATCH">
-      <value>'$1': literal character mismatched '$2'</value>
-    </diagnostic>
-
-    <diagnostic code="ZDTP0005" name="INCOMPLETE_DATE_OR_TIME">
-      <value>'$1': incomplete date, time, or dateTime format</value>
-    </diagnostic>
-
    <!--////////// JSON Parse Errors ////////////////////////////////////////-->
 
     <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
@@ -3264,6 +3290,10 @@
       <value>"$1": illegal $2?{child }element/node${ of JSON type "2"}${; must be "3"}</value>
     </diagnostic>
 
+    <diagnostic code="ZJSE0005" name="BAD_PREFIX">
+      <value>"$1": illegal XML prefix (must be NCName)</value>
+    </diagnostic>
+
     <diagnostic code="ZJSE0007" name="ELEMENT_MISSING_VALUE">
       <value>"$1" element missing required "$2" value</value>
     </diagnostic>
@@ -3297,21 +3327,20 @@
       </entry>
     </diagnostic>
 
-    <!-- /////////// URI procesing errors ///////////////////////////////// -->
-
-    <diagnostic code="ZURI0001" name="OPAQUE_WITH_OTHERS">
-      <comment>If the opaque-part section of the URI was specified in conjuction with other non-opaque parts.</comment>
-      <value>cannot specify opaque-part in conjunction with host/port/path/user-info/query</value>
-    </diagnostic>
-
-    <diagnostic code="ZURI0002" name="SCHEME_REQUIRED_FOR_OPAQUE">
-      <comment>If an opaque-part section was specified without a scheme section.</comment>
-      <value>scheme required when specifying opaque-part</value>
-    </diagnostic>
-
-    <diagnostic code="ZURI0003" name="SLASH_NEEDED_FOR_ABSOLUTE_URI">
-      <comment>If an absolute URI is specified with a path that does not start with slash ("/").</comment>
-      <value>path component of absolute URI must begin with /</value>
+    <diagnostic code="ZJ2X0002" name="JSONML_OBJECT_BAD_JSON">
+      <value>JsonML (object form) $1</value>
+      <entry key="childNodesArrayRequired">
+        <value>"childNodes" key must have array value</value>
+      </entry>
+      <entry key="ObjectRequired">
+        <value>must start with object</value>
+      </entry>
+      <entry key="BadElement">
+        <value>array must not have a "$2" element</value>
+      </entry>
+      <entry key="tagNameRequired">
+        <value>must contain a "tagName" key</value>
+      </entry>
     </diagnostic>
 
   </namespace>
@@ -3520,6 +3549,157 @@
 
   </namespace>
 
+  <!--////////// JSound errors /////////////////////////////////////////////-->
+
+  <namespace prefix="jse">
+
+    <diagnostic code="DUPLICATE_PREFIX">
+      <value>"$1": duplicate prefix</value>
+    </diagnostic>
+
+    <diagnostic code="DUPLICATE_TYPE">
+      <value>"$1": duplicate type name</value>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_ARRAY_SIZE">
+      <value>\$content facet for \$array must be array with exactly 1 element</value>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_BASE_TYPE">
+      <value>"$1": illegal base-type${ for "2"}$3</value>
+      <entry key="BecauseOfKey_45">
+        <value> because of key "$4": $5</value>
+      </entry>
+      <entry key="IncompatibleFacets_4">
+        <value>: incompatible facet values for "$4"</value>
+      </entry>
+      <entry key="MustBeX_4">
+        <value>: must be "$4"</value>
+      </entry>
+      <entry key="NotSubtype_45">
+        <value>: "$4" is not a subtype of "$5"</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_FACET">
+      <value>"$1": illegal facet for $2</value>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_FACET_VALUE">
+      <value>"$1": illegal value for facet $2: $3</value>
+      <entry key="BadConstraint_45">
+        <value>[$4]: $5</value>
+      </entry>
+      <entry key="BadPattern_45">
+        <value>[$4]: $5</value>
+      </entry>
+      <entry key="IncompatibleWith_45">
+        <value>incompatible with $4 facet value of "$5"</value>
+      </entry>
+      <entry key="LocationMismatch_45">
+        <value>does not match location "$4" given for previous import of schema "$5"</value>
+      </entry>
+      <entry key="MustBeGE0">
+        <value>must be &gt;= 0</value>
+      </entry>
+      <entry key="MustBeOPR">
+        <value>must be one of "optional", "prohibited", or "required"</value>
+      </entry>
+      <entry key="MustBeAAOU">
+        <value>must be one of "array", "atomic", "object", or "union"</value>
+      </entry>
+      <entry key="NoAddEnum_4">
+        <value>can not add value to enumeration of base-type $4</value>
+      </entry>
+      <entry key="NoOverrideBase_4">
+        <value>can not override base-type value of "$4"</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_KEY">
+      <value>"$1": illegal key for $2</value>
+      <entry key="FieldDescriptor">
+        <value>field descriptor</value>
+      </entry>
+      <entry key="Type_34o">
+        <value>$3 type${ "4"}</value>
+      </entry>
+      <entry key="UnionNoBaseType">
+        <value>union type: unions may not have base types</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_NAMESPACE">
+      <value>"$1": illegal explicit namespace for \$name; if given, must match schema namespace "$2"</value>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_PREFIX">
+      <value>"$1": illegal prefix (must not include ':')</value>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_SCHEMA">
+      <value>"$1": illegal schema${ at location "2"}: [$3]: $4</value>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_TYPE">
+      <value>"$1": illegal type for $2; must be $3${ or 4}</value>
+    </diagnostic>
+
+    <diagnostic code="INVALID_OPTION">
+      <value>${"1": }invalid value for "$2" option${; 3}</value>
+      <entry key="jse_MustBeBoolean">
+        <value>must be boolean</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="MISSING_KEY">
+      <value>"$1": missing key${ for type "2"} required</value>
+    </diagnostic>
+
+    <diagnostic code="NEW_KEY_NOT_ALLOWED">
+      <value>"$1": new key not allowed since \$open of base-type $2 is false</value>
+    </diagnostic>
+
+    <diagnostic code="SCHEMA_NOT_FOUND">
+      <value>"$1": could not find schema${ at location "2"}${: 3}</value>
+    </diagnostic>
+
+    <diagnostic code="TYPE_MISMATCH">
+      <value>"$1": type does not match required type of $2${ for 3}</value>
+    </diagnostic>
+
+    <diagnostic code="UNKNOWN_PREFIX">
+      <value>"$1": unknown prefix</value>
+    </diagnostic>
+
+    <diagnostic code="UNKNOWN_TYPE">
+      <value>"$1": unknown type</value>
+    </diagnostic>
+
+    <!-- $reasons -->
+
+    <diagnostic code="FACET_VIOLATION">
+      <value>$1</value>
+      <entry key="BadConstraint_23o4o5o">
+        <value>value violates \$constraints facet "$2" of type${ 3}${: [4]}${: 5}</value>
+      </entry>
+      <entry key="BadKey_23o">
+        <value>"$2": new key violates "false" value of \$open facet of type${ 3}</value>
+      </entry>
+      <entry key="BadValue_23o">
+        <value>value violates $2 facet of type${ 3}</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="TYPE_VIOLATION">
+      <value>"$1": invalid value type; must be $2</value>
+      <entry key="UnionMemberType">
+        <value>a union member type</value>
+      </entry>
+    </diagnostic>
+
+  </namespace>
+
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->
 
   <namespace prefix="zwarn">
@@ -3545,22 +3725,21 @@
     <diagnostic code="ZWST0005" name="CACHING_NOT_POSSIBLE">
       <comment>
         This warning is raised if the user explicitly enables caching
-        of function results (using the %an:cache annotation) but the function
-        is updating or its parameter and return types are not subtypes of
-        xs:anyAtomicType.
+        of function results (using the %an:cache or %an:strictlydeterministic 
+        annotation) but the function cannot be cached. 
+        For %an:cache this happens if the function is updating or variadic.
+        For %an:strictlydeterministic this happens if the function is updating, 
+        variadic or sequential.
       </comment>
-      <value>"$1": function caching not possible; $2</value>
-      <entry key="RETURN_TYPE">
-        <value>return type ($3) is not subtype of xs:anyAtomicType</value>
-      </entry>
-      <entry key="PARAM_TYPE">
-        <value>type of parameter $3 is $4 which is not a subtype of xs:anyAtomicType</value>
-      </entry>
+      <value>"$1": function caching not possible; $2</value>      
       <entry key="UPDATING">
         <value>function is updating</value>
       </entry>
       <entry key="VARIADIC">
         <value>function is variadic</value>
+      </entry>
+      <entry key="SEQUENTIAL">
+        <value>function is sequential</value>
       </entry>
     </diagnostic>
 
@@ -3644,6 +3823,9 @@
 
     <diagnostic code="INVALID_OPTION">
       <value>${"1": }invalid value for "$2" option${; 3}</value>
+      <entry key="MustBeArray">
+        <value>must be JSON array</value>
+      </entry>
       <entry key="MustBeASCIIChar">
         <value>must be single ASCII character</value>
       </entry>
@@ -3656,6 +3838,13 @@
       <entry key="MustBeString">
         <value>must be string</value>
       </entry>
+      <entry key="ArrayElementsMustBeString">
+        <value>array elements must be string</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="INVALID_VALUE">
+      <value>"$1": invalid type for value of key "$2"</value>
     </diagnostic>
 
     <diagnostic code="MISSING_VALUE">
@@ -3674,6 +3863,73 @@
 
   </namespace>
 
+  <!--////////// dateTime Module Errors ////////////////////////////////////-->
+
+  <namespace prefix="dt">
+    <diagnostic code="INVALID_SPECIFICATION">
+      <value>'$1': invalid % conversion specification</value>
+    </diagnostic>
+
+    <diagnostic code="INSUFFICIENT_BUFFER">
+      <value>"$1": insufficient value to parse for "$2"</value>
+    </diagnostic>
+
+    <diagnostic code="INVALID_VALUE">
+      <value>"$1": invalid value for conversion specification(s) %$2</value>
+    </diagnostic>
+
+    <diagnostic code="LITERAL_MISMATCH">
+      <value>'$1': literal character mismatched '$2'</value>
+    </diagnostic>
+
+    <diagnostic code="INCOMPLETE_DATE_OR_TIME">
+      <value>'$1': incomplete date, time, or dateTime format</value>
+    </diagnostic>
+    
+    <diagnostic code="INVALID_LOCALE">
+      <value>"$1": invalid locale</value>
+    </diagnostic>
+
+    <diagnostic code="UNKNOWN_LOCALE">
+      <value>"$1": unknown locale</value>
+    </diagnostic>
+    
+    <diagnostic code="UNSUPPORTED_LOCALE">
+      <value>"$1": unsupported locale</value>
+    </diagnostic>
+  </namespace>
+  
+  <!-- /////////// URI procesing errors /////////////////////////////////// -->
+
+  <namespace prefix="zuri">
+  
+    <diagnostic code="CHARSET_UNKNOWN">
+      <comment>The character set provided is unknown or invalid.</comment>
+      <value>"$1": unknown or invalid character set</value>
+    </diagnostic>
+    
+    <diagnostic code="OPAQUE_COMB_NOT_VALID">
+      <comment>If the opaque-part section of the URI was specified in conjuction with other non-opaque parts.</comment>
+      <value>cannot specify opaque-part in conjunction with host/port/path/user-info/query</value>
+    </diagnostic>
+
+    <diagnostic code="OPAQUE_WITHOUT_SCHEME">
+      <comment>If an opaque-part section was specified without a scheme section.</comment>
+      <value>scheme required when specifying opaque-part</value>
+    </diagnostic>
+
+    <diagnostic code="INVALID_ABSOLUTE_PATH">
+      <comment>If an absolute URI is specified with a path that does not start with slash ("/").</comment>
+      <value>path component of absolute URI must begin with /</value>
+    </diagnostic>
+    
+    <diagnostic code="URI_UNRESOLVED_OR_NOSTREAM">
+      <comment>If the stream is unresolved or is not an stream.</comment>
+      <value>"$1": stream is unresolved or it is not a stream - "$2"</value>
+    </diagnostic>
+    
+  </namespace>
+
   <!--////////// Subvalues /////////////////////////////////////////////////-->
 
   <subvalues>
@@ -3684,6 +3940,10 @@
 
     <entry key="AlreadySpecified">
       <value>already specified</value>
+    </entry>
+    
+    <entry key="AppendStringValue">
+      <value>append string value</value>
     </entry>
 
     <entry key="AppliedAt">
@@ -3732,10 +3992,6 @@
 
     <entry key="BadDecDigit_3">
       <value>'$3': invalid decimal digit</value>
-    </entry>
-
-    <entry key="BadFileURIAuthority_2">
-      <value>"$2": invalid authority for "file" scheme</value>
     </entry>
 
     <entry key="BadHexSequence">

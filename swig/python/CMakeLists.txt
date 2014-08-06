@@ -19,7 +19,12 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
   INCLUDE_DIRECTORIES (${PYTHON_INCLUDE_PATH})
   SWIG_ADD_MODULE (zorba_api_python python zorba_api.i)
   SWIG_LINK_LIBRARIES (zorba_api_python zorba_simplestore ${PYTHON_LIBRARIES})
-  SET_TARGET_PROPERTIES (_zorba_api_python PROPERTIES OUTPUT_NAME "_zorba_api")
+
+  IF ( APPLE )
+    SET_TARGET_PROPERTIES (_zorba_api_python PROPERTIES OUTPUT_NAME "_zorba_api_python")
+  ELSE ( APPLE)
+    SET_TARGET_PROPERTIES (_zorba_api_python PROPERTIES OUTPUT_NAME "_zorba_api")
+  ENDIF (APPLE )
   
   IF (MSVC_IDE)
     SET_PROPERTY( TARGET _zorba_api_python PROPERTY PROJECT_LABEL "Python")

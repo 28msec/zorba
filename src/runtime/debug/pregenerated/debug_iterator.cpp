@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -77,6 +78,10 @@ void DebugIteratorState::init(PlanState& planState) {
 void DebugIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   notEmptySequence = false;
+}
+
+zstring DebugIterator::getNameAsString() const {
+  return "DebugIterator";
 }
 // </DebugIterator>
 

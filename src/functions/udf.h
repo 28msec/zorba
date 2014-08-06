@@ -17,22 +17,15 @@
 #ifndef ZORBA_FUNCTIONS_UDF
 #define ZORBA_FUNCTIONS_UDF
 
-#include "functions/function.h"
+#include "functions/cacheable_function.h"
+#include "store/api/item_handle.h"
 
 //#include "compiler/expression/expr_base.h"
 
 
 namespace zorba
 {
-
   class expr;
-
-  namespace store
-  {
-    class Index;
-    typedef rchandle<Index> Index_t;
-  }
-
 
 /*******************************************************************************
   A udf with params $x1, $x2, ..., $xn and a body_expr is translated into a
@@ -87,34 +80,14 @@ namespace zorba
   at most one of the references will actually be reached during each particular
   execution of the body.
 
-  theCache:
-  ---------
-  Maps the arg values of an invocation to the result of that invocation.
-  If an invocation uses the same arg values as a previous invocation, the cached
-  result is simply returned without re-evaluating the udf.
-
-  theCacheResults:
-  ----------------
-  Tells whether caching should be done for this udf or not.
-
-  theCacheComputed:
-  -----------------
-  Tells whether theCacheResults has been computed already or not.
-  theCacheResults is computed by the computeResultCaching() method, which is
-  invoked during codegen every time a udf call is encountered. The same udf may
-  be invoked multiple times, but the computation of theCacheResults needs to
-  be done only once. So, during the 1st invcocation of computeResultCaching(),
-  theCacheComputed is set to true, and subsequent invocations are noops.
 ********************************************************************************/
-class user_function : public function
+class user_function : public cacheable_function
 {
 public:
   typedef std::vector<LetVarIter_t> ArgVarRefs;
 
 private:
   CompilerCB                * theCCB;
-
-  QueryLoc                    theLoc;
 
   unsigned short              theScriptingKind;
 
@@ -138,10 +111,6 @@ private:
   uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
-  store::Index_t              theCache;
-  bool                        theCacheResults;
-  bool                        theCacheComputed;
-
 public:
   SERIALIZABLE_CLASS(user_function)
   user_function(::zorba::serialization::Archiver& ar);
@@ -150,6 +119,7 @@ public:
 public:
   user_function(
       const QueryLoc& loc,
+      static_context* sctx,
       const signature& sig,
       expr* expr_body,
       unsigned short scriptingKind,
@@ -158,8 +128,6 @@ public:
   virtual ~user_function();
 
   //xqtref_t getUDFReturnType(static_context* sctx) const;
-
-  const QueryLoc& getLoc() const { return theLoc; }
 
   bool isExiting() const { return theIsExiting; }
 
@@ -172,6 +140,8 @@ public:
   void setBody(expr* body);
 
   expr* getBody() const;
+
+  virtual TypeManager* getTypeManager();
 
   void setScriptingKind(unsigned short k);
 
@@ -202,6 +172,7 @@ public:
   void optimize();
 
   PlanIter_t getPlan(uint32_t& planStateSize, ulong nextVarId);
+  PlanIter_t const& getPlan() const { return thePlan; }
 
   void invalidatePlan();
 
@@ -236,13 +207,7 @@ public:
 
   const std::vector<ArgVarRefs>& getArgVarsRefs() const;
 
-  store::Index* getCache() const;
-
-  void setCache(store::Index* aCache);
-
-  bool cacheResults() const;
-
-  void computeResultCaching(XQueryDiagnostics* diag);
+  virtual void useDefaultCachingSettings();
 };
 
 

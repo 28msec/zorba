@@ -51,7 +51,7 @@ class pragma;
 class function : public SimpleRCObject
 {
 protected:
-	signature                    theSignature;
+  signature                    theSignature;
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
   AnnotationList             * theAnnotationList;
@@ -97,8 +97,6 @@ public:
   bool isVariadic() const { return theSignature.isVariadic(); }
 
   static_context* getStaticContext() const { return theModuleSctx; }
-
-  void setStaticContext(static_context* sctx) { theModuleSctx = sctx; }
 
   void setFlag(FunctionConsts::AnnotationFlags flag)
   {

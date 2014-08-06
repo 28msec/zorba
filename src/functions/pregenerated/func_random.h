@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_RANDOM_H
 #define ZORBA_FUNCTIONS_RANDOM_H
 
@@ -61,6 +62,7 @@ public:
     : 
     function(sig, kind)
   {
+setDeterministic(false);
 
   }
 

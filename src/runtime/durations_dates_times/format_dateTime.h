@@ -62,6 +62,8 @@ public:
 
   void accept( PlanIterVisitor& ) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl( store::Item_t&, PlanState& ) const;
 
 private:

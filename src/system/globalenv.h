@@ -17,6 +17,8 @@
 #ifndef ZORBA_GLOBALENV_H
 #define ZORBA_GLOBALENV_H
 
+#include <cassert>
+
 #include <zorba/config.h>
 #include <zorba/internal/unique_ptr.h>
 
@@ -61,7 +63,7 @@ private:
   static GlobalEnvironment        * m_globalEnv;
 
 private:
-  store::Store                    * m_store;
+  store::Store                    * theStore;
 
   RootTypeManager                 * theRootTypeManager;
 
@@ -100,6 +102,11 @@ public:
   {
     assert(m_globalEnv);
     return *m_globalEnv;
+  }
+
+  static GlobalEnvironment* getInstancePtr()
+  {
+    return m_globalEnv;
   }
 
 public:
@@ -151,6 +158,7 @@ private:
 
 
 #define GENV GlobalEnvironment::getInstance()
+#define GENV_PTR GlobalEnvironment::getInstancePtr()
 
 #define GENV_TYPESYSTEM GlobalEnvironment::getInstance().getRootTypeManager()
 

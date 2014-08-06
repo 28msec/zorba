@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/nodes/node_position.h"
 #include "functions/func_node_position.h"

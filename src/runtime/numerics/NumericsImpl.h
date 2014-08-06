@@ -72,6 +72,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState&) const;
       
 public:
@@ -119,6 +121,8 @@ public:
   virtual ~SpecificNumArithIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState&) const;
       
@@ -173,6 +177,8 @@ public:
   
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
@@ -208,6 +214,8 @@ public:
   virtual ~OpDoubleUnaryIterator();
   
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };

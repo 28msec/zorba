@@ -50,16 +50,21 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(InsertIterator)
+DEF_GET_NAME_AS_STRING(InsertIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(DeleteIterator)
+DEF_GET_NAME_AS_STRING(DeleteIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ReplaceIterator)
+DEF_GET_NAME_AS_STRING(ReplaceIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(RenameIterator)
+DEF_GET_NAME_AS_STRING(RenameIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CopyClause)
 
 SERIALIZABLE_CLASS_VERSIONS(TransformIterator)
+DEF_GET_NAME_AS_STRING(TransformIterator)
 
 
 void areNodeModifiersViolated(
@@ -584,7 +589,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     else
     {
       if (lTargetKind == store::StoreConsts::commentNode &&
-          (content.find("--") != zstring::npos || ascii::ends_with(content, "-", 1)))
+          (content.find("--") != zstring::npos || ZA_ENDS_WITH(content, "-")))
       {
         throw XQUERY_EXCEPTION(err::XQDY0072, ERROR_LOC(loc));
       }
@@ -830,7 +835,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
-  pul = GENV_ITEMFACTORY->createPendingUpdateList();
+  pul = GENV_ITEMFACTORY->createPendingUpdateList(true);
 
   typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
@@ -841,7 +846,8 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   {
     csize numCopyClauses = theCopyClauses.size(); 
-    std::vector<store::Item*> copyNodes(numCopyClauses);
+    std::vector<store::Item*> copyNodes;
+    copyNodes.reserve(numCopyClauses);
 
     // For each copy var compute the target node and bind that node to all
     // references of the copy var.
@@ -864,13 +870,13 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
       if (!copyClause.theCopyVars.empty())
       {
-        copyNodes[i] = copyNode->copy(NULL, copymode);
+        copyNodes.push_back(copyNode->copy(NULL, copymode));
 
         varRefIte = copyClause.theCopyVars.begin();
         varRefEnd = copyClause.theCopyVars.end();
         for(; varRefIte != varRefEnd; ++varRefIte)
         {
-          (*varRefIte)->bind(copyNodes[i], aPlanState);
+          (*varRefIte)->bind(copyNodes.back(), aPlanState);
         }
       }
     }

@@ -22,15 +22,16 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
-#include "diagnostics/assert.h"
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/properties.h>
 
+#include "diagnostics/assert.h"
 #include "util/hashmap32.h"
+#include "util/indent.h"
 #include "util/stl_util.h"
 #include "util/tracer.h"
 
 #include "system/globalenv.h"
-#include "system/properties.h"
 
 #include "compiler/expression/expr_manager.h"
 #include "compiler/api/compilercb.h"
@@ -105,6 +106,7 @@
 
 #include "functions/function.h"
 #include "functions/udf.h"
+#include "functions/external_function.h"
 #include "functions/library.h"
 
 #include "types/typeops.h"
@@ -127,7 +129,7 @@
 #define CODEGEN_TRACE(msg)                                         \
   QLOCDECL;                                                        \
   SCTXDECL;                                                        \
-  if (Properties::instance()->traceCodegen())                      \
+  if (Properties::instance().getTraceCodegen())                    \
   {                                                                \
     std::cout << (msg) << TRACE << ", stk size " << itstack.size() \
               << std::endl << std::endl;                           \
@@ -148,6 +150,7 @@
 #define CODEGEN_TRACE_OUT(msg) CODEGEN_TRACE(msg)
 #endif
 
+using namespace std;
 
 namespace zorba
 {
@@ -578,7 +581,8 @@ void end_visit(function_trace_expr& v)
   lDummyIter->setFunctionArity(v.getFunctionArity());
   lDummyIter->setFunctionLocation(v.getFunctionLocation());
   lDummyIter->setFunctionCallLocation(v.getFunctionCallLocation());
-  push_itstack(lDummyIter.release());
+  push_itstack(lDummyIter.get());
+  lDummyIter.release();
 }
 
 bool begin_visit(wrapper_expr& v)
@@ -2038,10 +2042,13 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                        flworExpr.get_loc(),
                                        forletClauses,
                                        whereIter,
-                                       groupClause.release(),
-                                       orderClause.release(),
-                                       materializeClause.release(),
+                                       groupClause.get(),
+                                       orderClause.get(),
+                                       materializeClause.get(),
                                        returnIter);
+  groupClause.release();
+  orderClause.release();
+  materializeClause.release();
   push_itstack(flworIter);
 }
 
@@ -2356,7 +2363,8 @@ void end_visit(debugger_expr& v)
     lDebugIterator->setParent(theDebuggerStack.top());
   }
 
-  push_itstack(lDebugIterator.release());
+  push_itstack(lDebugIterator.get());
+  lDebugIterator.release();
 }
 #endif
 
@@ -2515,9 +2523,15 @@ void end_visit(fo_expr& v)
     }
     else if (func->isUdf())
     {
-      // need to computeResultCaching here for iterprint to work
+      // need to computeCacheSettings here for iterprint to work
       user_function* udf = static_cast<user_function*>(func);
-      udf->computeResultCaching(theCCB->theXQueryDiagnostics);
+      udf->computeCacheSettings(theCCB->theXQueryDiagnostics);
+    }
+    else if (func->isExternal())
+    {
+      // need to computeCacheSettings here for iterprint to work
+      external_function* extf = static_cast<external_function*>(func);
+      extf->computeCacheSettings(theCCB->theXQueryDiagnostics);
     }
   }
   else
@@ -3801,21 +3815,27 @@ PlanIter_t codegen(
   root->accept(c);
   PlanIter_t result = c.result();
 
-  if (result != NULL &&
-      descr != NULL &&
-      Properties::instance()->printIteratorTree())
-  {
-    std::ostream& os = (Properties::instance()->iterPlanTest() ?
-                        std::cout :
-                        Properties::instance()->debug_out());
-
-    os << "Iterator tree for " << descr << ":\n";
-    XMLIterPrinter vp(os);
-    print_iter_plan(vp, result);
-    os << std::endl;
-  }
-
   nextDynamicVarId = c.getNextDynamicVarId();
+
+  Zorba_plan_format_t const format = Properties::instance().getPlanFormat();
+  if ( result && descr && format ) {
+    std::ostream &os = Properties::instance().getDebugStream();
+    unique_ptr<IterPrinter> printer;
+    switch ( format ) {
+      case PLAN_FORMAT_DOT:
+        printer.reset( new DOTIterPrinter( os, descr ) );
+        break;
+      case PLAN_FORMAT_JSON:
+        printer.reset( new JSONIterPrinter( os, descr ) );
+        break;
+      case PLAN_FORMAT_XML:
+        printer.reset( new XMLIterPrinter( os, descr ) );
+        break;
+      default: // to silence warning
+        break;
+    } // switch
+    print_iter_plan( *printer, result );
+  }
 
   return result;
 }

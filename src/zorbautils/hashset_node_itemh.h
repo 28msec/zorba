@@ -17,6 +17,8 @@
 #ifndef ZORBA_ZORBAUTILS_HASHSET_NODE_ITEMH
 #define ZORBA_ZORBAUTILS_HASHSET_NODE_ITEMH
 
+#include <cassert>
+
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashset.h"
 

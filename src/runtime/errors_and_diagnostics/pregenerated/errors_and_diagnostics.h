@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_ERRORS_AND_DIAGNOSTICS_ERRORS_AND_DIAGNOSTICS_H
 #define ZORBA_RUNTIME_ERRORS_AND_DIAGNOSTICS_ERRORS_AND_DIAGNOSTICS_H
 
@@ -56,6 +57,8 @@ public:
   {}
 
   virtual ~ErrorIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -102,6 +105,8 @@ public:
   {}
 
   virtual ~TraceIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

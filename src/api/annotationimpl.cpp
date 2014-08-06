@@ -44,19 +44,17 @@ Item AnnotationImpl::getQName() const
 }
 
 
-unsigned int AnnotationImpl::getLiteralsCount() const 
+Annotation::size_type AnnotationImpl::getLiteralsCount() const 
 {
   return theAnnotation->getNumLiterals();
 }
 
 
-Item AnnotationImpl::getLiteral(unsigned int i) const
+Item AnnotationImpl::getLiteral(size_type i) const
 {
   if (i >= theAnnotation->getNumLiterals())
     return Item(NULL);
-
-  Item lItem(theAnnotation->getLiteral(i));
-  return lItem;
+  return theAnnotation->getLiteral(i);
 }
 
 

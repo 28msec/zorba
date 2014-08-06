@@ -10,10 +10,10 @@ have been performed.
 The instructions in this section are based on executing commands at
 the command line. It is also possible configure Zorba using CMake's
 GUI configuration utility if you prefer. On Linux distributions, this
-is often a separate package named \"\c cmake-gui\". On Windows, the
+is often a separate package named <b>"cmake-gui"</b>. On Windows, the
 GUI is installed by default and can be started via the Start menu.  On
-MacOS, it is available as the \"\c gui\" variant of the \c cmake
-package.
+MacOS, it is available as the <b>"gui"</b> variant of the
+<a href="http://www.cmake.org/">CMake</a> package.
 
 \note
 The important configuration parameters - source and build directory;
@@ -61,7 +61,7 @@ executing the following command in the \c {ZORBASRC} directory: \code
 cmake -G "Visual Studio 10" {ZORBASRC} \endcode
 
 The list of available Generators for your CMake installation
-can be seen by typing \" <tt>cmake --help</tt> \".
+can be seen by typing \code cmake --help \endcode.
 
 \section configure_parameters Configuration Parameters (the -D arguments)
 

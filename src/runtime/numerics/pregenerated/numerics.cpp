@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #include "stdafx.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
@@ -57,6 +58,10 @@ void AbsIterator::accept(PlanIterVisitor& v) const
 
 AbsIterator::~AbsIterator() {}
 
+
+zstring AbsIterator::getNameAsString() const {
+  return "fn:abs";
+}
 // </AbsIterator>
 
 
@@ -85,6 +90,10 @@ void CeilingIterator::accept(PlanIterVisitor& v) const
 
 CeilingIterator::~CeilingIterator() {}
 
+
+zstring CeilingIterator::getNameAsString() const {
+  return "fn:ceiling";
+}
 // </CeilingIterator>
 
 
@@ -113,6 +122,10 @@ void FloorIterator::accept(PlanIterVisitor& v) const
 
 FloorIterator::~FloorIterator() {}
 
+
+zstring FloorIterator::getNameAsString() const {
+  return "fn:floor";
+}
 // </FloorIterator>
 
 
@@ -141,6 +154,10 @@ void RoundIterator::accept(PlanIterVisitor& v) const
 
 RoundIterator::~RoundIterator() {}
 
+
+zstring RoundIterator::getNameAsString() const {
+  return "fn:round";
+}
 // </RoundIterator>
 
 
@@ -169,6 +186,10 @@ void RoundHalfToEvenIterator::accept(PlanIterVisitor& v) const
 
 RoundHalfToEvenIterator::~RoundHalfToEvenIterator() {}
 
+
+zstring RoundHalfToEvenIterator::getNameAsString() const {
+  return "fn:round-half-to-even";
+}
 // </RoundHalfToEvenIterator>
 
 
@@ -197,6 +218,10 @@ void FormatNumberIterator::accept(PlanIterVisitor& v) const
 
 FormatNumberIterator::~FormatNumberIterator() {}
 
+
+zstring FormatNumberIterator::getNameAsString() const {
+  return "fn:format-number";
+}
 // </FormatNumberIterator>
 
 
@@ -225,6 +250,10 @@ void FormatIntegerIterator::accept(PlanIterVisitor& v) const
 
 FormatIntegerIterator::~FormatIntegerIterator() {}
 
+
+zstring FormatIntegerIterator::getNameAsString() const {
+  return "fn:format-integer";
+}
 // </FormatIntegerIterator>
 
 

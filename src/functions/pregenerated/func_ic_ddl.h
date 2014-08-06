@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_IC_DDL_H
 #define ZORBA_FUNCTIONS_IC_DDL_H
 
@@ -38,11 +39,11 @@ void populate_context_ic_ddl(static_context* sctx);
 
 
 
-//zorba-store-integrity_constraints-static-ddl:activate
-class zorba_store_integrity_constraints_static_ddl_activate : public function
+//zorba-store-static-integrity-constraints-ddl:activate
+class zorba_store_static_integrity_constraints_ddl_activate : public function
 {
 public:
-  zorba_store_integrity_constraints_static_ddl_activate(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_static_integrity_constraints_ddl_activate(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -57,11 +58,11 @@ public:
 };
 
 
-//zorba-store-integrity_constraints-static-ddl:deactivate
-class zorba_store_integrity_constraints_static_ddl_deactivate : public function
+//zorba-store-static-integrity-constraints-ddl:deactivate
+class zorba_store_static_integrity_constraints_ddl_deactivate : public function
 {
 public:
-  zorba_store_integrity_constraints_static_ddl_deactivate(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_static_integrity_constraints_ddl_deactivate(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -76,11 +77,11 @@ public:
 };
 
 
-//zorba-store-integrity_constraints-static-dml:check-integrity-constraint
-class zorba_store_integrity_constraints_static_dml_check_integrity_constraint : public function
+//zorba-store-static-integrity-constraints-dml:check-integrity-constraint
+class zorba_store_static_integrity_constraints_dml_check_integrity_constraint : public function
 {
 public:
-  zorba_store_integrity_constraints_static_dml_check_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_static_integrity_constraints_dml_check_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

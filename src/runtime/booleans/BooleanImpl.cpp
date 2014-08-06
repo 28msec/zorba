@@ -45,34 +45,49 @@
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
+DEF_GET_NAME_AS_STRING(FnBooleanIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(OrIterator)
+DEF_GET_NAME_AS_STRING(OrIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(AndIterator)
+DEF_GET_NAME_AS_STRING(AndIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
+DEF_GET_NAME_AS_STRING(CompareIterator)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
                                TypedValueCompareIterator<store::XS_DOUBLE>,
                                1)
+template<>
+DEF_GET_NAME_AS_STRING(TypedValueCompareIterator<store::XS_DOUBLE>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
                                TypedValueCompareIterator<store::XS_FLOAT>,
                                2)
+template<>
+DEF_GET_NAME_AS_STRING(TypedValueCompareIterator<store::XS_FLOAT>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
                                TypedValueCompareIterator<store::XS_DECIMAL>,
                                3)
+template<>
+DEF_GET_NAME_AS_STRING(TypedValueCompareIterator<store::XS_DECIMAL>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
                                TypedValueCompareIterator<store::XS_INTEGER>,
                                4)
+template<>
+DEF_GET_NAME_AS_STRING(TypedValueCompareIterator<store::XS_INTEGER>)
 
 SERIALIZABLE_TEMPLATE_INSTANCE(TypedValueCompareIterator,
                                TypedValueCompareIterator<store::XS_STRING>,
                                5)
+template<>
+DEF_GET_NAME_AS_STRING(TypedValueCompareIterator<store::XS_STRING>)
 
 SERIALIZABLE_CLASS_VERSIONS(AtomicValuesEquivalenceIterator)
+DEF_GET_NAME_AS_STRING(AtomicValuesEquivalenceIterator)
 
 
 /*******************************************************************************
@@ -518,11 +533,11 @@ bool CompareIterator::valueComparison(
     {
     case CompareConsts::VALUE_EQUAL:
     {
-      return valueEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
+      return valueEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation, true);
     }
     case CompareConsts::VALUE_NOT_EQUAL:
     {
-      return ! valueEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
+      return ! valueEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation, true);
     }
     case CompareConsts::VALUE_GREATER:
     {
@@ -577,11 +592,14 @@ bool CompareIterator::valueEqual(
     store::Item_t& aItem1,
     const TypeManager* typemgr,
     long timezone,
-    XQPCollator* aCollation)
+    XQPCollator* aCollation,
+    bool raiseError)
 {
   store::Item_t castItem0, castItem1;
-  valueCasting(loc, typemgr, aItem0, aItem1, castItem0, castItem1);
-  return equal(loc, castItem0, castItem1, typemgr, timezone, aCollation);
+  if (valueCasting(loc, typemgr, aItem0, aItem1, castItem0, castItem1, raiseError))
+    return equal(loc, castItem0, castItem1, typemgr, timezone, aCollation, raiseError);
+  else
+    return false;
 }
 
 
@@ -597,7 +615,7 @@ long CompareIterator::valueCompare(
     XQPCollator* aCollation)
 {
   store::Item_t castItem0, castItem1;
-  valueCasting(loc, typemgr, aItem0, aItem1, castItem0, castItem1);
+  valueCasting(loc, typemgr, aItem0, aItem1, castItem0, castItem1, true);
   return compare(loc, castItem0, castItem1, typemgr, timezone, aCollation);
 }
 
@@ -605,13 +623,14 @@ long CompareIterator::valueCompare(
 /*******************************************************************************
 
 ********************************************************************************/
-void CompareIterator::valueCasting(
+bool CompareIterator::valueCasting(
     const QueryLoc& loc,
     const TypeManager* tm,
     store::Item_t& item0,
     store::Item_t& item1,
     store::Item_t& castItem0,
-    store::Item_t& castItem1)
+    store::Item_t& castItem1,
+    bool raiseError)
 {
   store::SchemaTypeCode type0 = item0->getTypeCode();
   store::SchemaTypeCode type1 = item1->getTypeCode();
@@ -626,7 +645,8 @@ void CompareIterator::valueCasting(
     }
     else
     {
-      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc);
+      if (!GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc, raiseError))
+        return false;
 
       if (!GenericCast::promote(castItem1, item1, store::XS_STRING, NULL, tm, loc))
         castItem1.transfer(item1);
@@ -637,7 +657,8 @@ void CompareIterator::valueCasting(
     if (!GenericCast::promote(castItem0, item0, store::XS_STRING, NULL, tm, loc))
       castItem0.transfer(item0);
 
-    GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc);
+    if (!GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc, raiseError))
+      return false;
   }
   else
   {
@@ -647,6 +668,7 @@ void CompareIterator::valueCasting(
     if (!GenericCast::promote(castItem1, item1, type0, NULL, tm, loc))
       castItem1.transfer(item1);
   }
+  return true;
 }
 
 
@@ -745,7 +767,7 @@ bool CompareIterator::generalEqual(
 {
   store::Item_t castItem0, castItem1;
   generalCasting(loc, typemgr, aItem0, aItem1, castItem0, castItem1);
-  return equal(loc, castItem0, castItem1, typemgr, timezone, aCollation);
+  return equal(loc, castItem0, castItem1, typemgr, timezone, aCollation, true);
 }
 
 
@@ -867,7 +889,8 @@ bool CompareIterator::equal(
     const store::Item_t& item1,
     const TypeManager* tm,
     long timezone,
-    XQPCollator* collation)
+    XQPCollator* collation,
+    bool raiseError)
 {
   store::SchemaTypeCode type0 = item0->getTypeCode();
   store::SchemaTypeCode type1 = item1->getTypeCode();
@@ -913,7 +936,7 @@ bool CompareIterator::equal(
     {
       return item1->equals(item0);
     }
-    else
+    else if (raiseError)
     {
       xqtref_t type0 = tm->create_value_type(item0.getp());
       xqtref_t type1 = tm->create_value_type(item1.getp());
@@ -921,6 +944,8 @@ bool CompareIterator::equal(
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
     }
+    else
+      return false;
   }
 }
 
@@ -1246,7 +1271,8 @@ bool AtomicValuesEquivalenceIterator::nextImpl(
                                                        lItem1,
                                                        theTypeManager,
                                                        theTimezone,
-                                                       theCollation);
+                                                       theCollation,
+                                                       true);
         }
         catch (ZorbaException const& e)
         {
