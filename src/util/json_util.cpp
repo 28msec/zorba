@@ -34,11 +34,19 @@ namespace json {
 ///////////////////////////////////////////////////////////////////////////////
 
 ostream& serialize( ostream &os, char const *s ) {
+  const unsigned int length = 8192;
+  char buffer[length];
+  unsigned int i = 0;
+
   while ( true ) {
     unicode::code_point const cp = utf8::next_char( s );
     if ( !cp )
       break;
     if ( ascii::is_cntrl( cp ) ) {
+      if (i > 0) {
+        os.write(buffer, i);
+        i = 0;
+      }
       switch ( cp ) {
         case '\b': os << "\\b"; break;
         case '\f': os << "\\f"; break;
@@ -61,6 +69,10 @@ ostream& serialize( ostream &os, char const *s ) {
       oss << std::hex << std::setfill('0')
           << "\\u" << std::setw(4) << high
           << "\\u" << std::setw(4) << low;
+      if (i > 0) {
+        os.write(buffer, i);
+        i = 0;
+      }
       os << oss.str();
       continue;
     }
@@ -68,13 +80,28 @@ ostream& serialize( ostream &os, char const *s ) {
     switch ( cp ) {
       case '\\':
       case '"':
+        if (i > 0) {
+          os.write(buffer, i);
+          i = 0;
+        }
         os << '\\';
         // no break;
       default: {
         utf8::encoded_char_type ec;
-        os.write( ec, utf8::encode( cp, ec ) );
+        utf8::size_type len = utf8::encode( cp, ec );
+        if (i + len >= length) {
+          os.write(buffer, i);
+          i = 0;
+        }
+        memcpy(&buffer[i], &ec, len);
+        i += len;
+        //os.write( ec, utf8::encode( cp, ec ) );
       }
     }
+  }
+  if (i > 0) {
+    os.write(buffer, i);
+    i = 0;
   }
   return os;
 }
