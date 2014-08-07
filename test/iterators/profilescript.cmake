@@ -26,7 +26,7 @@ FILE (MAKE_DIRECTORY ${APITEST_OUT_DIRPATH})
     
 EXECUTE_PROCESS (
   COMMAND
-    ${APITEST_PATH}
+    ${ZORBA_EXE}
     --profile json
     --no-tree-ids
     --no-serializer  
@@ -40,7 +40,7 @@ EXECUTE_PROCESS (
   COMMAND
     ${ZORBA_EXE}
     -f -q ${profiletest_xq_path}
-    -e apitest-path:=${APITEST_PATH}
+    -e zorba-exe-path:=${ZORBA_EXE}
     -e testname:=${testname}
     -e result-filepath:=${APITEST_OUT_FILEPATH} 
     -z method=text

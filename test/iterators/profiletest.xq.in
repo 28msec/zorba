@@ -58,7 +58,7 @@ declare %an:sequential function local:filter($items as item()*, $replace-value-l
 declare variable $source-dir := "@CMAKE_SOURCE_DIR@";
 declare variable $binary-dir := "@CMAKE_BINARY_DIR@";
 
-declare variable $apitest-path external;
+declare variable $zorba-exe-path external;
 
 declare variable $testname external; 
  
@@ -74,7 +74,7 @@ variable $result-filepath-normalized := file:path-to-native($result-filepath);
 
 variable $query-filepath-normalized := file:path-to-native($query-filepath);
 
-variable $apitest-path-normalized := file:path-to-native($apitest-path);
+variable $zorba-exe-path-normalized := file:path-to-native($zorba-exe-path);
 
 
 if (file:exists($query-filepath-normalized))
@@ -120,9 +120,11 @@ then
   else
     "Failed!\n" ||
     "Generated profile does not match to the expected result!\n" ||
-    "Command to generate iterator tree: " || $apitest-path || " " || fn:string-join($query-options," ") || "\n\n" ||
-    "Actual Result: " || $result-filepath || "\n" ||
-    "Expected Result: " || $expected-filepath || "\n"
+    "Command to generate iterator tree: " || $zorba-exe-path-normalized || " " || fn:string-join($query-options," ") || "\n\n" ||
+    "Actual Result File: " || $result-filepath || "\n" ||
+    "Expected Result File: " || $expected-filepath || "\n\n" ||
+    "Actual Result: \n" ||
+    $result-text
 }
 else
     "Passed! But only because query file " || $query-filepath || " was not found. Test was not executed!"
