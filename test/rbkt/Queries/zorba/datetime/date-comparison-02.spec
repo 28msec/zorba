@@ -1,1 +1,1 @@
-Timezone: 10800
+Timezone: 180

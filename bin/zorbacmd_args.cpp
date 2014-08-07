@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2014 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,10 @@ static char const* check_args() {
           zc_props.ordering_mode_ == "ordered" ||
           zc_props.ordering_mode_ == "unordered" ) )
     return "Only ordered and unordered are allowed as values for the option ordering-mode";
+
+  if (zc_props.timezone_set_ &&
+      (zc_props.timezone_ > 14*60 || zc_props.timezone_ < -14*60))
+    return "Invalid timezone specified: valid timezones are in the range [-14*60, 14*60]";
 
   if ( zc_props.queries_or_files_.empty() )
     return "No queries submitted\nUsage: zorba -q '1 + 1' execute an inline query \n zorba file.xq execute a query from a file";
@@ -330,6 +334,9 @@ char const* get_help_msg() {
 
     HELP_OPT( "--trailing-nl, -n" )
       "Print a trailing newline after the result of the query.\n\n"
+
+    HELP_OPT( "--timezone <minutes>" )
+      "Set implicit time zone (in minutes).\n\n"
 
     ////////// u //////////////////////////////////////////////////////////////
 
@@ -804,6 +811,11 @@ int parse_args( int argc, char const *argv[] ) {
 #endif /* NDEBUG */
     else if ( IS_OPT( "--trailing-nl", "-n" ) )
       zc_props.trailing_nl_ = true;
+    else if ( IS_LONG_OPT( "--timezone" ) ) {
+      PARSE_ARG( "--timezone" );
+      SET_ZCPROP( timezone_ );
+      zc_props.timezone_set_ = true;
+    }
 
     ////////// u //////////////////////////////////////////////////////////////
 

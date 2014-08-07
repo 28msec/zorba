@@ -231,6 +231,10 @@ static bool populateStaticContext( Zorba *zorba, StaticContext_t &sctx ) {
 bool populateDynamicContext( Zorba *zorba, DynamicContext *dctx ) {
   ZorbaCmdProperties &zc_props = ZorbaCmdProperties::instance();
 
+  if ( zc_props.timezone_set_ ) {
+    dctx->setImplicitTimezone( zc_props.timezone_ );
+  }
+
   XmlDataManager_t xmlMgr;
   if ( !zc_props.ctx_item_.empty() ) {
     ifstream is( zc_props.ctx_item_.c_str() );
@@ -627,7 +631,6 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
   argc -= optind;
   argv += optind;
 
-  Properties const &z_props = Properties::instance();
   ZorbaCmdProperties const &zc_props = ZorbaCmdProperties::instance();
 
   Timers timers( zc_props.multiple_ );
