@@ -18,7 +18,7 @@ STRING (LENGTH ${TESTFILE} testfile_length)
 MATH (EXPR testfile_length "${testfile_length} - 5")
 STRING (SUBSTRING ${TESTFILE} 0 ${testfile_length} testname)
     
-SET (APITEST_OUT_FILEPATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterators/${testname}.spec)
+SET (APITEST_OUT_FILEPATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterators/${testname}.plan)
 
 GET_FILENAME_COMPONENT (APITEST_OUT_DIRPATH ${APITEST_OUT_FILEPATH} PATH)
     

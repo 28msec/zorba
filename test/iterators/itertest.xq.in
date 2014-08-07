@@ -27,7 +27,7 @@ declare variable $testname external;
  
 declare variable $result-filepath external;
 
-variable $expected-filepath := $source-dir || "/test/iterators/" || $testname || ".iter";
+variable $expected-filepath := $source-dir || "/test/iterators/" || $testname || ".plan";
 
 variable $query-filepath := $source-dir || "/test/rbkt/Queries/" || $testname || ".xq";
 
