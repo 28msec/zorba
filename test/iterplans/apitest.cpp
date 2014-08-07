@@ -143,7 +143,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
         printf( "save execution plan FAILED\n" );
         return 0x0badc0de;
       }
-      //printf( "saved execution plan at: %s\n", binary_path.c_str() ); //FIXME
+      printf( "saved execution plan at: %s\n", binary_path.c_str() );
     }
     catch( ZorbaException const &e ) {
       cout << e << endl;
@@ -169,7 +169,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
         cout << "cannot load plan " << binary_path << endl;
         return 16;
       }
-      //printf( "load execution plan: %s\n", binary_path.c_str() ); //FIXME
+      printf( "load execution plan: %s\n", binary_path.c_str() );
     }
     catch ( ZorbaException const &e ) {
       cout << e << endl;
@@ -211,7 +211,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
     // output the result (either using xml serialization or using show)
 
     try {
-      if ( at_props.serialize_only_query_ ) {//FIXME
+      if ( at_props.serialization_params_.size() ) {
         Zorba_SerializerOptions const opts( at_props.serialization_params_ );
         query->execute( *output_file, &opts );
       } else {
