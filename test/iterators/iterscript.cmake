@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#$TESTFILE is a filepath relative to the test/iterplans dir.
+#$TESTFILE is a filepath relative to the test/iterators dir.
 
 STRING (LENGTH ${TESTFILE} testfile_length)
 MATH (EXPR testfile_length "${testfile_length} - 5")
 STRING (SUBSTRING ${TESTFILE} 0 ${testfile_length} testname)
     
-SET (APITEST_OUT_FILEPATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterplans/${testname}.spec)
+SET (APITEST_OUT_FILEPATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterators/${testname}.spec)
 
 GET_FILENAME_COMPONENT (APITEST_OUT_DIRPATH ${APITEST_OUT_FILEPATH} PATH)
     
@@ -34,7 +34,7 @@ EXECUTE_PROCESS (
   OUTPUT_FILE ${APITEST_OUT_FILEPATH}
 ) 
     
-FILE (TO_NATIVE_PATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterplans/itertest.xq itertest_xq_path)
+FILE (TO_NATIVE_PATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterators/itertest.xq itertest_xq_path)
     
 EXECUTE_PROCESS (
   COMMAND
