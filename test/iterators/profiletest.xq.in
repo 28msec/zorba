@@ -127,4 +127,4 @@ then
     $result-text
 }
 else
-    "Passed! But only because query file " || $query-filepath || " was not found. Test was not executed!"
+  "Failed! Query file " || $query-filepath || " was not found. Test was not executed!"
