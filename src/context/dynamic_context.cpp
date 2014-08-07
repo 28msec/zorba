@@ -208,6 +208,9 @@ void dynamic_context::set_default_collection(const store::Item_t& default_collec
 ********************************************************************************/
 void dynamic_context::set_implicit_timezone(long tzone_seconds)
 {
+  if (tzone_seconds > 14*3600 || tzone_seconds < -14*3600)
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(tzone_seconds));
+
   theTimezone = tzone_seconds;
 }
 
