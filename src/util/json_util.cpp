@@ -34,6 +34,9 @@ namespace json {
 ///////////////////////////////////////////////////////////////////////////////
 
 ostream& serialize( ostream &os, char const *s ) {
+  // millions of calls to os.write(char) are quite expensive
+  // we do manual buffering here which gives approx. 30% performance
+  // improvement when writing out big json strings
   const unsigned int length = 8192;
   char buffer[length];
   unsigned int i = 0;
@@ -44,7 +47,7 @@ ostream& serialize( ostream &os, char const *s ) {
       break;
     if ( ascii::is_cntrl( cp ) ) {
       if (i > 0) {
-        os.write(buffer, i);
+        os.rdbuf()->sputn(buffer, i);
         i = 0;
       }
       switch ( cp ) {
@@ -70,7 +73,7 @@ ostream& serialize( ostream &os, char const *s ) {
           << "\\u" << std::setw(4) << high
           << "\\u" << std::setw(4) << low;
       if (i > 0) {
-        os.write(buffer, i);
+        os.rdbuf()->sputn(buffer, i);
         i = 0;
       }
       os << oss.str();
@@ -81,26 +84,23 @@ ostream& serialize( ostream &os, char const *s ) {
       case '\\':
       case '"':
         if (i > 0) {
-          os.write(buffer, i);
+          os.rdbuf()->sputn(buffer, i);
           i = 0;
         }
         os << '\\';
         // no break;
       default: {
-        utf8::encoded_char_type ec;
-        utf8::size_type len = utf8::encode( cp, ec );
-        if (i + len >= length) {
-          os.write(buffer, i);
+        if (i + 6 >= length) { // 6 is max length of ec
+          os.rdbuf()->sputn(buffer, i);
           i = 0;
         }
-        memcpy(&buffer[i], &ec, len);
+        utf8::size_type len = utf8::encode( cp, *reinterpret_cast<utf8::encoded_char_type*>(&buffer[i]) );
         i += len;
-        //os.write( ec, utf8::encode( cp, ec ) );
       }
     }
   }
   if (i > 0) {
-    os.write(buffer, i);
+    os.rdbuf()->sputn(buffer, i);
     i = 0;
   }
   return os;
