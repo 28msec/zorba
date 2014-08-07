@@ -627,7 +627,6 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
   argc -= optind;
   argv += optind;
 
-  Properties const &z_props = Properties::instance();
   ZorbaCmdProperties const &zc_props = ZorbaCmdProperties::instance();
 
   Timers timers( zc_props.multiple_ );

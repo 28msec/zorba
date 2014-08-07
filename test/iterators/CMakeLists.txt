@@ -16,28 +16,16 @@
 CONFIGURE_FILE(plantest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/plantest.xq)
 CONFIGURE_FILE(profiletest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/profiletest.xq)
 
-# apitest
-SET(APITEST_SRCS
-  apitest_args.cpp
-  apitest_props.cpp
-  apitest.cpp
-)
-ZORBA_GENERATE_EXE("apitest" "${APITEST_SRCS}" "" "" "")
-
 MESSAGE (STATUS "Adding plan tests")
 FILE (GLOB_RECURSE PLAN_TEST_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.plan)
 MESSAGE (STATUS "Adding profile tests")
 FILE (GLOB_RECURSE PROFILE_TEST_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.profile)
 
 # compute path to apitest
-SET(SUFFIX)
-IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-  SET(SUFFIX "_${ZORBA_STORE_NAME}")
-ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
 IF (WIN32)
-  SET(APITEST_PATH ${CMAKE_CURRENT_BINARY_DIR}/apitest${SUFFIX}.bat)
+  SET(APITEST_PATH ${CMAKE_BINARY_DIR}/bin/zorba.exe)
 ELSE()
-  SET(APITEST_PATH ${CMAKE_CURRENT_BINARY_DIR}/apitest${SUFFIX})
+  SET(APITEST_PATH ${CMAKE_BINARY_DIR}/bin/zorba)
 ENDIF()
 
 FOREACH (TESTFILE ${PLAN_TEST_FILES})

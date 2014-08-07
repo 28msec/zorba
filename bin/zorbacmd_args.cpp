@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2014 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -330,6 +330,9 @@ char const* get_help_msg() {
 
     HELP_OPT( "--trailing-nl, -n" )
       "Print a trailing newline after the result of the query.\n\n"
+
+    HELP_OPT( "--timezone <minutes>" )
+      "Set implicit time zone (in minutes).\n\n"
 
     ////////// u //////////////////////////////////////////////////////////////
 
@@ -804,6 +807,10 @@ int parse_args( int argc, char const *argv[] ) {
 #endif /* NDEBUG */
     else if ( IS_OPT( "--trailing-nl", "-n" ) )
       zc_props.trailing_nl_ = true;
+    else if ( IS_LONG_OPT( "--timezone" ) ) {
+      PARSE_ARG( "--timezone" );
+      SET_ZCPROP( timezone_ );
+    }
 
     ////////// u //////////////////////////////////////////////////////////////
 

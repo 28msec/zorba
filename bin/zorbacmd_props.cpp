@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2014 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ ZorbaCmdProperties::ZorbaCmdProperties() {
   timeout_ = -1;
   timing_ = false;
   trailing_nl_ = false;
+  timezone_ = 0;
 }
 
 ZorbaCmdProperties& ZorbaCmdProperties::instance() {
