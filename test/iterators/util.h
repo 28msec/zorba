@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2014 The FLWOR Foundation.
+ * Copyright 2006-2008 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,28 @@
  * limitations under the License.
  */
 
-// local
-#include "apitest_props.h"
+#ifndef ZORBA_CMD_UTIL_H
+#define ZORBA_CMD_UTIL_H
+
+#include <string>
+#include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
 
-APITestProperties::APITestProperties() {
-  as_file_ = false;
-  compile_only_ = false;
-#ifdef ZORBA_WITH_DEBUGGER
-  debug_ = false;
-  debug_host_ = "127.0.0.1";
-  debug_port_ = 28028;
-#endif /* ZORBA_WITH_DEBUGGER */
-  iter_plan_test_ = false;
-  jsoniq_ = false;
-  lib_module_ = false;
-  load_plan_ = false;
-  optimization_level_ = 1;
-  parse_only_ = false;
-  print_query_ = false;
-  serialize_only_query_ = false;
-  test_plan_serialization_ = false;
-  tz_ = 0;
-  use_serializer_ = false;
-}
+template<class InStringType,class OutStringType>
+void tokenize( InStringType const &s, char delim,
+               std::vector<OutStringType> *tokens ) {
+  typename InStringType::size_type last_pos = s.find_first_not_of( delim, 0 );
+  typename InStringType::size_type pos = s.find_first_of( delim, last_pos );
 
-APITestProperties& APITestProperties::instance() {
-  static APITestProperties instance;
-  return instance;
+  while ( pos != InStringType::npos || last_pos != InStringType::npos ) {
+    tokens->push_back( s.substr( last_pos, pos - last_pos ).c_str() );
+    last_pos = s.find_first_not_of( delim, pos );
+    pos = s.find_first_of( delim, last_pos );
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#endif /* ZORBA_CMD_UTIL_H */
 /* vim:set et sw=2 ts=2: */

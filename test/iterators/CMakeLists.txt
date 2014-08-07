@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# configure itertest
-CONFIGURE_FILE(itertest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/itertest.xq)
+# configure plan and profile test queries
+CONFIGURE_FILE(plantest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/plantest.xq)
+CONFIGURE_FILE(profiletest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/profiletest.xq)
 
 # apitest
 SET(APITEST_SRCS
@@ -23,8 +24,10 @@ SET(APITEST_SRCS
 )
 ZORBA_GENERATE_EXE("apitest" "${APITEST_SRCS}" "" "" "")
 
-MESSAGE (STATUS "Adding iterator plan tests")
-FILE (GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.iter)
+MESSAGE (STATUS "Adding plan tests")
+FILE (GLOB_RECURSE PLAN_TEST_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.plan)
+MESSAGE (STATUS "Adding profile tests")
+FILE (GLOB_RECURSE PROFILE_TEST_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.profile)
 
 # compute path to apitest
 SET(SUFFIX)
@@ -37,21 +40,39 @@ ELSE()
   SET(APITEST_PATH ${CMAKE_CURRENT_BINARY_DIR}/apitest${SUFFIX})
 ENDIF()
 
-FOREACH (TESTFILE ${TESTFILES})
+FOREACH (TESTFILE ${PLAN_TEST_FILES})
   STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
    
   ADD_TEST(
-    "iterplans/${TESTNAME}" 
+    "iterators/${TESTNAME}" 
     "${CMAKE_COMMAND}"
     -D "TESTFILE=${TESTFILE}"
     -D "CMAKE_ZORBA_BINARY_DIR=${CMAKE_BINARY_DIR}"
     -D "ZORBA_EXE=${ZORBA_EXE}"
     -D "CMAKE_ZORBA_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
     -D "APITEST_PATH=${APITEST_PATH}"
-    -P "${CMAKE_CURRENT_SOURCE_DIR}/iterscript.cmake")
+    -P "${CMAKE_CURRENT_SOURCE_DIR}/planscript.cmake")
      
-  SET_TESTS_PROPERTIES("iterplans/${TESTNAME}" 
+  SET_TESTS_PROPERTIES("iterators/${TESTNAME}" 
     PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
 ENDFOREACH(TESTFILE)
+
+FOREACH (TESTFILE ${PROFILE_TEST_FILES})
+  STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
+   
+  ADD_TEST(
+    "iterators/${TESTNAME}" 
+    "${CMAKE_COMMAND}"
+    -D "TESTFILE=${TESTFILE}"
+    -D "CMAKE_ZORBA_BINARY_DIR=${CMAKE_BINARY_DIR}"
+    -D "ZORBA_EXE=${ZORBA_EXE}"
+    -D "CMAKE_ZORBA_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
+    -D "APITEST_PATH=${APITEST_PATH}"
+    -P "${CMAKE_CURRENT_SOURCE_DIR}/profilescript.cmake")
+     
+  SET_TESTS_PROPERTIES("iterators/${TESTNAME}" 
+    PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
+ENDFOREACH(TESTFILE)
+
 
 # vim:set et sw=2 ts=2:
