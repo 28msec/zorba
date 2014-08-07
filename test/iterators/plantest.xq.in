@@ -62,8 +62,10 @@ then
     "Command to generate iterator tree: " || $zorba-exe-path-normalized || " " || fn:string-join($query-options," ") || "\n\n" ||
     "Actual Result File: " || $result-filepath || "\n" ||
     "Expected Result File: " || $expected-filepath || "\n\n" ||
-    "Actual Result: \n" ||
-    $result-text
+    "Actual Result: \n\n" ||
+    serialize($result-json) || "\n\n"
+    "Expected Result: \n\n" ||
+    serialize($expected-json)    
 }
 else
   "Failed! Query file " || $query-filepath || " was not found. Test was not executed!"
