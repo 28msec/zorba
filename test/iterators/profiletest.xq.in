@@ -124,7 +124,7 @@ then
     "Actual Result File: " || $result-filepath || "\n" ||
     "Expected Result File: " || $expected-filepath || "\n\n" ||
     "Actual Result: \n\n" ||
-    serialize($result-json) || "\n\n"
+    serialize($result-json) || "\n\n" ||
     "Expected Result: \n\n" ||
     serialize($expected-json)
 }
