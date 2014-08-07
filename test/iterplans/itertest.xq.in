@@ -1,3 +1,4 @@
+jsoniq version "1.0";
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
  :
@@ -13,7 +14,6 @@
  : See the License for the specific language governing permissions and
  : limitations under the License.
 :)
-
 import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
@@ -27,11 +27,9 @@ declare variable $testname external;
  
 declare variable $result-filepath external;
 
-variable $expected-filepath := 
-fn:concat($source-dir, '/test/iterplans/', $testname, '.iter');
+variable $expected-filepath := $source-dir || "/test/iterplans/" || $testname || ".iter";
 
-variable $query-filepath := 
-fn:concat($source-dir, '/test/rbkt/Queries/', $testname, '.xq');
+variable $query-filepath := $source-dir || "/test/rbkt/Queries/" || $testname || ".xq";
 
 variable $expected-filepath-normalized := file:path-to-native($expected-filepath);
 
@@ -46,9 +44,9 @@ if (file:exists($query-filepath-normalized))
 then
 {
   variable $query-options := (
-    '--iter-plan-test',
-    '--print-iterator-tree',
-    '--no-tree-ids',
+    "--iterator-tree", "xml",
+    "--no-tree-ids",
+    "--no-serializer",
     $query-filepath-normalized
   );
 
@@ -56,26 +54,14 @@ then
 
   variable $expected-text as xs:string := file:read-text($expected-filepath-normalized);
 
-  {
-    (
-      (: compare generated iterator tree with expected result :)
-      if ($result-text eq $expected-text) then
-        "Passed!"
-      else
-        fn:concat(
-          "Failed! Generated iterator tree is not equal to the expected Result!",
-          "Command to generate iterator tree: ", 
-           $apitest-path,
-           " ",
-           fn:string-join($query-options," "),
-           "",
-           "Actual Result: ",
-           $result-filepath, 
-           $result-text)
-    )
-  }
+  if ($result-text eq $expected-text) then
+    "Passed!"
+  else
+    "Failed!\n" ||
+    "Generated iterator tree is not equal to the expected result!\n" ||
+    "Command to generate iterator tree: " || $apitest-path || " " || fn:string-join($query-options," ") || "\n\n" ||
+    "Actual Result: " || $result-filepath || "\n" ||
+    "Expected Result: " || $expected-filepath || "\n"
 }
 else
-    fn:concat("Passed! But only because query file ", 
-              $query-filepath,
-              " not found. Test was not executed!")
+    "Passed! But only because query file " || $query-filepath || " was not found. Test was not executed!"
