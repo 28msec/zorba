@@ -411,15 +411,13 @@ inline void get_time( time_type *t ) {
  * @param t0 The earlier time.
  * @return Returns the difference in milliseconds.
  */
-inline msec_type operator-( time_type const &t1, time_type const &t0 ) {
+inline double operator-( time_type const &t1, time_type const &t0 ) {
 #if defined(ZORBA_HAVE_CLOCKGETTIME) && defined(_POSIX_CPUTIME)
-  return (t1.tv_sec  - t0.tv_sec) * 1000
-       + (t1.tv_nsec - t0.tv_nsec + 50000) / 1000000;
+  return (t1.tv_sec  - t0.tv_sec) * 1000 + (t1.tv_nsec - t0.tv_nsec) / 1000000.0;
 #elif defined(ZORBA_HAVE_GETRUSAGE)
-  return (t1.tv_sec  - t0.tv_sec) * 1000
-       + (t1.tv_usec - t0.tv_usec + 500) / 1000;
+  return (t1.tv_sec  - t0.tv_sec) * 1000 + (t1.tv_usec - t0.tv_usec + 500) / 1000.0;
 #else
-  return (t1.value - t0.value) / (CLOCKS_PER_SEC / 1000);
+  return (t1.value - t0.value) / (CLOCKS_PER_SEC / 1000.0);
 #endif
 }
 
@@ -442,7 +440,7 @@ public:
    *
    * @return Returns said amount of time in milliseconds.
    */
-  msec_type elapsed() const {
+  double elapsed() const {
     time_type now;
     get_time( &now );
     return now - start_;
@@ -492,13 +490,13 @@ inline void get_time( time_type *t ) {
  * @param t0 The earlier time.
  * @return Returns the difference in milliseconds.
  */
-inline msec_type operator-( time_type const &t1, time_type const &t0 ) {
+inline double operator-( time_type const &t1, time_type const &t0 ) {
 #if defined(ZORBA_HAVE_CLOCKGETTIME)
-  return (t1.tv_sec - t0.tv_sec) * 1000 + (t1.tv_nsec - t0.tv_nsec) / 1000000;
+  return (t1.tv_sec - t0.tv_sec) * 1000 + (t1.tv_nsec - t0.tv_nsec) / 1000000.0;
 #elif defined(WIN32)
   return (t1.time - t0.time) * 1000 + (t1.millitm - t0.millitm);
 #else
-  return (t1.tv_sec - t0.tv_sec) * 1000 + (t1.tv_usec - t0.tv_usec) / 1000;
+  return (t1.tv_sec - t0.tv_sec) * 1000 + (t1.tv_usec - t0.tv_usec) / 1000.0;
 #endif
 }
 
@@ -521,7 +519,7 @@ public:
    *
    * @return Returns said amount of time in milliseconds.
    */
-  msec_type elapsed() const {
+  double elapsed() const {
     time_type now;
     get_time( &now );
     return now - start_;

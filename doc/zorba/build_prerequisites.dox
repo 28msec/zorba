@@ -85,7 +85,7 @@ by CMake.
     provide the CMake configuration parameter <b>ZORBA_XQUERYX=ON</b>.
 
 - Flex 2.5.33 or later (http://flex.sourceforge.net/) and
-    Bison 2.4 or later (http://www.gnu.org/software/bison/) are
+    Bison 2.6 or later (http://www.gnu.org/software/bison/) are
     used to generate the XQuery scanner and XQuery parser. The Zorba
     source includes pre-generated versions of these, so Flex and Bison
     are only required if you are developing Zorba itself and need to

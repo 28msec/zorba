@@ -29,10 +29,9 @@
 **  safer to require the version.
 */
 %skeleton "lalr1.cc"  /*  -*- C++ -*- */
-%require "2.4"
+%require "2.6"
 %defines
-%name-prefix="zorba"
-%pure-parser
+%name-prefix "zorba"
 %error-verbose
 
 

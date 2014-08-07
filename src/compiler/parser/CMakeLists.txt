@@ -59,8 +59,15 @@ MACRO(BISON_VERSION_LESS a b)
 ENDMACRO(BISON_VERSION_LESS)
 
 # Bison lowest and highest supported versions
-BISON_VERSION_GREATER("${BISON_VERSION_FULL}" "2.4")
+BISON_VERSION_GREATER("${BISON_VERSION_FULL}" "2.6")
 BISON_VERSION_LESS("${BISON_VERSION_FULL}" "3.0")
+
+# Bison 3.0 removed yylval, yylhs.value should be used instead
+IF(BISON_MAJOR_VERSION GREATER 2)
+  SET (YYLVAL_DEFINE "-Dyylval=yylhs.value")
+ELSE(BISON_MAJOR_VERSION GREATER 2)
+  SET (YYLVAL_DEFINE "")
+ENDIF(BISON_MAJOR_VERSION GREATER 2)
 
 MACRO(GENERATE_GRAMMAR_FILE PARSER_TYPE)
   SET(TARGET_PATH "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
@@ -75,7 +82,7 @@ MACRO(GENERATE_GRAMMAR_FILE PARSER_TYPE)
             ">>"
            "${TARGET_PATH}/${PARSER_TYPE}.y"
       COMMAND ${CMAKE_CXX_COMPILER} 
-      ARGS "-xc++" "-P" "-D${PARSER_DEFINE}"
+      ARGS "-xc++" "-P" "-D${PARSER_DEFINE}" "${YYLVAL_DEFINE}"
            "-E" "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser.y"
            ">>" "${TARGET_PATH}/${PARSER_TYPE}.y"
       DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser.y" "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser_y_includes.h"

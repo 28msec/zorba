@@ -178,26 +178,32 @@ struct profile_data {
    */
   struct mbr_fn {
     unsigned call_count_;
-    time::msec_type cpu_time_;
-    time::msec_type wall_time_;
+    unsigned next_count_;
+    double cpu_time_;
+    double wall_time_;
 
     void init() {
       call_count_ = 0;
+      next_count_ = 0;
       cpu_time_ = 0;
       wall_time_ = 0;
     }
 
-    void add( time::msec_type cpu, time::msec_type wall ) {
+    void addCall() {
       ++call_count_;
+    }
+
+    void addNext( double cpu, double wall ) {
+      ++next_count_;
       cpu_time_ += cpu;
       wall_time_ += wall;
     }
   };
 
-  mbr_fn next_;                         // for nextImpl()
+  mbr_fn data_;
 
   void init() {
-    next_.init();
+    data_.init();
   }
 };
 
@@ -408,6 +414,14 @@ public:
   void open(PlanState& planState, uint32_t& offset)
   {
     openImpl(planState, offset);
+
+    if (planState.theProfile)
+    {
+      PlanIteratorState *const state =
+          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+      state->profile_data_.data_.addCall();
+    }
+
 #ifndef NDEBUG
     // do this after openImpl because the state is created there
     PlanIteratorState* state =
@@ -427,6 +441,13 @@ public:
    */
   void reset(PlanState& planState) const
   {
+    if (planState.theProfile)
+    {
+      PlanIteratorState *const state =
+          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+      state->profile_data_.data_.addCall();
+    }
+
 #ifndef NDEBUG
     PlanIteratorState* state =
     StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
@@ -484,9 +505,9 @@ public:
 
   inline void updateProfile(time::cpu::timer& c, time::wall::timer& w, PlanIteratorState *const state) const
   {
-    time::msec_type const ce( c.elapsed() );
-    time::msec_type const we( w.elapsed() );
-    state->profile_data_.next_.add( ce, we );
+    double const ce( c.elapsed() );
+    double const we( w.elapsed() );
+    state->profile_data_.data_.addNext( ce, we );
   }
 
   /**
