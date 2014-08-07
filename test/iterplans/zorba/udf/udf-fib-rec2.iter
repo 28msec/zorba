@@ -1,5 +1,5 @@
 <iterator-tree description="const-folded expr">
-  <UDFunctionCallIterator cached="true" function="local:fib">
+  <UDFunctionCallIterator function="local:fib" cached="true">
     <SingletonIterator value="xs:integer(10)"/>
   </UDFunctionCallIterator>
 </iterator-tree>
@@ -22,13 +22,13 @@
           </TypedValueCompareIterator_INTEGER>
           <SingletonIterator value="xs:integer(1)"/>
           <SpecificNumArithIterator_AddOperation_INTEGER>
-            <UDFunctionCallIterator cached="true" function="local:fib">
+            <UDFunctionCallIterator function="local:fib" cached="true">
               <SpecificNumArithIterator_SubtractOperation_INTEGER>
                 <ForVarIterator varname="n"/>
                 <SingletonIterator value="xs:integer(1)"/>
               </SpecificNumArithIterator_SubtractOperation_INTEGER>
             </UDFunctionCallIterator>
-            <UDFunctionCallIterator cached="true" function="local:fib">
+            <UDFunctionCallIterator function="local:fib" cached="true">
               <SpecificNumArithIterator_SubtractOperation_INTEGER>
                 <ForVarIterator varname="n"/>
                 <SingletonIterator value="xs:integer(2)"/>
