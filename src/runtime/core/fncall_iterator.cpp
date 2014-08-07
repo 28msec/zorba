@@ -96,16 +96,23 @@ SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
 
 /*******************************************************************************
 ********************************************************************************/
-UDFunctionCallIteratorState::UDFunctionCallIteratorState()
-  :
+FunctionCallIteratorState::FunctionCallIteratorState():
+  theCache(0),
+  theCacheKeySnapshot(0),
+  theCacheHits(0),
+  theCacheMisses(0)
+{
+}
+
+/*******************************************************************************
+********************************************************************************/
+UDFunctionCallIteratorState::UDFunctionCallIteratorState():
   theLocalDCtx(NULL),
   theIsLocalDCtxOwner(true),
   thePlan(NULL),
   thePlanState(NULL),
   thePlanOpen(false),
-  thePlanStateSize(0),
-  theCache(0),
-  theCacheKeySnapshot(0)
+  thePlanStateSize(0)
 {
 }
 
@@ -322,10 +329,12 @@ bool UDFunctionCallIterator::probeCache(
   if (lIt == aState->theCache->end())
   {
     aState->theCachedResult.clear();
+    ++aState->theCacheMisses;
     return false;
   }
 
   aState->theCachedResult = lIt.getValue();
+  ++aState->theCacheHits;
   return true;
 }
 
@@ -810,10 +819,8 @@ public:
 
 /*******************************************************************************
 ********************************************************************************/
-ExtFunctionCallIteratorState::ExtFunctionCallIteratorState() :
-    theIsEvaluated(false),
-    theCache(0),
-    theCacheKeySnapshot(0)
+ExtFunctionCallIteratorState::ExtFunctionCallIteratorState():
+    theIsEvaluated(false)
 {
 }
 
@@ -1376,10 +1383,12 @@ bool ExtFunctionCallIterator::probeCache(
   if (lIt == aState->theCache->end())
   {
     aState->theCachedResult.clear();
+    ++aState->theCacheMisses;
     return false;
   }
 
   aState->theCachedResult = lIt.getValue();
+  ++aState->theCacheHits;
   return true;
 }
 

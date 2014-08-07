@@ -40,6 +40,30 @@ class VectorItemSequence;
 class FunctionCache;
 
 /*******************************************************************************
+theCache:
+---------
+Is a map which is set in the state if caching for the invoked function
+should be done. The cache is owned by the UD/ext function itself and shared
+across all function invocations.
+********************************************************************************/
+class FunctionCallIteratorState : public PlanIteratorState
+{
+public:
+  FunctionCallIteratorState();
+
+  FunctionCache* theCache;
+  store::Item_t  theCacheKey;
+  uint64_t       theCacheKeySnapshot;
+  unsigned int   theCacheHits;
+  unsigned int   theCacheMisses;
+
+  std::vector<store::Item_t>                 theCachedResult;
+  std::vector<store::Item_t>::const_iterator theCachedResultIterator;
+};
+
+
+
+/*******************************************************************************
 
   theLocalDCtx:
   -------------
@@ -82,12 +106,6 @@ class FunctionCache;
   consumers, and as a result we can bind all those V references to the same arg
   wrapper.
 
-  theCache:
-  ---------
-  Is an Index which is set in the state if caching for the invoked function
-  should be done. The cache is owned by the UDF itself and shared across
-  all function invocations.
-
   theArgValues:
   -------------
   If caching is used, this vector contains the results of all arguments
@@ -95,7 +113,7 @@ class FunctionCache;
   cache didn't give a result in order to avoid duplicate evaluation of
   the arguments.
 ********************************************************************************/
-class UDFunctionCallIteratorState : public PlanIteratorState 
+class UDFunctionCallIteratorState : public FunctionCallIteratorState
 {
 public:
   dynamic_context* theLocalDCtx;
@@ -109,14 +127,7 @@ public:
   std::vector<ItemIterator_t> theArgValues;
   std::vector<store::Iterator_t> theArgWrappers;
 
-  FunctionCache* theCache;
-
-  store::Item_t theCacheKey;
-  uint64_t theCacheKeySnapshot;
-
   store::Item_t theNextResult;
-  std::vector<store::Item_t> theCachedResult;
-  std::vector<store::Item_t>::const_iterator theCachedResultIterator;
 
   UDFunctionCallIteratorState();
 
@@ -226,21 +237,13 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
-class ExtFunctionCallIteratorState : public PlanIteratorState 
+class ExtFunctionCallIteratorState : public FunctionCallIteratorState
 {
  public:
   std::vector<ItemSequence*> m_extArgs;
   ItemSequence_t             theResult;
   Iterator_t                 theResultIter;
   bool                       theIsEvaluated;
-
-  FunctionCache* theCache;
-
-  zorba::store::Item_t theCacheKey;
-  uint64_t theCacheKeySnapshot;
-
-  std::vector<store::Item_t> theCachedResult;
-  std::vector<store::Item_t>::const_iterator theCachedResultIterator;
 
   ExtFunctionCallIteratorState();
 
