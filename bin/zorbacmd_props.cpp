@@ -46,9 +46,10 @@ ZorbaCmdProperties::ZorbaCmdProperties() {
   serialize_plan_ = false;
   serialize_text_ = false;
   timeout_ = -1;
+  timezone_ = 0;
+  timezone_set_ = false;
   timing_ = false;
   trailing_nl_ = false;
-  timezone_ = 0;
 }
 
 ZorbaCmdProperties& ZorbaCmdProperties::instance() {

@@ -53,6 +53,10 @@ static char const* check_args() {
           zc_props.ordering_mode_ == "unordered" ) )
     return "Only ordered and unordered are allowed as values for the option ordering-mode";
 
+  if (zc_props.timezone_set_ &&
+      (zc_props.timezone_ > 14*60 || zc_props.timezone_ < -14*60))
+    return "Invalid timezone specified: valid timezones are in the range [-14*60, 14*60]";
+
   if ( zc_props.queries_or_files_.empty() )
     return "No queries submitted\nUsage: zorba -q '1 + 1' execute an inline query \n zorba file.xq execute a query from a file";
 
@@ -810,6 +814,7 @@ int parse_args( int argc, char const *argv[] ) {
     else if ( IS_LONG_OPT( "--timezone" ) ) {
       PARSE_ARG( "--timezone" );
       SET_ZCPROP( timezone_ );
+      zc_props.timezone_set_ = true;
     }
 
     ////////// u //////////////////////////////////////////////////////////////

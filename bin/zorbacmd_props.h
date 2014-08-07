@@ -109,6 +109,7 @@ struct ZorbaCmdProperties {
 #endif /* ZORBA_NO_FULL_TEXT */
   long          timeout_;               // unused
   int           timezone_;
+  bool          timezone_set_;
   bool          timing_;
   bool          trailing_nl_;
   std::string   uri_path_;
