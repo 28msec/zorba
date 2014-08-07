@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # configure plan and profile test queries
-CONFIGURE_FILE(itertest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/itertest.xq)
+CONFIGURE_FILE(plantest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/plantest.xq)
 CONFIGURE_FILE(profiletest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/profiletest.xq)
 
 # apitest
@@ -51,7 +51,7 @@ FOREACH (TESTFILE ${PLAN_TEST_FILES})
     -D "ZORBA_EXE=${ZORBA_EXE}"
     -D "CMAKE_ZORBA_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
     -D "APITEST_PATH=${APITEST_PATH}"
-    -P "${CMAKE_CURRENT_SOURCE_DIR}/iterscript.cmake")
+    -P "${CMAKE_CURRENT_SOURCE_DIR}/planscript.cmake")
      
   SET_TESTS_PROPERTIES("iterators/${TESTNAME}" 
     PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
