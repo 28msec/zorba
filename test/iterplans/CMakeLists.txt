@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# configure itertest
+# configure itertest/profiletest
 CONFIGURE_FILE(itertest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/itertest.xq)
+CONFIGURE_FILE(profiletest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/profiletest.xq)
 
 # apitest
 SET(APITEST_SRCS
@@ -24,7 +25,9 @@ SET(APITEST_SRCS
 ZORBA_GENERATE_EXE("apitest" "${APITEST_SRCS}" "" "" "")
 
 MESSAGE (STATUS "Adding iterator plan tests")
-FILE (GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.iter)
+FILE (GLOB_RECURSE ITERTESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.iter)
+MESSAGE (STATUS "Adding profile tests")
+FILE (GLOB_RECURSE PROFILETESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.profile)
 
 # compute path to apitest
 SET(SUFFIX)
@@ -37,7 +40,7 @@ ELSE()
   SET(APITEST_PATH ${CMAKE_CURRENT_BINARY_DIR}/apitest${SUFFIX})
 ENDIF()
 
-FOREACH (TESTFILE ${TESTFILES})
+FOREACH (TESTFILE ${ITERTESTFILES})
   STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
    
   ADD_TEST(
@@ -53,5 +56,23 @@ FOREACH (TESTFILE ${TESTFILES})
   SET_TESTS_PROPERTIES("iterplans/${TESTNAME}" 
     PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
 ENDFOREACH(TESTFILE)
+
+FOREACH (TESTFILE ${PROFILETESTFILES})
+  STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
+   
+  ADD_TEST(
+    "iterplans/${TESTNAME}" 
+    "${CMAKE_COMMAND}"
+    -D "TESTFILE=${TESTFILE}"
+    -D "CMAKE_ZORBA_BINARY_DIR=${CMAKE_BINARY_DIR}"
+    -D "ZORBA_EXE=${ZORBA_EXE}"
+    -D "CMAKE_ZORBA_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
+    -D "APITEST_PATH=${APITEST_PATH}"
+    -P "${CMAKE_CURRENT_SOURCE_DIR}/profilescript.cmake")
+     
+  SET_TESTS_PROPERTIES("iterplans/${TESTNAME}" 
+    PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
+ENDFOREACH(TESTFILE)
+
 
 # vim:set et sw=2 ts=2:
