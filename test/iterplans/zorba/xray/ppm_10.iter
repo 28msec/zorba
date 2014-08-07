@@ -1983,7 +1983,7 @@
               <SingletonIterator value="xs:integer(0)"/>
             </ReturnClause>
           </FLWORIterator>
-          <UDFunctionCallIterator cached="true" function="vector:sum-internal">
+          <UDFunctionCallIterator function="vector:sum-internal" cached="true">
             <LetVarIterator varname="v"/>
             <LetVarIterator varname="stride"/>
             <ForVarIterator varname="c"/>
@@ -2108,7 +2108,7 @@
         </LetVarIterator>
         <FLWORIterator>
           <ForVariable name="x">
-            <UDFunctionCallIterator cached="true" function="vector:sum-internal">
+            <UDFunctionCallIterator function="vector:sum-internal" cached="true">
               <LetVarIterator varname="v"/>
               <ForVarIterator varname="stride"/>
               <SpecificNumArithIterator_SubtractOperation_INTEGER>

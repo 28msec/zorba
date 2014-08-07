@@ -579,6 +579,11 @@ DEF_END_VISIT( TreatIterator )
 
 void PrinterVisitor::beginVisit( UDFunctionCallIterator const &i ) {
   thePrinter.startBeginVisit( "UDFunctionCallIterator", ++theId );
+  if ( i.theUDF->getSignature().getName() )
+    thePrinter.addAttribute( "function", i.theUDF->getSignature().getName()->getStringValue().str() );
+  else
+    thePrinter.addAttribute( "function", "inline function" );
+
   if ( i.isCached() )
   {
     if (i.isCacheAcrossSnapshots())
@@ -586,11 +591,19 @@ void PrinterVisitor::beginVisit( UDFunctionCallIterator const &i ) {
     else
       thePrinter.addBoolAttribute("cached", true);
   }
-  if ( i.theUDF->getSignature().getName() )
-    thePrinter.addAttribute( "function", i.theUDF->getSignature().getName()->getStringValue().str() );
-  else
-    thePrinter.addAttribute( "function", "inline function" );
+
   printCommons( &i, theId );
+
+  if ( i.isCached() && Properties::instance().getCollectProfile() && thePlanState )
+  {
+    FunctionCallIteratorState const *const pi_state =
+      StateTraitsImpl<FunctionCallIteratorState>::getState(
+          *thePlanState, i.getStateOffset());
+
+    thePrinter.addIntAttribute( "prof-cache-hits", pi_state->theCacheHits);
+    thePrinter.addIntAttribute( "prof-cache-misses", pi_state->theCacheMisses);
+  }
+
   thePrinter.endBeginVisit( theId );
 }
 DEF_END_VISIT( UDFunctionCallIterator )
