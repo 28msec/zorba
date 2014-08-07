@@ -34,12 +34,12 @@ EXECUTE_PROCESS (
   OUTPUT_FILE ${APITEST_OUT_FILEPATH}
 ) 
     
-FILE (TO_NATIVE_PATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterators/itertest.xq itertest_xq_path)
+FILE (TO_NATIVE_PATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterators/plantest.xq plantest_xq_path)
     
 EXECUTE_PROCESS (
   COMMAND
     ${ZORBA_EXE}
-    -f -q ${itertest_xq_path}
+    -f -q ${plantest_xq_path}
     -e apitest-path:=${APITEST_PATH}
     -e testname:=${testname}
     -e result-filepath:=${APITEST_OUT_FILEPATH} 
