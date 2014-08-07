@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# configure itertest/profiletest
+# configure plan and profile test queries
 CONFIGURE_FILE(itertest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/itertest.xq)
 CONFIGURE_FILE(profiletest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/profiletest.xq)
 
@@ -24,10 +24,10 @@ SET(APITEST_SRCS
 )
 ZORBA_GENERATE_EXE("apitest" "${APITEST_SRCS}" "" "" "")
 
-MESSAGE (STATUS "Adding iterator plan tests")
-FILE (GLOB_RECURSE ITERTESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.iter)
+MESSAGE (STATUS "Adding plan tests")
+FILE (GLOB_RECURSE PLAN_TEST_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.plan)
 MESSAGE (STATUS "Adding profile tests")
-FILE (GLOB_RECURSE PROFILETESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.profile)
+FILE (GLOB_RECURSE PROFILE_TEST_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.profile)
 
 # compute path to apitest
 SET(SUFFIX)
@@ -40,7 +40,7 @@ ELSE()
   SET(APITEST_PATH ${CMAKE_CURRENT_BINARY_DIR}/apitest${SUFFIX})
 ENDIF()
 
-FOREACH (TESTFILE ${ITERTESTFILES})
+FOREACH (TESTFILE ${PLAN_TEST_FILES})
   STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
    
   ADD_TEST(
@@ -57,7 +57,7 @@ FOREACH (TESTFILE ${ITERTESTFILES})
     PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
 ENDFOREACH(TESTFILE)
 
-FOREACH (TESTFILE ${PROFILETESTFILES})
+FOREACH (TESTFILE ${PROFILE_TEST_FILES})
   STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
    
   ADD_TEST(
