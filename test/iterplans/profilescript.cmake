@@ -29,7 +29,7 @@ EXECUTE_PROCESS (
     ${APITEST_PATH}
     --iterator-tree xml
     --no-tree-ids
-    --no-serializer
+    --no-serializer  
     ${CMAKE_ZORBA_SOURCE_DIR}/test/rbkt/Queries/${testname}.xq
   OUTPUT_FILE ${APITEST_OUT_FILEPATH}
 ) 
