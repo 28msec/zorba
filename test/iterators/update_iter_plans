@@ -6,7 +6,7 @@
 BUILDDIR=$1
 test -e "$BUILDDIR" || { echo "Arguments: BUILD_DIR"; exit 1; }
 
-D=$BUILDDIR/test/iterplans
+D=$BUILDDIR/test/iterators
 
 for src_file in `cd $D; find . -name *.spec`
 do

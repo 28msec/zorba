@@ -14,46 +14,9 @@ jsoniq version "1.0";
  : See the License for the specific language governing permissions and
  : limitations under the License.
 :)
-import module namespace jn = "http://jsoniq.org/functions";
-
 import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
-
-declare namespace an = "http://zorba.io/annotations";
-
-declare %an:sequential function local:filter($items as item()*, $replace-value-list as xs:string*, $remove-list as xs:string*) as item()*
-{
-  for $item in $items
-  return
-  {
-    if ($item instance of object())
-    then
-    {
-      for $key in keys($item)
-      return 
-      {
-        if ($key = $remove-list)
-        then delete json $item($key);
-        else
-          if ($key = $replace-value-list)
-          then replace value of json $item($key) with "REMOVED";
-          else local:filter($item($key), $replace-value-list, $remove-list);
-      }
-    }
-    else
-    { 
-      if ($item instance of array())
-      then
-      { 
-        for $member in members($item)
-        return local:filter($member, $replace-value-list, $remove-list);
-      }
-      else ();
-    }
-  };
-  $items
-};
 
 declare variable $source-dir := "@CMAKE_SOURCE_DIR@";
 declare variable $binary-dir := "@CMAKE_BINARY_DIR@";
@@ -64,7 +27,7 @@ declare variable $testname external;
  
 declare variable $result-filepath external;
 
-variable $expected-filepath := $source-dir || "/test/iterplans/" || $testname || ".profile";
+variable $expected-filepath := $source-dir || "/test/iterators/" || $testname || ".iter";
 
 variable $query-filepath := $source-dir || "/test/rbkt/Queries/" || $testname || ".xq";
 
@@ -81,7 +44,7 @@ if (file:exists($query-filepath-normalized))
 then
 {
   variable $query-options := (
-    "--profile", "json",
+    "--iterator-tree", "xml",
     "--no-tree-ids",
     "--no-serializer",
     $query-filepath-normalized
@@ -91,35 +54,11 @@ then
 
   variable $expected-text as xs:string := file:read-text($expected-filepath-normalized);
 
-  variable $result-json as object() :=
-  try
-  { 
-    jn:parse-json($result-text)
-  }
-  catch *
-  {
-    error(xs:QName("local:MALFORMED"), "The profile result file " || $result-filepath-normalized || " is malformed.")
-  };
-  
-  variable $expected-json as object() :=
-  try
-  { 
-    jn:parse-json($expected-text)
-  }
-  catch *
-  {
-    error(xs:QName("local:MALFORMED"), "The profile expected result file " || $expected-filepath-normalized || " is malformed.")
-  };
-  
-  if (deep-equal(
-        local:filter($result-json, ("prof-cpu", "prof-wall"),()), 
-        local:filter($expected-json, ("prof-cpu", "prof-wall"),())
-        )
-      ) then
+  if ($result-text eq $expected-text) then
     "Passed!"
   else
     "Failed!\n" ||
-    "Generated profile does not match to the expected result!\n" ||
+    "Generated iterator tree is not equal to the expected result!\n" ||
     "Command to generate iterator tree: " || $apitest-path || " " || fn:string-join($query-options," ") || "\n\n" ||
     "Actual Result: " || $result-filepath || "\n" ||
     "Expected Result: " || $expected-filepath || "\n"
