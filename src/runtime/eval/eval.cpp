@@ -55,7 +55,9 @@ DEF_GET_NAME_AS_STRING(EvalIterator)
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIteratorState::EvalIteratorState()
+EvalIteratorState::EvalIteratorState():
+  theCompilationsCPUTime(0),
+  theCompilationsWallTime(0)
 {
 }
 
@@ -65,10 +67,9 @@ EvalIteratorState::EvalIteratorState()
 ********************************************************************************/
 EvalIteratorState::~EvalIteratorState()
 {
-  std::cout << "~EvalIteratorState: thePlanWrapper: " << thePlanWrapper.getp() << std::endl;
   if (thePlanWrapper)
   {
-
+    addQueryProfile();
   }
 }
 
@@ -90,9 +91,6 @@ void EvalIteratorState::reset(PlanState& planState)
   std::cout << "reset, thePlanWrapper: " << thePlanWrapper.getp() << std::endl;
   if (thePlanWrapper)
   {
-    /*
-     * We are compiling a new query. We must save the plan of the current one.
-     */
     addQueryProfile();
   }
 
@@ -132,8 +130,23 @@ void EvalIteratorState::addQueryProfile()
       break;
   }
 
+  EvalProfile& lProfile = theEvalProfiles[theEvalProfiles.size()-1];
+
   print_iter_plan( *thePrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
-  theEvalProfiles[theEvalProfiles.size()-1].theProfile = lProfileStream.str();
+  lProfile.theProfile = lProfileStream.str();
+
+
+  PlanIteratorState const *const pi_state =
+        StateTraitsImpl<PlanIteratorState>::getState(
+            *thePlanWrapper->thePlanState, thePlanWrapper->theIterator->getStateOffset());
+
+  profile_data const &pd = pi_state->get_profile_data();
+
+  lProfile.theCallCount = pd.data_.call_count_;
+  lProfile.theNextCount = pd.data_.next_count_;
+  lProfile.theExecutionCPUTime = pd.data_.cpu_time_;
+  lProfile.theExecutionWallTime = pd.data_.wall_time_;
+  lProfile.theIterator = thePlanWrapper->theIterator;
 }
 
 
@@ -255,12 +268,16 @@ void EvalIterator::init(
       double const lCPUTime( lCPUTimer.elapsed() );
       double const lWallTime( lWallTimer.elapsed() );
       state->addQuery(item->getStringValue().str(), lCPUTime, lWallTime);
+      state->theCompilationsCPUTime+= lCPUTime;
+      state->theCompilationsWallTime+= lWallTime;
     }
     catch (const ZorbaException&)
     {
       double const lCPUTime( lCPUTimer.elapsed() );
       double const lWallTime( lWallTimer.elapsed() );
       state->addQuery(item->getStringValue().str(), lCPUTime, lWallTime);
+      state->theCompilationsCPUTime+= lCPUTime;
+      state->theCompilationsWallTime+= lWallTime;
       throw;
     }
   }
@@ -310,9 +327,6 @@ bool EvalIterator::nextORcount(
 
   if (planState.theProfile)
   {
-    /*
-     * The query iterator reached its end
-     */
     state->addQueryProfile();
   }
   state->thePlanWrapper = NULL;

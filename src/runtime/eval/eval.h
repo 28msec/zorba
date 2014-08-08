@@ -37,11 +37,21 @@ struct EvalProfile
   std::string       theProfile;
   double            theCompilationCPUTime;
   double            theCompilationWallTime;
+  unsigned          theCallCount;
+  unsigned          theNextCount;
+  double            theExecutionCPUTime;
+  double            theExecutionWallTime;
+  PlanIterator*     theIterator;
 
   EvalProfile(const std::string& aQuery, const double aCompilationCPUTime, const double aCompilationWallTime):
     theQuery(aQuery),
     theCompilationCPUTime(aCompilationCPUTime),
-    theCompilationWallTime(aCompilationWallTime)
+    theCompilationWallTime(aCompilationWallTime),
+    theCallCount(0),
+    theNextCount(0),
+    theExecutionCPUTime(0),
+    theExecutionWallTime(0),
+    theIterator(0)
   {
   }
 };
@@ -53,7 +63,10 @@ public:
   PlanWrapper_t                    thePlanWrapper;
   std::unique_ptr<CompilerCB>      theCCB;
   std::unique_ptr<dynamic_context> theDctx;
+
   std::vector<EvalProfile>         theEvalProfiles;
+  double                           theCompilationsCPUTime;
+  double                           theCompilationsWallTime;
   std::unique_ptr<IterPrinter>     thePrinter;
 
 public:

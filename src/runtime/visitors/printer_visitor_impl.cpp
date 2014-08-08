@@ -471,23 +471,45 @@ void PrinterVisitor::beginVisit( EvalIterator const &i )
   thePrinter.startBeginVisit( "EvalIterator", ++theId );
   int theEvalId = theId;
   printCommons( &i, theId );
+  Properties const &props = Properties::instance();
 
-  if ( Properties::instance().getCollectProfile() && thePlanState )
+  if ( props.getCollectProfile() && thePlanState )
   {
     EvalIteratorState const *const lState =
         StateTraitsImpl<EvalIteratorState>::getState(
           *thePlanState, i.getStateOffset());
 
+    thePrinter.addDecAttribute( "prof-compilation-cpu", lState->theCompilationsCPUTime );
+    thePrinter.addDecAttribute( "prof-compilation-wall", lState->theCompilationsWallTime );
+
     const std::vector<EvalProfile>& lEvalProfiles =
         lState->theEvalProfiles;
 
-    for (unsigned int i = 0; i < lEvalProfiles.size(); ++i)
+    for (std::vector<EvalProfile>::const_iterator lIt = lEvalProfiles.begin();
+         lIt != lEvalProfiles.end();
+         ++lIt)
     {
+      const EvalProfile& lEvalProfile = *lIt;
       thePrinter.startBeginVisit( "EvalQueryIterator", ++theId );
-      thePrinter.addAttribute( "prof-body", lEvalProfiles[i].theQuery );
-      thePrinter.addDecAttribute( "prof-compilation-cpu", lEvalProfiles[i].theCompilationCPUTime );
-      thePrinter.addDecAttribute( "prof-compilation-wall", lEvalProfiles[i].theCompilationWallTime );
-      thePrinter.addAttribute( "prof-query-profile", lEvalProfiles[i].theProfile );
+
+      if ( !props.getNoTreeIDs() ) {
+        ostringstream oss;
+        if ( props.getStableIteratorIDs() )
+          oss << theId;
+        else
+          oss << &i;
+        thePrinter.addAttribute( "id", oss.str() );
+      }
+
+      thePrinter.addAttribute( "prof-name", "EvalQueryIterator" );
+      thePrinter.addIntAttribute( "prof-calls", lEvalProfile.theCallCount);
+      thePrinter.addIntAttribute( "prof-next-calls", lEvalProfile.theNextCount);
+      thePrinter.addDecAttribute( "prof-cpu", lEvalProfile.theExecutionCPUTime);
+      thePrinter.addDecAttribute( "prof-wall", lEvalProfile.theExecutionWallTime);
+      thePrinter.addDecAttribute( "prof-compilation-cpu", lEvalProfile.theCompilationCPUTime );
+      thePrinter.addDecAttribute( "prof-compilation-wall", lEvalProfile.theCompilationWallTime );
+      thePrinter.addAttribute( "prof-body", lEvalProfile.theQuery );
+      thePrinter.addRawStructure( "iterators", lEvalProfile.theProfile.c_str() );
       thePrinter.endBeginVisit( theId );
       thePrinter.startEndVisit();
       thePrinter.endEndVisit();

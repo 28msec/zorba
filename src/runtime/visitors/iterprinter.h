@@ -49,6 +49,8 @@ public:
   virtual void addDecAttribute( char const *name, double value ) = 0;
 
   virtual void addAttribute( char const *name, char const *value ) = 0;
+  virtual void addRawStructure( char const *name, char const *value ) = 0;
+
   template<class ValueType>
   typename std::enable_if<ZORBA_HAS_C_STR(ValueType),void>::type
   addAttribute( char const *name, ValueType const &value ) {
@@ -82,6 +84,7 @@ public:
   void addIntAttribute( char const *name, xs_integer value );
   void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
+  void addRawStructure( char const *name, char const *value );
 
 
   void startEndVisit();
@@ -110,6 +113,7 @@ public:
   void addIntAttribute( char const *name, xs_integer value );
   void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
+  void addRawStructure( char const *name, char const *value );
 
   void startEndVisit();
   void endEndVisit();
@@ -136,6 +140,7 @@ public:
   void addIntAttribute( char const *name, xs_integer value );
   void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
+  void addRawStructure( char const *name, char const *value );
 
 
   void startEndVisit();

@@ -93,6 +93,23 @@ void XMLIterPrinter::addAttribute( char const *name, char const *value ) {
   os_ << ' ' << name << "=\"" << value << "\"";
 }
 
+void XMLIterPrinter::addRawStructure( char const *name, char const *value ) {
+  if ( theOpenStart )
+    os_ << ">\n";
+
+  os_ << inc_indent << indent;
+  while (*value != '\0')
+  {
+    os_ << *value;
+    if (*value == '\n')
+      os_ << indent;
+    ++value;
+  }
+  os_ << dec_indent;
+
+  theOpenStart = false;
+}
+
 void XMLIterPrinter::addIntAttribute( char const *name, xs_long value ) {
   assert( theOpenStart );
   os_ << ' ' << name << "=\"" << value << "\"";
@@ -169,6 +186,10 @@ void DOTIterPrinter::addAttribute( char const *name, char const *value ) {
   os_ << "\\n" << name << '=' << temp;
 }
 
+void DOTIterPrinter::addRawStructure( char const *name, char const *value ) {
+  os_ << "\\n" << name << '=' << value;
+}
+
 void DOTIterPrinter::addIntAttribute( char const *name, xs_long value ) {
   os_ << indent << "\\n" << name << '=' << value;
 }
@@ -241,6 +262,20 @@ void JSONIterPrinter::addAttribute( char const *name, char const *value ) {
   os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": \""
       << zorba::json::serialize(value) << "\"";
 }
+
+void JSONIterPrinter::addRawStructure( char const *name, char const *value ) {
+  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": [\n";
+  os_ << inc_indent << indent;
+  while (*value != '\0')
+  {
+    os_ << *value;
+    if (*value == '\n')
+      os_ << indent;
+    ++value;
+  }
+  os_ << '\n' << dec_indent << indent << ']';
+}
+
 
 void JSONIterPrinter::addIntAttribute( char const *name, xs_long value ) {
   os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": "
