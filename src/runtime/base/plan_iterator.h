@@ -535,7 +535,33 @@ public:
    */
   bool count(store::Item_t& result, PlanState& planState) const
   {
-    return countImpl(result, planState);
+    if ( planState.theProfile )
+    {
+      PlanIteratorState *const state =
+          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+      //
+      // Temporaries are used here to guarantee the order in which the timers
+      // are stopped.  (If the expressions were passed as function arguments,
+      // the order is platform/compiler-dependent.)
+      //
+      time::cpu::timer c;
+      time::wall::timer w;
+      c.start();
+      w.start();
+      try
+      {
+        bool const ret_val = countImpl(result, planState);
+        updateProfile(c, w, state);
+        return ret_val;
+      }
+      catch (const ZorbaException&)
+      {
+        updateProfile(c, w, state);
+        throw;
+      }
+    }
+    else
+      return countImpl(result, planState);
   }
 
   virtual bool countImpl(store::Item_t& result, PlanState& planState) const;
@@ -553,7 +579,33 @@ public:
    */
   bool skip(int64_t count, PlanState &planState) const
   {
-    return skipImpl(count, planState);
+    if ( planState.theProfile )
+    {
+      PlanIteratorState *const state =
+          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+      //
+      // Temporaries are used here to guarantee the order in which the timers
+      // are stopped.  (If the expressions were passed as function arguments,
+      // the order is platform/compiler-dependent.)
+      //
+      time::cpu::timer c;
+      time::wall::timer w;
+      c.start();
+      w.start();
+      try
+      {
+        bool const ret_val = skipImpl(count, planState);
+        updateProfile(c, w, state);
+        return ret_val;
+      }
+      catch (const ZorbaException&)
+      {
+        updateProfile(c, w, state);
+        throw;
+      }
+    }
+    else
+      return skipImpl(count, planState);
   }
 
   virtual bool skipImpl(int64_t count, PlanState &planState) const;
