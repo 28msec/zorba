@@ -67,7 +67,7 @@ EvalIteratorState::EvalIteratorState():
 ********************************************************************************/
 EvalIteratorState::~EvalIteratorState()
 {
-  if (thePlanWrapper)
+  if (thePlanWrapper && Properties::instance().getCollectProfile())
     addQueryProfile();
 }
 
@@ -77,7 +77,7 @@ EvalIteratorState::~EvalIteratorState()
 ********************************************************************************/
 void EvalIteratorState::reset(PlanState& planState)
 {
-  if (thePlanWrapper)
+  if (thePlanWrapper && planState.theProfile)
     addQueryProfile();
 
   PlanIteratorState::reset(planState);
