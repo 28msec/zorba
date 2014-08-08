@@ -17,8 +17,6 @@
 #ifndef ZORBA_RUNTIME_EVAL_EVAL_H
 #define ZORBA_RUNTIME_EVAL_EVAL_H
 
-#include <sstream>
-
 #include "common/shared_types.h"
 
 #include "compiler/expression/expr_consts.h"
