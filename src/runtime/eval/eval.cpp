@@ -93,6 +93,7 @@ void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompil
 {
   assert(theEvalProfiles.size() == 0 ||
          !theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
+
   theEvalProfiles.push_back(EvalProfile(aQuery, aCompilationCPUTime, aCompilationWallTime));
 }
 
@@ -127,7 +128,6 @@ void EvalIteratorState::addQueryProfile()
 
   print_iter_plan( *thePrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
   lProfile.theProfile = lProfileStream.str();
-
 
   PlanIteratorState const *const pi_state =
         StateTraitsImpl<PlanIteratorState>::getState(
@@ -319,11 +319,9 @@ bool EvalIterator::nextORcount(
   }
 
   if (planState.theProfile)
-  {
     state->addQueryProfile();
-  }
-  state->thePlanWrapper = NULL;
 
+  state->thePlanWrapper = NULL;
 
   STACK_END(state);
 }
