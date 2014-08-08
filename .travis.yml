@@ -12,6 +12,4 @@ env:
   matrix:
     - CTEST_ARGS="-R 'FOTS/'"
     - CTEST_ARGS="-R 'test/update/'"
-    - CTEST_ARGS="-R 'xqts-xquery'"
-    - CTEST_ARGS="-R 'xqts-xqx'"
-    - CTEST_ARGS="-E '^zorba_info-extraction_module|conversion/currency-convert|FOTS/|test/update/|xqts-xquery|xqts-xqx'"
+    - CTEST_ARGS="-E '^zorba_info-extraction_module|conversion/currency-convert|FOTS/|test/update/'"
