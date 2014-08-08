@@ -383,7 +383,7 @@ public:
 
   zstring getNameAsString() const;
 
-  bool count(store::Item_t& result, PlanState& planState) const;
+  bool countImpl(store::Item_t& result, PlanState& planState) const;
 
 protected:
   void getIndex(
@@ -527,7 +527,7 @@ public:
 
   zstring getNameAsString() const;
 
-  bool count(store::Item_t& result, PlanState& planState) const;
+  bool countImpl(store::Item_t& result, PlanState& planState) const;
 
 protected:
   void getIndex(

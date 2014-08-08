@@ -595,7 +595,7 @@ void TreatIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theQName;
 }
 
-bool TreatIterator::count( store::Item_t &result, PlanState &planState) const {
+bool TreatIterator::countImpl( store::Item_t &result, PlanState &planState) const {
   bool const ret_val = theChild->count( result, planState );
   xs_integer const count( result->getIntegerValue() );
 
@@ -619,7 +619,7 @@ bool TreatIterator::count( store::Item_t &result, PlanState &planState) const {
   return ret_val;
 }
 
-bool TreatIterator::skip( int64_t count, PlanState &planState ) const {
+bool TreatIterator::skipImpl( int64_t count, PlanState &planState ) const {
   switch ( theQuantifier ) {
     //
     // Given that the skip() signature is not as good as it could be (it should
@@ -630,7 +630,7 @@ bool TreatIterator::skip( int64_t count, PlanState &planState ) const {
     case SequenceType::QUANT_STAR:
       return theChild->skip( count, planState );
     default:
-      return base_type::skip( count, planState );
+      return base_type::skipImpl( count, planState );
   }
 }
 

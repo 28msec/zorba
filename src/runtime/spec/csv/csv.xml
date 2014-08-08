@@ -42,11 +42,11 @@
     <zorba:member type="zstring" name="string_"/>
     <zorba:member type="zstring" name="value_"/>
   </zorba:state>
-  <zorba:method name="count" const="true" return="bool">
+  <zorba:method name="countImpl" const="true" return="bool">
     <zorba:param name="result" type="store::Item_t&amp;"/>
     <zorba:param name="planState" type="PlanState&amp;"/>
   </zorba:method>
-  <zorba:method name="skip" const="true" return="bool">
+  <zorba:method name="skipImpl" const="true" return="bool">
     <zorba:param name="count" type="int64_t"/>
     <zorba:param name="planState" type="PlanState&amp;"/>
   </zorba:method>

@@ -285,7 +285,7 @@ public:
   zstring getNameAsString() const;
 
 public:
-  bool count(store::Item_t& result, PlanState& planState) const;
+  bool countImpl(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -499,7 +499,7 @@ public:
   zstring getNameAsString() const;
 
 public:
-  bool count(store::Item_t& result, PlanState& planState) const;
+  bool countImpl(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -546,7 +546,7 @@ public:
   zstring getNameAsString() const;
 
 public:
-  bool count(store::Item_t& result, PlanState& planState) const;
+  bool countImpl(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

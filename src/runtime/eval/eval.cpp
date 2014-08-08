@@ -330,7 +330,7 @@ bool EvalIterator::nextORcount(
 /****************************************************************************//**
 
 ********************************************************************************/
-bool EvalIterator::skip(int64_t count, PlanState &planState) const
+bool EvalIterator::skipImpl(int64_t count, PlanState &planState) const
 {
   EvalIteratorState* state = StateTraitsImpl<EvalIteratorState>::getState(planState, theStateOffset);
 

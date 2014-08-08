@@ -158,7 +158,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 }
 
 
-bool FnCollectionIterator::count(store::Item_t& result, PlanState& planState) const
+bool FnCollectionIterator::countImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t collection;
   xs_integer count;
@@ -382,7 +382,7 @@ bool ZorbaCollectionIterator::nextImpl(
 }
 
 
-bool ZorbaCollectionIterator::skip(int64_t count, PlanState& planState) const
+bool ZorbaCollectionIterator::skipImpl(int64_t count, PlanState& planState) const
 {  
   ZorbaCollectionIteratorState* state = StateTraitsImpl<ZorbaCollectionIteratorState>::getState(planState, theStateOffset);
 
@@ -401,10 +401,10 @@ bool ZorbaCollectionIterator::skip(int64_t count, PlanState& planState) const
 }
 
 
-bool ZorbaCollectionIterator::count(store::Item_t& result, PlanState& planState) const
+bool ZorbaCollectionIterator::countImpl(store::Item_t& result, PlanState& planState) const
 {
   if (!isCountOptimizable())
-    return PlanIterator::count(result, planState);
+    return PlanIterator::countImpl(result, planState);
 
   store::Item_t name;
   store::Collection_t collection;

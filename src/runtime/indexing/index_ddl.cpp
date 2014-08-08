@@ -692,7 +692,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
 }
 
 
-bool ProbeIndexPointValueIterator::count(
+bool ProbeIndexPointValueIterator::countImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1143,7 +1143,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
 }
 
 
-bool ProbeIndexRangeValueIterator::count(
+bool ProbeIndexRangeValueIterator::countImpl(
     store::Item_t& result,
     PlanState& planState) const
 {

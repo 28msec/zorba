@@ -199,7 +199,7 @@ TypeManager* PlanIterator::getTypeManager() const
 }
 
 
-bool PlanIterator::count(store::Item_t& result, PlanState& planState) const
+bool PlanIterator::countImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   xs_integer count(0);
@@ -217,7 +217,7 @@ bool PlanIterator::count(store::Item_t& result, PlanState& planState) const
 }
 
 
-bool PlanIterator::skip(int64_t count, PlanState& planState) const
+bool PlanIterator::skipImpl(int64_t count, PlanState& planState) const
 {
   bool have_more_items = true;
   store::Item_t item;

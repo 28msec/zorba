@@ -255,7 +255,7 @@ void CsvParseIterator::set_options( store::Item_t const &item,
     state->csv_.set_separator( opt_char );
 }
 
-bool CsvParseIterator::count( store::Item_t &result,
+bool CsvParseIterator::countImpl( store::Item_t &result,
                               PlanState &plan_state ) const {
   unsigned long count = 0;
   bool eol;
@@ -292,7 +292,7 @@ bool CsvParseIterator::count( store::Item_t &result,
   STACK_END( state );
 }
 
-bool CsvParseIterator::skip( int64_t count, PlanState &plan_state ) const {
+bool CsvParseIterator::skipImpl( int64_t count, PlanState &plan_state ) const {
   bool eol;
   store::Item_t item;
   vector<store::Item_t> keys;

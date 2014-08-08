@@ -972,7 +972,7 @@ void ExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
 }
 
-bool ExtFunctionCallIterator::count( store::Item_t &result,
+bool ExtFunctionCallIterator::countImpl( store::Item_t &result,
                                      PlanState &planState ) const {
   int64_t count = 0;
 
@@ -1007,7 +1007,7 @@ bool ExtFunctionCallIterator::count( store::Item_t &result,
   STACK_END( state );
 }
 
-bool ExtFunctionCallIterator::skip( int64_t count, PlanState &planState ) const
+bool ExtFunctionCallIterator::skipImpl( int64_t count, PlanState &planState ) const
 {
   if (count == 0)
     return true;

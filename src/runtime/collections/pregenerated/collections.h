@@ -235,7 +235,7 @@ public:
   zstring getNameAsString() const;
 
 public:
-  bool count(store::Item_t& result, PlanState& planState) const;
+  bool countImpl(store::Item_t& result, PlanState& planState) const;
   store::Collection_t getCollection(PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
@@ -291,8 +291,8 @@ public:
 
 public:
   bool isCountOptimizable() const;
-  bool count(store::Item_t& result, PlanState& planState) const;
-  bool skip(int64_t count, PlanState& planState) const;
+  bool countImpl(store::Item_t& result, PlanState& planState) const;
+  bool skipImpl(int64_t count, PlanState& planState) const;
   void initCollection(PlanState& planState, int64_t skipCount) const;
   void accept(PlanIterVisitor& v) const;
 
