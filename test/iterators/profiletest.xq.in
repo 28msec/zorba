@@ -111,9 +111,11 @@ then
     error(xs:QName("local:MALFORMED"), "The profile expected result file " || $expected-filepath-normalized || " is malformed.")
   };
   
+  variable $filter := ("prof-cpu", "prof-wall", "prof-next-calls", "prof-compilation-cpu", "prof-compilation-wall");
+  
   if (deep-equal(
-        local:filter($result-json, ("prof-cpu", "prof-wall", "prof-next-calls"),()), 
-        local:filter($expected-json, ("prof-cpu", "prof-wall", "prof-next-calls"),())
+        local:filter($result-json, $filter,()), 
+        local:filter($expected-json, $filter, ())
         )
       ) then
     "Passed!"
