@@ -1055,7 +1055,7 @@ bool SingleObjectKeysIterator::nextImpl(
 }
 
 
-bool SingleObjectKeysIterator::count(
+bool SingleObjectKeysIterator::countImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -1314,7 +1314,7 @@ bool MultiArrayMembersIterator::nextImpl(
 }
 
 
-bool MultiArrayMembersIterator::count(
+bool MultiArrayMembersIterator::countImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1368,7 +1368,7 @@ bool SingleArrayMembersIterator::nextImpl(
 }
 
 
-bool SingleArrayMembersIterator::count(
+bool SingleArrayMembersIterator::countImpl(
     store::Item_t& result,
     PlanState& planState) const
 {

@@ -297,9 +297,9 @@ public:
 
   void openImpl(PlanState& planState, uint32_t& offset);
 
-  bool count(store::Item_t& result, PlanState& planState) const;
+  bool countImpl(store::Item_t& result, PlanState& planState) const;
 
-  bool skip(int64_t count, PlanState &planState) const;
+  bool skipImpl(int64_t count, PlanState &planState) const;
 
   bool nextImpl(store::Item_t& aResult, PlanState& aPlanState) const;
 

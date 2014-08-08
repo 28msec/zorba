@@ -533,7 +533,17 @@ public:
    * without computing the whole result sequence. One such example is the
    * iterator that computes the dml:collection() function.
    */
-  virtual bool count(store::Item_t& result, PlanState& planState) const;
+  bool count(store::Item_t& result, PlanState& planState) const
+  {
+    PlanIteratorState* state =
+        StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+
+    TimerWrapper t(state, planState.theProfile, NULL);
+
+    return countImpl(result, planState);
+  }
+
+  virtual bool countImpl(store::Item_t& result, PlanState& planState) const;
 
   /**
    * Skip a number of items from the Plan's sequence. Classes can overwrite
@@ -546,7 +556,17 @@ public:
    * @param planState the state plan
    *
    */
-  virtual bool skip(int64_t count, PlanState &planState) const;
+  bool skip(int64_t count, PlanState &planState) const
+  {
+    PlanIteratorState* state =
+        StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+
+    TimerWrapper t(state, planState.theProfile, NULL);
+
+    return skipImpl(count, planState);
+  }
+
+  virtual bool skipImpl(int64_t count, PlanState &planState) const;
 
   /**
    * Produce the next item and return it to the caller. Implicitly, the first

@@ -91,8 +91,8 @@ public:
   zstring getNameAsString() const;
 
 public:
-  bool count(store::Item_t& result, PlanState& planState) const;
-  bool skip(int64_t count, PlanState& planState) const;
+  bool countImpl(store::Item_t& result, PlanState& planState) const;
+  bool skipImpl(int64_t count, PlanState& planState) const;
   void set_input(store::Item_t const& item, CsvParseIteratorState* state) const;
   void set_options(store::Item_t const& item, CsvParseIteratorState* state) const;
   void accept(PlanIterVisitor& v) const;

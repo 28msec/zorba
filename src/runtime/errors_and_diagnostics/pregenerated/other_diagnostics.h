@@ -147,8 +147,8 @@ public:
   void setFunctionCallLocation(const QueryLoc& aFunctionLocation);
   void setFunctionLocation(const QueryLoc& aFunctionLocation);
   void setFunctionArity(unsigned int arity);
-  bool count(store::Item_t& result, PlanState& planState) const;
-  bool skip(int64_t count, PlanState& planState) const;
+  bool countImpl(store::Item_t& result, PlanState& planState) const;
+  bool skipImpl(int64_t count, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
