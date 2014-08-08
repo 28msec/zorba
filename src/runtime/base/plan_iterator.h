@@ -413,14 +413,27 @@ public:
    */
   void open(PlanState& planState, uint32_t& offset)
   {
-    openImpl(planState, offset);
-
     if (planState.theProfile)
     {
+      //
+      // Temporaries are used here to guarantee the order in which the timers
+      // are stopped.  (If the expressions were passed as function arguments,
+      // the order is platform/compiler-dependent.)
+      //
+      time::cpu::timer c;
+      time::wall::timer w;
+      c.start();
+      w.start();
+
+      openImpl(planState, offset);
+
       PlanIteratorState *const state =
           StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+      updateProfile(c, w, state);
       state->profile_data_.data_.addCall();
     }
+    else
+      openImpl(planState, offset);
 
 #ifndef NDEBUG
     // do this after openImpl because the state is created there
@@ -441,19 +454,33 @@ public:
    */
   void reset(PlanState& planState) const
   {
-    if (planState.theProfile)
-    {
-      PlanIteratorState *const state =
-          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-      state->profile_data_.data_.addCall();
-    }
-
 #ifndef NDEBUG
     PlanIteratorState* state =
     StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
     ZORBA_ASSERT(state->theIsOpened);
 #endif
-    resetImpl(planState);
+
+    if (planState.theProfile)
+    {
+      //
+      // Temporaries are used here to guarantee the order in which the timers
+      // are stopped.  (If the expressions were passed as function arguments,
+      // the order is platform/compiler-dependent.)
+      //
+      time::cpu::timer c;
+      time::wall::timer w;
+      c.start();
+      w.start();
+
+      resetImpl(planState);
+
+      PlanIteratorState *const state =
+          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+      updateProfile(c, w, state);
+      state->profile_data_.data_.addCall();
+    }
+    else
+      resetImpl(planState);
   }
 
   virtual void resetImpl(PlanState& planState) const = 0;
@@ -467,13 +494,31 @@ public:
    */
   void close(PlanState& planState)
   {
+    if (planState.theProfile)
+    {
+      //
+      // Temporaries are used here to guarantee the order in which the timers
+      // are stopped.  (If the expressions were passed as function arguments,
+      // the order is platform/compiler-dependent.)
+      //
+      time::cpu::timer c;
+      time::wall::timer w;
+      c.start();
+      w.start();
+
+      closeImpl(planState);
+
+      PlanIteratorState *const state =
+          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+      updateProfile(c, w, state);
+    }
+    else
+      closeImpl(planState);
+
 #ifndef NDEBUG
     PlanIteratorState* state =
-    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-    closeImpl(planState);
+        StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
     state->theIsOpened = false;
-#else
-    closeImpl(planState);
 #endif
   }
 
