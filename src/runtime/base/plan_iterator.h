@@ -361,7 +361,7 @@ public:
     if (aProfile)
     {
       theCPUTimer.start();
-      theCPUTimer.start();
+      theWallTimer.start();
     }
   }
 
