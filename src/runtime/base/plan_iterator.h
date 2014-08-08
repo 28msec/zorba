@@ -193,8 +193,11 @@ struct profile_data {
       ++call_count_;
     }
 
-    void addNext( double cpu, double wall ) {
+    void addNext() {
       ++next_count_;
+    }
+
+    void addTime( double cpu, double wall ) {
       cpu_time_ += cpu;
       wall_time_ += wall;
     }
@@ -429,7 +432,8 @@ public:
 
       PlanIteratorState *const state =
           StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-      updateProfile(c, w, state);
+
+      state->profile_data_.data_.addTime(c.elapsed(), w.elapsed());
       state->profile_data_.data_.addCall();
     }
     else
@@ -476,7 +480,8 @@ public:
 
       PlanIteratorState *const state =
           StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-      updateProfile(c, w, state);
+
+      state->profile_data_.data_.addTime(c.elapsed(), w.elapsed());
       state->profile_data_.data_.addCall();
     }
     else
@@ -510,7 +515,8 @@ public:
 
       PlanIteratorState *const state =
           StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-      updateProfile(c, w, state);
+
+      state->profile_data_.data_.addTime(c.elapsed(), w.elapsed());
     }
     else
       closeImpl(planState);
@@ -547,14 +553,6 @@ public:
    */
   virtual bool skip(int64_t count, PlanState &planState) const;
 
-
-  inline void updateProfile(time::cpu::timer& c, time::wall::timer& w, PlanIteratorState *const state) const
-  {
-    double const ce( c.elapsed() );
-    double const we( w.elapsed() );
-    state->profile_data_.data_.addNext( ce, we );
-  }
-
   /**
    * Produce the next item and return it to the caller. Implicitly, the first
    * call of 'producNext' initializes the iterator and allocates resources
@@ -583,12 +581,14 @@ public:
       try
       {
         bool const ret_val = nextImpl(result, planState);
-        updateProfile(c, w, state);
+        state->profile_data_.data_.addTime(c.elapsed(), w.elapsed());
+        state->profile_data_.data_.addNext();
         return ret_val;
       }
       catch (const ZorbaException&)
       {
-        updateProfile(c, w, state);
+        state->profile_data_.data_.addTime(c.elapsed(), w.elapsed());
+        state->profile_data_.data_.addNext();
         throw;
       }
     }
