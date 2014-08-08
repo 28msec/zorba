@@ -358,7 +358,7 @@ public:
     theState(aState),
     theMethod(aMethod)
   {
-    if (aProfile)
+    if (theProfilingEnabled)
     {
       theCPUTimer.start();
       theWallTimer.start();
