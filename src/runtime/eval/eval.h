@@ -17,6 +17,8 @@
 #ifndef ZORBA_RUNTIME_EVAL_EVAL_H
 #define ZORBA_RUNTIME_EVAL_EVAL_H
 
+#include <sstream>
+
 #include "common/shared_types.h"
 
 #include "compiler/expression/expr_consts.h"
@@ -27,21 +29,47 @@
 
 namespace zorba {
 
+class IterPrinter;
+
+struct EvalProfile
+{
+  std::string       theQuery;
+  std::string       theProfile;
+  double            theCompilationCPUTime;
+  double            theCompilationWallTime;
+
+  EvalProfile(const std::string& aQuery, const double aCompilationCPUTime, const double aCompilationWallTime):
+    theQuery(aQuery),
+    theCompilationCPUTime(aCompilationCPUTime),
+    theCompilationWallTime(aCompilationWallTime)
+  {
+  }
+};
 
 class EvalIteratorState : public PlanIteratorState
 {
 public:
-  PlanIter_t                     thePlan;
-  PlanWrapper_t                  thePlanWrapper;
-  std::unique_ptr<CompilerCB>      ccb;
-  std::unique_ptr<dynamic_context> dctx;
+  PlanIter_t                       thePlan;
+  PlanWrapper_t                    thePlanWrapper;
+  std::unique_ptr<CompilerCB>      theCCB;
+  std::unique_ptr<dynamic_context> theDctx;
+  std::vector<EvalProfile>         theEvalProfiles;
+  std::unique_ptr<IterPrinter>     thePrinter;
 
 public:
   EvalIteratorState();
 
   ~EvalIteratorState();
 
+  void init(PlanState& planState);
+
   void reset(PlanState& planState);
+
+  void addQuery(const std::string& aQuery, const double aCompilationCPUTime,
+      const double aCompilationWallTime);
+
+  void addQueryProfile();
+
 };
 
 

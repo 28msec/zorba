@@ -199,7 +199,6 @@ DEF_VISIT( DeleteIndexIterator )
 DEF_VISIT( DeleteIterator )
 DEF_VISIT( EitherNodesOrAtomicsIterator )
 DEF_VISIT( EmptyIterator )
-DEF_VISIT( EvalIterator )
 DEF_VISIT( ExitCatcherIterator )
 DEF_VISIT( ExitIterator )
 DEF_VISIT( FlowCtlIterator )
@@ -457,8 +456,8 @@ void PrinterVisitor::beginVisit( ElementIterator const &i ) {
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
 }
-
 DEF_END_VISIT( ElementIterator )
+
 void PrinterVisitor::beginVisit( EnclosedIterator const &i ) {
   thePrinter.startBeginVisit( "EnclosedIterator", ++theId );
   thePrinter.addBoolAttribute( "attr_cont", i.getAttrContent() ? true : false );
@@ -466,6 +465,35 @@ void PrinterVisitor::beginVisit( EnclosedIterator const &i ) {
   thePrinter.endBeginVisit( theId );
 }
 DEF_END_VISIT( EnclosedIterator )
+
+void PrinterVisitor::beginVisit( EvalIterator const &i )
+{
+  thePrinter.startBeginVisit( "EvalIterator", ++theId );
+  int theEvalId = theId;
+  printCommons( &i, theId );
+
+  if ( Properties::instance().getCollectProfile() && thePlanState )
+  {
+    EvalIteratorState const *const lState =
+        StateTraitsImpl<EvalIteratorState>::getState(
+          *thePlanState, i.getStateOffset());
+
+    const std::vector<EvalProfile>& lEvalProfiles =
+        lState->theEvalProfiles;
+
+    for (unsigned int i = 0; i < lEvalProfiles.size(); ++i)
+    {
+      thePrinter.startBeginVisit( "EvalQueryIterator", ++theId );
+      thePrinter.addAttribute( "prof-query", lEvalProfiles[i].theQuery );
+      thePrinter.addDecAttribute( "prof-cpu", lEvalProfiles[i].theCompilationCPUTime );
+      thePrinter.addDecAttribute( "prof-wall", lEvalProfiles[i].theCompilationWallTime );
+      thePrinter.addAttribute( "prof-query-profile", lEvalProfiles[i].theProfile );
+      thePrinter.endBeginVisit( theId );
+    }
+  }
+  thePrinter.endBeginVisit( theEvalId );
+}
+DEF_END_VISIT( EvalIterator )
 
 void PrinterVisitor::beginVisit( flwor::OuterForIterator const &i ) {
   thePrinter.startBeginVisit( "OuterForIterator", ++theId );

@@ -15,17 +15,18 @@
  */
 #include "stdafx.h"
 
-#include <sstream>
-
+#include "zorba/options.h"
+#include "zorba/properties.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
+#include "api/auditimpl.h"
 
-#include "runtime/eval/eval.h"
-
-#include "runtime/visitors/planiter_visitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
-#include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/eval/eval.h"
+#include "runtime/visitors/planiter_visitor.h"
+#include "runtime/visitors/iterprinter.h"
+#include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/util/iterator_impl.h"
 
 #include "compiler/parsetree/parsenodes.h"
@@ -34,16 +35,12 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_manager.h"
 #include "compiler/rewriter/tools/expr_tools.h"
-#include "runtime/visitors/iterprinter.h"
-
-#include "functions/library.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
+#include "functions/library.h"
 #include "types/typeimpl.h"
-
-#include "api/auditimpl.h"
 
 #include "diagnostics/util_macros.h"
 
@@ -68,11 +65,20 @@ EvalIteratorState::EvalIteratorState()
 ********************************************************************************/
 EvalIteratorState::~EvalIteratorState()
 {
+  std::cout << "~EvalIteratorState: thePlanWrapper: " << thePlanWrapper.getp() << std::endl;
   if (thePlanWrapper)
   {
-    JSONIterPrinter printer = JSONIterPrinter( std::cout );
-    print_iter_plan( printer, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
+
   }
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+void EvalIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
 }
 
 
@@ -81,15 +87,53 @@ EvalIteratorState::~EvalIteratorState()
 ********************************************************************************/
 void EvalIteratorState::reset(PlanState& planState)
 {
+  std::cout << "reset, thePlanWrapper: " << thePlanWrapper.getp() << std::endl;
   if (thePlanWrapper)
   {
-    JSONIterPrinter printer = JSONIterPrinter( std::cout );
-    print_iter_plan( printer, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
+    /*
+     * We are compiling a new query. We must save the plan of the current one.
+     */
+    addQueryProfile();
   }
 
   PlanIteratorState::reset(planState);
 
   thePlanWrapper = NULL;
+}
+
+void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompilationCPUTime,
+    const double aCompilationWallTime)
+{
+  assert(theEvalProfiles.size() == 0 ||
+         !theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
+  theEvalProfiles.push_back(EvalProfile(aQuery, aCompilationCPUTime, aCompilationWallTime));
+}
+
+void EvalIteratorState::addQueryProfile()
+{
+  assert(theEvalProfiles.size() >0 &&
+         !theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
+
+  Zorba_profile_format_t const lFormat = Properties::instance().getProfileFormat();
+  std::stringstream lProfileStream;
+
+  switch ( lFormat )
+  {
+    case PROFILE_FORMAT_DOT:
+      thePrinter.reset( new DOTIterPrinter( lProfileStream ) );
+      break;
+    case PROFILE_FORMAT_JSON:
+      thePrinter.reset( new JSONIterPrinter( lProfileStream ) );
+      break;
+    case PROFILE_FORMAT_XML:
+      thePrinter.reset( new XMLIterPrinter( lProfileStream ) );
+      break;
+    default: // to silence warning
+      break;
+  }
+
+  print_iter_plan( *thePrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
+  theEvalProfiles[theEvalProfiles.size()-1].theQuery = lProfileStream.str();
 }
 
 
@@ -176,11 +220,11 @@ void EvalIterator::init(
   evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
   (evalCCB->theSctxMap)[1] = evalSctx;
 
-  state->ccb.reset(evalCCB);
+  state->theCCB.reset(evalCCB);
 
   // Create the dynamic context for the eval query
   dynamic_context* evalDctx = new dynamic_context(planState.theGlobalDynCtx);
-  state->dctx.reset(evalDctx);
+  state->theDctx.reset(evalDctx);
 
   // Import the outer environment.
   ulong maxOuterVarId;
@@ -193,7 +237,35 @@ void EvalIterator::init(
   state->thePlanWrapper = NULL;
 
   // Compile
-  state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId, doCount);
+  if (planState.theProfile)
+  {
+    //
+    // Temporaries are used here to guarantee the order in which the timers
+    // are stopped.  (If the expressions were passed as function arguments,
+    // the order is platform/compiler-dependent.)
+    //
+    time::cpu::timer lCPUTimer;
+    time::wall::timer lWallTimer;
+    lCPUTimer.start();
+    lWallTimer.start();
+    try
+    {
+      item->ensureSeekable();
+      state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId, doCount);
+      double const lCPUTime( lCPUTimer.elapsed() );
+      double const lWallTime( lWallTimer.elapsed() );
+      state->addQuery(item->getStringValue().str(), lCPUTime, lWallTime);
+    }
+    catch (const ZorbaException&)
+    {
+      double const lCPUTime( lCPUTimer.elapsed() );
+      double const lWallTime( lWallTimer.elapsed() );
+      state->addQuery(item->getStringValue().str(), lCPUTime, lWallTime);
+      throw;
+    }
+  }
+  else
+    state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId, doCount);
 
   planState.theCompilerCB->theNextVisitId = evalCCB->theNextVisitId + 1;
 
@@ -206,8 +278,8 @@ void EvalIterator::init(
                                           evalDctx,
                                           planState.theQuery,
                                           planState.theStackDepth + 1,
-                                          state->ccb->theHaveTimeout,
-                                          state->ccb->theTimeout);
+                                          state->theCCB->theHaveTimeout,
+                                          state->theCCB->theTimeout);
 
   state->thePlanWrapper->checkDepth(loc);
 
@@ -236,10 +308,12 @@ bool EvalIterator::nextORcount(
     STACK_PUSH(true, state);
   }
 
-  if (state->thePlanWrapper)
+  if (planState.theProfile)
   {
-    JSONIterPrinter printer = JSONIterPrinter( std::cout );
-    print_iter_plan( printer, state->thePlanWrapper->theIterator, state->thePlanWrapper->thePlanState );
+    /*
+     * The query iterator reached its end
+     */
+    state->addQueryProfile();
   }
   state->thePlanWrapper = NULL;
 
@@ -258,7 +332,18 @@ bool EvalIterator::skip(int64_t count, PlanState &planState) const
   if (state->thePlanWrapper.getp() == NULL)
     init(false, planState);
 
-  return state->thePlanWrapper->skip(count);
+  if (planState.theProfile)
+  {
+    bool lHasMoreItems = state->thePlanWrapper->skip(count);
+    if (!lHasMoreItems)
+    {
+      state->addQueryProfile();
+      state->thePlanWrapper = NULL;
+    }
+    return lHasMoreItems;
+  }
+  else
+    return state->thePlanWrapper->skip(count);
 }
 
 
