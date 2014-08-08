@@ -24,6 +24,7 @@
 
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/util/iterator_impl.h"
 
@@ -33,6 +34,7 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_manager.h"
 #include "compiler/rewriter/tools/expr_tools.h"
+#include "runtime/visitors/iterprinter.h"
 
 #include "functions/library.h"
 
@@ -66,6 +68,11 @@ EvalIteratorState::EvalIteratorState()
 ********************************************************************************/
 EvalIteratorState::~EvalIteratorState()
 {
+  if (thePlanWrapper)
+  {
+    JSONIterPrinter printer = JSONIterPrinter( std::cout );
+    print_iter_plan( printer, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
+  }
 }
 
 
@@ -74,6 +81,12 @@ EvalIteratorState::~EvalIteratorState()
 ********************************************************************************/
 void EvalIteratorState::reset(PlanState& planState)
 {
+  if (thePlanWrapper)
+  {
+    JSONIterPrinter printer = JSONIterPrinter( std::cout );
+    print_iter_plan( printer, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
+  }
+
   PlanIteratorState::reset(planState);
 
   thePlanWrapper = NULL;
@@ -223,7 +236,13 @@ bool EvalIterator::nextORcount(
     STACK_PUSH(true, state);
   }
 
+  if (state->thePlanWrapper)
+  {
+    JSONIterPrinter printer = JSONIterPrinter( std::cout );
+    print_iter_plan( printer, state->thePlanWrapper->theIterator, state->thePlanWrapper->thePlanState );
+  }
   state->thePlanWrapper = NULL;
+
 
   STACK_END(state);
 }
