@@ -65,7 +65,6 @@ class PlanWrapper : public store::Iterator
   friend class DynamicFunctionInvocationIterator;
   friend class DebuggerRuntime;
   friend class EvalIteratorState;
-  friend class EvalIterator;
 
 protected:
 

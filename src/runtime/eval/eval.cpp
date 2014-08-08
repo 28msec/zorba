@@ -68,18 +68,7 @@ EvalIteratorState::EvalIteratorState():
 EvalIteratorState::~EvalIteratorState()
 {
   if (thePlanWrapper)
-  {
     addQueryProfile();
-  }
-}
-
-
-/****************************************************************************//**
-
-********************************************************************************/
-void EvalIteratorState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
 }
 
 
@@ -88,17 +77,17 @@ void EvalIteratorState::init(PlanState& planState)
 ********************************************************************************/
 void EvalIteratorState::reset(PlanState& planState)
 {
-  std::cout << "reset, thePlanWrapper: " << thePlanWrapper.getp() << std::endl;
   if (thePlanWrapper)
-  {
     addQueryProfile();
-  }
 
   PlanIteratorState::reset(planState);
 
   thePlanWrapper = NULL;
 }
 
+/****************************************************************************//**
+
+********************************************************************************/
 void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompilationCPUTime,
     const double aCompilationWallTime)
 {
@@ -107,6 +96,10 @@ void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompil
   theEvalProfiles.push_back(EvalProfile(aQuery, aCompilationCPUTime, aCompilationWallTime));
 }
 
+
+/****************************************************************************//**
+
+********************************************************************************/
 void EvalIteratorState::addQueryProfile()
 {
   assert(theEvalProfiles.size() >0 &&

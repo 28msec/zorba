@@ -74,8 +74,6 @@ public:
 
   ~EvalIteratorState();
 
-  void init(PlanState& planState);
-
   void reset(PlanState& planState);
 
   void addQuery(const std::string& aQuery, const double aCompilationCPUTime,
