@@ -337,18 +337,7 @@ bool EvalIterator::skip(int64_t count, PlanState &planState) const
   if (state->thePlanWrapper.getp() == NULL)
     init(false, planState);
 
-  if (planState.theProfile)
-  {
-    bool lHasMoreItems = state->thePlanWrapper->skip(count);
-    if (!lHasMoreItems)
-    {
-      state->addQueryProfile();
-      state->thePlanWrapper = NULL;
-    }
-    return lHasMoreItems;
-  }
-  else
-    return state->thePlanWrapper->skip(count);
+  return state->thePlanWrapper->skip(count);
 }
 
 
