@@ -34,7 +34,7 @@ namespace zorba {
 
 class IterPrinter {
 public:
-  IterPrinter( std::ostream &os, char const *descr = "" );
+  IterPrinter( std::ostream &os, char const *descr = "", const bool ignore_start_stop = false );
   virtual ~IterPrinter();
 
   virtual void start() = 0;
@@ -61,13 +61,14 @@ public:
 protected:  
   zstring descr_;
   std::ostream &os_;
+  bool ignore_start_stop_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
 class XMLIterPrinter : public IterPrinter {
 public:
-  XMLIterPrinter( std::ostream&, char const* = "" );
+  XMLIterPrinter( std::ostream&, char const* = "", const bool ignore_start_stop = false );
   ~XMLIterPrinter();
 
   void start();
@@ -95,7 +96,7 @@ private:
 
 class DOTIterPrinter : public IterPrinter {
 public:
-  DOTIterPrinter( std::ostream&, char const* = "" );
+  DOTIterPrinter( std::ostream&, char const* = "", const bool ignore_start_stop = false );
   ~DOTIterPrinter();
       
   void start();
@@ -121,7 +122,7 @@ private:
 
 class JSONIterPrinter : public IterPrinter {
 public:
-  JSONIterPrinter( std::ostream&, char const* = "" );
+  JSONIterPrinter( std::ostream&, char const* = "", const bool ignore_start_stop = false );
   ~JSONIterPrinter();
 
   void start();

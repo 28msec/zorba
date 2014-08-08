@@ -120,13 +120,13 @@ void EvalIteratorState::addQueryProfile()
   switch ( lFormat )
   {
     case PROFILE_FORMAT_DOT:
-      thePrinter.reset( new DOTIterPrinter( lProfileStream ) );
+      thePrinter.reset( new DOTIterPrinter( lProfileStream, "", true ) );
       break;
     case PROFILE_FORMAT_JSON:
-      thePrinter.reset( new JSONIterPrinter( lProfileStream ) );
+      thePrinter.reset( new JSONIterPrinter( lProfileStream, "", true ) );
       break;
     case PROFILE_FORMAT_XML:
-      thePrinter.reset( new XMLIterPrinter( lProfileStream ) );
+      thePrinter.reset( new XMLIterPrinter( lProfileStream, "", true ) );
       break;
     default: // to silence warning
       break;

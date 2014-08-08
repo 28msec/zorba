@@ -484,7 +484,7 @@ void PrinterVisitor::beginVisit( EvalIterator const &i )
     for (unsigned int i = 0; i < lEvalProfiles.size(); ++i)
     {
       thePrinter.startBeginVisit( "EvalQueryIterator", ++theId );
-      thePrinter.addAttribute( "prof-query", lEvalProfiles[i].theQuery );
+      thePrinter.addAttribute( "prof-body", lEvalProfiles[i].theQuery );
       thePrinter.addDecAttribute( "prof-compilation-cpu", lEvalProfiles[i].theCompilationCPUTime );
       thePrinter.addDecAttribute( "prof-compilation-wall", lEvalProfiles[i].theCompilationWallTime );
       thePrinter.addAttribute( "prof-query-profile", lEvalProfiles[i].theProfile );
