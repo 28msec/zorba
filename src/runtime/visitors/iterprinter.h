@@ -34,7 +34,7 @@ namespace zorba {
 
 class IterPrinter {
 public:
-  IterPrinter( std::ostream &os, char const *descr = "" );
+  IterPrinter( std::ostream &os, char const *descr = "", const bool ignore_start_stop = false );
   virtual ~IterPrinter();
 
   virtual void start() = 0;
@@ -49,6 +49,8 @@ public:
   virtual void addDecAttribute( char const *name, double value ) = 0;
 
   virtual void addAttribute( char const *name, char const *value ) = 0;
+  virtual void addRawStructure( char const *name, char const *value ) = 0;
+
   template<class ValueType>
   typename std::enable_if<ZORBA_HAS_C_STR(ValueType),void>::type
   addAttribute( char const *name, ValueType const &value ) {
@@ -61,13 +63,14 @@ public:
 protected:  
   zstring descr_;
   std::ostream &os_;
+  bool ignore_start_stop_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
 class XMLIterPrinter : public IterPrinter {
 public:
-  XMLIterPrinter( std::ostream&, char const* = "" );
+  XMLIterPrinter( std::ostream&, char const* = "", const bool ignore_start_stop = false );
   ~XMLIterPrinter();
 
   void start();
@@ -81,6 +84,7 @@ public:
   void addIntAttribute( char const *name, xs_integer value );
   void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
+  void addRawStructure( char const *name, char const *value );
 
 
   void startEndVisit();
@@ -95,7 +99,7 @@ private:
 
 class DOTIterPrinter : public IterPrinter {
 public:
-  DOTIterPrinter( std::ostream&, char const* = "" );
+  DOTIterPrinter( std::ostream&, char const* = "", const bool ignore_start_stop = false );
   ~DOTIterPrinter();
       
   void start();
@@ -109,6 +113,7 @@ public:
   void addIntAttribute( char const *name, xs_integer value );
   void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
+  void addRawStructure( char const *name, char const *value );
 
   void startEndVisit();
   void endEndVisit();
@@ -121,7 +126,7 @@ private:
 
 class JSONIterPrinter : public IterPrinter {
 public:
-  JSONIterPrinter( std::ostream&, char const* = "" );
+  JSONIterPrinter( std::ostream&, char const* = "", const bool ignore_start_stop = false );
   ~JSONIterPrinter();
 
   void start();
@@ -135,6 +140,7 @@ public:
   void addIntAttribute( char const *name, xs_integer value );
   void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
+  void addRawStructure( char const *name, char const *value );
 
 
   void startEndVisit();

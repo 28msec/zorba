@@ -15,16 +15,18 @@
  */
 #include "stdafx.h"
 
-#include <sstream>
-
+#include "zorba/options.h"
+#include "zorba/properties.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
+#include "api/auditimpl.h"
 
-#include "runtime/eval/eval.h"
-
-#include "runtime/visitors/planiter_visitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/eval/eval.h"
+#include "runtime/visitors/planiter_visitor.h"
+#include "runtime/visitors/iterprinter.h"
+#include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/util/iterator_impl.h"
 
 #include "compiler/parsetree/parsenodes.h"
@@ -34,14 +36,11 @@
 #include "compiler/expression/expr_manager.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 
-#include "functions/library.h"
-
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
+#include "functions/library.h"
 #include "types/typeimpl.h"
-
-#include "api/auditimpl.h"
 
 #include "diagnostics/util_macros.h"
 
@@ -56,7 +55,9 @@ DEF_GET_NAME_AS_STRING(EvalIterator)
 /****************************************************************************//**
 
 ********************************************************************************/
-EvalIteratorState::EvalIteratorState()
+EvalIteratorState::EvalIteratorState():
+  theCompilationsCPUTime(0),
+  theCompilationsWallTime(0)
 {
 }
 
@@ -66,6 +67,8 @@ EvalIteratorState::EvalIteratorState()
 ********************************************************************************/
 EvalIteratorState::~EvalIteratorState()
 {
+  if (thePlanWrapper && Properties::instance().getCollectProfile())
+    addQueryProfile();
 }
 
 
@@ -74,9 +77,69 @@ EvalIteratorState::~EvalIteratorState()
 ********************************************************************************/
 void EvalIteratorState::reset(PlanState& planState)
 {
+  if (thePlanWrapper && planState.theProfile)
+    addQueryProfile();
+
   PlanIteratorState::reset(planState);
 
   thePlanWrapper = NULL;
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
+void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompilationCPUTime,
+    const double aCompilationWallTime)
+{
+  assert(theEvalProfiles.size() == 0 ||
+         !theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
+
+  theEvalProfiles.push_back(EvalProfile(aQuery, aCompilationCPUTime, aCompilationWallTime));
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+void EvalIteratorState::addQueryProfile()
+{
+  assert(theEvalProfiles.size() >0 &&
+         theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
+
+  Zorba_profile_format_t const lFormat = Properties::instance().getProfileFormat();
+  std::stringstream lProfileStream;
+
+  switch ( lFormat )
+  {
+    case PROFILE_FORMAT_DOT:
+      thePrinter.reset( new DOTIterPrinter( lProfileStream, "", true ) );
+      break;
+    case PROFILE_FORMAT_JSON:
+      thePrinter.reset( new JSONIterPrinter( lProfileStream, "", true ) );
+      break;
+    case PROFILE_FORMAT_XML:
+      thePrinter.reset( new XMLIterPrinter( lProfileStream, "", true ) );
+      break;
+    default: // to silence warning
+      break;
+  }
+
+  EvalProfile& lProfile = theEvalProfiles[theEvalProfiles.size()-1];
+
+  print_iter_plan( *thePrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
+  lProfile.theProfile = lProfileStream.str();
+
+  PlanIteratorState const *const pi_state =
+        StateTraitsImpl<PlanIteratorState>::getState(
+            *thePlanWrapper->thePlanState, thePlanWrapper->theIterator->getStateOffset());
+
+  profile_data const &pd = pi_state->get_profile_data();
+
+  lProfile.theCallCount = pd.data_.call_count_;
+  lProfile.theNextCount = pd.data_.next_count_;
+  lProfile.theExecutionCPUTime = pd.data_.cpu_time_;
+  lProfile.theExecutionWallTime = pd.data_.wall_time_;
+  lProfile.theIterator = thePlanWrapper->theIterator;
 }
 
 
@@ -163,11 +226,11 @@ void EvalIterator::init(
   evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
   (evalCCB->theSctxMap)[1] = evalSctx;
 
-  state->ccb.reset(evalCCB);
+  state->theCCB.reset(evalCCB);
 
   // Create the dynamic context for the eval query
   dynamic_context* evalDctx = new dynamic_context(planState.theGlobalDynCtx);
-  state->dctx.reset(evalDctx);
+  state->theDctx.reset(evalDctx);
 
   // Import the outer environment.
   ulong maxOuterVarId;
@@ -180,7 +243,39 @@ void EvalIterator::init(
   state->thePlanWrapper = NULL;
 
   // Compile
-  state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId, doCount);
+  if (planState.theProfile)
+  {
+    //
+    // Temporaries are used here to guarantee the order in which the timers
+    // are stopped.  (If the expressions were passed as function arguments,
+    // the order is platform/compiler-dependent.)
+    //
+    time::cpu::timer lCPUTimer;
+    time::wall::timer lWallTimer;
+    lCPUTimer.start();
+    lWallTimer.start();
+    try
+    {
+      item->ensureSeekable();
+      state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId, doCount);
+      double const lCPUTime( lCPUTimer.elapsed() );
+      double const lWallTime( lWallTimer.elapsed() );
+      state->addQuery(item->getStringValue().str(), lCPUTime, lWallTime);
+      state->theCompilationsCPUTime+= lCPUTime;
+      state->theCompilationsWallTime+= lWallTime;
+    }
+    catch (const ZorbaException&)
+    {
+      double const lCPUTime( lCPUTimer.elapsed() );
+      double const lWallTime( lWallTimer.elapsed() );
+      state->addQuery(item->getStringValue().str(), lCPUTime, lWallTime);
+      state->theCompilationsCPUTime+= lCPUTime;
+      state->theCompilationsWallTime+= lWallTime;
+      throw;
+    }
+  }
+  else
+    state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId, doCount);
 
   planState.theCompilerCB->theNextVisitId = evalCCB->theNextVisitId + 1;
 
@@ -193,8 +288,8 @@ void EvalIterator::init(
                                           evalDctx,
                                           planState.theQuery,
                                           planState.theStackDepth + 1,
-                                          state->ccb->theHaveTimeout,
-                                          state->ccb->theTimeout);
+                                          state->theCCB->theHaveTimeout,
+                                          state->theCCB->theTimeout);
 
   state->thePlanWrapper->checkDepth(loc);
 
@@ -222,6 +317,9 @@ bool EvalIterator::nextORcount(
   {
     STACK_PUSH(true, state);
   }
+
+  if (planState.theProfile)
+    state->addQueryProfile();
 
   state->thePlanWrapper = NULL;
 

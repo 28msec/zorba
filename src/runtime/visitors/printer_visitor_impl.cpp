@@ -199,7 +199,6 @@ DEF_VISIT( DeleteIndexIterator )
 DEF_VISIT( DeleteIterator )
 DEF_VISIT( EitherNodesOrAtomicsIterator )
 DEF_VISIT( EmptyIterator )
-DEF_VISIT( EvalIterator )
 DEF_VISIT( ExitCatcherIterator )
 DEF_VISIT( ExitIterator )
 DEF_VISIT( FlowCtlIterator )
@@ -457,8 +456,8 @@ void PrinterVisitor::beginVisit( ElementIterator const &i ) {
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
 }
-
 DEF_END_VISIT( ElementIterator )
+
 void PrinterVisitor::beginVisit( EnclosedIterator const &i ) {
   thePrinter.startBeginVisit( "EnclosedIterator", ++theId );
   thePrinter.addBoolAttribute( "attr_cont", i.getAttrContent() ? true : false );
@@ -466,6 +465,59 @@ void PrinterVisitor::beginVisit( EnclosedIterator const &i ) {
   thePrinter.endBeginVisit( theId );
 }
 DEF_END_VISIT( EnclosedIterator )
+
+void PrinterVisitor::beginVisit( EvalIterator const &i )
+{
+  thePrinter.startBeginVisit( "EvalIterator", ++theId );
+  int theEvalId = theId;
+  printCommons( &i, theId );
+  Properties const &props = Properties::instance();
+
+  if ( props.getCollectProfile() && thePlanState )
+  {
+    EvalIteratorState const *const lState =
+        StateTraitsImpl<EvalIteratorState>::getState(
+          *thePlanState, i.getStateOffset());
+
+    thePrinter.addDecAttribute( "prof-compilation-cpu", lState->theCompilationsCPUTime );
+    thePrinter.addDecAttribute( "prof-compilation-wall", lState->theCompilationsWallTime );
+
+    const std::vector<EvalProfile>& lEvalProfiles =
+        lState->theEvalProfiles;
+
+    for (std::vector<EvalProfile>::const_iterator lIt = lEvalProfiles.begin();
+         lIt != lEvalProfiles.end();
+         ++lIt)
+    {
+      const EvalProfile& lEvalProfile = *lIt;
+      thePrinter.startBeginVisit( "EvalQueryIterator", ++theId );
+
+      if ( !props.getNoTreeIDs() ) {
+        ostringstream oss;
+        if ( props.getStableIteratorIDs() )
+          oss << theId;
+        else
+          oss << &i;
+        thePrinter.addAttribute( "id", oss.str() );
+      }
+
+      thePrinter.addAttribute( "prof-name", "EvalQueryIterator" );
+      thePrinter.addIntAttribute( "prof-calls", lEvalProfile.theCallCount);
+      thePrinter.addIntAttribute( "prof-next-calls", lEvalProfile.theNextCount);
+      thePrinter.addDecAttribute( "prof-cpu", lEvalProfile.theExecutionCPUTime);
+      thePrinter.addDecAttribute( "prof-wall", lEvalProfile.theExecutionWallTime);
+      thePrinter.addDecAttribute( "prof-compilation-cpu", lEvalProfile.theCompilationCPUTime );
+      thePrinter.addDecAttribute( "prof-compilation-wall", lEvalProfile.theCompilationWallTime );
+      thePrinter.addAttribute( "prof-body", lEvalProfile.theQuery );
+      thePrinter.addRawStructure( "iterators", lEvalProfile.theProfile.c_str() );
+      thePrinter.endBeginVisit( theId );
+      thePrinter.startEndVisit();
+      thePrinter.endEndVisit();
+    }
+  }
+  thePrinter.endBeginVisit( theEvalId );
+}
+DEF_END_VISIT( EvalIterator )
 
 void PrinterVisitor::beginVisit( flwor::OuterForIterator const &i ) {
   thePrinter.startBeginVisit( "OuterForIterator", ++theId );

@@ -32,9 +32,10 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-IterPrinter::IterPrinter( ostream &os, char const *descr ) :
+IterPrinter::IterPrinter( ostream &os, char const *descr,  const bool ignore_start_stop  ) :
   descr_( descr ),
-  os_( os )
+  os_( os ),
+  ignore_start_stop_( ignore_start_stop )
 {
 }
 
@@ -44,8 +45,8 @@ IterPrinter::~IterPrinter() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-XMLIterPrinter::XMLIterPrinter( ostream &os, char const *descr ) :
-  IterPrinter( os, descr ),
+XMLIterPrinter::XMLIterPrinter( ostream &os, char const *descr, const bool ignore_start_stop ) :
+  IterPrinter( os, descr, ignore_start_stop ),
   theOpenStart( false )
 {
 }
@@ -55,14 +56,20 @@ XMLIterPrinter::~XMLIterPrinter() {
 }
 
 void XMLIterPrinter::start() {
-  os_ << indent << "<iterator-tree";
-  if ( !descr_.empty() )
-    os_ << " description=\"" << descr_ << '"';
-  os_ << ">\n" << inc_indent;
+  if ( !ignore_start_stop_ )
+  {
+    os_ << indent << "<iterator-tree";
+    if ( !descr_.empty() )
+      os_ << " description=\"" << descr_ << '"';
+    os_ << ">\n" << inc_indent;
+  }
 }
 
 void XMLIterPrinter::stop() {
-  os_ << dec_indent << indent << "</iterator-tree>\n";
+  if ( !ignore_start_stop_ )
+  {
+    os_ << dec_indent << indent << "</iterator-tree>\n";
+  }
 }
 
 void XMLIterPrinter::startBeginVisit( char const *name, int ) {
@@ -84,6 +91,23 @@ void XMLIterPrinter::addBoolAttribute( char const *name, bool value ) {
 void XMLIterPrinter::addAttribute( char const *name, char const *value ) {
   assert( theOpenStart );
   os_ << ' ' << name << "=\"" << value << "\"";
+}
+
+void XMLIterPrinter::addRawStructure( char const *name, char const *value ) {
+  if ( theOpenStart )
+    os_ << ">\n";
+
+  os_ << inc_indent << indent;
+  while (*value != '\0')
+  {
+    os_ << *value;
+    if (*value == '\n')
+      os_ << indent;
+    ++value;
+  }
+  os_ << dec_indent;
+
+  theOpenStart = false;
 }
 
 void XMLIterPrinter::addIntAttribute( char const *name, xs_long value ) {
@@ -116,8 +140,8 @@ void XMLIterPrinter::endEndVisit() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-DOTIterPrinter::DOTIterPrinter( ostream &os, char const *descr ) :
-  IterPrinter( os, descr )
+DOTIterPrinter::DOTIterPrinter( ostream &os, char const *descr, const bool ignore_start_stop ) :
+  IterPrinter( os, descr, ignore_start_stop )
 {
 }
 
@@ -126,12 +150,18 @@ DOTIterPrinter::~DOTIterPrinter() {
 }
 
 void DOTIterPrinter::start() {
-  os_ << indent << "digraph {\n" << inc_indent
-      << indent << "node [ color=gray, fontname=\"Arial\" ]\n";
+  if ( !ignore_start_stop_ )
+  {
+    os_ << indent << "digraph {\n" << inc_indent
+        << indent << "node [ color=gray, fontname=\"Arial\" ]\n";
+  }
 }
 
 void DOTIterPrinter::stop() {
-  os_ << dec_indent << indent << "}\n";
+  if ( !ignore_start_stop_ )
+  {
+    os_ << dec_indent << indent << "}\n";
+  }
 }
 
 void DOTIterPrinter::startBeginVisit( char const *name, int addr ) {
@@ -156,6 +186,10 @@ void DOTIterPrinter::addAttribute( char const *name, char const *value ) {
   os_ << "\\n" << name << '=' << temp;
 }
 
+void DOTIterPrinter::addRawStructure( char const *name, char const *value ) {
+  os_ << "\\n" << name << '=' << value;
+}
+
 void DOTIterPrinter::addIntAttribute( char const *name, xs_long value ) {
   os_ << indent << "\\n" << name << '=' << value;
 }
@@ -177,8 +211,8 @@ void DOTIterPrinter::endEndVisit() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-JSONIterPrinter::JSONIterPrinter( ostream &os, char const *descr ) :
-  IterPrinter( os, descr )
+JSONIterPrinter::JSONIterPrinter( ostream &os, char const *descr, const bool ignore_start_stop ) :
+  IterPrinter( os, descr, ignore_start_stop )
 {
 }
 
@@ -187,14 +221,20 @@ JSONIterPrinter::~JSONIterPrinter() {
 }
 
 void JSONIterPrinter::start() {
-  os_ << indent << "{\n" << inc_indent;
-  if ( !descr_.empty() )
-    os_ << indent << "\"description\": \"" << descr_ << "\",\n";
-  os_ << indent << "\"iterator-tree\":\n" << inc_indent;
+  if ( !ignore_start_stop_ )
+  {
+    os_ << indent << "{\n" << inc_indent;
+    if ( !descr_.empty() )
+      os_ << indent << "\"description\": \"" << descr_ << "\",\n";
+    os_ << indent << "\"iterator-tree\":\n" << inc_indent;
+  }
 }
 
 void JSONIterPrinter::stop() {
-  os_ << '\n' << dec_indent << dec_indent << indent << "}\n";
+  if ( !ignore_start_stop_ )
+  {
+    os_ << '\n' << dec_indent << dec_indent << indent << "}\n";
+  }
 }
 
 void JSONIterPrinter::startBeginVisit( char const *name, int ) {
@@ -222,6 +262,20 @@ void JSONIterPrinter::addAttribute( char const *name, char const *value ) {
   os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": \""
       << zorba::json::serialize(value) << "\"";
 }
+
+void JSONIterPrinter::addRawStructure( char const *name, char const *value ) {
+  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": [\n";
+  os_ << inc_indent << indent;
+  while (*value != '\0')
+  {
+    os_ << *value;
+    if (*value == '\n')
+      os_ << indent;
+    ++value;
+  }
+  os_ << '\n' << dec_indent << indent << ']';
+}
+
 
 void JSONIterPrinter::addIntAttribute( char const *name, xs_long value ) {
   os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": "
