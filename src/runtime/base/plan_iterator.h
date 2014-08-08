@@ -164,48 +164,51 @@ public:
  ******************************************************************************/
 
 /**
+ * Contains per-member-function profiling data.
+ *
+ * An init() member function is used rather than a constructor so
+ * initialization is done only when profiling is enabled.
+ */
+struct mbr_fn {
+  unsigned call_count_;
+  unsigned next_count_;
+  double cpu_time_;
+  double wall_time_;
+
+  void init() {
+    call_count_ = 0;
+    next_count_ = 0;
+    cpu_time_ = 0;
+    wall_time_ = 0;
+  }
+
+  void addCall() {
+    ++call_count_;
+  }
+
+  void addNext() {
+    ++next_count_;
+  }
+
+  void addTime( double cpu, double wall ) {
+    cpu_time_ += cpu;
+    wall_time_ += wall;
+  }
+};
+
+
+/**
  * Contains all profiling data for an iterator.
  *
  * An init() member function is used rather than a constructor so
  * initialization is done only when profiling is enabled.
  */
-struct profile_data {
-  /**
-   * Contains per-member-function profiling data.
-   *
-   * An init() member function is used rather than a constructor so
-   * initialization is done only when profiling is enabled.
-   */
-  struct mbr_fn {
-    unsigned call_count_;
-    unsigned next_count_;
-    double cpu_time_;
-    double wall_time_;
-
-    void init() {
-      call_count_ = 0;
-      next_count_ = 0;
-      cpu_time_ = 0;
-      wall_time_ = 0;
-    }
-
-    void addCall() {
-      ++call_count_;
-    }
-
-    void addNext() {
-      ++next_count_;
-    }
-
-    void addTime( double cpu, double wall ) {
-      cpu_time_ += cpu;
-      wall_time_ += wall;
-    }
-  };
-
+struct profile_data
+{
   mbr_fn data_;
 
-  void init() {
+  void init()
+  {
     data_.init();
   }
 };
@@ -215,6 +218,7 @@ struct profile_data {
 ********************************************************************************/
 class PlanIteratorState
 {
+  friend class TimerWrapper;
 public:
   static const uint32_t DUFFS_ALLOCATE_RESOURCES = 0;
 
@@ -338,6 +342,48 @@ public:
   }
 };
 
+typedef void (mbr_fn::*method)();
+
+class TimerWrapper
+{
+  bool               theProfilingEnabled;
+  PlanIteratorState* theState;
+  time::cpu::timer   theCPUTimer;
+  time::wall::timer  theWallTimer;
+  method             theMethod;
+
+public:
+  TimerWrapper(PlanIteratorState* aState, bool aProfile, method aMethod):
+    theProfilingEnabled(aProfile),
+    theState(aState),
+    theMethod(aMethod)
+  {
+    if (aProfile)
+    {
+      theCPUTimer.start();
+      theWallTimer.start();
+    }
+  }
+
+  void setState(PlanIteratorState* aState)
+  {
+    theState = aState;
+  }
+
+  ~TimerWrapper()
+  {
+    if (theProfilingEnabled && theState)
+    {
+      mbr_fn& lData = theState->profile_data_.data_;
+      lData.addTime(theCPUTimer.elapsed(), theWallTimer.elapsed());
+      if (theMethod)
+      {
+        (lData.*theMethod)();
+      }
+    }
+  }
+};
+
 
 /*******************************************************************************
   Base class of all plan iterators.
@@ -416,33 +462,17 @@ public:
    */
   void open(PlanState& planState, uint32_t& offset)
   {
-    if (planState.theProfile)
-    {
-      //
-      // Temporaries are used here to guarantee the order in which the timers
-      // are stopped.  (If the expressions were passed as function arguments,
-      // the order is platform/compiler-dependent.)
-      //
-      time::cpu::timer c;
-      time::wall::timer w;
-      c.start();
-      w.start();
+    TimerWrapper t(NULL, planState.theProfile, &mbr_fn::addCall);
 
-      openImpl(planState, offset);
+    openImpl(planState, offset);
 
-      PlanIteratorState *const state =
-          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+    PlanIteratorState *const state =
+        StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
 
-      state->profile_data_.data_.addTime(c.elapsed(), w.elapsed());
-      state->profile_data_.data_.addCall();
-    }
-    else
-      openImpl(planState, offset);
+    t.setState(state);
 
 #ifndef NDEBUG
     // do this after openImpl because the state is created there
-    PlanIteratorState* state =
-    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
     ZORBA_ASSERT(!state->theIsOpened); // don't call open twice
     state->theIsOpened = true;
 #endif
@@ -458,34 +488,16 @@ public:
    */
   void reset(PlanState& planState) const
   {
-#ifndef NDEBUG
     PlanIteratorState* state =
-    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+        StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+
+#ifndef NDEBUG
     ZORBA_ASSERT(state->theIsOpened);
 #endif
 
-    if (planState.theProfile)
-    {
-      //
-      // Temporaries are used here to guarantee the order in which the timers
-      // are stopped.  (If the expressions were passed as function arguments,
-      // the order is platform/compiler-dependent.)
-      //
-      time::cpu::timer c;
-      time::wall::timer w;
-      c.start();
-      w.start();
+    TimerWrapper t(state, planState.theProfile, &mbr_fn::addCall);
 
-      resetImpl(planState);
-
-      PlanIteratorState *const state =
-          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-
-      state->profile_data_.data_.addTime(c.elapsed(), w.elapsed());
-      state->profile_data_.data_.addCall();
-    }
-    else
-      resetImpl(planState);
+    resetImpl(planState);
   }
 
   virtual void resetImpl(PlanState& planState) const = 0;
@@ -499,31 +511,14 @@ public:
    */
   void close(PlanState& planState)
   {
-    if (planState.theProfile)
-    {
-      //
-      // Temporaries are used here to guarantee the order in which the timers
-      // are stopped.  (If the expressions were passed as function arguments,
-      // the order is platform/compiler-dependent.)
-      //
-      time::cpu::timer c;
-      time::wall::timer w;
-      c.start();
-      w.start();
-
-      closeImpl(planState);
-
-      PlanIteratorState *const state =
-          StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-
-      state->profile_data_.data_.addTime(c.elapsed(), w.elapsed());
-    }
-    else
-      closeImpl(planState);
-
-#ifndef NDEBUG
     PlanIteratorState* state =
         StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+
+    TimerWrapper t(state, planState.theProfile, NULL);
+
+    closeImpl(planState);
+
+#ifndef NDEBUG
     state->theIsOpened = false;
 #endif
   }
@@ -564,36 +559,13 @@ public:
   {
     PlanIteratorState *const state =
       StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+
 #ifndef NDEBUG
     ZORBA_ASSERT(state->theIsOpened);
 #endif
-    if ( planState.theProfile )
-    {
-      //
-      // Temporaries are used here to guarantee the order in which the timers
-      // are stopped.  (If the expressions were passed as function arguments,
-      // the order is platform/compiler-dependent.)
-      //
-      time::cpu::timer c;
-      time::wall::timer w;
-      c.start();
-      w.start();
-      try
-      {
-        bool const ret_val = nextImpl(result, planState);
-        state->profile_data_.data_.addTime(c.elapsed(), w.elapsed());
-        state->profile_data_.data_.addNext();
-        return ret_val;
-      }
-      catch (const ZorbaException&)
-      {
-        state->profile_data_.data_.addTime(c.elapsed(), w.elapsed());
-        state->profile_data_.data_.addNext();
-        throw;
-      }
-    }
-    else
-      return nextImpl(result, planState);
+    TimerWrapper t(state, planState.theProfile, &mbr_fn::addNext);
+
+    return nextImpl(result, planState);
   }
 
   virtual bool nextImpl(store::Item_t& result, PlanState& planState) const = 0;
