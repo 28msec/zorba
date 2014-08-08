@@ -112,7 +112,7 @@ void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompil
 void EvalIteratorState::addQueryProfile()
 {
   assert(theEvalProfiles.size() >0 &&
-         !theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
+         theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
 
   Zorba_profile_format_t const lFormat = Properties::instance().getProfileFormat();
   std::stringstream lProfileStream;
@@ -133,7 +133,7 @@ void EvalIteratorState::addQueryProfile()
   }
 
   print_iter_plan( *thePrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
-  theEvalProfiles[theEvalProfiles.size()-1].theQuery = lProfileStream.str();
+  theEvalProfiles[theEvalProfiles.size()-1].theProfile = lProfileStream.str();
 }
 
 

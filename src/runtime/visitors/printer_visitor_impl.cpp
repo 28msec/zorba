@@ -485,10 +485,12 @@ void PrinterVisitor::beginVisit( EvalIterator const &i )
     {
       thePrinter.startBeginVisit( "EvalQueryIterator", ++theId );
       thePrinter.addAttribute( "prof-query", lEvalProfiles[i].theQuery );
-      thePrinter.addDecAttribute( "prof-cpu", lEvalProfiles[i].theCompilationCPUTime );
-      thePrinter.addDecAttribute( "prof-wall", lEvalProfiles[i].theCompilationWallTime );
+      thePrinter.addDecAttribute( "prof-compilation-cpu", lEvalProfiles[i].theCompilationCPUTime );
+      thePrinter.addDecAttribute( "prof-compilation-wall", lEvalProfiles[i].theCompilationWallTime );
       thePrinter.addAttribute( "prof-query-profile", lEvalProfiles[i].theProfile );
       thePrinter.endBeginVisit( theId );
+      thePrinter.startEndVisit();
+      thePrinter.endEndVisit();
     }
   }
   thePrinter.endBeginVisit( theEvalId );
