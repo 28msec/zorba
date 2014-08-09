@@ -296,8 +296,10 @@ char const* get_help_msg() {
     HELP_OPT( "--serialize-text" )
       "Serialize the result as text.\n\n"
 
+#ifndef NDEBUG
     HELP_OPT( "--stable-iterator-ids" )
       "Print the iterator plan with stable IDs.\n\n"
+#endif
 
 #ifndef ZORBA_NO_FULL_TEXT
     HELP_OPT( "--stop-words <uri>:=<value>" )
@@ -758,8 +760,10 @@ int parse_args( int argc, char const *argv[] ) {
       zc_props.serialize_plan_ = true;
     else if ( IS_LONG_OPT( "--serialize-text" ) )
       zc_props.serialize_text_ = true;
+#ifndef NDEBUG
     else if ( IS_LONG_OPT( "--stable-iterator-ids" ) )
       z_props.setStableIteratorIDs( true );
+#endif
 #ifndef ZORBA_NO_FULL_TEXT
     else if ( IS_LONG_OPT( "--stop-words" ) ) {
       PARSE_ARG( "--stop-words" );
