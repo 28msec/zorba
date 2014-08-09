@@ -14,7 +14,7 @@
             </ElementIterator>
           </ForVariable>
           <MaterializeClause>
-            <MaterializeForVariable inputVar="n : "/>
+            <MaterializeForVariable inputVar="n"/>
           </MaterializeClause>
           <ReturnClause>
             <IsSameNodeIterator>
@@ -39,7 +39,7 @@
             </ElementIterator>
           </ForVariable>
           <MaterializeClause>
-            <MaterializeForVariable inputVar="n : "/>
+            <MaterializeForVariable inputVar="n"/>
           </MaterializeClause>
           <ReturnClause>
             <IsSameNodeIterator>

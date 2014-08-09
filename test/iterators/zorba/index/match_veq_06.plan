@@ -110,8 +110,8 @@
       <LetVarIterator varname="overwrite"/>
     </ForVariable>
     <MaterializeClause>
-      <MaterializeForVariable inputVar="docURI : "/>
-      <MaterializeForVariable inputVar="overwrite : "/>
+      <MaterializeForVariable inputVar="docURI"/>
+      <MaterializeForVariable inputVar="overwrite"/>
     </MaterializeClause>
     <ReturnClause>
       <SequentialIterator>
@@ -182,8 +182,8 @@
             </AndIterator>
           </WhereClause>
           <MaterializeClause>
-            <MaterializeForVariable inputVar="parent : "/>
-            <MaterializeForVariable inputVar="child : "/>
+            <MaterializeForVariable inputVar="parent"/>
+            <MaterializeForVariable inputVar="child"/>
           </MaterializeClause>
           <ReturnClause>
             <ApplyIterator>
@@ -282,9 +282,9 @@
                   </ProbeIndexPointValueIterator>
                 </LetVariable>
                 <MaterializeClause>
-                  <MaterializeForVariable inputVar="parent-uri : "/>
-                  <MaterializeForVariable inputVar="child-uri : "/>
-                  <MaterializeLetVariable inputVar="parent : "/>
+                  <MaterializeForVariable inputVar="parent-uri"/>
+                  <MaterializeForVariable inputVar="child-uri"/>
+                  <MaterializeLetVariable inputVar="parent"/>
                 </MaterializeClause>
                 <ReturnClause>
                   <SequentialIterator>

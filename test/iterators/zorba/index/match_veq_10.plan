@@ -48,8 +48,8 @@
     </ApplyIterator>
     <TupleStreamIterator>
       <OrderByIterator>
-        <OrderByForVariable inputVar="count : "/>
-        <OrderByLetVariable inputVar="$$opt_temp_0 : "/>
+        <OrderByForVariable inputVar="count"/>
+        <OrderByLetVariable inputVar="$$opt_temp_0"/>
         <OrderBySpec>
           <ForVarIterator varname="count"/>
         </OrderBySpec>

@@ -32,7 +32,7 @@
         </FnZorbaParseXmlFragmentIterator>
       </ForVariable>
       <MaterializeClause>
-        <MaterializeForVariable inputVar="w : "/>
+        <MaterializeForVariable inputVar="w"/>
       </MaterializeClause>
       <ReturnClause>
         <SequentialIterator>
