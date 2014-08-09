@@ -41,23 +41,31 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarIterator)
-DEF_GET_NAME_AS_STRING(CtxVarIterator)
-
 SERIALIZABLE_CLASS_VERSIONS(CtxVarDeclareIterator)
-DEF_GET_NAME_AS_STRING(CtxVarDeclareIterator)
-
 SERIALIZABLE_CLASS_VERSIONS(CtxVarAssignIterator)
-DEF_GET_NAME_AS_STRING(CtxVarAssignIterator)
-
 SERIALIZABLE_CLASS_VERSIONS(CtxVarIsSetIterator)
-DEF_GET_NAME_AS_STRING(CtxVarIsSetIterator)
-
 SERIALIZABLE_CLASS_VERSIONS(ForVarIterator)
-DEF_GET_NAME_AS_STRING(ForVarIterator)
-
 SERIALIZABLE_CLASS_VERSIONS(LetVarIterator)
-DEF_GET_NAME_AS_STRING(LetVarIterator)
 
+#define VAR_IT_GET_NAME_AS_STRING(...)          \
+  zstring __VA_ARGS__::getNameAsString() const  \
+  {                                             \
+    std::stringstream lName;                    \
+    lName << #__VA_ARGS__ << " ($"              \
+          << theVarName->getStringValue().str() \
+          <<")";                                \
+    return lName.str();                         \
+  }
+
+VAR_IT_GET_NAME_AS_STRING(CtxVarIterator)
+VAR_IT_GET_NAME_AS_STRING(CtxVarDeclareIterator)
+VAR_IT_GET_NAME_AS_STRING(CtxVarAssignIterator)
+VAR_IT_GET_NAME_AS_STRING(CtxVarIsSetIterator)
+VAR_IT_GET_NAME_AS_STRING(ForVarIterator)
+VAR_IT_GET_NAME_AS_STRING(LetVarIterator)
+
+
+#undef VAR_IT_GET_NAME_AS_STRING
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
