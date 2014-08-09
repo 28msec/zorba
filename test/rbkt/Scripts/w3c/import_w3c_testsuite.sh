@@ -32,6 +32,7 @@ done
 
 
 SRC="$1"
+echo "XXXXXXXXXX ${SRC}"
 if [ -z "$BUILD" ]; then
   BUILD="$SRC/build"
 fi
