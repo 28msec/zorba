@@ -52,6 +52,8 @@ namespace zorba {
     bool hasToVisit(PlanIterator const *pi);
   private:
     void printCommons(const PlanIterator* aIter, int theId);
+    template<class T>
+    void printVarRefs( const char* name, std::vector<T> const &values );
 
   public:
 

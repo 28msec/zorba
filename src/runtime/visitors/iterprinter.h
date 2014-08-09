@@ -57,18 +57,27 @@ public:
     return addAttribute( name, value.c_str() );
   }
 
-  virtual void addVecAttribute( char const *name, const std::vector<std::string>& values )
+  template<typename T>
+  void doAddVecAttribute( char const *name, const std::vector<T>& values )
   {
     std::stringstream joinedValue;
-    std::copy(values.begin(), values.end(), std::ostream_iterator<std::string, char>(joinedValue, " "));
-    addAttribute( name, joinedValue.str().c_str());
+    for (std::vector<std::string>::size_type i = 0; i < values.size(); ++i)
+    {
+      joinedValue << values[i];
+      if (i < (values.size() -1))
+        joinedValue << " ";
+    }
+    addAttribute( name, joinedValue.str().c_str() );
+  }
+
+  virtual void addVecAttribute( char const *name, const std::vector<std::string>& values )
+  {
+    doAddVecAttribute( name, values );
   }
 
   virtual void addVecAttribute( char const *name, const std::vector<int>& values )
   {
-    std::stringstream joinedValue;
-    std::copy(values.begin(), values.end(), std::ostream_iterator<int, char>(joinedValue, " "));
-    addAttribute( name, joinedValue.str().c_str());
+    doAddVecAttribute( name, values );
   }
 
 

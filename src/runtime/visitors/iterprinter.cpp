@@ -291,7 +291,12 @@ void JSONIterPrinter::addVecAttribute( char const *name, const std::vector<std::
 void JSONIterPrinter::addVecAttribute( char const *name, const std::vector<int>& values )
 {
   os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": [";
-  std::copy(values.begin(), values.end(), std::ostream_iterator<int, char>(os_, ", "));
+  for (std::vector<std::string>::size_type i = 0; i < values.size(); ++i)
+  {
+    os_ << values[i];
+    if (i < (values.size() -1))
+      os_ << ", ";
+  }
   os_ << "]";
 }
 

@@ -695,19 +695,36 @@ DEF_END_VISIT( ExtFunctionCallIterator )
 ////////// really special cases ///////////////////////////////////////////////
 
 template<class T>
-string var_refs( vector<T> const &v ) {
-  typename vector<T>::size_type const n = v.size();
-  ostringstream oss;
-  for ( typename vector<T>::size_type i = 0; i < n; ++i ) {
-    if ( Properties::instance().getStableIteratorIDs() )
-      oss << v[i]->getId();
-    else
-      oss << v[i].getp();
-    if ( i < n - 1 )
-      oss << ' ';
-  }
+std::string non_stable_id(T const& v)
+{
+  std::stringstream oss;
+  oss << v.getp();
   return oss.str();
 }
+
+template<class T>
+int stable_id(T const& v)
+{
+  return v->getId();
+}
+
+template<class T>
+void PrinterVisitor::printVarRefs( const char* name, vector<T> const &values )
+{
+  if (Properties::instance().getStableIteratorIDs())
+  {
+    std::vector<int> lIDs;
+    std::transform(values.begin(), values.end(), std::back_inserter(lIDs), stable_id<T>);
+    thePrinter.addVecAttribute( name, lIDs );
+  }
+  else
+  {
+    std::vector<std::string> lIDs;
+    std::transform(values.begin(), values.end(), std::back_inserter(lIDs), non_stable_id<T>);
+    thePrinter.addVecAttribute( name, lIDs );
+  }
+}
+
 
 void PrinterVisitor::
 beginVisitFlworLetVariable( bool materialize, zstring const &varName,
@@ -718,10 +735,7 @@ beginVisitFlworLetVariable( bool materialize, zstring const &varName,
   thePrinter.addBoolAttribute( "materialize", materialize ? true : false);
 
   if ( !Properties::instance().getNoTreeIDs() )
-  {
-    string const ref_s( var_refs( varRefs ) );
-    thePrinter.addAttribute( "referenced-by", ref_s );
-  }
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -740,13 +754,9 @@ beginVisitFlworForVariable( zstring const &varName,
 
   if ( !Properties::instance().getNoTreeIDs() )
   {
-    string const ref_s( var_refs( varRefs ) );
-    thePrinter.addAttribute( "referenced-by", ref_s );
+    printVarRefs( "referenced-by", varRefs );
     if (!posRefs.empty())
-    {
-      string const pos_ref_s( var_refs( posRefs ) );
-      thePrinter.addAttribute( "pos-referenced-by", ref_s );
-    }
+      printVarRefs( "pos-referenced-by", posRefs );
   }
 
   thePrinter.endBeginVisit( theId );
@@ -816,10 +826,7 @@ beginVisitGroupVariable( vector<ForVarIter_t> const &varRefs ) {
   thePrinter.startBeginVisit( "GroupVariable", ++theId );
 
   if ( !Properties::instance().getNoTreeIDs() )
-  {
-    string const ref_s( var_refs( varRefs ) );
-    thePrinter.addAttribute( "referenced-by", ref_s );
-  }
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -854,8 +861,7 @@ beginVisitOrderByForVariable( ForVarIter_t inputVar,
     else
       iv_s << " : " << inputVar.getp();
 
-    string const ref_s( var_refs( varRefs ) );
-    thePrinter.addAttribute( "referenced-by", ref_s );
+    printVarRefs( "referenced-by", varRefs );
   }
 
   thePrinter.addAttribute( "inputVar", iv_s.str() );
@@ -883,8 +889,7 @@ beginVisitOrderByLetVariable( LetVarIter_t inputVar,
     else
       iv_s << " : " << inputVar.getp();
 
-    string const ref_s( var_refs( varRefs ) );
-    thePrinter.addAttribute( "referenced-by", ref_s );
+    printVarRefs( "referenced-by", varRefs );
   }
 
   thePrinter.addAttribute( "inputVar", iv_s.str() );
@@ -939,10 +944,7 @@ beginVisitMaterializeVariable( bool forVar, PlanIter_t inputVar,
 
   thePrinter.addAttribute( "inputVar", iv_s.str() );
   if ( !Properties::instance().getNoTreeIDs() )
-  {
-    string const ref_s( var_refs( varRefs ) );
-    thePrinter.addAttribute( "referenced-by", ref_s );
-  }
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -957,10 +959,7 @@ beginVisitNonGroupVariable( vector<LetVarIter_t> const &varRefs ) {
   thePrinter.startBeginVisit( "NonGroupVariable", ++theId );
 
   if ( !Properties::instance().getNoTreeIDs() )
-  {
-    string ref_s( var_refs( varRefs ) );
-    thePrinter.addAttribute( "referenced-by", ref_s );
-  }
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -977,10 +976,7 @@ beginVisitWindowVariable( string const &varName,
   thePrinter.addAttribute( "name", varName );
 
   if ( !Properties::instance().getNoTreeIDs() )
-  {
-    string const ref_s( var_refs( varRefs ) );
-    thePrinter.addAttribute( "referenced-by", ref_s );
-  }
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -997,10 +993,7 @@ beginVisitWinCondVariable( zstring const &varName,
   thePrinter.addAttribute( "name", varName.str() );
 
   if ( !Properties::instance().getNoTreeIDs() )
-  {
-    string const ref_s( var_refs( varRefs ) );
-    thePrinter.addAttribute( "referenced-by", ref_s );
-  }
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }
