@@ -20,7 +20,7 @@ echo "==========================================================================
 mkdir -p "${ZORBA_BUILD_DIR}"
 cd "${ZORBA_BUILD_DIR}"
 cmake -DZORBA_XQUERYX:BOOL=1 -DZORBA_TEST_XQUERYX:BOOL=1 -DZORBA_WITH_BIG_INTEGER=1 -DCMAKE_BUILD_TYPE=Release -DZORBA_TEST_PLAN_SERIALIZATION:BOOL=1 -DZORBATEST_USE_MT_XQTS:BOOL=1 "${ZORBA_SRC_DIR}"
-make -j8
+make -j4
 
 echo "================================================================================"
 "${ZORBA_SRC_DIR}/test/rbkt/Scripts/w3c/import_w3c_testsuite.sh" "${ZORBA_SRC_DIR}" &
@@ -43,7 +43,7 @@ make fots-activate-sets
 
 echo "================================================================================"
 #export CLOUDANT_CREDENTIALS=/home/jenkins/rq/dbs/cloudant/credentials.json
-env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure --no-compress-output &
+env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j4 -T Test `echo $CTEST_ARGS` --output-on-failure --no-compress-output &
 wait $! || FAIL=1
 #cmake -D zorba="${ZORB_BUILD_DIR}/bin/zorba" -P "${ZORBA_SRC_DIR}/ctest2junit.cmake"
 exit ${FAIL}

@@ -6,3 +6,10 @@ before_script:
   - sudo locale-gen de_DE && sudo locale-gen de_DE.UTF-8 && sudo locale-gen fr_FR && sudo locale-gen fr_FR.UTF-8 && sudo update-locale
 script: bash travis.sh
 cache: apt
+matrix:
+  fast_finish: true
+env:
+  matrix:
+    - CTEST_ARGS="-R 'FOTS/'"
+    - CTEST_ARGS="-R 'test/update/'"
+    - CTEST_ARGS="-E '^zorba_info-extraction_module|conversion/currency-convert|FOTS/|test/update/'"
