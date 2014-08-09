@@ -181,7 +181,7 @@
       <LetVarIterator varname="x"/>
     </ForVariable>
     <MaterializeClause>
-      <MaterializeForVariable inputVar="x : "/>
+      <MaterializeForVariable inputVar="x"/>
     </MaterializeClause>
     <ReturnClause>
       <SequentialIterator>

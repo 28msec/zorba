@@ -937,8 +937,8 @@
         <FnConcatIterator>
           <TupleStreamIterator>
             <OrderByIterator>
-              <OrderByForVariable inputVar="$$context-item : "/>
-              <OrderByLetVariable inputVar="distance : "/>
+              <OrderByForVariable inputVar="$$context-item"/>
+              <OrderByLetVariable inputVar="distance"/>
               <OrderBySpec>
                 <LetVarIterator varname="distance"/>
               </OrderBySpec>

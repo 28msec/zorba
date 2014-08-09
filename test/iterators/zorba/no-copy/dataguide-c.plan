@@ -83,9 +83,9 @@
       <LetVarIterator varname="s"/>
     </ForVariable>
     <MaterializeClause>
-      <MaterializeForVariable inputVar="s : "/>
-      <MaterializeForVariable inputVar="e : "/>
-      <MaterializeLetVariable inputVar="x : "/>
+      <MaterializeForVariable inputVar="s"/>
+      <MaterializeForVariable inputVar="e"/>
+      <MaterializeLetVariable inputVar="x"/>
     </MaterializeClause>
     <ReturnClause>
       <SequentialIterator>
@@ -288,9 +288,9 @@
       <LetVarIterator varname="s"/>
     </ForVariable>
     <MaterializeClause>
-      <MaterializeForVariable inputVar="e : "/>
-      <MaterializeForVariable inputVar="s : "/>
-      <MaterializeLetVariable inputVar="x : "/>
+      <MaterializeForVariable inputVar="e"/>
+      <MaterializeForVariable inputVar="s"/>
+      <MaterializeLetVariable inputVar="x"/>
     </MaterializeClause>
     <ReturnClause>
       <IfThenElseIterator>
@@ -315,7 +315,7 @@
             </Spec>
           </GroupByClause>
           <MaterializeClause>
-            <MaterializeLetVariable inputVar="y : "/>
+            <MaterializeLetVariable inputVar="y"/>
             <OrderBySpec>
               <FnStringIterator>
                 <ForVarIterator varname="n"/>

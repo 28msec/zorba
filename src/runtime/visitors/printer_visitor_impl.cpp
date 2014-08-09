@@ -405,6 +405,11 @@ DEF_END_VISIT( CreateInternalIndexIterator )
 void PrinterVisitor::beginVisit( CtxVarAssignIterator const &i ) {
   thePrinter.startBeginVisit( "CtxVarAssignIterator", ++theId );
   thePrinter.addIntAttribute( "varid", i.getVarId() );
+#ifndef NDEBUG
+  if ( !Properties::instance().getNoTreeIDs() &&
+       Properties::instance().getStableIteratorIDs() )
+    thePrinter.addIntAttribute( "varreference", i.getId() );
+#endif
   thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
   thePrinter.addAttribute( "varkind", i.isLocal() ? "local" : "global" );
   printCommons( &i, theId );
@@ -415,6 +420,11 @@ DEF_END_VISIT( CtxVarAssignIterator )
 void PrinterVisitor::beginVisit( CtxVarDeclareIterator const &i ) {
   thePrinter.startBeginVisit( "CtxVarDeclareIterator", ++theId );
   thePrinter.addIntAttribute( "varid", i.getVarId() );
+#ifndef NDEBUG
+  if ( !Properties::instance().getNoTreeIDs() &&
+       Properties::instance().getStableIteratorIDs() )
+    thePrinter.addIntAttribute( "varreference", i.getId() );
+#endif
   thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
@@ -424,6 +434,11 @@ DEF_END_VISIT( CtxVarDeclareIterator )
 void PrinterVisitor::beginVisit( CtxVarIsSetIterator const &i ) {
   thePrinter.startBeginVisit( "CtxVarIsSetIterator", ++theId );
   thePrinter.addIntAttribute( "varid", i.getVarId() );
+#ifndef NDEBUG
+  if ( !Properties::instance().getNoTreeIDs() &&
+       Properties::instance().getStableIteratorIDs() )
+    thePrinter.addIntAttribute( "varreference", i.getId() );
+#endif
   thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
@@ -433,6 +448,11 @@ DEF_END_VISIT( CtxVarIsSetIterator )
 void PrinterVisitor::beginVisit( CtxVarIterator const &i ) {
   thePrinter.startBeginVisit( "CtxVarIterator", ++theId );
   thePrinter.addIntAttribute( "varid", i.getVarId() );
+#ifndef NDEBUG
+  if ( !Properties::instance().getNoTreeIDs() &&
+       Properties::instance().getStableIteratorIDs() )
+    thePrinter.addIntAttribute( "varreference", i.getId() );
+#endif
   thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
   thePrinter.addAttribute( "varkind", i.isLocal() ? "local" : "global" );
   printCommons( &i, theId );
@@ -539,6 +559,11 @@ DEF_END_VISIT( FnMinMaxIterator )
 
 void PrinterVisitor::beginVisit( ForVarIterator const &i ) {
   thePrinter.startBeginVisit( "ForVarIterator", ++theId );
+#ifndef NDEBUG
+  if ( !Properties::instance().getNoTreeIDs() &&
+       Properties::instance().getStableIteratorIDs() )
+    thePrinter.addIntAttribute( "varreference", i.getId() );
+#endif
   if ( i.getVarName() )
     thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().c_str() );
   printCommons( &i, theId );
@@ -564,6 +589,11 @@ DEF_END_VISIT( FunctionItemIterator )
 
 void PrinterVisitor::beginVisit( LetVarIterator const &i ) {
   thePrinter.startBeginVisit( "LetVarIterator", ++theId );
+#ifndef NDEBUG
+  if ( !Properties::instance().getNoTreeIDs() &&
+       Properties::instance().getStableIteratorIDs() )
+    thePrinter.addIntAttribute( "varreference", i.getId() );
+#endif
   if ( i.getVarName() )
     thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().c_str() );
   if ( i.getTargetPos() > numeric_consts<xs_integer>::zero() )
@@ -590,16 +620,6 @@ void PrinterVisitor::beginVisit( NodeSortIterator const &i ) {
   thePrinter.endBeginVisit( theId );
 }
 DEF_END_VISIT( NodeSortIterator )
-
-#if 0
-void PrinterVisitor::beginVisit( PathIterator const &i ) {
-  thePrinter.startBeginVisit( "PathIterator", ++theId );
-  printCommons( &i, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-DEF_END_VISIT( PathIterator )
-#endif
 
 void PrinterVisitor::beginVisit( PromoteIterator const &i ) {
   thePrinter.startBeginVisit( "PromoteIterator", ++theId );
@@ -677,16 +697,42 @@ DEF_END_VISIT( ExtFunctionCallIterator )
 ////////// really special cases ///////////////////////////////////////////////
 
 template<class T>
-string var_refs( vector<T> const &v ) {
-  typename vector<T>::size_type const n = v.size();
-  ostringstream oss;
-  for ( typename vector<T>::size_type i = 0; i < n; ++i ) {
-    oss << v[i].getp();
-    if ( i < n - 1 )
-      oss << ' ';
-  }
+std::string non_stable_id(T const& v)
+{
+  std::stringstream oss;
+  oss << v.getp();
   return oss.str();
 }
+
+#ifndef NDEBUG
+template<class T>
+int stable_id(T const& v)
+{
+  return v->getId();
+}
+#endif
+
+template<class T>
+void PrinterVisitor::printVarRefs( const char* name, vector<T> const &values )
+{
+#ifndef NDEBUG
+  if (Properties::instance().getStableIteratorIDs())
+  {
+    std::vector<int> lIDs;
+    std::transform(values.begin(), values.end(), std::back_inserter(lIDs), stable_id<T>);
+    thePrinter.addVecAttribute( name, lIDs );
+  }
+  else
+  {
+#endif
+    std::vector<std::string> lIDs;
+    std::transform(values.begin(), values.end(), std::back_inserter(lIDs), non_stable_id<T>);
+    thePrinter.addVecAttribute( name, lIDs );
+#ifndef NDEBUG
+  }
+#endif
+}
+
 
 void PrinterVisitor::
 beginVisitFlworLetVariable( bool materialize, zstring const &varName,
@@ -696,20 +742,8 @@ beginVisitFlworLetVariable( bool materialize, zstring const &varName,
   thePrinter.addAttribute( "name", varName.str() );
   thePrinter.addBoolAttribute( "materialize", materialize ? true : false);
 
-  ostringstream str;
-  vector<PlanIter_t>::size_type const numRefs = varRefs.size();
-  for ( vector<PlanIter_t>::size_type i = 0; i < numRefs; ++i ) {
-#ifndef NDEBUG
-    str << varRefs[i]->getId();
-#else
-    str << varRefs[i].getp();
-#endif
-    if ( i < numRefs - 1 )
-      str << ' ';
-  }
-
   if ( !Properties::instance().getNoTreeIDs() )
-    thePrinter.addAttribute( "referenced-by", str.str() );
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -726,25 +760,11 @@ beginVisitFlworForVariable( zstring const &varName,
   thePrinter.startBeginVisit( "ForVariable", ++theId );
   thePrinter.addAttribute( "name", varName.str() );
 
-  ostringstream ref_oss;
-  vector<PlanIter_t>::size_type const numRefs = varRefs.size();
-  for ( vector<PlanIter_t>::size_type i = 0; i < numRefs; ++i ) {
-#ifndef NDEBUG
-    ref_oss << varRefs[i]->getId();
-#else
-    ref_oss << varRefs[i].getp();
-#endif
-    if ( i < numRefs - 1 )
-      ref_oss << ' ';
-  }
-
   if ( !Properties::instance().getNoTreeIDs() )
-    thePrinter.addAttribute( "referenced-by", ref_oss.str() );
-
-  if ( !posRefs.empty() ) {
-    string const ref_s( var_refs( posRefs ) );
-    if ( !Properties::instance().getNoTreeIDs() )
-      thePrinter.addAttribute( "pos-referenced-by", ref_s );
+  {
+    printVarRefs( "referenced-by", varRefs );
+    if (!posRefs.empty())
+      printVarRefs( "pos-referenced-by", posRefs );
   }
 
   thePrinter.endBeginVisit( theId );
@@ -812,9 +832,10 @@ void PrinterVisitor::endVisitGroupBySpec() {
 void PrinterVisitor::
 beginVisitGroupVariable( vector<ForVarIter_t> const &varRefs ) {
   thePrinter.startBeginVisit( "GroupVariable", ++theId );
-  string const ref_s( var_refs( varRefs ) );
+
   if ( !Properties::instance().getNoTreeIDs() )
-    thePrinter.addAttribute( "referenced-by", ref_s );
+    printVarRefs( "referenced-by", varRefs );
+
   thePrinter.endBeginVisit( theId );
 }
 
@@ -839,14 +860,21 @@ beginVisitOrderByForVariable( ForVarIter_t inputVar,
   thePrinter.startBeginVisit( "OrderByForVariable", theId );
 
   ostringstream iv_s;
-  iv_s << inputVar->getVarName()->getStringValue() << " : ";
-  if ( !Properties::instance().getNoTreeIDs() )
-    iv_s << inputVar.getp();
+  iv_s << inputVar->getVarName()->getStringValue();
 
-  string const ref_s( var_refs( varRefs ) );
-  thePrinter.addAttribute( "inputVar", iv_s.str() );
   if ( !Properties::instance().getNoTreeIDs() )
-    thePrinter.addAttribute( "referenced-by", ref_s );
+  {
+#ifndef NDEBUG
+    if ( Properties::instance().getStableIteratorIDs() )
+      iv_s << " : " << inputVar->getId();
+    else
+#endif
+      iv_s << " : " << inputVar.getp();
+
+    printVarRefs( "referenced-by", varRefs );
+  }
+
+  thePrinter.addAttribute( "inputVar", iv_s.str() );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -862,14 +890,21 @@ beginVisitOrderByLetVariable( LetVarIter_t inputVar,
   thePrinter.startBeginVisit( "OrderByLetVariable", theId );
 
   ostringstream iv_s;
-  iv_s << inputVar->getVarName()->getStringValue() << " : ";
-  if ( !Properties::instance().getNoTreeIDs() )
-    iv_s << inputVar.getp();
+  iv_s << inputVar->getVarName()->getStringValue();
 
-  string const ref_s( var_refs( varRefs ) );
-  thePrinter.addAttribute( "inputVar", iv_s.str() );
   if ( !Properties::instance().getNoTreeIDs() )
-    thePrinter.addAttribute( "referenced-by", ref_s );
+  {
+#ifndef NDEBUG
+    if ( Properties::instance().getStableIteratorIDs() )
+      iv_s << " : " << inputVar->getId();
+    else
+#endif
+      iv_s << " : " << inputVar.getp();
+
+    printVarRefs( "referenced-by", varRefs );
+  }
+
+  thePrinter.addAttribute( "inputVar", iv_s.str() );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -898,21 +933,34 @@ beginVisitMaterializeVariable( bool forVar, PlanIter_t inputVar,
   if ( forVar ) {
     thePrinter.startBeginVisit( "MaterializeForVariable", theId );
     ForVarIterator *const i = static_cast<ForVarIterator*>( inputVar.getp() );
-    iv_s << i->getVarName()->getStringValue() << " : ";
+    iv_s << i->getVarName()->getStringValue();
     if ( !Properties::instance().getNoTreeIDs() )
-      iv_s <<  i;
+    {
+#ifndef NDEBUG
+      if ( Properties::instance().getStableIteratorIDs() )
+        iv_s << " : " << inputVar->getId();
+      else
+#endif
+        iv_s << " : " << inputVar.getp();
+    }
   } else {
     thePrinter.startBeginVisit( "MaterializeLetVariable", theId );
     LetVarIterator *const i = static_cast<LetVarIterator*>( inputVar.getp() );
-    iv_s << i->getVarName()->getStringValue() << " : " ;
+    iv_s << i->getVarName()->getStringValue();
     if ( !Properties::instance().getNoTreeIDs() )
-      iv_s << i;
+    {
+#ifndef NDEBUG
+      if ( Properties::instance().getStableIteratorIDs() )
+        iv_s << " : " << inputVar->getId();
+      else
+#endif
+        iv_s << " : " << inputVar.getp();
+    }
   }
 
-  string const ref_s( var_refs( varRefs ) );
   thePrinter.addAttribute( "inputVar", iv_s.str() );
   if ( !Properties::instance().getNoTreeIDs() )
-    thePrinter.addAttribute( "referenced-by", ref_s );
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -926,9 +974,8 @@ void PrinterVisitor::
 beginVisitNonGroupVariable( vector<LetVarIter_t> const &varRefs ) {
   thePrinter.startBeginVisit( "NonGroupVariable", ++theId );
 
-  string ref_s( var_refs( varRefs ) );
   if ( !Properties::instance().getNoTreeIDs() )
-    thePrinter.addAttribute( "referenced-by", ref_s );
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -944,9 +991,8 @@ beginVisitWindowVariable( string const &varName,
   thePrinter.startBeginVisit( "WindowVariable", theId );
   thePrinter.addAttribute( "name", varName );
 
-  string const ref_s( var_refs( varRefs ) );
   if ( !Properties::instance().getNoTreeIDs() )
-    thePrinter.addAttribute( "referenced-by", ref_s );
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }
@@ -962,9 +1008,8 @@ beginVisitWinCondVariable( zstring const &varName,
   thePrinter.startBeginVisit( "WinCondVariable", theId );
   thePrinter.addAttribute( "name", varName.str() );
 
-  string const ref_s( var_refs( varRefs ) );
   if ( !Properties::instance().getNoTreeIDs() )
-    thePrinter.addAttribute( "referenced-by", ref_s );
+    printVarRefs( "referenced-by", varRefs );
 
   thePrinter.endBeginVisit( theId );
 }

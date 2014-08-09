@@ -77,7 +77,9 @@ declare function local:create-class() as xs:string
     gen:indent(2),'void print();',$gen:newline,
     gen:indent(2),'bool hasToVisit(PlanIterator const *pi);',$gen:newline,
     $gen:indent,'private:',$gen:newline,
-    gen:indent(2),'void printCommons(const PlanIterator* aIter, int theId);',$gen:newline, $gen:newline,
+    gen:indent(2),'void printCommons(const PlanIterator* aIter, int theId);',$gen:newline,
+    gen:indent(2),'template<class T>', $gen:newline,
+    gen:indent(2),'void printVarRefs( const char* name, std::vector<T> const &amp;values );', $gen:newline, $gen:newline,
     $gen:indent,'public:',$gen:newline, $gen:newline,
     (: temporarily included until all iterators are generated :)
     '#include "runtime/visitors/plan_iter_visitor_impl.h"'

@@ -99,7 +99,7 @@
           </ChildAxisIterator>
         </ForVariable>
         <MaterializeClause>
-          <MaterializeForVariable inputVar="acc : "/>
+          <MaterializeForVariable inputVar="acc"/>
         </MaterializeClause>
         <ReturnClause>
           <ApplyIterator>

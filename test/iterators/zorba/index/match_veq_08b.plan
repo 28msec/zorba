@@ -46,8 +46,8 @@
     </ApplyIterator>
     <TupleStreamIterator>
       <OrderByIterator>
-        <OrderByForVariable inputVar="id : "/>
-        <OrderByForVariable inputVar="count : "/>
+        <OrderByForVariable inputVar="id"/>
+        <OrderByForVariable inputVar="count"/>
         <OrderBySpec>
           <ForVarIterator varname="count"/>
         </OrderBySpec>

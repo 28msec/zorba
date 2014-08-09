@@ -181,7 +181,7 @@
           </ChildAxisIterator>
         </ForVariable>
         <MaterializeClause>
-          <MaterializeForVariable inputVar="p : "/>
+          <MaterializeForVariable inputVar="p"/>
         </MaterializeClause>
         <ReturnClause>
           <ApplyIterator>

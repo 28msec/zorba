@@ -57,6 +57,30 @@ public:
     return addAttribute( name, value.c_str() );
   }
 
+  template<typename T>
+  void doAddVecAttribute( char const *name, const std::vector<T>& values )
+  {
+    std::stringstream joinedValue;
+    for (std::vector<std::string>::size_type i = 0; i < values.size(); ++i)
+    {
+      joinedValue << values[i];
+      if (i < (values.size() -1))
+        joinedValue << " ";
+    }
+    addAttribute( name, joinedValue.str().c_str() );
+  }
+
+  virtual void addVecAttribute( char const *name, const std::vector<std::string>& values )
+  {
+    doAddVecAttribute( name, values );
+  }
+
+  virtual void addVecAttribute( char const *name, const std::vector<int>& values )
+  {
+    doAddVecAttribute( name, values );
+  }
+
+
   virtual void startEndVisit() = 0;
   virtual void endEndVisit() = 0;
 
@@ -85,7 +109,6 @@ public:
   void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
   void addRawStructure( char const *name, char const *value );
-
 
   void startEndVisit();
   void endEndVisit();
@@ -142,6 +165,8 @@ public:
   void addAttribute( char const *name, char const *value );
   void addRawStructure( char const *name, char const *value );
 
+  void addVecAttribute( char const *name, const std::vector<std::string>& values );
+  void addVecAttribute( char const *name, const std::vector<int>& values );
 
   void startEndVisit();
   void endEndVisit();
