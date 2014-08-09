@@ -57,6 +57,14 @@ public:
     return addAttribute( name, value.c_str() );
   }
 
+  virtual void addVecAttribute( char const *name, const std::vector<int>& values )
+  {
+    std::stringstream joinedValue;
+    std::copy(values.begin(), values.end(), std::ostream_iterator<int, char>(joinedValue, " "));
+    addAttribute( name, joinedValue.str().c_str());
+  }
+
+
   virtual void startEndVisit() = 0;
   virtual void endEndVisit() = 0;
 
@@ -85,7 +93,6 @@ public:
   void addDecAttribute( char const *name, double value );
   void addAttribute( char const *name, char const *value );
   void addRawStructure( char const *name, char const *value );
-
 
   void startEndVisit();
   void endEndVisit();
@@ -142,6 +149,7 @@ public:
   void addAttribute( char const *name, char const *value );
   void addRawStructure( char const *name, char const *value );
 
+  void addVecAttribute( char const *name, const std::vector<int>& values );
 
   void startEndVisit();
   void endEndVisit();
