@@ -1,4 +1,4 @@
-#Zorba - NoSQL Query Processor [![Build Status](https://travis-ci.org/28msec/zorba.svg?branch=master)](https://travis-ci.org/28msec/zorba)
+#Zorba - NoSQL Query Processor
 
 http://zorba.io
 

@@ -1,7 +1,0 @@
-language: cpp
-before_script:
-  - sudo apt-get update -qq
-  - sudo apt-get install libicu-dev libxml2-dev uuid-dev libxerces-c-dev
-  - sudo apt-get remove bison flex
-  - sudo locale-gen de_DE && sudo locale-gen de_DE.UTF-8 && sudo locale-gen fr_FR && sudo locale-gen fr_FR.UTF-8 && sudo update-locale
-script: sh travis.sh
