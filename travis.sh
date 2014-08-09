@@ -38,7 +38,7 @@ then
 fi
 
 echo "================================================================================"
-cmake -D ZORBA="${ZORB_BUILD_DIR}/bin/zorba" -D BUILDDIR="${ZORBA_BUILD_DIR}" -P "${ZORBA_SRC_DIR}/test/fots/ImportFOTS.cmake"
+cmake -D ZORBA="${ZORBA_BUILD_DIR}/bin/zorba" -D BUILDDIR="${ZORBA_BUILD_DIR}" -P "${ZORBA_SRC_DIR}/test/fots/ImportFOTS.cmake"
 make fots-activate-sets
 
 echo "================================================================================"
