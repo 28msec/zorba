@@ -704,15 +704,18 @@ std::string non_stable_id(T const& v)
   return oss.str();
 }
 
+#ifndef NDEBUG
 template<class T>
 int stable_id(T const& v)
 {
-  return v->getVarId();
+  return v->getId();
 }
+#endif
 
 template<class T>
 void PrinterVisitor::printVarRefs( const char* name, vector<T> const &values )
 {
+#ifndef NDEBUG
   if (Properties::instance().getStableIteratorIDs())
   {
     std::vector<int> lIDs;
@@ -721,10 +724,13 @@ void PrinterVisitor::printVarRefs( const char* name, vector<T> const &values )
   }
   else
   {
+#endif
     std::vector<std::string> lIDs;
     std::transform(values.begin(), values.end(), std::back_inserter(lIDs), non_stable_id<T>);
     thePrinter.addVecAttribute( name, lIDs );
+#ifndef NDEBUG
   }
+#endif
 }
 
 
