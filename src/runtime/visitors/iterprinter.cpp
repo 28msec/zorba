@@ -276,6 +276,18 @@ void JSONIterPrinter::addRawStructure( char const *name, char const *value ) {
   os_ << '\n' << dec_indent << indent << ']';
 }
 
+void JSONIterPrinter::addVecAttribute( char const *name, const std::vector<std::string>& values )
+{
+  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": [";
+  for (std::vector<std::string>::size_type i = 0; i < values.size(); ++i)
+  {
+    os_ << "\"" << zorba::json::serialize(values[i]) << "\"";
+    if (i < (values.size() -1))
+      os_ << ", ";
+  }
+  os_ << "]";
+}
+
 void JSONIterPrinter::addVecAttribute( char const *name, const std::vector<int>& values )
 {
   os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": [";

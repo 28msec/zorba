@@ -57,6 +57,13 @@ public:
     return addAttribute( name, value.c_str() );
   }
 
+  virtual void addVecAttribute( char const *name, const std::vector<std::string>& values )
+  {
+    std::stringstream joinedValue;
+    std::copy(values.begin(), values.end(), std::ostream_iterator<std::string, char>(joinedValue, " "));
+    addAttribute( name, joinedValue.str().c_str());
+  }
+
   virtual void addVecAttribute( char const *name, const std::vector<int>& values )
   {
     std::stringstream joinedValue;
@@ -149,6 +156,7 @@ public:
   void addAttribute( char const *name, char const *value );
   void addRawStructure( char const *name, char const *value );
 
+  void addVecAttribute( char const *name, const std::vector<std::string>& values );
   void addVecAttribute( char const *name, const std::vector<int>& values );
 
   void startEndVisit();
