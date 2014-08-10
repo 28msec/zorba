@@ -29,13 +29,11 @@ build:
         - script:
             name: Download & Import W3C test suites
             code: |
+                export ZORBA_SRC_DIR
+                export ZORBA_BUILD_DIR
+                bash "${ZORBA_SRC_DIR}/import_tests.sh"
                 cd "${ZORBA_BUILD_DIR}"
-                "${ZORBA_SRC_DIR}/test/rbkt/Scripts/w3c/import_w3c_testsuite.sh" "${ZORBA_SRC_DIR}"
-                "${ZORBA_SRC_DIR}/test/rbkt/Scripts/w3c/import_w3c_full_text_testsuite.sh" "${ZORBA_SRC_DIR}"
-                "${ZORBA_SRC_DIR}/test/update/Scripts/import_w3c_update_testsuite.sh" "${ZORBA_SRC_DIR}"
-                cmake -D ZORBA="${ZORBA_BUILD_DIR}/bin/zorba" -D BUILDDIR="${ZORBA_BUILD_DIR}" -P "${ZORBA_SRC_DIR}/test/fots/ImportFOTS.cmake"
                 make fots-activate-sets
-
         - script:
             name: Run Tests
             code: |
