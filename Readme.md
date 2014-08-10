@@ -1,4 +1,4 @@
-#Zorba - NoSQL Query Processor [![wercker status](https://app.wercker.com/status/a90d1862ea8f050d8e508705b1e52bf4/s "wercker status")](https://app.wercker.com/project/bykey/a90d1862ea8f050d8e508705b1e52bf4)
+#Zorba - NoSQL Query Processor [![wercker status](https://app.wercker.com/status/bdbb203211970c7eaf33295f7c449172/s/master "wercker status")](https://app.wercker.com/project/bykey/bdbb203211970c7eaf33295f7c449172)
 
 http://zorba.io
 
