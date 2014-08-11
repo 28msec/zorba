@@ -970,7 +970,7 @@ MACRO (ADD_XQDOC_TARGETS)
   MESSAGE(STATUS "ADD_XQDOC_TARGETS")
 
   SET(ZORBA_XQDOC_HTML_XQ
-    ${CMAKE_BINARY_DIR}/xqdoc/generator/xqdoc-html.xq
+    ${CMAKE_BINARY_DIR}/xqdoc/generator/xqdoc.xq
       CACHE PATH
       "The XQDoc XHTML generator for external modules.")
 

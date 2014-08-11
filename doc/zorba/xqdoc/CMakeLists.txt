@@ -16,11 +16,16 @@ IF(NOT ZORBA_WITH_FILE_ACCESS)
   MESSAGE(WARNING "Can not build XQDoc documentation because 'File' module is not present")
 ELSE(NOT ZORBA_WITH_FILE_ACCESS)
 
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc.xq
+                ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/xqdoc.xq COPYONLY)
 CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-html.xq
                 ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/xqdoc-html.xq COPYONLY)
-
-CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-html.xqy
-                ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/xqdoc-html.xqy COPYONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/batch.xq
+                ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/batch.xq COPYONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/menu.xq
+                ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/menu.xq COPYONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/html.xq
+                ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/html.xq COPYONLY)
 
 # Add the modules_svg command for which a working zorba cmd is required.
 # We need to add this target in all cases because ADD_XQDOC_TARGETS() in
