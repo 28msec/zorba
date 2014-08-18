@@ -81,11 +81,11 @@ declare %an:sequential function local:test-json($result-text as xs:string, $expe
 declare %an:sequential function local:test-xml($result-text as xs:string, $expected-text as xs:string) as xs:string
 {
   variable $result as element() := 
-    try { parse-xml($result-text)/* } 
+    try { parse-xml("<root>" || $result-text || "</root>")/* } 
     catch * { error(xs:QName("local:MALFORMED"), "The plan result file " || $result-filepath || " is malformed.") };
   
   variable $expected as element() :=
-    try { parse-xml($expected-text)/* }
+    try { parse-xml("<root>" || $expected-text || "</root>")/* }
     catch * { error(xs:QName("local:MALFORMED"), "The plan expected result file " || $expected-filepath || " is malformed.") };
      
   local:compare(local:filter-xml($result, $filter,()), local:filter-xml($expected, $filter, ()))
