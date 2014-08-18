@@ -14,37 +14,50 @@
 
 #$TESTFILE is a filepath relative to the test/iterators dir.
 
-STRING (LENGTH ${TESTFILE} testfile_length)
-MATH (EXPR testfile_length "${testfile_length} - 8")
-STRING (SUBSTRING ${TESTFILE} 0 ${testfile_length} testname)
-    
-SET (APITEST_OUT_FILEPATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterators/${testname}.profile)
+GET_FILENAME_COMPONENT(EXTENSION "${TESTFILE}" EXT)
+STRING (LENGTH ${TESTFILE} TESTFILE_LENGTH)
+STRING (LENGTH ${EXTENSION} EXTENSION_LENGTH)
+MATH (EXPR FORMAT_LENGTH "${EXTENSION_LENGTH} - 9")
+MATH (EXPR BASENAME_LENGTH "${TESTFILE_LENGTH} - ${EXTENSION_LENGTH}")
+STRING (SUBSTRING ${EXTENSION} 9 ${FORMAT_LENGTH} FORMAT)
+STRING (SUBSTRING ${TESTFILE} 0 "${BASENAME_LENGTH}" BASENAME)
 
-GET_FILENAME_COMPONENT (APITEST_OUT_DIRPATH ${APITEST_OUT_FILEPATH} PATH)
-    
+SET (APITEST_RESULT_FILEPATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterators/${TESTFILE})
+SET (APITEST_EXPECTED_FILEPATH ${CMAKE_ZORBA_SOURCE_DIR}/test/iterators/${TESTFILE})
+SET (APITEST_QUERY ${CMAKE_ZORBA_SOURCE_DIR}/test/rbkt/Queries/${BASENAME}.xq)
+
+GET_FILENAME_COMPONENT (APITEST_OUT_DIRPATH ${APITEST_RESULT_FILEPATH} PATH)    
 FILE (MAKE_DIRECTORY ${APITEST_OUT_DIRPATH})
+
+FILE (TO_NATIVE_PATH ${ZORBA_EXE} NATIVE_ZORBA_EXE)
     
 EXECUTE_PROCESS (
   COMMAND
-    ${ZORBA_EXE}
-    --profile json
+    ${NATIVE_ZORBA_EXE} 
+    --profile ${FORMAT}
     --no-tree-ids
-    --no-serializer  
-    ${CMAKE_ZORBA_SOURCE_DIR}/test/rbkt/Queries/${testname}.xq
-  OUTPUT_FILE ${APITEST_OUT_FILEPATH}
+    --no-serializer
+    ${APITEST_QUERY}
+  RESULT_VARIABLE EXIT_CODE
+  OUTPUT_FILE ${APITEST_RESULT_FILEPATH}
 ) 
-    
-FILE (TO_NATIVE_PATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterators/profiletest.xq profiletest_xq_path)
-    
-EXECUTE_PROCESS (
-  COMMAND
-    ${ZORBA_EXE}
-    -f -q ${profiletest_xq_path}
-    -e zorba-exe-path:=${ZORBA_EXE}
-    -e testname:=${testname}
-    -e result-filepath:=${APITEST_OUT_FILEPATH} 
-    -z method=text
-  OUTPUT_VARIABLE out_var
-)
+
+IF ("${EXIT_CODE}" STREQUAL "0")
+  FILE (TO_NATIVE_PATH ${CMAKE_ZORBA_BINARY_DIR}/test/iterators/profiletest.xq PROFILETEST_XQ_PATH)
+
+  EXECUTE_PROCESS (
+    COMMAND
+      ${NATIVE_ZORBA_EXE}
+      -f -q ${PROFILETEST_XQ_PATH}
+      -e command:="${NATIVE_ZORBA_EXE} --profile ${FORMAT} --no-tree-ids --no-serializer ${APITEST_QUERY}"
+      -e format:=${FORMAT}
+      -e expected-filepath:=${APITEST_EXPECTED_FILEPATH}
+      -e result-filepath:=${APITEST_RESULT_FILEPATH} 
+      -z method=text
+    OUTPUT_VARIABLE out_var
+  )
               
-MESSAGE(STATUS ${out_var})
+  MESSAGE(STATUS ${out_var})
+ELSE ("${EXIT_CODE}" STREQUAL "0")
+  MESSAGE(STATUS "Profile generation failed.")
+ENDIF ("${EXIT_CODE}" STREQUAL "0")
