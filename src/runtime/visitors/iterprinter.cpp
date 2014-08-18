@@ -60,11 +60,7 @@ void XMLIterPrinter::start() {
   {
     os_ << indent << "<iterator-tree";
     if ( !descr_.empty() )
-    {
-      zstring escDescription;
-      zorba::xml::escape(descr_, &escDescription);
-      os_ << " description=\"" << escDescription << '"';
-    }
+      os_ << " description=\"" << zorba::xml::serialize(descr_, true) << '"';
     os_ << ">\n" << inc_indent;
   }
 }
@@ -97,9 +93,7 @@ void XMLIterPrinter::addBoolAttribute( char const *name, bool value ) {
 void XMLIterPrinter::addAttribute( char const *name, char const *value ) {
   assert( theOpenStart );
   assert( zorba::xml::is_NCName(zstring(name)) );
-  zstring escValue;
-  zorba::xml::escape(zstring(value), &escValue);
-  os_ << ' ' << name << "=\"" << escValue << "\"";
+  os_ << ' ' << name << "=\"" << zorba::xml::serialize(value, true) << "\"";
 }
 
 void XMLIterPrinter::addRawStructure( char const *name, char const *value ) {

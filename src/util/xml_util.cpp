@@ -148,6 +148,85 @@ int parse_entity( char const *s, unicode::code_point *c ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+ostream& serialize( ostream &os, char const *s, bool attr ) {
+  utf8::encoded_char_type ec;
+
+  while ( true ) {
+    unicode::code_point const cp = utf8::next_char( s );
+    if ( !cp )
+      break;
+
+    if (cp >= 0x10000 && cp <= 0x10FFFF)
+    {
+      ascii::itoa_buf_type cp_buf;
+      os << "&#" << ascii::itoa(cp, cp_buf) << ';';
+    }
+    /*
+       In addition, the non-whitespace control characters #x1 through #x1F and
+       #x7F through #x9F in text nodes and attribute nodes MUST be output as
+       character references.
+     */
+    else if ((cp >= 0x01 && cp <= 0x1F)
+        ||
+        (cp >= 0x7F && cp <= 0x9F))
+    {
+      if ((!attr) && (cp == 0xA || cp == 0x9))
+        os.write( ec, utf8::encode( cp, ec ) );
+      else
+      {
+        char buf[3];
+        toHexString(cp, buf);
+        os << "&#x" << buf << ";";
+      }
+    }
+    else
+    {
+      switch (cp)
+      {
+        case '<':
+          os << "&lt;";
+          break;
+        case '>':
+          os << "&gt;";
+          break;
+        case '"':
+          if (attr)
+            os << "&quot;";
+          else
+            os.write( ec, utf8::encode( cp, ec ) );
+          break;
+        case '&':
+          os << "&amp;";
+          break;
+        default:
+          os.write( ec, utf8::encode( cp, ec ) );
+          break;
+      }
+    }
+  }
+  return os;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void toHexString(unsigned char ch, char result[])
+{
+  static const char hex[] =
+  { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+  if ((ch >> 4) > 0)
+  {
+    result[0] = hex[ch >> 4];
+    result[1]= hex[ch & 0xF];
+    result[2] = '\0';
+  }
+  else
+  {
+    result[0]= hex[ch & 0xF];
+    result[1] = '\0';
+  }
+}
+
+
 } // namespace xml
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
