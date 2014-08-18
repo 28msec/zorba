@@ -60,7 +60,11 @@ void XMLIterPrinter::start() {
   {
     os_ << indent << "<iterator-tree";
     if ( !descr_.empty() )
-      os_ << " description=\"" << descr_ << '"';
+    {
+      zstring escDescription;
+      zorba::xml::escape(descr_, &escDescription);
+      os_ << " description=\"" << escDescription << '"';
+    }
     os_ << ">\n" << inc_indent;
   }
 }
@@ -75,6 +79,7 @@ void XMLIterPrinter::stop() {
 void XMLIterPrinter::startBeginVisit( char const *name, int ) {
   if ( theOpenStart )
     os_ << ">\n";
+  assert( zorba::xml::is_NCName(zstring(name)) );
   os_ << indent << '<' << name << inc_indent;
   theNameStack.push( name );
   theOpenStart = true;
@@ -85,15 +90,22 @@ void XMLIterPrinter::endBeginVisit( int ) {
 
 void XMLIterPrinter::addBoolAttribute( char const *name, bool value ) {
   assert( theOpenStart );
+  assert(zorba::xml::is_NCName(zstring(name)));
   os_ << ' ' << name << "=\"" << (value ? "true" : "false") << "\"";
 }
 
 void XMLIterPrinter::addAttribute( char const *name, char const *value ) {
   assert( theOpenStart );
-  os_ << ' ' << name << "=\"" << value << "\"";
+  assert( zorba::xml::is_NCName(zstring(name)) );
+  zstring escValue;
+  zorba::xml::escape(zstring(value), &escValue);
+  os_ << ' ' << name << "=\"" << escValue << "\"";
 }
 
 void XMLIterPrinter::addRawStructure( char const *name, char const *value ) {
+
+  assert( zorba::xml::is_NCName(zstring(name)) );
+
   if ( theOpenStart )
     os_ << ">\n";
 
@@ -112,16 +124,19 @@ void XMLIterPrinter::addRawStructure( char const *name, char const *value ) {
 
 void XMLIterPrinter::addIntAttribute( char const *name, xs_long value ) {
   assert( theOpenStart );
+  assert( zorba::xml::is_NCName(zstring(name)) );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
 
 void XMLIterPrinter::addIntAttribute( char const *name, xs_integer value ) {
   assert( theOpenStart );
+  assert (zorba::xml::is_NCName(zstring(name)) );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
 
 void XMLIterPrinter::addDecAttribute( char const *name, double value ) {
   assert( theOpenStart );
+  assert( zorba::xml::is_NCName(zstring(name)) );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
 
