@@ -329,8 +329,9 @@ public:
           lInnerHash = id_hash(lVector->getItem(i));
         else
           lInnerHash = deep_hash(lVector->getItem(i));
+
+        lHash = hashfun::h32(&lInnerHash, sizeof(lInnerHash), lHash);
       }
-      lHash = hashfun::h32(&lInnerHash, sizeof(lInnerHash), lHash);
     }
     return lHash;
   }
