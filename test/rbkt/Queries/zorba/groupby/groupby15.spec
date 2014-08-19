@@ -1,7 +1,7 @@
 Args: 
--e
+-x
 sales-records:=$RBKT_SRC_DIR/Queries/zorba/groupby/sales-records.xml 
--e
+-x
 stores:=$RBKT_SRC_DIR/Queries/zorba/groupby/stores.xml 
--e
+-x
 products:=$RBKT_SRC_DIR/Queries/zorba/groupby/products.xml

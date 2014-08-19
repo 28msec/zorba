@@ -350,7 +350,7 @@ public:
             zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);
             trim(*it);
             std::string lArg = *it;
-            if ( (lArg == "-e") ||
+            if ( (lArg == "-x") ||
               (lArg == "--stop-words") || (lArg == "--thesaurus") )
             {
               // Argument binding and stop-words/thesaurus URI binding are
@@ -374,7 +374,7 @@ public:
                 setVarName(it->begin(), it->begin()+it->find(":="));
               }
               setVarValue(it->begin()+it->find("=")+1, it->end());
-              if (lArg == "-e") {
+              if (lArg == "-x") {
                 addVariable();
               }
 #ifndef ZORBA_NO_FULL_TEXT

@@ -1,3 +1,3 @@
 Args:
--e
+-x
 rbktPath:=$RBKT_SRC_DIR

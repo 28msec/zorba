@@ -1,4 +1,4 @@
 Error: http://jsound.io/errors:ILLEGAL_FACET_VALUE
 Args:
--e
+-x
 rbktPath:=$RBKT_SRC_DIR
