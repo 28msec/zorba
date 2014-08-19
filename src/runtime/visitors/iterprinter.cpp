@@ -93,7 +93,6 @@ void XMLIterPrinter::addBoolAttribute( char const *name, bool value ) {
 void XMLIterPrinter::addAttribute( char const *name, char const *value ) {
   assert( theOpenStart );
   assert( zorba::xml::is_NCName(zstring(name)) );
-  std::cerr << "adding: " << value;
   os_ << ' ' << name << "=\"" << zorba::xml::serialize(value, true) << "\"";
 }
 
