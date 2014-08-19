@@ -59,9 +59,7 @@
         </EnclosedIterator>
       </ElementIterator>
     </TupleStreamIterator>
-    <SingletonIterator value="xs:string(
-
-)"/>
+    <SingletonIterator value="xs:string(&#xA;&#xA;)"/>
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,res)"/>
       <EnclosedIterator attr_cont="false">

@@ -47,3 +47,50 @@
     </FLWORIterator>
   </SequentialIterator>
 </iterator-tree>
+<iterator-tree description="main query">
+  <FnConcatIterator/>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="xxx-func-name"/>
+    <TreatIterator type="xs:QName" quant="">
+      <CtxVarIterator varid="4" varname="xxx-func-name" varkind="global"/>
+    </TreatIterator>
+    <CtxVarDeclareIterator varid="5" varname="arg0"/>
+    <FLWORIterator>
+      <ForVariable name="temp_invoke_var1">
+        <CtxVarIterator varid="4" varname="xxx-func-name" varkind="global"/>
+      </ForVariable>
+      <ReturnClause>
+        <EvalIterator>
+          <ConcatStrIterator>
+            <SingletonIterator value="xs:string(Q{)"/>
+            <FnStringIterator>
+              <NamespaceUriFromQNameIterator>
+                <ForVarIterator varname="temp_invoke_var1"/>
+              </NamespaceUriFromQNameIterator>
+            </FnStringIterator>
+            <SingletonIterator value="xs:string(})"/>
+            <FnStringIterator>
+              <LocalNameFromQNameIterator>
+                <ForVarIterator varname="temp_invoke_var1"/>
+              </LocalNameFromQNameIterator>
+            </FnStringIterator>
+            <SingletonIterator value="xs:string(($temp_invoke_var2))"/>
+          </ConcatStrIterator>
+          <ForVarIterator varname="temp_invoke_var1"/>
+          <CtxVarIterator varid="5" varname="arg0" varkind="global"/>
+        </EvalIterator>
+      </ReturnClause>
+    </FLWORIterator>
+  </SequentialIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <FnParseXmlIterator>
+    <PromoteIterator type="xs:string">
+      <FnDataIterator>
+        <CtxVarIterator varid="7" varname="temp_invoke_var2" varkind="global"/>
+      </FnDataIterator>
+    </PromoteIterator>
+  </FnParseXmlIterator>
+</iterator-tree>

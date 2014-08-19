@@ -90,7 +90,7 @@
           <ConcatStrIterator>
             <SingletonIterator value="xs:string(xmlns:)"/>
             <ForVarIterator varname="prefixE"/>
-            <SingletonIterator value="xs:string(=")"/>
+            <SingletonIterator value="xs:string(=&quot;)"/>
           </ConcatStrIterator>
         </HoistIterator>
       </ForVariable>
@@ -128,7 +128,7 @@
       <ReturnClause>
         <FnConcatIterator>
           <SingletonIterator value="xs:string( )"/>
-          <ElementIterator>
+          <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,span)"/>
             <AttributeIterator qname="xs:QName(,,class)">
               <SingletonIterator value="xs:string(ns)"/>
@@ -138,7 +138,7 @@
                 <UnhoistIterator>
                   <ForVarIterator varname="$$opt_temp_3"/>
                 </UnhoistIterator>
-                <ElementIterator>
+                <ElementIterator copyInputNodes="false">
                   <SingletonIterator value="xs:QName(,,span)"/>
                   <AttributeIterator qname="xs:QName(,,class)">
                     <SingletonIterator value="xs:string(nsUri)"/>
@@ -149,7 +149,7 @@
                     </UnhoistIterator>
                   </EnclosedIterator>
                 </ElementIterator>
-                <SingletonIterator value="xs:string(")"/>
+                <SingletonIterator value="xs:string(&quot;)"/>
               </FnConcatIterator>
             </EnclosedIterator>
           </ElementIterator>

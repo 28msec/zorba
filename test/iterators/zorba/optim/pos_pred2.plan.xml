@@ -33,9 +33,7 @@
           </EnclosedIterator>
         </ElementIterator>
       </TupleStreamIterator>
-      <SingletonIterator value="xs:string(
-,
-)"/>
+      <SingletonIterator value="xs:string(&#xA;,&#xA;)"/>
       <TupleStreamIterator>
         <OuterForIterator varname="x">
           <TupleSourceIterator/>

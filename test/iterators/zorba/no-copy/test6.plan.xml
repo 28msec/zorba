@@ -32,9 +32,7 @@
           </ElementIterator>
         </ChildAxisIterator>
       </FnDataIterator>
-      <SingletonIterator value="xs:string(
-
-)"/>
+      <SingletonIterator value="xs:string(&#xA;&#xA;)"/>
       <FnDataIterator>
         <ElementIterator copyInputNodes="false">
           <SingletonIterator value="xs:QName(,,root)"/>
