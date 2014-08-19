@@ -1,0 +1,220 @@
+<iterator-tree>
+  <FnConcatIterator prof-calls="1" prof-next-calls="15" prof-cpu="1.46202" prof-wall="1.45948" prof-name="op:concatenate">
+    <UDFunctionCallIterator function="local:test-01-cache" cached-across-snapshots="true" prof-calls="1" prof-next-calls="2" prof-cpu="1.09223" prof-wall="1.09079" prof-name="local:test-01-cache" prof-cache-hits="0" prof-cache-misses="1">
+      <SingletonIterator value="xs:integer(2)" prof-calls="1" prof-next-calls="2" prof-cpu="0.002277" prof-wall="0.001383" prof-name="SingletonIterator"/>
+      <FLWORIterator prof-calls="1" prof-next-calls="2" prof-cpu="0.2974" prof-wall="0.296192" prof-name="FLWORIterator">
+        <ForVariable name="x">
+          <LetVarIterator varname="x" prof-calls="1" prof-next-calls="2" prof-cpu="0.013" prof-wall="0.012054" prof-name="LetVarIterator ($x)"/>
+        </ForVariable>
+        <ReturnClause prof-calls="1" prof-next-calls="2" prof-cpu="0.19418" prof-wall="0.193716" prof-name="IfThenElseIterator">
+          <IfThenElseIterator prof-calls="1" prof-next-calls="2" prof-cpu="0.19418" prof-wall="0.193716" prof-name="IfThenElseIterator">
+            <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="2" prof-cpu="0.164543" prof-wall="0.162958" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="2" prof-cpu="0.00139" prof-wall="0.000705" prof-name="ForVarIterator ($x)"/>
+              <SingletonIterator value="xs:integer(10)" prof-calls="1" prof-next-calls="2" prof-cpu="0.000991" prof-wall="0.00037" prof-name="SingletonIterator"/>
+            </TypedValueCompareIterator_INTEGER>
+            <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="2" prof-cpu="0.011181" prof-wall="0.010393" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="1" prof-cpu="0.000776" prof-wall="0.00036" prof-name="ForVarIterator ($x)"/>
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="1" prof-cpu="0.000612" prof-wall="0.000194" prof-name="ForVarIterator ($x)"/>
+            </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+            <IfThenElseIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.007225" prof-wall="0.007025" prof-name="IfThenElseIterator">
+              <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.00197" prof-wall="0.001759" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000356" prof-wall="0.00014" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:integer(20)" prof-calls="1" prof-next-calls="0" prof-cpu="0.000368" prof-wall="0.000153" prof-name="SingletonIterator"/>
+              </TypedValueCompareIterator_INTEGER>
+              <FnConcatIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.000857" prof-wall="0.000651" prof-name="op:concatenate"/>
+              <FnConcatIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.003325" prof-wall="0.003121" prof-name="op:concatenate">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000347" prof-wall="0.000133" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:string( == )" prof-calls="1" prof-next-calls="0" prof-cpu="0.000339" prof-wall="0.000123" prof-name="SingletonIterator"/>
+                <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001489" prof-wall="0.00128" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.00034" prof-wall="0.000139" prof-name="ForVarIterator ($x)"/>
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000323" prof-wall="0.000117" prof-name="ForVarIterator ($x)"/>
+                </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+              </FnConcatIterator>
+            </IfThenElseIterator>
+          </IfThenElseIterator>
+        </ReturnClause>
+      </FLWORIterator>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:string(&#xA;)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001313" prof-wall="0.000676" prof-name="SingletonIterator"/>
+    <UDFunctionCallIterator function="local:test-01-cache" cached-across-snapshots="true" prof-calls="1" prof-next-calls="1" prof-cpu="0.089264" prof-wall="0.087662" prof-name="local:test-01-cache" prof-cache-hits="0" prof-cache-misses="1">
+      <SingletonIterator value="xs:integer(12)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001278" prof-wall="0.000528" prof-name="SingletonIterator"/>
+      <FLWORIterator prof-calls="1" prof-next-calls="1" prof-cpu="0.039613" prof-wall="0.038702" prof-name="FLWORIterator">
+        <ForVariable name="x">
+          <LetVarIterator varname="x" prof-calls="1" prof-next-calls="2" prof-cpu="0.004888" prof-wall="0.004155" prof-name="LetVarIterator ($x)"/>
+        </ForVariable>
+        <ReturnClause prof-calls="1" prof-next-calls="1" prof-cpu="0.02221" prof-wall="0.021816" prof-name="IfThenElseIterator">
+          <IfThenElseIterator prof-calls="1" prof-next-calls="1" prof-cpu="0.02221" prof-wall="0.021816" prof-name="IfThenElseIterator">
+            <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="2" prof-cpu="0.006443" prof-wall="0.005826" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="2" prof-cpu="0.001078" prof-wall="0.000447" prof-name="ForVarIterator ($x)"/>
+              <SingletonIterator value="xs:integer(10)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001005" prof-wall="0.000391" prof-name="SingletonIterator"/>
+            </TypedValueCompareIterator_INTEGER>
+            <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001591" prof-wall="0.001389" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000377" prof-wall="0.000169" prof-name="ForVarIterator ($x)"/>
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.00034" prof-wall="0.000131" prof-name="ForVarIterator ($x)"/>
+            </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+            <IfThenElseIterator prof-calls="1" prof-next-calls="1" prof-cpu="0.01128" prof-wall="0.01088" prof-name="IfThenElseIterator">
+              <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="2" prof-cpu="0.004654" prof-wall="0.004035" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="2" prof-cpu="0.00096" prof-wall="0.00033" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:integer(20)" prof-calls="1" prof-next-calls="2" prof-cpu="0.000954" prof-wall="0.000332" prof-name="SingletonIterator"/>
+              </TypedValueCompareIterator_INTEGER>
+              <FnConcatIterator prof-calls="1" prof-next-calls="1" prof-cpu="0.001242" prof-wall="0.000827" prof-name="op:concatenate"/>
+              <FnConcatIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.003281" prof-wall="0.003077" prof-name="op:concatenate">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000336" prof-wall="0.000131" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:string( == )" prof-calls="1" prof-next-calls="0" prof-cpu="0.000339" prof-wall="0.000135" prof-name="SingletonIterator"/>
+                <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001443" prof-wall="0.001238" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000325" prof-wall="0.00012" prof-name="ForVarIterator ($x)"/>
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.00034" prof-wall="0.000139" prof-name="ForVarIterator ($x)"/>
+                </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+              </FnConcatIterator>
+            </IfThenElseIterator>
+          </IfThenElseIterator>
+        </ReturnClause>
+      </FLWORIterator>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:string(&#xA;)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001066" prof-wall="0.000429" prof-name="SingletonIterator"/>
+    <UDFunctionCallIterator function="local:test-01-cache" cached-across-snapshots="true" prof-calls="1" prof-next-calls="2" prof-cpu="0.076012" prof-wall="0.074031" prof-name="local:test-01-cache" prof-cache-hits="1" prof-cache-misses="0">
+      <SingletonIterator value="xs:integer(2)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001396" prof-wall="0.000722" prof-name="SingletonIterator"/>
+      <FLWORIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.037561" prof-wall="0.037014" prof-name="FLWORIterator">
+        <ForVariable name="x">
+          <LetVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.001371" prof-wall="0.001095" prof-name="LetVarIterator ($x)"/>
+        </ForVariable>
+        <ReturnClause prof-calls="1" prof-next-calls="0" prof-cpu="0.025938" prof-wall="0.025753" prof-name="IfThenElseIterator">
+          <IfThenElseIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.025938" prof-wall="0.025753" prof-name="IfThenElseIterator">
+            <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.002111" prof-wall="0.001905" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000412" prof-wall="0.000202" prof-name="ForVarIterator ($x)"/>
+              <SingletonIterator value="xs:integer(10)" prof-calls="1" prof-next-calls="0" prof-cpu="0.00036" prof-wall="0.000155" prof-name="SingletonIterator"/>
+            </TypedValueCompareIterator_INTEGER>
+            <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001617" prof-wall="0.001411" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.00038" prof-wall="0.000172" prof-name="ForVarIterator ($x)"/>
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000332" prof-wall="0.00012" prof-name="ForVarIterator ($x)"/>
+            </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+            <IfThenElseIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.021164" prof-wall="0.020979" prof-name="IfThenElseIterator">
+              <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001547" prof-wall="0.001339" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000353" prof-wall="0.000142" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:integer(20)" prof-calls="1" prof-next-calls="0" prof-cpu="0.000328" prof-wall="0.000122" prof-name="SingletonIterator"/>
+              </TypedValueCompareIterator_INTEGER>
+              <FnConcatIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.000622" prof-wall="0.000415" prof-name="op:concatenate"/>
+              <FnConcatIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.005216" prof-wall="0.004795" prof-name="op:concatenate">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000569" prof-wall="0.000337" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:string( == )" prof-calls="1" prof-next-calls="0" prof-cpu="0.000473" prof-wall="0.000263" prof-name="SingletonIterator"/>
+                <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001579" prof-wall="0.00137" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000339" prof-wall="0.000135" prof-name="ForVarIterator ($x)"/>
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000327" prof-wall="0.000121" prof-name="ForVarIterator ($x)"/>
+                </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+              </FnConcatIterator>
+            </IfThenElseIterator>
+          </IfThenElseIterator>
+        </ReturnClause>
+      </FLWORIterator>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:string(&#xA;)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001086" prof-wall="0.000451" prof-name="SingletonIterator"/>
+    <UDFunctionCallIterator function="local:test-01-cache" cached-across-snapshots="true" prof-calls="1" prof-next-calls="1" prof-cpu="0.045488" prof-wall="0.043831" prof-name="local:test-01-cache" prof-cache-hits="1" prof-cache-misses="0">
+      <SingletonIterator value="xs:integer(12)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001282" prof-wall="0.000556" prof-name="SingletonIterator"/>
+      <FLWORIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.020181" prof-wall="0.019681" prof-name="FLWORIterator">
+        <ForVariable name="x">
+          <LetVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.001941" prof-wall="0.001659" prof-name="LetVarIterator ($x)"/>
+        </ForVariable>
+        <ReturnClause prof-calls="1" prof-next-calls="0" prof-cpu="0.011392" prof-wall="0.011199" prof-name="IfThenElseIterator">
+          <IfThenElseIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.011392" prof-wall="0.011199" prof-name="IfThenElseIterator">
+            <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.002272" prof-wall="0.002065" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000411" prof-wall="0.0002" prof-name="ForVarIterator ($x)"/>
+              <SingletonIterator value="xs:integer(10)" prof-calls="1" prof-next-calls="0" prof-cpu="0.000349" prof-wall="0.000134" prof-name="SingletonIterator"/>
+            </TypedValueCompareIterator_INTEGER>
+            <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001663" prof-wall="0.001459" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000362" prof-wall="0.000156" prof-name="ForVarIterator ($x)"/>
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000361" prof-wall="0.000151" prof-name="ForVarIterator ($x)"/>
+            </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+            <IfThenElseIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.006391" prof-wall="0.006189" prof-name="IfThenElseIterator">
+              <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001554" prof-wall="0.001346" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000358" prof-wall="0.000142" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:integer(20)" prof-calls="1" prof-next-calls="0" prof-cpu="0.000354" prof-wall="0.000144" prof-name="SingletonIterator"/>
+              </TypedValueCompareIterator_INTEGER>
+              <FnConcatIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.000582" prof-wall="0.000375" prof-name="op:concatenate"/>
+              <FnConcatIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.003323" prof-wall="0.003115" prof-name="op:concatenate">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000341" prof-wall="0.000128" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:string( == )" prof-calls="1" prof-next-calls="0" prof-cpu="0.000325" prof-wall="0.000112" prof-name="SingletonIterator"/>
+                <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.00151" prof-wall="0.001299" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000377" prof-wall="0.000173" prof-name="ForVarIterator ($x)"/>
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000317" prof-wall="0.000113" prof-name="ForVarIterator ($x)"/>
+                </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+              </FnConcatIterator>
+            </IfThenElseIterator>
+          </IfThenElseIterator>
+        </ReturnClause>
+      </FLWORIterator>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:string(&#xA;)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001057" prof-wall="0.000428" prof-name="SingletonIterator"/>
+    <UDFunctionCallIterator function="local:test-01-cache" cached-across-snapshots="true" prof-calls="1" prof-next-calls="4" prof-cpu="0.08431" prof-wall="0.081975" prof-name="local:test-01-cache" prof-cache-hits="0" prof-cache-misses="1">
+      <SingletonIterator value="xs:integer(22)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001228" prof-wall="0.000542" prof-name="SingletonIterator"/>
+      <FLWORIterator prof-calls="1" prof-next-calls="4" prof-cpu="0.047434" prof-wall="0.045964" prof-name="FLWORIterator">
+        <ForVariable name="x">
+          <LetVarIterator varname="x" prof-calls="1" prof-next-calls="2" prof-cpu="0.005" prof-wall="0.004265" prof-name="LetVarIterator ($x)"/>
+        </ForVariable>
+        <ReturnClause prof-calls="1" prof-next-calls="4" prof-cpu="0.031833" prof-wall="0.030825" prof-name="IfThenElseIterator">
+          <IfThenElseIterator prof-calls="1" prof-next-calls="4" prof-cpu="0.031833" prof-wall="0.030825" prof-name="IfThenElseIterator">
+            <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="2" prof-cpu="0.006069" prof-wall="0.005451" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="2" prof-cpu="0.000999" prof-wall="0.000368" prof-name="ForVarIterator ($x)"/>
+              <SingletonIterator value="xs:integer(10)" prof-calls="1" prof-next-calls="2" prof-cpu="0.00098" prof-wall="0.00035" prof-name="SingletonIterator"/>
+            </TypedValueCompareIterator_INTEGER>
+            <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001563" prof-wall="0.001361" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000368" prof-wall="0.000159" prof-name="ForVarIterator ($x)"/>
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000339" prof-wall="0.000134" prof-name="ForVarIterator ($x)"/>
+            </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+            <IfThenElseIterator prof-calls="1" prof-next-calls="4" prof-cpu="0.019807" prof-wall="0.018799" prof-name="IfThenElseIterator">
+              <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="2" prof-cpu="0.004471" prof-wall="0.003856" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="2" prof-cpu="0.000946" prof-wall="0.000316" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:integer(20)" prof-calls="1" prof-next-calls="2" prof-cpu="0.00093" prof-wall="0.000303" prof-name="SingletonIterator"/>
+              </TypedValueCompareIterator_INTEGER>
+              <FnConcatIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.00056" prof-wall="0.000358" prof-name="op:concatenate"/>
+              <FnConcatIterator prof-calls="1" prof-next-calls="4" prof-cpu="0.011216" prof-wall="0.010201" prof-name="op:concatenate">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="2" prof-cpu="0.000957" prof-wall="0.000332" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:string( == )" prof-calls="1" prof-next-calls="2" prof-cpu="0.000922" prof-wall="0.000301" prof-name="SingletonIterator"/>
+                <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="2" prof-cpu="0.005289" prof-wall="0.00462" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="1" prof-cpu="0.000708" prof-wall="0.000298" prof-name="ForVarIterator ($x)"/>
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="1" prof-cpu="0.000597" prof-wall="0.000191" prof-name="ForVarIterator ($x)"/>
+                </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+              </FnConcatIterator>
+            </IfThenElseIterator>
+          </IfThenElseIterator>
+        </ReturnClause>
+      </FLWORIterator>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:string(&#xA;)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001158" prof-wall="0.000525" prof-name="SingletonIterator"/>
+    <UDFunctionCallIterator function="local:test-01-cache" cached-across-snapshots="true" prof-calls="1" prof-next-calls="4" prof-cpu="0.045537" prof-wall="0.043194" prof-name="local:test-01-cache" prof-cache-hits="1" prof-cache-misses="0">
+      <SingletonIterator value="xs:integer(22)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001111" prof-wall="0.000433" prof-name="SingletonIterator"/>
+      <FLWORIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.019573" prof-wall="0.019007" prof-name="FLWORIterator">
+        <ForVariable name="x">
+          <LetVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.001517" prof-wall="0.001227" prof-name="LetVarIterator ($x)"/>
+        </ForVariable>
+        <ReturnClause prof-calls="1" prof-next-calls="0" prof-cpu="0.011151" prof-wall="0.010955" prof-name="IfThenElseIterator">
+          <IfThenElseIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.011151" prof-wall="0.010955" prof-name="IfThenElseIterator">
+            <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.002073" prof-wall="0.001859" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000385" prof-wall="0.000169" prof-name="ForVarIterator ($x)"/>
+              <SingletonIterator value="xs:integer(10)" prof-calls="1" prof-next-calls="0" prof-cpu="0.000354" prof-wall="0.000139" prof-name="SingletonIterator"/>
+            </TypedValueCompareIterator_INTEGER>
+            <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001606" prof-wall="0.001398" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000346" prof-wall="0.000135" prof-name="ForVarIterator ($x)"/>
+              <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000334" prof-wall="0.000125" prof-name="ForVarIterator ($x)"/>
+            </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+            <IfThenElseIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.006442" prof-wall="0.006242" prof-name="IfThenElseIterator">
+              <TypedValueCompareIterator_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001559" prof-wall="0.001348" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000359" prof-wall="0.000141" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:integer(20)" prof-calls="1" prof-next-calls="0" prof-cpu="0.000334" prof-wall="0.000122" prof-name="SingletonIterator"/>
+              </TypedValueCompareIterator_INTEGER>
+              <FnConcatIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.000599" prof-wall="0.000394" prof-name="op:concatenate"/>
+              <FnConcatIterator prof-calls="1" prof-next-calls="0" prof-cpu="0.003328" prof-wall="0.003114" prof-name="op:concatenate">
+                <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000357" prof-wall="0.00014" prof-name="ForVarIterator ($x)"/>
+                <SingletonIterator value="xs:string( == )" prof-calls="1" prof-next-calls="0" prof-cpu="0.000335" prof-wall="0.00012" prof-name="SingletonIterator"/>
+                <SpecificNumArithIterator_MultiplyOperation_INTEGER prof-calls="1" prof-next-calls="0" prof-cpu="0.001479" prof-wall="0.001267" prof-name="SpecificNumArithIterator&lt;MultiplyOperation,store::XS_INTEGER&gt;">
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.00037" prof-wall="0.000164" prof-name="ForVarIterator ($x)"/>
+                  <ForVarIterator varname="x" prof-calls="1" prof-next-calls="0" prof-cpu="0.000324" prof-wall="0.000119" prof-name="ForVarIterator ($x)"/>
+                </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+              </FnConcatIterator>
+            </IfThenElseIterator>
+          </IfThenElseIterator>
+        </ReturnClause>
+      </FLWORIterator>
+    </UDFunctionCallIterator>
+    <SingletonIterator value="xs:string(&#xA;)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001063" prof-wall="0.000434" prof-name="SingletonIterator"/>
+  </FnConcatIterator>
+</iterator-tree>

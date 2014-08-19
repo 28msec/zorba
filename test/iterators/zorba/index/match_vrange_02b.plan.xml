@@ -1,0 +1,299 @@
+<iterator-tree description="doc indexer">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <SubstringAfterIterator>
+          <PromoteIterator type="xs:string">
+            <FnDataIterator>
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,base-uri)" typename="*" nill-allowed="false">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,doc)" typename="*" nill-allowed="false">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </AttributeAxisIterator>
+            </FnDataIterator>
+          </PromoteIterator>
+          <SingletonIterator value="xs:string(www.foo.com/)"/>
+        </SubstringAfterIterator>
+        <FnStringIterator>
+          <TreatIterator quant="?">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,date-time)" typename="*" nill-allowed="false">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-metadata)" typename="*" nill-allowed="false">
+                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-content)" typename="*" nill-allowed="false">
+                  <ForVarIterator varname="$$context-item"/>
+                </DescendantAxisIterator>
+              </ChildAxisIterator>
+            </AttributeAxisIterator>
+          </TreatIterator>
+        </FnStringIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="index">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <ZorbaCollectionIterator>
+        <SingletonIterator value="xs:QName(www.data.com,data,documents)"/>
+      </ZorbaCollectionIterator>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <SubstringAfterIterator>
+          <PromoteIterator type="xs:string">
+            <FnDataIterator>
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,base-uri)" typename="*" nill-allowed="false">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,doc)" typename="*" nill-allowed="false">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </AttributeAxisIterator>
+            </FnDataIterator>
+          </PromoteIterator>
+          <SingletonIterator value="xs:string(www.foo.com/)"/>
+        </SubstringAfterIterator>
+        <FnStringIterator>
+          <TreatIterator quant="?">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,date-time)" typename="*" nill-allowed="false">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-metadata)" typename="*" nill-allowed="false">
+                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-content)" typename="*" nill-allowed="false">
+                  <ForVarIterator varname="$$context-item"/>
+                </DescendantAxisIterator>
+              </ChildAxisIterator>
+            </AttributeAxisIterator>
+          </TreatIterator>
+        </FnStringIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="data:documents">
+      <SingletonIterator value="xs:QName(www.data.com,data,documents)"/>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="5" varname="data:idx">
+      <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="6" varname="doc11">
+      <DocumentIterator>
+        <EnclosedIterator attr_cont="false">
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,doc)"/>
+            <AttributeIterator qname="xs:QName(,,base-uri)">
+              <SingletonIterator value="xs:string(www.foo.com/folder1)"/>
+            </AttributeIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,sports-content)"/>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,sports-metadata)"/>
+                <AttributeIterator qname="xs:QName(,,date-time)">
+                  <SingletonIterator value="xs:string(2012-12-31)"/>
+                </AttributeIterator>
+              </ElementIterator>
+            </ElementIterator>
+          </ElementIterator>
+        </EnclosedIterator>
+      </DocumentIterator>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="7" varname="doc12">
+      <DocumentIterator>
+        <EnclosedIterator attr_cont="false">
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,doc)"/>
+            <AttributeIterator qname="xs:QName(,,base-uri)">
+              <SingletonIterator value="xs:string(www.foo.com/folder1)"/>
+            </AttributeIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,sports-content)"/>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,sports-metadata)"/>
+                <AttributeIterator qname="xs:QName(,,date-time)">
+                  <SingletonIterator value="xs:string(2013-01-01)"/>
+                </AttributeIterator>
+              </ElementIterator>
+            </ElementIterator>
+          </ElementIterator>
+        </EnclosedIterator>
+      </DocumentIterator>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="8" varname="doc21">
+      <DocumentIterator>
+        <EnclosedIterator attr_cont="false">
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,doc)"/>
+            <AttributeIterator qname="xs:QName(,,base-uri)">
+              <SingletonIterator value="xs:string(www.foo.com/folder2)"/>
+            </AttributeIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,sports-content)"/>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,sports-metadata)"/>
+                <AttributeIterator qname="xs:QName(,,date-time)">
+                  <SingletonIterator value="xs:string(2012-12-31)"/>
+                </AttributeIterator>
+              </ElementIterator>
+            </ElementIterator>
+          </ElementIterator>
+        </EnclosedIterator>
+      </DocumentIterator>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="9" varname="doc31">
+      <DocumentIterator>
+        <EnclosedIterator attr_cont="false">
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,doc)"/>
+            <AttributeIterator qname="xs:QName(,,base-uri)">
+              <SingletonIterator value="xs:string(www.foo.com/folder3)"/>
+            </AttributeIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,sports-content)"/>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,sports-metadata)"/>
+                <AttributeIterator qname="xs:QName(,,date-time)">
+                  <SingletonIterator value="xs:string(2012-12-31)"/>
+                </AttributeIterator>
+              </ElementIterator>
+            </ElementIterator>
+          </ElementIterator>
+        </EnclosedIterator>
+      </DocumentIterator>
+    </CtxVarDeclareIterator>
+    <SequentialIterator>
+      <ApplyIterator>
+        <ZorbaCreateCollectionIterator>
+          <CtxVarIterator varid="4" varname="data:documents" varkind="global"/>
+        </ZorbaCreateCollectionIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <ZorbaInsertIterator need-to-copy="true">
+          <CtxVarIterator varid="4" varname="data:documents" varkind="global"/>
+          <FnConcatIterator>
+            <CtxVarIterator varid="6" varname="doc11" varkind="global"/>
+            <CtxVarIterator varid="9" varname="doc31" varkind="global"/>
+            <CtxVarIterator varid="8" varname="doc21" varkind="global"/>
+            <CtxVarIterator varid="7" varname="doc12" varkind="global"/>
+          </FnConcatIterator>
+        </ZorbaInsertIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <CreateIndexIterator>
+          <CtxVarIterator varid="5" varname="data:idx" varkind="global"/>
+        </CreateIndexIterator>
+      </ApplyIterator>
+      <FnConcatIterator>
+        <FLWORIterator>
+          <ForVariable name="d">
+            <ProbeIndexRangeValueIterator>
+              <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
+              <SingletonIterator value="xs:string(folder1)"/>
+              <FnConcatIterator/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <FnConcatIterator/>
+              <FnConcatIterator/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+            </ProbeIndexRangeValueIterator>
+          </ForVariable>
+          <ReturnClause>
+            <ForVarIterator varname="d"/>
+          </ReturnClause>
+        </FLWORIterator>
+        <SingletonIterator value="xs:string(&#xA;)"/>
+        <FLWORIterator>
+          <ForVariable name="d">
+            <ProbeIndexRangeValueIterator>
+              <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
+              <SingletonIterator value="xs:string(folder1)"/>
+              <SingletonIterator value="xs:string(folder3)"/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:string(2012-12-30)"/>
+              <FnConcatIterator/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+            </ProbeIndexRangeValueIterator>
+          </ForVariable>
+          <ReturnClause>
+            <ForVarIterator varname="d"/>
+          </ReturnClause>
+        </FLWORIterator>
+        <SingletonIterator value="xs:string(&#xA;)"/>
+        <FLWORIterator>
+          <ForVariable name="d">
+            <ProbeIndexRangeValueIterator>
+              <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
+              <SingletonIterator value="xs:string(folder1)"/>
+              <SingletonIterator value="xs:string(folder3)"/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:string(2012-12-30)"/>
+              <FnConcatIterator/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+            </ProbeIndexRangeValueIterator>
+          </ForVariable>
+          <ReturnClause>
+            <ForVarIterator varname="d"/>
+          </ReturnClause>
+        </FLWORIterator>
+        <SingletonIterator value="xs:string(&#xA;)"/>
+        <FLWORIterator>
+          <ForVariable name="d">
+            <ProbeIndexRangeValueIterator>
+              <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
+              <SingletonIterator value="xs:string(folder1)"/>
+              <SingletonIterator value="xs:string(folder3)"/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:string(2012-12-30)"/>
+              <FnConcatIterator/>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(false)"/>
+            </ProbeIndexRangeValueIterator>
+          </ForVariable>
+          <ForVariable name="key2">
+            <FnStringIterator>
+              <TreatIterator quant="?">
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,date-time)" typename="*" nill-allowed="false">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-metadata)" typename="*" nill-allowed="false">
+                    <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-content)" typename="*" nill-allowed="false">
+                      <ForVarIterator varname="d"/>
+                    </DescendantAxisIterator>
+                  </ChildAxisIterator>
+                </AttributeAxisIterator>
+              </TreatIterator>
+            </FnStringIterator>
+          </ForVariable>
+          <OrderBySpec>
+            <ForVarIterator varname="key2"/>
+          </OrderBySpec>
+          <ReturnClause>
+            <ForVarIterator varname="d"/>
+          </ReturnClause>
+        </FLWORIterator>
+        <SingletonIterator value="xs:string(&#xA;)"/>
+      </FnConcatIterator>
+    </SequentialIterator>
+  </SequentialIterator>
+</iterator-tree>

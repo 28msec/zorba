@@ -14,58 +14,114 @@ jsoniq version "1.0";
  : See the License for the specific language governing permissions and
  : limitations under the License.
 :)
+import module namespace jn = "http://jsoniq.org/functions";
+
 import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-declare variable $source-dir := "@CMAKE_SOURCE_DIR@";
-declare variable $binary-dir := "@CMAKE_BINARY_DIR@";
+declare namespace an = "http://zorba.io/annotations";
 
-declare variable $zorba-exe-path external;
-
-declare variable $testname external; 
- 
-declare variable $result-filepath external;
-
-variable $expected-filepath := $source-dir || "/test/iterators/" || $testname || ".plan";
-
-variable $query-filepath := $source-dir || "/test/rbkt/Queries/" || $testname || ".xq";
-
-variable $expected-filepath-normalized := file:path-to-native($expected-filepath);
-
-variable $result-filepath-normalized := file:path-to-native($result-filepath);
-
-variable $query-filepath-normalized := file:path-to-native($query-filepath);
-
-variable $zorba-exe-path-normalized := file:path-to-native($zorba-exe-path);
-
-
-if (file:exists($query-filepath-normalized))
-then
+declare %an:sequential function local:filter-xml($items as item()*, $replace-value-list as xs:string*, $remove-list as xs:string*) as item()*
 {
-  variable $query-options := (
-    "--iterator-tree", "xml",
-    "--no-tree-ids",
-    "--no-serializer",
-    $query-filepath-normalized
+  (
+    delete node $items//*/($$ | @*)[local-name($$) = $remove-list],
+    for $node in $items//*/($$ | @*)[local-name($$) = $replace-value-list]
+    return replace value of node $node with "REMOVED"
   );
+  $items
+};
 
-  variable $result-text as xs:string := file:read-text($result-filepath-normalized);
+declare %an:sequential function local:filter-json($items as item()*, $replace-value-list as xs:string*, $remove-list as xs:string*) as item()*
+{
+  for $item in $items
+  return
+  {
+    if ($item instance of object())
+    then
+    {
+      for $key in keys($item)
+      return 
+      {
+        if ($key = $remove-list)
+        then delete json $item($key);
+        else
+          if ($key = $replace-value-list)
+          then replace value of json $item($key) with "REMOVED";
+          else local:filter-json($item($key), $replace-value-list, $remove-list);
+      }
+    }
+    else
+    { 
+      if ($item instance of array())
+      then
+      { 
+        for $member in members($item)
+        return local:filter-json($member, $replace-value-list, $remove-list);
+      }
+      else ();      
+    }
+  };
+  $items
+};
 
-  variable $expected-text as xs:string := file:read-text($expected-filepath-normalized);
+declare %an:sequential function local:test-json($result-text as xs:string, $expected-text as xs:string) as xs:string
+{
+  variable $result as object() := 
+    try { jn:parse-json($result-text) } 
+    catch * { error(xs:QName("local:MALFORMED"), "The plan result file " || $result-filepath || " is malformed.") };
+  
+  variable $expected as object() :=
+    try { jn:parse-json($expected-text) }
+    catch * { error(xs:QName("local:MALFORMED"), "The plan expected result file " || $expected-filepath || " is malformed.") };
+    
+  local:compare(local:filter-json($result, $filter,()), local:filter-json($expected, $filter, ()))
+};
 
-  if ($result-text eq $expected-text) then
+declare %an:sequential function local:test-xml($result-text as xs:string, $expected-text as xs:string) as xs:string
+{
+  variable $result as element() := 
+    try { parse-xml("<root>" || $result-text || "</root>")/* } 
+    catch * { error(xs:QName("local:MALFORMED"), "The plan result file " || $result-filepath || " is malformed.") };
+  
+  variable $expected as element() :=
+    try { parse-xml("<root>" || $expected-text || "</root>")/* }
+    catch * { error(xs:QName("local:MALFORMED"), "The plan expected result file " || $expected-filepath || " is malformed.") };
+     
+  local:compare(local:filter-xml($result, $filter,()), local:filter-xml($expected, $filter, ()))
+};
+
+
+declare function local:compare($result as item, $expected as item) as xs:string
+{
+  if (deep-equal($result, $expected)) then
     "Passed!"
   else
     "Failed!\n" ||
-    "Generated iterator tree is not equal to the expected result!\n" ||
-    "Command to generate iterator tree: " || $zorba-exe-path-normalized || " " || fn:string-join($query-options," ") || "\n\n" ||
+    "Generated plan does not match to the expected result!\n" ||
+    "Command to generate plan: " || $command || "\n\n" ||
     "Actual Result File: " || $result-filepath || "\n" ||
     "Expected Result File: " || $expected-filepath || "\n\n" ||
     "Actual Result: \n\n" ||
-    $result-text || "\n\n" ||
+    serialize($result) || "\n\n" ||
     "Expected Result: \n\n" ||
-    $expected-text    
-}
-else
-  "Failed! Query file " || $query-filepath || " was not found. Test was not executed!"
+    serialize($expected)
+};
+
+declare variable $command external;
+
+declare variable $format external; 
+
+declare variable $expected-filepath external;
+ 
+declare variable $result-filepath external;
+
+declare variable $filter := ("prof-cpu", "prof-wall", "prof-next-calls", "prof-compilation-cpu", "prof-compilation-wall");
+
+variable $result-text as xs:string := file:read-text($result-filepath);
+variable $expected-text as xs:string := file:read-text($expected-filepath);
+
+switch ($format)
+ case "xml" return local:test-xml($result-text, $expected-text)
+ case "json" return local:test-json($result-text, $expected-text)
+ default return "Failed! Unsupported profile format: " || $format

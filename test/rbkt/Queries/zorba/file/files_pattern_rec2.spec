@@ -1,3 +1,3 @@
 Args: 
--x 
-path:=xs:string($RBKT_SRC_DIR/Queries/zorba/file/sample_files)
+-x
+path:=$RBKT_SRC_DIR/Queries/zorba/file/sample_files

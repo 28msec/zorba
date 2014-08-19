@@ -1,0 +1,96 @@
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="input-context"/>
+    <FLWORIterator>
+      <ForVariable name="folder">
+        <NodeSortIterator distinct="true" ascending="true">
+          <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,Folder)" typename="*" nill-allowed="false">
+            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+              <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
+            </TreatIterator>
+          </DescendantAxisIterator>
+        </NodeSortIterator>
+      </ForVariable>
+      <LetVariable name="$$opt_temp_0" materialize="true">
+        <HoistIterator>
+          <FnDataIterator>
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,FolderName)" typename="*" nill-allowed="false">
+              <ForVarIterator varname="folder"/>
+            </ChildAxisIterator>
+          </FnDataIterator>
+        </HoistIterator>
+      </LetVariable>
+      <ForVariable name="file">
+        <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill-allowed="false">
+          <ForVarIterator varname="folder"/>
+        </DescendantAxisIterator>
+      </ForVariable>
+      <ReturnClause>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,File)"/>
+          <AttributeIterator qname="xs:QName(,,folder)">
+            <EnclosedIterator attr_cont="true">
+              <UnhoistIterator>
+                <LetVarIterator varname="$$opt_temp_0"/>
+              </UnhoistIterator>
+            </EnclosedIterator>
+          </AttributeIterator>
+          <EnclosedIterator attr_cont="false">
+            <FnStringIterator>
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,FileName)" typename="*" nill-allowed="false" target_position="0">
+                <ForVarIterator varname="file"/>
+              </ChildAxisIterator>
+            </FnStringIterator>
+          </EnclosedIterator>
+        </ElementIterator>
+      </ReturnClause>
+    </FLWORIterator>
+  </SequentialIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <FnConcatIterator/>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="xxx-func-name"/>
+    <TreatIterator type="xs:QName" quant="">
+      <CtxVarIterator varid="4" varname="xxx-func-name" varkind="global"/>
+    </TreatIterator>
+    <CtxVarDeclareIterator varid="5" varname="arg0"/>
+    <FLWORIterator>
+      <ForVariable name="temp_invoke_var1">
+        <CtxVarIterator varid="4" varname="xxx-func-name" varkind="global"/>
+      </ForVariable>
+      <ReturnClause>
+        <EvalIterator>
+          <ConcatStrIterator>
+            <SingletonIterator value="xs:string(Q{)"/>
+            <FnStringIterator>
+              <NamespaceUriFromQNameIterator>
+                <ForVarIterator varname="temp_invoke_var1"/>
+              </NamespaceUriFromQNameIterator>
+            </FnStringIterator>
+            <SingletonIterator value="xs:string(})"/>
+            <FnStringIterator>
+              <LocalNameFromQNameIterator>
+                <ForVarIterator varname="temp_invoke_var1"/>
+              </LocalNameFromQNameIterator>
+            </FnStringIterator>
+            <SingletonIterator value="xs:string(($temp_invoke_var2))"/>
+          </ConcatStrIterator>
+          <ForVarIterator varname="temp_invoke_var1"/>
+          <CtxVarIterator varid="5" varname="arg0" varkind="global"/>
+        </EvalIterator>
+      </ReturnClause>
+    </FLWORIterator>
+  </SequentialIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <FnParseXmlIterator>
+    <PromoteIterator type="xs:string">
+      <FnDataIterator>
+        <CtxVarIterator varid="7" varname="temp_invoke_var2" varkind="global"/>
+      </FnDataIterator>
+    </PromoteIterator>
+  </FnParseXmlIterator>
+</iterator-tree>

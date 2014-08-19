@@ -1,4 +1,4 @@
 Serialization: indent=yes
 Args:
 -x
-rbktPath:=xs:string($RBKT_SRC_DIR)
+rbktPath:=$RBKT_SRC_DIR

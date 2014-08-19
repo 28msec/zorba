@@ -1,0 +1,595 @@
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="input-context1"/>
+    <CtxVarDeclareIterator varid="5" varname="input-context2"/>
+    <OrIterator>
+      <AndIterator>
+        <NodeAfterIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="0">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="0">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+        </NodeAfterIterator>
+        <NodeAfterIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="1">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="1">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+        </NodeAfterIterator>
+        <NodeAfterIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="2">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="2">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+        </NodeAfterIterator>
+      </AndIterator>
+      <AndIterator>
+        <NodeBeforeIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="0">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="0">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+        </NodeBeforeIterator>
+        <NodeBeforeIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="1">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="1">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+        </NodeBeforeIterator>
+        <NodeBeforeIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="2">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+          <TreatIterator quant="?">
+            <NodeDistinctIterator allow-atomics="false" check-only="false">
+              <FLWORIterator>
+                <ForVariable name="$$context-item">
+                  <NodeDistinctIterator allow-atomics="false" check-only="false">
+                    <FLWORIterator>
+                      <ForVariable name="$$context-item">
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <FLWORIterator>
+                            <ForVariable name="$$context-item">
+                              <NodeDistinctIterator allow-atomics="false" check-only="false">
+                                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                  <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                                </TreatIterator>
+                              </NodeDistinctIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill-allowed="false" target_position="0">
+                                <ForVarIterator varname="$$context-item"/>
+                              </ChildAxisIterator>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </NodeDistinctIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill-allowed="false" target_position="2">
+                          <ForVarIterator varname="$$context-item"/>
+                        </ChildAxisIterator>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </NodeDistinctIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill-allowed="false" target_position="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ReturnClause>
+              </FLWORIterator>
+            </NodeDistinctIterator>
+          </TreatIterator>
+        </NodeBeforeIterator>
+      </AndIterator>
+    </OrIterator>
+  </SequentialIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <FnConcatIterator/>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="xxx-func-name"/>
+    <TreatIterator type="xs:QName" quant="">
+      <CtxVarIterator varid="4" varname="xxx-func-name" varkind="global"/>
+    </TreatIterator>
+    <CtxVarDeclareIterator varid="5" varname="arg0"/>
+    <FLWORIterator>
+      <ForVariable name="temp_invoke_var1">
+        <CtxVarIterator varid="4" varname="xxx-func-name" varkind="global"/>
+      </ForVariable>
+      <ReturnClause>
+        <EvalIterator>
+          <ConcatStrIterator>
+            <SingletonIterator value="xs:string(Q{)"/>
+            <FnStringIterator>
+              <NamespaceUriFromQNameIterator>
+                <ForVarIterator varname="temp_invoke_var1"/>
+              </NamespaceUriFromQNameIterator>
+            </FnStringIterator>
+            <SingletonIterator value="xs:string(})"/>
+            <FnStringIterator>
+              <LocalNameFromQNameIterator>
+                <ForVarIterator varname="temp_invoke_var1"/>
+              </LocalNameFromQNameIterator>
+            </FnStringIterator>
+            <SingletonIterator value="xs:string(($temp_invoke_var2))"/>
+          </ConcatStrIterator>
+          <ForVarIterator varname="temp_invoke_var1"/>
+          <CtxVarIterator varid="5" varname="arg0" varkind="global"/>
+        </EvalIterator>
+      </ReturnClause>
+    </FLWORIterator>
+  </SequentialIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <FnParseXmlIterator>
+    <PromoteIterator type="xs:string">
+      <FnDataIterator>
+        <CtxVarIterator varid="7" varname="temp_invoke_var2" varkind="global"/>
+      </FnDataIterator>
+    </PromoteIterator>
+  </FnParseXmlIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="xxx-func-name"/>
+    <TreatIterator type="xs:QName" quant="">
+      <CtxVarIterator varid="4" varname="xxx-func-name" varkind="global"/>
+    </TreatIterator>
+    <CtxVarDeclareIterator varid="5" varname="arg0"/>
+    <FLWORIterator>
+      <ForVariable name="temp_invoke_var1">
+        <CtxVarIterator varid="4" varname="xxx-func-name" varkind="global"/>
+      </ForVariable>
+      <ReturnClause>
+        <EvalIterator>
+          <ConcatStrIterator>
+            <SingletonIterator value="xs:string(Q{)"/>
+            <FnStringIterator>
+              <NamespaceUriFromQNameIterator>
+                <ForVarIterator varname="temp_invoke_var1"/>
+              </NamespaceUriFromQNameIterator>
+            </FnStringIterator>
+            <SingletonIterator value="xs:string(})"/>
+            <FnStringIterator>
+              <LocalNameFromQNameIterator>
+                <ForVarIterator varname="temp_invoke_var1"/>
+              </LocalNameFromQNameIterator>
+            </FnStringIterator>
+            <SingletonIterator value="xs:string(($temp_invoke_var2))"/>
+          </ConcatStrIterator>
+          <ForVarIterator varname="temp_invoke_var1"/>
+          <CtxVarIterator varid="5" varname="arg0" varkind="global"/>
+        </EvalIterator>
+      </ReturnClause>
+    </FLWORIterator>
+  </SequentialIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <FnParseXmlIterator>
+    <PromoteIterator type="xs:string">
+      <FnDataIterator>
+        <CtxVarIterator varid="7" varname="temp_invoke_var2" varkind="global"/>
+      </FnDataIterator>
+    </PromoteIterator>
+  </FnParseXmlIterator>
+</iterator-tree>

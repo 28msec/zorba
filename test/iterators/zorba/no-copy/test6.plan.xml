@@ -1,0 +1,48 @@
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="doc">
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(http://www.zorba-xquery.org/simple,s,person)"/>
+        <FnConcatIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(http://www.zorba-xquery.org/simple,s,name)"/>
+            <TextIterator>
+              <SingletonIterator value="xs:string(foo)"/>
+            </TextIterator>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(http://www.zorba-xquery.org/simple,s,age)"/>
+            <TextIterator>
+              <SingletonIterator value="xs:string(25)"/>
+            </TextIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <FnConcatIterator>
+      <FnDataIterator>
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.zorba-xquery.org/simple,s,person)" typename="*" nill-allowed="false">
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,root)"/>
+            <EnclosedIterator attr_cont="false">
+              <ValidateIterator>
+                <CtxVarIterator varid="4" varname="doc" varkind="global"/>
+              </ValidateIterator>
+            </EnclosedIterator>
+          </ElementIterator>
+        </ChildAxisIterator>
+      </FnDataIterator>
+      <SingletonIterator value="xs:string(&#xA;&#xA;)"/>
+      <FnDataIterator>
+        <ElementIterator copyInputNodes="false">
+          <SingletonIterator value="xs:QName(,,root)"/>
+          <EnclosedIterator attr_cont="false">
+            <ValidateIterator>
+              <CtxVarIterator varid="4" varname="doc" varkind="global"/>
+            </ValidateIterator>
+          </EnclosedIterator>
+        </ElementIterator>
+      </FnDataIterator>
+    </FnConcatIterator>
+  </SequentialIterator>
+</iterator-tree>

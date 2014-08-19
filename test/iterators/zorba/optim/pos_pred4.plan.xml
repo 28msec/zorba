@@ -1,0 +1,73 @@
+<iterator-tree description="const-folded expr">
+  <SubsequenceIntIterator>
+    <FnConcatIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+      <SingletonIterator value="xs:integer(2)"/>
+      <SingletonIterator value="xs:integer(3)"/>
+      <SingletonIterator value="xs:integer(4)"/>
+      <SingletonIterator value="xs:integer(5)"/>
+      <SingletonIterator value="xs:integer(6)"/>
+      <SingletonIterator value="xs:integer(7)"/>
+      <SingletonIterator value="xs:integer(8)"/>
+      <SingletonIterator value="xs:integer(9)"/>
+      <SingletonIterator value="xs:integer(0)"/>
+    </FnConcatIterator>
+    <SingletonIterator value="xs:integer(4)"/>
+    <SingletonIterator value="xs:integer(1)"/>
+  </SubsequenceIntIterator>
+</iterator-tree>
+<iterator-tree description="const-folded expr">
+  <SingletonIterator value="xs:integer(4)"/>
+</iterator-tree>
+<iterator-tree description="const-folded expr">
+  <SingletonIterator value="xs:integer(1)"/>
+</iterator-tree>
+<iterator-tree description="main query">
+  <FnConcatIterator>
+    <TupleStreamIterator>
+      <WhereIterator>
+        <CountIterator>
+          <ForIterator>
+            <ForVariable name="x"/>
+            <TupleSourceIterator/>
+            <FnConcatIterator>
+              <SingletonIterator value="xs:integer(1)"/>
+              <SingletonIterator value="xs:integer(2)"/>
+              <SingletonIterator value="xs:integer(3)"/>
+              <SingletonIterator value="xs:integer(4)"/>
+              <SingletonIterator value="xs:integer(5)"/>
+              <SingletonIterator value="xs:integer(6)"/>
+              <SingletonIterator value="xs:integer(7)"/>
+              <SingletonIterator value="xs:integer(8)"/>
+              <SingletonIterator value="xs:integer(9)"/>
+              <SingletonIterator value="xs:integer(0)"/>
+            </FnConcatIterator>
+          </ForIterator>
+        </CountIterator>
+        <TypedValueCompareIterator_INTEGER>
+          <ForVarIterator varname="p"/>
+          <SingletonIterator value="xs:integer(4)"/>
+        </TypedValueCompareIterator_INTEGER>
+      </WhereIterator>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,res)"/>
+        <EnclosedIterator attr_cont="false">
+          <FnConcatIterator>
+            <ForVarIterator varname="x"/>
+            <ForVarIterator varname="c"/>
+          </FnConcatIterator>
+        </EnclosedIterator>
+      </ElementIterator>
+    </TupleStreamIterator>
+    <SingletonIterator value="xs:string(&#xA;&#xA;)"/>
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,res)"/>
+      <EnclosedIterator attr_cont="false">
+        <FnConcatIterator>
+          <SingletonIterator value="xs:integer(4)"/>
+          <SingletonIterator value="xs:integer(1)"/>
+        </FnConcatIterator>
+      </EnclosedIterator>
+    </ElementIterator>
+  </FnConcatIterator>
+</iterator-tree>

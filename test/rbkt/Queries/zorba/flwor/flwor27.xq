@@ -5,12 +5,14 @@ import module namespace fetch = "http://zorba.io/modules/fetch";
 declare namespace an = "http://zorba.io/annotations";
 declare namespace ext = "http://zorba.io/extensions";
 
+declare variable $file external;
+
 declare %an:sequential function local:test-sequential($pos)
 {
   
 };
  
-variable $xmlcontents := fetch:content("$RBKT_SRC_DIR/Queries/zorba/flwor/flwor24.xml");
+variable $xmlcontents := fetch:content($file);
 
 variable $contents := parse-xml:parse(
       $xmlcontents,

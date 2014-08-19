@@ -1,3 +1,3 @@
 Args: 
--x 
-sales-records:=xs:string($RBKT_SRC_DIR/Queries/zorba/groupby/sales-records.xml)
+-x
+sales-records:=$RBKT_SRC_DIR/Queries/zorba/groupby/sales-records.xml

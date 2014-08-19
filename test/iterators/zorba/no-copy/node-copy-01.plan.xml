@@ -1,0 +1,34 @@
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="doc">
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,a)"/>
+        <FnConcatIterator/>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,b)"/>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,c)"/>
+          </ElementIterator>
+        </ElementIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <FnConcatIterator>
+      <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill-allowed="false">
+        <NodeCopyIterator>
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="false">
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,node)"/>
+              <FnConcatIterator/>
+              <EnclosedIterator attr_cont="false">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="false">
+                  <CtxVarIterator varid="4" varname="doc" varkind="global"/>
+                </ChildAxisIterator>
+              </EnclosedIterator>
+            </ElementIterator>
+          </ChildAxisIterator>
+        </NodeCopyIterator>
+      </DescendantAxisIterator>
+      <SingletonIterator value="xs:string(&#xA;)"/>
+    </FnConcatIterator>
+  </SequentialIterator>
+</iterator-tree>

@@ -54,29 +54,6 @@
 
 namespace zorba {
 
-
-/*******************************************************************************
-
-********************************************************************************/
-static void toHexString(unsigned char ch, char result[])
-{
-  static const char hex[] =
-  { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-
-  if ((ch >> 4) > 0)
-  {
-    result[0] = hex[ch >> 4];
-    result[1]= hex[ch & 0xF];
-    result[2] = '\0';
-  }
-  else
-  {
-    result[0]= hex[ch & 0xF];
-    result[1] = '\0';
-  }
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -276,7 +253,7 @@ int serializer::emitter::emit_expanded_string(
       else
       {
         char buf[3];
-        toHexString(*chars, buf);
+        zorba::xml::toHexString(*chars, buf);
         tr << "&#x" << buf << ";";
       }
     }

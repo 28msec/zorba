@@ -1,0 +1,65 @@
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="doc">
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,a)"/>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,b)"/>
+        </ElementIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <FnConcatIterator>
+      <TupleStreamIterator>
+        <WhereIterator>
+          <OuterForIterator varname="x">
+            <TupleSourceIterator/>
+            <NodeSortIterator distinct="true" ascending="true">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,foo)" typename="*" nill-allowed="false">
+                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                  <CtxVarIterator varid="4" varname="doc" varkind="local"/>
+                </TreatIterator>
+              </ChildAxisIterator>
+            </NodeSortIterator>
+          </OuterForIterator>
+          <TypedValueCompareIterator_INTEGER>
+            <ForVarIterator varname="pos"/>
+            <SingletonIterator value="xs:integer(1)"/>
+          </TypedValueCompareIterator_INTEGER>
+        </WhereIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,result)"/>
+          <EnclosedIterator attr_cont="false">
+            <ForVarIterator varname="x"/>
+          </EnclosedIterator>
+        </ElementIterator>
+      </TupleStreamIterator>
+      <SingletonIterator value="xs:string(&#xA;,&#xA;)"/>
+      <TupleStreamIterator>
+        <OuterForIterator varname="x">
+          <TupleSourceIterator/>
+          <SubsequenceIntIterator>
+            <NodeSortIterator distinct="true" ascending="true">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,foo)" typename="*" nill-allowed="false">
+                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                  <CtxVarIterator varid="4" varname="doc" varkind="local"/>
+                </TreatIterator>
+              </ChildAxisIterator>
+            </NodeSortIterator>
+            <SingletonIterator value="xs:integer(1)"/>
+            <SingletonIterator value="xs:integer(1)"/>
+          </SubsequenceIntIterator>
+        </OuterForIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,result)"/>
+          <EnclosedIterator attr_cont="false">
+            <FnConcatIterator>
+              <ForVarIterator varname="x"/>
+              <ForVarIterator varname="pos"/>
+            </FnConcatIterator>
+          </EnclosedIterator>
+        </ElementIterator>
+      </TupleStreamIterator>
+      <SingletonIterator value="xs:string(&#xA;)"/>
+    </FnConcatIterator>
+  </SequentialIterator>
+</iterator-tree>

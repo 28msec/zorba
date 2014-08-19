@@ -1,3 +1,3 @@
 Args: 
--x 
-rbktPath:=xs:string($RBKT_SRC_DIR)
+-x
+rbktPath:=$RBKT_SRC_DIR

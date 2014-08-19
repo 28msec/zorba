@@ -491,9 +491,13 @@ public:
           if(lIter == tokens.end() ) { return false; }
           setTimezone(lIter->begin(), lIter->end());
         }
-        else
+        else if ( lIter->length() && (*lIter)[0] == '#')
         {
           break;
+        }
+        else
+        {
+          return false;
         }
       }
     }

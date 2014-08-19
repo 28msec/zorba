@@ -4,12 +4,13 @@ import module namespace fetch = "http://zorba.io/modules/fetch";
 
 declare namespace an = "http://zorba.io/annotations";
 
+declare variable $file external;
+
 declare %an:sequential function local:test-sequential()
-{
-  
+{  
 };
  
-variable $xmlcontents := fetch:content("$RBKT_SRC_DIR/Queries/zorba/flwor/flwor24.xml");
+variable $xmlcontents := fetch:content($file);
 
 let $contents := parse-xml:parse(
       $xmlcontents,

@@ -1,0 +1,321 @@
+<iterator-tree description="const-folded expr">
+  <OrIterator>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </OrIterator>
+</iterator-tree>
+<iterator-tree description="doc indexer">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <FLWORIterator>
+        <ForVariable name="$$context-item">
+          <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
+        </ForVariable>
+        <WhereClause>
+          <CompareIterator>
+            <FnDataIterator>
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,duration)" typename="*" nill-allowed="false">
+                <ForVarIterator varname="$$context-item"/>
+              </AttributeAxisIterator>
+            </FnDataIterator>
+            <SingletonIterator value="xs:integer(120)"/>
+          </CompareIterator>
+        </WhereClause>
+        <ReturnClause>
+          <ForVarIterator varname="$$context-item"/>
+        </ReturnClause>
+      </FLWORIterator>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <PromoteIterator type="xs:string">
+          <FnDataIterator>
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="false">
+              <ForVarIterator varname="$$context-item"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </PromoteIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="index">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <FLWORIterator>
+        <ForVariable name="$$context-item">
+          <ZorbaCollectionIterator>
+            <SingletonIterator value="xs:QName(www.sessions.com,sessions,sessions)"/>
+          </ZorbaCollectionIterator>
+        </ForVariable>
+        <WhereClause>
+          <CompareIterator>
+            <FnDataIterator>
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,duration)" typename="*" nill-allowed="false">
+                <ForVarIterator varname="$$context-item"/>
+              </AttributeAxisIterator>
+            </FnDataIterator>
+            <SingletonIterator value="xs:integer(120)"/>
+          </CompareIterator>
+        </WhereClause>
+        <ReturnClause>
+          <ForVarIterator varname="$$context-item"/>
+        </ReturnClause>
+      </FLWORIterator>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <PromoteIterator type="xs:string">
+          <FnDataIterator>
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="false">
+              <ForVarIterator varname="$$context-item"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </PromoteIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="const-folded expr">
+  <OrIterator>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </OrIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="sessions:sessions">
+      <SingletonIterator value="xs:QName(www.sessions.com,sessions,sessions)"/>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="5" varname="external_id">
+      <SingletonIterator value="xs:string(50)"/>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="6" varname="doc">
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,sessions)"/>
+        <FnConcatIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,session)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,id)">
+                <SingletonIterator value="xs:string(50)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,duration)">
+                <SingletonIterator value="xs:string(130)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,data)"/>
+              <TextIterator>
+                <SingletonIterator value="xs:string(1111111111)"/>
+              </TextIterator>
+            </ElementIterator>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,session)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,id)">
+                <SingletonIterator value="xs:string(12)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,duration)">
+                <SingletonIterator value="xs:string(30)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,data)"/>
+              <TextIterator>
+                <SingletonIterator value="xs:string(2222222222)"/>
+              </TextIterator>
+            </ElementIterator>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,session)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,id)">
+                <SingletonIterator value="xs:string(50)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,duration)">
+                <SingletonIterator value="xs:string(150)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,data)"/>
+              <TextIterator>
+                <SingletonIterator value="xs:string(3333333333)"/>
+              </TextIterator>
+            </ElementIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="7" varname="doc2">
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,sessions)"/>
+        <FnConcatIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,session)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,id)">
+                <SingletonIterator value="xs:string(50)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,duration)">
+                <SingletonIterator value="xs:string(130)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,data)"/>
+              <TextIterator>
+                <SingletonIterator value="xs:string(6666666)"/>
+              </TextIterator>
+            </ElementIterator>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,session)"/>
+            <FnConcatIterator>
+              <AttributeIterator qname="xs:QName(,,id)">
+                <SingletonIterator value="xs:string(70)"/>
+              </AttributeIterator>
+              <AttributeIterator qname="xs:QName(,,duration)">
+                <SingletonIterator value="xs:string(150)"/>
+              </AttributeIterator>
+            </FnConcatIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,data)"/>
+              <TextIterator>
+                <SingletonIterator value="xs:string(7777777)"/>
+              </TextIterator>
+            </ElementIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </CtxVarDeclareIterator>
+    <SequentialIterator>
+      <ApplyIterator>
+        <ZorbaCreateCollectionIterator>
+          <CtxVarIterator varid="4" varname="sessions:sessions" varkind="global"/>
+        </ZorbaCreateCollectionIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <CreateIndexIterator>
+          <SingletonIterator value="xs:QName(www.sessions.com,s,session-index)"/>
+        </CreateIndexIterator>
+      </ApplyIterator>
+      <FLWORIterator>
+        <ForVariable name="s">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill-allowed="false">
+            <CtxVarIterator varid="6" varname="doc" varkind="global"/>
+          </ChildAxisIterator>
+        </ForVariable>
+        <MaterializeClause>
+          <MaterializeForVariable inputVar="s"/>
+        </MaterializeClause>
+        <ReturnClause>
+          <ApplyIterator>
+            <ZorbaInsertIterator need-to-copy="true">
+              <CtxVarIterator varid="4" varname="sessions:sessions" varkind="global"/>
+              <ForVarIterator varname="s"/>
+            </ZorbaInsertIterator>
+          </ApplyIterator>
+        </ReturnClause>
+      </FLWORIterator>
+      <FLWORIterator>
+        <ForVariable name="s">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill-allowed="false">
+            <CtxVarIterator varid="7" varname="doc2" varkind="global"/>
+          </ChildAxisIterator>
+        </ForVariable>
+        <MaterializeClause>
+          <MaterializeForVariable inputVar="s"/>
+        </MaterializeClause>
+        <ReturnClause>
+          <ApplyIterator>
+            <ZorbaInsertFirstIterator need-to-copy="true">
+              <CtxVarIterator varid="4" varname="sessions:sessions" varkind="global"/>
+              <ForVarIterator varname="s"/>
+            </ZorbaInsertFirstIterator>
+          </ApplyIterator>
+        </ReturnClause>
+      </FLWORIterator>
+      <FLWORIterator>
+        <ForVariable name="s">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill-allowed="false">
+            <CtxVarIterator varid="7" varname="doc2" varkind="global"/>
+          </ChildAxisIterator>
+        </ForVariable>
+        <MaterializeClause>
+          <MaterializeForVariable inputVar="s"/>
+        </MaterializeClause>
+        <ReturnClause>
+          <ApplyIterator>
+            <ZorbaInsertLastIterator need-to-copy="true">
+              <CtxVarIterator varid="4" varname="sessions:sessions" varkind="global"/>
+              <ForVarIterator varname="s"/>
+            </ZorbaInsertLastIterator>
+          </ApplyIterator>
+        </ReturnClause>
+      </FLWORIterator>
+      <FnConcatIterator>
+        <FLWORIterator>
+          <LetVariable name="id" materialize="true">
+            <CtxVarIterator varid="5" varname="external_id" varkind="global"/>
+          </LetVariable>
+          <LetVariable name="$$opt_temp_0" materialize="true">
+            <HoistIterator>
+              <PromoteIterator type="xs:anyAtomicType">
+                <FnDataIterator>
+                  <LetVarIterator varname="id"/>
+                </FnDataIterator>
+              </PromoteIterator>
+            </HoistIterator>
+          </LetVariable>
+          <LetVariable name="session" materialize="true">
+            <FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeSortIterator distinct="false" ascending="true">
+                  <ProbeIndexPointValueIterator>
+                    <SingletonIterator value="xs:QName(www.sessions.com,sessions,session-index)"/>
+                    <UnhoistIterator>
+                      <LetVarIterator varname="$$opt_temp_0"/>
+                    </UnhoistIterator>
+                  </ProbeIndexPointValueIterator>
+                </NodeSortIterator>
+              </ForVariable>
+              <WhereClause>
+                <CompareIterator>
+                  <FnDataIterator>
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,duration)" typename="*" nill-allowed="false">
+                      <ForVarIterator varname="$$context-item"/>
+                    </AttributeAxisIterator>
+                  </FnDataIterator>
+                  <SingletonIterator value="xs:integer(150)"/>
+                </CompareIterator>
+              </WhereClause>
+              <ReturnClause>
+                <ForVarIterator varname="$$context-item"/>
+              </ReturnClause>
+            </FLWORIterator>
+          </LetVariable>
+          <ReturnClause>
+            <IfThenElseIterator>
+              <FnEmptyIterator>
+                <LetVarIterator varname="session"/>
+              </FnEmptyIterator>
+              <TraceIterator>
+                <LetVarIterator varname="id"/>
+                <SingletonIterator value="xs:string(no session with the given uuid)"/>
+              </TraceIterator>
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill-allowed="false">
+                <LetVarIterator varname="session"/>
+              </ChildAxisIterator>
+            </IfThenElseIterator>
+          </ReturnClause>
+        </FLWORIterator>
+        <SingletonIterator value="xs:string(&#xA;)"/>
+      </FnConcatIterator>
+    </SequentialIterator>
+  </SequentialIterator>
+</iterator-tree>

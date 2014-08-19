@@ -360,6 +360,44 @@ parse_entity( InputStringType const &ref, OutputStringType *out ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Serializes the given string as a valid XML string: any characters that must
+ * be escaped are escaped.
+ *
+ * @param os The ostream to serialize to.
+ * @param s The C string to serialize as JSON.
+ * @param attr Serialize as attribute value
+ * @return Returns \a os.
+ */
+std::ostream& serialize( std::ostream &os, char const *s, bool attr = false );
+
+// An ostream manipulator version of the above.
+DEF_OMANIP2( serialize, char const*, bool )
+
+/**
+ * Serializes the given string as a valid XML string: any characters that must
+ * be escaped are escaped.
+ *
+ * @tparam The string type.
+ * @param os The ostream to serialize to.
+ * @param s The string to serialize as JSON.
+ * @param attr Serialize as attribute value
+ * @return Returns \a os.
+ */
+template<class StringType> inline
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),std::ostream&>::type
+serialize( std::ostream &os, StringType const &s, bool attr = false ) {
+  return serialize( os, s.c_str(), attr );
+}
+
+// An ostream manipulator version of the above.
+template<class StringType>
+DEF_OMANIP2( serialize, StringType const&, bool)
+
+void toHexString(unsigned char ch, char result[]);
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace xml
 } // namespace zorba
 

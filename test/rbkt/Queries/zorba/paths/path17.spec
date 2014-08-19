@@ -1,3 +1,3 @@
 Args: 
--x 
-input-context:=xs:string($RBKT_SRC_DIR/Queries/zorba/paths/XQTSCatalog.xml)
+-x
+input-context:=$RBKT_SRC_DIR/Queries/zorba/paths/XQTSCatalog.xml
