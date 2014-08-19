@@ -5,51 +5,58 @@
 </iterator-tree>
 <iterator-tree description="main query">
   <SequentialIterator>
-    <CtxVarDeclareIterator varid="4" varname="xmlcontents">
-      <UDFunctionCallIterator function="fetch:content">
-        <SingletonIterator value="xs:string($RBKT_SRC_DIR/Queries/zorba/flwor/flwor24.xml)"/>
-      </UDFunctionCallIterator>
-    </CtxVarDeclareIterator>
-    <CtxVarDeclareIterator varid="5" varname="contents">
-      <FnZorbaParseXmlFragmentIterator>
-        <PromoteIterator type="xs:string">
-          <FnDataIterator>
-            <CtxVarIterator varid="4" varname="xmlcontents" varkind="local"/>
-          </FnDataIterator>
-        </PromoteIterator>
-        <TreatIterator type="[NodeXQType elementNode nametest=[uri: http://zorba.io/modules/xml-options, local: options] content=[XQType ANY_TYPE_KIND*]]" quant="?">
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(http://zorba.io/modules/xml-options,opt,options)"/>
+    <CtxVarDeclareIterator varid="4" varname="file"/>
+    <SequentialIterator>
+      <CtxVarDeclareIterator varid="5" varname="xmlcontents">
+        <UDFunctionCallIterator function="fetch:content">
+          <PromoteIterator type="xs:string">
+            <FnDataIterator>
+              <CtxVarIterator varid="4" varname="file" varkind="global"/>
+            </FnDataIterator>
+          </PromoteIterator>
+        </UDFunctionCallIterator>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="6" varname="contents">
+        <FnZorbaParseXmlFragmentIterator>
+          <PromoteIterator type="xs:string">
+            <FnDataIterator>
+              <CtxVarIterator varid="5" varname="xmlcontents" varkind="local"/>
+            </FnDataIterator>
+          </PromoteIterator>
+          <TreatIterator type="[NodeXQType elementNode nametest=[uri: http://zorba.io/modules/xml-options, local: options] content=[XQType ANY_TYPE_KIND*]]" quant="?">
             <ElementIterator>
-              <SingletonIterator value="xs:QName(http://zorba.io/modules/xml-options,opt,parse-external-parsed-entity)"/>
-              <AttributeIterator qname="xs:QName(http://zorba.io/modules/xml-options,opt,skip-root-nodes)">
-                <SingletonIterator value="xs:string(1)"/>
-              </AttributeIterator>
+              <SingletonIterator value="xs:QName(http://zorba.io/modules/xml-options,opt,options)"/>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(http://zorba.io/modules/xml-options,opt,parse-external-parsed-entity)"/>
+                <AttributeIterator qname="xs:QName(http://zorba.io/modules/xml-options,opt,skip-root-nodes)">
+                  <SingletonIterator value="xs:string(1)"/>
+                </AttributeIterator>
+              </ElementIterator>
             </ElementIterator>
-          </ElementIterator>
-        </TreatIterator>
-      </FnZorbaParseXmlFragmentIterator>
-    </CtxVarDeclareIterator>
-    <FLWORIterator>
-      <ForVariable name="w">
-        <CtxVarIterator varid="5" varname="contents" varkind="local"/>
-      </ForVariable>
-      <OrderBySpec>
-        <FnLocalNameIterator>
-          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
-            <ForVarIterator varname="w"/>
           </TreatIterator>
-        </FnLocalNameIterator>
-      </OrderBySpec>
-      <ReturnClause>
-        <SequentialIterator>
-          <ApplyIterator>
-            <FnConcatIterator/>
-          </ApplyIterator>
-          <ForVarIterator varname="w"/>
-        </SequentialIterator>
-      </ReturnClause>
-    </FLWORIterator>
+        </FnZorbaParseXmlFragmentIterator>
+      </CtxVarDeclareIterator>
+      <FLWORIterator>
+        <ForVariable name="w">
+          <CtxVarIterator varid="6" varname="contents" varkind="local"/>
+        </ForVariable>
+        <OrderBySpec>
+          <FnLocalNameIterator>
+            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
+              <ForVarIterator varname="w"/>
+            </TreatIterator>
+          </FnLocalNameIterator>
+        </OrderBySpec>
+        <ReturnClause>
+          <SequentialIterator>
+            <ApplyIterator>
+              <FnConcatIterator/>
+            </ApplyIterator>
+            <ForVarIterator varname="w"/>
+          </SequentialIterator>
+        </ReturnClause>
+      </FLWORIterator>
+    </SequentialIterator>
   </SequentialIterator>
 </iterator-tree>
 <iterator-tree description="fetch:content">
