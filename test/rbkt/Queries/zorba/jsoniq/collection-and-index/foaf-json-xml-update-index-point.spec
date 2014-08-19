@@ -1,2 +1,1 @@
-Serialization: method=json-e
-ml-hybrid jsoniq-multiple-items=yes
+Serialization: method=json-xml-hybrid jsoniq-multiple-items=yes
