@@ -95,8 +95,7 @@
         <ZorbaCollectionIterator>
           <CtxVarIterator varid="4" varname="data:parents" varkind="global"/>
         </ZorbaCollectionIterator>
-        <SingletonIterator value="xs:string(
-)"/>
+        <SingletonIterator value="xs:string(&#xA;)"/>
       </FnConcatIterator>
     </SequentialIterator>
   </SequentialIterator>

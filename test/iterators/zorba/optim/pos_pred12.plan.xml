@@ -127,8 +127,7 @@
         <SingletonIterator value="xs:integer(1)"/>
         <SingletonIterator value="xs:integer(1)"/>
       </SubsequenceIntIterator>
-      <SingletonIterator value="xs:string(
-)"/>
+      <SingletonIterator value="xs:string(&#xA;)"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
           <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
@@ -140,8 +139,7 @@
         <SingletonIterator value="xs:integer(1)"/>
         <SingletonIterator value="xs:integer(2)"/>
       </SubsequenceIntIterator>
-      <SingletonIterator value="xs:string(
-)"/>
+      <SingletonIterator value="xs:string(&#xA;)"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
           <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
@@ -153,8 +151,7 @@
         <SingletonIterator value="xs:integer(1)"/>
         <SingletonIterator value="xs:integer(-2)"/>
       </SubsequenceIntIterator>
-      <SingletonIterator value="xs:string(
-)"/>
+      <SingletonIterator value="xs:string(&#xA;)"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
           <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
@@ -166,8 +163,7 @@
         <SingletonIterator value="xs:integer(1)"/>
         <SingletonIterator value="xs:integer(1)"/>
       </SubsequenceIntIterator>
-      <SingletonIterator value="xs:string(
-)"/>
+      <SingletonIterator value="xs:string(&#xA;)"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
           <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
@@ -179,8 +175,7 @@
         <SingletonIterator value="xs:integer(1)"/>
         <SingletonIterator value="xs:integer(2)"/>
       </SubsequenceIntIterator>
-      <SingletonIterator value="xs:string(
-)"/>
+      <SingletonIterator value="xs:string(&#xA;)"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
           <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
@@ -191,8 +186,7 @@
         </NodeSortIterator>
         <SingletonIterator value="xs:integer(3)"/>
       </SubsequenceIntIterator>
-      <SingletonIterator value="xs:string(
-)"/>
+      <SingletonIterator value="xs:string(&#xA;)"/>
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
           <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="false">
@@ -203,8 +197,7 @@
         </NodeSortIterator>
         <SingletonIterator value="xs:integer(2)"/>
       </SubsequenceIntIterator>
-      <SingletonIterator value="xs:string(
-)"/>
+      <SingletonIterator value="xs:string(&#xA;)"/>
     </FnConcatIterator>
   </SequentialIterator>
 </iterator-tree>

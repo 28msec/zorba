@@ -3,7 +3,7 @@
     <LetVariable name="j" materialize="true">
       <TreatIterator quant="?">
         <JSONParseIterator>
-          <SingletonIterator value="xs:string([ "foo", "bar" ])"/>
+          <SingletonIterator value="xs:string([ &quot;foo&quot;, &quot;bar&quot; ])"/>
         </JSONParseIterator>
       </TreatIterator>
     </LetVariable>

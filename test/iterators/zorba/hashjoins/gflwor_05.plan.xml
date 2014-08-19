@@ -121,8 +121,7 @@
             </FnConcatIterator>
           </EnclosedIterator>
         </ElementIterator>
-        <SingletonIterator value="xs:string(
-)"/>
+        <SingletonIterator value="xs:string(&#xA;)"/>
       </FnConcatIterator>
     </ReturnClause>
   </FLWORIterator>

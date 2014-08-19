@@ -164,8 +164,7 @@
             </IfThenElseIterator>
           </ReturnClause>
         </FLWORIterator>
-        <SingletonIterator value="xs:string(
-)"/>
+        <SingletonIterator value="xs:string(&#xA;)"/>
       </FnConcatIterator>
     </SequentialIterator>
   </SequentialIterator>
