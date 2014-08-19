@@ -128,7 +128,7 @@
       <ReturnClause>
         <FnConcatIterator>
           <SingletonIterator value="xs:string( )"/>
-          <ElementIterator copyInputNodes="false">
+          <ElementIterator>
             <SingletonIterator value="xs:QName(,,span)"/>
             <AttributeIterator qname="xs:QName(,,class)">
               <SingletonIterator value="xs:string(ns)"/>
@@ -138,7 +138,7 @@
                 <UnhoistIterator>
                   <ForVarIterator varname="$$opt_temp_3"/>
                 </UnhoistIterator>
-                <ElementIterator copyInputNodes="false">
+                <ElementIterator>
                   <SingletonIterator value="xs:QName(,,span)"/>
                   <AttributeIterator qname="xs:QName(,,class)">
                     <SingletonIterator value="xs:string(nsUri)"/>
