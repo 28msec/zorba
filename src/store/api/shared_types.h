@@ -90,6 +90,7 @@ typedef rchandle<IndexProbeIterator> IndexProbeIterator_t;
 
 class Store;
 class XmlDataManager_Impl;
+class JsonDataManager_Impl;
 
 class IC;
 typedef rchandle<IC> IC_t;

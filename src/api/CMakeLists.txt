@@ -34,6 +34,7 @@ SET(API_SRCS
     sequencetype.cpp
     unmarshaller.cpp
     xmldatamanagerimpl.cpp
+    jsondatamanagerimpl.cpp
     documentmanagerimpl.cpp
     collectionmanagerimpl.cpp
     staticcollectionmanagerimpl.cpp

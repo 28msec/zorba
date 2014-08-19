@@ -25,6 +25,7 @@
 #include <zorba/diagnostic_handler.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
+#include <zorba/jsondatamanager.h>
 #include <zorba/options.h>
 #include <zorba/static_context.h>
 #include <zorba/version.h>
@@ -43,7 +44,7 @@ namespace zorba {
  * There exists one instance of the Zorba class per process.
  * It can be used to (1) create and compile queries,
  * (2) create static contexts,
- * (3) provides access to the XmlDataManager,
+ * (3) provides access to the XmlDataManager and JsonDataManager,
  * (4) provides access to the ItemFactory, and
  * (5) provides access to the Properties.
  */
@@ -302,6 +303,13 @@ class ZORBA_DLL_PUBLIC Zorba
    */
   virtual XmlDataManager_t
   getXmlDataManager() = 0;
+
+  /** \brief Returns a JsonDataManager object.
+   *
+   * @return JsonDataManager a JsonDataManager.
+   */
+  virtual JsonDataManager_t
+  getJsonDataManager() = 0;
 
   /** \brief Gets the singleton instance of the ItemFactory.
    *
