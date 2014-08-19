@@ -1,3 +1,3 @@
 Args: 
 -x
-foo:=1
+foo:=xs:string(1)
