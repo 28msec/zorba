@@ -35,17 +35,17 @@ using namespace zorba;
  * (5) make sure the document is removed.
  */
 bool
-datamanager_example_1(Zorba* aZorba, XmlDataManager* aDataManager)
+xmldatamanager_example_1(Zorba* aZorba, XmlDataManager* aDataManager)
 {
   try {
 
     // create a document in a temporary stream
     std::stringstream lInStream;
     lInStream
-      << "<books>" << std::endl
-      << "  <book>Book 1</book>" << std::endl
-      << "  <book>Book 2</book>" << std::endl
-      << "</books>";
+    << "<books>" << std::endl
+    << "  <book>Book 1</book>" << std::endl
+    << "  <book>Book 2</book>" << std::endl
+    << "</books>";
 
     // (1) parse the document and return a item
     Item lDoc = aDataManager->parseXML(lInStream);
@@ -71,7 +71,7 @@ datamanager_example_1(Zorba* aZorba, XmlDataManager* aDataManager)
     return false;
   }
 
-	return true;
+  return true;
 }
 
 /*
@@ -82,7 +82,7 @@ datamanager_example_1(Zorba* aZorba, XmlDataManager* aDataManager)
  * (4) make sure the collection was removed.
  */
 bool
-datamanager_example_2(Zorba* aZorba, XmlDataManager* aDataManager)
+xmldatamanager_example_2(Zorba* aZorba, XmlDataManager* aDataManager)
 {
   try {
     CollectionManager* lColMgr = aDataManager->getCollectionManager();
@@ -115,7 +115,7 @@ datamanager_example_2(Zorba* aZorba, XmlDataManager* aDataManager)
     return false;
   }
 
-	return true;
+  return true;
 }
 
 /*
@@ -128,7 +128,7 @@ datamanager_example_2(Zorba* aZorba, XmlDataManager* aDataManager)
  * (6) make sure the node was deleted.
  */
 bool
-datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
+xmldatamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
 {
   try {
     CollectionManager* lColMgr = aDataManager->getCollectionManager();
@@ -143,10 +143,10 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
     // create a document in a temporary stream
     std::stringstream lInStream;
     lInStream
-      << "<books>" << std::endl
-      << "  <book>Book 1</book>" << std::endl
-      << "  <book>Book 2</book>" << std::endl
-      << "</books>";
+    << "<books>" << std::endl
+    << "  <book>Book 1</book>" << std::endl
+    << "  <book>Book 2</book>" << std::endl
+    << "</books>";
 
     Item lDoc = aDataManager->parseXML(lInStream);
 
@@ -161,10 +161,10 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
     lColl->getAnnotations(lAnnotations);
     size_t num_annotations = 0;
     for (std::vector<Annotation_t>::const_iterator lIter = lAnnotations.begin();
-         lIter != lAnnotations.end(); ++lIter)
+        lIter != lAnnotations.end(); ++lIter)
     {
       std::cout << "Annotation QName "
-        << (*lIter)->getQName().getStringValue() << std::endl;
+          << (*lIter)->getQName().getStringValue() << std::endl;
       ++num_annotations;
     }
 
@@ -185,7 +185,7 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
 
     while (lIter->next(lDoc)) {
       std::cout << "node found at position "
-        << lColl->indexOf(lDoc) << std::endl;
+          << lColl->indexOf(lDoc) << std::endl;
     }
 
     // (5) delete the node
@@ -216,7 +216,7 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
  * (4) make sure the collection was removed.
  */
 bool
-datamanager_example_4(Zorba* aZorba, XmlDataManager* aDataManager)
+xmldatamanager_example_4(Zorba* aZorba, XmlDataManager* aDataManager)
 {
   try {
     CollectionManager* lColMgr = aDataManager->getW3CCollectionManager();
@@ -255,14 +255,14 @@ datamanager_example_4(Zorba* aZorba, XmlDataManager* aDataManager)
 /*
  */
 bool
-datamanager_example_5(Zorba* aZorba, XmlDataManager* aDataManager)
+xmldatamanager_example_5(Zorba* aZorba, XmlDataManager* aDataManager)
 {
   try {
     std::stringstream lStream;
-      lStream
-        << "<book><title>XQuery From The Experts</title></book>"
-        << "<book><title>XQuery Kick Start</title></book>"
-        << "<book><title>Querying XML</title></book>";
+    lStream
+    << "<book><title>XQuery From The Experts</title></book>"
+    << "<book><title>XQuery Kick Start</title></book>"
+    << "<book><title>Querying XML</title></book>";
 
     XmlDataManager::ParseOptions lOptions;
     lOptions.setExternalEntityProcessing(true);
@@ -283,7 +283,7 @@ datamanager_example_5(Zorba* aZorba, XmlDataManager* aDataManager)
 }
 
 int 
-datamanager(int argc, char* argv[])
+xmldatamanager(int argc, char* argv[])
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
@@ -291,27 +291,27 @@ datamanager(int argc, char* argv[])
   bool res = false;
 
   std::cout << "executing example 1" << std::endl;
-  res = datamanager_example_1(lZorba, lDataManager);
+  res = xmldatamanager_example_1(lZorba, lDataManager);
   if (!res) return 1;
   std::cout << std::endl;
 
   std::cout << "executing example 2" << std::endl;
-  res = datamanager_example_2(lZorba, lDataManager);
+  res = xmldatamanager_example_2(lZorba, lDataManager);
   if (!res) return 2;
   std::cout << std::endl;
 
   std::cout << "executing example 3" << std::endl;
-  res = datamanager_example_3(lZorba, lDataManager);
+  res = xmldatamanager_example_3(lZorba, lDataManager);
   if (!res) return 3;
   std::cout << std::endl;
 
   std::cout << "executing example 4" << std::endl;
-  res = datamanager_example_4(lZorba, lDataManager);
+  res = xmldatamanager_example_4(lZorba, lDataManager);
   if (!res) return 4;
   std::cout << std::endl;
 
   std::cout << "executing example 5" << std::endl;
-  res = datamanager_example_5(lZorba, lDataManager);
+  res = xmldatamanager_example_5(lZorba, lDataManager);
   if (!res) return 5;
   std::cout << std::endl;
 

@@ -23,7 +23,8 @@ SET(API_EXAMPLES
   serialization.cpp
   chaining.cpp
   external_functions.cpp
-  datamanager.cpp
+  xmldatamanager.cpp
+  jsondatamanager.cpp
   uri_resolvers.cpp
   execution_plans.cpp
   item_handler.cpp
