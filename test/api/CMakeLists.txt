@@ -16,6 +16,7 @@ CREATE_TEST_SOURCELIST(APITests
   APITests.cpp
   itemfactory.cpp
   xmldatamanager.cpp
+  jsondatamanager.cpp
   xquery.cpp
   test_static_context.cpp
   test_dynamic_context.cpp

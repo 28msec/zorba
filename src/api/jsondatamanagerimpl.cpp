@@ -128,21 +128,13 @@ ItemSequence_t JsonDataManagerImpl::parseJSON(std::istream& aStream) const
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::W3C_FN_NS, "parse-xml");
+    Item lQName = theFactory->createQName(static_context::JSONIQ_FN_NS, "parse-json");
 
-    // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(
-    new SingletonItemSequence(theFactory->createStreamableString(aStream,
-                                                                 &streamReleaser)));
-/*
-    ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
-    Iterator_t lIter = lSeq->getIterator();
-    lIter->open();
-    Item lRes;
-    lIter->next(lRes);
-    return lRes;
-*/
+
+    Item lString = theFactory->createStreamableString(aStream, &streamReleaser);
+    lArgs.push_back(new SingletonItemSequence(lString));
+
     return theContext->invoke(lQName, lArgs);
   }
   ZORBA_DM_CATCH
@@ -159,46 +151,24 @@ ItemSequence_t JsonDataManagerImpl::parseJSON(
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS, "parse");
+    Item lQName = theFactory->createQName(static_context::JSONIQ_FN_NS, "parse-json");
 
-    // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(new SingletonItemSequence(
-        theFactory->createStreamableString(aStream, &streamReleaser)));
 
-    Item empty_item;
-    Item validated_options;
-    NsBindings nsPairs;
-    Item untyped_type = theFactory->createQName(static_context::W3C_XML_SCHEMA_NS,
-                                                "",
-                                                "untyped");
-    Item options_node = theFactory->createElementNode(empty_item,
-        theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "options"),
-        untyped_type, false, false, nsPairs);
-/*
-    if (aOptions.isDtdValidationEnabled())
-      theFactory->createElementNode(options_node,
-          theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "DTD-validate"),
-          untyped_type, false, false, nsPairs);
+    Item lString = theFactory->createStreamableString(aStream, &streamReleaser);
+    lArgs.push_back(new SingletonItemSequence(lString));
 
-    if (aOptions.isExternalEntityProcessingEnabled())
-      theFactory->createElementNode(options_node,
-          theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "parse-external-parsed-entity"),
-          untyped_type, false, false, nsPairs);
-*/
-    theContext->validate(options_node, validated_options, validate_strict);
-
-    lArgs.push_back(new SingletonItemSequence(validated_options));
+    std::vector<std::pair<Item, Item> > lOptionsPairs;
+    Item lMultipleName = theFactory->createString("jsoniq-multiple-top-level-items");
+    Item lMultipleValue = theFactory->createBoolean(aOptions.isMultipleTopLevelItems());
+    lOptionsPairs.push_back(std::make_pair(lMultipleName, lMultipleValue));
+    Item lStripName = theFactory->createString("jsoniq-strip-top-level-array");
+    Item lStripValue = theFactory->createBoolean(aOptions.isStripTopLevelArray());
+    lOptionsPairs.push_back(std::make_pair(lStripName, lStripValue));
+    Item lOptionsObj = theFactory->createJSONObject(lOptionsPairs);
+    lArgs.push_back(new SingletonItemSequence(lOptionsObj));
 
     return theContext->invoke(lQName, lArgs);
-    /*
-    ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
-    Iterator_t lIter = lSeq->getIterator();
-    lIter->open();
-    Item lRes;
-    lIter->next(lRes);
-    return lRes;
-    */
   }
   ZORBA_DM_CATCH
   return 0;

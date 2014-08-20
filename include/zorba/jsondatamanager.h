@@ -68,7 +68,7 @@ class ZORBA_DLL_PUBLIC JsonDataManager : public SmartObject
     /**
      * Returns true if dtd validation is enabled, false otherwise.
      */
-    bool isMultipleTopLevelItemsEnabled() const
+    bool isMultipleTopLevelItems() const
     {
       return theMultipleTopLevelItems;
     }
