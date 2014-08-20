@@ -15,7 +15,12 @@
  */
 #include "stdafx.h"
 
+#include "zorba/zorba.h"
 #include "zorba/options.h"
+#include "zorba/iterator.h"
+#include "zorba/xmldatamanager.h"
+#include "zorba/jsondatamanager.h"
+#include "zorba/item_sequence.h"
 #include "zorba/properties.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
@@ -92,7 +97,7 @@ void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompil
     const double aCompilationWallTime)
 {
   assert(theEvalProfiles.size() == 0 ||
-         !theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
+         !theEvalProfiles[theEvalProfiles.size()-1].theProfile.isNull());
 
   theEvalProfiles.push_back(EvalProfile(aQuery, aCompilationCPUTime, aCompilationWallTime));
 }
@@ -104,30 +109,24 @@ void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompil
 void EvalIteratorState::addQueryProfile()
 {
   assert(theEvalProfiles.size() >0 &&
-         theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
+         theEvalProfiles[theEvalProfiles.size()-1].theProfile.isNull());
 
   Zorba_profile_format_t const lFormat = Properties::instance().getProfileFormat();
-  std::stringstream lProfileStream;
-
+  EvalProfile& lProfile = theEvalProfiles[theEvalProfiles.size()-1];
   switch ( lFormat )
   {
     case PROFILE_FORMAT_DOT:
-      thePrinter.reset( new DOTIterPrinter( lProfileStream, "", true ) );
+      addDOTQueryProfile(lProfile);
       break;
     case PROFILE_FORMAT_JSON:
-      thePrinter.reset( new JSONIterPrinter( lProfileStream, "", true ) );
+      addJSONQueryProfile(lProfile);
       break;
     case PROFILE_FORMAT_XML:
-      thePrinter.reset( new XMLIterPrinter( lProfileStream, "", true ) );
+      addXMLQueryProfile(lProfile);
       break;
     default: // to silence warning
       break;
   }
-
-  EvalProfile& lProfile = theEvalProfiles[theEvalProfiles.size()-1];
-
-  print_iter_plan( *thePrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
-  lProfile.theProfile = lProfileStream.str();
 
   PlanIteratorState const *const pi_state =
         StateTraitsImpl<PlanIteratorState>::getState(
@@ -142,6 +141,59 @@ void EvalIteratorState::addQueryProfile()
   lProfile.theIterator = thePlanWrapper->theIterator;
 }
 
+
+void EvalIteratorState::addXMLQueryProfile(EvalProfile& aProfile)
+{
+  std::stringstream lProfileStream;
+  XMLIterPrinter lPrinter(lProfileStream, "", true);
+  print_iter_plan( lPrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
+
+  {
+    DisableProfiling lDisableProfiling;
+    zorba::XmlDataManager_t lDataManager = Zorba::getInstance(0)->getXmlDataManager();
+    zorba::Item lDocItem = lDataManager->parseXML(lProfileStream);
+    zorba::Iterator_t lIterator = lDocItem.getChildren();
+    lIterator->open();
+    lIterator->next(aProfile.theProfile);
+    lIterator->close();
+  }
+}
+
+void EvalIteratorState::addJSONQueryProfile(EvalProfile& aProfile)
+{
+  std::stringstream lProfileStream;
+  JSONIterPrinter lPrinter(lProfileStream, "", true);
+  print_iter_plan( lPrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
+
+  {
+    DisableProfiling lDisableProfiling;
+    zorba::JsonDataManager_t lDataManager = Zorba::getInstance(0)->getJsonDataManager();
+    zorba::JsonDataManager::ParseOptions lOptions;
+    lOptions.setMultipleTopLevelItems(false);
+    zorba::ItemSequence_t lDataSeq = lDataManager->parseJSON(lProfileStream, lOptions);
+    zorba::Item lData;
+    zorba::Iterator_t lIterator = lDataSeq->getIterator();
+    lIterator->open();
+    lIterator->next(lData);
+    lIterator->close();
+
+    zorba::ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
+    std::vector<zorba::Item> lItems;
+    lItems.push_back(lData);
+    aProfile.theProfile = lFactory->createJSONArray(lItems);
+  }
+
+}
+
+void EvalIteratorState::addDOTQueryProfile(EvalProfile& aProfile)
+{
+  std::stringstream lProfileStream;
+  DOTIterPrinter lPrinter(lProfileStream, "", true);
+  print_iter_plan( lPrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
+
+  zorba::ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
+  aProfile.theProfile = lFactory->createString(lProfileStream.str());
+}
 
 /****************************************************************************//**
 

@@ -1,0 +1,29 @@
+<iterator-tree>
+  <FLWORIterator prof-calls="1" prof-next-calls="4" prof-cpu="39.3401" prof-wall="39.3922" prof-name="FLWORIterator">
+    <ForVariable name="i">
+      <OpToIterator prof-calls="1" prof-next-calls="4" prof-cpu="0.058323" prof-wall="0.057039" prof-name="op:to">
+        <SingletonIterator value="xs:integer(1)" prof-calls="1" prof-next-calls="1" prof-cpu="0.005466" prof-wall="0.004336" prof-name="SingletonIterator"/>
+        <SingletonIterator value="xs:integer(3)" prof-calls="1" prof-next-calls="1" prof-cpu="0.000717" prof-wall="0.000338" prof-name="SingletonIterator"/>
+      </OpToIterator>
+    </ForVariable>
+    <ReturnClause prof-calls="3" prof-next-calls="6" prof-cpu="39.1516" prof-wall="39.204" prof-name="EvalIterator">
+      <EvalIterator prof-calls="3" prof-next-calls="6" prof-cpu="39.1516" prof-wall="39.204" prof-name="EvalIterator" prof-compilation-cpu="1.98728" prof-compilation-wall="1.98975">
+        <EvalQueryIterator prof-name="EvalQueryIterator" prof-calls="1" prof-next-calls="2" prof-cpu="0.001697" prof-wall="0.00081" prof-compilation-cpu="0.845558" prof-compilation-wall="0.846524" prof-body="1+1">
+            <SingletonIterator value="xs:integer(2)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001697" prof-wall="0.00081" prof-name="SingletonIterator"/>
+        </EvalQueryIterator>
+        <EvalQueryIterator prof-name="EvalQueryIterator" prof-calls="1" prof-next-calls="2" prof-cpu="0.001837" prof-wall="0.001012" prof-compilation-cpu="0.615263" prof-compilation-wall="0.616074" prof-body="2+2">
+            <SingletonIterator value="xs:integer(4)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001837" prof-wall="0.001012" prof-name="SingletonIterator"/>
+        </EvalQueryIterator>
+        <EvalQueryIterator prof-name="EvalQueryIterator" prof-calls="1" prof-next-calls="2" prof-cpu="0.001768" prof-wall="0.000995" prof-compilation-cpu="0.52646" prof-compilation-wall="0.527153" prof-body="3+3">
+            <SingletonIterator value="xs:integer(6)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001768" prof-wall="0.000995" prof-name="SingletonIterator"/>
+        </EvalQueryIterator>
+        <ConcatStrIterator prof-calls="3" prof-next-calls="3" prof-cpu="0.120843" prof-wall="0.119141" prof-name="fn:concat">
+          <ForVarIterator varname="i" prof-calls="3" prof-next-calls="6" prof-cpu="0.00633" prof-wall="0.003726" prof-name="ForVarIterator ($i)"/>
+          <SingletonIterator value="xs:string(+)" prof-calls="3" prof-next-calls="6" prof-cpu="0.003574" prof-wall="0.001537" prof-name="SingletonIterator"/>
+          <ForVarIterator varname="i" prof-calls="3" prof-next-calls="6" prof-cpu="0.003152" prof-wall="0.000993" prof-name="ForVarIterator ($i)"/>
+        </ConcatStrIterator>
+        <ForVarIterator varname="i" prof-calls="3" prof-next-calls="6" prof-cpu="0.005735" prof-wall="0.002205" prof-name="ForVarIterator ($i)"/>
+      </EvalIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>

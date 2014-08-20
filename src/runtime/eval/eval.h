@@ -32,7 +32,7 @@ class IterPrinter;
 struct EvalProfile
 {
   std::string       theQuery;
-  std::string       theProfile;
+  zorba::Item       theProfile;
   double            theCompilationCPUTime;
   double            theCompilationWallTime;
   unsigned          theCallCount;
@@ -56,6 +56,21 @@ struct EvalProfile
 
 class EvalIteratorState : public PlanIteratorState
 {
+  struct DisableProfiling
+  {
+    Zorba_profile_format_t theFormat;
+    DisableProfiling():
+      theFormat(zorba::Properties::instance().getProfileFormat())
+    {
+      zorba::Properties::instance().setProfileFormat(PROFILE_FORMAT_NONE);
+    }
+
+    ~DisableProfiling()
+    {
+      zorba::Properties::instance().setProfileFormat(theFormat);
+    }
+  };
+
 public:
   PlanIter_t                       thePlan;
   PlanWrapper_t                    thePlanWrapper;
@@ -65,7 +80,6 @@ public:
   std::vector<EvalProfile>         theEvalProfiles;
   double                           theCompilationsCPUTime;
   double                           theCompilationsWallTime;
-  std::unique_ptr<IterPrinter>     thePrinter;
 
 public:
   EvalIteratorState();
@@ -78,7 +92,9 @@ public:
       const double aCompilationWallTime);
 
   void addQueryProfile();
-
+  void addXMLQueryProfile(EvalProfile& aProfile);
+  void addJSONQueryProfile(EvalProfile& aProfile);
+  void addDOTQueryProfile(EvalProfile& aProfile);
 };
 
 

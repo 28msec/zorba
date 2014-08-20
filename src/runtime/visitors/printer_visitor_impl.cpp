@@ -529,7 +529,7 @@ void PrinterVisitor::beginVisit( EvalIterator const &i )
       thePrinter.addDecAttribute( "prof-compilation-cpu", lEvalProfile.theCompilationCPUTime );
       thePrinter.addDecAttribute( "prof-compilation-wall", lEvalProfile.theCompilationWallTime );
       thePrinter.addAttribute( "prof-body", lEvalProfile.theQuery );
-      thePrinter.addRawStructure( "iterators", lEvalProfile.theProfile.c_str() );
+      thePrinter.addItemAttribute( "iterators", lEvalProfile.theProfile );
       thePrinter.endBeginVisit( theId );
       thePrinter.startEndVisit();
       thePrinter.endEndVisit();

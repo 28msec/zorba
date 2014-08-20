@@ -51,6 +51,8 @@ FILE (MAKE_DIRECTORY ${APITEST_OUT_DIRPATH})
 
 FILE (TO_NATIVE_PATH ${ZORBA_EXE} NATIVE_ZORBA_EXE)
 
+SET (APITEST_COMMAND "${NATIVE_ZORBA_EXE} --iterator-tree ${FORMAT} --no-tree-ids --no-serializer ${APITEST_ARGS} ${APITEST_QUERY}")
+MESSAGE(STATUS "Generating plan: ${APITEST_COMMAND}")
 STRING(REGEX MATCHALL "[^ ]+" APITEST_ARGS_LIST "${APITEST_ARGS}")    
 EXECUTE_PROCESS (
   COMMAND
@@ -72,7 +74,7 @@ IF (("${EXIT_CODE}" STREQUAL "0") OR (${APITEST_SPEC_CONTENTS} MATCHES "Error:")
     COMMAND
       ${NATIVE_ZORBA_EXE}
       -f -q ${PLANTEST_XQ_PATH}
-      -e command:="${NATIVE_ZORBA_EXE} --profile ${FORMAT} --no-tree-ids --no-serializer ${APITEST_ARGS} ${APITEST_QUERY}"
+      -e command:="${APITEST_COMMAND}"
       -e format:=${FORMAT}
       -e expected-filepath:=${APITEST_EXPECTED_FILEPATH}
       -e result-filepath:=${APITEST_RESULT_FILEPATH} 
