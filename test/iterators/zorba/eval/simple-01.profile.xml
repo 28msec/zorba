@@ -1,0 +1,8 @@
+<iterator-tree>
+  <EvalIterator prof-calls="1" prof-next-calls="2" prof-cpu="1.27433" prof-wall="1.2736" prof-name="EvalIterator" prof-profiling-cpu="18.0404" prof-profiling-wall="18.0602" prof-compilation-cpu="1.10195" prof-compilation-wall="1.10326">
+    <EvalQueryIterator prof-name="EvalQueryIterator" prof-calls="1" prof-next-calls="2" prof-cpu="0.001666" prof-wall="0.000875" prof-compilation-cpu="1.10195" prof-compilation-wall="1.10326" prof-body="1+1">
+        <SingletonIterator value="xs:integer(2)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001666" prof-wall="0.000875" prof-name="SingletonIterator"/>
+    </EvalQueryIterator>
+    <SingletonIterator value="xs:string(1+1)" prof-calls="1" prof-next-calls="1" prof-cpu="0.004421" prof-wall="0.003002" prof-name="SingletonIterator"/>
+  </EvalIterator>
+</iterator-tree>

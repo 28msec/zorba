@@ -490,15 +490,18 @@ void PrinterVisitor::beginVisit( EvalIterator const &i )
 {
   thePrinter.startBeginVisit( "EvalIterator", ++theId );
   int theEvalId = theId;
-  printCommons( &i, theId );
   Properties const &props = Properties::instance();
 
   if ( props.getCollectProfile() && thePlanState )
   {
-    EvalIteratorState const *const lState =
+    EvalIteratorState * lState =
         StateTraitsImpl<EvalIteratorState>::getState(
-          *thePlanState, i.getStateOffset());
+            *thePlanState, i.getStateOffset());
 
+    lState->profile_data_.data_.removeTime(lState->theProfilingCPUTime, lState->theProfilingWallTime);
+    printCommons( &i, theId );
+    thePrinter.addDecAttribute( "prof-profiling-cpu", lState->theProfilingCPUTime );
+    thePrinter.addDecAttribute( "prof-profiling-wall", lState->theProfilingWallTime );
     thePrinter.addDecAttribute( "prof-compilation-cpu", lState->theCompilationsCPUTime );
     thePrinter.addDecAttribute( "prof-compilation-wall", lState->theCompilationsWallTime );
 
@@ -529,12 +532,15 @@ void PrinterVisitor::beginVisit( EvalIterator const &i )
       thePrinter.addDecAttribute( "prof-compilation-cpu", lEvalProfile.theCompilationCPUTime );
       thePrinter.addDecAttribute( "prof-compilation-wall", lEvalProfile.theCompilationWallTime );
       thePrinter.addAttribute( "prof-body", lEvalProfile.theQuery );
-      thePrinter.addRawStructure( "iterators", lEvalProfile.theProfile.c_str() );
+      thePrinter.addItemAttribute( "iterators", lEvalProfile.theProfile );
       thePrinter.endBeginVisit( theId );
       thePrinter.startEndVisit();
       thePrinter.endEndVisit();
     }
   }
+  else
+    printCommons( &i, theId );
+
   thePrinter.endBeginVisit( theEvalId );
 }
 DEF_END_VISIT( EvalIterator )

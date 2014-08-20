@@ -194,6 +194,11 @@ struct mbr_fn {
     cpu_time_ += cpu;
     wall_time_ += wall;
   }
+
+  void removeTime( double cpu, double wall ) {
+      cpu_time_ -= cpu;
+      wall_time_ -= wall;
+    }
 };
 
 
@@ -219,6 +224,7 @@ struct profile_data
 class PlanIteratorState
 {
   friend class TimerWrapper;
+  friend class PrinterVisitor;
 public:
   static const uint32_t DUFFS_ALLOCATE_RESOURCES = 0;
 

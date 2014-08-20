@@ -4,41 +4,41 @@
       "kind": "EvalIterator",
       "prof-calls": 1,
       "prof-next-calls": 2,
-      "prof-cpu": 1.13624,
-      "prof-wall": 1.13552,
+      "prof-cpu": 1.22799,
+      "prof-wall": 1.22703,
       "prof-name": "EvalIterator",
-      "prof-compilation-cpu": 0.876357,
-      "prof-compilation-wall": 0.877387,
+      "prof-profiling-cpu": 16.7347,
+      "prof-profiling-wall": 16.7532,
+      "prof-compilation-cpu": 1.06576,
+      "prof-compilation-wall": 1.06698,
       "iterators": [
         {
           "kind": "EvalQueryIterator",
           "prof-name": "EvalQueryIterator",
           "prof-calls": 1,
           "prof-next-calls": 2,
-          "prof-cpu": 0.001709,
-          "prof-wall": 0.000863,
-          "prof-compilation-cpu": 0.876357,
-          "prof-compilation-wall": 0.877387,
+          "prof-cpu": 0.001514,
+          "prof-wall": 0.000738,
+          "prof-compilation-cpu": 1.06576,
+          "prof-compilation-wall": 1.06698,
           "prof-body": "1+1",
-          "iterators": [
-            {
-              "kind": "SingletonIterator",
-              "value": "xs:integer(2)",
-              "prof-calls": 1,
-              "prof-next-calls": 2,
-              "prof-cpu": 0.001709,
-              "prof-wall": 0.000863,
-              "prof-name": "SingletonIterator"
-            }
-          ]
+          "iterators": [ {
+              "kind" : "SingletonIterator", 
+              "value" : "xs:integer(2)", 
+              "prof-calls" : 1, 
+              "prof-next-calls" : 2, 
+              "prof-cpu" : 0.001514, 
+              "prof-wall" : 0.000738, 
+              "prof-name" : "SingletonIterator"
+            } ]
         },
         {
           "kind": "SingletonIterator",
           "value": "xs:string(1+1)",
           "prof-calls": 1,
           "prof-next-calls": 1,
-          "prof-cpu": 0.002532,
-          "prof-wall": 0.001934,
+          "prof-cpu": 0.003731,
+          "prof-wall": 0.003097,
           "prof-name": "SingletonIterator"
         }
       ]

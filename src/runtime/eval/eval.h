@@ -23,7 +23,8 @@
 
 #include "runtime/base/narybase.h"
 
-#include <zorba/internal/unique_ptr.h>
+#include "zorba/internal/unique_ptr.h"
+#include "zorba/properties.h"
 
 namespace zorba {
 
@@ -32,21 +33,21 @@ class IterPrinter;
 struct EvalProfile
 {
   std::string       theQuery;
-  std::string       theProfile;
-  double            theCompilationCPUTime;
-  double            theCompilationWallTime;
+  zorba::Item       theProfile;
   unsigned          theCallCount;
   unsigned          theNextCount;
+  double            theCompilationCPUTime;
+  double            theCompilationWallTime;
   double            theExecutionCPUTime;
   double            theExecutionWallTime;
   PlanIterator*     theIterator;
 
   EvalProfile(const std::string& aQuery, const double aCompilationCPUTime, const double aCompilationWallTime):
     theQuery(aQuery),
-    theCompilationCPUTime(aCompilationCPUTime),
-    theCompilationWallTime(aCompilationWallTime),
     theCallCount(0),
     theNextCount(0),
+    theCompilationCPUTime(aCompilationCPUTime),
+    theCompilationWallTime(aCompilationWallTime),
     theExecutionCPUTime(0),
     theExecutionWallTime(0),
     theIterator(0)
@@ -56,6 +57,40 @@ struct EvalProfile
 
 class EvalIteratorState : public PlanIteratorState
 {
+  struct ProfilingTimeWrapper
+  {
+    EvalIteratorState& theState;
+    time::cpu::timer theCPUTimer;
+    time::wall::timer theWallTimer;
+    ProfilingTimeWrapper(EvalIteratorState& aState):
+      theState(aState)
+    {
+      theCPUTimer.start();
+      theWallTimer.start();
+    }
+
+    ~ProfilingTimeWrapper()
+    {
+      theState.theProfilingCPUTime += theCPUTimer.elapsed();
+      theState.theProfilingWallTime += theWallTimer.elapsed();
+    }
+  };
+
+  struct DisableProfiling
+  {
+    Zorba_profile_format_t theFormat;
+    DisableProfiling():
+      theFormat(zorba::Properties::instance().getProfileFormat())
+    {
+      zorba::Properties::instance().setProfileFormat(PROFILE_FORMAT_NONE);
+    }
+
+    ~DisableProfiling()
+    {
+      zorba::Properties::instance().setProfileFormat(theFormat);
+    }
+  };
+
 public:
   PlanIter_t                       thePlan;
   PlanWrapper_t                    thePlanWrapper;
@@ -65,7 +100,8 @@ public:
   std::vector<EvalProfile>         theEvalProfiles;
   double                           theCompilationsCPUTime;
   double                           theCompilationsWallTime;
-  std::unique_ptr<IterPrinter>     thePrinter;
+  double                           theProfilingCPUTime;
+  double                           theProfilingWallTime;
 
 public:
   EvalIteratorState();
@@ -77,8 +113,10 @@ public:
   void addQuery(const std::string& aQuery, const double aCompilationCPUTime,
       const double aCompilationWallTime);
 
-  void addQueryProfile();
-
+  void addQueryProfile(bool aTrackProfilingTime);
+  void addXMLQueryProfile(EvalProfile& aProfile);
+  void addJSONQueryProfile(EvalProfile& aProfile);
+  void addDOTQueryProfile(EvalProfile& aProfile);
 };
 
 

@@ -25,6 +25,8 @@
 #include "util/json_util.h"
 #include "util/indent.h"
 #include "util/xml_util.h"
+#include "zorba/serializer.h"
+#include "zorba/singleton_item_sequence.h"
 
 using namespace std;
 
@@ -42,6 +44,119 @@ IterPrinter::IterPrinter( ostream &os, char const *descr,  const bool ignore_sta
 IterPrinter::~IterPrinter() {
   // out-of-line since it's virtual
 }
+
+template<typename T>
+void IterPrinter::doAddVecAttribute( char const *name, const std::vector<T>& values )
+{
+  std::stringstream joinedValue;
+  for (typename std::vector<T>::size_type i = 0; i < values.size(); ++i)
+  {
+    joinedValue << values[i];
+    if (i < (values.size() -1))
+      joinedValue << " ";
+  }
+  addAttribute( name, joinedValue.str().c_str() );
+}
+
+void IterPrinter::addVecAttribute( char const *name, const std::vector<std::string>& values )
+{
+  doAddVecAttribute( name, values );
+}
+
+void IterPrinter::addVecAttribute( char const *name, const std::vector<int>& values )
+{
+  doAddVecAttribute( name, values );
+}
+
+void IterPrinter::addItemAttribute( char const *name, const zorba::Item& value )
+{
+  if (value.isNull())
+    return;
+
+  if (value.isJSONItem() || value.isNode())
+  {
+    Zorba_SerializerOptions_t serOptions;
+    serOptions.indent = ZORBA_INDENT_YES;
+    Serializer_t serializer = Serializer::createSerializer(serOptions);
+
+    std::stringstream valueSS;
+    zorba::SingletonItemSequence lSeq(value);
+    serializer->serialize(lSeq.getIterator(), valueSS);
+
+    addAttribute(name, valueSS.str().c_str());
+  }
+  else if (value.isAtomic())
+  {
+    switch (value.getTypeCode())
+    {
+      case zorba::store::XS_STRING:
+      case zorba::store::XS_NORMALIZED_STRING:
+      case zorba::store::XS_TOKEN:
+      case zorba::store::XS_LANGUAGE:
+      case zorba::store::XS_NMTOKEN:
+      case zorba::store::XS_NAME:
+      case zorba::store::XS_NCNAME:
+      case zorba::store::XS_ID:
+      case zorba::store::XS_IDREF:
+      case zorba::store::XS_ENTITY:
+      case zorba::store::XS_UNTYPED_ATOMIC:
+      case zorba::store::XS_DATETIME:
+      case zorba::store::XS_DATE:
+      case zorba::store::XS_TIME:
+      case zorba::store::XS_DURATION:
+      case zorba::store::XS_DT_DURATION:
+      case zorba::store::XS_YM_DURATION:
+      case zorba::store::XS_GYEAR_MONTH:
+      case zorba::store::XS_GYEAR:
+      case zorba::store::XS_GMONTH_DAY:
+      case zorba::store::XS_GDAY:
+      case zorba::store::XS_GMONTH:
+      case zorba::store::XS_BASE64BINARY:
+      case zorba::store::XS_HEXBINARY:
+      case zorba::store::XS_ANY_URI:
+      case zorba::store::XS_QNAME:
+      case zorba::store::XS_NOTATION:
+      case zorba::store::XS_DATETIME_STAMP:
+        addAttribute(name, value.getStringValue().c_str());
+        return;
+
+      case zorba::store::XS_FLOAT:
+      case zorba::store::XS_DOUBLE:
+      case zorba::store::XS_DECIMAL:
+        addDecAttribute(name, value.getDoubleValue());
+        return;
+
+      case zorba::store::XS_INTEGER:
+      case zorba::store::XS_NON_POSITIVE_INTEGER:
+      case zorba::store::XS_NEGATIVE_INTEGER:
+      case zorba::store::XS_POSITIVE_INTEGER:
+      case zorba::store::XS_NON_NEGATIVE_INTEGER:
+      case zorba::store::XS_INT:
+      case zorba::store::XS_LONG:
+      case zorba::store::XS_SHORT:
+      case zorba::store::XS_BYTE:
+      case zorba::store::XS_UNSIGNED_LONG:
+      case zorba::store::XS_UNSIGNED_SHORT:
+      case zorba::store::XS_UNSIGNED_INT:
+      case zorba::store::XS_UNSIGNED_BYTE:
+        addIntAttribute(name, value.getLongValue());
+        return;
+
+      case zorba::store::XS_BOOLEAN:
+        addBoolAttribute(name, value.getBooleanValue());
+        return;
+
+      case zorba::store::JS_NULL:
+        addAttribute(name, "null");
+        return;
+
+      case zorba::store::XS_ANY_ATOMIC:
+      case zorba::store::XS_LAST:
+        return;
+    }
+  }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -96,6 +211,28 @@ void XMLIterPrinter::addAttribute( char const *name, char const *value ) {
   os_ << ' ' << name << "=\"" << zorba::xml::serialize(value, true) << "\"";
 }
 
+void XMLIterPrinter::addItemAttribute( char const *name, const zorba::Item& value )
+{
+  if (value.isNull())
+    return;
+
+  if (value.isNode())
+  {
+    Zorba_SerializerOptions_t serOptions;
+    serOptions.indent = ZORBA_INDENT_YES;
+    serOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    Serializer_t serializer = Serializer::createSerializer(serOptions);
+
+    std::stringstream valueSS;
+    zorba::SingletonItemSequence lSeq(value);
+    serializer->serialize(lSeq.getIterator(), valueSS);
+
+    addRawStructure(name, valueSS.str().c_str());
+  }
+  else
+    IterPrinter::addItemAttribute(name, value);
+}
+
 void XMLIterPrinter::addRawStructure( char const *name, char const *value ) {
 
   assert( zorba::xml::is_NCName(zstring(name)) );
@@ -111,7 +248,7 @@ void XMLIterPrinter::addRawStructure( char const *name, char const *value ) {
       os_ << indent;
     ++value;
   }
-  os_ << dec_indent;
+  os_ << "\n" << dec_indent;
 
   theOpenStart = false;
 }
@@ -272,9 +409,31 @@ void JSONIterPrinter::addAttribute( char const *name, char const *value ) {
       << zorba::json::serialize(value) << "\"";
 }
 
+void JSONIterPrinter::addItemAttribute( char const *name, const zorba::Item& value )
+{
+  if (value.isNull())
+    return;
+
+  if (value.isJSONItem())
+  {
+    Zorba_SerializerOptions_t serOptions;
+    serOptions.indent = ZORBA_INDENT_YES;
+    Serializer_t serializer = Serializer::createSerializer(serOptions);
+
+    std::stringstream valueSS;
+    zorba::SingletonItemSequence lSeq(value);
+    serializer->serialize(lSeq.getIterator(), valueSS);
+
+    addRawStructure(name, valueSS.str().c_str());
+  }
+  else
+    IterPrinter::addItemAttribute(name, value);
+}
+
+
 void JSONIterPrinter::addRawStructure( char const *name, char const *value ) {
-  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": [\n";
-  os_ << inc_indent << indent;
+  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": ";
+  os_ << inc_indent;
   while (*value != '\0')
   {
     os_ << *value;
@@ -282,7 +441,7 @@ void JSONIterPrinter::addRawStructure( char const *name, char const *value ) {
       os_ << indent;
     ++value;
   }
-  os_ << '\n' << dec_indent << indent << ']';
+  os_ << dec_indent;
 }
 
 void JSONIterPrinter::addVecAttribute( char const *name, const std::vector<std::string>& values )
