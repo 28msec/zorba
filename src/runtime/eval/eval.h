@@ -23,7 +23,8 @@
 
 #include "runtime/base/narybase.h"
 
-#include <zorba/internal/unique_ptr.h>
+#include "zorba/internal/unique_ptr.h"
+#include "zorba/properties.h"
 
 namespace zorba {
 
