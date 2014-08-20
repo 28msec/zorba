@@ -116,7 +116,7 @@ declare variable $expected-filepath external;
  
 declare variable $result-filepath external;
 
-declare variable $filter := ("prof-cpu", "prof-wall", "prof-next-calls", "prof-compilation-cpu", "prof-compilation-wall");
+declare variable $filter := ("prof-cpu", "prof-wall", "prof-next-calls", "prof-compilation-cpu", "prof-compilation-wall", "prof-profiling-wall", "prof-profiling-cpu");
 
 variable $result-text as xs:string := file:read-text($result-filepath);
 variable $expected-text as xs:string := file:read-text($expected-filepath);
