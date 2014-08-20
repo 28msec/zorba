@@ -131,6 +131,8 @@ public:
 
   XmlDataManager_t getXmlDataManager();
 
+  JsonDataManager_t getJsonDataManager();
+
   ItemFactory* getItemFactory();
 
   audit::Provider* getAuditProvider();

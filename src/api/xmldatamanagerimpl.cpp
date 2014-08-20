@@ -372,12 +372,13 @@ ItemSequence_t XmlDataManagerImpl::parseXML(
 ********************************************************************************/
 void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler)
 {
-  theContext = new StaticContextImpl(aDiagnosticHandler);
   if (!theUserDiagnosticHandler)
     delete theDiagnosticHandler;
 
   theDiagnosticHandler = aDiagnosticHandler;
   theUserDiagnosticHandler = true;
+
+  initStaticContext(aDiagnosticHandler);
 
   if (theColManager)
   {

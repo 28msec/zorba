@@ -28,6 +28,7 @@
 #include "api/documentmanagerimpl.h"
 #include "api/itemfactoryimpl.h"
 #include "api/unmarshaller.h"
+#include "api/jsondatamanagerimpl.h"
 #include "api/xmldatamanagerimpl.h"
 //#include "api/item_iter_vector.h"
 #include "api/auditimpl.h"
@@ -129,6 +130,7 @@ void ZorbaImpl::shutdownInternal(bool soft)
   {
     Loki::DeletableSingleton<ItemFactoryImpl>::GracefulDelete();
     Loki::DeletableSingleton<XmlDataManagerImpl>::GracefulDelete();
+    Loki::DeletableSingleton<JsonDataManagerImpl>::GracefulDelete();
     void* store = &GENV_STORE;
     GlobalEnvironment::destroy();
     StoreManager::shutdownStore(store);
@@ -266,6 +268,15 @@ ItemFactory* ZorbaImpl::getItemFactory()
 XmlDataManager_t ZorbaImpl::getXmlDataManager()
 {
   return new XmlDataManagerImpl();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JsonDataManager_t ZorbaImpl::getJsonDataManager()
+{
+  return new JsonDataManagerImpl();
 }
 
 
