@@ -432,8 +432,8 @@ void JSONIterPrinter::addItemAttribute( char const *name, const zorba::Item& val
 
 
 void JSONIterPrinter::addRawStructure( char const *name, char const *value ) {
-  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\":\n";
-  os_ << inc_indent << indent;
+  os_ << ",\n" << indent << "\"" << zorba::json::serialize(name) << "\": ";
+  os_ << inc_indent;
   while (*value != '\0')
   {
     os_ << *value;
@@ -441,7 +441,7 @@ void JSONIterPrinter::addRawStructure( char const *name, char const *value ) {
       os_ << indent;
     ++value;
   }
-  os_ << '\n' << dec_indent;
+  os_ << dec_indent;
 }
 
 void JSONIterPrinter::addVecAttribute( char const *name, const std::vector<std::string>& values )

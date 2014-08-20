@@ -33,20 +33,20 @@ struct EvalProfile
 {
   std::string       theQuery;
   zorba::Item       theProfile;
-  double            theCompilationCPUTime;
-  double            theCompilationWallTime;
   unsigned          theCallCount;
   unsigned          theNextCount;
+  double            theCompilationCPUTime;
+  double            theCompilationWallTime;
   double            theExecutionCPUTime;
   double            theExecutionWallTime;
   PlanIterator*     theIterator;
 
   EvalProfile(const std::string& aQuery, const double aCompilationCPUTime, const double aCompilationWallTime):
     theQuery(aQuery),
-    theCompilationCPUTime(aCompilationCPUTime),
-    theCompilationWallTime(aCompilationWallTime),
     theCallCount(0),
     theNextCount(0),
+    theCompilationCPUTime(aCompilationCPUTime),
+    theCompilationWallTime(aCompilationWallTime),
     theExecutionCPUTime(0),
     theExecutionWallTime(0),
     theIterator(0)
@@ -56,6 +56,25 @@ struct EvalProfile
 
 class EvalIteratorState : public PlanIteratorState
 {
+  struct ProfilingTimeWrapper
+  {
+    EvalIteratorState& theState;
+    time::cpu::timer theCPUTimer;
+    time::wall::timer theWallTimer;
+    ProfilingTimeWrapper(EvalIteratorState& aState):
+      theState(aState)
+    {
+      theCPUTimer.start();
+      theWallTimer.start();
+    }
+
+    ~ProfilingTimeWrapper()
+    {
+      theState.theProfilingCPUTime += theCPUTimer.elapsed();
+      theState.theProfilingWallTime += theWallTimer.elapsed();
+    }
+  };
+
   struct DisableProfiling
   {
     Zorba_profile_format_t theFormat;
@@ -80,6 +99,8 @@ public:
   std::vector<EvalProfile>         theEvalProfiles;
   double                           theCompilationsCPUTime;
   double                           theCompilationsWallTime;
+  double                           theProfilingCPUTime;
+  double                           theProfilingWallTime;
 
 public:
   EvalIteratorState();
@@ -91,7 +112,7 @@ public:
   void addQuery(const std::string& aQuery, const double aCompilationCPUTime,
       const double aCompilationWallTime);
 
-  void addQueryProfile();
+  void addQueryProfile(bool aTrackProfilingTime);
   void addXMLQueryProfile(EvalProfile& aProfile);
   void addJSONQueryProfile(EvalProfile& aProfile);
   void addDOTQueryProfile(EvalProfile& aProfile);

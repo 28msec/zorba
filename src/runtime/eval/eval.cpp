@@ -62,7 +62,9 @@ DEF_GET_NAME_AS_STRING(EvalIterator)
 ********************************************************************************/
 EvalIteratorState::EvalIteratorState():
   theCompilationsCPUTime(0),
-  theCompilationsWallTime(0)
+  theCompilationsWallTime(0),
+  theProfilingCPUTime(0),
+  theProfilingWallTime(0)
 {
 }
 
@@ -73,7 +75,7 @@ EvalIteratorState::EvalIteratorState():
 EvalIteratorState::~EvalIteratorState()
 {
   if (thePlanWrapper && Properties::instance().getCollectProfile())
-    addQueryProfile();
+    addQueryProfile(false);
 }
 
 
@@ -83,7 +85,7 @@ EvalIteratorState::~EvalIteratorState()
 void EvalIteratorState::reset(PlanState& planState)
 {
   if (thePlanWrapper && planState.theProfile)
-    addQueryProfile();
+    addQueryProfile(true);
 
   PlanIteratorState::reset(planState);
 
@@ -106,39 +108,45 @@ void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompil
 /****************************************************************************//**
 
 ********************************************************************************/
-void EvalIteratorState::addQueryProfile()
+void EvalIteratorState::addQueryProfile(bool aTrackProfilingTime)
 {
   assert(theEvalProfiles.size() >0 &&
          theEvalProfiles[theEvalProfiles.size()-1].theProfile.isNull());
 
-  Zorba_profile_format_t const lFormat = Properties::instance().getProfileFormat();
-  EvalProfile& lProfile = theEvalProfiles[theEvalProfiles.size()-1];
-  switch ( lFormat )
   {
-    case PROFILE_FORMAT_DOT:
-      addDOTQueryProfile(lProfile);
-      break;
-    case PROFILE_FORMAT_JSON:
-      addJSONQueryProfile(lProfile);
-      break;
-    case PROFILE_FORMAT_XML:
-      addXMLQueryProfile(lProfile);
-      break;
-    default: // to silence warning
-      break;
-  }
+    EvalProfile& lProfile = theEvalProfiles[theEvalProfiles.size()-1];
+    std::auto_ptr<ProfilingTimeWrapper> lPTWrapper;
+    if (aTrackProfilingTime)
+      lPTWrapper.reset(new ProfilingTimeWrapper(*this));
 
-  PlanIteratorState const *const pi_state =
+    Zorba_profile_format_t const lFormat = Properties::instance().getProfileFormat();
+    switch ( lFormat )
+    {
+      case PROFILE_FORMAT_DOT:
+        addDOTQueryProfile(lProfile);
+        break;
+      case PROFILE_FORMAT_JSON:
+        addJSONQueryProfile(lProfile);
+        break;
+      case PROFILE_FORMAT_XML:
+        addXMLQueryProfile(lProfile);
+        break;
+      default: // to silence warning
+        break;
+    }
+
+    PlanIteratorState const *const pi_state =
         StateTraitsImpl<PlanIteratorState>::getState(
             *thePlanWrapper->thePlanState, thePlanWrapper->theIterator->getStateOffset());
 
-  profile_data const &pd = pi_state->get_profile_data();
+    profile_data const &pd = pi_state->get_profile_data();
 
-  lProfile.theCallCount = pd.data_.call_count_;
-  lProfile.theNextCount = pd.data_.next_count_;
-  lProfile.theExecutionCPUTime = pd.data_.cpu_time_;
-  lProfile.theExecutionWallTime = pd.data_.wall_time_;
-  lProfile.theIterator = thePlanWrapper->theIterator;
+    lProfile.theCallCount = pd.data_.call_count_;
+    lProfile.theNextCount = pd.data_.next_count_;
+    lProfile.theExecutionCPUTime = pd.data_.cpu_time_;
+    lProfile.theExecutionWallTime = pd.data_.wall_time_;
+    lProfile.theIterator = thePlanWrapper->theIterator;
+  }
 }
 
 
@@ -371,7 +379,7 @@ bool EvalIterator::nextORcount(
   }
 
   if (planState.theProfile)
-    state->addQueryProfile();
+    state->addQueryProfile(true);
 
   state->thePlanWrapper = NULL;
 
