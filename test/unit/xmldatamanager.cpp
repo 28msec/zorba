@@ -66,5 +66,4 @@ int xmldatamanager(int argc, char* argv[])
   // make sure the diagnostic handler has been called
   return lCheck?0:1;
 }
-/* vim:set et sw=2 ts=2: */
 

@@ -24,6 +24,8 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/api_shared_types.h>
+#include <zorba/item_sequence.h>
 
 
 
@@ -31,7 +33,7 @@ using namespace zorba;
 
 
 void
-testMultipleXmlDataMgrInitilizations()
+testMultipleJsonDataMgrInitilizations()
 {
 
   Zorba* zorba = NULL;
@@ -41,11 +43,11 @@ testMultipleXmlDataMgrInitilizations()
   zorba = Zorba::getInstance(store);
 
   {
-    XmlDataManager_t mgr = zorba->getXmlDataManager();
+    JsonDataManager_t mgr = zorba->getJsonDataManager();
 
-    std::stringstream lDoc;
-    lDoc << "<foo><bar/></foo>";
-    mgr->parseXML( lDoc );
+    std::stringstream lObj;
+    lObj << "{\"a\":1}";
+    mgr->parseJSON(lObj);
   }
 
   zorba->shutdown();
@@ -55,10 +57,10 @@ testMultipleXmlDataMgrInitilizations()
   zorba = Zorba::getInstance(store);
 
   {
-    XmlDataManager_t mgr = zorba->getXmlDataManager();
-    std::stringstream lDoc;
-    lDoc << "<foo><bar/></foo>";
-    mgr->parseXML( lDoc );
+    JsonDataManager_t mgr = zorba->getJsonDataManager();
+    std::stringstream lObj;
+    lObj << "{\"a\":1}";
+    mgr->parseJSON(lObj);
   }
 
   zorba->shutdown();
@@ -67,11 +69,11 @@ testMultipleXmlDataMgrInitilizations()
 
 
 int
-xmldatamanager(int argc, char* argv[]) 
+jsondatamanager(int argc, char* argv[])
 {
   try
   {
-    testMultipleXmlDataMgrInitilizations();
+    testMultipleJsonDataMgrInitilizations();
   }
   catch (ZorbaException &e)
   {

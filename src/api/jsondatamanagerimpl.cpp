@@ -43,7 +43,7 @@
 namespace zorba {
 
 
-#define ZORBA_DM_TRY                                    \
+#define ZORBA_DM_TRY                                           \
   try
 
 #define ZORBA_DM_CATCH                                         \
@@ -179,12 +179,12 @@ ItemSequence_t JsonDataManagerImpl::parseJSON(
 ********************************************************************************/
 void JsonDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler)
 {
-  theContext = new StaticContextImpl(aDiagnosticHandler);
   if (!theUserDiagnosticHandler)
     delete theDiagnosticHandler;
 
   theDiagnosticHandler = aDiagnosticHandler;
   theUserDiagnosticHandler = true;
+  initStaticContext(aDiagnosticHandler);
 }
 
 } // namespace zorba
