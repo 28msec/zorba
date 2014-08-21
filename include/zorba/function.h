@@ -17,9 +17,13 @@
 #define ZORBA_FUNCTION_API_H
 
 #include <cstddef>
+#include <cassert>
+#include <string>
 #include <vector>
+#include <map>
 
 #include <zorba/config.h>
+#include <zorba/item.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/util/smart_ptr.h>
 
@@ -130,6 +134,9 @@ class ZORBA_DLL_PUBLIC Function : public SmartObject
 };
 
 
+typedef std::map<std::string, Item> ProfileDataMap;
+
+
 /**************************************************************************//**
   The ExternalFunction class serves as the base of subclasses that represent
   the implementation/body of external functions.
@@ -165,6 +172,8 @@ public:
    */
   virtual bool
   isContextual() const = 0;
+
+  virtual ProfileDataMap* getProfilingData() const { return NULL; }
 
 protected:
   Item

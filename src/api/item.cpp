@@ -37,6 +37,7 @@
 #include "store/api/store.h"
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
+#include "store/api/copymode.h"
 
 #include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
@@ -573,6 +574,16 @@ Item::isSeekable() const
   return false;
 }
 
+void
+Item::ensureSeekable()
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    m_item->ensureSeekable();
+  ITEM_CATCH
+}
+
 std::istream&
 Item::getStream()
 {
@@ -636,6 +647,17 @@ Item::getHexBinaryValue(size_t& s) const
   ITEM_CATCH
   // TODO: throw exception
 }
+
+Item
+Item::copy() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->copy(NULL, zorba::store::CopyMode());
+  ITEM_CATCH
+}
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

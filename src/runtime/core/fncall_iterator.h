@@ -39,6 +39,8 @@ class VectorItemSequence;
 
 class FunctionCache;
 
+class PrinterVisitor;
+
 /*******************************************************************************
 theCache:
 ---------
@@ -244,10 +246,13 @@ class ExtFunctionCallIteratorState : public FunctionCallIteratorState
   ItemSequence_t             theResult;
   Iterator_t                 theResultIter;
   bool                       theIsEvaluated;
+  ProfileDataMap           * theProfileDataMap;
 
   ExtFunctionCallIteratorState();
 
   ~ExtFunctionCallIteratorState();
+
+  ProfileDataMap* getProfileDataMap() const { return theProfileDataMap; }
 
   void reset(PlanState&);
 };
@@ -256,6 +261,8 @@ class ExtFunctionCallIteratorState : public FunctionCallIteratorState
 class ExtFunctionCallIterator : public NaryBaseIterator<ExtFunctionCallIterator,
                                                         ExtFunctionCallIteratorState>
 {
+  friend class PrinterVisitor;
+
 protected:
   rchandle<external_function> theFunctionDef;
   const ExternalFunction * theFunction;

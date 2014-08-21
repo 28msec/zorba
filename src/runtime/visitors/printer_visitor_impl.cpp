@@ -696,6 +696,23 @@ void PrinterVisitor::beginVisit( ExtFunctionCallIterator const &i ) {
       thePrinter.addBoolAttribute("cached", true);
   }
   printCommons(  &i, theId );
+
+  if (zorba::Properties::instance().getCollectProfile() && thePlanState)
+  {
+    ExtFunctionCallIteratorState const *const pi_state =
+        StateTraitsImpl<ExtFunctionCallIteratorState>::getState(
+            *thePlanState, i.getStateOffset());
+
+    const ProfileDataMap* lDataMap = pi_state->getProfileDataMap();
+    if (lDataMap)
+    {
+      for (ProfileDataMap::const_iterator lIt = lDataMap->begin();
+          lIt != lDataMap->end();
+          ++lIt)
+        thePrinter.addItemAttribute(lIt->first.c_str(), lIt->second);
+    }
+  }
+
   thePrinter.endBeginVisit( theId );
 }
 DEF_END_VISIT( ExtFunctionCallIterator )

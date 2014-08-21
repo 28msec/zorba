@@ -82,8 +82,9 @@ HttpClientModule::getExternalFunction(const String& aLocalname)
   return lFunc;
 }
 
-int HttpSendFunction::do_request(Request& aRequest, ItemSequence_t& aResult) const
+int HttpSendFunction::doRequest(Request& aRequest, ItemSequence_t& aResult) const
 {
+  ProfileWrapper lProfileWrapper(aRequest, theJSONProfileData, theXMLProfileData);
   CURL* lCURL = curl::create();
 
   std::unique_ptr<HttpRequestHandler> lHandler;
@@ -159,7 +160,7 @@ HttpSendFunction::evaluate(const ExternalFunction::Arguments_t& args,
     {
       try
       {
-        int lStatus = do_request(lRequest, lResult);
+        int lStatus = doRequest(lRequest, lResult);
 
         if (std::find(lRetrySpec.theRetryStatuses.begin(), lRetrySpec.theRetryStatuses.end(), lStatus) == lRetrySpec.theRetryStatuses.end())
           return lResult;
@@ -181,13 +182,13 @@ HttpSendFunction::evaluate(const ExternalFunction::Arguments_t& args,
       nanosleep(&lTs, 0);
 #endif
     }
-    do_request(lRequest, lResult);
+    doRequest(lRequest, lResult);
     return lResult;
   }
   else
   {
     ItemSequence_t lResult;
-    do_request(lRequest, lResult);
+    doRequest(lRequest, lResult);
     return lResult;
   }
 }

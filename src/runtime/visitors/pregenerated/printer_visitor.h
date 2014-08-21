@@ -26,8 +26,10 @@
 #define ZORBA_RUNTIME_PRINTER_VISITOR_H
 
 #include "runtime/visitors/planiter_visitor.h"
-
 #include "common/common.h"
+#include "zorba/function.h"
+
+
 
 namespace zorba {
 

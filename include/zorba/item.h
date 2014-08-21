@@ -430,12 +430,25 @@ public:
 
   /**
    * Checks whether the item's streamable content is arbitrarily
-   * (forward anb backward) seekable.
+   * (forward and backward) seekable.
    *
    * @return true only if it is.
    */
   bool
   isSeekable() const;
+
+  /**
+   * Makes the item's streamable content arbitrarily
+   * (forward and backward) seekable.
+   *
+   * If the item is not streamable, the function has
+   * no effect.
+   * If the item is streamable, but has already been
+   * consumed, an error is raised.
+   *
+   */
+  void
+  ensureSeekable();
 
   /**
    * Gets an istream for the item's content.
@@ -500,6 +513,18 @@ public:
    */
   const char*
   getHexBinaryValue(size_t& s) const;
+
+  /*
+   * Returns a deep copy of the given item.
+   * Types are preserved. Namespaces are preserved and inherited.
+   *
+   * Note that this function is only available for XML nodes, JSON objects and
+   * arrays.
+   *
+   * @return  A deep copy of the XML node, JSON object or array.
+   */
+  Item
+  copy() const;
 
 private:
   friend class Unmarshaller;

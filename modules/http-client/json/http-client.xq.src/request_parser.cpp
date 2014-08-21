@@ -141,6 +141,32 @@ bool RequestParser::getItem(const Item& aItem, const String& aName, const bool a
   return true;
 }
 
+bool RequestParser::getBody(const Item& aItem, const String& aName, const bool aMandatory, Item& aResult)
+{
+  if (!getItem(aItem, aName, aMandatory, aResult))
+    return false;
+
+  if (aResult.isAtomic())
+  {
+    store::SchemaTypeCode lTypeCode = aResult.getTypeCode();
+    switch (lTypeCode)
+    {
+      case store::XS_STRING:
+      case store::XS_BASE64BINARY:
+      case store::XS_HEXBINARY:
+        break;
+      default:
+        raiseTypeError("content", aResult.getType().getLocalName(), "string, base64Binary or hexBinary");
+    }
+  }
+  else if (aResult.isJSONItem())
+    raiseTypeError("content", "JSON item", "string, base64Binary or hexBinary");
+  else
+    raiseTypeError("content", "XML node", "string, base64Binary or hexBinary");
+
+  return true;
+}
+
 bool RequestParser::getArray(const Item& aItem, const String& aName, const bool aMandatory, Item& aResult)
 {
   aResult = aItem.getObjectValue(aName);
@@ -241,7 +267,7 @@ void RequestParser::parseBody(const Item& aItem, Body& aBody)
   getString(aItem, "media-type", true, aBody.theMediaType);
   getCharset(aBody.theMediaType, aBody.theCharset);
   getString(aItem, "src", false, aBody.theSrc);
-  getItem(aItem, "content", true, aBody.theContent);
+  getBody(aItem, "content", true, aBody.theContent);
 }
 
 void RequestParser::parsePart(const Item& aItem, Part& aPart)
