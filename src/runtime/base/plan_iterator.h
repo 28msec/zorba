@@ -27,7 +27,7 @@
 
 #include "compiler/parser/query_loc.h"
 
-#include "util/time_util.h"
+#include "zorba/util/timer.h"
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"

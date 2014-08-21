@@ -820,7 +820,8 @@ public:
 /*******************************************************************************
 ********************************************************************************/
 ExtFunctionCallIteratorState::ExtFunctionCallIteratorState():
-    theIsEvaluated(false)
+    theIsEvaluated(false),
+    theProfileDataMap(NULL)
 {
 }
 
@@ -835,8 +836,9 @@ ExtFunctionCallIteratorState::~ExtFunctionCallIteratorState()
   {
     m_extArgs[i]->removeReference();
   }
-}
 
+  delete theProfileDataMap;
+}
 
 void ExtFunctionCallIteratorState::reset(PlanState& planState)
 {
@@ -1309,6 +1311,15 @@ void ExtFunctionCallIterator::evaluate(PlanState& aPlanState, ExtFunctionCallIte
 
   if (isSequential())
     aPlanState.theGlobalDynCtx->changeSnapshot();
+
+  if (zorba::Properties::instance().getCollectProfile())
+  {
+    if (!aState->theProfileDataMap)
+      aState->theProfileDataMap = new ProfileDataMap();
+    else
+      aState->theProfileDataMap->clear();
+    aState->theProfileDataMap->swap(*theFunction->getProfilingData());
+  }
 }
 
 

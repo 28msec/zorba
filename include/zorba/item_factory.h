@@ -685,7 +685,7 @@ namespace zorba {
       * root (and single node) of a new XML tree.
       *
       * @param aParent     The parent P of the new node; may be NULL.
-      * @param aNodeName   The fully qualified name of the new node. The nemaspace
+      * @param aNodeName   The fully qualified name of the new node. The namespace
       *                    binding implied by this name will be added to the namespaces
       *                    of P. If the name prefix is "xml" and the local name is
       *                    "base", then the base-uri property of P will be set or

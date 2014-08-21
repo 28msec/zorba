@@ -99,9 +99,9 @@ declare function local:create-fwd-decl() as xs:string
 declare function local:create-includes() as xs:string
 {
   fn:concat(
-    '#include "runtime/visitors/planiter_visitor.h"',
-    $gen:newline, $gen:newline,
-    '#include "common/common.h"'
+    '#include "runtime/visitors/planiter_visitor.h"', $gen:newline, 
+    '#include "common/common.h"', $gen:newline,
+    '#include "zorba/function.h"', $gen:newline, $gen:newline
   )
 };
 
