@@ -1,0 +1,579 @@
+<iterator-tree>
+  <FLWORIterator prof-calls="1" prof-next-calls="1" prof-cpu="11.848" prof-wall="857.347" prof-name="FLWORIterator">
+    <ForVariable name="i">
+      <OpToIterator prof-calls="1" prof-next-calls="3" prof-cpu="0.032294" prof-wall="0.030543" prof-name="op:to">
+        <SingletonIterator value="xs:integer(1)" prof-calls="1" prof-next-calls="1" prof-cpu="0.001908" prof-wall="0.001304" prof-name="SingletonIterator"/>
+        <SingletonIterator value="xs:integer(2)" prof-calls="1" prof-next-calls="1" prof-cpu="0.000814" prof-wall="0.000401" prof-name="SingletonIterator"/>
+      </OpToIterator>
+    </ForVariable>
+    <MaterializeClause/>
+    <ReturnClause prof-calls="2" prof-next-calls="2" prof-cpu="11.658" prof-wall="857.158" prof-name="ApplyIterator">
+      <ApplyIterator prof-calls="2" prof-next-calls="2" prof-cpu="11.658" prof-wall="857.158" prof-name="ApplyIterator">
+        <UDFunctionCallIterator function="http:post" prof-calls="2" prof-next-calls="4" prof-cpu="11.6418" prof-wall="857.14" prof-name="http:post">
+          <SingletonIterator value="xs:string(http://zorbatest.lambda.nu:8080/cgi-bin/test-text)" prof-calls="3" prof-next-calls="4" prof-cpu="0.00317" prof-wall="0.001471" prof-name="SingletonIterator"/>
+          <SingletonIterator value="xs:string(poststring)" prof-calls="3" prof-next-calls="4" prof-cpu="0.002207" prof-wall="0.000708" prof-name="SingletonIterator"/>
+          <SingletonIterator value="xs:string(text/plain)" prof-calls="3" prof-next-calls="4" prof-cpu="0.002292" prof-wall="0.000774" prof-name="SingletonIterator"/>
+          <FLWORIterator prof-calls="2" prof-next-calls="4" prof-cpu="11.1703" prof-wall="856.669" prof-name="FLWORIterator">
+            <ForVariable name="href">
+              <LetVarIterator varname="href" prof-calls="2" prof-next-calls="4" prof-cpu="0.019004" prof-wall="0.017592" prof-name="LetVarIterator ($href)"/>
+            </ForVariable>
+            <ForVariable name="body">
+              <LetVarIterator varname="body" prof-calls="2" prof-next-calls="4" prof-cpu="0.009225" prof-wall="0.007807" prof-name="LetVarIterator ($body)"/>
+            </ForVariable>
+            <ForVariable name="content-type">
+              <LetVarIterator varname="content-type" prof-calls="2" prof-next-calls="4" prof-cpu="0.008974" prof-wall="0.00757" prof-name="LetVarIterator ($content-type)"/>
+            </ForVariable>
+            <MaterializeClause>
+              <MaterializeForVariable inputVar="href"/>
+              <MaterializeForVariable inputVar="content-type"/>
+              <MaterializeForVariable inputVar="body"/>
+            </MaterializeClause>
+            <ReturnClause prof-calls="2" prof-next-calls="4" prof-cpu="11.0528" prof-wall="856.551" prof-name="http:send-request">
+              <UDFunctionCallIterator function="http:send-request" prof-calls="2" prof-next-calls="4" prof-cpu="11.0528" prof-wall="856.551" prof-name="http:send-request">
+                <JSONDirectObjectIterator prof-calls="3" prof-next-calls="4" prof-cpu="0.175594" prof-wall="0.17342" prof-name="JSONDirectObjectIterator">
+                  <SingletonIterator value="xs:string(method)" prof-calls="3" prof-next-calls="2" prof-cpu="0.002251" prof-wall="0.001154" prof-name="SingletonIterator"/>
+                  <SingletonIterator value="xs:string(href)" prof-calls="3" prof-next-calls="2" prof-cpu="0.001785" prof-wall="0.00068" prof-name="SingletonIterator"/>
+                  <SingletonIterator value="xs:string(body)" prof-calls="3" prof-next-calls="2" prof-cpu="0.001794" prof-wall="0.00067" prof-name="SingletonIterator"/>
+                  <SingletonIterator value="xs:string(POST)" prof-calls="3" prof-next-calls="2" prof-cpu="0.00167" prof-wall="0.000643" prof-name="SingletonIterator"/>
+                  <ForVarIterator varname="href" prof-calls="3" prof-next-calls="2" prof-cpu="0.002044" prof-wall="0.001019" prof-name="ForVarIterator ($href)"/>
+                  <JSONDirectObjectIterator prof-calls="3" prof-next-calls="2" prof-cpu="0.119252" prof-wall="0.117031" prof-name="JSONDirectObjectIterator">
+                    <SingletonIterator value="xs:string(media-type)" prof-calls="3" prof-next-calls="2" prof-cpu="0.001704" prof-wall="0.000624" prof-name="SingletonIterator"/>
+                    <SingletonIterator value="xs:string(content)" prof-calls="3" prof-next-calls="2" prof-cpu="0.001729" prof-wall="0.000644" prof-name="SingletonIterator"/>
+                    <ForVarIterator varname="content-type" prof-calls="3" prof-next-calls="2" prof-cpu="0.001574" prof-wall="0.00055" prof-name="ForVarIterator ($content-type)"/>
+                    <ForVarIterator varname="body" prof-calls="3" prof-next-calls="2" prof-cpu="0.001705" prof-wall="0.000667" prof-name="ForVarIterator ($body)"/>
+                  </JSONDirectObjectIterator>
+                </JSONDirectObjectIterator>
+                <TreatIterator quant="" prof-calls="2" prof-next-calls="4" prof-cpu="10.7553" prof-wall="856.254" prof-name="TreatIterator">
+                  <FLWORIterator prof-calls="2" prof-next-calls="4" prof-cpu="10.7465" prof-wall="856.245" prof-name="FLWORIterator">
+                    <ForVariable name="request">
+                      <LetVarIterator varname="request" prof-calls="2" prof-next-calls="4" prof-cpu="0.174998" prof-wall="0.173847" prof-name="LetVarIterator ($request)"/>
+                    </ForVariable>
+                    <MaterializeClause>
+                      <MaterializeForVariable inputVar="request"/>
+                    </MaterializeClause>
+                    <ReturnClause prof-calls="2" prof-next-calls="4" prof-cpu="10.5038" prof-wall="856.002" prof-name="IfThenElseIterator">
+                      <IfThenElseIterator prof-calls="2" prof-next-calls="4" prof-cpu="10.5038" prof-wall="856.002" prof-name="IfThenElseIterator">
+                        <UDFunctionCallIterator function="http:check-request" prof-calls="2" prof-next-calls="4" prof-cpu="3.44593" prof-wall="3.4466" prof-name="http:check-request">
+                          <ForVarIterator varname="request" prof-calls="3" prof-next-calls="4" prof-cpu="0.00292" prof-wall="0.001282" prof-name="ForVarIterator ($request)"/>
+                          <PromoteIterator type="xs:boolean" prof-calls="2" prof-next-calls="4" prof-cpu="2.78931" prof-wall="2.79096" prof-name="PromoteIterator">
+                            <FLWORIterator prof-calls="2" prof-next-calls="4" prof-cpu="2.78041" prof-wall="2.78187" prof-name="FLWORIterator">
+                              <ForVariable name="$$opt_temp_1">
+                                <HoistIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.326278" prof-wall="0.324528" prof-name="HoistIterator">
+                                  <ErrorIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.253614" prof-wall="0.251691" prof-name="fn:error">
+                                    <SingletonIterator value="xs:QName(http://zorba.io/modules/http-client,http,REQUEST)" prof-calls="2" prof-next-calls="2" prof-cpu="0.001862" prof-wall="0.000759" prof-name="SingletonIterator"/>
+                                    <SingletonIterator value="xs:string(The specified request is not valid. The type of the body content must be string, base64Binary, or hexBinary.)" prof-calls="2" prof-next-calls="2" prof-cpu="0.001363" prof-wall="0.000529" prof-name="SingletonIterator"/>
+                                  </ErrorIterator>
+                                </HoistIterator>
+                              </ForVariable>
+                              <ForVariable name="$$opt_temp_0">
+                                <HoistIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.062759" prof-wall="0.060861" prof-name="HoistIterator">
+                                  <ErrorIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.047065" prof-wall="0.04517" prof-name="fn:error">
+                                    <SingletonIterator value="xs:QName(http://zorba.io/modules/http-client,http,REQUEST)" prof-calls="2" prof-next-calls="2" prof-cpu="0.001538" prof-wall="0.000612" prof-name="SingletonIterator"/>
+                                    <SingletonIterator value="xs:string(The specified request is not valid. The src and content fields are mutually exclusive.)" prof-calls="2" prof-next-calls="2" prof-cpu="0.00148" prof-wall="0.000655" prof-name="SingletonIterator"/>
+                                  </ErrorIterator>
+                                </HoistIterator>
+                              </ForVariable>
+                              <ForVariable name="request">
+                                <LetVarIterator varname="request" prof-calls="2" prof-next-calls="4" prof-cpu="0.015423" prof-wall="0.014036" prof-name="LetVarIterator ($request)"/>
+                              </ForVariable>
+                              <ReturnClause prof-calls="2" prof-next-calls="4" prof-cpu="2.34188" prof-wall="2.3431" prof-name="op:concatenate">
+                                <FnConcatIterator prof-calls="2" prof-next-calls="4" prof-cpu="2.34188" prof-wall="2.3431" prof-name="op:concatenate">
+                                  <FLWORIterator prof-calls="2" prof-next-calls="2" prof-cpu="1.21684" prof-wall="1.2171" prof-name="FLWORIterator">
+                                    <ForVariable name="body">
+                                      <MultiObjectLookupIterator prof-calls="2" prof-next-calls="4" prof-cpu="1.0693" prof-wall="1.06882" prof-name="op-zorba:multi-object-lookup">
+                                        <UDFunctionCallIterator function="libjn:descendant-objects" prof-calls="2" prof-next-calls="6" prof-cpu="1.03578" prof-wall="1.03399" prof-name="libjn:descendant-objects">
+                                          <ForVarIterator varname="request" prof-calls="3" prof-next-calls="4" prof-cpu="0.003326" prof-wall="0.001781" prof-name="ForVarIterator ($request)"/>
+                                          <FLWORIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.808083" prof-wall="0.806924" prof-name="FLWORIterator">
+                                            <ForVariable name="i">
+                                              <LetVarIterator varname="items" prof-calls="2" prof-next-calls="4" prof-cpu="0.01213" prof-wall="0.010764" prof-name="LetVarIterator ($items)"/>
+                                            </ForVariable>
+                                            <ReturnClause prof-calls="2" prof-next-calls="6" prof-cpu="0.776625" prof-wall="0.774469" prof-name="libjn:descendant-objects-priv">
+                                              <UDFunctionCallIterator function="libjn:descendant-objects-priv" prof-calls="2" prof-next-calls="6" prof-cpu="0.776625" prof-wall="0.774469" prof-name="libjn:descendant-objects-priv">
+                                                <ForVarIterator varname="i" prof-calls="3" prof-next-calls="4" prof-cpu="0.002678" prof-wall="0.001028" prof-name="ForVarIterator ($i)"/>
+                                                <TreatIterator type="[JSONXQType object]" quant="*" prof-calls="2" prof-next-calls="6" prof-cpu="0.397766" prof-wall="0.396385" prof-name="TreatIterator">
+                                                  <FLWORIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.391136" prof-wall="0.389674" prof-name="FLWORIterator">
+                                                    <ForVariable name="i">
+                                                      <LetVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.010029" prof-wall="0.008694" prof-name="LetVarIterator ($i)"/>
+                                                    </ForVariable>
+                                                    <ReturnClause prof-calls="2" prof-next-calls="6" prof-cpu="0.368656" prof-wall="0.367317" prof-name="IfThenElseIterator">
+                                                      <IfThenElseIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.368656" prof-wall="0.367317" prof-name="IfThenElseIterator">
+                                                        <InstanceOfIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.011072" prof-wall="0.009822" prof-name="InstanceOfIterator">
+                                                          <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.002068" prof-wall="0.000831" prof-name="ForVarIterator ($i)"/>
+                                                        </InstanceOfIterator>
+                                                        <FnConcatIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.322561" prof-wall="0.321255" prof-name="op:concatenate">
+                                                          <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.002031" prof-wall="0.000776" prof-name="ForVarIterator ($i)"/>
+                                                          <FLWORIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.313031" prof-wall="0.311896" prof-name="FLWORIterator">
+                                                            <ForVariable name="v">
+                                                              <FunctionTraceIterator prof-calls="2" prof-next-calls="8" prof-cpu="0.088103" prof-wall="0.085961" prof-name="FunctionTraceIterator">
+                                                                <FLWORIterator prof-calls="2" prof-next-calls="8" prof-cpu="0.081243" prof-wall="0.079035" prof-name="FLWORIterator">
+                                                                  <ForVariable name="$$opt_temp_0">
+                                                                    <HoistIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.010168" prof-wall="0.008938" prof-name="HoistIterator">
+                                                                      <TreatIterator type="[JSONXQType object]" quant="" prof-calls="2" prof-next-calls="4" prof-cpu="0.006116" prof-wall="0.004863" prof-name="TreatIterator">
+                                                                        <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.00199" prof-wall="0.000745" prof-name="ForVarIterator ($i)"/>
+                                                                      </TreatIterator>
+                                                                    </HoistIterator>
+                                                                  </ForVariable>
+                                                                  <ForVariable name="k">
+                                                                    <SingleObjectKeysIterator prof-calls="2" prof-next-calls="8" prof-cpu="0.017027" prof-wall="0.014436" prof-name="op-zorba:keys">
+                                                                      <ForVarIterator varname="i" prof-calls="2" prof-next-calls="2" prof-cpu="0.001259" prof-wall="0.000429" prof-name="ForVarIterator ($i)"/>
+                                                                    </SingleObjectKeysIterator>
+                                                                  </ForVariable>
+                                                                  <ReturnClause prof-calls="6" prof-next-calls="12" prof-cpu="0.034864" prof-wall="0.030479" prof-name="op-zorba:single-object-lookup">
+                                                                    <SingleObjectLookupIterator prof-calls="6" prof-next-calls="12" prof-cpu="0.034864" prof-wall="0.030479" prof-name="op-zorba:single-object-lookup">
+                                                                      <UnhoistIterator prof-calls="6" prof-next-calls="6" prof-cpu="0.01163" prof-wall="0.009161" prof-name="UnhoistIterator">
+                                                                        <ForVarIterator varname="$$opt_temp_0" prof-calls="6" prof-next-calls="6" prof-cpu="0.003771" prof-wall="0.001306" prof-name="ForVarIterator ($$$opt_temp_0)"/>
+                                                                      </UnhoistIterator>
+                                                                      <ForVarIterator varname="k" prof-calls="6" prof-next-calls="6" prof-cpu="0.00351" prof-wall="0.001059" prof-name="ForVarIterator ($k)"/>
+                                                                    </SingleObjectLookupIterator>
+                                                                  </ReturnClause>
+                                                                </FLWORIterator>
+                                                              </FunctionTraceIterator>
+                                                            </ForVariable>
+                                                            <WhereClause prof-calls="8" prof-next-calls="6" prof-cpu="0.015719" prof-wall="0.01255" prof-name="InstanceOfIterator">
+                                                              <InstanceOfIterator prof-calls="8" prof-next-calls="6" prof-cpu="0.015719" prof-wall="0.01255" prof-name="InstanceOfIterator">
+                                                                <ForVarIterator varname="v" prof-calls="8" prof-next-calls="8" prof-cpu="0.0051" prof-wall="0.001792" prof-name="ForVarIterator ($v)"/>
+                                                              </InstanceOfIterator>
+                                                            </WhereClause>
+                                                            <ReturnClause prof-calls="2" prof-next-calls="4" prof-cpu="0.19218" prof-wall="0.190496" prof-name="libjn:descendant-objects-priv">
+                                                              <UDFunctionCallIterator function="libjn:descendant-objects-priv" prof-calls="2" prof-next-calls="4" prof-cpu="0.19218" prof-wall="0.190496" prof-name="libjn:descendant-objects-priv">
+                                                                <ForVarIterator varname="v" prof-calls="3" prof-next-calls="4" prof-cpu="0.002416" prof-wall="0.000888" prof-name="ForVarIterator ($v)"/>
+                                                                <TreatIterator type="[JSONXQType object]" quant="*" prof-calls="2" prof-next-calls="4" prof-cpu="0.174445" prof-wall="0.173323" prof-name="TreatIterator">
+                                                                  <FLWORIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.169837" prof-wall="0.168549" prof-name="FLWORIterator">
+                                                                    <ForVariable name="i">
+                                                                      <LetVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.01062" prof-wall="0.009298" prof-name="LetVarIterator ($i)"/>
+                                                                    </ForVariable>
+                                                                    <ReturnClause prof-calls="2" prof-next-calls="4" prof-cpu="0.148305" prof-wall="0.147162" prof-name="IfThenElseIterator">
+                                                                      <IfThenElseIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.148305" prof-wall="0.147162" prof-name="IfThenElseIterator">
+                                                                        <InstanceOfIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.006401" prof-wall="0.005149" prof-name="InstanceOfIterator">
+                                                                          <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.001929" prof-wall="0.000677" prof-name="ForVarIterator ($i)"/>
+                                                                        </InstanceOfIterator>
+                                                                        <FnConcatIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.108618" prof-wall="0.107497" prof-name="op:concatenate">
+                                                                          <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.001909" prof-wall="0.000664" prof-name="ForVarIterator ($i)"/>
+                                                                          <FLWORIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.10105" prof-wall="0.100115" prof-name="FLWORIterator">
+                                                                            <ForVariable name="v">
+                                                                              <FunctionTraceIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.064616" prof-wall="0.062873" prof-name="FunctionTraceIterator">
+                                                                                <FLWORIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.05913" prof-wall="0.057252" prof-name="FLWORIterator">
+                                                                                  <ForVariable name="$$opt_temp_0">
+                                                                                    <HoistIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.010104" prof-wall="0.008882" prof-name="HoistIterator">
+                                                                                      <TreatIterator type="[JSONXQType object]" quant="" prof-calls="2" prof-next-calls="4" prof-cpu="0.005722" prof-wall="0.004499" prof-name="TreatIterator">
+                                                                                        <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.001966" prof-wall="0.000701" prof-name="ForVarIterator ($i)"/>
+                                                                                      </TreatIterator>
+                                                                                    </HoistIterator>
+                                                                                  </ForVariable>
+                                                                                  <ForVariable name="k">
+                                                                                    <SingleObjectKeysIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.008755" prof-wall="0.006925" prof-name="op-zorba:keys">
+                                                                                      <ForVarIterator varname="i" prof-calls="2" prof-next-calls="2" prof-cpu="0.001231" prof-wall="0.000408" prof-name="ForVarIterator ($i)"/>
+                                                                                    </SingleObjectKeysIterator>
+                                                                                  </ForVariable>
+                                                                                  <ReturnClause prof-calls="4" prof-next-calls="8" prof-cpu="0.023166" prof-wall="0.020272" prof-name="op-zorba:single-object-lookup">
+                                                                                    <SingleObjectLookupIterator prof-calls="4" prof-next-calls="8" prof-cpu="0.023166" prof-wall="0.020272" prof-name="op-zorba:single-object-lookup">
+                                                                                      <UnhoistIterator prof-calls="4" prof-next-calls="4" prof-cpu="0.007255" prof-wall="0.005615" prof-name="UnhoistIterator">
+                                                                                        <ForVarIterator varname="$$opt_temp_0" prof-calls="4" prof-next-calls="4" prof-cpu="0.002599" prof-wall="0.000945" prof-name="ForVarIterator ($$$opt_temp_0)"/>
+                                                                                      </UnhoistIterator>
+                                                                                      <ForVarIterator varname="k" prof-calls="4" prof-next-calls="4" prof-cpu="0.002438" prof-wall="0.000774" prof-name="ForVarIterator ($k)"/>
+                                                                                    </SingleObjectLookupIterator>
+                                                                                  </ReturnClause>
+                                                                                </FLWORIterator>
+                                                                              </FunctionTraceIterator>
+                                                                            </ForVariable>
+                                                                            <WhereClause prof-calls="6" prof-next-calls="4" prof-cpu="0.010337" prof-wall="0.008161" prof-name="InstanceOfIterator">
+                                                                              <InstanceOfIterator prof-calls="6" prof-next-calls="4" prof-cpu="0.010337" prof-wall="0.008161" prof-name="InstanceOfIterator">
+                                                                                <ForVarIterator varname="v" prof-calls="6" prof-next-calls="4" prof-cpu="0.003405" prof-wall="0.0013" prof-name="ForVarIterator ($v)"/>
+                                                                              </InstanceOfIterator>
+                                                                            </WhereClause>
+                                                                            <ReturnClause prof-calls="2" prof-next-calls="0" prof-cpu="0.013504" prof-wall="0.012352" prof-name="libjn:descendant-objects-priv">
+                                                                              <UDFunctionCallIterator function="libjn:descendant-objects-priv" prof-calls="2" prof-next-calls="0" prof-cpu="0.013504" prof-wall="0.012352" prof-name="libjn:descendant-objects-priv">
+                                                                                <ForVarIterator varname="v" prof-calls="2" prof-next-calls="0" prof-cpu="0.000751" prof-wall="0.000298" prof-name="ForVarIterator ($v)"/>
+                                                                              </UDFunctionCallIterator>
+                                                                            </ReturnClause>
+                                                                          </FLWORIterator>
+                                                                        </FnConcatIterator>
+                                                                        <IfThenElseIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.027208" prof-wall="0.026822" prof-name="IfThenElseIterator">
+                                                                          <InstanceOfIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001858" prof-wall="0.001451" prof-name="InstanceOfIterator">
+                                                                            <ForVarIterator varname="i" prof-calls="2" prof-next-calls="0" prof-cpu="0.000639" prof-wall="0.00023" prof-name="ForVarIterator ($i)"/>
+                                                                          </InstanceOfIterator>
+                                                                          <FLWORIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.022048" prof-wall="0.02142" prof-name="FLWORIterator">
+                                                                            <ForVariable name="v">
+                                                                              <SingleArrayMembersIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.002591" prof-wall="0.002138" prof-name="op-zorba:members">
+                                                                                <ForVarIterator varname="i" prof-calls="2" prof-next-calls="0" prof-cpu="0.000649" prof-wall="0.000234" prof-name="ForVarIterator ($i)"/>
+                                                                              </SingleArrayMembersIterator>
+                                                                            </ForVariable>
+                                                                            <WhereClause prof-calls="2" prof-next-calls="0" prof-cpu="0.001893" prof-wall="0.001397" prof-name="InstanceOfIterator">
+                                                                              <InstanceOfIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001893" prof-wall="0.001397" prof-name="InstanceOfIterator">
+                                                                                <ForVarIterator varname="v" prof-calls="2" prof-next-calls="0" prof-cpu="0.000676" prof-wall="0.000262" prof-name="ForVarIterator ($v)"/>
+                                                                              </InstanceOfIterator>
+                                                                            </WhereClause>
+                                                                            <ReturnClause prof-calls="2" prof-next-calls="0" prof-cpu="0.01049" prof-wall="0.009502" prof-name="libjn:descendant-objects-priv">
+                                                                              <UDFunctionCallIterator function="libjn:descendant-objects-priv" prof-calls="2" prof-next-calls="0" prof-cpu="0.01049" prof-wall="0.009502" prof-name="libjn:descendant-objects-priv">
+                                                                                <ForVarIterator varname="v" prof-calls="2" prof-next-calls="0" prof-cpu="0.000728" prof-wall="0.00028" prof-name="ForVarIterator ($v)"/>
+                                                                              </UDFunctionCallIterator>
+                                                                            </ReturnClause>
+                                                                          </FLWORIterator>
+                                                                          <FnConcatIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001051" prof-wall="0.000635" prof-name="op:concatenate"/>
+                                                                        </IfThenElseIterator>
+                                                                      </IfThenElseIterator>
+                                                                    </ReturnClause>
+                                                                  </FLWORIterator>
+                                                                </TreatIterator>
+                                                              </UDFunctionCallIterator>
+                                                            </ReturnClause>
+                                                          </FLWORIterator>
+                                                        </FnConcatIterator>
+                                                        <IfThenElseIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.025224" prof-wall="0.024842" prof-name="IfThenElseIterator">
+                                                          <InstanceOfIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001671" prof-wall="0.001267" prof-name="InstanceOfIterator">
+                                                            <ForVarIterator varname="i" prof-calls="2" prof-next-calls="0" prof-cpu="0.000619" prof-wall="0.000214" prof-name="ForVarIterator ($i)"/>
+                                                          </InstanceOfIterator>
+                                                          <FLWORIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.020404" prof-wall="0.019797" prof-name="FLWORIterator">
+                                                            <ForVariable name="v">
+                                                              <SingleArrayMembersIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.002367" prof-wall="0.001903" prof-name="op-zorba:members">
+                                                                <ForVarIterator varname="i" prof-calls="2" prof-next-calls="0" prof-cpu="0.000624" prof-wall="0.000211" prof-name="ForVarIterator ($i)"/>
+                                                              </SingleArrayMembersIterator>
+                                                            </ForVariable>
+                                                            <WhereClause prof-calls="2" prof-next-calls="0" prof-cpu="0.001727" prof-wall="0.001312" prof-name="InstanceOfIterator">
+                                                              <InstanceOfIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001727" prof-wall="0.001312" prof-name="InstanceOfIterator">
+                                                                <ForVarIterator varname="v" prof-calls="2" prof-next-calls="0" prof-cpu="0.000636" prof-wall="0.000228" prof-name="ForVarIterator ($v)"/>
+                                                              </InstanceOfIterator>
+                                                            </WhereClause>
+                                                            <ReturnClause prof-calls="2" prof-next-calls="0" prof-cpu="0.010104" prof-wall="0.009143" prof-name="libjn:descendant-objects-priv">
+                                                              <UDFunctionCallIterator function="libjn:descendant-objects-priv" prof-calls="2" prof-next-calls="0" prof-cpu="0.010104" prof-wall="0.009143" prof-name="libjn:descendant-objects-priv">
+                                                                <ForVarIterator varname="v" prof-calls="2" prof-next-calls="0" prof-cpu="0.000744" prof-wall="0.000246" prof-name="ForVarIterator ($v)"/>
+                                                              </UDFunctionCallIterator>
+                                                            </ReturnClause>
+                                                          </FLWORIterator>
+                                                          <FnConcatIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001001" prof-wall="0.000594" prof-name="op:concatenate"/>
+                                                        </IfThenElseIterator>
+                                                      </IfThenElseIterator>
+                                                    </ReturnClause>
+                                                  </FLWORIterator>
+                                                </TreatIterator>
+                                              </UDFunctionCallIterator>
+                                            </ReturnClause>
+                                          </FLWORIterator>
+                                        </UDFunctionCallIterator>
+                                        <SingletonIterator value="xs:string(body)" prof-calls="2" prof-next-calls="2" prof-cpu="0.001827" prof-wall="0.000965" prof-name="SingletonIterator"/>
+                                      </MultiObjectLookupIterator>
+                                    </ForVariable>
+                                    <ReturnClause prof-calls="2" prof-next-calls="2" prof-cpu="0.137739" prof-wall="0.136986" prof-name="op:concatenate">
+                                      <FnConcatIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.137739" prof-wall="0.136986" prof-name="op:concatenate">
+                                        <IfThenElseIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.040804" prof-wall="0.040018" prof-name="IfThenElseIterator">
+                                          <AndIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.031138" prof-wall="0.02994" prof-name="AndIterator">
+                                            <FnExistsIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.020753" prof-wall="0.019517" prof-name="fn:exists">
+                                              <SingleObjectLookupIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.013483" prof-wall="0.012514" prof-name="op-zorba:single-object-lookup">
+                                                <ForVarIterator varname="body" prof-calls="2" prof-next-calls="2" prof-cpu="0.002328" prof-wall="0.001501" prof-name="ForVarIterator ($body)"/>
+                                                <SingletonIterator value="xs:string(src)" prof-calls="2" prof-next-calls="2" prof-cpu="0.001796" prof-wall="0.000971" prof-name="SingletonIterator"/>
+                                              </SingleObjectLookupIterator>
+                                            </FnExistsIterator>
+                                            <FnExistsIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.004339" prof-wall="0.00393" prof-name="fn:exists">
+                                              <SingleObjectLookupIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.003079" prof-wall="0.002668" prof-name="op-zorba:single-object-lookup">
+                                                <ForVarIterator varname="body" prof-calls="2" prof-next-calls="0" prof-cpu="0.00063" prof-wall="0.00022" prof-name="ForVarIterator ($body)"/>
+                                                <SingletonIterator value="xs:string(content)" prof-calls="2" prof-next-calls="0" prof-cpu="0.000618" prof-wall="0.000204" prof-name="SingletonIterator"/>
+                                              </SingleObjectLookupIterator>
+                                            </FnExistsIterator>
+                                          </AndIterator>
+                                          <UnhoistIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.002562" prof-wall="0.00215" prof-name="UnhoistIterator">
+                                            <ForVarIterator varname="$$opt_temp_0" prof-calls="2" prof-next-calls="0" prof-cpu="0.000617" prof-wall="0.000209" prof-name="ForVarIterator ($$$opt_temp_0)"/>
+                                          </UnhoistIterator>
+                                          <FnConcatIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.001567" prof-wall="0.000738" prof-name="op:concatenate"/>
+                                        </IfThenElseIterator>
+                                        <IfThenElseIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.092207" prof-wall="0.091491" prof-name="IfThenElseIterator">
+                                          <FnExistsIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.016546" prof-wall="0.0153" prof-name="fn:exists">
+                                            <SingleObjectLookupIterator prof-calls="4" prof-next-calls="2" prof-cpu="0.012224" prof-wall="0.01087" prof-name="op-zorba:single-object-lookup">
+                                              <ForVarIterator varname="body" prof-calls="4" prof-next-calls="2" prof-cpu="0.002139" prof-wall="0.000908" prof-name="ForVarIterator ($body)"/>
+                                              <SingletonIterator value="xs:string(content)" prof-calls="4" prof-next-calls="2" prof-cpu="0.001932" prof-wall="0.000708" prof-name="SingletonIterator"/>
+                                            </SingleObjectLookupIterator>
+                                          </FnExistsIterator>
+                                          <FLWORIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.06951" prof-wall="0.068379" prof-name="FLWORIterator">
+                                            <LetVariable name="$$temp7" materialize="true">
+                                              <SingleObjectLookupIterator prof-calls="4" prof-next-calls="2" prof-cpu="0.011536" prof-wall="0.009995" prof-name="op-zorba:single-object-lookup">
+                                                <ForVarIterator varname="body" prof-calls="4" prof-next-calls="2" prof-cpu="0.002062" prof-wall="0.000827" prof-name="ForVarIterator ($body)"/>
+                                                <SingletonIterator value="xs:string(content)" prof-calls="4" prof-next-calls="2" prof-cpu="0.001981" prof-wall="0.000758" prof-name="SingletonIterator"/>
+                                              </SingleObjectLookupIterator>
+                                            </LetVariable>
+                                            <ReturnClause prof-calls="2" prof-next-calls="2" prof-cpu="0.033683" prof-wall="0.032822" prof-name="IfThenElseIterator">
+                                              <IfThenElseIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.033683" prof-wall="0.032822" prof-name="IfThenElseIterator">
+                                                <InstanceOfIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.012948" prof-wall="0.011718" prof-name="InstanceOfIterator">
+                                                  <LetVarIterator varname="$$temp7" prof-calls="2" prof-next-calls="4" prof-cpu="0.007367" prof-wall="0.005977" prof-name="LetVarIterator ($$$temp7)"/>
+                                                </InstanceOfIterator>
+                                                <FnConcatIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.001621" prof-wall="0.000804" prof-name="op:concatenate"/>
+                                                <IfThenElseIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.014297" prof-wall="0.013891" prof-name="IfThenElseIterator">
+                                                  <InstanceOfIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.002804" prof-wall="0.002401" prof-name="InstanceOfIterator">
+                                                    <LetVarIterator varname="$$temp7" prof-calls="2" prof-next-calls="0" prof-cpu="0.00156" prof-wall="0.001118" prof-name="LetVarIterator ($$$temp7)"/>
+                                                  </InstanceOfIterator>
+                                                  <FnConcatIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.000879" prof-wall="0.00047" prof-name="op:concatenate"/>
+                                                  <IfThenElseIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.007422" prof-wall="0.00702" prof-name="IfThenElseIterator">
+                                                    <InstanceOfIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.002525" prof-wall="0.002117" prof-name="InstanceOfIterator">
+                                                      <LetVarIterator varname="$$temp7" prof-calls="2" prof-next-calls="0" prof-cpu="0.00144" prof-wall="0.000992" prof-name="LetVarIterator ($$$temp7)"/>
+                                                    </InstanceOfIterator>
+                                                    <FnConcatIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.00095" prof-wall="0.000542" prof-name="op:concatenate"/>
+                                                    <UnhoistIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001865" prof-wall="0.001454" prof-name="UnhoistIterator">
+                                                      <ForVarIterator varname="$$opt_temp_1" prof-calls="2" prof-next-calls="0" prof-cpu="0.00062" prof-wall="0.00021" prof-name="ForVarIterator ($$$opt_temp_1)"/>
+                                                    </UnhoistIterator>
+                                                  </IfThenElseIterator>
+                                                </IfThenElseIterator>
+                                              </IfThenElseIterator>
+                                            </ReturnClause>
+                                          </FLWORIterator>
+                                          <FnConcatIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001044" prof-wall="0.000628" prof-name="op:concatenate"/>
+                                        </IfThenElseIterator>
+                                      </FnConcatIterator>
+                                    </ReturnClause>
+                                  </FLWORIterator>
+                                  <IfThenElseIterator prof-calls="2" prof-next-calls="2" prof-cpu="1.11298" prof-wall="1.11335" prof-name="IfThenElseIterator">
+                                    <TypedValueCompareIterator_INTEGER prof-calls="2" prof-next-calls="4" prof-cpu="0.798708" prof-wall="0.797106" prof-name="TypedValueCompareIterator&lt;store::XS_INTEGER&gt;">
+                                      <FnCountIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.627583" prof-wall="0.627022" prof-name="fn:count">
+                                        <FLWORIterator prof-calls="2" prof-next-calls="2" prof-cpu="1.15532" prof-wall="1.15506" prof-name="FLWORIterator">
+                                          <ForVariable name="$$context-item">
+                                            <MultiObjectLookupIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.573337" prof-wall="0.57245" prof-name="op-zorba:multi-object-lookup">
+                                              <UDFunctionCallIterator function="libjn:descendant-objects" prof-calls="2" prof-next-calls="6" prof-cpu="0.557933" prof-wall="0.556139" prof-name="libjn:descendant-objects">
+                                                <ForVarIterator varname="request" prof-calls="3" prof-next-calls="4" prof-cpu="0.00253" prof-wall="0.000979" prof-name="ForVarIterator ($request)"/>
+                                                <FLWORIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.54002" prof-wall="0.538705" prof-name="FLWORIterator">
+                                                  <ForVariable name="i">
+                                                    <LetVarIterator varname="items" prof-calls="2" prof-next-calls="4" prof-cpu="0.009632" prof-wall="0.008263" prof-name="LetVarIterator ($items)"/>
+                                                  </ForVariable>
+                                                  <ReturnClause prof-calls="2" prof-next-calls="6" prof-cpu="0.517333" prof-wall="0.515401" prof-name="libjn:descendant-objects-priv">
+                                                    <UDFunctionCallIterator function="libjn:descendant-objects-priv" prof-calls="2" prof-next-calls="6" prof-cpu="0.517333" prof-wall="0.515401" prof-name="libjn:descendant-objects-priv">
+                                                      <ForVarIterator varname="i" prof-calls="3" prof-next-calls="4" prof-cpu="0.002526" prof-wall="0.000947" prof-name="ForVarIterator ($i)"/>
+                                                      <TreatIterator type="[JSONXQType object]" quant="*" prof-calls="2" prof-next-calls="6" prof-cpu="0.498748" prof-wall="0.497458" prof-name="TreatIterator">
+                                                        <FLWORIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.490919" prof-wall="0.489592" prof-name="FLWORIterator">
+                                                          <ForVariable name="i">
+                                                            <LetVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.010218" prof-wall="0.008862" prof-name="LetVarIterator ($i)"/>
+                                                          </ForVariable>
+                                                          <ReturnClause prof-calls="2" prof-next-calls="6" prof-cpu="0.46979" prof-wall="0.468569" prof-name="IfThenElseIterator">
+                                                            <IfThenElseIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.46979" prof-wall="0.468569" prof-name="IfThenElseIterator">
+                                                              <InstanceOfIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.006656" prof-wall="0.0054" prof-name="InstanceOfIterator">
+                                                                <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.001923" prof-wall="0.000679" prof-name="ForVarIterator ($i)"/>
+                                                              </InstanceOfIterator>
+                                                              <FnConcatIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.431547" prof-wall="0.430361" prof-name="op:concatenate">
+                                                                <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.001908" prof-wall="0.000672" prof-name="ForVarIterator ($i)"/>
+                                                                <FLWORIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.422382" prof-wall="0.42074" prof-name="FLWORIterator">
+                                                                  <ForVariable name="v">
+                                                                    <FunctionTraceIterator prof-calls="2" prof-next-calls="8" prof-cpu="0.078546" prof-wall="0.076392" prof-name="FunctionTraceIterator">
+                                                                      <FLWORIterator prof-calls="2" prof-next-calls="8" prof-cpu="0.07247" prof-wall="0.070231" prof-name="FLWORIterator">
+                                                                        <ForVariable name="$$opt_temp_0">
+                                                                          <HoistIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.009172" prof-wall="0.00794" prof-name="HoistIterator">
+                                                                            <TreatIterator type="[JSONXQType object]" quant="" prof-calls="2" prof-next-calls="4" prof-cpu="0.005571" prof-wall="0.004319" prof-name="TreatIterator">
+                                                                              <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.001926" prof-wall="0.000693" prof-name="ForVarIterator ($i)"/>
+                                                                            </TreatIterator>
+                                                                          </HoistIterator>
+                                                                        </ForVariable>
+                                                                        <ForVariable name="k">
+                                                                          <SingleObjectKeysIterator prof-calls="2" prof-next-calls="8" prof-cpu="0.008345" prof-wall="0.006015" prof-name="op-zorba:keys">
+                                                                            <ForVarIterator varname="i" prof-calls="2" prof-next-calls="2" prof-cpu="0.001254" prof-wall="0.000437" prof-name="ForVarIterator ($i)"/>
+                                                                          </SingleObjectKeysIterator>
+                                                                        </ForVariable>
+                                                                        <ReturnClause prof-calls="6" prof-next-calls="12" prof-cpu="0.033482" prof-wall="0.029107" prof-name="op-zorba:single-object-lookup">
+                                                                          <SingleObjectLookupIterator prof-calls="6" prof-next-calls="12" prof-cpu="0.033482" prof-wall="0.029107" prof-name="op-zorba:single-object-lookup">
+                                                                            <UnhoistIterator prof-calls="6" prof-next-calls="6" prof-cpu="0.010686" prof-wall="0.008222" prof-name="UnhoistIterator">
+                                                                              <ForVarIterator varname="$$opt_temp_0" prof-calls="6" prof-next-calls="6" prof-cpu="0.003814" prof-wall="0.001333" prof-name="ForVarIterator ($$$opt_temp_0)"/>
+                                                                            </UnhoistIterator>
+                                                                            <ForVarIterator varname="k" prof-calls="6" prof-next-calls="6" prof-cpu="0.003562" prof-wall="0.001096" prof-name="ForVarIterator ($k)"/>
+                                                                          </SingleObjectLookupIterator>
+                                                                        </ReturnClause>
+                                                                      </FLWORIterator>
+                                                                    </FunctionTraceIterator>
+                                                                  </ForVariable>
+                                                                  <WhereClause prof-calls="8" prof-next-calls="6" prof-cpu="0.015279" prof-wall="0.012102" prof-name="InstanceOfIterator">
+                                                                    <InstanceOfIterator prof-calls="8" prof-next-calls="6" prof-cpu="0.015279" prof-wall="0.012102" prof-name="InstanceOfIterator">
+                                                                      <ForVarIterator varname="v" prof-calls="8" prof-next-calls="8" prof-cpu="0.005118" prof-wall="0.001784" prof-name="ForVarIterator ($v)"/>
+                                                                    </InstanceOfIterator>
+                                                                  </WhereClause>
+                                                                  <ReturnClause prof-calls="2" prof-next-calls="4" prof-cpu="0.206653" prof-wall="0.204946" prof-name="libjn:descendant-objects-priv">
+                                                                    <UDFunctionCallIterator function="libjn:descendant-objects-priv" prof-calls="2" prof-next-calls="4" prof-cpu="0.206653" prof-wall="0.204946" prof-name="libjn:descendant-objects-priv">
+                                                                      <ForVarIterator varname="v" prof-calls="3" prof-next-calls="4" prof-cpu="0.002615" prof-wall="0.001084" prof-name="ForVarIterator ($v)"/>
+                                                                      <TreatIterator type="[JSONXQType object]" quant="*" prof-calls="2" prof-next-calls="4" prof-cpu="0.191142" prof-wall="0.189939" prof-name="TreatIterator">
+                                                                        <FLWORIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.186766" prof-wall="0.185481" prof-name="FLWORIterator">
+                                                                          <ForVariable name="i">
+                                                                            <LetVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.01096" prof-wall="0.009642" prof-name="LetVarIterator ($i)"/>
+                                                                          </ForVariable>
+                                                                          <ReturnClause prof-calls="2" prof-next-calls="4" prof-cpu="0.165286" prof-wall="0.16414" prof-name="IfThenElseIterator">
+                                                                            <IfThenElseIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.165286" prof-wall="0.16414" prof-name="IfThenElseIterator">
+                                                                              <InstanceOfIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.006253" prof-wall="0.004911" prof-name="InstanceOfIterator">
+                                                                                <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.001888" prof-wall="0.000651" prof-name="ForVarIterator ($i)"/>
+                                                                              </InstanceOfIterator>
+                                                                              <FnConcatIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.127743" prof-wall="0.12658" prof-name="op:concatenate">
+                                                                                <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.002176" prof-wall="0.000857" prof-name="ForVarIterator ($i)"/>
+                                                                                <FLWORIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.119247" prof-wall="0.118306" prof-name="FLWORIterator">
+                                                                                  <ForVariable name="v">
+                                                                                    <FunctionTraceIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.06912" prof-wall="0.067381" prof-name="FunctionTraceIterator">
+                                                                                      <FLWORIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.063544" prof-wall="0.061713" prof-name="FLWORIterator">
+                                                                                        <ForVariable name="$$opt_temp_0">
+                                                                                          <HoistIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.010021" prof-wall="0.008796" prof-name="HoistIterator">
+                                                                                            <TreatIterator type="[JSONXQType object]" quant="" prof-calls="2" prof-next-calls="4" prof-cpu="0.005995" prof-wall="0.004765" prof-name="TreatIterator">
+                                                                                              <ForVarIterator varname="i" prof-calls="2" prof-next-calls="4" prof-cpu="0.002127" prof-wall="0.000847" prof-name="ForVarIterator ($i)"/>
+                                                                                            </TreatIterator>
+                                                                                          </HoistIterator>
+                                                                                        </ForVariable>
+                                                                                        <ForVariable name="k">
+                                                                                          <SingleObjectKeysIterator prof-calls="2" prof-next-calls="6" prof-cpu="0.008904" prof-wall="0.007016" prof-name="op-zorba:keys">
+                                                                                            <ForVarIterator varname="i" prof-calls="2" prof-next-calls="2" prof-cpu="0.001261" prof-wall="0.000436" prof-name="ForVarIterator ($i)"/>
+                                                                                          </SingleObjectKeysIterator>
+                                                                                        </ForVariable>
+                                                                                        <ReturnClause prof-calls="4" prof-next-calls="8" prof-cpu="0.023478" prof-wall="0.020521" prof-name="op-zorba:single-object-lookup">
+                                                                                          <SingleObjectLookupIterator prof-calls="4" prof-next-calls="8" prof-cpu="0.023478" prof-wall="0.020521" prof-name="op-zorba:single-object-lookup">
+                                                                                            <UnhoistIterator prof-calls="4" prof-next-calls="4" prof-cpu="0.007427" prof-wall="0.005783" prof-name="UnhoistIterator">
+                                                                                              <ForVarIterator varname="$$opt_temp_0" prof-calls="4" prof-next-calls="4" prof-cpu="0.002546" prof-wall="0.000909" prof-name="ForVarIterator ($$$opt_temp_0)"/>
+                                                                                            </UnhoistIterator>
+                                                                                            <ForVarIterator varname="k" prof-calls="4" prof-next-calls="4" prof-cpu="0.002438" prof-wall="0.000785" prof-name="ForVarIterator ($k)"/>
+                                                                                          </SingleObjectLookupIterator>
+                                                                                        </ReturnClause>
+                                                                                      </FLWORIterator>
+                                                                                    </FunctionTraceIterator>
+                                                                                  </ForVariable>
+                                                                                  <WhereClause prof-calls="6" prof-next-calls="4" prof-cpu="0.025236" prof-wall="0.023069" prof-name="InstanceOfIterator">
+                                                                                    <InstanceOfIterator prof-calls="6" prof-next-calls="4" prof-cpu="0.025236" prof-wall="0.023069" prof-name="InstanceOfIterator">
+                                                                                      <ForVarIterator varname="v" prof-calls="6" prof-next-calls="4" prof-cpu="0.004205" prof-wall="0.001882" prof-name="ForVarIterator ($v)"/>
+                                                                                    </InstanceOfIterator>
+                                                                                  </WhereClause>
+                                                                                  <ReturnClause prof-calls="2" prof-next-calls="0" prof-cpu="0.011682" prof-wall="0.010657" prof-name="libjn:descendant-objects-priv">
+                                                                                    <UDFunctionCallIterator function="libjn:descendant-objects-priv" prof-calls="2" prof-next-calls="0" prof-cpu="0.011682" prof-wall="0.010657" prof-name="libjn:descendant-objects-priv">
+                                                                                      <ForVarIterator varname="v" prof-calls="2" prof-next-calls="0" prof-cpu="0.000701" prof-wall="0.000284" prof-name="ForVarIterator ($v)"/>
+                                                                                    </UDFunctionCallIterator>
+                                                                                  </ReturnClause>
+                                                                                </FLWORIterator>
+                                                                              </FnConcatIterator>
+                                                                              <IfThenElseIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.024525" prof-wall="0.024143" prof-name="IfThenElseIterator">
+                                                                                <InstanceOfIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001785" prof-wall="0.001374" prof-name="InstanceOfIterator">
+                                                                                  <ForVarIterator varname="i" prof-calls="2" prof-next-calls="0" prof-cpu="0.000625" prof-wall="0.000218" prof-name="ForVarIterator ($i)"/>
+                                                                                </InstanceOfIterator>
+                                                                                <FLWORIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.01965" prof-wall="0.019041" prof-name="FLWORIterator">
+                                                                                  <ForVariable name="v">
+                                                                                    <SingleArrayMembersIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001848" prof-wall="0.001399" prof-name="op-zorba:members">
+                                                                                      <ForVarIterator varname="i" prof-calls="2" prof-next-calls="0" prof-cpu="0.000623" prof-wall="0.000206" prof-name="ForVarIterator ($i)"/>
+                                                                                    </SingleArrayMembersIterator>
+                                                                                  </ForVariable>
+                                                                                  <WhereClause prof-calls="2" prof-next-calls="0" prof-cpu="0.001744" prof-wall="0.001331" prof-name="InstanceOfIterator">
+                                                                                    <InstanceOfIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001744" prof-wall="0.001331" prof-name="InstanceOfIterator">
+                                                                                      <ForVarIterator varname="v" prof-calls="2" prof-next-calls="0" prof-cpu="0.000641" prof-wall="0.000233" prof-name="ForVarIterator ($v)"/>
+                                                                                    </InstanceOfIterator>
+                                                                                  </WhereClause>
+                                                                                  <ReturnClause prof-calls="2" prof-next-calls="0" prof-cpu="0.010001" prof-wall="0.009004" prof-name="libjn:descendant-objects-priv">
+                                                                                    <UDFunctionCallIterator function="libjn:descendant-objects-priv" prof-calls="2" prof-next-calls="0" prof-cpu="0.010001" prof-wall="0.009004" prof-name="libjn:descendant-objects-priv">
+                                                                                      <ForVarIterator varname="v" prof-calls="2" prof-next-calls="0" prof-cpu="0.000718" prof-wall="0.000262" prof-name="ForVarIterator ($v)"/>
+                                                                                    </UDFunctionCallIterator>
+                                                                                  </ReturnClause>
+                                                                                </FLWORIterator>
+                                                                                <FnConcatIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.00103" prof-wall="0.000617" prof-name="op:concatenate"/>
+                                                                              </IfThenElseIterator>
+                                                                            </IfThenElseIterator>
+                                                                          </ReturnClause>
+                                                                        </FLWORIterator>
+                                                                      </TreatIterator>
+                                                                    </UDFunctionCallIterator>
+                                                                  </ReturnClause>
+                                                                </FLWORIterator>
+                                                              </FnConcatIterator>
+                                                              <IfThenElseIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.024437" prof-wall="0.024047" prof-name="IfThenElseIterator">
+                                                                <InstanceOfIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001725" prof-wall="0.001315" prof-name="InstanceOfIterator">
+                                                                  <ForVarIterator varname="i" prof-calls="2" prof-next-calls="0" prof-cpu="0.000635" prof-wall="0.000223" prof-name="ForVarIterator ($i)"/>
+                                                                </InstanceOfIterator>
+                                                                <FLWORIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.019598" prof-wall="0.018999" prof-name="FLWORIterator">
+                                                                  <ForVariable name="v">
+                                                                    <SingleArrayMembersIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001917" prof-wall="0.001454" prof-name="op-zorba:members">
+                                                                      <ForVarIterator varname="i" prof-calls="2" prof-next-calls="0" prof-cpu="0.00064" prof-wall="0.000225" prof-name="ForVarIterator ($i)"/>
+                                                                    </SingleArrayMembersIterator>
+                                                                  </ForVariable>
+                                                                  <WhereClause prof-calls="2" prof-next-calls="0" prof-cpu="0.001897" prof-wall="0.001483" prof-name="InstanceOfIterator">
+                                                                    <InstanceOfIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.001897" prof-wall="0.001483" prof-name="InstanceOfIterator">
+                                                                      <ForVarIterator varname="v" prof-calls="2" prof-next-calls="0" prof-cpu="0.000719" prof-wall="0.000252" prof-name="ForVarIterator ($v)"/>
+                                                                    </InstanceOfIterator>
+                                                                  </WhereClause>
+                                                                  <ReturnClause prof-calls="2" prof-next-calls="0" prof-cpu="0.009874" prof-wall="0.008911" prof-name="libjn:descendant-objects-priv">
+                                                                    <UDFunctionCallIterator function="libjn:descendant-objects-priv" prof-calls="2" prof-next-calls="0" prof-cpu="0.009874" prof-wall="0.008911" prof-name="libjn:descendant-objects-priv">
+                                                                      <ForVarIterator varname="v" prof-calls="2" prof-next-calls="0" prof-cpu="0.000751" prof-wall="0.000282" prof-name="ForVarIterator ($v)"/>
+                                                                    </UDFunctionCallIterator>
+                                                                  </ReturnClause>
+                                                                </FLWORIterator>
+                                                                <FnConcatIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.00104" prof-wall="0.000625" prof-name="op:concatenate"/>
+                                                              </IfThenElseIterator>
+                                                            </IfThenElseIterator>
+                                                          </ReturnClause>
+                                                        </FLWORIterator>
+                                                      </TreatIterator>
+                                                    </UDFunctionCallIterator>
+                                                  </ReturnClause>
+                                                </FLWORIterator>
+                                              </UDFunctionCallIterator>
+                                              <SingletonIterator value="xs:string(body)" prof-calls="2" prof-next-calls="2" prof-cpu="0.001635" prof-wall="0.000796" prof-name="SingletonIterator"/>
+                                            </MultiObjectLookupIterator>
+                                          </ForVariable>
+                                          <WhereClause prof-calls="4" prof-next-calls="2" prof-cpu="0.03035" prof-wall="0.029071" prof-name="AndIterator">
+                                            <AndIterator prof-calls="4" prof-next-calls="2" prof-cpu="0.03035" prof-wall="0.029071" prof-name="AndIterator">
+                                              <FnExistsIterator prof-calls="4" prof-next-calls="4" prof-cpu="0.016779" prof-wall="0.015096" prof-name="fn:exists">
+                                                <SingleObjectLookupIterator prof-calls="4" prof-next-calls="2" prof-cpu="0.011161" prof-wall="0.009785" prof-name="op-zorba:single-object-lookup">
+                                                  <ForVarIterator varname="$$context-item" prof-calls="4" prof-next-calls="2" prof-cpu="0.002016" prof-wall="0.00078" prof-name="ForVarIterator ($$$context-item)"/>
+                                                  <SingletonIterator value="xs:string(src)" prof-calls="4" prof-next-calls="2" prof-cpu="0.002022" prof-wall="0.000782" prof-name="SingletonIterator"/>
+                                                </SingleObjectLookupIterator>
+                                              </FnExistsIterator>
+                                              <FnExistsIterator prof-calls="4" prof-next-calls="0" prof-cpu="0.007693" prof-wall="0.006879" prof-name="fn:exists">
+                                                <SingleObjectLookupIterator prof-calls="4" prof-next-calls="0" prof-cpu="0.0054" prof-wall="0.004568" prof-name="op-zorba:single-object-lookup">
+                                                  <ForVarIterator varname="$$context-item" prof-calls="4" prof-next-calls="0" prof-cpu="0.001164" prof-wall="0.000335" prof-name="ForVarIterator ($$$context-item)"/>
+                                                  <SingletonIterator value="xs:string(content)" prof-calls="4" prof-next-calls="0" prof-cpu="0.001139" prof-wall="0.000321" prof-name="SingletonIterator"/>
+                                                </SingleObjectLookupIterator>
+                                              </FnExistsIterator>
+                                            </AndIterator>
+                                          </WhereClause>
+                                          <ReturnClause prof-calls="2" prof-next-calls="0" prof-cpu="0.000686" prof-wall="0.000275" prof-name="SingletonIterator">
+                                            <SingletonIterator value="xs:boolean(true)" prof-calls="2" prof-next-calls="0" prof-cpu="0.000686" prof-wall="0.000275" prof-name="SingletonIterator"/>
+                                          </ReturnClause>
+                                        </FLWORIterator>
+                                      </FnCountIterator>
+                                      <SingletonIterator value="xs:integer(1)" prof-calls="2" prof-next-calls="4" prof-cpu="0.002601" prof-wall="0.001367" prof-name="SingletonIterator"/>
+                                    </TypedValueCompareIterator_INTEGER>
+                                    <ErrorIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.004861" prof-wall="0.00444" prof-name="fn:error">
+                                      <SingletonIterator value="xs:QName(http://zorba.io/modules/http-client,http,REQUEST)" prof-calls="2" prof-next-calls="0" prof-cpu="0.000706" prof-wall="0.000284" prof-name="SingletonIterator"/>
+                                      <SingletonIterator value="xs:string(The specified request is not valid. The src and content fields are mutually exclusive.)" prof-calls="2" prof-next-calls="0" prof-cpu="0.000622" prof-wall="0.000212" prof-name="SingletonIterator"/>
+                                    </ErrorIterator>
+                                    <IfThenElseIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.303727" prof-wall="0.30316" prof-name="IfThenElseIterator">
+                                      <AndIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.292311" prof-wall="0.291374" prof-name="AndIterator">
+                                        <FnExistsIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.017917" prof-wall="0.016564" prof-name="fn:exists">
+                                          <SingleObjectLookupIterator prof-calls="4" prof-next-calls="2" prof-cpu="0.013345" prof-wall="0.011853" prof-name="op-zorba:single-object-lookup">
+                                            <ForVarIterator varname="request" prof-calls="4" prof-next-calls="2" prof-cpu="0.002159" prof-wall="0.00092" prof-name="ForVarIterator ($request)"/>
+                                            <SingletonIterator value="xs:string(href)" prof-calls="4" prof-next-calls="2" prof-cpu="0.002056" prof-wall="0.000836" prof-name="SingletonIterator"/>
+                                          </SingleObjectLookupIterator>
+                                        </FnExistsIterator>
+                                        <FnBooleanIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.267178" prof-wall="0.266201" prof-name="FnBooleanIterator">
+                                          <CastableIterator type="xs:anyURI" prof-calls="2" prof-next-calls="4" prof-cpu="0.262479" prof-wall="0.261492" prof-name="CastableIterator">
+                                            <FnDataIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.025126" prof-wall="0.023117" prof-name="fn:data">
+                                              <SingleObjectLookupIterator prof-calls="2" prof-next-calls="4" prof-cpu="0.011005" prof-wall="0.009545" prof-name="op-zorba:single-object-lookup">
+                                                <ForVarIterator varname="request" prof-calls="2" prof-next-calls="2" prof-cpu="0.001343" prof-wall="0.000478" prof-name="ForVarIterator ($request)"/>
+                                                <SingletonIterator value="xs:string(href)" prof-calls="2" prof-next-calls="2" prof-cpu="0.002838" prof-wall="0.002017" prof-name="SingletonIterator"/>
+                                              </SingleObjectLookupIterator>
+                                            </FnDataIterator>
+                                          </CastableIterator>
+                                        </FnBooleanIterator>
+                                      </AndIterator>
+                                      <ErrorIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.002876" prof-wall="0.002467" prof-name="fn:error">
+                                        <SingletonIterator value="xs:QName(http://zorba.io/modules/http-client,http,REQUEST)" prof-calls="2" prof-next-calls="0" prof-cpu="0.000585" prof-wall="0.000178" prof-name="SingletonIterator"/>
+                                        <SingletonIterator value="xs:string(he specified request is not valid. The specified href is not a valid anyURI.)" prof-calls="2" prof-next-calls="0" prof-cpu="0.000557" prof-wall="0.000148" prof-name="SingletonIterator"/>
+                                      </ErrorIterator>
+                                      <FnConcatIterator prof-calls="2" prof-next-calls="2" prof-cpu="0.00248" prof-wall="0.001655" prof-name="op:concatenate"/>
+                                    </IfThenElseIterator>
+                                  </IfThenElseIterator>
+                                  <SingletonIterator value="xs:boolean(true)" prof-calls="2" prof-next-calls="4" prof-cpu="0.00207" prof-wall="0.000838" prof-name="SingletonIterator"/>
+                                </FnConcatIterator>
+                              </ReturnClause>
+                            </FLWORIterator>
+                          </PromoteIterator>
+                        </UDFunctionCallIterator>
+                        <TreatIterator type="[JSONXQType object]" quant="" prof-calls="2" prof-next-calls="4" prof-cpu="7.03362" prof-wall="852.528" prof-name="TreatIterator">
+                          <ExtFunctionCallIterator prof-calls="2" prof-next-calls="4" prof-cpu="7.01788" prof-wall="852.509" prof-name="{http://zorba.io/modules/http-client}http-sequential-impl">
+                              <prof-requests>
+                                <prof-request prof-uri="POST http://zorbatest.lambda.nu:8080/cgi-bin/test-text" prof-request-body-size="10" prof-cpu="4.20995" prof-wall="424.180674"/>
+                                <prof-request prof-uri="POST http://zorbatest.lambda.nu:8080/cgi-bin/test-text" prof-request-body-size="10" prof-cpu="1.432508" prof-wall="426.95698"/>
+                              </prof-requests>
+                            <ForVarIterator varname="request" prof-calls="2" prof-next-calls="2" prof-cpu="0.002741" prof-wall="0.001234" prof-name="ForVarIterator ($request)"/>
+                          </ExtFunctionCallIterator>
+                        </TreatIterator>
+                        <FnConcatIterator prof-calls="2" prof-next-calls="0" prof-cpu="0.008758" prof-wall="0.008298" prof-name="op:concatenate"/>
+                      </IfThenElseIterator>
+                    </ReturnClause>
+                  </FLWORIterator>
+                </TreatIterator>
+              </UDFunctionCallIterator>
+            </ReturnClause>
+          </FLWORIterator>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
