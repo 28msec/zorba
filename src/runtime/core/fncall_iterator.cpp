@@ -1318,7 +1318,10 @@ void ExtFunctionCallIterator::evaluate(PlanState& aPlanState, ExtFunctionCallIte
       aState->theProfileDataMap = new ProfileDataMap();
     else
       aState->theProfileDataMap->clear();
-    aState->theProfileDataMap->swap(*theFunction->getProfilingData());
+
+    ProfileDataMap* lProfileDataMap = theFunction->getProfilingData();
+    if (lProfileDataMap)
+      aState->theProfileDataMap->swap(*lProfileDataMap);
   }
 }
 
