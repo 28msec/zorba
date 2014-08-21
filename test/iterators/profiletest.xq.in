@@ -67,13 +67,21 @@ declare %an:sequential function local:filter-json($items as item()*, $replace-va
 
 declare %an:sequential function local:test-json($result-text as xs:string, $expected-text as xs:string) as xs:string
 {
-  variable $result as object() := 
+  variable $result := 
     try { jn:parse-json($result-text) } 
     catch * { error(xs:QName("local:MALFORMED"), "The profile result file " || $result-filepath || " is malformed.") };
   
-  variable $expected as object() :=
+  if (not($result instance of object()))
+  then error(xs:QName("local:MALFORMED"), "The profile result file " || $result-filepath || " is malformed.");
+  else ();
+  
+  variable $expected :=
     try { jn:parse-json($expected-text) }
     catch * { error(xs:QName("local:MALFORMED"), "The profile expected result file " || $expected-filepath || " is malformed.") };
+    
+  if (not($expected instance of object()))
+  then error(xs:QName("local:MALFORMED"), "The profile expected file " || $expected-filepath || " is malformed.");
+  else ();
     
   local:compare(local:filter-json($result, $filter,()), local:filter-json($expected, $filter, ()))
 };
