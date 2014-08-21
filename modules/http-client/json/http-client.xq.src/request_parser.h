@@ -56,6 +56,7 @@ private:
   bool getObject(const Item& aItem, const String& aName, const bool aMandatory, Item& aResult);
   bool getItem(const Item& aItem, const String& aName, const bool aMandatory, Item& aResult);
   bool getArray(const Item& aItem, const String& aName, const bool aMandatory, Item& aResult);
+  bool getBody(const Item& aItem, const String& aName, const bool aMandatory, Item& aResult);
 
   int parseInteger(const Item& aItem, const String& aName);
 

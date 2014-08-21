@@ -66,14 +66,30 @@ struct Body
   Body()
   {
   }
+
+  int getSize()
+  {
+    if (!theContent.isNull())
+    {
+      theContent.ensureSeekable();
+      return theContent.getStringValue().size();
+    }
+    return 0;
+  }
 };
 
 struct Part
 {
   Headers theHeaders;
   Body theBody;
+
   Part()
   {
+  }
+
+  int getSize()
+  {
+    return theBody.getSize();
   }
 };
 
@@ -86,6 +102,16 @@ struct MultiPart
 
   MultiPart()
   {
+  }
+
+  int getSize()
+  {
+    int lSize = 0;
+    for (std::vector<Part>::iterator lIt = theParts.begin();
+         lIt != theParts.end();
+         ++lIt)
+      lSize += lIt->getSize();
+    return lSize;
   }
 };
 
@@ -122,6 +148,16 @@ struct Request
     theHaveBody(false),
     theHaveMultiPart(false)
   {
+  }
+
+  int getBodySize()
+  {
+    if (theHaveBody)
+      return theBody.getSize();
+    else if (theHaveMultiPart)
+      return theMultiPart.getSize();
+    else
+      return 0;
   }
 };
 
