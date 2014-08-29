@@ -5,7 +5,9 @@
 </iterator-tree>
 <iterator-tree description="const-folded expr">
   <UDFunctionCallIterator function="local:foo-sd" cached="true">
-    <FnConcatIterator/>
+    <UDFunctionArgs>
+      <FnConcatIterator/>
+    </UDFunctionArgs>
   </UDFunctionCallIterator>
 </iterator-tree>
 <iterator-tree description="local:foo-sd">
@@ -13,7 +15,9 @@
 </iterator-tree>
 <iterator-tree description="const-folded expr">
   <UDFunctionCallIterator function="local:foo-c" cached-across-snapshots="true">
-    <FnConcatIterator/>
+    <UDFunctionArgs>
+      <FnConcatIterator/>
+    </UDFunctionArgs>
   </UDFunctionCallIterator>
 </iterator-tree>
 <iterator-tree description="local:foo-c">

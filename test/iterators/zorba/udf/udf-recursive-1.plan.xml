@@ -1,6 +1,8 @@
 <iterator-tree description="const-folded expr">
   <UDFunctionCallIterator function="local:get-request-id2" cached="true">
-    <SingletonIterator value="xs:integer(4)"/>
+    <UDFunctionArgs>
+      <SingletonIterator value="xs:integer(4)"/>
+    </UDFunctionArgs>
   </UDFunctionCallIterator>
 </iterator-tree>
 <iterator-tree description="local:get-request-id2">
@@ -10,7 +12,9 @@
     </ForVariable>
     <ReturnClause>
       <UDFunctionCallIterator function="local:get-request-id1" cached="true">
-        <SingletonIterator value="xs:integer(4)"/>
+        <UDFunctionArgs>
+          <SingletonIterator value="xs:integer(4)"/>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
     </ReturnClause>
   </FLWORIterator>
@@ -31,7 +35,9 @@
           </ForVariable>
           <ReturnClause>
             <UDFunctionCallIterator function="local:get-request-id2" cached="true">
-              <SingletonIterator value="xs:integer(4)"/>
+              <UDFunctionArgs>
+                <SingletonIterator value="xs:integer(4)"/>
+              </UDFunctionArgs>
             </UDFunctionCallIterator>
           </ReturnClause>
         </FLWORIterator>
@@ -41,7 +47,9 @@
 </iterator-tree>
 <iterator-tree description="main query">
   <UDFunctionCallIterator function="local:get-request-id1" cached="true">
-    <SingletonIterator value="xs:integer(1)"/>
+    <UDFunctionArgs>
+      <SingletonIterator value="xs:integer(1)"/>
+    </UDFunctionArgs>
   </UDFunctionCallIterator>
 </iterator-tree>
 <iterator-tree description="local:get-request-id1">
@@ -55,7 +63,9 @@
       </ForVariable>
       <ReturnClause>
         <UDFunctionCallIterator function="local:get-request-id2" cached="true">
-          <SingletonIterator value="xs:integer(4)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(4)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ReturnClause>
     </FLWORIterator>
@@ -63,6 +73,8 @@
 </iterator-tree>
 <iterator-tree description="local:get-request-id2">
   <UDFunctionCallIterator function="local:get-request-id1" cached="true">
-    <SingletonIterator value="xs:integer(4)"/>
+    <UDFunctionArgs>
+      <SingletonIterator value="xs:integer(4)"/>
+    </UDFunctionArgs>
   </UDFunctionCallIterator>
 </iterator-tree>

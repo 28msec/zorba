@@ -6,7 +6,9 @@
     <SequentialIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="ddl:create">
-          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+          <UDFunctionArgs>
+            <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <FnCountIterator>

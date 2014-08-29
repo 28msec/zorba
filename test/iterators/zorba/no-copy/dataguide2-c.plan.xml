@@ -10,9 +10,11 @@
       </ChildAxisIterator>
     </CtxVarDeclareIterator>
     <UDFunctionCallIterator function="local:collapseNodesSameName">
-      <TreatIterator quant="+">
-        <CtxVarIterator varid="4" varname="input" varkind="global"/>
-      </TreatIterator>
+      <UDFunctionArgs>
+        <TreatIterator quant="+">
+          <CtxVarIterator varid="4" varname="input" varkind="global"/>
+        </TreatIterator>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
   </SequentialIterator>
 </iterator-tree>
@@ -49,16 +51,20 @@
         </CtxVarDeclareIterator>
         <CtxVarDeclareIterator varid="5" varname="ca">
           <UDFunctionCallIterator function="local:collapseNodes">
-            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-              <CtxVarIterator varid="3" varname="a" varkind="local"/>
-            </TreatIterator>
+            <UDFunctionArgs>
+              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                <CtxVarIterator varid="3" varname="a" varkind="local"/>
+              </TreatIterator>
+            </UDFunctionArgs>
           </UDFunctionCallIterator>
         </CtxVarDeclareIterator>
         <CtxVarDeclareIterator varid="6" varname="cc">
           <UDFunctionCallIterator function="local:collapseNodes">
-            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-              <CtxVarIterator varid="4" varname="c" varkind="local"/>
-            </TreatIterator>
+            <UDFunctionArgs>
+              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                <CtxVarIterator varid="4" varname="c" varkind="local"/>
+              </TreatIterator>
+            </UDFunctionArgs>
           </UDFunctionCallIterator>
         </CtxVarDeclareIterator>
         <IfThenElseIterator>
@@ -117,9 +123,11 @@
     </OrderBySpec>
     <ReturnClause>
       <UDFunctionCallIterator function="local:collapseNodesSameName">
-        <TreatIterator quant="+">
-          <LetVarIterator varname="y"/>
-        </TreatIterator>
+        <UDFunctionArgs>
+          <TreatIterator quant="+">
+            <LetVarIterator varname="y"/>
+          </TreatIterator>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
     </ReturnClause>
   </FLWORIterator>

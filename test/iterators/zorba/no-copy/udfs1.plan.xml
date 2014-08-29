@@ -29,14 +29,18 @@
     </CtxVarDeclareIterator>
     <FnConcatIterator>
       <UDFunctionCallIterator function="local:foo">
-        <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-          <CtxVarIterator varid="4" varname="d1" varkind="local"/>
-        </TreatIterator>
+        <UDFunctionArgs>
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
+            <CtxVarIterator varid="4" varname="d1" varkind="local"/>
+          </TreatIterator>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
       <UDFunctionCallIterator function="local:foo">
-        <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-          <CtxVarIterator varid="5" varname="d2" varkind="local"/>
-        </TreatIterator>
+        <UDFunctionArgs>
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
+            <CtxVarIterator varid="5" varname="d2" varkind="local"/>
+          </TreatIterator>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
     </FnConcatIterator>
   </SequentialIterator>
@@ -51,7 +55,9 @@
       </ForVariable>
       <ReturnClause>
         <UDFunctionCallIterator function="local:parent">
-          <ForVarIterator varname="child"/>
+          <UDFunctionArgs>
+            <ForVarIterator varname="child"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ReturnClause>
     </FLWORIterator>

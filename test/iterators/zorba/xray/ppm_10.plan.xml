@@ -157,13 +157,15 @@
     </CtxVarDeclareIterator>
     <CtxVarDeclareIterator varid="6" varname="scene">
       <UDFunctionCallIterator function="scene:prepare-scene">
-        <TreatIterator quant="">
-          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill-allowed="false">
-            <FnDocIterator>
-              <SingletonIterator value="xs:string(scene.xml)"/>
-            </FnDocIterator>
-          </ChildAxisIterator>
-        </TreatIterator>
+        <UDFunctionArgs>
+          <TreatIterator quant="">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill-allowed="false">
+              <FnDocIterator>
+                <SingletonIterator value="xs:string(scene.xml)"/>
+              </FnDocIterator>
+            </ChildAxisIterator>
+          </TreatIterator>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
     </CtxVarDeclareIterator>
     <FnConcatIterator>
@@ -231,22 +233,24 @@
                 <FLWORIterator>
                   <ForVariable name="channel">
                     <UDFunctionCallIterator function="raytracer:plot-pixel">
-                      <CtxVarIterator varid="6" varname="scene" varkind="global"/>
-                      <PromoteIterator type="xs:double">
-                        <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
-                          <SpecificNumArithIterator_SubtractOperation_DECIMAL>
-                            <SpecificNumArithIterator_DivideOperation_DECIMAL>
-                              <ForVarIterator varname="x"/>
-                              <CtxVarIterator varid="4" varname="width" varkind="global"/>
-                            </SpecificNumArithIterator_DivideOperation_DECIMAL>
-                            <SingletonIterator value="xs:decimal(0.5)"/>
-                          </SpecificNumArithIterator_SubtractOperation_DECIMAL>
-                          <ForVarIterator varname="aspect-ratio"/>
-                        </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
-                      </PromoteIterator>
-                      <UnhoistIterator>
-                        <ForVarIterator varname="$$opt_temp_1"/>
-                      </UnhoistIterator>
+                      <UDFunctionArgs>
+                        <CtxVarIterator varid="6" varname="scene" varkind="global"/>
+                        <PromoteIterator type="xs:double">
+                          <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+                            <SpecificNumArithIterator_SubtractOperation_DECIMAL>
+                              <SpecificNumArithIterator_DivideOperation_DECIMAL>
+                                <ForVarIterator varname="x"/>
+                                <CtxVarIterator varid="4" varname="width" varkind="global"/>
+                              </SpecificNumArithIterator_DivideOperation_DECIMAL>
+                              <SingletonIterator value="xs:decimal(0.5)"/>
+                            </SpecificNumArithIterator_SubtractOperation_DECIMAL>
+                            <ForVarIterator varname="aspect-ratio"/>
+                          </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+                        </PromoteIterator>
+                        <UnhoistIterator>
+                          <ForVarIterator varname="$$opt_temp_1"/>
+                        </UnhoistIterator>
+                      </UDFunctionArgs>
                     </UDFunctionCallIterator>
                   </ForVariable>
                   <ReturnClause>
@@ -287,9 +291,11 @@
               <ForVarIterator varname="node"/>
             </InstanceOfIterator>
             <UDFunctionCallIterator function="scene:calculate-basis">
-              <TreatIterator type="[NodeXQType elementNode nametest=[uri: , local: camera] content=[XQType ANY_TYPE_KIND*]]" quant="">
-                <ForVarIterator varname="node"/>
-              </TreatIterator>
+              <UDFunctionArgs>
+                <TreatIterator type="[NodeXQType elementNode nametest=[uri: , local: camera] content=[XQType ANY_TYPE_KIND*]]" quant="">
+                  <ForVarIterator varname="node"/>
+                </TreatIterator>
+              </UDFunctionArgs>
             </UDFunctionCallIterator>
             <ForVarIterator varname="node"/>
           </IfThenElseIterator>
@@ -306,225 +312,229 @@
       </ForVariable>
       <ForVariable name="channel">
         <UDFunctionCallIterator function="raytracer:trace-ray">
-          <ForVarIterator varname="scene"/>
-          <FunctionTraceIterator>
-            <FLWORIterator>
-              <ForVariable name="a">
-                <TreatIterator quant="">
-                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill-allowed="false">
-                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
-                      <ForVarIterator varname="scene"/>
-                    </ChildAxisIterator>
-                  </ChildAxisIterator>
-                </TreatIterator>
-              </ForVariable>
-              <ReturnClause>
-                <FnConcatIterator>
-                  <CastIterator type="xs:double">
-                    <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
-                        <ForVarIterator varname="a"/>
-                      </AttributeAxisIterator>
-                    </FnDataIterator>
-                  </CastIterator>
-                  <CastIterator type="xs:double">
-                    <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
-                        <ForVarIterator varname="a"/>
-                      </AttributeAxisIterator>
-                    </FnDataIterator>
-                  </CastIterator>
-                  <CastIterator type="xs:double">
-                    <FnDataIterator>
-                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
-                        <ForVarIterator varname="a"/>
-                      </AttributeAxisIterator>
-                    </FnDataIterator>
-                  </CastIterator>
-                </FnConcatIterator>
-              </ReturnClause>
-            </FLWORIterator>
-          </FunctionTraceIterator>
-          <UDFunctionCallIterator function="vector:normalize">
+          <UDFunctionArgs>
+            <ForVarIterator varname="scene"/>
             <FunctionTraceIterator>
               <FLWORIterator>
-                <LetVariable name="v2" materialize="true">
-                  <FunctionTraceIterator>
-                    <FLWORIterator>
-                      <LetVariable name="v2" materialize="true">
-                        <FunctionTraceIterator>
-                          <FLWORIterator>
-                            <ForVariable name="x">
-                              <LetVarIterator varname="y"/>
-                            </ForVariable>
-                            <ForVariable name="y">
-                              <FunctionTraceIterator>
-                                <FLWORIterator>
-                                  <ForVariable name="a">
-                                    <TreatIterator quant="">
-                                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,up)" typename="*" nill-allowed="false">
-                                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
-                                          <ForVarIterator varname="scene"/>
-                                        </ChildAxisIterator>
-                                      </ChildAxisIterator>
-                                    </TreatIterator>
-                                  </ForVariable>
-                                  <ReturnClause>
-                                    <FnConcatIterator>
-                                      <CastIterator type="xs:double">
-                                        <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
-                                            <ForVarIterator varname="a"/>
-                                          </AttributeAxisIterator>
-                                        </FnDataIterator>
-                                      </CastIterator>
-                                      <CastIterator type="xs:double">
-                                        <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
-                                            <ForVarIterator varname="a"/>
-                                          </AttributeAxisIterator>
-                                        </FnDataIterator>
-                                      </CastIterator>
-                                      <CastIterator type="xs:double">
-                                        <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
-                                            <ForVarIterator varname="a"/>
-                                          </AttributeAxisIterator>
-                                        </FnDataIterator>
-                                      </CastIterator>
-                                    </FnConcatIterator>
-                                  </ReturnClause>
-                                </FLWORIterator>
-                              </FunctionTraceIterator>
-                            </ForVariable>
-                            <ReturnClause>
-                              <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                                <ForVarIterator varname="x"/>
-                                <ForVarIterator varname="y"/>
-                              </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                            </ReturnClause>
-                          </FLWORIterator>
-                        </FunctionTraceIterator>
-                      </LetVariable>
-                      <ForVariable name="x">
-                        <FunctionTraceIterator>
-                          <FLWORIterator>
-                            <ForVariable name="x">
-                              <LetVarIterator varname="x"/>
-                            </ForVariable>
-                            <ForVariable name="y">
-                              <FunctionTraceIterator>
-                                <FLWORIterator>
-                                  <ForVariable name="a">
-                                    <TreatIterator quant="">
-                                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,right)" typename="*" nill-allowed="false">
-                                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
-                                          <ForVarIterator varname="scene"/>
-                                        </ChildAxisIterator>
-                                      </ChildAxisIterator>
-                                    </TreatIterator>
-                                  </ForVariable>
-                                  <ReturnClause>
-                                    <FnConcatIterator>
-                                      <CastIterator type="xs:double">
-                                        <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
-                                            <ForVarIterator varname="a"/>
-                                          </AttributeAxisIterator>
-                                        </FnDataIterator>
-                                      </CastIterator>
-                                      <CastIterator type="xs:double">
-                                        <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
-                                            <ForVarIterator varname="a"/>
-                                          </AttributeAxisIterator>
-                                        </FnDataIterator>
-                                      </CastIterator>
-                                      <CastIterator type="xs:double">
-                                        <FnDataIterator>
-                                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
-                                            <ForVarIterator varname="a"/>
-                                          </AttributeAxisIterator>
-                                        </FnDataIterator>
-                                      </CastIterator>
-                                    </FnConcatIterator>
-                                  </ReturnClause>
-                                </FLWORIterator>
-                              </FunctionTraceIterator>
-                            </ForVariable>
-                            <ReturnClause>
-                              <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                                <ForVarIterator varname="x"/>
-                                <ForVarIterator varname="y"/>
-                              </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                            </ReturnClause>
-                          </FLWORIterator>
-                        </FunctionTraceIterator>
-                      </ForVariable>
-                      <ReturnClause>
-                        <SpecificNumArithIterator_AddOperation_DOUBLE>
-                          <ForVarIterator varname="x"/>
-                          <LetVarIterator varname="v2">
-                            <ForVarIterator varname="p"/>
-                          </LetVarIterator>
-                        </SpecificNumArithIterator_AddOperation_DOUBLE>
-                      </ReturnClause>
-                    </FLWORIterator>
-                  </FunctionTraceIterator>
-                </LetVariable>
-                <ForVariable name="x">
-                  <FunctionTraceIterator>
-                    <FLWORIterator>
-                      <ForVariable name="a">
-                        <TreatIterator quant="">
-                          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,forward)" typename="*" nill-allowed="false">
-                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
-                              <ForVarIterator varname="scene"/>
-                            </ChildAxisIterator>
-                          </ChildAxisIterator>
-                        </TreatIterator>
-                      </ForVariable>
-                      <ReturnClause>
-                        <FnConcatIterator>
-                          <CastIterator type="xs:double">
-                            <FnDataIterator>
-                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
-                                <ForVarIterator varname="a"/>
-                              </AttributeAxisIterator>
-                            </FnDataIterator>
-                          </CastIterator>
-                          <CastIterator type="xs:double">
-                            <FnDataIterator>
-                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
-                                <ForVarIterator varname="a"/>
-                              </AttributeAxisIterator>
-                            </FnDataIterator>
-                          </CastIterator>
-                          <CastIterator type="xs:double">
-                            <FnDataIterator>
-                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
-                                <ForVarIterator varname="a"/>
-                              </AttributeAxisIterator>
-                            </FnDataIterator>
-                          </CastIterator>
-                        </FnConcatIterator>
-                      </ReturnClause>
-                    </FLWORIterator>
-                  </FunctionTraceIterator>
+                <ForVariable name="a">
+                  <TreatIterator quant="">
+                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill-allowed="false">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
+                        <ForVarIterator varname="scene"/>
+                      </ChildAxisIterator>
+                    </ChildAxisIterator>
+                  </TreatIterator>
                 </ForVariable>
                 <ReturnClause>
-                  <SpecificNumArithIterator_AddOperation_DOUBLE>
-                    <ForVarIterator varname="x"/>
-                    <LetVarIterator varname="v2">
-                      <ForVarIterator varname="p"/>
-                    </LetVarIterator>
-                  </SpecificNumArithIterator_AddOperation_DOUBLE>
+                  <FnConcatIterator>
+                    <CastIterator type="xs:double">
+                      <FnDataIterator>
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
+                          <ForVarIterator varname="a"/>
+                        </AttributeAxisIterator>
+                      </FnDataIterator>
+                    </CastIterator>
+                    <CastIterator type="xs:double">
+                      <FnDataIterator>
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
+                          <ForVarIterator varname="a"/>
+                        </AttributeAxisIterator>
+                      </FnDataIterator>
+                    </CastIterator>
+                    <CastIterator type="xs:double">
+                      <FnDataIterator>
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
+                          <ForVarIterator varname="a"/>
+                        </AttributeAxisIterator>
+                      </FnDataIterator>
+                    </CastIterator>
+                  </FnConcatIterator>
                 </ReturnClause>
               </FLWORIterator>
             </FunctionTraceIterator>
-          </UDFunctionCallIterator>
-          <FnConcatIterator/>
-          <SingletonIterator value="xs:double(1)"/>
+            <UDFunctionCallIterator function="vector:normalize">
+              <UDFunctionArgs>
+                <FunctionTraceIterator>
+                  <FLWORIterator>
+                    <LetVariable name="v2" materialize="true">
+                      <FunctionTraceIterator>
+                        <FLWORIterator>
+                          <LetVariable name="v2" materialize="true">
+                            <FunctionTraceIterator>
+                              <FLWORIterator>
+                                <ForVariable name="x">
+                                  <LetVarIterator varname="y"/>
+                                </ForVariable>
+                                <ForVariable name="y">
+                                  <FunctionTraceIterator>
+                                    <FLWORIterator>
+                                      <ForVariable name="a">
+                                        <TreatIterator quant="">
+                                          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,up)" typename="*" nill-allowed="false">
+                                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
+                                              <ForVarIterator varname="scene"/>
+                                            </ChildAxisIterator>
+                                          </ChildAxisIterator>
+                                        </TreatIterator>
+                                      </ForVariable>
+                                      <ReturnClause>
+                                        <FnConcatIterator>
+                                          <CastIterator type="xs:double">
+                                            <FnDataIterator>
+                                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
+                                                <ForVarIterator varname="a"/>
+                                              </AttributeAxisIterator>
+                                            </FnDataIterator>
+                                          </CastIterator>
+                                          <CastIterator type="xs:double">
+                                            <FnDataIterator>
+                                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
+                                                <ForVarIterator varname="a"/>
+                                              </AttributeAxisIterator>
+                                            </FnDataIterator>
+                                          </CastIterator>
+                                          <CastIterator type="xs:double">
+                                            <FnDataIterator>
+                                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
+                                                <ForVarIterator varname="a"/>
+                                              </AttributeAxisIterator>
+                                            </FnDataIterator>
+                                          </CastIterator>
+                                        </FnConcatIterator>
+                                      </ReturnClause>
+                                    </FLWORIterator>
+                                  </FunctionTraceIterator>
+                                </ForVariable>
+                                <ReturnClause>
+                                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                                    <ForVarIterator varname="x"/>
+                                    <ForVarIterator varname="y"/>
+                                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                                </ReturnClause>
+                              </FLWORIterator>
+                            </FunctionTraceIterator>
+                          </LetVariable>
+                          <ForVariable name="x">
+                            <FunctionTraceIterator>
+                              <FLWORIterator>
+                                <ForVariable name="x">
+                                  <LetVarIterator varname="x"/>
+                                </ForVariable>
+                                <ForVariable name="y">
+                                  <FunctionTraceIterator>
+                                    <FLWORIterator>
+                                      <ForVariable name="a">
+                                        <TreatIterator quant="">
+                                          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,right)" typename="*" nill-allowed="false">
+                                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
+                                              <ForVarIterator varname="scene"/>
+                                            </ChildAxisIterator>
+                                          </ChildAxisIterator>
+                                        </TreatIterator>
+                                      </ForVariable>
+                                      <ReturnClause>
+                                        <FnConcatIterator>
+                                          <CastIterator type="xs:double">
+                                            <FnDataIterator>
+                                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
+                                                <ForVarIterator varname="a"/>
+                                              </AttributeAxisIterator>
+                                            </FnDataIterator>
+                                          </CastIterator>
+                                          <CastIterator type="xs:double">
+                                            <FnDataIterator>
+                                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
+                                                <ForVarIterator varname="a"/>
+                                              </AttributeAxisIterator>
+                                            </FnDataIterator>
+                                          </CastIterator>
+                                          <CastIterator type="xs:double">
+                                            <FnDataIterator>
+                                              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
+                                                <ForVarIterator varname="a"/>
+                                              </AttributeAxisIterator>
+                                            </FnDataIterator>
+                                          </CastIterator>
+                                        </FnConcatIterator>
+                                      </ReturnClause>
+                                    </FLWORIterator>
+                                  </FunctionTraceIterator>
+                                </ForVariable>
+                                <ReturnClause>
+                                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                                    <ForVarIterator varname="x"/>
+                                    <ForVarIterator varname="y"/>
+                                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                                </ReturnClause>
+                              </FLWORIterator>
+                            </FunctionTraceIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <SpecificNumArithIterator_AddOperation_DOUBLE>
+                              <ForVarIterator varname="x"/>
+                              <LetVarIterator varname="v2">
+                                <ForVarIterator varname="p"/>
+                              </LetVarIterator>
+                            </SpecificNumArithIterator_AddOperation_DOUBLE>
+                          </ReturnClause>
+                        </FLWORIterator>
+                      </FunctionTraceIterator>
+                    </LetVariable>
+                    <ForVariable name="x">
+                      <FunctionTraceIterator>
+                        <FLWORIterator>
+                          <ForVariable name="a">
+                            <TreatIterator quant="">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,forward)" typename="*" nill-allowed="false">
+                                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,camera)" typename="*" nill-allowed="false">
+                                  <ForVarIterator varname="scene"/>
+                                </ChildAxisIterator>
+                              </ChildAxisIterator>
+                            </TreatIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <FnConcatIterator>
+                              <CastIterator type="xs:double">
+                                <FnDataIterator>
+                                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
+                                    <ForVarIterator varname="a"/>
+                                  </AttributeAxisIterator>
+                                </FnDataIterator>
+                              </CastIterator>
+                              <CastIterator type="xs:double">
+                                <FnDataIterator>
+                                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
+                                    <ForVarIterator varname="a"/>
+                                  </AttributeAxisIterator>
+                                </FnDataIterator>
+                              </CastIterator>
+                              <CastIterator type="xs:double">
+                                <FnDataIterator>
+                                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
+                                    <ForVarIterator varname="a"/>
+                                  </AttributeAxisIterator>
+                                </FnDataIterator>
+                              </CastIterator>
+                            </FnConcatIterator>
+                          </ReturnClause>
+                        </FLWORIterator>
+                      </FunctionTraceIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <SpecificNumArithIterator_AddOperation_DOUBLE>
+                        <ForVarIterator varname="x"/>
+                        <LetVarIterator varname="v2">
+                          <ForVarIterator varname="p"/>
+                        </LetVarIterator>
+                      </SpecificNumArithIterator_AddOperation_DOUBLE>
+                    </ReturnClause>
+                  </FLWORIterator>
+                </FunctionTraceIterator>
+              </UDFunctionArgs>
+            </UDFunctionCallIterator>
+            <FnConcatIterator/>
+            <SingletonIterator value="xs:double(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ForVariable>
       <ReturnClause>
@@ -592,107 +602,111 @@
     </LetVariable>
     <LetVariable name="forward" materialize="true">
       <UDFunctionCallIterator function="vector:normalize">
-        <FunctionTraceIterator>
-          <FLWORIterator>
-            <ForVariable name="x">
-              <FunctionTraceIterator>
-                <FLWORIterator>
-                  <ForVariable name="a">
-                    <TreatIterator quant="">
-                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,look-at)" typename="*" nill-allowed="false">
-                        <ForVarIterator varname="camera"/>
-                      </ChildAxisIterator>
-                    </TreatIterator>
-                  </ForVariable>
-                  <ReturnClause>
-                    <FnConcatIterator>
-                      <CastIterator type="xs:double">
-                        <FnDataIterator>
-                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
-                            <ForVarIterator varname="a"/>
-                          </AttributeAxisIterator>
-                        </FnDataIterator>
-                      </CastIterator>
-                      <CastIterator type="xs:double">
-                        <FnDataIterator>
-                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
-                            <ForVarIterator varname="a"/>
-                          </AttributeAxisIterator>
-                        </FnDataIterator>
-                      </CastIterator>
-                      <CastIterator type="xs:double">
-                        <FnDataIterator>
-                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
-                            <ForVarIterator varname="a"/>
-                          </AttributeAxisIterator>
-                        </FnDataIterator>
-                      </CastIterator>
-                    </FnConcatIterator>
-                  </ReturnClause>
-                </FLWORIterator>
-              </FunctionTraceIterator>
-            </ForVariable>
-            <ReturnClause>
-              <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                <ForVarIterator varname="x"/>
-                <LetVarIterator varname="position">
-                  <ForVarIterator varname="p"/>
-                </LetVarIterator>
-              </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-            </ReturnClause>
-          </FLWORIterator>
-        </FunctionTraceIterator>
+        <UDFunctionArgs>
+          <FunctionTraceIterator>
+            <FLWORIterator>
+              <ForVariable name="x">
+                <FunctionTraceIterator>
+                  <FLWORIterator>
+                    <ForVariable name="a">
+                      <TreatIterator quant="">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,look-at)" typename="*" nill-allowed="false">
+                          <ForVarIterator varname="camera"/>
+                        </ChildAxisIterator>
+                      </TreatIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <FnConcatIterator>
+                        <CastIterator type="xs:double">
+                          <FnDataIterator>
+                            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
+                              <ForVarIterator varname="a"/>
+                            </AttributeAxisIterator>
+                          </FnDataIterator>
+                        </CastIterator>
+                        <CastIterator type="xs:double">
+                          <FnDataIterator>
+                            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
+                              <ForVarIterator varname="a"/>
+                            </AttributeAxisIterator>
+                          </FnDataIterator>
+                        </CastIterator>
+                        <CastIterator type="xs:double">
+                          <FnDataIterator>
+                            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
+                              <ForVarIterator varname="a"/>
+                            </AttributeAxisIterator>
+                          </FnDataIterator>
+                        </CastIterator>
+                      </FnConcatIterator>
+                    </ReturnClause>
+                  </FLWORIterator>
+                </FunctionTraceIterator>
+              </ForVariable>
+              <ReturnClause>
+                <SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                  <ForVarIterator varname="x"/>
+                  <LetVarIterator varname="position">
+                    <ForVarIterator varname="p"/>
+                  </LetVarIterator>
+                </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+              </ReturnClause>
+            </FLWORIterator>
+          </FunctionTraceIterator>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
     </LetVariable>
     <LetVariable name="right" materialize="true">
       <UDFunctionCallIterator function="vector:normalize">
-        <FunctionTraceIterator>
-          <FLWORIterator>
-            <LetVariable name="v2" materialize="true">
-              <PromoteIterator type="xs:double">
+        <UDFunctionArgs>
+          <FunctionTraceIterator>
+            <FLWORIterator>
+              <LetVariable name="v2" materialize="true">
+                <PromoteIterator type="xs:double">
+                  <FnConcatIterator>
+                    <SingletonIterator value="xs:integer(0)"/>
+                    <SingletonIterator value="xs:integer(-1)"/>
+                    <SingletonIterator value="xs:integer(0)"/>
+                  </FnConcatIterator>
+                </PromoteIterator>
+              </LetVariable>
+              <ReturnClause>
                 <FnConcatIterator>
-                  <SingletonIterator value="xs:integer(0)"/>
-                  <SingletonIterator value="xs:integer(-1)"/>
-                  <SingletonIterator value="xs:integer(0)"/>
+                  <SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                    <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                      <LetVarIterator varname="forward" targetPos="2"/>
+                      <LetVarIterator varname="v2" targetPos="3"/>
+                    </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                      <LetVarIterator varname="forward" targetPos="3"/>
+                      <LetVarIterator varname="v2" targetPos="2"/>
+                    </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                  </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                  <SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                    <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                      <LetVarIterator varname="forward" targetPos="3"/>
+                      <LetVarIterator varname="v2" targetPos="1"/>
+                    </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                      <LetVarIterator varname="forward" targetPos="1"/>
+                      <LetVarIterator varname="v2" targetPos="3"/>
+                    </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                  </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                  <SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                    <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                      <LetVarIterator varname="forward" targetPos="1"/>
+                      <LetVarIterator varname="v2" targetPos="2"/>
+                    </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                      <LetVarIterator varname="forward" targetPos="2"/>
+                      <LetVarIterator varname="v2" targetPos="1"/>
+                    </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                  </SpecificNumArithIterator_SubtractOperation_DOUBLE>
                 </FnConcatIterator>
-              </PromoteIterator>
-            </LetVariable>
-            <ReturnClause>
-              <FnConcatIterator>
-                <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                    <LetVarIterator varname="forward" targetPos="2"/>
-                    <LetVarIterator varname="v2" targetPos="3"/>
-                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                    <LetVarIterator varname="forward" targetPos="3"/>
-                    <LetVarIterator varname="v2" targetPos="2"/>
-                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                    <LetVarIterator varname="forward" targetPos="3"/>
-                    <LetVarIterator varname="v2" targetPos="1"/>
-                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                    <LetVarIterator varname="forward" targetPos="1"/>
-                    <LetVarIterator varname="v2" targetPos="3"/>
-                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                    <LetVarIterator varname="forward" targetPos="1"/>
-                    <LetVarIterator varname="v2" targetPos="2"/>
-                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                    <LetVarIterator varname="forward" targetPos="2"/>
-                    <LetVarIterator varname="v2" targetPos="1"/>
-                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-              </FnConcatIterator>
-            </ReturnClause>
-          </FLWORIterator>
-        </FunctionTraceIterator>
+              </ReturnClause>
+            </FLWORIterator>
+          </FunctionTraceIterator>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
     </LetVariable>
     <ReturnClause>
@@ -965,9 +979,11 @@
                     </FnBooleanIterator>
                   </WhereIterator>
                   <UDFunctionCallIterator function="shapes:intersect">
-                    <LetVarIterator varname="source"/>
-                    <LetVarIterator varname="direction"/>
-                    <ForVarIterator varname="$$context-item"/>
+                    <UDFunctionArgs>
+                      <LetVarIterator varname="source"/>
+                      <LetVarIterator varname="direction"/>
+                      <ForVarIterator varname="$$context-item"/>
+                    </UDFunctionArgs>
                   </UDFunctionCallIterator>
                 </LetIterator>
                 <FnExistsIterator>
@@ -976,40 +992,42 @@
               </WhereIterator>
             </OrderByIterator>
             <UDFunctionCallIterator function="raytracer:shade">
-              <FunctionTraceIterator>
-                <FLWORIterator>
-                  <LetVariable name="v2" materialize="true">
-                    <FunctionTraceIterator>
-                      <FLWORIterator>
-                        <ForVariable name="y">
-                          <LetVarIterator varname="direction"/>
-                        </ForVariable>
-                        <ReturnClause>
-                          <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                            <LetVarIterator varname="distance"/>
-                            <ForVarIterator varname="y"/>
-                          </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                        </ReturnClause>
-                      </FLWORIterator>
-                    </FunctionTraceIterator>
-                  </LetVariable>
-                  <ForVariable name="x">
-                    <LetVarIterator varname="source"/>
-                  </ForVariable>
-                  <ReturnClause>
-                    <SpecificNumArithIterator_AddOperation_DOUBLE>
-                      <ForVarIterator varname="x"/>
-                      <LetVarIterator varname="v2">
-                        <ForVarIterator varname="p"/>
-                      </LetVarIterator>
-                    </SpecificNumArithIterator_AddOperation_DOUBLE>
-                  </ReturnClause>
-                </FLWORIterator>
-              </FunctionTraceIterator>
-              <LetVarIterator varname="direction"/>
-              <ForVarIterator varname="$$context-item"/>
-              <ForVarIterator varname="scene"/>
-              <ForVarIterator varname="contribution"/>
+              <UDFunctionArgs>
+                <FunctionTraceIterator>
+                  <FLWORIterator>
+                    <LetVariable name="v2" materialize="true">
+                      <FunctionTraceIterator>
+                        <FLWORIterator>
+                          <ForVariable name="y">
+                            <LetVarIterator varname="direction"/>
+                          </ForVariable>
+                          <ReturnClause>
+                            <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                              <LetVarIterator varname="distance"/>
+                              <ForVarIterator varname="y"/>
+                            </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                          </ReturnClause>
+                        </FLWORIterator>
+                      </FunctionTraceIterator>
+                    </LetVariable>
+                    <ForVariable name="x">
+                      <LetVarIterator varname="source"/>
+                    </ForVariable>
+                    <ReturnClause>
+                      <SpecificNumArithIterator_AddOperation_DOUBLE>
+                        <ForVarIterator varname="x"/>
+                        <LetVarIterator varname="v2">
+                          <ForVarIterator varname="p"/>
+                        </LetVarIterator>
+                      </SpecificNumArithIterator_AddOperation_DOUBLE>
+                    </ReturnClause>
+                  </FLWORIterator>
+                </FunctionTraceIterator>
+                <LetVarIterator varname="direction"/>
+                <ForVarIterator varname="$$context-item"/>
+                <ForVarIterator varname="scene"/>
+                <ForVarIterator varname="contribution"/>
+              </UDFunctionArgs>
             </UDFunctionCallIterator>
           </TupleStreamIterator>
           <FunctionTraceIterator>
@@ -1066,18 +1084,22 @@
           <ForVarIterator varname="shape"/>
         </InstanceOfIterator>
         <UDFunctionCallIterator function="shapes:intersect-plane">
-          <LetVarIterator varname="start"/>
-          <LetVarIterator varname="dir"/>
-          <ForVarIterator varname="shape"/>
+          <UDFunctionArgs>
+            <LetVarIterator varname="start"/>
+            <LetVarIterator varname="dir"/>
+            <ForVarIterator varname="shape"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
         <IfThenElseIterator>
           <InstanceOfIterator>
             <ForVarIterator varname="shape"/>
           </InstanceOfIterator>
           <UDFunctionCallIterator function="shapes:intersect-sphere">
-            <LetVarIterator varname="start"/>
-            <LetVarIterator varname="dir"/>
-            <ForVarIterator varname="shape"/>
+            <UDFunctionArgs>
+              <LetVarIterator varname="start"/>
+              <LetVarIterator varname="dir"/>
+              <ForVarIterator varname="shape"/>
+            </UDFunctionArgs>
           </UDFunctionCallIterator>
           <FnConcatIterator/>
         </IfThenElseIterator>
@@ -1172,8 +1194,10 @@
     </LetVariable>
     <LetVariable name="normal" materialize="true">
       <UDFunctionCallIterator function="shapes:normal">
-        <LetVarIterator varname="position"/>
-        <ForVarIterator varname="shape"/>
+        <UDFunctionArgs>
+          <LetVarIterator varname="position"/>
+          <ForVarIterator varname="shape"/>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
     </LetVariable>
     <LetVariable name="normal" materialize="true">
@@ -1271,47 +1295,53 @@
     </LetVariable>
     <ReturnClause>
       <UDFunctionCallIterator function="vector:sum">
-        <FnConcatIterator>
-          <UDFunctionCallIterator function="raytracer:light">
-            <ForVarIterator varname="scene"/>
-            <ForVarIterator varname="shape"/>
-            <LetVarIterator varname="position"/>
-            <LetVarIterator varname="normal"/>
-            <LetVarIterator varname="reflected-direction"/>
-            <LetVarIterator varname="material"/>
-          </UDFunctionCallIterator>
-          <FunctionTraceIterator>
-            <FLWORIterator>
-              <ForVariable name="y">
-                <IfThenElseIterator>
-                  <FnBooleanIterator>
-                    <TypedValueCompareIterator_DOUBLE>
-                      <LetVarIterator varname="contribution"/>
-                      <SingletonIterator value="xs:double(0.01)"/>
-                    </TypedValueCompareIterator_DOUBLE>
-                  </FnBooleanIterator>
-                  <UDFunctionCallIterator function="raytracer:trace-ray">
-                    <ForVarIterator varname="scene"/>
-                    <LetVarIterator varname="position"/>
-                    <LetVarIterator varname="reflected-direction"/>
-                    <ForVarIterator varname="shape"/>
-                    <PromoteIterator type="xs:double">
-                      <LetVarIterator varname="contribution"/>
-                    </PromoteIterator>
-                  </UDFunctionCallIterator>
-                  <FnConcatIterator/>
-                </IfThenElseIterator>
-              </ForVariable>
-              <ReturnClause>
-                <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                  <LetVarIterator varname="surface-reflectiveness"/>
-                  <ForVarIterator varname="y"/>
-                </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-              </ReturnClause>
-            </FLWORIterator>
-          </FunctionTraceIterator>
-        </FnConcatIterator>
-        <SingletonIterator value="xs:integer(3)"/>
+        <UDFunctionArgs>
+          <FnConcatIterator>
+            <UDFunctionCallIterator function="raytracer:light">
+              <UDFunctionArgs>
+                <ForVarIterator varname="scene"/>
+                <ForVarIterator varname="shape"/>
+                <LetVarIterator varname="position"/>
+                <LetVarIterator varname="normal"/>
+                <LetVarIterator varname="reflected-direction"/>
+                <LetVarIterator varname="material"/>
+              </UDFunctionArgs>
+            </UDFunctionCallIterator>
+            <FunctionTraceIterator>
+              <FLWORIterator>
+                <ForVariable name="y">
+                  <IfThenElseIterator>
+                    <FnBooleanIterator>
+                      <TypedValueCompareIterator_DOUBLE>
+                        <LetVarIterator varname="contribution"/>
+                        <SingletonIterator value="xs:double(0.01)"/>
+                      </TypedValueCompareIterator_DOUBLE>
+                    </FnBooleanIterator>
+                    <UDFunctionCallIterator function="raytracer:trace-ray">
+                      <UDFunctionArgs>
+                        <ForVarIterator varname="scene"/>
+                        <LetVarIterator varname="position"/>
+                        <LetVarIterator varname="reflected-direction"/>
+                        <ForVarIterator varname="shape"/>
+                        <PromoteIterator type="xs:double">
+                          <LetVarIterator varname="contribution"/>
+                        </PromoteIterator>
+                      </UDFunctionArgs>
+                    </UDFunctionCallIterator>
+                    <FnConcatIterator/>
+                  </IfThenElseIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    <LetVarIterator varname="surface-reflectiveness"/>
+                    <ForVarIterator varname="y"/>
+                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                </ReturnClause>
+              </FLWORIterator>
+            </FunctionTraceIterator>
+          </FnConcatIterator>
+          <SingletonIterator value="xs:integer(3)"/>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
     </ReturnClause>
   </FLWORIterator>
@@ -1649,8 +1679,10 @@
             <ForVarIterator varname="shape"/>
           </InstanceOfIterator>
           <UDFunctionCallIterator function="shapes:sphere-normal">
-            <LetVarIterator varname="position"/>
-            <ForVarIterator varname="shape"/>
+            <UDFunctionArgs>
+              <LetVarIterator varname="position"/>
+              <ForVarIterator varname="shape"/>
+            </UDFunctionArgs>
           </UDFunctionCallIterator>
           <FnConcatIterator/>
         </IfThenElseIterator>
@@ -1696,259 +1728,265 @@
     </ForVariable>
     <ReturnClause>
       <UDFunctionCallIterator function="vector:sum">
-        <FLWORIterator>
-          <ForVariable name="light">
-            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,light)" typename="*" nill-allowed="false">
-              <ForVarIterator varname="scene"/>
-            </ChildAxisIterator>
-          </ForVariable>
-          <LetVariable name="light-color" materialize="true">
-            <FunctionTraceIterator>
-              <FLWORIterator>
-                <ForVariable name="a">
-                  <TreatIterator quant="">
-                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,color)" typename="*" nill-allowed="false">
-                      <ForVarIterator varname="light"/>
-                    </ChildAxisIterator>
-                  </TreatIterator>
-                </ForVariable>
-                <ReturnClause>
-                  <FnConcatIterator>
-                    <CastIterator type="xs:double">
-                      <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,r)" typename="*" nill-allowed="false">
-                          <ForVarIterator varname="a"/>
-                        </AttributeAxisIterator>
-                      </FnDataIterator>
-                    </CastIterator>
-                    <CastIterator type="xs:double">
-                      <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,g)" typename="*" nill-allowed="false">
-                          <ForVarIterator varname="a"/>
-                        </AttributeAxisIterator>
-                      </FnDataIterator>
-                    </CastIterator>
-                    <CastIterator type="xs:double">
-                      <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="false">
-                          <ForVarIterator varname="a"/>
-                        </AttributeAxisIterator>
-                      </FnDataIterator>
-                    </CastIterator>
-                  </FnConcatIterator>
-                </ReturnClause>
-              </FLWORIterator>
-            </FunctionTraceIterator>
-          </LetVariable>
-          <LetVariable name="light-position" materialize="true">
-            <FunctionTraceIterator>
-              <FLWORIterator>
-                <ForVariable name="a">
-                  <TreatIterator quant="">
-                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill-allowed="false">
-                      <ForVarIterator varname="light"/>
-                    </ChildAxisIterator>
-                  </TreatIterator>
-                </ForVariable>
-                <ReturnClause>
-                  <FnConcatIterator>
-                    <CastIterator type="xs:double">
-                      <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
-                          <ForVarIterator varname="a"/>
-                        </AttributeAxisIterator>
-                      </FnDataIterator>
-                    </CastIterator>
-                    <CastIterator type="xs:double">
-                      <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
-                          <ForVarIterator varname="a"/>
-                        </AttributeAxisIterator>
-                      </FnDataIterator>
-                    </CastIterator>
-                    <CastIterator type="xs:double">
-                      <FnDataIterator>
-                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
-                          <ForVarIterator varname="a"/>
-                        </AttributeAxisIterator>
-                      </FnDataIterator>
-                    </CastIterator>
-                  </FnConcatIterator>
-                </ReturnClause>
-              </FLWORIterator>
-            </FunctionTraceIterator>
-          </LetVariable>
-          <LetVariable name="light-direction" materialize="true">
-            <UDFunctionCallIterator function="vector:normalize">
+        <UDFunctionArgs>
+          <FLWORIterator>
+            <ForVariable name="light">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,light)" typename="*" nill-allowed="false">
+                <ForVarIterator varname="scene"/>
+              </ChildAxisIterator>
+            </ForVariable>
+            <LetVariable name="light-color" materialize="true">
               <FunctionTraceIterator>
                 <FLWORIterator>
-                  <ForVariable name="x">
-                    <LetVarIterator varname="light-position"/>
+                  <ForVariable name="a">
+                    <TreatIterator quant="">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,color)" typename="*" nill-allowed="false">
+                        <ForVarIterator varname="light"/>
+                      </ChildAxisIterator>
+                    </TreatIterator>
                   </ForVariable>
                   <ReturnClause>
-                    <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                      <ForVarIterator varname="x"/>
-                      <LetVarIterator varname="position">
-                        <ForVarIterator varname="p"/>
-                      </LetVarIterator>
-                    </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                    <FnConcatIterator>
+                      <CastIterator type="xs:double">
+                        <FnDataIterator>
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,r)" typename="*" nill-allowed="false">
+                            <ForVarIterator varname="a"/>
+                          </AttributeAxisIterator>
+                        </FnDataIterator>
+                      </CastIterator>
+                      <CastIterator type="xs:double">
+                        <FnDataIterator>
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,g)" typename="*" nill-allowed="false">
+                            <ForVarIterator varname="a"/>
+                          </AttributeAxisIterator>
+                        </FnDataIterator>
+                      </CastIterator>
+                      <CastIterator type="xs:double">
+                        <FnDataIterator>
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill-allowed="false">
+                            <ForVarIterator varname="a"/>
+                          </AttributeAxisIterator>
+                        </FnDataIterator>
+                      </CastIterator>
+                    </FnConcatIterator>
                   </ReturnClause>
                 </FLWORIterator>
               </FunctionTraceIterator>
-            </UDFunctionCallIterator>
-          </LetVariable>
-          <ForVariable name="illumination">
-            <FunctionTraceIterator>
-              <FnSumDoubleIterator>
+            </LetVariable>
+            <LetVariable name="light-position" materialize="true">
+              <FunctionTraceIterator>
                 <FLWORIterator>
-                  <ForVariable name="x">
-                    <LetVarIterator varname="light-direction"/>
+                  <ForVariable name="a">
+                    <TreatIterator quant="">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill-allowed="false">
+                        <ForVarIterator varname="light"/>
+                      </ChildAxisIterator>
+                    </TreatIterator>
                   </ForVariable>
                   <ReturnClause>
-                    <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                      <ForVarIterator varname="x"/>
-                      <LetVarIterator varname="normal">
-                        <ForVarIterator varname="p"/>
-                      </LetVarIterator>
-                    </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    <FnConcatIterator>
+                      <CastIterator type="xs:double">
+                        <FnDataIterator>
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill-allowed="false">
+                            <ForVarIterator varname="a"/>
+                          </AttributeAxisIterator>
+                        </FnDataIterator>
+                      </CastIterator>
+                      <CastIterator type="xs:double">
+                        <FnDataIterator>
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill-allowed="false">
+                            <ForVarIterator varname="a"/>
+                          </AttributeAxisIterator>
+                        </FnDataIterator>
+                      </CastIterator>
+                      <CastIterator type="xs:double">
+                        <FnDataIterator>
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill-allowed="false">
+                            <ForVarIterator varname="a"/>
+                          </AttributeAxisIterator>
+                        </FnDataIterator>
+                      </CastIterator>
+                    </FnConcatIterator>
                   </ReturnClause>
                 </FLWORIterator>
-              </FnSumDoubleIterator>
-            </FunctionTraceIterator>
-          </ForVariable>
-          <ForVariable name="specular">
-            <FunctionTraceIterator>
-              <FnSumDoubleIterator>
-                <FLWORIterator>
-                  <ForVariable name="x">
-                    <LetVarIterator varname="light-direction"/>
-                  </ForVariable>
-                  <ReturnClause>
-                    <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                      <ForVarIterator varname="x"/>
-                      <LetVarIterator varname="reflected-direction">
-                        <ForVarIterator varname="p"/>
-                      </LetVarIterator>
-                    </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                  </ReturnClause>
-                </FLWORIterator>
-              </FnSumDoubleIterator>
-            </FunctionTraceIterator>
-          </ForVariable>
-          <WhereClause>
-            <FnBooleanIterator>
-              <CompareIterator>
-                <UDFunctionCallIterator function="raytracer:test-ray">
-                  <ForVarIterator varname="scene"/>
-                  <LetVarIterator varname="position"/>
-                  <LetVarIterator varname="light-direction"/>
-                  <ForVarIterator varname="shape"/>
-                </UDFunctionCallIterator>
-                <FunctionTraceIterator>
-                  <SqrtIterator>
-                    <FnSumDoubleIterator>
-                      <FLWORIterator>
-                        <ForVariable name="x">
-                          <FunctionTraceIterator>
-                            <FLWORIterator>
-                              <ForVariable name="x">
-                                <LetVarIterator varname="light-position"/>
-                              </ForVariable>
-                              <ReturnClause>
-                                <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                                  <ForVarIterator varname="x"/>
-                                  <LetVarIterator varname="position">
-                                    <ForVarIterator varname="p"/>
-                                  </LetVarIterator>
-                                </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                              </ReturnClause>
-                            </FLWORIterator>
-                          </FunctionTraceIterator>
-                        </ForVariable>
-                        <ReturnClause>
-                          <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                            <ForVarIterator varname="x"/>
-                            <ForVarIterator varname="x"/>
-                          </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                        </ReturnClause>
-                      </FLWORIterator>
-                    </FnSumDoubleIterator>
-                  </SqrtIterator>
-                </FunctionTraceIterator>
-              </CompareIterator>
-            </FnBooleanIterator>
-          </WhereClause>
-          <ReturnClause>
-            <FnConcatIterator>
-              <IfThenElseIterator>
-                <TypedValueCompareIterator_DOUBLE>
-                  <ForVarIterator varname="illumination"/>
-                  <SingletonIterator value="xs:double(0)"/>
-                </TypedValueCompareIterator_DOUBLE>
-                <FunctionTraceIterator>
+              </FunctionTraceIterator>
+            </LetVariable>
+            <LetVariable name="light-direction" materialize="true">
+              <UDFunctionCallIterator function="vector:normalize">
+                <UDFunctionArgs>
+                  <FunctionTraceIterator>
+                    <FLWORIterator>
+                      <ForVariable name="x">
+                        <LetVarIterator varname="light-position"/>
+                      </ForVariable>
+                      <ReturnClause>
+                        <SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                          <ForVarIterator varname="x"/>
+                          <LetVarIterator varname="position">
+                            <ForVarIterator varname="p"/>
+                          </LetVarIterator>
+                        </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </FunctionTraceIterator>
+                </UDFunctionArgs>
+              </UDFunctionCallIterator>
+            </LetVariable>
+            <ForVariable name="illumination">
+              <FunctionTraceIterator>
+                <FnSumDoubleIterator>
                   <FLWORIterator>
-                    <ForVariable name="y">
-                      <FunctionTraceIterator>
+                    <ForVariable name="x">
+                      <LetVarIterator varname="light-direction"/>
+                    </ForVariable>
+                    <ReturnClause>
+                      <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                        <ForVarIterator varname="x"/>
+                        <LetVarIterator varname="normal">
+                          <ForVarIterator varname="p"/>
+                        </LetVarIterator>
+                      </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    </ReturnClause>
+                  </FLWORIterator>
+                </FnSumDoubleIterator>
+              </FunctionTraceIterator>
+            </ForVariable>
+            <ForVariable name="specular">
+              <FunctionTraceIterator>
+                <FnSumDoubleIterator>
+                  <FLWORIterator>
+                    <ForVariable name="x">
+                      <LetVarIterator varname="light-direction"/>
+                    </ForVariable>
+                    <ReturnClause>
+                      <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                        <ForVarIterator varname="x"/>
+                        <LetVarIterator varname="reflected-direction">
+                          <ForVarIterator varname="p"/>
+                        </LetVarIterator>
+                      </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    </ReturnClause>
+                  </FLWORIterator>
+                </FnSumDoubleIterator>
+              </FunctionTraceIterator>
+            </ForVariable>
+            <WhereClause>
+              <FnBooleanIterator>
+                <CompareIterator>
+                  <UDFunctionCallIterator function="raytracer:test-ray">
+                    <UDFunctionArgs>
+                      <ForVarIterator varname="scene"/>
+                      <LetVarIterator varname="position"/>
+                      <LetVarIterator varname="light-direction"/>
+                      <ForVarIterator varname="shape"/>
+                    </UDFunctionArgs>
+                  </UDFunctionCallIterator>
+                  <FunctionTraceIterator>
+                    <SqrtIterator>
+                      <FnSumDoubleIterator>
                         <FLWORIterator>
                           <ForVariable name="x">
-                            <LetVarIterator varname="light-color"/>
+                            <FunctionTraceIterator>
+                              <FLWORIterator>
+                                <ForVariable name="x">
+                                  <LetVarIterator varname="light-position"/>
+                                </ForVariable>
+                                <ReturnClause>
+                                  <SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                                    <ForVarIterator varname="x"/>
+                                    <LetVarIterator varname="position">
+                                      <ForVarIterator varname="p"/>
+                                    </LetVarIterator>
+                                  </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                                </ReturnClause>
+                              </FLWORIterator>
+                            </FunctionTraceIterator>
                           </ForVariable>
                           <ReturnClause>
                             <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                               <ForVarIterator varname="x"/>
-                              <LetVarIterator varname="surface-color">
-                                <ForVarIterator varname="p"/>
-                              </LetVarIterator>
+                              <ForVarIterator varname="x"/>
                             </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                           </ReturnClause>
                         </FLWORIterator>
-                      </FunctionTraceIterator>
-                    </ForVariable>
-                    <ReturnClause>
-                      <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                        <ForVarIterator varname="illumination"/>
-                        <ForVarIterator varname="y"/>
-                      </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                    </ReturnClause>
-                  </FLWORIterator>
-                </FunctionTraceIterator>
-                <FnConcatIterator/>
-              </IfThenElseIterator>
-              <IfThenElseIterator>
-                <TypedValueCompareIterator_DOUBLE>
-                  <ForVarIterator varname="specular"/>
-                  <SingletonIterator value="xs:double(0)"/>
-                </TypedValueCompareIterator_DOUBLE>
-                <FunctionTraceIterator>
-                  <FLWORIterator>
-                    <LetVariable name="x" materialize="true">
-                      <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                        <PowIterator>
-                          <ForVarIterator varname="specular"/>
-                          <UnhoistIterator>
-                            <ForVarIterator varname="$$opt_temp_0"/>
-                          </UnhoistIterator>
-                        </PowIterator>
-                        <LetVarIterator varname="surface-reflectiveness"/>
-                      </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                    </LetVariable>
-                    <ForVariable name="y">
-                      <LetVarIterator varname="light-color"/>
-                    </ForVariable>
-                    <ReturnClause>
-                      <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                        <LetVarIterator varname="x"/>
-                        <ForVarIterator varname="y"/>
-                      </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                    </ReturnClause>
-                  </FLWORIterator>
-                </FunctionTraceIterator>
-                <FnConcatIterator/>
-              </IfThenElseIterator>
-            </FnConcatIterator>
-          </ReturnClause>
-        </FLWORIterator>
-        <SingletonIterator value="xs:integer(3)"/>
+                      </FnSumDoubleIterator>
+                    </SqrtIterator>
+                  </FunctionTraceIterator>
+                </CompareIterator>
+              </FnBooleanIterator>
+            </WhereClause>
+            <ReturnClause>
+              <FnConcatIterator>
+                <IfThenElseIterator>
+                  <TypedValueCompareIterator_DOUBLE>
+                    <ForVarIterator varname="illumination"/>
+                    <SingletonIterator value="xs:double(0)"/>
+                  </TypedValueCompareIterator_DOUBLE>
+                  <FunctionTraceIterator>
+                    <FLWORIterator>
+                      <ForVariable name="y">
+                        <FunctionTraceIterator>
+                          <FLWORIterator>
+                            <ForVariable name="x">
+                              <LetVarIterator varname="light-color"/>
+                            </ForVariable>
+                            <ReturnClause>
+                              <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                                <ForVarIterator varname="x"/>
+                                <LetVarIterator varname="surface-color">
+                                  <ForVarIterator varname="p"/>
+                                </LetVarIterator>
+                              </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                            </ReturnClause>
+                          </FLWORIterator>
+                        </FunctionTraceIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                          <ForVarIterator varname="illumination"/>
+                          <ForVarIterator varname="y"/>
+                        </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </FunctionTraceIterator>
+                  <FnConcatIterator/>
+                </IfThenElseIterator>
+                <IfThenElseIterator>
+                  <TypedValueCompareIterator_DOUBLE>
+                    <ForVarIterator varname="specular"/>
+                    <SingletonIterator value="xs:double(0)"/>
+                  </TypedValueCompareIterator_DOUBLE>
+                  <FunctionTraceIterator>
+                    <FLWORIterator>
+                      <LetVariable name="x" materialize="true">
+                        <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                          <PowIterator>
+                            <ForVarIterator varname="specular"/>
+                            <UnhoistIterator>
+                              <ForVarIterator varname="$$opt_temp_0"/>
+                            </UnhoistIterator>
+                          </PowIterator>
+                          <LetVarIterator varname="surface-reflectiveness"/>
+                        </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                      </LetVariable>
+                      <ForVariable name="y">
+                        <LetVarIterator varname="light-color"/>
+                      </ForVariable>
+                      <ReturnClause>
+                        <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                          <LetVarIterator varname="x"/>
+                          <ForVarIterator varname="y"/>
+                        </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                      </ReturnClause>
+                    </FLWORIterator>
+                  </FunctionTraceIterator>
+                  <FnConcatIterator/>
+                </IfThenElseIterator>
+              </FnConcatIterator>
+            </ReturnClause>
+          </FLWORIterator>
+          <SingletonIterator value="xs:integer(3)"/>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
     </ReturnClause>
   </FLWORIterator>
@@ -1982,10 +2020,12 @@
             </ReturnClause>
           </FLWORIterator>
           <UDFunctionCallIterator function="vector:sum-internal" cached="true">
-            <LetVarIterator varname="v"/>
-            <LetVarIterator varname="stride"/>
-            <ForVarIterator varname="c"/>
-            <SingletonIterator value="xs:integer(0)"/>
+            <UDFunctionArgs>
+              <LetVarIterator varname="v"/>
+              <LetVarIterator varname="stride"/>
+              <ForVarIterator varname="c"/>
+              <SingletonIterator value="xs:integer(0)"/>
+            </UDFunctionArgs>
           </UDFunctionCallIterator>
         </IfThenElseIterator>
       </ReturnClause>
@@ -2107,16 +2147,18 @@
         <FLWORIterator>
           <ForVariable name="x">
             <UDFunctionCallIterator function="vector:sum-internal" cached="true">
-              <LetVarIterator varname="v"/>
-              <ForVarIterator varname="stride"/>
-              <SpecificNumArithIterator_SubtractOperation_INTEGER>
-                <ForVarIterator varname="remaining"/>
+              <UDFunctionArgs>
+                <LetVarIterator varname="v"/>
                 <ForVarIterator varname="stride"/>
-              </SpecificNumArithIterator_SubtractOperation_INTEGER>
-              <SpecificNumArithIterator_AddOperation_INTEGER>
-                <ForVarIterator varname="offset"/>
-                <ForVarIterator varname="stride"/>
-              </SpecificNumArithIterator_AddOperation_INTEGER>
+                <SpecificNumArithIterator_SubtractOperation_INTEGER>
+                  <ForVarIterator varname="remaining"/>
+                  <ForVarIterator varname="stride"/>
+                </SpecificNumArithIterator_SubtractOperation_INTEGER>
+                <SpecificNumArithIterator_AddOperation_INTEGER>
+                  <ForVarIterator varname="offset"/>
+                  <ForVarIterator varname="stride"/>
+                </SpecificNumArithIterator_AddOperation_INTEGER>
+              </UDFunctionArgs>
             </UDFunctionCallIterator>
           </ForVariable>
           <ReturnClause>
@@ -2166,9 +2208,11 @@
     </WhereClause>
     <ReturnClause>
       <UDFunctionCallIterator function="shapes:intersect">
-        <LetVarIterator varname="source"/>
-        <LetVarIterator varname="direction"/>
-        <ForVarIterator varname="$$context-item"/>
+        <UDFunctionArgs>
+          <LetVarIterator varname="source"/>
+          <LetVarIterator varname="direction"/>
+          <ForVarIterator varname="$$context-item"/>
+        </UDFunctionArgs>
       </UDFunctionCallIterator>
     </ReturnClause>
   </FLWORIterator>

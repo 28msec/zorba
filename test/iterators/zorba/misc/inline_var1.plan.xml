@@ -1,20 +1,22 @@
 <iterator-tree description="main query">
   <UDFunctionCallIterator function="local:foo">
-    <ElementIterator copyInputNodes="false">
-      <SingletonIterator value="xs:QName(,,a)"/>
+    <UDFunctionArgs>
       <ElementIterator copyInputNodes="false">
-        <SingletonIterator value="xs:QName(,,b)"/>
-        <FnConcatIterator>
-          <AttributeIterator qname="xs:QName(,,att1)">
-            <SingletonIterator value="xs:string(1)"/>
-          </AttributeIterator>
-          <AttributeIterator qname="xs:QName(,,att2)">
-            <SingletonIterator value="xs:string(20)"/>
-          </AttributeIterator>
-        </FnConcatIterator>
+        <SingletonIterator value="xs:QName(,,a)"/>
+        <ElementIterator copyInputNodes="false">
+          <SingletonIterator value="xs:QName(,,b)"/>
+          <FnConcatIterator>
+            <AttributeIterator qname="xs:QName(,,att1)">
+              <SingletonIterator value="xs:string(1)"/>
+            </AttributeIterator>
+            <AttributeIterator qname="xs:QName(,,att2)">
+              <SingletonIterator value="xs:string(20)"/>
+            </AttributeIterator>
+          </FnConcatIterator>
+        </ElementIterator>
       </ElementIterator>
-    </ElementIterator>
-    <SingletonIterator value="xs:integer(10)"/>
+      <SingletonIterator value="xs:integer(10)"/>
+    </UDFunctionArgs>
   </UDFunctionCallIterator>
 </iterator-tree>
 <iterator-tree description="local:foo">

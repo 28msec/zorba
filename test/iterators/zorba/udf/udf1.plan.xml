@@ -4,34 +4,36 @@
       <SingletonIterator value="xs:integer(1)"/>
     </CtxVarDeclareIterator>
     <UDFunctionCallIterator function="local:sum">
-      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill-allowed="false">
-        <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill-allowed="false">
-          <ElementIterator copyInputNodes="false">
-            <SingletonIterator value="xs:QName(,,books)"/>
-            <FnConcatIterator>
-              <ElementIterator copyInputNodes="false">
-                <SingletonIterator value="xs:QName(,,book)"/>
+      <UDFunctionArgs>
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill-allowed="false">
+          <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill-allowed="false">
+            <ElementIterator copyInputNodes="false">
+              <SingletonIterator value="xs:QName(,,books)"/>
+              <FnConcatIterator>
                 <ElementIterator copyInputNodes="false">
-                  <SingletonIterator value="xs:QName(,,price)"/>
-                  <TextIterator>
-                    <SingletonIterator value="xs:string(10)"/>
-                  </TextIterator>
+                  <SingletonIterator value="xs:QName(,,book)"/>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(10)"/>
+                    </TextIterator>
+                  </ElementIterator>
                 </ElementIterator>
-              </ElementIterator>
-              <ElementIterator copyInputNodes="false">
-                <SingletonIterator value="xs:QName(,,book)"/>
                 <ElementIterator copyInputNodes="false">
-                  <SingletonIterator value="xs:QName(,,price)"/>
-                  <TextIterator>
-                    <SingletonIterator value="xs:string(20)"/>
-                  </TextIterator>
+                  <SingletonIterator value="xs:QName(,,book)"/>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(20)"/>
+                    </TextIterator>
+                  </ElementIterator>
                 </ElementIterator>
-              </ElementIterator>
-            </FnConcatIterator>
-          </ElementIterator>
-        </DescendantAxisIterator>
-      </ChildAxisIterator>
-      <CtxVarIterator varid="4" varname="x" varkind="global"/>
+              </FnConcatIterator>
+            </ElementIterator>
+          </DescendantAxisIterator>
+        </ChildAxisIterator>
+        <CtxVarIterator varid="4" varname="x" varkind="global"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
   </SequentialIterator>
 </iterator-tree>

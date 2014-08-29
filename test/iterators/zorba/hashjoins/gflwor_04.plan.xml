@@ -21,7 +21,9 @@
                 </ForIterator>
                 <HoistIterator>
                   <UDFunctionCallIterator function="local:foo">
-                    <ForVarIterator varname="a"/>
+                    <UDFunctionArgs>
+                      <ForVarIterator varname="a"/>
+                    </UDFunctionArgs>
                   </UDFunctionCallIterator>
                 </HoistIterator>
               </LetIterator>

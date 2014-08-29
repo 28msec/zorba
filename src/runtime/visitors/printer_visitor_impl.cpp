@@ -820,7 +820,6 @@ void PrinterVisitor::visitFlworReturn( PlanIterator const &i ) {
     return;
 
   thePrinter.startBeginVisit( "ReturnClause", ++theId );
-  printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
   i.accept( *this );
   thePrinter.startEndVisit();
@@ -832,7 +831,6 @@ void PrinterVisitor::visitFlworWhereClause( PlanIterator const &i ) {
     return;
 
   thePrinter.startBeginVisit( "WhereClause", ++theId );
-  printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
   i.accept( *this );
   thePrinter.startEndVisit();
@@ -846,6 +844,27 @@ void PrinterVisitor::visitOrderBySpec( PlanIterator const &i ) {
   thePrinter.startBeginVisit( "OrderBySpec", ++theId );
   thePrinter.endBeginVisit( theId );
   i.accept( *this );
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::visitUDFunctionBody( PlanIterator const &i ) {
+  if (!hasToVisit(&i))
+    return;
+
+  thePrinter.startBeginVisit( "UDFunctionBody", ++theId );
+  thePrinter.endBeginVisit( theId );
+  i.accept( *this );
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::beginVisitUDFunctionArgs() {
+  thePrinter.startBeginVisit( "UDFunctionArgs", ++theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitUDFunctionArgs() {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
