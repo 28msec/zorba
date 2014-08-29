@@ -99,7 +99,7 @@ void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompil
     const double aCompilationWallTime)
 {
   assert(theEvalProfiles.size() == 0 ||
-         !theEvalProfiles[theEvalProfiles.size()-1].theProfile.isNull());
+         !theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
 
   theEvalProfiles.push_back(EvalProfile(aQuery, aCompilationCPUTime, aCompilationWallTime));
 }
@@ -111,7 +111,7 @@ void EvalIteratorState::addQuery(const std::string& aQuery, const double aCompil
 void EvalIteratorState::addQueryProfile(bool aTrackProfilingTime)
 {
   assert(theEvalProfiles.size() >0 &&
-         theEvalProfiles[theEvalProfiles.size()-1].theProfile.isNull());
+         theEvalProfiles[theEvalProfiles.size()-1].theProfile.empty());
 
   {
     EvalProfile& lProfile = theEvalProfiles[theEvalProfiles.size()-1];
@@ -156,15 +156,7 @@ void EvalIteratorState::addXMLQueryProfile(EvalProfile& aProfile)
   XMLIterPrinter lPrinter(lProfileStream, "", true);
   print_iter_plan( lPrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
 
-  {
-    DisableProfiling lDisableProfiling;
-    zorba::XmlDataManager_t lDataManager = Zorba::getInstance(0)->getXmlDataManager();
-    zorba::Item lDocItem = lDataManager->parseXML(lProfileStream);
-    zorba::Iterator_t lIterator = lDocItem.getChildren();
-    lIterator->open();
-    lIterator->next(aProfile.theProfile);
-    lIterator->close();
-  }
+  aProfile.theProfile = lProfileStream.str();
 }
 
 void EvalIteratorState::addJSONQueryProfile(EvalProfile& aProfile)
@@ -173,24 +165,7 @@ void EvalIteratorState::addJSONQueryProfile(EvalProfile& aProfile)
   JSONIterPrinter lPrinter(lProfileStream, "", true);
   print_iter_plan( lPrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
 
-  {
-    DisableProfiling lDisableProfiling;
-    zorba::JsonDataManager_t lDataManager = Zorba::getInstance(0)->getJsonDataManager();
-    zorba::JsonDataManager::ParseOptions lOptions;
-    lOptions.setMultipleTopLevelItems(false);
-    zorba::ItemSequence_t lDataSeq = lDataManager->parseJSON(lProfileStream, lOptions);
-    zorba::Item lData;
-    zorba::Iterator_t lIterator = lDataSeq->getIterator();
-    lIterator->open();
-    lIterator->next(lData);
-    lIterator->close();
-
-    zorba::ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
-    std::vector<zorba::Item> lItems;
-    lItems.push_back(lData);
-    aProfile.theProfile = lFactory->createJSONArray(lItems);
-  }
-
+  aProfile.theProfile = lProfileStream.str();
 }
 
 void EvalIteratorState::addDOTQueryProfile(EvalProfile& aProfile)
@@ -199,8 +174,7 @@ void EvalIteratorState::addDOTQueryProfile(EvalProfile& aProfile)
   DOTIterPrinter lPrinter(lProfileStream, "", true);
   print_iter_plan( lPrinter, thePlanWrapper->theIterator, thePlanWrapper->thePlanState );
 
-  zorba::ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
-  aProfile.theProfile = lFactory->createString(lProfileStream.str());
+  aProfile.theProfile = lProfileStream.str();
 }
 
 /****************************************************************************//**

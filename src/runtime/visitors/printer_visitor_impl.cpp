@@ -116,15 +116,19 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
 bool PrinterVisitor::hasToVisit(PlanIterator const *pi)
 {
   if (thePlanState &&
-      Properties::instance().getCollectProfile() &&
-      Properties::instance().getNoUncalledIterators())
+      Properties::instance().getCollectProfile())
   {
     PlanIteratorState const *const pi_state =
       StateTraitsImpl<PlanIteratorState>::getState(
         *thePlanState, pi->getStateOffset()
       );
     profile_data const &pd = pi_state->get_profile_data();
-    return pd.data_.next_count_;
+
+    if (Properties::instance().getNoUncalledIterators() && pd.data_.next_count_ == 0)
+      return false;
+
+    if (Properties::instance().getWallTimeThreshold() > pd.data_.wall_time_)
+      return false;
   }
   return true;
 }
@@ -532,7 +536,20 @@ void PrinterVisitor::beginVisit( EvalIterator const &i )
       thePrinter.addDecAttribute( "prof-compilation-cpu", lEvalProfile.theCompilationCPUTime );
       thePrinter.addDecAttribute( "prof-compilation-wall", lEvalProfile.theCompilationWallTime );
       thePrinter.addAttribute( "prof-body", lEvalProfile.theQuery );
-      thePrinter.addItemAttribute( "iterators", lEvalProfile.theProfile );
+      switch (props.getProfileFormat())
+      {
+        case PROFILE_FORMAT_DOT:
+          thePrinter.addAttribute("iterators", lEvalProfile.theProfile.c_str());
+          break;
+        case PROFILE_FORMAT_JSON:
+          thePrinter.addRawStructure("iterators", ("[ " + lEvalProfile.theProfile + " ]").c_str());
+          break;
+        case PROFILE_FORMAT_XML:
+          thePrinter.addRawStructure("iterators", lEvalProfile.theProfile.c_str());
+          break;
+        case PROFILE_FORMAT_NONE:
+          break;
+      }
       thePrinter.endBeginVisit( theId );
       thePrinter.startEndVisit();
       thePrinter.endEndVisit();
@@ -798,26 +815,37 @@ void PrinterVisitor::endVisitFlworForVariable() {
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisitFlworReturn( PlanIterator const &i ) {
+void PrinterVisitor::visitFlworReturn( PlanIterator const &i ) {
+  if (!hasToVisit(&i))
+    return;
+
   thePrinter.startBeginVisit( "ReturnClause", ++theId );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
   i.accept( *this );
-}
-
-void PrinterVisitor::endVisitFlworReturn( PlanIterator const& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisitFlworWhereClause( PlanIterator const &i ) {
+void PrinterVisitor::visitFlworWhereClause( PlanIterator const &i ) {
+  if (!hasToVisit(&i))
+    return;
+
   thePrinter.startBeginVisit( "WhereClause", ++theId );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
   i.accept( *this );
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::endVisitFlworWhereClause( PlanIterator const& ) {
+void PrinterVisitor::visitOrderBySpec( PlanIterator const &i ) {
+  if (!hasToVisit(&i))
+    return;
+
+  thePrinter.startBeginVisit( "OrderBySpec", ++theId );
+  thePrinter.endBeginVisit( theId );
+  i.accept( *this );
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
@@ -933,17 +961,6 @@ beginVisitOrderByLetVariable( LetVarIter_t inputVar,
 }
 
 void PrinterVisitor::endVisitOrderByLetVariable() {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisitOrderBySpec( PlanIterator const &i ) {
-  thePrinter.startBeginVisit( "OrderBySpec", ++theId );
-  thePrinter.endBeginVisit( theId );
-  i.accept( *this );
-}
-
-void PrinterVisitor::endVisitOrderBySpec( PlanIterator const& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }

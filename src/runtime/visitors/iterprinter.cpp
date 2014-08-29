@@ -358,7 +358,8 @@ void DOTIterPrinter::endEndVisit() {
 ///////////////////////////////////////////////////////////////////////////////
 
 JSONIterPrinter::JSONIterPrinter( ostream &os, char const *descr, const bool ignore_start_stop ) :
-  IterPrinter( os, descr, ignore_start_stop )
+  IterPrinter( os, descr, ignore_start_stop ),
+  theIteratorTreePrinted(false)
 {
 }
 
@@ -371,8 +372,7 @@ void JSONIterPrinter::start() {
   {
     os_ << indent << "{\n" << inc_indent;
     if ( !descr_.empty() )
-      os_ << indent << "\"description\": \"" << descr_ << "\",\n";
-    os_ << indent << "\"iterator-tree\":\n" << inc_indent;
+      os_ << indent << "\"description\": \"" << descr_ << "\"";
   }
 }
 
@@ -384,6 +384,16 @@ void JSONIterPrinter::stop() {
 }
 
 void JSONIterPrinter::startBeginVisit( char const *name, int ) {
+  if ( !ignore_start_stop_ && !theIteratorTreePrinted )
+  {
+    if ( !descr_.empty() )
+      os_ << ",\n";
+
+    os_ << indent << "\"iterator-tree\":\n" << inc_indent;
+
+    theIteratorTreePrinted = true;
+  }
+
   if ( !theListStack.empty() )
     os_ << ",\n";
   if ( !theListStack.empty() && !theListStack.top() ) {

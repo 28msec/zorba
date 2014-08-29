@@ -159,6 +159,7 @@ public:
 
 private:
   std::stack<bool> theListStack;
+  bool             theIteratorTreePrinted;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

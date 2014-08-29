@@ -226,6 +226,14 @@ public:
     no_uncalled_iterators_ = b;
   }
 
+  double getWallTimeThreshold() const {
+    return wall_time_threshold_;
+  }
+
+  void setWallTimeThreshold( double d ) {
+    wall_time_threshold_ = d;
+  }
+
   unsigned getOptimizationLevel() const {
     return optimization_level_;
   }
@@ -413,6 +421,7 @@ private:
   bool                   trace_scanning_;
   bool                   trace_translator_;
   bool                   use_indexes_;
+  double                 wall_time_threshold_;
 };
 
 // deprecated name
