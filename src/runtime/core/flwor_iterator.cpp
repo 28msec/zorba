@@ -1862,7 +1862,7 @@ void FLWORIterator::accept(PlanIterVisitor& v) const
   }
 
   if (theWhereClause != NULL)
-    theWhereClause->accept(v);
+    v.visitFlworWhereClause(*theWhereClause);
 
   if (theGroupByClause)
     theGroupByClause->accept(v);
@@ -1873,7 +1873,7 @@ void FLWORIterator::accept(PlanIterVisitor& v) const
   if (theMaterializeClause)
     theMaterializeClause->accept(v);
 
-  theReturnClause->accept(v);
+  v.visitFlworReturn(*theReturnClause);
 
   v.endVisit(*this);
 }

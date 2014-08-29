@@ -815,26 +815,37 @@ void PrinterVisitor::endVisitFlworForVariable() {
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisitFlworReturn( PlanIterator const &i ) {
+void PrinterVisitor::visitFlworReturn( PlanIterator const &i ) {
+  if (!hasToVisit(&i))
+    return;
+
   thePrinter.startBeginVisit( "ReturnClause", ++theId );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
   i.accept( *this );
-}
-
-void PrinterVisitor::endVisitFlworReturn( PlanIterator const& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisitFlworWhereClause( PlanIterator const &i ) {
+void PrinterVisitor::visitFlworWhereClause( PlanIterator const &i ) {
+  if (!hasToVisit(&i))
+    return;
+
   thePrinter.startBeginVisit( "WhereClause", ++theId );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
   i.accept( *this );
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::endVisitFlworWhereClause( PlanIterator const& ) {
+void PrinterVisitor::visitOrderBySpec( PlanIterator const &i ) {
+  if (!hasToVisit(&i))
+    return;
+
+  thePrinter.startBeginVisit( "OrderBySpec", ++theId );
+  thePrinter.endBeginVisit( theId );
+  i.accept( *this );
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
@@ -950,17 +961,6 @@ beginVisitOrderByLetVariable( LetVarIter_t inputVar,
 }
 
 void PrinterVisitor::endVisitOrderByLetVariable() {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisitOrderBySpec( PlanIterator const &i ) {
-  thePrinter.startBeginVisit( "OrderBySpec", ++theId );
-  thePrinter.endBeginVisit( theId );
-  i.accept( *this );
-}
-
-void PrinterVisitor::endVisitOrderBySpec( PlanIterator const& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }

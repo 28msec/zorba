@@ -87,7 +87,7 @@ void OrderSpec::serialize(::zorba::serialization::Archiver& ar)
 
 void OrderSpec::accept(PlanIterVisitor& v) const
 {
-  theDomainIter->accept(v);
+  v.visitOrderBySpec(*theDomainIter);
 }
 
 
