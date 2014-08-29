@@ -67,6 +67,7 @@ Properties::Properties() {
   trace_scanning_ = false;
   trace_translator_ = false;
   use_indexes_ = true;
+  wall_time_threshold_ = 0;
 }
 
 Properties::~Properties() {

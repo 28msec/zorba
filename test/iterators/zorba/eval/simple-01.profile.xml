@@ -1,8 +1,9 @@
 <iterator-tree>
-  <EvalIterator prof-calls="1" prof-next-calls="2" prof-cpu="1.27433" prof-wall="1.2736" prof-name="EvalIterator" prof-profiling-cpu="18.0404" prof-profiling-wall="18.0602" prof-compilation-cpu="1.10195" prof-compilation-wall="1.10326">
-    <EvalQueryIterator prof-name="EvalQueryIterator" prof-calls="1" prof-next-calls="2" prof-cpu="0.001666" prof-wall="0.000875" prof-compilation-cpu="1.10195" prof-compilation-wall="1.10326" prof-body="1+1">
-        <SingletonIterator value="xs:integer(2)" prof-calls="1" prof-next-calls="2" prof-cpu="0.001666" prof-wall="0.000875" prof-name="SingletonIterator"/>
+  <EvalIterator prof-calls="1" prof-next-calls="2" prof-cpu="0.22674" prof-wall="0.225831" prof-name="EvalIterator" prof-profiling-cpu="0.068265" prof-profiling-wall="0.068527" prof-compilation-cpu="0.189376" prof-compilation-wall="0.189761">
+    <EvalQueryIterator prof-name="EvalQueryIterator" prof-calls="1" prof-next-calls="2" prof-cpu="0.000899" prof-wall="0.000261" prof-compilation-cpu="0.189376" prof-compilation-wall="0.189761" prof-body="1+1">
+        <SingletonIterator value="xs:integer(2)" prof-calls="1" prof-next-calls="2" prof-cpu="0.000899" prof-wall="0.000261" prof-name="SingletonIterator"/>
+        
     </EvalQueryIterator>
-    <SingletonIterator value="xs:string(1+1)" prof-calls="1" prof-next-calls="1" prof-cpu="0.004421" prof-wall="0.003002" prof-name="SingletonIterator"/>
+    <SingletonIterator value="xs:string(1+1)" prof-calls="1" prof-next-calls="1" prof-cpu="0.003433" prof-wall="0.002898" prof-name="SingletonIterator"/>
   </EvalIterator>
 </iterator-tree>

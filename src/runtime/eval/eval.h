@@ -33,7 +33,7 @@ class IterPrinter;
 struct EvalProfile
 {
   std::string       theQuery;
-  zorba::Item       theProfile;
+  std::string       theProfile;
   unsigned          theCallCount;
   unsigned          theNextCount;
   double            theCompilationCPUTime;
@@ -73,21 +73,6 @@ class EvalIteratorState : public PlanIteratorState
     {
       theState.theProfilingCPUTime += theCPUTimer.elapsed();
       theState.theProfilingWallTime += theWallTimer.elapsed();
-    }
-  };
-
-  struct DisableProfiling
-  {
-    Zorba_profile_format_t theFormat;
-    DisableProfiling():
-      theFormat(zorba::Properties::instance().getProfileFormat())
-    {
-      zorba::Properties::instance().setProfileFormat(PROFILE_FORMAT_NONE);
-    }
-
-    ~DisableProfiling()
-    {
-      zorba::Properties::instance().setProfileFormat(theFormat);
     }
   };
 

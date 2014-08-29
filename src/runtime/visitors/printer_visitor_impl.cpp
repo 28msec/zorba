@@ -116,15 +116,19 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
 bool PrinterVisitor::hasToVisit(PlanIterator const *pi)
 {
   if (thePlanState &&
-      Properties::instance().getCollectProfile() &&
-      Properties::instance().getNoUncalledIterators())
+      Properties::instance().getCollectProfile())
   {
     PlanIteratorState const *const pi_state =
       StateTraitsImpl<PlanIteratorState>::getState(
         *thePlanState, pi->getStateOffset()
       );
     profile_data const &pd = pi_state->get_profile_data();
-    return pd.data_.next_count_;
+
+    if (Properties::instance().getNoUncalledIterators() && pd.data_.next_count_ == 0)
+      return false;
+
+    if (Properties::instance().getWallTimeThreshold() > pd.data_.wall_time_)
+      return false;
   }
   return true;
 }
@@ -532,7 +536,20 @@ void PrinterVisitor::beginVisit( EvalIterator const &i )
       thePrinter.addDecAttribute( "prof-compilation-cpu", lEvalProfile.theCompilationCPUTime );
       thePrinter.addDecAttribute( "prof-compilation-wall", lEvalProfile.theCompilationWallTime );
       thePrinter.addAttribute( "prof-body", lEvalProfile.theQuery );
-      thePrinter.addItemAttribute( "iterators", lEvalProfile.theProfile );
+      switch (props.getProfileFormat())
+      {
+        case PROFILE_FORMAT_DOT:
+          thePrinter.addAttribute("iterators", lEvalProfile.theProfile.c_str());
+          break;
+        case PROFILE_FORMAT_JSON:
+          thePrinter.addRawStructure("iterators", ("[ " + lEvalProfile.theProfile + " ]").c_str());
+          break;
+        case PROFILE_FORMAT_XML:
+          thePrinter.addRawStructure("iterators", lEvalProfile.theProfile.c_str());
+          break;
+        case PROFILE_FORMAT_NONE:
+          break;
+      }
       thePrinter.endBeginVisit( theId );
       thePrinter.startEndVisit();
       thePrinter.endEndVisit();
