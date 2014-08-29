@@ -9,11 +9,13 @@
     <SequentialIterator>
       <CtxVarDeclareIterator varid="5" varname="xmlcontents">
         <UDFunctionCallIterator function="fetch:content">
-          <PromoteIterator type="xs:string">
-            <FnDataIterator>
-              <CtxVarIterator varid="4" varname="file" varkind="global"/>
-            </FnDataIterator>
-          </PromoteIterator>
+          <UDFunctionArgs>
+            <PromoteIterator type="xs:string">
+              <FnDataIterator>
+                <CtxVarIterator varid="4" varname="file" varkind="global"/>
+              </FnDataIterator>
+            </PromoteIterator>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </CtxVarDeclareIterator>
       <CtxVarDeclareIterator varid="6" varname="contents">

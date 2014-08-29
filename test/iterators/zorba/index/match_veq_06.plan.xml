@@ -87,8 +87,10 @@
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="data:add-document">
-          <SingletonIterator value="xs:anyURI(http://www.xmlteam.com/zorba/repo/index)"/>
-          <SingletonIterator value="xs:boolean(true)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:anyURI(http://www.xmlteam.com/zorba/repo/index)"/>
+            <SingletonIterator value="xs:boolean(true)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <FnConcatIterator>

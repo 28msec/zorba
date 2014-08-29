@@ -55,11 +55,13 @@
       </ApplyIterator>
       <CtxVarDeclareIterator varid="9" varname="DG">
         <UDFunctionCallIterator function="local:collapseNodesSameName">
-          <TreatIterator quant="+">
-            <CtxVarIterator varid="8" varname="input" varkind="global"/>
-          </TreatIterator>
-          <SingletonIterator value="xs:boolean(true)"/>
-          <SingletonIterator value="xs:string()"/>
+          <UDFunctionArgs>
+            <TreatIterator quant="+">
+              <CtxVarIterator varid="8" varname="input" varkind="global"/>
+            </TreatIterator>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <SingletonIterator value="xs:string()"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </CtxVarDeclareIterator>
       <ApplyIterator>
@@ -159,28 +161,32 @@
         </CtxVarDeclareIterator>
         <CtxVarDeclareIterator varid="7" varname="ca">
           <UDFunctionCallIterator function="local:collapseNodes">
-            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-              <CtxVarIterator varid="5" varname="a" varkind="local"/>
-            </TreatIterator>
-            <SingletonIterator value="xs:boolean(false)"/>
-            <PromoteIterator type="xs:string">
-              <FnDataIterator>
-                <CtxVarIterator varid="4" varname="s2" varkind="local"/>
-              </FnDataIterator>
-            </PromoteIterator>
+            <UDFunctionArgs>
+              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                <CtxVarIterator varid="5" varname="a" varkind="local"/>
+              </TreatIterator>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <PromoteIterator type="xs:string">
+                <FnDataIterator>
+                  <CtxVarIterator varid="4" varname="s2" varkind="local"/>
+                </FnDataIterator>
+              </PromoteIterator>
+            </UDFunctionArgs>
           </UDFunctionCallIterator>
         </CtxVarDeclareIterator>
         <CtxVarDeclareIterator varid="8" varname="cc">
           <UDFunctionCallIterator function="local:collapseNodes">
-            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-              <CtxVarIterator varid="6" varname="c" varkind="local"/>
-            </TreatIterator>
-            <SingletonIterator value="xs:boolean(true)"/>
-            <PromoteIterator type="xs:string">
-              <FnDataIterator>
-                <CtxVarIterator varid="4" varname="s2" varkind="local"/>
-              </FnDataIterator>
-            </PromoteIterator>
+            <UDFunctionArgs>
+              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                <CtxVarIterator varid="6" varname="c" varkind="local"/>
+              </TreatIterator>
+              <SingletonIterator value="xs:boolean(true)"/>
+              <PromoteIterator type="xs:string">
+                <FnDataIterator>
+                  <CtxVarIterator varid="4" varname="s2" varkind="local"/>
+                </FnDataIterator>
+              </PromoteIterator>
+            </UDFunctionArgs>
           </UDFunctionCallIterator>
         </CtxVarDeclareIterator>
         <CtxVarAssignIterator varid="1" varname="label" varkind="local">
@@ -324,11 +330,13 @@
           </MaterializeClause>
           <ReturnClause>
             <UDFunctionCallIterator function="local:collapseNodesSameName">
-              <TreatIterator quant="+">
-                <LetVarIterator varname="y"/>
-              </TreatIterator>
-              <ForVarIterator varname="e"/>
-              <ForVarIterator varname="s"/>
+              <UDFunctionArgs>
+                <TreatIterator quant="+">
+                  <LetVarIterator varname="y"/>
+                </TreatIterator>
+                <ForVarIterator varname="e"/>
+                <ForVarIterator varname="s"/>
+              </UDFunctionArgs>
             </UDFunctionCallIterator>
           </ReturnClause>
         </FLWORIterator>

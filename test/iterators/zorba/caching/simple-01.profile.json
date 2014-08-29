@@ -4,8 +4,8 @@
       "kind": "FnConcatIterator",
       "prof-calls": 1,
       "prof-next-calls": 15,
-      "prof-cpu": 1.45306,
-      "prof-wall": 1.44988,
+      "prof-cpu": 1.18213,
+      "prof-wall": 1.17996,
       "prof-name": "op:concatenate",
       "iterators": [
         {
@@ -14,130 +14,549 @@
           "cached-across-snapshots": true,
           "prof-calls": 1,
           "prof-next-calls": 2,
-          "prof-cpu": 0.996801,
-          "prof-wall": 0.994848,
+          "prof-cpu": 0.861549,
+          "prof-wall": 0.860147,
           "prof-name": "local:test-01-cache",
           "prof-cache-hits": 0,
           "prof-cache-misses": 1,
           "iterators": [
             {
-              "kind": "SingletonIterator",
-              "value": "xs:integer(2)",
-              "prof-calls": 1,
-              "prof-next-calls": 2,
-              "prof-cpu": 0.003094,
-              "prof-wall": 0.001926,
-              "prof-name": "SingletonIterator"
-            },
-            {
-              "kind": "FLWORIterator",
-              "prof-calls": 1,
-              "prof-next-calls": 2,
-              "prof-cpu": 0.314654,
-              "prof-wall": 0.313097,
-              "prof-name": "FLWORIterator",
+              "kind": "UDFunctionArgs",
               "iterators": [
                 {
-                  "kind": "ForVariable",
-                  "name": "x",
-                  "iterators": [
-                    {
-                      "kind": "LetVarIterator",
-                      "varname": "x",
-                      "prof-calls": 1,
-                      "prof-next-calls": 2,
-                      "prof-cpu": 0.015753,
-                      "prof-wall": 0.014853,
-                      "prof-name": "LetVarIterator ($x)"
-                    }
-                  ]
-                },
-                {
-                  "kind": "ReturnClause",
+                  "kind": "SingletonIterator",
+                  "value": "xs:integer(2)",
                   "prof-calls": 1,
                   "prof-next-calls": 2,
-                  "prof-cpu": 0.200914,
-                  "prof-wall": 0.200448,
-                  "prof-name": "IfThenElseIterator",
+                  "prof-cpu": 0.001973,
+                  "prof-wall": 0.001141,
+                  "prof-name": "SingletonIterator"
+                }
+              ]
+            },
+            {
+              "kind": "UDFunctionBody",
+              "iterators": [
+                {
+                  "kind": "FLWORIterator",
+                  "prof-calls": 1,
+                  "prof-next-calls": 2,
+                  "prof-cpu": 0.254457,
+                  "prof-wall": 0.253398,
+                  "prof-name": "FLWORIterator",
                   "iterators": [
                     {
-                      "kind": "IfThenElseIterator",
-                      "prof-calls": 1,
-                      "prof-next-calls": 2,
-                      "prof-cpu": 0.200914,
-                      "prof-wall": 0.200448,
-                      "prof-name": "IfThenElseIterator",
+                      "kind": "ForVariable",
+                      "name": "x",
                       "iterators": [
                         {
-                          "kind": "TypedValueCompareIterator_INTEGER",
+                          "kind": "LetVarIterator",
+                          "varname": "x",
                           "prof-calls": 1,
                           "prof-next-calls": 2,
-                          "prof-cpu": 0.168548,
-                          "prof-wall": 0.166537,
-                          "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 2,
-                              "prof-cpu": 0.001578,
-                              "prof-wall": 0.000905,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "SingletonIterator",
-                              "value": "xs:integer(10)",
-                              "prof-calls": 1,
-                              "prof-next-calls": 2,
-                              "prof-cpu": 0.00111,
-                              "prof-wall": 0.000465,
-                              "prof-name": "SingletonIterator"
-                            }
-                          ]
-                        },
+                          "prof-cpu": 0.011205,
+                          "prof-wall": 0.01026,
+                          "prof-name": "LetVarIterator ($x)"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "ReturnClause",
+                      "iterators": [
                         {
-                          "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                          "kind": "IfThenElseIterator",
                           "prof-calls": 1,
                           "prof-next-calls": 2,
-                          "prof-cpu": 0.014648,
-                          "prof-wall": 0.013755,
-                          "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                          "prof-cpu": 0.16788,
+                          "prof-wall": 0.167431,
+                          "prof-name": "IfThenElseIterator",
                           "iterators": [
                             {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
+                              "kind": "TypedValueCompareIterator_INTEGER",
                               "prof-calls": 1,
-                              "prof-next-calls": 1,
-                              "prof-cpu": 0.001017,
-                              "prof-wall": 0.000598,
-                              "prof-name": "ForVarIterator ($x)"
+                              "prof-next-calls": 2,
+                              "prof-cpu": 0.139084,
+                              "prof-wall": 0.137553,
+                              "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
+                              "iterators": [
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 2,
+                                  "prof-cpu": 0.001355,
+                                  "prof-wall": 0.000701,
+                                  "prof-name": "ForVarIterator ($x)"
+                                },
+                                {
+                                  "kind": "SingletonIterator",
+                                  "value": "xs:integer(10)",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 2,
+                                  "prof-cpu": 0.000946,
+                                  "prof-wall": 0.000339,
+                                  "prof-name": "SingletonIterator"
+                                }
+                              ]
                             },
                             {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
+                              "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
                               "prof-calls": 1,
-                              "prof-next-calls": 1,
-                              "prof-cpu": 0.000698,
-                              "prof-wall": 0.000283,
-                              "prof-name": "ForVarIterator ($x)"
+                              "prof-next-calls": 2,
+                              "prof-cpu": 0.011859,
+                              "prof-wall": 0.01108,
+                              "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                              "iterators": [
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 1,
+                                  "prof-cpu": 0.000769,
+                                  "prof-wall": 0.000348,
+                                  "prof-name": "ForVarIterator ($x)"
+                                },
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 1,
+                                  "prof-cpu": 0.000707,
+                                  "prof-wall": 0.000206,
+                                  "prof-name": "ForVarIterator ($x)"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "IfThenElseIterator",
+                              "prof-calls": 1,
+                              "prof-next-calls": 0,
+                              "prof-cpu": 0.007224,
+                              "prof-wall": 0.007033,
+                              "prof-name": "IfThenElseIterator",
+                              "iterators": [
+                                {
+                                  "kind": "TypedValueCompareIterator_INTEGER",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.001998,
+                                  "prof-wall": 0.001799,
+                                  "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
+                                  "iterators": [
+                                    {
+                                      "kind": "ForVarIterator",
+                                      "varname": "x",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000323,
+                                      "prof-wall": 0.000131,
+                                      "prof-name": "ForVarIterator ($x)"
+                                    },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:integer(20)",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000361,
+                                      "prof-wall": 0.000167,
+                                      "prof-name": "SingletonIterator"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000964,
+                                  "prof-wall": 0.000772,
+                                  "prof-name": "op:concatenate"
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.003153,
+                                  "prof-wall": 0.002964,
+                                  "prof-name": "op:concatenate",
+                                  "iterators": [
+                                    {
+                                      "kind": "ForVarIterator",
+                                      "varname": "x",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000332,
+                                      "prof-wall": 0.000123,
+                                      "prof-name": "ForVarIterator ($x)"
+                                    },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:string( == )",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000317,
+                                      "prof-wall": 0.000112,
+                                      "prof-name": "SingletonIterator"
+                                    },
+                                    {
+                                      "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.001429,
+                                      "prof-wall": 0.001236,
+                                      "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                                      "iterators": [
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 0,
+                                          "prof-cpu": 0.000337,
+                                          "prof-wall": 0.000128,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        },
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 0,
+                                          "prof-cpu": 0.000317,
+                                          "prof-wall": 0.000117,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
                             }
                           ]
-                        },
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "SingletonIterator",
+          "value": "xs:string(\n)",
+          "prof-calls": 1,
+          "prof-next-calls": 2,
+          "prof-cpu": 0.001222,
+          "prof-wall": 0.000638,
+          "prof-name": "SingletonIterator"
+        },
+        {
+          "kind": "UDFunctionCallIterator",
+          "function": "local:test-01-cache",
+          "cached-across-snapshots": true,
+          "prof-calls": 1,
+          "prof-next-calls": 1,
+          "prof-cpu": 0.082018,
+          "prof-wall": 0.080503,
+          "prof-name": "local:test-01-cache",
+          "prof-cache-hits": 0,
+          "prof-cache-misses": 1,
+          "iterators": [
+            {
+              "kind": "UDFunctionArgs",
+              "iterators": [
+                {
+                  "kind": "SingletonIterator",
+                  "value": "xs:integer(12)",
+                  "prof-calls": 1,
+                  "prof-next-calls": 2,
+                  "prof-cpu": 0.001213,
+                  "prof-wall": 0.000517,
+                  "prof-name": "SingletonIterator"
+                }
+              ]
+            },
+            {
+              "kind": "UDFunctionBody",
+              "iterators": [
+                {
+                  "kind": "FLWORIterator",
+                  "prof-calls": 1,
+                  "prof-next-calls": 1,
+                  "prof-cpu": 0.036995,
+                  "prof-wall": 0.036006,
+                  "prof-name": "FLWORIterator",
+                  "iterators": [
+                    {
+                      "kind": "ForVariable",
+                      "name": "x",
+                      "iterators": [
+                        {
+                          "kind": "LetVarIterator",
+                          "varname": "x",
+                          "prof-calls": 1,
+                          "prof-next-calls": 2,
+                          "prof-cpu": 0.004752,
+                          "prof-wall": 0.003924,
+                          "prof-name": "LetVarIterator ($x)"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "ReturnClause",
+                      "iterators": [
+                        {
+                          "kind": "IfThenElseIterator",
+                          "prof-calls": 1,
+                          "prof-next-calls": 1,
+                          "prof-cpu": 0.020425,
+                          "prof-wall": 0.020056,
+                          "prof-name": "IfThenElseIterator",
+                          "iterators": [
+                            {
+                              "kind": "TypedValueCompareIterator_INTEGER",
+                              "prof-calls": 1,
+                              "prof-next-calls": 2,
+                              "prof-cpu": 0.005924,
+                              "prof-wall": 0.005334,
+                              "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
+                              "iterators": [
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 2,
+                                  "prof-cpu": 0.001017,
+                                  "prof-wall": 0.000431,
+                                  "prof-name": "ForVarIterator ($x)"
+                                },
+                                {
+                                  "kind": "SingletonIterator",
+                                  "value": "xs:integer(10)",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 2,
+                                  "prof-cpu": 0.000941,
+                                  "prof-wall": 0.000354,
+                                  "prof-name": "SingletonIterator"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                              "prof-calls": 1,
+                              "prof-next-calls": 0,
+                              "prof-cpu": 0.001533,
+                              "prof-wall": 0.001335,
+                              "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                              "iterators": [
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000335,
+                                  "prof-wall": 0.00013,
+                                  "prof-name": "ForVarIterator ($x)"
+                                },
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000341,
+                                  "prof-wall": 0.000117,
+                                  "prof-name": "ForVarIterator ($x)"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "IfThenElseIterator",
+                              "prof-calls": 1,
+                              "prof-next-calls": 1,
+                              "prof-cpu": 0.010502,
+                              "prof-wall": 0.010118,
+                              "prof-name": "IfThenElseIterator",
+                              "iterators": [
+                                {
+                                  "kind": "TypedValueCompareIterator_INTEGER",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 2,
+                                  "prof-cpu": 0.00432,
+                                  "prof-wall": 0.003729,
+                                  "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
+                                  "iterators": [
+                                    {
+                                      "kind": "ForVarIterator",
+                                      "varname": "x",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 2,
+                                      "prof-cpu": 0.000873,
+                                      "prof-wall": 0.000292,
+                                      "prof-name": "ForVarIterator ($x)"
+                                    },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:integer(20)",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 2,
+                                      "prof-cpu": 0.000863,
+                                      "prof-wall": 0.000286,
+                                      "prof-name": "SingletonIterator"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 1,
+                                  "prof-cpu": 0.001056,
+                                  "prof-wall": 0.000675,
+                                  "prof-name": "op:concatenate"
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.003147,
+                                  "prof-wall": 0.002944,
+                                  "prof-name": "op:concatenate",
+                                  "iterators": [
+                                    {
+                                      "kind": "ForVarIterator",
+                                      "varname": "x",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000332,
+                                      "prof-wall": 0.000129,
+                                      "prof-name": "ForVarIterator ($x)"
+                                    },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:string( == )",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000311,
+                                      "prof-wall": 0.000122,
+                                      "prof-name": "SingletonIterator"
+                                    },
+                                    {
+                                      "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.001397,
+                                      "prof-wall": 0.001202,
+                                      "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                                      "iterators": [
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 0,
+                                          "prof-cpu": 0.00033,
+                                          "prof-wall": 0.000138,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        },
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 0,
+                                          "prof-cpu": 0.000311,
+                                          "prof-wall": 0.000119,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "SingletonIterator",
+          "value": "xs:string(\n)",
+          "prof-calls": 1,
+          "prof-next-calls": 2,
+          "prof-cpu": 0.000987,
+          "prof-wall": 0.000407,
+          "prof-name": "SingletonIterator"
+        },
+        {
+          "kind": "UDFunctionCallIterator",
+          "function": "local:test-01-cache",
+          "cached-across-snapshots": true,
+          "prof-calls": 1,
+          "prof-next-calls": 2,
+          "prof-cpu": 0.051107,
+          "prof-wall": 0.0494,
+          "prof-name": "local:test-01-cache",
+          "prof-cache-hits": 1,
+          "prof-cache-misses": 0,
+          "iterators": [
+            {
+              "kind": "UDFunctionArgs",
+              "iterators": [
+                {
+                  "kind": "SingletonIterator",
+                  "value": "xs:integer(2)",
+                  "prof-calls": 1,
+                  "prof-next-calls": 2,
+                  "prof-cpu": 0.001098,
+                  "prof-wall": 0.000461,
+                  "prof-name": "SingletonIterator"
+                }
+              ]
+            },
+            {
+              "kind": "UDFunctionBody",
+              "iterators": [
+                {
+                  "kind": "FLWORIterator",
+                  "prof-calls": 1,
+                  "prof-next-calls": 0,
+                  "prof-cpu": 0.019096,
+                  "prof-wall": 0.018563,
+                  "prof-name": "FLWORIterator",
+                  "iterators": [
+                    {
+                      "kind": "ForVariable",
+                      "name": "x",
+                      "iterators": [
+                        {
+                          "kind": "LetVarIterator",
+                          "varname": "x",
+                          "prof-calls": 1,
+                          "prof-next-calls": 0,
+                          "prof-cpu": 0.001309,
+                          "prof-wall": 0.001079,
+                          "prof-name": "LetVarIterator ($x)"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "ReturnClause",
+                      "iterators": [
                         {
                           "kind": "IfThenElseIterator",
                           "prof-calls": 1,
                           "prof-next-calls": 0,
-                          "prof-cpu": 0.008243,
-                          "prof-wall": 0.008038,
+                          "prof-cpu": 0.010615,
+                          "prof-wall": 0.010431,
                           "prof-name": "IfThenElseIterator",
                           "iterators": [
                             {
                               "kind": "TypedValueCompareIterator_INTEGER",
                               "prof-calls": 1,
                               "prof-next-calls": 0,
-                              "prof-cpu": 0.002423,
-                              "prof-wall": 0.002215,
+                              "prof-cpu": 0.002052,
+                              "prof-wall": 0.001847,
                               "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
                               "iterators": [
                                 {
@@ -145,36 +564,240 @@
                                   "varname": "x",
                                   "prof-calls": 1,
                                   "prof-next-calls": 0,
-                                  "prof-cpu": 0.000414,
-                                  "prof-wall": 0.000172,
+                                  "prof-cpu": 0.000378,
+                                  "prof-wall": 0.000184,
                                   "prof-name": "ForVarIterator ($x)"
                                 },
                                 {
                                   "kind": "SingletonIterator",
-                                  "value": "xs:integer(20)",
+                                  "value": "xs:integer(10)",
                                   "prof-calls": 1,
                                   "prof-next-calls": 0,
-                                  "prof-cpu": 0.000407,
-                                  "prof-wall": 0.000196,
+                                  "prof-cpu": 0.000358,
+                                  "prof-wall": 0.000164,
                                   "prof-name": "SingletonIterator"
                                 }
                               ]
                             },
                             {
-                              "kind": "FnConcatIterator",
+                              "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
                               "prof-calls": 1,
                               "prof-next-calls": 0,
-                              "prof-cpu": 0.001217,
-                              "prof-wall": 0.001011,
-                              "prof-name": "op:concatenate"
+                              "prof-cpu": 0.001529,
+                              "prof-wall": 0.00134,
+                              "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                              "iterators": [
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000344,
+                                  "prof-wall": 0.000144,
+                                  "prof-name": "ForVarIterator ($x)"
+                                },
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000378,
+                                  "prof-wall": 0.000153,
+                                  "prof-name": "ForVarIterator ($x)"
+                                }
+                              ]
                             },
                             {
-                              "kind": "FnConcatIterator",
+                              "kind": "IfThenElseIterator",
                               "prof-calls": 1,
                               "prof-next-calls": 0,
-                              "prof-cpu": 0.003478,
-                              "prof-wall": 0.003272,
-                              "prof-name": "op:concatenate",
+                              "prof-cpu": 0.006081,
+                              "prof-wall": 0.005893,
+                              "prof-name": "IfThenElseIterator",
+                              "iterators": [
+                                {
+                                  "kind": "TypedValueCompareIterator_INTEGER",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.00147,
+                                  "prof-wall": 0.001269,
+                                  "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
+                                  "iterators": [
+                                    {
+                                      "kind": "ForVarIterator",
+                                      "varname": "x",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000321,
+                                      "prof-wall": 0.000126,
+                                      "prof-name": "ForVarIterator ($x)"
+                                    },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:integer(20)",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000304,
+                                      "prof-wall": 0.000118,
+                                      "prof-name": "SingletonIterator"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000602,
+                                  "prof-wall": 0.000415,
+                                  "prof-name": "op:concatenate"
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.003109,
+                                  "prof-wall": 0.002909,
+                                  "prof-name": "op:concatenate",
+                                  "iterators": [
+                                    {
+                                      "kind": "ForVarIterator",
+                                      "varname": "x",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000321,
+                                      "prof-wall": 0.000125,
+                                      "prof-name": "ForVarIterator ($x)"
+                                    },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:string( == )",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000317,
+                                      "prof-wall": 0.000122,
+                                      "prof-name": "SingletonIterator"
+                                    },
+                                    {
+                                      "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.001417,
+                                      "prof-wall": 0.00123,
+                                      "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                                      "iterators": [
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 0,
+                                          "prof-cpu": 0.000337,
+                                          "prof-wall": 0.000138,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        },
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 0,
+                                          "prof-cpu": 0.000341,
+                                          "prof-wall": 0.000144,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "SingletonIterator",
+          "value": "xs:string(\n)",
+          "prof-calls": 1,
+          "prof-next-calls": 2,
+          "prof-cpu": 0.000976,
+          "prof-wall": 0.000387,
+          "prof-name": "SingletonIterator"
+        },
+        {
+          "kind": "UDFunctionCallIterator",
+          "function": "local:test-01-cache",
+          "cached-across-snapshots": true,
+          "prof-calls": 1,
+          "prof-next-calls": 1,
+          "prof-cpu": 0.0418,
+          "prof-wall": 0.040334,
+          "prof-name": "local:test-01-cache",
+          "prof-cache-hits": 1,
+          "prof-cache-misses": 0,
+          "iterators": [
+            {
+              "kind": "UDFunctionArgs",
+              "iterators": [
+                {
+                  "kind": "SingletonIterator",
+                  "value": "xs:integer(12)",
+                  "prof-calls": 1,
+                  "prof-next-calls": 2,
+                  "prof-cpu": 0.001036,
+                  "prof-wall": 0.000416,
+                  "prof-name": "SingletonIterator"
+                }
+              ]
+            },
+            {
+              "kind": "UDFunctionBody",
+              "iterators": [
+                {
+                  "kind": "FLWORIterator",
+                  "prof-calls": 1,
+                  "prof-next-calls": 0,
+                  "prof-cpu": 0.018585,
+                  "prof-wall": 0.01799,
+                  "prof-name": "FLWORIterator",
+                  "iterators": [
+                    {
+                      "kind": "ForVariable",
+                      "name": "x",
+                      "iterators": [
+                        {
+                          "kind": "LetVarIterator",
+                          "varname": "x",
+                          "prof-calls": 1,
+                          "prof-next-calls": 0,
+                          "prof-cpu": 0.001498,
+                          "prof-wall": 0.001221,
+                          "prof-name": "LetVarIterator ($x)"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "ReturnClause",
+                      "iterators": [
+                        {
+                          "kind": "IfThenElseIterator",
+                          "prof-calls": 1,
+                          "prof-next-calls": 0,
+                          "prof-cpu": 0.010368,
+                          "prof-wall": 0.010185,
+                          "prof-name": "IfThenElseIterator",
+                          "iterators": [
+                            {
+                              "kind": "TypedValueCompareIterator_INTEGER",
+                              "prof-calls": 1,
+                              "prof-next-calls": 0,
+                              "prof-cpu": 0.001947,
+                              "prof-wall": 0.001755,
+                              "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
                               "iterators": [
                                 {
                                   "kind": "ForVarIterator",
@@ -182,43 +805,145 @@
                                   "prof-calls": 1,
                                   "prof-next-calls": 0,
                                   "prof-cpu": 0.000346,
-                                  "prof-wall": 0.000135,
+                                  "prof-wall": 0.00016,
                                   "prof-name": "ForVarIterator ($x)"
                                 },
                                 {
                                   "kind": "SingletonIterator",
-                                  "value": "xs:string( == )",
+                                  "value": "xs:integer(10)",
                                   "prof-calls": 1,
                                   "prof-next-calls": 0,
-                                  "prof-cpu": 0.000337,
-                                  "prof-wall": 0.000131,
+                                  "prof-cpu": 0.000356,
+                                  "prof-wall": 0.00016,
                                   "prof-name": "SingletonIterator"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                              "prof-calls": 1,
+                              "prof-next-calls": 0,
+                              "prof-cpu": 0.001462,
+                              "prof-wall": 0.001276,
+                              "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                              "iterators": [
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000323,
+                                  "prof-wall": 0.00013,
+                                  "prof-name": "ForVarIterator ($x)"
                                 },
                                 {
-                                  "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
                                   "prof-calls": 1,
                                   "prof-next-calls": 0,
-                                  "prof-cpu": 0.00149,
-                                  "prof-wall": 0.001289,
-                                  "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                                  "prof-cpu": 0.000324,
+                                  "prof-wall": 0.000102,
+                                  "prof-name": "ForVarIterator ($x)"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "IfThenElseIterator",
+                              "prof-calls": 1,
+                              "prof-next-calls": 0,
+                              "prof-cpu": 0.005973,
+                              "prof-wall": 0.005792,
+                              "prof-name": "IfThenElseIterator",
+                              "iterators": [
+                                {
+                                  "kind": "TypedValueCompareIterator_INTEGER",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.001443,
+                                  "prof-wall": 0.001237,
+                                  "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
                                   "iterators": [
                                     {
                                       "kind": "ForVarIterator",
                                       "varname": "x",
                                       "prof-calls": 1,
                                       "prof-next-calls": 0,
-                                      "prof-cpu": 0.000371,
-                                      "prof-wall": 0.000163,
+                                      "prof-cpu": 0.000336,
+                                      "prof-wall": 0.000141,
                                       "prof-name": "ForVarIterator ($x)"
                                     },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:integer(20)",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000291,
+                                      "prof-wall": 0.000101,
+                                      "prof-name": "SingletonIterator"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000601,
+                                  "prof-wall": 0.0004,
+                                  "prof-name": "op:concatenate"
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.003077,
+                                  "prof-wall": 0.002871,
+                                  "prof-name": "op:concatenate",
+                                  "iterators": [
                                     {
                                       "kind": "ForVarIterator",
                                       "varname": "x",
                                       "prof-calls": 1,
                                       "prof-next-calls": 0,
-                                      "prof-cpu": 0.000324,
-                                      "prof-wall": 0.00012,
+                                      "prof-cpu": 0.000312,
+                                      "prof-wall": 0.000124,
                                       "prof-name": "ForVarIterator ($x)"
+                                    },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:string( == )",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000323,
+                                      "prof-wall": 0.000134,
+                                      "prof-name": "SingletonIterator"
+                                    },
+                                    {
+                                      "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.001359,
+                                      "prof-wall": 0.001166,
+                                      "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                                      "iterators": [
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 0,
+                                          "prof-cpu": 0.000324,
+                                          "prof-wall": 0.000132,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        },
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 0,
+                                          "prof-cpu": 0.0003,
+                                          "prof-wall": 0.000113,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
@@ -239,8 +964,8 @@
           "value": "xs:string(\n)",
           "prof-calls": 1,
           "prof-next-calls": 2,
-          "prof-cpu": 0.001299,
-          "prof-wall": 0.000666,
+          "prof-cpu": 0.000978,
+          "prof-wall": 0.000394,
           "prof-name": "SingletonIterator"
         },
         {
@@ -248,447 +973,217 @@
           "function": "local:test-01-cache",
           "cached-across-snapshots": true,
           "prof-calls": 1,
-          "prof-next-calls": 1,
-          "prof-cpu": 0.106532,
-          "prof-wall": 0.104892,
+          "prof-next-calls": 4,
+          "prof-cpu": 0.077954,
+          "prof-wall": 0.075707,
           "prof-name": "local:test-01-cache",
           "prof-cache-hits": 0,
           "prof-cache-misses": 1,
           "iterators": [
             {
-              "kind": "SingletonIterator",
-              "value": "xs:integer(12)",
-              "prof-calls": 1,
-              "prof-next-calls": 2,
-              "prof-cpu": 0.001216,
-              "prof-wall": 0.0005,
-              "prof-name": "SingletonIterator"
-            },
-            {
-              "kind": "FLWORIterator",
-              "prof-calls": 1,
-              "prof-next-calls": 1,
-              "prof-cpu": 0.05057,
-              "prof-wall": 0.049529,
-              "prof-name": "FLWORIterator",
+              "kind": "UDFunctionArgs",
               "iterators": [
                 {
-                  "kind": "ForVariable",
-                  "name": "x",
-                  "iterators": [
-                    {
-                      "kind": "LetVarIterator",
-                      "varname": "x",
-                      "prof-calls": 1,
-                      "prof-next-calls": 2,
-                      "prof-cpu": 0.00577,
-                      "prof-wall": 0.005016,
-                      "prof-name": "LetVarIterator ($x)"
-                    }
-                  ]
-                },
-                {
-                  "kind": "ReturnClause",
+                  "kind": "SingletonIterator",
+                  "value": "xs:integer(22)",
                   "prof-calls": 1,
-                  "prof-next-calls": 1,
-                  "prof-cpu": 0.025337,
-                  "prof-wall": 0.024891,
-                  "prof-name": "IfThenElseIterator",
-                  "iterators": [
-                    {
-                      "kind": "IfThenElseIterator",
-                      "prof-calls": 1,
-                      "prof-next-calls": 1,
-                      "prof-cpu": 0.025337,
-                      "prof-wall": 0.024891,
-                      "prof-name": "IfThenElseIterator",
-                      "iterators": [
-                        {
-                          "kind": "TypedValueCompareIterator_INTEGER",
-                          "prof-calls": 1,
-                          "prof-next-calls": 2,
-                          "prof-cpu": 0.008599,
-                          "prof-wall": 0.007976,
-                          "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 2,
-                              "prof-cpu": 0.00135,
-                              "prof-wall": 0.000695,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "SingletonIterator",
-                              "value": "xs:integer(10)",
-                              "prof-calls": 1,
-                              "prof-next-calls": 2,
-                              "prof-cpu": 0.001062,
-                              "prof-wall": 0.000433,
-                              "prof-name": "SingletonIterator"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
-                          "prof-calls": 1,
-                          "prof-next-calls": 0,
-                          "prof-cpu": 0.001693,
-                          "prof-wall": 0.001489,
-                          "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000356,
-                              "prof-wall": 0.000149,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000391,
-                              "prof-wall": 0.000187,
-                              "prof-name": "ForVarIterator ($x)"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "IfThenElseIterator",
-                          "prof-calls": 1,
-                          "prof-next-calls": 1,
-                          "prof-cpu": 0.01209,
-                          "prof-wall": 0.011572,
-                          "prof-name": "IfThenElseIterator",
-                          "iterators": [
-                            {
-                              "kind": "TypedValueCompareIterator_INTEGER",
-                              "prof-calls": 1,
-                              "prof-next-calls": 2,
-                              "prof-cpu": 0.004776,
-                              "prof-wall": 0.004128,
-                              "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
-                              "iterators": [
-                                {
-                                  "kind": "ForVarIterator",
-                                  "varname": "x",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 2,
-                                  "prof-cpu": 0.000961,
-                                  "prof-wall": 0.000346,
-                                  "prof-name": "ForVarIterator ($x)"
-                                },
-                                {
-                                  "kind": "SingletonIterator",
-                                  "value": "xs:integer(20)",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 2,
-                                  "prof-cpu": 0.000939,
-                                  "prof-wall": 0.000312,
-                                  "prof-name": "SingletonIterator"
-                                }
-                              ]
-                            },
-                            {
-                              "kind": "FnConcatIterator",
-                              "prof-calls": 1,
-                              "prof-next-calls": 1,
-                              "prof-cpu": 0.001468,
-                              "prof-wall": 0.001023,
-                              "prof-name": "op:concatenate"
-                            },
-                            {
-                              "kind": "FnConcatIterator",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.003534,
-                              "prof-wall": 0.003331,
-                              "prof-name": "op:concatenate",
-                              "iterators": [
-                                {
-                                  "kind": "ForVarIterator",
-                                  "varname": "x",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.000357,
-                                  "prof-wall": 0.000147,
-                                  "prof-name": "ForVarIterator ($x)"
-                                },
-                                {
-                                  "kind": "SingletonIterator",
-                                  "value": "xs:string( == )",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.000331,
-                                  "prof-wall": 0.000126,
-                                  "prof-name": "SingletonIterator"
-                                },
-                                {
-                                  "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.001525,
-                                  "prof-wall": 0.00132,
-                                  "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
-                                  "iterators": [
-                                    {
-                                      "kind": "ForVarIterator",
-                                      "varname": "x",
-                                      "prof-calls": 1,
-                                      "prof-next-calls": 0,
-                                      "prof-cpu": 0.000355,
-                                      "prof-wall": 0.00015,
-                                      "prof-name": "ForVarIterator ($x)"
-                                    },
-                                    {
-                                      "kind": "ForVarIterator",
-                                      "varname": "x",
-                                      "prof-calls": 1,
-                                      "prof-next-calls": 0,
-                                      "prof-cpu": 0.000324,
-                                      "prof-wall": 0.000118,
-                                      "prof-name": "ForVarIterator ($x)"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
+                  "prof-next-calls": 2,
+                  "prof-cpu": 0.00101,
+                  "prof-wall": 0.000404,
+                  "prof-name": "SingletonIterator"
                 }
               ]
-            }
-          ]
-        },
-        {
-          "kind": "SingletonIterator",
-          "value": "xs:string(\n)",
-          "prof-calls": 1,
-          "prof-next-calls": 2,
-          "prof-cpu": 0.001192,
-          "prof-wall": 0.000575,
-          "prof-name": "SingletonIterator"
-        },
-        {
-          "kind": "UDFunctionCallIterator",
-          "function": "local:test-01-cache",
-          "cached-across-snapshots": true,
-          "prof-calls": 1,
-          "prof-next-calls": 2,
-          "prof-cpu": 0.06462,
-          "prof-wall": 0.062094,
-          "prof-name": "local:test-01-cache",
-          "prof-cache-hits": 1,
-          "prof-cache-misses": 0,
-          "iterators": [
-            {
-              "kind": "SingletonIterator",
-              "value": "xs:integer(2)",
-              "prof-calls": 1,
-              "prof-next-calls": 2,
-              "prof-cpu": 0.001311,
-              "prof-wall": 0.000603,
-              "prof-name": "SingletonIterator"
             },
             {
-              "kind": "FLWORIterator",
-              "prof-calls": 1,
-              "prof-next-calls": 0,
-              "prof-cpu": 0.022354,
-              "prof-wall": 0.021798,
-              "prof-name": "FLWORIterator",
+              "kind": "UDFunctionBody",
               "iterators": [
                 {
-                  "kind": "ForVariable",
-                  "name": "x",
-                  "iterators": [
-                    {
-                      "kind": "LetVarIterator",
-                      "varname": "x",
-                      "prof-calls": 1,
-                      "prof-next-calls": 0,
-                      "prof-cpu": 0.0016,
-                      "prof-wall": 0.00129,
-                      "prof-name": "LetVarIterator ($x)"
-                    }
-                  ]
-                },
-                {
-                  "kind": "ReturnClause",
+                  "kind": "FLWORIterator",
                   "prof-calls": 1,
-                  "prof-next-calls": 0,
-                  "prof-cpu": 0.012287,
-                  "prof-wall": 0.012094,
-                  "prof-name": "IfThenElseIterator",
+                  "prof-next-calls": 4,
+                  "prof-cpu": 0.04418,
+                  "prof-wall": 0.04276,
+                  "prof-name": "FLWORIterator",
                   "iterators": [
                     {
-                      "kind": "IfThenElseIterator",
-                      "prof-calls": 1,
-                      "prof-next-calls": 0,
-                      "prof-cpu": 0.012287,
-                      "prof-wall": 0.012094,
-                      "prof-name": "IfThenElseIterator",
+                      "kind": "ForVariable",
+                      "name": "x",
                       "iterators": [
                         {
-                          "kind": "TypedValueCompareIterator_INTEGER",
+                          "kind": "LetVarIterator",
+                          "varname": "x",
                           "prof-calls": 1,
-                          "prof-next-calls": 0,
-                          "prof-cpu": 0.002234,
-                          "prof-wall": 0.002028,
-                          "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.00044,
-                              "prof-wall": 0.000232,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "SingletonIterator",
-                              "value": "xs:integer(10)",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000368,
-                              "prof-wall": 0.000161,
-                              "prof-name": "SingletonIterator"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
-                          "prof-calls": 1,
-                          "prof-next-calls": 0,
-                          "prof-cpu": 0.001506,
-                          "prof-wall": 0.001303,
-                          "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000359,
-                              "prof-wall": 0.00015,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000323,
-                              "prof-wall": 0.00012,
-                              "prof-name": "ForVarIterator ($x)"
-                            }
-                          ]
-                        },
+                          "prof-next-calls": 2,
+                          "prof-cpu": 0.004758,
+                          "prof-wall": 0.003968,
+                          "prof-name": "LetVarIterator ($x)"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "ReturnClause",
+                      "iterators": [
                         {
                           "kind": "IfThenElseIterator",
                           "prof-calls": 1,
-                          "prof-next-calls": 0,
-                          "prof-cpu": 0.007332,
-                          "prof-wall": 0.007136,
+                          "prof-next-calls": 4,
+                          "prof-cpu": 0.02941,
+                          "prof-wall": 0.028418,
                           "prof-name": "IfThenElseIterator",
                           "iterators": [
                             {
                               "kind": "TypedValueCompareIterator_INTEGER",
                               "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.001665,
-                              "prof-wall": 0.001462,
+                              "prof-next-calls": 2,
+                              "prof-cpu": 0.005433,
+                              "prof-wall": 0.004851,
                               "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
                               "iterators": [
                                 {
                                   "kind": "ForVarIterator",
                                   "varname": "x",
                                   "prof-calls": 1,
+                                  "prof-next-calls": 2,
+                                  "prof-cpu": 0.00097,
+                                  "prof-wall": 0.000378,
+                                  "prof-name": "ForVarIterator ($x)"
+                                },
+                                {
+                                  "kind": "SingletonIterator",
+                                  "value": "xs:integer(10)",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 2,
+                                  "prof-cpu": 0.000919,
+                                  "prof-wall": 0.000348,
+                                  "prof-name": "SingletonIterator"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                              "prof-calls": 1,
+                              "prof-next-calls": 0,
+                              "prof-cpu": 0.001445,
+                              "prof-wall": 0.001258,
+                              "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                              "iterators": [
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
                                   "prof-next-calls": 0,
-                                  "prof-cpu": 0.00034,
+                                  "prof-cpu": 0.000335,
                                   "prof-wall": 0.000135,
                                   "prof-name": "ForVarIterator ($x)"
                                 },
                                 {
-                                  "kind": "SingletonIterator",
-                                  "value": "xs:integer(20)",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.000322,
-                                  "prof-wall": 0.000116,
-                                  "prof-name": "SingletonIterator"
-                                }
-                              ]
-                            },
-                            {
-                              "kind": "FnConcatIterator",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.001505,
-                              "prof-wall": 0.001299,
-                              "prof-name": "op:concatenate"
-                            },
-                            {
-                              "kind": "FnConcatIterator",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.003211,
-                              "prof-wall": 0.003009,
-                              "prof-name": "op:concatenate",
-                              "iterators": [
-                                {
                                   "kind": "ForVarIterator",
                                   "varname": "x",
                                   "prof-calls": 1,
                                   "prof-next-calls": 0,
-                                  "prof-cpu": 0.000352,
-                                  "prof-wall": 0.000146,
-                                  "prof-name": "ForVarIterator ($x)"
-                                },
-                                {
-                                  "kind": "SingletonIterator",
-                                  "value": "xs:string( == )",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
                                   "prof-cpu": 0.000332,
-                                  "prof-wall": 0.000129,
-                                  "prof-name": "SingletonIterator"
-                                },
+                                  "prof-wall": 0.000109,
+                                  "prof-name": "ForVarIterator ($x)"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "IfThenElseIterator",
+                              "prof-calls": 1,
+                              "prof-next-calls": 4,
+                              "prof-cpu": 0.018508,
+                              "prof-wall": 0.01755,
+                              "prof-name": "IfThenElseIterator",
+                              "iterators": [
                                 {
-                                  "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                                  "kind": "TypedValueCompareIterator_INTEGER",
                                   "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.001414,
-                                  "prof-wall": 0.001212,
-                                  "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                                  "prof-next-calls": 2,
+                                  "prof-cpu": 0.004336,
+                                  "prof-wall": 0.003738,
+                                  "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
                                   "iterators": [
                                     {
                                       "kind": "ForVarIterator",
                                       "varname": "x",
                                       "prof-calls": 1,
-                                      "prof-next-calls": 0,
-                                      "prof-cpu": 0.000344,
-                                      "prof-wall": 0.000138,
+                                      "prof-next-calls": 2,
+                                      "prof-cpu": 0.000884,
+                                      "prof-wall": 0.000287,
                                       "prof-name": "ForVarIterator ($x)"
                                     },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:integer(20)",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 2,
+                                      "prof-cpu": 0.000879,
+                                      "prof-wall": 0.000276,
+                                      "prof-name": "SingletonIterator"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.00052,
+                                  "prof-wall": 0.00032,
+                                  "prof-name": "op:concatenate"
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 4,
+                                  "prof-cpu": 0.010202,
+                                  "prof-wall": 0.009212,
+                                  "prof-name": "op:concatenate",
+                                  "iterators": [
                                     {
                                       "kind": "ForVarIterator",
                                       "varname": "x",
                                       "prof-calls": 1,
-                                      "prof-next-calls": 0,
-                                      "prof-cpu": 0.000329,
-                                      "prof-wall": 0.000123,
+                                      "prof-next-calls": 2,
+                                      "prof-cpu": 0.000921,
+                                      "prof-wall": 0.000314,
                                       "prof-name": "ForVarIterator ($x)"
+                                    },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:string( == )",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 2,
+                                      "prof-cpu": 0.000879,
+                                      "prof-wall": 0.000279,
+                                      "prof-name": "SingletonIterator"
+                                    },
+                                    {
+                                      "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 2,
+                                      "prof-cpu": 0.004643,
+                                      "prof-wall": 0.003986,
+                                      "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                                      "iterators": [
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 1,
+                                          "prof-cpu": 0.000651,
+                                          "prof-wall": 0.000258,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        },
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 1,
+                                          "prof-cpu": 0.000607,
+                                          "prof-wall": 0.000215,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
@@ -709,8 +1204,8 @@
           "value": "xs:string(\n)",
           "prof-calls": 1,
           "prof-next-calls": 2,
-          "prof-cpu": 0.001079,
-          "prof-wall": 0.000448,
+          "prof-cpu": 0.000937,
+          "prof-wall": 0.000357,
           "prof-name": "SingletonIterator"
         },
         {
@@ -718,212 +1213,217 @@
           "function": "local:test-01-cache",
           "cached-across-snapshots": true,
           "prof-calls": 1,
-          "prof-next-calls": 1,
-          "prof-cpu": 0.046267,
-          "prof-wall": 0.044641,
+          "prof-next-calls": 4,
+          "prof-cpu": 0.043009,
+          "prof-wall": 0.040743,
           "prof-name": "local:test-01-cache",
           "prof-cache-hits": 1,
           "prof-cache-misses": 0,
           "iterators": [
             {
-              "kind": "SingletonIterator",
-              "value": "xs:integer(12)",
-              "prof-calls": 1,
-              "prof-next-calls": 2,
-              "prof-cpu": 0.001264,
-              "prof-wall": 0.000578,
-              "prof-name": "SingletonIterator"
-            },
-            {
-              "kind": "FLWORIterator",
-              "prof-calls": 1,
-              "prof-next-calls": 0,
-              "prof-cpu": 0.020489,
-              "prof-wall": 0.019864,
-              "prof-name": "FLWORIterator",
+              "kind": "UDFunctionArgs",
               "iterators": [
                 {
-                  "kind": "ForVariable",
-                  "name": "x",
-                  "iterators": [
-                    {
-                      "kind": "LetVarIterator",
-                      "varname": "x",
-                      "prof-calls": 1,
-                      "prof-next-calls": 0,
-                      "prof-cpu": 0.001663,
-                      "prof-wall": 0.001361,
-                      "prof-name": "LetVarIterator ($x)"
-                    }
-                  ]
-                },
+                  "kind": "SingletonIterator",
+                  "value": "xs:integer(22)",
+                  "prof-calls": 1,
+                  "prof-next-calls": 2,
+                  "prof-cpu": 0.001178,
+                  "prof-wall": 0.000517,
+                  "prof-name": "SingletonIterator"
+                }
+              ]
+            },
+            {
+              "kind": "UDFunctionBody",
+              "iterators": [
                 {
-                  "kind": "ReturnClause",
+                  "kind": "FLWORIterator",
                   "prof-calls": 1,
                   "prof-next-calls": 0,
-                  "prof-cpu": 0.011558,
-                  "prof-wall": 0.011365,
-                  "prof-name": "IfThenElseIterator",
+                  "prof-cpu": 0.01846,
+                  "prof-wall": 0.017904,
+                  "prof-name": "FLWORIterator",
                   "iterators": [
                     {
-                      "kind": "IfThenElseIterator",
-                      "prof-calls": 1,
-                      "prof-next-calls": 0,
-                      "prof-cpu": 0.011558,
-                      "prof-wall": 0.011365,
-                      "prof-name": "IfThenElseIterator",
+                      "kind": "ForVariable",
+                      "name": "x",
                       "iterators": [
                         {
-                          "kind": "TypedValueCompareIterator_INTEGER",
+                          "kind": "LetVarIterator",
+                          "varname": "x",
                           "prof-calls": 1,
                           "prof-next-calls": 0,
-                          "prof-cpu": 0.00234,
-                          "prof-wall": 0.002133,
-                          "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000418,
-                              "prof-wall": 0.000213,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "SingletonIterator",
-                              "value": "xs:integer(10)",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000422,
-                              "prof-wall": 0.000164,
-                              "prof-name": "SingletonIterator"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
-                          "prof-calls": 1,
-                          "prof-next-calls": 0,
-                          "prof-cpu": 0.001492,
-                          "prof-wall": 0.001287,
-                          "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000353,
-                              "prof-wall": 0.000145,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000318,
-                              "prof-wall": 0.000115,
-                              "prof-name": "ForVarIterator ($x)"
-                            }
-                          ]
-                        },
+                          "prof-cpu": 0.001473,
+                          "prof-wall": 0.001201,
+                          "prof-name": "LetVarIterator ($x)"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "ReturnClause",
+                      "iterators": [
                         {
                           "kind": "IfThenElseIterator",
                           "prof-calls": 1,
                           "prof-next-calls": 0,
-                          "prof-cpu": 0.006688,
-                          "prof-wall": 0.006491,
+                          "prof-cpu": 0.010354,
+                          "prof-wall": 0.01017,
                           "prof-name": "IfThenElseIterator",
                           "iterators": [
                             {
                               "kind": "TypedValueCompareIterator_INTEGER",
                               "prof-calls": 1,
                               "prof-next-calls": 0,
-                              "prof-cpu": 0.001604,
-                              "prof-wall": 0.0014,
+                              "prof-cpu": 0.001968,
+                              "prof-wall": 0.001775,
                               "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
                               "iterators": [
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000362,
+                                  "prof-wall": 0.000173,
+                                  "prof-name": "ForVarIterator ($x)"
+                                },
+                                {
+                                  "kind": "SingletonIterator",
+                                  "value": "xs:integer(10)",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000346,
+                                  "prof-wall": 0.000157,
+                                  "prof-name": "SingletonIterator"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                              "prof-calls": 1,
+                              "prof-next-calls": 0,
+                              "prof-cpu": 0.001471,
+                              "prof-wall": 0.001284,
+                              "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                              "iterators": [
+                                {
+                                  "kind": "ForVarIterator",
+                                  "varname": "x",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000321,
+                                  "prof-wall": 0.000121,
+                                  "prof-name": "ForVarIterator ($x)"
+                                },
                                 {
                                   "kind": "ForVarIterator",
                                   "varname": "x",
                                   "prof-calls": 1,
                                   "prof-next-calls": 0,
                                   "prof-cpu": 0.000348,
-                                  "prof-wall": 0.000136,
+                                  "prof-wall": 0.000124,
                                   "prof-name": "ForVarIterator ($x)"
-                                },
-                                {
-                                  "kind": "SingletonIterator",
-                                  "value": "xs:integer(20)",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.000323,
-                                  "prof-wall": 0.000118,
-                                  "prof-name": "SingletonIterator"
                                 }
                               ]
                             },
                             {
-                              "kind": "FnConcatIterator",
+                              "kind": "IfThenElseIterator",
                               "prof-calls": 1,
                               "prof-next-calls": 0,
-                              "prof-cpu": 0.000967,
-                              "prof-wall": 0.000756,
-                              "prof-name": "op:concatenate"
-                            },
-                            {
-                              "kind": "FnConcatIterator",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.003181,
-                              "prof-wall": 0.002978,
-                              "prof-name": "op:concatenate",
+                              "prof-cpu": 0.005942,
+                              "prof-wall": 0.005753,
+                              "prof-name": "IfThenElseIterator",
                               "iterators": [
                                 {
-                                  "kind": "ForVarIterator",
-                                  "varname": "x",
+                                  "kind": "TypedValueCompareIterator_INTEGER",
                                   "prof-calls": 1,
                                   "prof-next-calls": 0,
-                                  "prof-cpu": 0.000341,
-                                  "prof-wall": 0.000136,
-                                  "prof-name": "ForVarIterator ($x)"
-                                },
-                                {
-                                  "kind": "SingletonIterator",
-                                  "value": "xs:string( == )",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.000325,
-                                  "prof-wall": 0.000121,
-                                  "prof-name": "SingletonIterator"
-                                },
-                                {
-                                  "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.001416,
-                                  "prof-wall": 0.001213,
-                                  "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                                  "prof-cpu": 0.001466,
+                                  "prof-wall": 0.001267,
+                                  "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
                                   "iterators": [
                                     {
                                       "kind": "ForVarIterator",
                                       "varname": "x",
                                       "prof-calls": 1,
                                       "prof-next-calls": 0,
-                                      "prof-cpu": 0.000345,
-                                      "prof-wall": 0.000139,
+                                      "prof-cpu": 0.000332,
+                                      "prof-wall": 0.000138,
                                       "prof-name": "ForVarIterator ($x)"
                                     },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:integer(20)",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000302,
+                                      "prof-wall": 0.000108,
+                                      "prof-name": "SingletonIterator"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.000566,
+                                  "prof-wall": 0.000378,
+                                  "prof-name": "op:concatenate"
+                                },
+                                {
+                                  "kind": "FnConcatIterator",
+                                  "prof-calls": 1,
+                                  "prof-next-calls": 0,
+                                  "prof-cpu": 0.003023,
+                                  "prof-wall": 0.002832,
+                                  "prof-name": "op:concatenate",
+                                  "iterators": [
                                     {
                                       "kind": "ForVarIterator",
                                       "varname": "x",
                                       "prof-calls": 1,
                                       "prof-next-calls": 0,
-                                      "prof-cpu": 0.000321,
-                                      "prof-wall": 0.000118,
+                                      "prof-cpu": 0.000317,
+                                      "prof-wall": 0.000121,
                                       "prof-name": "ForVarIterator ($x)"
+                                    },
+                                    {
+                                      "kind": "SingletonIterator",
+                                      "value": "xs:string( == )",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.000296,
+                                      "prof-wall": 0.000105,
+                                      "prof-name": "SingletonIterator"
+                                    },
+                                    {
+                                      "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
+                                      "prof-calls": 1,
+                                      "prof-next-calls": 0,
+                                      "prof-cpu": 0.001342,
+                                      "prof-wall": 0.001154,
+                                      "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
+                                      "iterators": [
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 0,
+                                          "prof-cpu": 0.000319,
+                                          "prof-wall": 0.00012,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        },
+                                        {
+                                          "kind": "ForVarIterator",
+                                          "varname": "x",
+                                          "prof-calls": 1,
+                                          "prof-next-calls": 0,
+                                          "prof-cpu": 0.000288,
+                                          "prof-wall": 0.000101,
+                                          "prof-name": "ForVarIterator ($x)"
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
@@ -944,478 +1444,8 @@
           "value": "xs:string(\n)",
           "prof-calls": 1,
           "prof-next-calls": 2,
-          "prof-cpu": 0.001276,
-          "prof-wall": 0.000661,
-          "prof-name": "SingletonIterator"
-        },
-        {
-          "kind": "UDFunctionCallIterator",
-          "function": "local:test-01-cache",
-          "cached-across-snapshots": true,
-          "prof-calls": 1,
-          "prof-next-calls": 4,
-          "prof-cpu": 0.153575,
-          "prof-wall": 0.148169,
-          "prof-name": "local:test-01-cache",
-          "prof-cache-hits": 0,
-          "prof-cache-misses": 1,
-          "iterators": [
-            {
-              "kind": "SingletonIterator",
-              "value": "xs:integer(22)",
-              "prof-calls": 1,
-              "prof-next-calls": 2,
-              "prof-cpu": 0.001197,
-              "prof-wall": 0.000505,
-              "prof-name": "SingletonIterator"
-            },
-            {
-              "kind": "FLWORIterator",
-              "prof-calls": 1,
-              "prof-next-calls": 4,
-              "prof-cpu": 0.065073,
-              "prof-wall": 0.062367,
-              "prof-name": "FLWORIterator",
-              "iterators": [
-                {
-                  "kind": "ForVariable",
-                  "name": "x",
-                  "iterators": [
-                    {
-                      "kind": "LetVarIterator",
-                      "varname": "x",
-                      "prof-calls": 1,
-                      "prof-next-calls": 2,
-                      "prof-cpu": 0.00745,
-                      "prof-wall": 0.006447,
-                      "prof-name": "LetVarIterator ($x)"
-                    }
-                  ]
-                },
-                {
-                  "kind": "ReturnClause",
-                  "prof-calls": 1,
-                  "prof-next-calls": 4,
-                  "prof-cpu": 0.042569,
-                  "prof-wall": 0.041443,
-                  "prof-name": "IfThenElseIterator",
-                  "iterators": [
-                    {
-                      "kind": "IfThenElseIterator",
-                      "prof-calls": 1,
-                      "prof-next-calls": 4,
-                      "prof-cpu": 0.042569,
-                      "prof-wall": 0.041443,
-                      "prof-name": "IfThenElseIterator",
-                      "iterators": [
-                        {
-                          "kind": "TypedValueCompareIterator_INTEGER",
-                          "prof-calls": 1,
-                          "prof-next-calls": 2,
-                          "prof-cpu": 0.008686,
-                          "prof-wall": 0.008072,
-                          "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 2,
-                              "prof-cpu": 0.001156,
-                              "prof-wall": 0.000509,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "SingletonIterator",
-                              "value": "xs:integer(10)",
-                              "prof-calls": 1,
-                              "prof-next-calls": 2,
-                              "prof-cpu": 0.0017,
-                              "prof-wall": 0.001082,
-                              "prof-name": "SingletonIterator"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
-                          "prof-calls": 1,
-                          "prof-next-calls": 0,
-                          "prof-cpu": 0.001593,
-                          "prof-wall": 0.001386,
-                          "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000366,
-                              "prof-wall": 0.000153,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000327,
-                              "prof-wall": 0.000123,
-                              "prof-name": "ForVarIterator ($x)"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "IfThenElseIterator",
-                          "prof-calls": 1,
-                          "prof-next-calls": 4,
-                          "prof-cpu": 0.027132,
-                          "prof-wall": 0.025983,
-                          "prof-name": "IfThenElseIterator",
-                          "iterators": [
-                            {
-                              "kind": "TypedValueCompareIterator_INTEGER",
-                              "prof-calls": 1,
-                              "prof-next-calls": 2,
-                              "prof-cpu": 0.004765,
-                              "prof-wall": 0.004151,
-                              "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
-                              "iterators": [
-                                {
-                                  "kind": "ForVarIterator",
-                                  "varname": "x",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 2,
-                                  "prof-cpu": 0.000965,
-                                  "prof-wall": 0.000342,
-                                  "prof-name": "ForVarIterator ($x)"
-                                },
-                                {
-                                  "kind": "SingletonIterator",
-                                  "value": "xs:integer(20)",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 2,
-                                  "prof-cpu": 0.001039,
-                                  "prof-wall": 0.000406,
-                                  "prof-name": "SingletonIterator"
-                                }
-                              ]
-                            },
-                            {
-                              "kind": "FnConcatIterator",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000592,
-                              "prof-wall": 0.000387,
-                              "prof-name": "op:concatenate"
-                            },
-                            {
-                              "kind": "FnConcatIterator",
-                              "prof-calls": 1,
-                              "prof-next-calls": 4,
-                              "prof-cpu": 0.017517,
-                              "prof-wall": 0.01616,
-                              "prof-name": "op:concatenate",
-                              "iterators": [
-                                {
-                                  "kind": "ForVarIterator",
-                                  "varname": "x",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 2,
-                                  "prof-cpu": 0.001872,
-                                  "prof-wall": 0.000634,
-                                  "prof-name": "ForVarIterator ($x)"
-                                },
-                                {
-                                  "kind": "SingletonIterator",
-                                  "value": "xs:string( == )",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 2,
-                                  "prof-cpu": 0.001244,
-                                  "prof-wall": 0.000416,
-                                  "prof-name": "SingletonIterator"
-                                },
-                                {
-                                  "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 2,
-                                  "prof-cpu": 0.008856,
-                                  "prof-wall": 0.007542,
-                                  "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
-                                  "iterators": [
-                                    {
-                                      "kind": "ForVarIterator",
-                                      "varname": "x",
-                                      "prof-calls": 1,
-                                      "prof-next-calls": 1,
-                                      "prof-cpu": 0.000793,
-                                      "prof-wall": 0.000334,
-                                      "prof-name": "ForVarIterator ($x)"
-                                    },
-                                    {
-                                      "kind": "ForVarIterator",
-                                      "varname": "x",
-                                      "prof-calls": 1,
-                                      "prof-next-calls": 1,
-                                      "prof-cpu": 0.000719,
-                                      "prof-wall": 0.000202,
-                                      "prof-name": "ForVarIterator ($x)"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "kind": "SingletonIterator",
-          "value": "xs:string(\n)",
-          "prof-calls": 1,
-          "prof-next-calls": 2,
-          "prof-cpu": 0.002035,
-          "prof-wall": 0.000998,
-          "prof-name": "SingletonIterator"
-        },
-        {
-          "kind": "UDFunctionCallIterator",
-          "function": "local:test-01-cache",
-          "cached-across-snapshots": true,
-          "prof-calls": 1,
-          "prof-next-calls": 4,
-          "prof-cpu": 0.053603,
-          "prof-wall": 0.051356,
-          "prof-name": "local:test-01-cache",
-          "prof-cache-hits": 1,
-          "prof-cache-misses": 0,
-          "iterators": [
-            {
-              "kind": "SingletonIterator",
-              "value": "xs:integer(22)",
-              "prof-calls": 1,
-              "prof-next-calls": 2,
-              "prof-cpu": 0.001277,
-              "prof-wall": 0.000581,
-              "prof-name": "SingletonIterator"
-            },
-            {
-              "kind": "FLWORIterator",
-              "prof-calls": 1,
-              "prof-next-calls": 0,
-              "prof-cpu": 0.024545,
-              "prof-wall": 0.023949,
-              "prof-name": "FLWORIterator",
-              "iterators": [
-                {
-                  "kind": "ForVariable",
-                  "name": "x",
-                  "iterators": [
-                    {
-                      "kind": "LetVarIterator",
-                      "varname": "x",
-                      "prof-calls": 1,
-                      "prof-next-calls": 0,
-                      "prof-cpu": 0.001969,
-                      "prof-wall": 0.00168,
-                      "prof-name": "LetVarIterator ($x)"
-                    }
-                  ]
-                },
-                {
-                  "kind": "ReturnClause",
-                  "prof-calls": 1,
-                  "prof-next-calls": 0,
-                  "prof-cpu": 0.012273,
-                  "prof-wall": 0.01208,
-                  "prof-name": "IfThenElseIterator",
-                  "iterators": [
-                    {
-                      "kind": "IfThenElseIterator",
-                      "prof-calls": 1,
-                      "prof-next-calls": 0,
-                      "prof-cpu": 0.012273,
-                      "prof-wall": 0.01208,
-                      "prof-name": "IfThenElseIterator",
-                      "iterators": [
-                        {
-                          "kind": "TypedValueCompareIterator_INTEGER",
-                          "prof-calls": 1,
-                          "prof-next-calls": 0,
-                          "prof-cpu": 0.002725,
-                          "prof-wall": 0.002518,
-                          "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000537,
-                              "prof-wall": 0.000294,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "SingletonIterator",
-                              "value": "xs:integer(10)",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000392,
-                              "prof-wall": 0.000188,
-                              "prof-name": "SingletonIterator"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
-                          "prof-calls": 1,
-                          "prof-next-calls": 0,
-                          "prof-cpu": 0.001615,
-                          "prof-wall": 0.001408,
-                          "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
-                          "iterators": [
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.00035,
-                              "prof-wall": 0.000144,
-                              "prof-name": "ForVarIterator ($x)"
-                            },
-                            {
-                              "kind": "ForVarIterator",
-                              "varname": "x",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000322,
-                              "prof-wall": 0.000119,
-                              "prof-name": "ForVarIterator ($x)"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "IfThenElseIterator",
-                          "prof-calls": 1,
-                          "prof-next-calls": 0,
-                          "prof-cpu": 0.006844,
-                          "prof-wall": 0.006646,
-                          "prof-name": "IfThenElseIterator",
-                          "iterators": [
-                            {
-                              "kind": "TypedValueCompareIterator_INTEGER",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.001647,
-                              "prof-wall": 0.00144,
-                              "prof-name": "TypedValueCompareIterator<store::XS_INTEGER>",
-                              "iterators": [
-                                {
-                                  "kind": "ForVarIterator",
-                                  "varname": "x",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.000369,
-                                  "prof-wall": 0.000165,
-                                  "prof-name": "ForVarIterator ($x)"
-                                },
-                                {
-                                  "kind": "SingletonIterator",
-                                  "value": "xs:integer(20)",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.000323,
-                                  "prof-wall": 0.000121,
-                                  "prof-name": "SingletonIterator"
-                                }
-                              ]
-                            },
-                            {
-                              "kind": "FnConcatIterator",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.000991,
-                              "prof-wall": 0.000782,
-                              "prof-name": "op:concatenate"
-                            },
-                            {
-                              "kind": "FnConcatIterator",
-                              "prof-calls": 1,
-                              "prof-next-calls": 0,
-                              "prof-cpu": 0.003256,
-                              "prof-wall": 0.003055,
-                              "prof-name": "op:concatenate",
-                              "iterators": [
-                                {
-                                  "kind": "ForVarIterator",
-                                  "varname": "x",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.000356,
-                                  "prof-wall": 0.00015,
-                                  "prof-name": "ForVarIterator ($x)"
-                                },
-                                {
-                                  "kind": "SingletonIterator",
-                                  "value": "xs:string( == )",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.000333,
-                                  "prof-wall": 0.000126,
-                                  "prof-name": "SingletonIterator"
-                                },
-                                {
-                                  "kind": "SpecificNumArithIterator_MultiplyOperation_INTEGER",
-                                  "prof-calls": 1,
-                                  "prof-next-calls": 0,
-                                  "prof-cpu": 0.001456,
-                                  "prof-wall": 0.001253,
-                                  "prof-name": "SpecificNumArithIterator<MultiplyOperation,store::XS_INTEGER>",
-                                  "iterators": [
-                                    {
-                                      "kind": "ForVarIterator",
-                                      "varname": "x",
-                                      "prof-calls": 1,
-                                      "prof-next-calls": 0,
-                                      "prof-cpu": 0.000347,
-                                      "prof-wall": 0.000141,
-                                      "prof-name": "ForVarIterator ($x)"
-                                    },
-                                    {
-                                      "kind": "ForVarIterator",
-                                      "varname": "x",
-                                      "prof-calls": 1,
-                                      "prof-next-calls": 0,
-                                      "prof-cpu": 0.00036,
-                                      "prof-wall": 0.000155,
-                                      "prof-name": "ForVarIterator ($x)"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "kind": "SingletonIterator",
-          "value": "xs:string(\n)",
-          "prof-calls": 1,
-          "prof-next-calls": 2,
-          "prof-cpu": 0.001151,
-          "prof-wall": 0.000536,
+          "prof-cpu": 0.000963,
+          "prof-wall": 0.00037,
           "prof-name": "SingletonIterator"
         }
       ]

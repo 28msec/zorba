@@ -173,6 +173,10 @@ PIV_VISIT_DECL( ValueIndexEntryBuilderIterator );
 void visitFlworReturn(const PlanIterator&);
 void visitFlworWhereClause(const PlanIterator&);
 void visitOrderBySpec(const PlanIterator&);
+void visitUDFunctionBody(const PlanIterator&);
+
+void beginVisitUDFunctionArgs();
+void endVisitUDFunctionArgs();
 
 void beginVisitFlworLetVariable( bool, const zstring&,
                                  const std::vector<PlanIter_t>& );

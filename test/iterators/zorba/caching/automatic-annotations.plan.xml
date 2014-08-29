@@ -15,106 +15,142 @@
     </CtxVarDeclareIterator>
     <SequentialIterator>
       <ApplyIterator>
-        <UDFunctionCallIterator function="local:not-cached-1"/>
+        <UDFunctionCallIterator function="local:not-cached-1">
+          <UDFunctionArgs/>
+        </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-2">
-          <ElementIterator copyInputNodes="false">
-            <SingletonIterator value="xs:QName(,,x)"/>
-          </ElementIterator>
+          <UDFunctionArgs>
+            <ElementIterator copyInputNodes="false">
+              <SingletonIterator value="xs:QName(,,x)"/>
+            </ElementIterator>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-3">
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-4">
-          <JSONObjectIterator/>
+          <UDFunctionArgs>
+            <JSONObjectIterator/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-5">
-          <SingletonIterator value="xs:integer(1)"/>
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(1)"/>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-6">
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-7">
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-8">
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-9">
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-10">
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-11">
-          <SingletonIterator value="xs:double(0)"/>
-          <SingletonIterator value="xs:integer(2)"/>
-          <SingletonIterator value="xs:integer(1)"/>
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:double(0)"/>
+            <SingletonIterator value="xs:integer(2)"/>
+            <SingletonIterator value="xs:integer(1)"/>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:not-cached-12">
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:cached-1" cached="true">
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:cached-2" cached="true">
-          <SingletonIterator value="xs:integer(1)"/>
-          <SingletonIterator value="xs:integer(1)"/>
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:integer(1)"/>
+            <SingletonIterator value="xs:integer(1)"/>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:cached-3" cached="true">
-          <FnConcatIterator/>
+          <UDFunctionArgs>
+            <FnConcatIterator/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:cached-4" cached="true">
-          <FnConcatIterator/>
-          <FnConcatIterator/>
-          <FnConcatIterator/>
+          <UDFunctionArgs>
+            <FnConcatIterator/>
+            <FnConcatIterator/>
+            <FnConcatIterator/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:cached-5" cached-across-snapshots="true">
-          <FnConcatIterator/>
-          <FnConcatIterator/>
-          <FnConcatIterator/>
+          <UDFunctionArgs>
+            <FnConcatIterator/>
+            <FnConcatIterator/>
+            <FnConcatIterator/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <ApplyIterator>
         <UDFunctionCallIterator function="local:cached-6" cached="true">
-          <SingletonIterator value="xs:double(0)"/>
-          <SingletonIterator value="xs:integer(2)"/>
-          <SingletonIterator value="xs:integer(1)"/>
-          <SingletonIterator value="xs:integer(1)"/>
+          <UDFunctionArgs>
+            <SingletonIterator value="xs:double(0)"/>
+            <SingletonIterator value="xs:integer(2)"/>
+            <SingletonIterator value="xs:integer(1)"/>
+            <SingletonIterator value="xs:integer(1)"/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
       </ApplyIterator>
       <SingletonIterator value="xs:integer(1)"/>
@@ -126,7 +162,9 @@
     <FnBooleanIterator>
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
-    <UDFunctionCallIterator function="local:not-cached-1"/>
+    <UDFunctionCallIterator function="local:not-cached-1">
+      <UDFunctionArgs/>
+    </UDFunctionCallIterator>
     <FnConcatIterator/>
   </IfThenElseIterator>
 </iterator-tree>
@@ -136,7 +174,9 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:not-cached-2">
-      <LetVarIterator varname="x"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <JSONObjectIterator/>
   </IfThenElseIterator>
@@ -147,7 +187,9 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:not-cached-3">
-      <LetVarIterator varname="x"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <JSONObjectIterator/>
   </IfThenElseIterator>
@@ -158,7 +200,9 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:not-cached-4">
-      <LetVarIterator varname="x"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <SingletonIterator value="xs:integer(1)"/>
   </IfThenElseIterator>
@@ -169,8 +213,10 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:not-cached-5">
-      <LetVarIterator varname="x"/>
-      <LetVarIterator varname="y"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+        <LetVarIterator varname="y"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <SingletonIterator value="xs:integer(1)"/>
   </IfThenElseIterator>
@@ -197,7 +243,9 @@
             <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
           </FnBooleanIterator>
           <UDFunctionCallIterator function="local:not-cached-6">
-            <ForVarIterator varname="x"/>
+            <UDFunctionArgs>
+              <ForVarIterator varname="x"/>
+            </UDFunctionArgs>
           </UDFunctionCallIterator>
           <SingletonIterator value="xs:integer(1)"/>
         </IfThenElseIterator>
@@ -211,7 +259,9 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:not-cached-7">
-      <LetVarIterator varname="x"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <SingletonIterator value="xs:integer(1)"/>
   </IfThenElseIterator>
@@ -222,7 +272,9 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:not-cached-8">
-      <LetVarIterator varname="x"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <SingletonIterator value="xs:integer(1)"/>
   </IfThenElseIterator>
@@ -233,7 +285,9 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:not-cached-9">
-      <LetVarIterator varname="x"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <DeleteIterator>
       <ElementIterator>
@@ -248,7 +302,9 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:not-cached-10">
-      <LetVarIterator varname="x"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <FnConcatIterator/>
   </IfThenElseIterator>
@@ -279,16 +335,18 @@
         <FLWORIterator>
           <ForVariable name="x">
             <UDFunctionCallIterator function="local:not-cached-11">
-              <LetVarIterator varname="v"/>
-              <ForVarIterator varname="stride"/>
-              <SpecificNumArithIterator_SubtractOperation_INTEGER>
-                <ForVarIterator varname="remaining"/>
+              <UDFunctionArgs>
+                <LetVarIterator varname="v"/>
                 <ForVarIterator varname="stride"/>
-              </SpecificNumArithIterator_SubtractOperation_INTEGER>
-              <SpecificNumArithIterator_AddOperation_INTEGER>
-                <ForVarIterator varname="offset"/>
-                <ForVarIterator varname="stride"/>
-              </SpecificNumArithIterator_AddOperation_INTEGER>
+                <SpecificNumArithIterator_SubtractOperation_INTEGER>
+                  <ForVarIterator varname="remaining"/>
+                  <ForVarIterator varname="stride"/>
+                </SpecificNumArithIterator_SubtractOperation_INTEGER>
+                <SpecificNumArithIterator_AddOperation_INTEGER>
+                  <ForVarIterator varname="offset"/>
+                  <ForVarIterator varname="stride"/>
+                </SpecificNumArithIterator_AddOperation_INTEGER>
+              </UDFunctionArgs>
             </UDFunctionCallIterator>
           </ForVariable>
           <ReturnClause>
@@ -317,7 +375,9 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:not-cached-12">
-      <LetVarIterator varname="x"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <SingletonIterator value="xs:integer(1)"/>
   </IfThenElseIterator>
@@ -328,7 +388,9 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:cached-1" cached="true">
-      <LetVarIterator varname="x"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <SingletonIterator value="xs:integer(1)"/>
   </IfThenElseIterator>
@@ -339,9 +401,11 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:cached-2" cached="true">
-      <LetVarIterator varname="x"/>
-      <LetVarIterator varname="y"/>
-      <LetVarIterator varname="z"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+        <LetVarIterator varname="y"/>
+        <LetVarIterator varname="z"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <FnConcatIterator/>
   </IfThenElseIterator>
@@ -352,7 +416,9 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:cached-3" cached="true">
-      <LetVarIterator varname="x"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <FnConcatIterator/>
   </IfThenElseIterator>
@@ -363,9 +429,11 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:cached-4" cached="true">
-      <LetVarIterator varname="x"/>
-      <LetVarIterator varname="y"/>
-      <LetVarIterator varname="z"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+        <LetVarIterator varname="y"/>
+        <LetVarIterator varname="z"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <FnConcatIterator/>
   </IfThenElseIterator>
@@ -376,9 +444,11 @@
       <CtxVarIterator varid="4" varname="local:x" varkind="global"/>
     </FnBooleanIterator>
     <UDFunctionCallIterator function="local:cached-5" cached-across-snapshots="true">
-      <LetVarIterator varname="x"/>
-      <LetVarIterator varname="y"/>
-      <LetVarIterator varname="z"/>
+      <UDFunctionArgs>
+        <LetVarIterator varname="x"/>
+        <LetVarIterator varname="y"/>
+        <LetVarIterator varname="z"/>
+      </UDFunctionArgs>
     </UDFunctionCallIterator>
     <FnConcatIterator/>
   </IfThenElseIterator>
@@ -412,16 +482,18 @@
         <FLWORIterator>
           <ForVariable name="x">
             <UDFunctionCallIterator function="local:cached-6" cached="true">
-              <LetVarIterator varname="v"/>
-              <ForVarIterator varname="stride"/>
-              <SpecificNumArithIterator_SubtractOperation_INTEGER>
-                <ForVarIterator varname="remaining"/>
+              <UDFunctionArgs>
+                <LetVarIterator varname="v"/>
                 <ForVarIterator varname="stride"/>
-              </SpecificNumArithIterator_SubtractOperation_INTEGER>
-              <SpecificNumArithIterator_AddOperation_INTEGER>
-                <ForVarIterator varname="offset"/>
-                <ForVarIterator varname="stride"/>
-              </SpecificNumArithIterator_AddOperation_INTEGER>
+                <SpecificNumArithIterator_SubtractOperation_INTEGER>
+                  <ForVarIterator varname="remaining"/>
+                  <ForVarIterator varname="stride"/>
+                </SpecificNumArithIterator_SubtractOperation_INTEGER>
+                <SpecificNumArithIterator_AddOperation_INTEGER>
+                  <ForVarIterator varname="offset"/>
+                  <ForVarIterator varname="stride"/>
+                </SpecificNumArithIterator_AddOperation_INTEGER>
+              </UDFunctionArgs>
             </UDFunctionCallIterator>
           </ForVariable>
           <ReturnClause>

@@ -168,6 +168,10 @@ PIV_VISIT_DECL( ValueIndexEntryBuilderIterator );
 virtual void visitFlworReturn(const PlanIterator&) = 0;
 virtual void visitFlworWhereClause(const PlanIterator&) = 0;
 virtual void visitOrderBySpec(const PlanIterator&) = 0;
+virtual void visitUDFunctionBody(const PlanIterator&) = 0;
+
+virtual void beginVisitUDFunctionArgs() = 0;
+virtual void endVisitUDFunctionArgs() = 0;
 
 virtual void beginVisitFlworLetVariable( bool, zstring const&,
                                          std::vector<PlanIter_t> const& ) = 0;

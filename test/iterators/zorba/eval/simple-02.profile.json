@@ -4,8 +4,8 @@
       "kind": "FLWORIterator",
       "prof-calls": 1,
       "prof-next-calls": 4,
-      "prof-cpu": 49.7744,
-      "prof-wall": 49.8257,
+      "prof-cpu": 4.43443,
+      "prof-wall": 4.43674,
       "prof-name": "FLWORIterator",
       "iterators": [
         {
@@ -16,8 +16,8 @@
               "kind": "OpToIterator",
               "prof-calls": 1,
               "prof-next-calls": 4,
-              "prof-cpu": 0.041962,
-              "prof-wall": 0.040642,
+              "prof-cpu": 0.039401,
+              "prof-wall": 0.037465,
               "prof-name": "op:to",
               "iterators": [
                 {
@@ -25,8 +25,8 @@
                   "value": "xs:integer(1)",
                   "prof-calls": 1,
                   "prof-next-calls": 1,
-                  "prof-cpu": 0.004119,
-                  "prof-wall": 0.003491,
+                  "prof-cpu": 0.003683,
+                  "prof-wall": 0.0031,
                   "prof-name": "SingletonIterator"
                 },
                 {
@@ -34,8 +34,8 @@
                   "value": "xs:integer(3)",
                   "prof-calls": 1,
                   "prof-next-calls": 1,
-                  "prof-cpu": 0.000702,
-                  "prof-wall": 0.000286,
+                  "prof-cpu": 0.000848,
+                  "prof-wall": 0.000337,
                   "prof-name": "SingletonIterator"
                 }
               ]
@@ -44,42 +44,37 @@
         },
         {
           "kind": "ReturnClause",
-          "prof-calls": 3,
-          "prof-next-calls": 6,
-          "prof-cpu": 49.5906,
-          "prof-wall": 49.6422,
-          "prof-name": "EvalIterator",
           "iterators": [
             {
               "kind": "EvalIterator",
               "prof-calls": 3,
               "prof-next-calls": 6,
-              "prof-cpu": 3.79504,
-              "prof-wall": 3.79614,
+              "prof-cpu": 3.97366,
+              "prof-wall": 3.97418,
               "prof-name": "EvalIterator",
-              "prof-profiling-cpu": 45.7956,
-              "prof-profiling-wall": 45.8461,
-              "prof-compilation-cpu": 2.93316,
-              "prof-compilation-wall": 2.93747,
+              "prof-profiling-cpu": 0.290777,
+              "prof-profiling-wall": 0.292098,
+              "prof-compilation-cpu": 3.21668,
+              "prof-compilation-wall": 3.22075,
               "iterators": [
                 {
                   "kind": "EvalQueryIterator",
                   "prof-name": "EvalQueryIterator",
                   "prof-calls": 1,
                   "prof-next-calls": 2,
-                  "prof-cpu": 0.00266,
-                  "prof-wall": 0.000994,
-                  "prof-compilation-cpu": 1.03898,
-                  "prof-compilation-wall": 1.04057,
+                  "prof-cpu": 0.001876,
+                  "prof-wall": 0.000951,
+                  "prof-compilation-cpu": 1.05468,
+                  "prof-compilation-wall": 1.05639,
                   "prof-body": "1+1",
                   "iterators": [ {
-                      "kind" : "SingletonIterator", 
-                      "value" : "xs:integer(2)", 
-                      "prof-calls" : 1, 
-                      "prof-next-calls" : 2, 
-                      "prof-cpu" : 0.00266, 
-                      "prof-wall" : 0.000994, 
-                      "prof-name" : "SingletonIterator"
+                      "kind": "SingletonIterator",
+                      "value": "xs:integer(2)",
+                      "prof-calls": 1,
+                      "prof-next-calls": 2,
+                      "prof-cpu": 0.001876,
+                      "prof-wall": 0.000951,
+                      "prof-name": "SingletonIterator"
                     } ]
                 },
                 {
@@ -87,19 +82,19 @@
                   "prof-name": "EvalQueryIterator",
                   "prof-calls": 1,
                   "prof-next-calls": 2,
-                  "prof-cpu": 0.002079,
-                  "prof-wall": 0.001214,
-                  "prof-compilation-cpu": 1.08307,
-                  "prof-compilation-wall": 1.08442,
+                  "prof-cpu": 0.003802,
+                  "prof-wall": 0.002028,
+                  "prof-compilation-cpu": 1.01756,
+                  "prof-compilation-wall": 1.01853,
                   "prof-body": "2+2",
                   "iterators": [ {
-                      "kind" : "SingletonIterator", 
-                      "value" : "xs:integer(4)", 
-                      "prof-calls" : 1, 
-                      "prof-next-calls" : 2, 
-                      "prof-cpu" : 0.002079, 
-                      "prof-wall" : 0.001214, 
-                      "prof-name" : "SingletonIterator"
+                      "kind": "SingletonIterator",
+                      "value": "xs:integer(4)",
+                      "prof-calls": 1,
+                      "prof-next-calls": 2,
+                      "prof-cpu": 0.003802,
+                      "prof-wall": 0.002028,
+                      "prof-name": "SingletonIterator"
                     } ]
                 },
                 {
@@ -107,27 +102,27 @@
                   "prof-name": "EvalQueryIterator",
                   "prof-calls": 1,
                   "prof-next-calls": 2,
-                  "prof-cpu": 0.003177,
-                  "prof-wall": 0.002351,
-                  "prof-compilation-cpu": 0.811114,
-                  "prof-compilation-wall": 0.812478,
+                  "prof-cpu": 0.002145,
+                  "prof-wall": 0.001253,
+                  "prof-compilation-cpu": 1.14444,
+                  "prof-compilation-wall": 1.14583,
                   "prof-body": "3+3",
                   "iterators": [ {
-                      "kind" : "SingletonIterator", 
-                      "value" : "xs:integer(6)", 
-                      "prof-calls" : 1, 
-                      "prof-next-calls" : 2, 
-                      "prof-cpu" : 0.003177, 
-                      "prof-wall" : 0.002351, 
-                      "prof-name" : "SingletonIterator"
+                      "kind": "SingletonIterator",
+                      "value": "xs:integer(6)",
+                      "prof-calls": 1,
+                      "prof-next-calls": 2,
+                      "prof-cpu": 0.002145,
+                      "prof-wall": 0.001253,
+                      "prof-name": "SingletonIterator"
                     } ]
                 },
                 {
                   "kind": "ConcatStrIterator",
                   "prof-calls": 3,
                   "prof-next-calls": 3,
-                  "prof-cpu": 0.145678,
-                  "prof-wall": 0.144294,
+                  "prof-cpu": 0.122831,
+                  "prof-wall": 0.121157,
                   "prof-name": "fn:concat",
                   "iterators": [
                     {
@@ -135,8 +130,8 @@
                       "varname": "i",
                       "prof-calls": 3,
                       "prof-next-calls": 6,
-                      "prof-cpu": 0.005854,
-                      "prof-wall": 0.003489,
+                      "prof-cpu": 0.006217,
+                      "prof-wall": 0.003258,
                       "prof-name": "ForVarIterator ($i)"
                     },
                     {
@@ -144,8 +139,8 @@
                       "value": "xs:string(+)",
                       "prof-calls": 3,
                       "prof-next-calls": 6,
-                      "prof-cpu": 0.004181,
-                      "prof-wall": 0.002311,
+                      "prof-cpu": 0.004042,
+                      "prof-wall": 0.001844,
                       "prof-name": "SingletonIterator"
                     },
                     {
@@ -153,8 +148,8 @@
                       "varname": "i",
                       "prof-calls": 3,
                       "prof-next-calls": 6,
-                      "prof-cpu": 0.003113,
-                      "prof-wall": 0.000974,
+                      "prof-cpu": 0.003534,
+                      "prof-wall": 0.001259,
                       "prof-name": "ForVarIterator ($i)"
                     }
                   ]
@@ -164,8 +159,8 @@
                   "varname": "i",
                   "prof-calls": 3,
                   "prof-next-calls": 6,
-                  "prof-cpu": 0.005202,
-                  "prof-wall": 0.001873,
+                  "prof-cpu": 0.005582,
+                  "prof-wall": 0.002043,
                   "prof-name": "ForVarIterator ($i)"
                 }
               ]

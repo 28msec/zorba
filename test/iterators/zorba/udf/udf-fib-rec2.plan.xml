@@ -1,6 +1,8 @@
 <iterator-tree description="const-folded expr">
   <UDFunctionCallIterator function="local:fib" cached="true">
-    <SingletonIterator value="xs:integer(10)"/>
+    <UDFunctionArgs>
+      <SingletonIterator value="xs:integer(10)"/>
+    </UDFunctionArgs>
   </UDFunctionCallIterator>
 </iterator-tree>
 <iterator-tree description="local:fib">
@@ -23,16 +25,20 @@
           <SingletonIterator value="xs:integer(1)"/>
           <SpecificNumArithIterator_AddOperation_INTEGER>
             <UDFunctionCallIterator function="local:fib" cached="true">
-              <SpecificNumArithIterator_SubtractOperation_INTEGER>
-                <ForVarIterator varname="n"/>
-                <SingletonIterator value="xs:integer(1)"/>
-              </SpecificNumArithIterator_SubtractOperation_INTEGER>
+              <UDFunctionArgs>
+                <SpecificNumArithIterator_SubtractOperation_INTEGER>
+                  <ForVarIterator varname="n"/>
+                  <SingletonIterator value="xs:integer(1)"/>
+                </SpecificNumArithIterator_SubtractOperation_INTEGER>
+              </UDFunctionArgs>
             </UDFunctionCallIterator>
             <UDFunctionCallIterator function="local:fib" cached="true">
-              <SpecificNumArithIterator_SubtractOperation_INTEGER>
-                <ForVarIterator varname="n"/>
-                <SingletonIterator value="xs:integer(2)"/>
-              </SpecificNumArithIterator_SubtractOperation_INTEGER>
+              <UDFunctionArgs>
+                <SpecificNumArithIterator_SubtractOperation_INTEGER>
+                  <ForVarIterator varname="n"/>
+                  <SingletonIterator value="xs:integer(2)"/>
+                </SpecificNumArithIterator_SubtractOperation_INTEGER>
+              </UDFunctionArgs>
             </UDFunctionCallIterator>
           </SpecificNumArithIterator_AddOperation_INTEGER>
         </IfThenElseIterator>

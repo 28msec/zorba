@@ -1,6 +1,8 @@
 <iterator-tree description="const-folded expr">
   <UDFunctionCallIterator function="local:recursion">
-    <FnConcatIterator/>
+    <UDFunctionArgs>
+      <FnConcatIterator/>
+    </UDFunctionArgs>
   </UDFunctionCallIterator>
 </iterator-tree>
 <iterator-tree description="local:recursion">
@@ -14,7 +16,9 @@
           <LetVarIterator varname="param"/>
         </FnBooleanIterator>
         <UDFunctionCallIterator function="local:recursion">
-          <FnConcatIterator/>
+          <UDFunctionArgs>
+            <FnConcatIterator/>
+          </UDFunctionArgs>
         </UDFunctionCallIterator>
         <SingletonIterator value="xs:boolean(false)"/>
       </IfThenElseIterator>
@@ -26,16 +30,18 @@
 </iterator-tree>
 <iterator-tree description="main query">
   <UDFunctionCallIterator function="local:recursion">
-    <TreatIterator type="[NodeXQType elementNode content=[UserDefinedXQType  Content@http://foo.com/schemas/schema isComplex emptyContent base:[XQType ANY_TYPE_KIND*]]]" quant="?">
-      <ValidateIterator>
-        <ElementIterator>
-          <SingletonIterator value="xs:QName(http://foo.com/schemas/schema,d,Content)"/>
-          <AttributeIterator qname="xs:QName(,,id)">
-            <SingletonIterator value="xs:string(foo)"/>
-          </AttributeIterator>
-        </ElementIterator>
-      </ValidateIterator>
-    </TreatIterator>
+    <UDFunctionArgs>
+      <TreatIterator type="[NodeXQType elementNode content=[UserDefinedXQType  Content@http://foo.com/schemas/schema isComplex emptyContent base:[XQType ANY_TYPE_KIND*]]]" quant="?">
+        <ValidateIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(http://foo.com/schemas/schema,d,Content)"/>
+            <AttributeIterator qname="xs:QName(,,id)">
+              <SingletonIterator value="xs:string(foo)"/>
+            </AttributeIterator>
+          </ElementIterator>
+        </ValidateIterator>
+      </TreatIterator>
+    </UDFunctionArgs>
   </UDFunctionCallIterator>
 </iterator-tree>
 <iterator-tree description="local:recursion">
