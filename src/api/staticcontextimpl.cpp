@@ -60,6 +60,7 @@
 #include "types/typeops.h"
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 
 #include "runtime/util/flowctl_exception.h"
 

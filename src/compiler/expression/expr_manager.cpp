@@ -830,7 +830,7 @@ function_item_expr* ExprManager::create_function_item_expr(
                          isInline, isCoercion);
 }
 
-
+#ifndef ZORBA_NO_FULL_TEXT
 ftcontains_expr* ExprManager::create_ftcontains_expr(
     static_context* sctx,
     user_function* udf,
@@ -841,7 +841,7 @@ ftcontains_expr* ExprManager::create_ftcontains_expr(
 {
   CREATE_AND_RETURN_EXPR(ftcontains_expr, sctx, udf, loc, range, ftselection, ftignore);
 }
-
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
