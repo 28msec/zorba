@@ -273,7 +273,7 @@ SequenceType SequenceType::createElementType(
   return Unmarshaller::createSequenceType(res.getp());
 }
 
-
+#ifndef ZORBA_NO_FULL_TEXT
 SequenceType SequenceType::createSchemaElementType(
     const StaticContext_t& sctx,
     const String& uri,
@@ -305,7 +305,7 @@ SequenceType SequenceType::createSchemaElementType(
     return Unmarshaller::createSequenceType(NULL);
   }
 }
-
+#endif
 
 SequenceType SequenceType::createAttributeType(
     const StaticContext_t& sctx,
@@ -359,7 +359,7 @@ SequenceType SequenceType::createAttributeType(
   return Unmarshaller::createSequenceType(res.getp());
 }
 
-
+#ifndef ZORBA_NO_FULL_TEXT
 SequenceType SequenceType::createSchemaAttributeType(
     const StaticContext_t& sctx,
     const String& uri,
@@ -391,7 +391,7 @@ SequenceType SequenceType::createSchemaAttributeType(
     return Unmarshaller::createSequenceType(NULL);
   }
 }
-
+#endif
 
 SequenceType SequenceType::createPIType(Quantifier quant)
 {

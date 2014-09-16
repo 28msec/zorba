@@ -1113,6 +1113,7 @@ bool NodeXQType::is_supertype(
       if (!TypeOps::is_subtype(tm, *subContentType, *theContentType))
         return false;
 
+#ifndef ZORBA_NO_XMLSCHEMA
       bool nillable;
       store::Item_t typeName;
       tm->get_schema_element_typeinfo(subitem->getNodeName(), typeName, nillable, loc);
@@ -1121,6 +1122,9 @@ bool NodeXQType::is_supertype(
         return false;
 
       return true;
+#else
+      return theNillable;
+#endif
     }
     else
     {

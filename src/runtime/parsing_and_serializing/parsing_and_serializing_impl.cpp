@@ -207,7 +207,7 @@ FnSerializeIterator::setSerializationParams(
             throw XQUERY_EXCEPTION(
               err::XQDY0027,
               ERROR_PARAMS(lSb.str()),
-              ERROR_LOC( loc ));
+              ERROR_LOC( aLoc ));
           }
 #endif
         }
@@ -222,7 +222,7 @@ FnSerializeIterator::setSerializationParams(
       throw XQUERY_EXCEPTION(
         err::XQDY0027,
         ERROR_PARAMS(lSb.str()),
-        ERROR_LOC( loc ));
+        ERROR_LOC( aLoc ));
     }
 #endif
   }
