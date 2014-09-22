@@ -7,15 +7,15 @@ build_prerequisites) have been installed.
 \section build_gettingsrc Getting the Zorba Source Code
 
 You may get the Zorba source code in one of two ways: downloading a
-released source distribution, or getting the code from our Launchpad
+released source distribution, or getting the code from our Github
 code repository. The directory that the Zorba source code is placed
 into will be referred to as \c {ZORBASRC} in later instructions.
 
 \subsection download_source Getting a Source Code Release
 
 You may download the latest Zorba release source code as either a
-<b>.zip</b> or <b>.tar.gz</b> file from Launchpad:
-https://github.com/28msec/zorba/releases .
+<b>.zip</b> or <b>.tar.gz</b> file from Github:
+https://github.com/28msec/zorba/releases.
 
 \subsection checkout_source Getting the Latest Code from Github
 
