@@ -273,7 +273,7 @@ SequenceType SequenceType::createElementType(
   return Unmarshaller::createSequenceType(res.getp());
 }
 
-#ifndef ZORBA_NO_FULL_TEXT
+#ifndef ZORBA_NO_XMLSCHEMA
 SequenceType SequenceType::createSchemaElementType(
     const StaticContext_t& sctx,
     const String& uri,
@@ -359,7 +359,7 @@ SequenceType SequenceType::createAttributeType(
   return Unmarshaller::createSequenceType(res.getp());
 }
 
-#ifndef ZORBA_NO_FULL_TEXT
+#ifndef ZORBA_NO_XMLSCHEMA
 SequenceType SequenceType::createSchemaAttributeType(
     const StaticContext_t& sctx,
     const String& uri,

@@ -808,8 +808,10 @@ int parse_args( int argc, char const *argv[] ) {
 #ifndef NDEBUG
     else if ( IS_LONG_OPT( "--trace-codegen" ) )
       z_props.setTraceCodegen( true );
+#ifndef ZORBA_NO_FULL_TEXT
     else if ( IS_LONG_OPT( "--trace-fulltext" ) )
       z_props.setTraceFulltext( true );
+#endif
     else if ( IS_LONG_OPT( "--trace-translator" ) )
       z_props.setTraceTranslator( true );
 #endif /* NDEBUG */

@@ -133,7 +133,7 @@ public:
       bool nillable,
       Quantifier quant = QUANT_ONE);
 
-#ifndef ZORBA_NO_FULL_TEXT
+#ifndef ZORBA_NO_XMLSCHEMA
   /**
    *
    */
@@ -155,7 +155,7 @@ public:
       const String& contentTypeLocalName,
       Quantifier quant = QUANT_ONE);
 
-#ifndef ZORBA_NO_FULL_TEXT
+#ifndef ZORBA_NO_XMLSCHEMA
   /**
    *
    */
