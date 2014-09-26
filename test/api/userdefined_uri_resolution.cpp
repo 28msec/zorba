@@ -45,7 +45,7 @@ class MySchemaURIMapper : public URIMapper
       return;
     }
     if(aUri == "http://www.zorba-xquery.com/helloworld") {
-      oUris.push_back("http://zorbatest.lambda.nu:8080/tutorial/helloworld.xsd");
+      oUris.push_back("http://zorbatest.28.io:8080/tutorial/helloworld.xsd");
     }
   }
 };
@@ -83,7 +83,7 @@ class DenyAccessURIMapper : public URIMapper
     std::vector<zorba::String>& oUris) throw ()
   {
     // Deny access to an URI that would otherwise work
-    if(aUri == "http://zorbatest.lambda.nu:8080/tutorial/helloworld.xsd" ||
+    if(aUri == "http://zorbatest.28.io:8080/tutorial/helloworld.xsd" ||
        aUri == "http://zorba.io/modules/fetch" ||
        aUri == "http://expath.org/ns/file") {
       oUris.push_back(URIMapper::DENY_ACCESS);
@@ -323,7 +323,7 @@ bool test_deny_schema_access(Zorba* aZorba)
   try {
     XQuery_t lQuery = aZorba->compileQuery
       ("import schema namespace lm="
-        "'http://zorbatest.lambda.nu:8080/tutorial/helloworld.xsd'; "
+        "'http://zorbatest.28.io:8080/tutorial/helloworld.xsd'; "
         "validate{ <p>Hello World!</p> }", lContext);
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {

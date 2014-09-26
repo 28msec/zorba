@@ -3,9 +3,9 @@
 (: Date: 2011/01/09                                      :)
 (: Purpose: Library module with external variable        :)
 (:*******************************************************:)
-module namespace zm-B = "http://zorbatest.lambda.nu/modules-B";
+module namespace zm-B = "http://zorbatest.28.io/modules-B";
 
-import module namespace zm-C = "http://zorbatest.lambda.nu/modules-C"
+import module namespace zm-C = "http://zorbatest.28.io/modules-C"
 at "extvarModule-C.xqlib";
 
 declare function zm-B:getVar ()

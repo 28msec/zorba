@@ -3,7 +3,7 @@ import module namespace http = "http://www.zorba-xquery.com/modules/http-client"
 declare namespace h = "http://expath.org/ns/http-client";
 
 variable $req := <h:request method="GET"
-               href="http://zorbatest.lambda.nu:8080/http-test-data/basic-auth/example.svg"
+               href="http://zorbatest.28.io:8080/http-test-data/basic-auth/example.svg"
                auth-method="Basic"
                send-authorization="true"
                username="zorba"

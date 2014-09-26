@@ -4,9 +4,9 @@
 (: Purpose: Library module which imports another library :)
 (:   module with an external variable                    :)
 (:*******************************************************:)
-module namespace zm-A = "http://zorbatest.lambda.nu/modules-A";
+module namespace zm-A = "http://zorbatest.28.io/modules-A";
 
-import module namespace zm-B = "http://zorbatest.lambda.nu/modules-B"
+import module namespace zm-B = "http://zorbatest.28.io/modules-B"
 at "extvarModule-B.xqlib";
 
 

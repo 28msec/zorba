@@ -11,7 +11,7 @@
       <ApplyIterator prof-calls="2" prof-next-calls="2" prof-cpu="17.0915" prof-wall="889.354" prof-name="ApplyIterator">
         <UDFunctionCallIterator function="http:post" prof-calls="2" prof-next-calls="4" prof-cpu="17.0595" prof-wall="889.32" prof-name="http:post">
           <UDFunctionArgs>
-            <SingletonIterator value="xs:string(http://zorbatest.lambda.nu:8080/cgi-bin/test-text)" prof-calls="3" prof-next-calls="4" prof-cpu="0.006589" prof-wall="0.002816" prof-name="SingletonIterator"/>
+            <SingletonIterator value="xs:string(http://zorbatest.28.io:8080/cgi-bin/test-text)" prof-calls="3" prof-next-calls="4" prof-cpu="0.006589" prof-wall="0.002816" prof-name="SingletonIterator"/>
             <SingletonIterator value="xs:string(poststring)" prof-calls="3" prof-next-calls="4" prof-cpu="0.005236" prof-wall="0.001612" prof-name="SingletonIterator"/>
             <SingletonIterator value="xs:string(text/plain)" prof-calls="3" prof-next-calls="4" prof-cpu="0.005437" prof-wall="0.001826" prof-name="SingletonIterator"/>
           </UDFunctionArgs>
@@ -604,8 +604,8 @@
                             <TreatIterator type="[JSONXQType object]" quant="" prof-calls="2" prof-next-calls="4" prof-cpu="10.9079" prof-wall="883.111" prof-name="TreatIterator">
                               <ExtFunctionCallIterator prof-calls="2" prof-next-calls="4" prof-cpu="10.8786" prof-wall="883.075" prof-name="{http://zorba.io/modules/http-client}http-sequential-impl">
                                   <prof-requests>
-                                    <prof-request prof-uri="POST http://zorbatest.lambda.nu:8080/cgi-bin/test-text" prof-request-body-size="10" prof-cpu="4.707657" prof-wall="438.196153"/>
-                                    <prof-request prof-uri="POST http://zorbatest.lambda.nu:8080/cgi-bin/test-text" prof-request-body-size="10" prof-cpu="3.360669" prof-wall="442.077903"/>
+                                    <prof-request prof-uri="POST http://zorbatest.28.io:8080/cgi-bin/test-text" prof-request-body-size="10" prof-cpu="4.707657" prof-wall="438.196153"/>
+                                    <prof-request prof-uri="POST http://zorbatest.28.io:8080/cgi-bin/test-text" prof-request-body-size="10" prof-cpu="3.360669" prof-wall="442.077903"/>
                                   </prof-requests>
                                 <ForVarIterator varname="request" prof-calls="2" prof-next-calls="2" prof-cpu="0.005741" prof-wall="0.00228" prof-name="ForVarIterator ($request)"/>
                               </ExtFunctionCallIterator>

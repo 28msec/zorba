@@ -1,4 +1,4 @@
 import module namespace http="http://www.zorba-xquery.com/modules/http-client";
 
-http:get-text("http://zorbatest.lambda.nu:8080/cgi-bin/test-text")[2]
+http:get-text("http://zorbatest.28.io:8080/cgi-bin/test-text")[2]
 

@@ -5,7 +5,7 @@ declare namespace h = "http://expath.org/ns/http-client";
 
 http:send-request(
 {
-  "href": "http://zorbatest.lambda.nu:8080/remotequeue", 
+  "href": "http://zorbatest.28.io:8080/remotequeue", 
   "method": "POST",
   "options": { 
     "follow-redirect": true
