@@ -424,7 +424,7 @@ nextImpl( store::Item_t &result, PlanState &plan_state ) const {
 #else /* ZORBA_NO_XMLSCHEMA */
 
   // In case Zorba is compiled without schema, the function will return an empty sequence
-  DEFAULT_STACK_INIT(InScopeAttributeDeclarationsIteratorState, state, plan_state);
+  DEFAULT_STACK_INIT(SctxInScopeAttributeDeclarationsIteratorState, state, plan_state);
 
 #endif /* ZORBA_NO_XMLSCHEMA */
   STACK_END( state );
@@ -497,7 +497,7 @@ nextImpl( store::Item_t &result, PlanState &plan_state) const {
 #else /* ZORBA_NO_XMLSCHEMA */
 
   // In case Zorba is compiled without schema, the function will return an empty sequence
-  DEFAULT_STACK_INIT( InScopeAttributeGroupsIteratorState, state, plan_state );
+  DEFAULT_STACK_INIT( SctxInScopeAttributeGroupsIteratorState, state, plan_state );
 
 #endif /* ZORBA_NO_XMLSCHEMA */
   STACK_END( state );
@@ -573,8 +573,8 @@ nextImpl( store::Item_t &result, PlanState &plan_state ) const {
 #else /* ZORBA_NO_XMLSCHEMA */
 
   // In case Zorba is compiled without schema, the function will return an empty sequence
-  InScopeElementDeclarationsIteratorState* state;
-  DEFAULT_STACK_INIT(InScopeElementDeclarationsIteratorState, state, plan_state);
+  SctxInScopeElementDeclarationsIteratorState* state;
+  DEFAULT_STACK_INIT(SctxInScopeElementDeclarationsIteratorState, state, plan_state);
 
 #endif /* ZORBA_NO_XMLSCHEMA */
   STACK_END( state );
@@ -649,7 +649,7 @@ bool SctxInScopeElementGroupsIterator::nextImpl(
 #else // #ifndef ZORBA_NO_XMLSCHEMA
 
   // In case Zorba is compiled without schema, the function will return an empty sequence
-  DEFAULT_STACK_INIT(InScopeElementGroupsIteratorState, state, plan_state);
+  DEFAULT_STACK_INIT(SctxInScopeElementGroupsIteratorState, state, plan_state);
 
 #endif // #ifndef ZORBA_NO_XMLSCHEMA
   STACK_END( state );

@@ -71,9 +71,15 @@ IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE)
     testdriver_comparator.cpp
     testuriresolver.cpp
     )
-
+   
+   SET (REQUIRED_LIBS ${Boost_LIBRARIES})
+   
+   IF(ZORBA_HAVE_PTHREAD_H AND Boost_SYSTEM_FOUND)
+     SET(REQUIRED_LIBS ${REQUIRED_LIBS} pthread)
+   ENDIF(ZORBA_HAVE_PTHREAD_H AND Boost_SYSTEM_FOUND)
+    
   ZORBA_GENERATE_EXE(
-    "testdriver_mt" "${TESTDRIVER_MT_SRCS}" "${Boost_LIBRARIES}" "" "")
+    "testdriver_mt" "${TESTDRIVER_MT_SRCS}" "${REQUIRED_LIBS}" "" "")
 
   SET (ZORBATEST_USE_MT_XQTS NO CACHE BOOLEAN
     "If true, use testdriver_mt (when available) for running XQTS")

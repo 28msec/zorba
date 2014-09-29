@@ -1359,7 +1359,9 @@ expr* expr::get_single_child() const
   case json_direct_object_expr_kind:
   case axis_step_expr_kind:
   case match_expr_kind:
+#ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
+#endif
   {
     return NULL;
   }

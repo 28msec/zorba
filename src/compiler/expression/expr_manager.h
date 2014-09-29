@@ -500,6 +500,7 @@ public:
       bool isInline,
       bool isCoercion);
 
+#ifndef ZORBA_NO_FULL_TEXT
   ftcontains_expr* create_ftcontains_expr(
       static_context*,
       user_function* udf,
@@ -507,6 +508,7 @@ public:
       expr* range,
       ftnode* ftselection,
       expr* ftignore);
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
