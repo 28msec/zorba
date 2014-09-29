@@ -578,3 +578,10 @@ EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_04.jq 1067028)
 EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_05.jq 1067028)
 
 EXPECTED_FAILURE(test/rbkt/zorba/json/json-invalid-option-parameter 1200089)
+
+IF (NOT ZORBA_WITH_DEBUGGER)    
+  SET_TESTS_PROPERTIES(test/rbkt/zorba/debugger/dmh/break_response_no_info                      
+                      PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES(test/rbkt/zorba/debugger/dmh/break_response                      
+                      PROPERTIES WILL_FAIL TRUE)
+ENDIF (NOT ZORBA_WITH_DEBUGGER)
