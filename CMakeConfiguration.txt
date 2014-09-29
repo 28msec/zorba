@@ -86,7 +86,7 @@ ENDIF (DEFINED UNIX)
 SET(ZORBA_WITH_FILE_ACCESS ON CACHE BOOL "compile zorba and allow loading documents from the filesystem")
 MESSAGE(STATUS "ZORBA_WITH_FILE_ACCESS [ON/OFF]:      " ${ZORBA_WITH_FILE_ACCESS})
 
-SET(ZORBA_WITH_DEBUGGER ON CACHE BOOL "compile zorba with debugger support")
+SET(ZORBA_WITH_DEBUGGER OFF CACHE BOOL "compile zorba with debugger support")
 MESSAGE(STATUS "ZORBA_WITH_DEBUGGER [ON/OFF]:         " ${ZORBA_WITH_DEBUGGER})
 
 SET(ZORBA_WITH_UNIT_TESTS ON CACHE BOOL "compile zorba with unit tests")
