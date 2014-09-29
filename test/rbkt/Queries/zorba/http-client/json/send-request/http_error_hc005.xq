@@ -13,7 +13,7 @@ try {
 },
 try {
   http:send-request({
-  "mistypedhref": "http://zorbatest.lambda.nu:8080/remotequeue",
+  "mistypedhref": "http://zorbatest.28.io:8080/remotequeue",
   "method": "GET",
   "options": {
     "follow-redirect": false
@@ -24,7 +24,7 @@ try {
 },
 try {
   http:send-request({
-  "href": "http://zorbatest.lambda.nu:8080/remotequeue",
+  "href": "http://zorbatest.28.io:8080/remotequeue",
   "method": 3,
   "options": {
     "follow-redirect": false
@@ -35,7 +35,7 @@ try {
 },
 try {
   http:send-request({
-  "href": "http://zorbatest.lambda.nu:8080/remotequeue",
+  "href": "http://zorbatest.28.io:8080/remotequeue",
   "method": "GET",
   "headers": "three",
   "options": {
@@ -46,7 +46,7 @@ try {
   "ok"
 },
 try {
-  http:post("http://zorbatest.lambda.nu:8080/cgi-bin/test-text", 3,"text/plain")  
+  http:post("http://zorbatest.28.io:8080/cgi-bin/test-text", 3,"text/plain")  
 } catch http:REQUEST {
   "ok"
 },

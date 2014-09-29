@@ -1,3 +1,3 @@
 Args: 
 -x
-{http://zorbatest.lambda.nu/modules-C}var:=xs:string(MyString)
+{http://zorbatest.28.io/modules-C}var:=xs:string(MyString)

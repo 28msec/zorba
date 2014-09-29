@@ -4,7 +4,7 @@ import module namespace doc = "http://zorba.io/modules/store/documents";
 
 declare namespace x = "http://www.zorba-xquery.com/http-test-data";
 
-let $mydoc := http:get-node("http://zorbatest.lambda.nu:8080/http-test-data/http2.xml")[2]
+let $mydoc := http:get-node("http://zorbatest.28.io:8080/http-test-data/http2.xml")[2]
 return
   {
     doc:put("mydoc.xml", $mydoc); (: add the document with name mydoc.xml :)

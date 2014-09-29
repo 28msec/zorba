@@ -70,7 +70,7 @@
                       "iterators": [
                         {
                           "kind": "SingletonIterator",
-                          "value": "xs:string(http://zorbatest.lambda.nu:8080/cgi-bin/test-text)",
+                          "value": "xs:string(http://zorbatest.28.io:8080/cgi-bin/test-text)",
                           "prof-calls": 3,
                           "prof-next-calls": 4,
                           "prof-cpu": 0.004042,
@@ -3142,12 +3142,12 @@
                                                               "prof-wall": 866.353,
                                                               "prof-name": "{http://zorba.io/modules/http-client}http-sequential-impl",
                                                               "prof-requests": [ {
-                                                                  "prof-request" : "POST http://zorbatest.lambda.nu:8080/cgi-bin/test-text", 
+                                                                  "prof-request" : "POST http://zorbatest.28.io:8080/cgi-bin/test-text", 
                                                                   "prof-request-body-size" : 10, 
                                                                   "prof-cpu" : 3.708494, 
                                                                   "prof-wall" : 434.182561
                                                                 }, {
-                                                                  "prof-request" : "POST http://zorbatest.lambda.nu:8080/cgi-bin/test-text", 
+                                                                  "prof-request" : "POST http://zorbatest.28.io:8080/cgi-bin/test-text", 
                                                                   "prof-request-body-size" : 10, 
                                                                   "prof-cpu" : 1.762409, 
                                                                   "prof-wall" : 431.227534

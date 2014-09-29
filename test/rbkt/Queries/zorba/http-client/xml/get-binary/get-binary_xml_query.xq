@@ -1,4 +1,4 @@
 import module namespace http="http://www.zorba-xquery.com/modules/http-client";
 
-http:get-binary("http://zorbatest.lambda.nu:8080/cgi-bin/test-xml?querystring")[2]
+http:get-binary("http://zorbatest.28.io:8080/cgi-bin/test-xml?querystring")[2]
 

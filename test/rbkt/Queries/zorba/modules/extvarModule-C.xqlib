@@ -3,7 +3,7 @@
 (: Date: 2011/01/09                                      :)
 (: Purpose: Library module with external variable        :)
 (:*******************************************************:)
-module namespace zm-C = "http://zorbatest.lambda.nu/modules-C";
+module namespace zm-C = "http://zorbatest.28.io/modules-C";
 
 declare variable $zm-C:var as xs:string external;
 

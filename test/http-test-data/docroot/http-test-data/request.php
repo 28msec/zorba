@@ -9,8 +9,8 @@ function emitMultipart($contentType)
   $boundary = trim($boundary);
   $d = fopen("php://input", "r");
 ?>
-  <http:multipart content-type="<? echo $type; ?>" boundary="<? echo $boundary; ?>">
-<?
+  <http:multipart content-type="<?php echo $type; ?>" boundary="<?php echo $boundary; ?>">
+<?php
   $hasNext = false;
   do {
     $finish = false;
@@ -42,8 +42,8 @@ function emitMultipart($contentType)
         $contentDescription = $value;
       }
 ?>
-  <http:header name="<? echo $key; ?>" value="<? echo $value; ?>"/>
-<?
+  <http:header name="<?php echo $key; ?>" value="<?php echo $value; ?>"/>
+<?php
     }
     if ($finish == false) {
       $hasNext = emitBody($contentType, $contentDescription, $contentId, $boundary, $d);
@@ -51,7 +51,7 @@ function emitMultipart($contentType)
   } while ($hasNext)
 ?>
   </http:multipart>
-<?
+<?php
     fclose($d);
 }
 
@@ -63,20 +63,20 @@ function emitBody($contentType, $contentDescription, $contentId, $boundary, $d)
   $hasNext = false;
   if ($contentDescription != "" && $contentId != "") {
 ?>
-  <http:body content-type="<?echo $contentType?>" description="<?echo $contentDescription?>" id="<?$contentId?>">
-<?
+  <http:body content-type="<?php echo $contentType?>" description="<?php echo $contentDescription?>" id="<?php echo $contentId?>">
+<?php
   } elseif ($contentId != "") {
 ?>
-  <http:body content-type="<?echo $contentType?>" id="<?$contentId?>">
-<?
+  <http:body content-type="<?php echo $contentType?>" id="<?php echo $contentId?>">
+<?php
   } elseif ($contentDescription != "") {
 ?>
-  <http:body content-type="<?echo $contentType?>" description="<?echo $contentDescription?>"> 
-<?
+  <http:body content-type="<?php echo $contentType?>" description="<?php echo $contentDescription?>">
+<?php
   } else {
 ?>
-  <http:body content-type="<?echo $contentType?>">
-<?
+  <http:body content-type="<?php echo $contentType?>">
+<?php
   }
   if ($boundary == "") {
     if (substr($contentType,  0, 5) == "text/" || strstr($contentType, "xml")) {
@@ -114,19 +114,19 @@ function emitBody($contentType, $contentDescription, $contentId, $boundary, $d)
   }
 ?>
   </http:body>
-<?
+<?php
   return $hasNext;
 }
 
 header("Content-Type: text/xml");
 
-if (!function_exists('getallheaders')) 
+if (!function_exists('getallheaders'))
 {
-    function getallheaders() 
+    function getallheaders()
     {
-       foreach ($_SERVER as $name => $value) 
+       foreach ($_SERVER as $name => $value)
        {
-           if (substr($name, 0, 5) == 'HTTP_') 
+           if (substr($name, 0, 5) == 'HTTP_')
            {
                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
            }
@@ -139,9 +139,9 @@ $contentDescription = "";
 $contentId = "";
 ?>
 <http:request xmlns:http="http://expath.org/ns/http-client"
-              method="<?echo $_SERVER['REQUEST_METHOD'];?>"
-              href="<?echo $_SERVER['HTTP_HOST']; echo $_SERVER['REQUEST_URI'];?>">
-<?
+              method="<?php echo $_SERVER['REQUEST_METHOD'];?>"
+              href="<?php echo $_SERVER['HTTP_HOST']; echo $_SERVER['REQUEST_URI'];?>">
+<?php
 foreach (getallheaders() as $name => $value) {
   if ($name == "Content-Type") {
     $contentType = $value;
@@ -151,8 +151,8 @@ foreach (getallheaders() as $name => $value) {
     $contentType = $value;
   }
 ?>
-  <http:header name="<?echo $name;?>" value="<?echo $value;?>"/>
-<?
+  <http:header name="<?php echo $name;?>" value="<?php echo $value;?>"/>
+<?php
 }
 if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == "PUT") {
   if (substr($contentType, 0, 10) == "multipart/") {

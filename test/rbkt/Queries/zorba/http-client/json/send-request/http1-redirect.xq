@@ -6,7 +6,7 @@ declare namespace h = "http://expath.org/ns/http-client";
 variable $http-res-with := 
 http:send-request(
 {
-  "href": "http://zorbatest.lambda.nu:8080/remotequeue",
+  "href": "http://zorbatest.28.io:8080/remotequeue",
   "method": "HEAD",
   "options": {
     "follow-redirect": true
@@ -16,7 +16,7 @@ http:send-request(
 variable $http-res-without := 
 http:send-request(
 {
-  "href": "http://zorbatest.lambda.nu:8080/remotequeue",
+  "href": "http://zorbatest.28.io:8080/remotequeue",
   "method": "HEAD",
   "options": {
     "follow-redirect": false

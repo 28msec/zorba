@@ -6,7 +6,7 @@ declare namespace h = "http://expath.org/ns/http-client";
 variable $req := 
 {
   "method": "GET",
-  "href": "http://zorbatest.lambda.nu:8080/http-test-data/basic-auth/example.svg",
+  "href": "http://zorbatest.28.io:8080/http-test-data/basic-auth/example.svg",
   "authentication": {
     "auth-method": "Basic",    
     "username": "zorba",

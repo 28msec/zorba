@@ -3,7 +3,7 @@ import module namespace httpc = "http://www.zorba-xquery.com/modules/http-client
 declare namespace http = "http://expath.org/ns/http-client";
 
 variable $req :=
-  <http:request method="POST" href="http://zorbatest.lambda.nu:8080/http-test-data/request.php">
+  <http:request method="POST" href="http://zorbatest.28.io:8080/http-test-data/request.php">
     <http:header name="foo" value="bar"/>
     <http:multipart media-type="multipart/mixed">
       <http:header name="insidemutlipart" value="blubb"/>
