@@ -652,6 +652,12 @@ inline void assert_type( store::Item_t const &item, zstring const &name,
 
 static store::SchemaTypeCode map_atomic_type( zstring const &type_name ) {
   zstring temp_name( type_name );
+
+  if ( ZSTREQ( temp_name, "js:null" ) )
+    return store::JS_NULL;
+  if ( ZSTREQ( temp_name, "null" ) )
+    return store::JS_NULL;
+
   if ( ZA_BEGINS_WITH( temp_name, "xs:" ) )
     temp_name.erase( 0, 3 );
 
@@ -721,6 +727,7 @@ static store::SchemaTypeCode map_atomic_type( zstring const &type_name ) {
     return store::XS_UNSIGNED_SHORT;
   if ( ZSTREQ( temp_name, "yearMonthDuration" ) )
     return store::XS_YM_DURATION;
+
   return store::XS_LAST;
 }
 
@@ -785,6 +792,7 @@ static type const* find_builtin_atomic_type( zstring const &type_name,
     INIT_ATOMIC_TYPE( gYear, XS_GYEAR );
     INIT_ATOMIC_TYPE( gYearMonth, XS_GYEAR_MONTH );
     INIT_ATOMIC_TYPE( hexBinary, XS_HEXBINARY );
+    INIT_ATOMIC_TYPE( null, JS_NULL );
     INIT_ATOMIC_TYPE( string, XS_STRING );
     INIT_ATOMIC_TYPE( time, XS_TIME );
     INIT_ATOMIC_TYPE( yearMonthDuration, XS_YM_DURATION );
