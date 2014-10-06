@@ -201,6 +201,8 @@ bool SingleDynamicFnCallIterator::nextImpl(
 
     if (theIsPartialApply)
     {
+      fnItem = new FunctionItem(*fnItem);
+
       for (csize i = 1, pos = 0; i < theChildren.size(); ++i)
       {
         if (dynamic_cast<ArgumentPlaceholderIterator*>(theChildren[i].getp()) == NULL)

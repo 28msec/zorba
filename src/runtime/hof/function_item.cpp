@@ -165,6 +165,16 @@ void FunctionItemInfo::add_variable(expr* var, var_expr* substVar)
 ////////////////////////////////////////////////////////////////////////////////
 
 
+FunctionItem::FunctionItem(const FunctionItem& aFunctionItem)
+  :
+  store::Item(store::Item::FUNCTION),
+  theFunctionItemInfo(aFunctionItem.theFunctionItemInfo),
+  theArity(aFunctionItem.theArity),
+  theClosureDctx(aFunctionItem.theClosureDctx.get())
+{
+  theArgValues.insert(theArgValues.begin(), aFunctionItem.theArgValues.begin(), aFunctionItem.theArgValues.end());
+}
+
 /*******************************************************************************
 
 ********************************************************************************/

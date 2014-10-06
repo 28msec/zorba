@@ -198,6 +198,8 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
+  FunctionItem(const FunctionItem& aFunctionItem);
+
   FunctionItem(const FunctionItemInfo_t& fiInfo, dynamic_context* dctx);
 
   ~FunctionItem();
