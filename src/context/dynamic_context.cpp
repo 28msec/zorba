@@ -1008,7 +1008,7 @@ std::string dynamic_context::toString()
     parent = parent->getParent();
   }
   ss << std::endl;
-  
+
   for (csize i=0; i < theVarValues.size(); i++)
   {
     ss << "    var[" << i << "]: ";

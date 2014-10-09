@@ -186,11 +186,14 @@ protected:
 
   csize                           theArity;
 
-  std::unique_ptr<dynamic_context>  theClosureDctx;
+  dynamic_context*                theClosureDctx;
 
   std::vector<PlanIter_t>         theArgValues;
 
+  bool                            theClosureDctxOwned;
+
   SYNC_CODE(mutable RCLock        theRCLock;)
+
 
 public:
   SERIALIZABLE_CLASS(FunctionItem)
@@ -218,9 +221,7 @@ public:
 
   const signature& getSignature() const;
 
-  dynamic_context* getDctx() const { return theClosureDctx.get(); }
-
-  void setDctx(dynamic_context* dctx) { theClosureDctx.reset(dctx); }
+  dynamic_context* getDctx() const { return theClosureDctx; }
 
   ulong getMaxInScopeVarId() const;
 
