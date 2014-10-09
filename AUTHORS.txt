@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-Zorba is a joint effort between multiple authors and organizations.
+Zorba is a joint effort between multiple authors and organizations. t
 
 The primary authors are:
 
