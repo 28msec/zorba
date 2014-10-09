@@ -165,6 +165,17 @@ void FunctionItemInfo::add_variable(expr* var, var_expr* substVar)
 ////////////////////////////////////////////////////////////////////////////////
 
 
+FunctionItem::FunctionItem(const FunctionItem& aFunctionItem)
+  :
+  store::Item(store::Item::FUNCTION),
+  theFunctionItemInfo(aFunctionItem.theFunctionItemInfo),
+  theArity(aFunctionItem.theArity),
+  theClosureDctx(aFunctionItem.getDctx()),
+  theClosureDctxOwned(false)
+{
+  theArgValues.insert(theArgValues.begin(), aFunctionItem.theArgValues.begin(), aFunctionItem.theArgValues.end());
+}
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -173,7 +184,8 @@ FunctionItem::FunctionItem(const FunctionItemInfo_t& fiInfo, dynamic_context* dc
   store::Item(store::Item::FUNCTION),
   theFunctionItemInfo(fiInfo),
   theArity(fiInfo->theArity),
-  theClosureDctx(dctx)
+  theClosureDctx(dctx),
+  theClosureDctxOwned(true)
 {
   assert(theFunctionItemInfo->theFunction->isUdf());
   theArgValues.resize(theArity);
@@ -195,7 +207,9 @@ FunctionItem::FunctionItem(const FunctionItemInfo_t& fiInfo, dynamic_context* dc
 ********************************************************************************/
 FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
   :
-  store::Item(store::Item::FUNCTION)
+  store::Item(store::Item::FUNCTION),
+  theClosureDctx(NULL),
+  theClosureDctxOwned(false)
 {
 }
 
@@ -214,6 +228,8 @@ FunctionItem::~FunctionItem()
     std::cerr << "DeAllocated FunctionItem " << this << " for anonymous function"
               << std::endl;
 #endif
+  if (theClosureDctxOwned)
+    delete theClosureDctx;
 }
 
 
