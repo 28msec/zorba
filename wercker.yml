@@ -1,4 +1,4 @@
-box: wcandillon/zorba@0.0.5
+box: wcandillon/zorba@0.0.6
 no-response-timeout: 10
 build:
     steps:
