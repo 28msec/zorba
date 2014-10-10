@@ -36,7 +36,7 @@ IF(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
   MESSAGE (STATUS "FOTS archive '${FOTS_ARCHIVE}' already downloaded.")
 ELSE(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
   MESSAGE (STATUS "Downloading FOTS archive '${FOTS_ARCHIVE}'...")
-  FILE (DOWNLOAD http://zorbatest.28.io:8080/~spungi/${FOTS_ARCHIVE}
+  FILE (DOWNLOAD http://w3c-tests.s3.amazonaws.com/${FOTS_ARCHIVE}
     "${_outdir}/${FOTS_ARCHIVE}" STATUS _dlstat SHOW_PROGRESS)
   LIST (GET _dlstat 0 _dlcode)
   IF (NOT _dlcode EQUAL 0)
