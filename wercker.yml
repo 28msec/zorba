@@ -13,6 +13,10 @@ build:
                 echo "ZORBA_MODULE_DIR ${ZORBA_MODULE_DIR}"
         
         - script:
+            name: Show output folder
+            code: ls $WERCKER_OUTPUT_DIR
+        
+        - script:
             name: Download external modules
             code: |
                 mkdir -p "${ZORBA_MODULE_DIR}"
