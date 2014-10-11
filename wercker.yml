@@ -13,10 +13,6 @@ build:
                 echo "ZORBA_MODULE_DIR ${ZORBA_MODULE_DIR}"
         
         - script:
-            name: Show output folder
-            code: ls $WERCKER_OUTPUT_DIR
-        
-        - script:
             name: Download external modules
             code: |
                 mkdir -p "${ZORBA_MODULE_DIR}"
@@ -42,4 +38,4 @@ build:
             name: Run Tests
             code: |
                 cd "${ZORBA_BUILD_DIR}"
-                env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure
+                env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure 2>&1 | tee "${WERCKER_OUTPUT_DIR}/ctest_log.txt"
