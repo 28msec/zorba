@@ -62,9 +62,9 @@ ENDMACRO(BISON_VERSION_LESS)
 BISON_VERSION_GREATER("${BISON_VERSION_FULL}" "2.6")
 BISON_VERSION_LESS("${BISON_VERSION_FULL}" "3.0")
 
-# Bison 3.0 removed yylval, yylhs.value should be used instead
+# Bison 3.0 removed yylval, yyla.value should be used instead
 IF(BISON_MAJOR_VERSION GREATER 2)
-  SET (YYLVAL_DEFINE "-Dyylval=yylhs.value")
+  SET (YYLVAL_DEFINE "-Dyylval=yyla.value")
 ELSE(BISON_MAJOR_VERSION GREATER 2)
   SET (YYLVAL_DEFINE "")
 ENDIF(BISON_MAJOR_VERSION GREATER 2)
