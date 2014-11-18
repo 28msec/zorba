@@ -3570,34 +3570,62 @@ void static_context::bind_option(
     theOptionMap = new OptionMap(HashMapItemPointerCmp(0, NULL), 8, false);
   }
 
-  PrologOption option(qname, value);
+  /*
+   * The key of the map is a simple pointer.
+   * The lifetime of the qname pointed by the key is managed through a smart
+   * pointer which is stored inside the value.
+   *
+   * When updating the value of an option, we must either update the current key or
+   * the smart pointer inside the value.
+   */
+  store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  store::Item* qname2 = option.theName.getp();
+  OptionMap::iterator lIt = theOptionMap->find(qname2);
+  if (lIt != theOptionMap->end())
+    qname2 = lIt.getKey();
 
-  zstring lNamespace = qname2->getNamespace();
-  zstring lLocalName = qname2->getLocalName();
+  PrologOption option(qname2, value);
+
+  process_option(option, lIt, loc);
+
+  // in any case, we bind the option in the static context such that
+  // external functions can also access them
+  if (lIt != theOptionMap->end())
+    theOptionMap->update(qname2, option);
+  else
+    theOptionMap->insert(qname2, option);
+}
+
+void static_context::process_option(
+    PrologOption& option,
+    const OptionMap::iterator& iterator,
+    const QueryLoc& loc)
+{
+  store::Item* qname = option.theName.getp();
+
+  const zstring& lNamespace = qname->getNamespace();
+  const zstring& lLocalName = qname->getLocalName();
 
   // If option namespace is the XQuery namespace.
-  if ( lNamespace == XQUERY_NS)
+  if ( lNamespace == XQUERY_NS )
   {
-    OptionMap::iterator lIt = theOptionMap->find(qname2);
-    if (lIt != theOptionMap->end())
+    if (iterator != theOptionMap->end())
     {
-      // if there was already an earlier declarationof the same option, append
+      // if there was already an earlier declaration of the same option, append
       // the value of the current declaration to the value of the earlier decl.
       std::ostringstream lOss;
-      lOss << lIt.getValue().theValue << " " << option.theValue;
+      lOss << iterator.getValue().theValue << " " << option.theValue;
       option.theValue = lOss.str();
     }
   }
-  
+
   // If option namespace starts with zorba options namespace
   else if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 )
   {
     if (lNamespace == ZORBA_OPTION_FEATURE_NS &&
         (lLocalName == "enable" || lLocalName == "disable"))
     {
-      zstring lVal1 = value;
+      zstring lVal1 = option.theValue;
       zstring lVal2;
       bool lCommaFound = false;
       while (ztd::split(lVal1, ",", &lVal1, &lVal2))
@@ -3606,13 +3634,13 @@ void static_context::bind_option(
         lCommaFound = true;
       }
       process_feature_option(lCommaFound ? lVal2 : lVal1,
-                             lLocalName == "enable",
-                             loc);
+          lLocalName == "enable",
+          loc);
     }
-    else if (qname2->getNamespace() == ZORBA_OPTION_OPTIM_NS &&
-             (lLocalName == "enable" || lLocalName == "disable"))
+    else if (lNamespace == ZORBA_OPTION_OPTIM_NS &&
+        (lLocalName == "enable" || lLocalName == "disable"))
     {
-      zstring lVal1 = value;
+      zstring lVal1 = option.theValue;
       zstring lVal2;
       bool lCommaFound = false;
       while (ztd::split(lVal1, ",", &lVal1, &lVal2))
@@ -3621,13 +3649,13 @@ void static_context::bind_option(
         lCommaFound = true;
       }
       process_optim_option(lCommaFound ? lVal2 : lVal1,
-                           lLocalName == "enable",
-                           loc);
+          lLocalName == "enable",
+          loc);
     }
     else if (lNamespace == ZORBA_OPTION_WARN_NS &&
-             (lLocalName == "enable" || lLocalName == "disable" || lLocalName == "error"))
+        (lLocalName == "enable" || lLocalName == "disable" || lLocalName == "error"))
     {
-      zstring lVal1 = value;
+      zstring lVal1 = option.theValue;
       zstring lVal2;
       bool lCommaFound = false;
       while (ztd::split(lVal1, ",", &lVal1, &lVal2))
@@ -3639,28 +3667,28 @@ void static_context::bind_option(
     }
 
     // process zorba-version option
-    else if (qname2->getNamespace() == ZORBA_VERSIONING_NS &&
-             ( lLocalName == ZORBA_OPTION_MODULE_VERSION ||
-               lLocalName == ZORBA_OPTION_ZORBA_VERSION ) )
+    else if (lNamespace == ZORBA_VERSIONING_NS &&
+        ( lLocalName == ZORBA_OPTION_MODULE_VERSION ||
+            lLocalName == ZORBA_OPTION_ZORBA_VERSION ) )
     {
-      if ( qname2->getLocalName() == ZORBA_OPTION_ZORBA_VERSION )
+      if ( lLocalName == ZORBA_OPTION_ZORBA_VERSION )
       {
         // Re-use "ModuleVersion" class since it does 98% of the work for us;
         // just use a fake URI
-        ModuleVersion lOptVersion(zstring(ZORBA_VERSIONING_NS) + "/corezorba", value);
+        ModuleVersion lOptVersion(zstring(ZORBA_VERSIONING_NS) + "/corezorba", option.theValue);
         if (! lOptVersion.is_valid_version())
         {
           RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
-          ERROR_PARAMS(value));
+              ERROR_PARAMS(option.theValue));
         }
 
         ModuleVersion lZorbaVersion(zstring(ZORBA_VERSIONING_NS) + "/corezorba",
-                                    ZORBA_VERSION);
+            ZORBA_VERSION);
 
         if ( ! lZorbaVersion.satisfies(lOptVersion))
         {
           RAISE_ERROR(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION, loc,
-          ERROR_PARAMS(value, ZORBA_VERSION));
+              ERROR_PARAMS(option.theValue, ZORBA_VERSION));
         }
       }
     }
@@ -3670,15 +3698,8 @@ void static_context::bind_option(
     else
     {
       RAISE_ERROR(zerr::ZXQP0060_OPTION_NOT_KNOWN, loc,
-      ERROR_PARAMS(qname2->getNamespace() + ":" + qname2->getLocalName()));
+          ERROR_PARAMS(lNamespace + ":" + lLocalName));
     }
-  }
-
-  // in any case, we bind the option in the static context such that
-  // external functions can also access them
-  if (!theOptionMap->update(qname2, option))
-  {
-    theOptionMap->insert(qname2, option);
   }
 }
 

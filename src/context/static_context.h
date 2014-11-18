@@ -1050,6 +1050,11 @@ public:
   bool is_feature_set(feature::kind k) const { return (theFeatures & k) != 0; }
 
 protected:
+  void process_option(
+    PrologOption& option,
+    const OptionMap::iterator& iterator,
+    const QueryLoc& loc);
+
   void process_feature_option(
     const zstring& value,
     bool  enable,
