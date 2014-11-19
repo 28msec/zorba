@@ -42,6 +42,7 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
+#include "context/namespace_context.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "stemmer_wrappers.h"
 #include "thesaurus_wrappers.h"
@@ -705,9 +706,12 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
     const zstring& baseURI = Unmarshaller::getInternalString(aBaseURI);
     zstring baseURI2 = baseURI;
 
+    namespace_context nsCtx(theCtx.getp());
+
     if(!GenericCast::instance()->isCastable(baseURI2,
                                             &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
-                                            &GENV_TYPESYSTEM))
+                                            &GENV_TYPESYSTEM,
+                                            &nsCtx))
     {
       throw ZORBA_EXCEPTION(
         zerr::ZXQP0020_INVALID_URI, ERROR_PARAMS( baseURI )

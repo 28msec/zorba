@@ -136,6 +136,8 @@ private:
   xqtref_t  theCastType;
   bool      theAllowEmpty;
 
+  namespace_context theNsCtx;
+
 public:
   SERIALIZABLE_CLASS(CastableIterator);
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
