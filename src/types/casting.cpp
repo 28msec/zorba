@@ -2808,7 +2808,7 @@ bool GenericCast::castToAtomic(
     assert(targetType->type_kind() == XQType::USER_DEFINED_KIND);
 
     const UserDefinedXQType* udt =
-    static_cast<const UserDefinedXQType*>(targetType);
+      static_cast<const UserDefinedXQType*>(targetType);
 
     xqtref_t baseTargetType = udt->getBaseBuiltinType();
     targetTypeCode = TypeOps::get_atomic_type_code(*baseTargetType);
