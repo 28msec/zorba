@@ -2581,8 +2581,7 @@ bool GenericCast::castToSimple(
         ERROR_PARAMS(*sourceType, ZED(NoCastTo_34o), *targetType));
       }
 
-      return schema->parseUserListTypes(textValue, targetType, resultList, loc,
-                                        true);
+      return schema->parseUserListTypes(textValue, targetType, resultList, nsCtx, loc, true);
     }
     else
     {

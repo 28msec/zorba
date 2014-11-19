@@ -1685,6 +1685,7 @@ bool Schema::parseUserSimpleTypes(
     zstring& textValue,
     const xqtref_t& aTargetType,
     std::vector<store::Item_t>& resultList,
+    const namespace_context* nsCtx,
     const QueryLoc& loc,
     bool isCasting)
 {
@@ -1692,12 +1693,11 @@ bool Schema::parseUserSimpleTypes(
   {
     // must be a built in type
     store::Item_t atomicResult;
-    //todo add nsCtx
     bool res = GenericCast::castStringToBuiltinAtomic(atomicResult,
                                                       textValue,
                                                       aTargetType,
                                                       theTypeManager,
-                                                      NULL,
+                                                      nsCtx,
                                                       loc);
 
     if (res == false)
@@ -1726,7 +1726,7 @@ bool Schema::parseUserSimpleTypes(
   case XQType::ATOMIC_UDT:
   {
     store::Item_t atomicResult;
-    hasResult = parseUserAtomicTypes(textValue, aTargetType, atomicResult, NULL,
+    hasResult = parseUserAtomicTypes(textValue, aTargetType, atomicResult, nsCtx,
                                      loc, isCasting);
 
     if ( !hasResult )
@@ -1745,11 +1745,11 @@ bool Schema::parseUserSimpleTypes(
   break;
 
   case XQType::LIST_UDT:
-    return parseUserListTypes(textValue, aTargetType, resultList, loc, isCasting);
+    return parseUserListTypes(textValue, aTargetType, resultList, nsCtx, loc, isCasting);
     break;
 
   case XQType::UNION_UDT:
-    return parseUserUnionTypes(textValue, aTargetType, resultList, loc, isCasting);
+    return parseUserUnionTypes(textValue, aTargetType, resultList, nsCtx, loc, isCasting);
     break;
 
   case XQType::COMPLEX_UDT:
@@ -1957,6 +1957,7 @@ bool Schema::parseUserListTypes(
     const zstring& textValue,
     const xqtref_t& targetType,
     std::vector<store::Item_t>& resultList,
+    const namespace_context* nsCtx,
     const QueryLoc& loc,
     bool isCasting)
 {
@@ -1995,6 +1996,7 @@ bool Schema::parseUserListTypes(
     bool res = parseUserSimpleTypes(atomicTextValues[i],
                                     listItemType,
                                     resultList,
+                                    nsCtx,
                                     loc,
                                     isCasting);
     hasResult = hasResult && res;
@@ -2011,6 +2013,7 @@ bool Schema::parseUserUnionTypes(
     zstring& textValue,
     const xqtref_t& targetType,
     std::vector<store::Item_t>& resultList,
+    const namespace_context* nsCtx,
     const QueryLoc& loc,
     bool isCasting)
 {
@@ -2029,7 +2032,7 @@ bool Schema::parseUserUnionTypes(
       if (GenericCast::isCastable(textValue, unionItemTypes[i].getp(), theTypeManager, NULL))
       {
         return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList,
-                                    loc, isCasting);
+                                    nsCtx, loc, isCasting);
       }
     }
     catch(ZorbaException const&)

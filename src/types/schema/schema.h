@@ -142,6 +142,7 @@ public:
       zstring& textValue,
       const xqtref_t& aTargetType,
       std::vector<store::Item_t>& resultList,
+      const namespace_context* nsCtx,
       const QueryLoc& loc,
       bool isCasting);
 
@@ -149,7 +150,7 @@ public:
       zstring& textValue,
       const xqtref_t& aTargetType,
       store::Item_t& result,
-      const namespace_context* aNCtx,
+      const namespace_context* nsCtx,
       const QueryLoc& loc,
       bool isCasting);
 
@@ -157,6 +158,7 @@ public:
       const zstring& textValue,
       const xqtref_t& aTargetType,
       std::vector<store::Item_t>& resultList,
+      const namespace_context* nsCtx,
       const QueryLoc& loc,
       bool isCasting);
 
@@ -164,6 +166,7 @@ public:
       zstring& textValue,
       const xqtref_t& aTargetType,
       std::vector<store::Item_t>& resultList,
+      const namespace_context* nsCtx,
       const QueryLoc& loc,
       bool isCasting);
 
