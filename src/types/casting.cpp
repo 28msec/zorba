@@ -3415,18 +3415,20 @@ bool GenericCast::isCastableUserAtomicTypes(
     return castStringToAtomic(result, stringValue, targetType, tm, nsCtx, QueryLoc::null, false);
   }
 
-  store::Item_t item;
-  zstring stringValue(textValue);
-  GENV_ITEMFACTORY->createString(item, stringValue);
-  if ( !castToBuiltinAtomic(result, item, targetTypeCode, nsCtx, QueryLoc::null, false) )
-    return false;
+  {
+    store::Item_t item;
+    zstring stringValue(textValue);
+    GENV_ITEMFACTORY->createString(item, stringValue);
+    if ( !castToBuiltinAtomic(result, item, targetTypeCode, nsCtx, QueryLoc::null, false) )
+      return false;
+  }
 
-  Schema* schema = targetType->get_manager()->getSchema();
-  zstring stringValue2(textValue);
-  store::Item_t baseItem;
   try
   {
-    return schema->parseUserAtomicTypes(stringValue2, targetType, baseItem, nsCtx, QueryLoc::null, true);
+    Schema* schema = targetType->get_manager()->getSchema();
+    zstring stringValue(textValue);
+    store::Item_t baseItem;
+    return schema->parseUserAtomicTypes(stringValue, targetType, baseItem, nsCtx, QueryLoc::null, true);
   }
   catch (const ZorbaException&)
   {
