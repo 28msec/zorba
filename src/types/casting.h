@@ -154,12 +154,14 @@ public:
   static bool isCastable(
       const store::Item_t& item,
       const XQType* targetType,
-      TypeManager* tm); 
+      TypeManager* tm,
+      const namespace_context* nsCtx);
 
   static bool isCastable(
       const zstring& stringValue,
       const XQType* targetType,
-      TypeManager* tm);
+      TypeManager* tm,
+      const namespace_context* nsCtx);
 
   static void splitToAtomicTextValues(
     const zstring& textValue,
@@ -169,22 +171,26 @@ protected:
   static bool isCastableUserSimpleTypes(
       const zstring& textValue,
       const XQType* targetType,
-      TypeManager* tm);
+      TypeManager* tm,
+      const namespace_context* nsCtx);
 
   static bool isCastableUserAtomicTypes(
       const zstring& textValue,
-      const XQType* targetType,
-      TypeManager* tm);
+      const UserDefinedXQType* targetType,
+      TypeManager* tm,
+      const namespace_context* nsCtx);
 
   static bool isCastableUserListTypes(
       const zstring& textValue,
-      const XQType* targetType,
-      TypeManager* tm);
+      const UserDefinedXQType* targetType,
+      TypeManager* tm,
+      const namespace_context* nsCtx);
 
   static bool isCastableUserUnionTypes(
       const zstring& textValue,
-      const XQType* targetType,
-      TypeManager* tm);
+      const UserDefinedXQType* targetType,
+      TypeManager* tm,
+      const namespace_context* nsCtx);
 };
 
 } /* namespace zorba */

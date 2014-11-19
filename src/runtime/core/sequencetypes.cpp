@@ -318,7 +318,8 @@ CastableIterator::CastableIterator(
   bool allowEmpty)
   :
   UnaryBaseIterator<CastableIterator, PlanIteratorState>(sctx, loc, child),
-  theAllowEmpty(allowEmpty)
+  theAllowEmpty(allowEmpty),
+  theNsCtx(theSctx)
 {
   theCastType = TypeOps::prime_type(sctx->get_typemanager(), *castType);
 }
@@ -355,7 +356,7 @@ bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   }
   else
   {
-    res = GenericCast::isCastable(item, theCastType, tm);
+    res = GenericCast::isCastable(item, theCastType, tm, &theNsCtx);
 
     if (consumeNext(item, theChild.getp(), planState))
     {

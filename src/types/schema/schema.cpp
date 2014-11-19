@@ -2026,7 +2026,7 @@ bool Schema::parseUserUnionTypes(
   {
     try
     {
-      if (GenericCast::isCastable(textValue, unionItemTypes[i].getp(), theTypeManager))
+      if (GenericCast::isCastable(textValue, unionItemTypes[i].getp(), theTypeManager, NULL))
       {
         return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList,
                                     loc, isCasting);
