@@ -1872,42 +1872,55 @@ bool Schema::parseUserAtomicTypes(
       }
       else
       {
-        /*
-         * Patterns must be validated against the base type canonical
-         * representation. We need to retrieve the simple type definition
-         * to check whether it has a pattern facet specified.
-         */
-        bool modified;
-
-        XSTypeDefinition* typeDef = theGrammarPool->getXSModel(modified)->
-            getTypeDefinition(localPart, uriStr);
-        ZORBA_ASSERT(typeDef && typeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE);
-        XSSimpleTypeDefinition* simpleTypeDef =
-            static_cast<XSSimpleTypeDefinition*>(typeDef);
         XMLChArray xchTextValue(textValue.str());
-
-        if (simpleTypeDef->isDefinedFacet(XSSimpleTypeDefinition::FACET_PATTERN) &&
-            simpleTypeDef->getLexicalPattern())
+        if (isCasting)
         {
           /*
-           * The type has an actual, user-defined pattern associated.
-           * We need to canonicalize the value we are trying to validate respect
-           * to the base type and validate the canonicalized value.
+           * Patterns must be validated against the base type canonical
+           * representation. We need to retrieve the simple type definition
+           * to check whether it has a pattern facet specified.
            */
-          XMLChArray canonicalValue((XMLCh*) xsiTypeDV->getCanonicalRepresentation(
-              xchTextValue.get(), NULL, false));
-          if (canonicalValue.get())
+          bool modified;
+
+          XSTypeDefinition* typeDef = theGrammarPool->getXSModel(modified)->
+              getTypeDefinition(localPart, uriStr);
+          std::cout << localPart << std::endl;
+          ZORBA_ASSERT(typeDef);
+          ZORBA_ASSERT(typeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE);
+          XSSimpleTypeDefinition* simpleTypeDef =
+              static_cast<XSSimpleTypeDefinition*>(typeDef);
+
+          if (simpleTypeDef->isDefinedFacet(XSSimpleTypeDefinition::FACET_PATTERN) &&
+              simpleTypeDef->getLexicalPattern())
           {
             /*
-             * Validate against canonical value
+             * The type has an actual, user-defined pattern associated.
+             * We need to canonicalize the value we are trying to validate respect
+             * to the base type and validate the canonicalized value.
              */
-            xsiTypeDV->validate(canonicalValue.get());
+            XMLChArray canonicalValue((XMLCh*) xsiTypeDV->getCanonicalRepresentation(
+                xchTextValue.get(), NULL, false));
+            if (canonicalValue.get())
+            {
+              /*
+               * Validate against canonical value
+               */
+              xsiTypeDV->validate(canonicalValue.get());
+            }
+            else
+            {
+              /*
+               * The value is invalid for its base type, we need to perform the validation
+               * against the required type to raise proper errors
+               */
+              xsiTypeDV->validate(xchTextValue.get());
+            }
           }
           else
           {
             /*
-             * The value is invalid for its base type, we need to perform the validation
-             * against the required type to raise proper errors
+             * The type has no actual, user-defined pattern associated.
+             * We can validate against the raw value provided.
              */
             xsiTypeDV->validate(xchTextValue.get());
           }
@@ -1915,8 +1928,7 @@ bool Schema::parseUserAtomicTypes(
         else
         {
           /*
-           * The type has no actual, user-defined pattern associated.
-           * We can validate against the raw value provided.
+           * We are not casting, the canonicalization is not necessary
            */
           xsiTypeDV->validate(xchTextValue.get());
         }
