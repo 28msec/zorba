@@ -1,0 +1,1 @@
+true 12 true -12 true 93.7 true -93.7 true 0 true -0

@@ -1,0 +1,243 @@
+<xs:schema
+   xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+   xmlns:derivedType = "http://www.w3.org/XQueryTest/derivedTypes" 
+   targetNamespace = "http://www.w3.org/XQueryTest/derivedTypes" 
+   elementFormDefault = "qualified">
+   
+  <xs:simpleType name = "long">
+   <xs:restriction base = "xs:long">
+    <xs:minInclusive value = "1"/>
+    <xs:maxInclusive value = "19"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "short">
+   <xs:restriction base = "xs:short">
+    <xs:minInclusive value = "1"/>
+    <xs:maxInclusive value = "19"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "unsignedByte">
+   <xs:restriction base = "xs:unsignedByte">
+    <xs:minInclusive value = "1"/>
+    <xs:maxInclusive value = "19"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "unsignedInt">
+   <xs:restriction base = "xs:unsignedInt">
+    <xs:minInclusive value = "1"/>
+    <xs:maxInclusive value = "19"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "unsignedLong">
+   <xs:restriction base = "xs:unsignedLong">
+    <xs:minInclusive value = "1"/>
+    <xs:maxInclusive value = "19"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "unsignedShort">
+   <xs:restriction base = "xs:unsignedShort">
+    <xs:minInclusive value = "1"/>
+    <xs:maxInclusive value = "19"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "byte">
+   <xs:restriction base = "xs:byte">
+    <xs:minInclusive value = "1"/>
+    <xs:maxInclusive value = "19"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "integer">
+   <xs:restriction base = "xs:integer">
+    <xs:minInclusive value = "1"/>
+    <xs:maxInclusive value = "19"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "positiveInteger">
+   <xs:restriction base = "xs:positiveInteger">
+    <xs:minInclusive value = "1"/>
+    <xs:maxInclusive value = "19"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "nonNegativeInteger">
+   <xs:restriction base = "xs:nonNegativeInteger">
+    <xs:minInclusive value = "1"/>
+    <xs:maxInclusive value = "19"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "negativeInteger">
+   <xs:restriction base = "xs:negativeInteger">
+    <xs:minInclusive value = "-19"/>
+    <xs:maxInclusive value = "-1"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "nonPositiveInteger">
+   <xs:restriction base = "xs:nonPositiveInteger">
+    <xs:minInclusive value = "-19"/>
+    <xs:maxInclusive value = "-1"/>
+   </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:simpleType name = "double">
+   <xs:restriction base = "xs:double">
+    <xs:minInclusive value = "15"/>
+    <xs:maxInclusive value = "20"/>
+   </xs:restriction>
+  </xs:simpleType> 
+    
+  <xs:simpleType name = "decimal">
+   <xs:restriction base = "xs:decimal">
+    <xs:minInclusive value = "15"/>
+    <xs:maxInclusive value = "20"/>
+   </xs:restriction>
+  </xs:simpleType> 
+    
+  <xs:simpleType name = "gDay">
+   <xs:restriction base = "xs:gDay">
+    <xs:minInclusive value = "---01"/>
+    <xs:maxInclusive value = "---14"/>
+   </xs:restriction>
+  </xs:simpleType> 
+    
+  <xs:simpleType name = "float">
+   <xs:restriction base = "xs:float">
+    <xs:minInclusive value = "15"/>
+    <xs:maxInclusive value = "20"/>
+   </xs:restriction>
+  </xs:simpleType> 
+    
+  <xs:simpleType name = "base64Binary">
+   <xs:restriction base = "xs:base64Binary">
+    <xs:maxLength value = "20"/>
+   </xs:restriction>
+  </xs:simpleType> 
+    
+  <xs:simpleType name = "hexBinary">
+   <xs:restriction base = "xs:hexBinary">
+    <xs:maxLength value = "20"/>
+   </xs:restriction>
+  </xs:simpleType> 
+    
+  <xs:simpleType name = "anyURI">
+   <xs:restriction base = "xs:anyURI">
+      <xs:enumeration value="http://news.bbc.co.uk/" />
+      <xs:enumeration value="http://slashdot.org/" />
+   </xs:restriction>
+  </xs:simpleType>    
+
+  <xs:simpleType name = "boolean">
+   <xs:restriction base = "xs:boolean">
+      <xs:pattern value="true" />
+   </xs:restriction>
+  </xs:simpleType>    
+
+  <xs:simpleType name = "duration">
+   <xs:restriction base = "xs:duration">
+      <xs:enumeration value="P1M" />
+      <xs:enumeration value="P1D" />
+   </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name = "gMonthDay">
+   <xs:restriction base = "xs:gMonthDay">
+      <xs:enumeration value="--12-25" />
+      <xs:enumeration value="--12-31" />
+   </xs:restriction>
+  </xs:simpleType>    
+
+  <xs:simpleType name = "gMonth">
+   <xs:restriction base = "xs:gMonth">
+      <xs:enumeration value="--12" />
+      <xs:enumeration value="--01" />
+      <xs:enumeration value="--02" />
+   </xs:restriction>
+  </xs:simpleType>    
+
+  <xs:simpleType name = "gYear">
+   <xs:restriction base = "xs:gYear">
+      <xs:enumeration value="2004" />
+      <xs:enumeration value="1996" />
+      <xs:enumeration value="2008" />
+   </xs:restriction>
+  </xs:simpleType>    
+
+  <xs:simpleType name = "gYearMonth">
+   <xs:restriction base = "xs:gYearMonth">
+      <xs:enumeration value="2004-02" />
+      <xs:enumeration value="1996-02" />
+      <xs:enumeration value="2008-02" />
+   </xs:restriction>
+  </xs:simpleType>    
+
+  <xs:simpleType name = "date">
+   <xs:restriction base = "xs:date">
+      <xs:enumeration value="2001-01-01" />
+      <xs:enumeration value="1980-01-24" />
+   </xs:restriction>
+  </xs:simpleType>    
+
+  <xs:simpleType name = "dateTime">
+   <xs:restriction base = "xs:dateTime">
+      <xs:enumeration value="2001-01-01T09:00:00" />
+      <xs:enumeration value="1980-01-24T09:00:00" />
+   </xs:restriction>
+  </xs:simpleType>    
+
+  <xs:simpleType name = "time">
+   <xs:restriction base = "xs:time">
+      <xs:enumeration value="10:00:00" />
+      <xs:enumeration value="12:00:00" />
+      <xs:enumeration value="15:00:00" />
+   </xs:restriction>
+  </xs:simpleType>    
+
+  <xs:simpleType name = "string">
+   <xs:restriction base = "xs:string">
+      <xs:enumeration value="valid value 1" />
+      <xs:enumeration value="valid value 2" />
+      <xs:enumeration value="valid value 3" />
+      <xs:enumeration value="valid value 4" />
+      <xs:enumeration value="valid value 5" />
+   </xs:restriction>
+  </xs:simpleType>    
+
+  <xs:simpleType name = "QName">
+   <xs:restriction base = "xs:QName">
+     <xs:enumeration value="value1" />
+     <xs:enumeration value="value2" />
+   </xs:restriction>
+  </xs:simpleType> 
+  
+  <xs:simpleType name="NOTATION">
+     <xs:restriction base = "xs:NOTATION">
+      <xs:enumeration value="derivedType:value1"/>
+      <xs:enumeration value="derivedType:value2"/>
+     </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="canonicalDecimal">
+    <xs:restriction base="xs:decimal">
+      <xs:pattern value="-?[0-9]+\.[0-9]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+    
+  <xs:simpleType name="canonicalDouble">
+    <xs:restriction base="xs:double">
+      <xs:pattern value="-?[0-9]+\.[0-9]+E-?[0-9]+"/>
+    </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:notation name="value1" public="image/jpeg" system="viewer.exe"/>
+  <xs:notation name="value2" public="image/jpeg" system="viewer.exe"/>
+  
+</xs:schema>
