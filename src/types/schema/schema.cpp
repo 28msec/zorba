@@ -1779,7 +1779,7 @@ bool Schema::parseUserAtomicTypes(
   ZORBA_ASSERT(targetType->type_kind() == XQType::USER_DEFINED_KIND);
 
   const UserDefinedXQType* udXQType =
-  static_cast<const UserDefinedXQType*>(targetType.getp());
+      static_cast<const UserDefinedXQType*>(targetType.getp());
 
   ZORBA_ASSERT(udXQType->isAtomicAny());
 
@@ -1795,7 +1795,7 @@ bool Schema::parseUserAtomicTypes(
   {
     // Create grammar resolver and string pool that we pass to the scanner
     std::unique_ptr<GrammarResolver> fGrammarResolver(
-    new GrammarResolver(theGrammarPool));
+        new GrammarResolver(theGrammarPool));
 
     fGrammarResolver->useCachedGrammarInParse(true);
 
@@ -1805,7 +1805,7 @@ bool Schema::parseUserAtomicTypes(
     if (sGrammar)
     {
       DatatypeValidator* xsiTypeDV = fGrammarResolver->
-      getDatatypeValidator(uriStr, localPart);
+        getDatatypeValidator(uriStr, localPart);
 
       if (!xsiTypeDV)
       {
@@ -1819,11 +1819,11 @@ bool Schema::parseUserAtomicTypes(
           if (baseXQType.getp())
           {
             store::Item_t baseTypeQName = baseXQType->getQName();
-            XMLChArray baseLocalPart(baseTypeQName->getLocalName());
-            XMLChArray baseUriStr(baseTypeQName->getNamespace());
+            localPart = XMLChArray(baseTypeQName->getLocalName());
+            uriStr = XMLChArray(baseTypeQName->getNamespace());
 
             xsiTypeDV = fGrammarResolver->
-            getDatatypeValidator(baseUriStr, baseLocalPart);
+              getDatatypeValidator(uriStr, localPart);
 
             tmpXQType = NULL;
             if (baseXQType->type_kind() == XQType::USER_DEFINED_KIND)
@@ -1862,7 +1862,7 @@ bool Schema::parseUserAtomicTypes(
         }
         else
         {
-          if (isCasting )
+          if (isCasting)
             RAISE_ERROR(err::FORG0001, loc,
             ERROR_PARAMS(ZED(FORG0001_PrefixNotBound_2), prefix));
           else
@@ -1872,8 +1872,64 @@ bool Schema::parseUserAtomicTypes(
       }
       else
       {
+        /*
+         * Patterns must be validated against the base type canonical
+         * representation. We need to retrieve the simple type definition
+         * to check whether it has a pattern facet specified.
+         */
+        bool modified;
+
+        XSTypeDefinition* typeDef = theGrammarPool->getXSModel(modified)->
+            getTypeDefinition(localPart, uriStr);
+        ZORBA_ASSERT(typeDef && typeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE);
+        XSSimpleTypeDefinition* simpleTypeDef =
+            static_cast<XSSimpleTypeDefinition*>(typeDef);
         XMLChArray xchTextValue(textValue.str());
-        xsiTypeDV->validate(xchTextValue.get());
+
+        //char* lName = XMLString::transcode(simpleTypeDef->getName(), fGrammarResolver->getGrammarPoolMemoryManager());
+        //char* lVal = XMLString::transcode(xchTextValue.get(), fGrammarResolver->getGrammarPoolMemoryManager());
+
+        if (simpleTypeDef->isDefinedFacet(XSSimpleTypeDefinition::FACET_PATTERN) &&
+            simpleTypeDef->getLexicalPattern())
+        {
+          //std::cout << "Type " << lName <<  " has a pattern, canonicalizing raw value: " << lVal << std::endl;
+          /*
+           * The type has an actual, user-defined pattern associated.
+           * We need to canonicalize the value we are trying to validate respect
+           * to the base type and validate the canonicalized value.
+           */
+          XMLChArray canonicalValue((XMLCh*) xsiTypeDV->getCanonicalRepresentation(
+              xchTextValue.get(), NULL, false));
+          if (canonicalValue.get())
+          {
+            /*
+             * Validate against canonical value
+             */
+            //char* lCanonicalVal = XMLString::transcode(canonicalValue, fGrammarResolver->getGrammarPoolMemoryManager());
+            //std::cout << lVal << " canonicalized as " << lCanonicalVal << std::endl;
+            xsiTypeDV->validate(canonicalValue.get());
+          }
+          else
+          {
+            /*
+             * The value is invalid for its base type, we need to perform the validation
+             * against the required type to raise proper errors
+             */
+            //std::cout << lVal << " is not valid for " << lName << std::endl;
+            xsiTypeDV->validate(xchTextValue.get());
+          }
+        }
+        else
+        {
+          /*
+           * The type has no actual, user-defined pattern associated.
+           * We can validate against the raw value provided.
+           */
+          //std::cout << "Type " << lName <<  " has NO pattern, validating again raw value: " << lVal << std::endl;
+          xsiTypeDV->validate(xchTextValue.get());
+        }
+
+
       }
     } // if found grammar
     else
