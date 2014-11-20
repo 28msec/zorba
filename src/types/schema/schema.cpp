@@ -1886,13 +1886,9 @@ bool Schema::parseUserAtomicTypes(
             static_cast<XSSimpleTypeDefinition*>(typeDef);
         XMLChArray xchTextValue(textValue.str());
 
-        //char* lName = XMLString::transcode(simpleTypeDef->getName(), fGrammarResolver->getGrammarPoolMemoryManager());
-        //char* lVal = XMLString::transcode(xchTextValue.get(), fGrammarResolver->getGrammarPoolMemoryManager());
-
         if (simpleTypeDef->isDefinedFacet(XSSimpleTypeDefinition::FACET_PATTERN) &&
             simpleTypeDef->getLexicalPattern())
         {
-          //std::cout << "Type " << lName <<  " has a pattern, canonicalizing raw value: " << lVal << std::endl;
           /*
            * The type has an actual, user-defined pattern associated.
            * We need to canonicalize the value we are trying to validate respect
@@ -1905,8 +1901,6 @@ bool Schema::parseUserAtomicTypes(
             /*
              * Validate against canonical value
              */
-            //char* lCanonicalVal = XMLString::transcode(canonicalValue, fGrammarResolver->getGrammarPoolMemoryManager());
-            //std::cout << lVal << " canonicalized as " << lCanonicalVal << std::endl;
             xsiTypeDV->validate(canonicalValue.get());
           }
           else
@@ -1915,7 +1909,6 @@ bool Schema::parseUserAtomicTypes(
              * The value is invalid for its base type, we need to perform the validation
              * against the required type to raise proper errors
              */
-            //std::cout << lVal << " is not valid for " << lName << std::endl;
             xsiTypeDV->validate(xchTextValue.get());
           }
         }
@@ -1925,11 +1918,8 @@ bool Schema::parseUserAtomicTypes(
            * The type has no actual, user-defined pattern associated.
            * We can validate against the raw value provided.
            */
-          //std::cout << "Type " << lName <<  " has NO pattern, validating again raw value: " << lVal << std::endl;
           xsiTypeDV->validate(xchTextValue.get());
         }
-
-
       }
     } // if found grammar
     else
