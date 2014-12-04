@@ -4821,37 +4821,37 @@
 
     <!--////////// libxml2 Errors //////////////////////////////////////////-->
 
-    <entry key="libxml_ERR_1"> <!-- XML_ERR_INTERNAL_ERROR -->
+    <entry key="libxml_1"> <!-- XML_ERR_INTERNAL_ERROR -->
       <value>libxml internal error${: 9}</value>
     </entry>
 
-    <entry key="libxml_ERR_2"> <!-- XML_ERR_NO_MEMORY -->
+    <entry key="libxml_2"> <!-- XML_ERR_NO_MEMORY -->
       <value>out of memory${: 9}</value>
     </entry>
 
     <!-- 3: XML_ERR_DOCUMENT_START not used -->
 
-    <entry key="libxml_ERR_4"> <!-- XML_ERR_DOCUMENT_EMPTY -->
+    <entry key="libxml_4"> <!-- XML_ERR_DOCUMENT_EMPTY -->
       <value>empty XML document ('&lt;' expected)</value>
     </entry>
 
-    <entry key="libxml_ERR_5"> <!-- XML_ERR_DOCUMENT_END -->
+    <entry key="libxml_5"> <!-- XML_ERR_DOCUMENT_END -->
       <value>extra content at end of XML document</value>
     </entry>
 
-    <entry key="libxml_ERR_6"> <!-- XML_ERR_INVALID_HEX_CHARREF -->
+    <entry key="libxml_6"> <!-- XML_ERR_INVALID_HEX_CHARREF -->
       <value>${"5": }invalid hexedecimal value for character reference</value>
     </entry>
 
-    <entry key="libxml_ERR_7"> <!-- XML_ERR_INVALID_DEC_CHARREF -->
+    <entry key="libxml_7"> <!-- XML_ERR_INVALID_DEC_CHARREF -->
       <value>${"5": }invalid decimal value for character reference</value>
     </entry>
 
-    <entry key="libxml_ERR_8"> <!-- XML_ERR_INVALID_CHARREF -->
+    <entry key="libxml_8"> <!-- XML_ERR_INVALID_CHARREF -->
       <value>${"5": }invalid value for character reference</value>
     </entry>
 
-    <entry key="libxml_ERR_9"> <!-- XML_ERR_INVALID_CHAR -->
+    <entry key="libxml_9"> <!-- XML_ERR_INVALID_CHAR -->
       <value>${"&amp;#8;": }invalid XML character value</value>
     </entry>
 
@@ -4864,399 +4864,399 @@
     <!-- 16: XML_ERR_ENTITYREF_IN_EPILOG not used -->
     <!-- 17: XML_ERR_ENTITYREF_IN_DTD not used -->
 
-    <entry key="libxml_ERR_18"> <!-- XML_ERR_PEREF_AT_EOF -->
+    <entry key="libxml_18"> <!-- XML_ERR_PEREF_AT_EOF -->
       <value>PE reference at end of XML document</value>
     </entry>
 
-    <entry key="libxml_ERR_19"> <!-- XML_ERR_PEREF_IN_PROLOG -->
+    <entry key="libxml_19"> <!-- XML_ERR_PEREF_IN_PROLOG -->
       <value>PE reference in prolog</value>
     </entry>
 
-    <entry key="libxml_ERR_20"> <!-- XML_ERR_PEREF_IN_EPILOG -->
+    <entry key="libxml_20"> <!-- XML_ERR_PEREF_IN_EPILOG -->
       <value>PE reference in epilog</value>
     </entry>
 
-    <entry key="libxml_ERR_21"> <!-- XML_ERR_PEREF_IN_INT_SUBSET -->
+    <entry key="libxml_21"> <!-- XML_ERR_PEREF_IN_INT_SUBSET -->
       <value>PE reference forbidden within markup declaration in internal subset</value>
     </entry>
 
     <!-- 22: XML_ERR_ENTITYREF_NO_NAME not used -->
 
-    <entry key="libxml_ERR_23"> <!-- XML_ERR_ENTITYREF_SEMICOL_MISSING -->
+    <entry key="libxml_23"> <!-- XML_ERR_ENTITYREF_SEMICOL_MISSING -->
       <value>';' expected at end of character entity reference</value>
     </entry>
 
-    <entry key="libxml_ERR_24"> <!-- XML_ERR_PEREF_NO_NAME -->
+    <entry key="libxml_24"> <!-- XML_ERR_PEREF_NO_NAME -->
       <value>PE reference: no name</value>
     </entry>
 
-    <entry key="libxml_ERR_25"> <!-- XML_ERR_PEREF_SEMICOL_MISSING -->
+    <entry key="libxml_25"> <!-- XML_ERR_PEREF_SEMICOL_MISSING -->
       <value>PE reference: ';' expected</value>
     </entry>
 
-    <entry key="libxml_ERR_26"> <!-- XML_ERR_UNDECLARED_ENTITY -->
+    <entry key="libxml_26"> <!-- XML_ERR_UNDECLARED_ENTITY -->
       <value>${"5": }undeclared entity reference</value>
     </entry>
 
-    <entry key="libxml_WAR_27"> <!-- XML_WAR_UNDECLARED_ENTITY -->
+    <entry key="libxml_27"> <!-- XML_WAR_UNDECLARED_ENTITY -->
       <value>${"5": }undeclared entity reference</value>
     </entry>
 
-    <entry key="libxml_ERR_28"> <!-- XML_ERR_UNPARSED_ENTITY -->
+    <entry key="libxml_28"> <!-- XML_ERR_UNPARSED_ENTITY -->
       <value>${"5": }entity reference to unparsed entity</value>
     </entry>
 
-    <entry key="libxml_ERR_29"> <!-- XML_ERR_ENTITY_IS_EXTERNAL -->
+    <entry key="libxml_29"> <!-- XML_ERR_ENTITY_IS_EXTERNAL -->
       <value>${"5": }external entity referenced by attribute</value>
     </entry>
 
-    <entry key="libxml_ERR_30"> <!-- XML_ERR_ENTITY_IS_PARAMETER -->
+    <entry key="libxml_30"> <!-- XML_ERR_ENTITY_IS_PARAMETER -->
       <value>${"5": }parameter entity attempted reference</value>
     </entry>
 
-    <entry key="libxml_ERR_31"> <!-- XML_ERR_UNKNOWN_ENCODING -->
+    <entry key="libxml_31"> <!-- XML_ERR_UNKNOWN_ENCODING -->
       <value>${"5": }unknown character encoding</value>
     </entry>
 
-    <entry key="libxml_ERR_32"> <!-- XML_ERR_UNSUPPORTED_ENCODING -->
+    <entry key="libxml_32"> <!-- XML_ERR_UNSUPPORTED_ENCODING -->
       <value>${"5": }unsupported character encoding</value>
     </entry>
 
-    <entry key="libxml_ERR_33"> <!-- XML_ERR_STRING_NOT_STARTED -->
+    <entry key="libxml_33"> <!-- XML_ERR_STRING_NOT_STARTED -->
       <value>string not started (' or " expected)</value>
     </entry>
 
-    <entry key="libxml_ERR_34"> <!-- XML_ERR_STRING_NOT_CLOSED -->
+    <entry key="libxml_34"> <!-- XML_ERR_STRING_NOT_CLOSED -->
       <value>string not ended (' or " expected)</value>
     </entry>
 
-    <entry key="libxml_ERR_35"> <!-- XML_ERR_NS_DECL_ERROR -->
+    <entry key="libxml_35"> <!-- XML_ERR_NS_DECL_ERROR -->
       <value>${"5": }invalid namespace declaration</value>
     </entry>
 
-    <entry key="libxml_ERR_36"> <!-- XML_ERR_ENTITY_NOT_STARTED -->
+    <entry key="libxml_36"> <!-- XML_ERR_ENTITY_NOT_STARTED -->
       <value>entity value not started (' or " expected)</value>
     </entry>
 
-    <entry key="libxml_ERR_37"> <!-- XML_ERR_ENTITY_NOT_FINISHED -->
+    <entry key="libxml_37"> <!-- XML_ERR_ENTITY_NOT_FINISHED -->
       <value>${"5": }entity value not ended (' or " expected)</value>
     </entry>
 
-    <entry key="libxml_ERR_38"> <!-- XML_ERR_LT_IN_ATTRIBUTE -->
+    <entry key="libxml_38"> <!-- XML_ERR_LT_IN_ATTRIBUTE -->
       <value>unescaped '&lt;' not allowed in attribute values</value>
     </entry>
 
-    <entry key="libxml_ERR_39"> <!-- XML_ERR_ATTRIBUTE_NOT_STARTED -->
+    <entry key="libxml_39"> <!-- XML_ERR_ATTRIBUTE_NOT_STARTED -->
       <value>attribute value not started (' or " expected)</value>
     </entry>
 
-    <entry key="libxml_ERR_40"> <!-- XML_ERR_ATTRIBUTE_NOT_FINISHED -->
+    <entry key="libxml_40"> <!-- XML_ERR_ATTRIBUTE_NOT_FINISHED -->
       <value>attribute value not ended (' or " expected) or too big</value>
     </entry>
 
-    <entry key="libxml_ERR_41"> <!-- XML_ERR_ATTRIBUTE_WITHOUT_VALUE -->
+    <entry key="libxml_41"> <!-- XML_ERR_ATTRIBUTE_WITHOUT_VALUE -->
       <value>${"5": }attribute must have a value</value>
     </entry>
 
-    <entry key="libxml_ERR_42"> <!-- XML_ERR_ATTRIBUTE_REDEFINED -->
+    <entry key="libxml_42"> <!-- XML_ERR_ATTRIBUTE_REDEFINED -->
       <value>"$6?{5:}$6?6:5" attribute redefined</value>
     </entry>
 
-    <entry key="libxml_ERR_43"> <!-- XML_ERR_LITERAL_NOT_STARTED -->
+    <entry key="libxml_43"> <!-- XML_ERR_LITERAL_NOT_STARTED -->
       <value>' or " expected</value>
     </entry>
 
-    <entry key="libxml_ERR_44"> <!-- XML_ERR_LITERAL_NOT_FINISHED -->
+    <entry key="libxml_44"> <!-- XML_ERR_LITERAL_NOT_FINISHED -->
       <value>' or " expected to end System or Public ID literal</value>
     </entry>
 
-    <entry key="libxml_ERR_45"> <!-- XML_ERR_COMMENT_NOT_FINISHED -->
+    <entry key="libxml_45"> <!-- XML_ERR_COMMENT_NOT_FINISHED -->
       <value>comment not ended ("-->" expected) or too big</value>
     </entry>
 
-    <entry key="libxml_ERR_46"> <!-- XML_ERR_PI_NOT_STARTED -->
+    <entry key="libxml_46"> <!-- XML_ERR_PI_NOT_STARTED -->
       <value>processing instruction not started correctly (missing target name?)</value>
     </entry>
 
-    <entry key="libxml_ERR_47"> <!-- XML_ERR_PI_NOT_FINISHED -->
+    <entry key="libxml_47"> <!-- XML_ERR_PI_NOT_FINISHED -->
       <value>processing instruction "$5" not ended ("?>" expected) or too big</value>
     </entry>
 
-    <entry key="libxml_ERR_48"> <!-- XML_ERR_NOTATION_NOT_STARTED -->
+    <entry key="libxml_48"> <!-- XML_ERR_NOTATION_NOT_STARTED -->
       <value>notation name expected</value>
     </entry>
 
-    <entry key="libxml_ERR_49"> <!-- XML_ERR_NOTATION_NOT_FINISHED -->
+    <entry key="libxml_49"> <!-- XML_ERR_NOTATION_NOT_FINISHED -->
       <value>'>' expected to end notation declaration</value>
     </entry>
 
-    <entry key="libxml_ERR_50"> <!-- XML_ERR_ATTLIST_NOT_STARTED -->
+    <entry key="libxml_50"> <!-- XML_ERR_ATTLIST_NOT_STARTED -->
       <value>'(' expected to start ATTLIST enumeration</value>
     </entry>
 
-    <entry key="libxml_ERR_51"> <!-- XML_ERR_ATTLIST_NOT_FINISHED -->
+    <entry key="libxml_51"> <!-- XML_ERR_ATTLIST_NOT_FINISHED -->
       <value>')' expected to end ATTLIST enumeration</value>
     </entry>
 
-    <entry key="libxml_ERR_52"> <!-- XML_ERR_MIXED_NOT_STARTED -->
+    <entry key="libxml_52"> <!-- XML_ERR_MIXED_NOT_STARTED -->
       <value>'|' or ")*" expected for mixed content declaration</value>
     </entry>
 
     <!-- 53: XML_ERR_MIXED_NOT_FINISHED not used -->
 
-    <entry key="libxml_ERR_54"> <!-- XML_ERR_ELEMCONTENT_NOT_STARTED -->
+    <entry key="libxml_54"> <!-- XML_ERR_ELEMCONTENT_NOT_STARTED -->
       <value>$5?5:{name or} '(' expected for content declaration</value>
     </entry>
 
-    <entry key="libxml_ERR_55"> <!-- XML_ERR_ELEMCONTENT_NOT_FINISHED -->
+    <entry key="libxml_55"> <!-- XML_ERR_ELEMCONTENT_NOT_FINISHED -->
       <value>',', '|', or ')' expected in content declaration${ or depth 8 too deep}</value>
     </entry>
 
-    <entry key="libxml_ERR_56"> <!-- XML_ERR_XMLDECL_NOT_STARTED -->
+    <entry key="libxml_56"> <!-- XML_ERR_XMLDECL_NOT_STARTED -->
       <value>"&lt;?xml" required to start XML declaration</value>
     </entry>
 
-    <entry key="libxml_ERR_57"> <!-- XML_ERR_XMLDECL_NOT_FINISHED -->
+    <entry key="libxml_57"> <!-- XML_ERR_XMLDECL_NOT_FINISHED -->
       <value>"?>" expected to end XML declaration</value>
     </entry>
 
     <!-- 58: XML_ERR_CONDSEC_NOT_STARTED not used -->
 
-    <entry key="libxml_ERR_59"> <!-- XML_ERR_CONDSEC_NOT_FINISHED -->
+    <entry key="libxml_59"> <!-- XML_ERR_CONDSEC_NOT_FINISHED -->
       <value>XML conditional section not ended</value>
     </entry>
 
-    <entry key="libxml_ERR_60"> <!-- XML_ERR_EXT_SUBSET_NOT_FINISHED -->
+    <entry key="libxml_60"> <!-- XML_ERR_EXT_SUBSET_NOT_FINISHED -->
       <value>content error in external subset</value>
     </entry>
 
-    <entry key="libxml_ERR_61"> <!-- XML_ERR_DOCTYPE_NOT_FINISHED -->
+    <entry key="libxml_61"> <!-- XML_ERR_DOCTYPE_NOT_FINISHED -->
       <value>DOCTYPE improperly ended</value>
     </entry>
 
-    <entry key="libxml_ERR_62"> <!-- XML_ERR_MISPLACED_CDATA_END -->
+    <entry key="libxml_62"> <!-- XML_ERR_MISPLACED_CDATA_END -->
       <value>"]]&gt;" not allowed in content</value>
     </entry>
 
-    <entry key="libxml_ERR_63"> <!-- XML_ERR_CDATA_NOT_FINISHED -->
+    <entry key="libxml_63"> <!-- XML_ERR_CDATA_NOT_FINISHED -->
       <value>CDATA not ended ("]]&gt;" expected) or too big</value>
     </entry>
 
-    <entry key="libxml_ERR_64"> <!-- XML_ERR_RESERVED_XML_NAME -->
+    <entry key="libxml_64"> <!-- XML_ERR_RESERVED_XML_NAME -->
       <value>"xml": reserved XML prefix</value>
     </entry>
 
-    <entry key="libxml_ERR_65"> <!-- XML_ERR_SPACE_REQUIRED -->
+    <entry key="libxml_65"> <!-- XML_ERR_SPACE_REQUIRED -->
       <value>space required here</value>
     </entry>
 
-    <entry key="libxml_ERR_66"> <!-- XML_ERR_SEPARATOR_REQUIRED -->
+    <entry key="libxml_66"> <!-- XML_ERR_SEPARATOR_REQUIRED -->
       <value>'$8' expected</value>
     </entry>
 
-    <entry key="libxml_ERR_67"> <!-- XML_ERR_NMTOKEN_REQUIRED -->
+    <entry key="libxml_67"> <!-- XML_ERR_NMTOKEN_REQUIRED -->
       <value>NMTOKEN expected in ATTLIST enumeration</value>
     </entry>
 
-    <entry key="libxml_ERR_68"> <!-- XML_ERR_NAME_REQUIRED -->
+    <entry key="libxml_68"> <!-- XML_ERR_NAME_REQUIRED -->
       <value>name expected</value>
     </entry>
 
-    <entry key="libxml_ERR_69"> <!-- XML_ERR_PCDATA_REQUIRED -->
+    <entry key="libxml_69"> <!-- XML_ERR_PCDATA_REQUIRED -->
       <value>"#PCDATA" expected</value>
     </entry>
 
-    <entry key="libxml_ERR_70"> <!-- XML_ERR_URI_REQUIRED -->
+    <entry key="libxml_70"> <!-- XML_ERR_URI_REQUIRED -->
       <value>URI expected for SYSTEM or PUBLIC</value>
     </entry>
 
-    <entry key="libxml_ERR_71"> <!-- XML_ERR_PUBID_REQUIRED -->
+    <entry key="libxml_71"> <!-- XML_ERR_PUBID_REQUIRED -->
       <value>PUBLIC identifier expected</value>
     </entry>
 
-    <entry key="libxml_ERR_72"> <!-- XML_ERR_LT_REQUIRED -->
+    <entry key="libxml_72"> <!-- XML_ERR_LT_REQUIRED -->
       <value>'&lt;' expected</value>
     </entry>
 
-    <entry key="libxml_ERR_73"> <!-- XML_ERR_GT_REQUIRED -->
+    <entry key="libxml_73"> <!-- XML_ERR_GT_REQUIRED -->
       <value>'>' expected</value>
     </entry>
 
-    <entry key="libxml_ERR_74"> <!-- XML_ERR_LTSLASH_REQUIRED -->
+    <entry key="libxml_74"> <!-- XML_ERR_LTSLASH_REQUIRED -->
       <value>"&lt;/" expected</value>
     </entry>
 
-    <entry key="libxml_ERR_75"> <!-- XML_ERR_EQUAL_REQUIRED -->
+    <entry key="libxml_75"> <!-- XML_ERR_EQUAL_REQUIRED -->
       <value>'=' expected</value>
     </entry>
 
-    <entry key="libxml_ERR_76"> <!-- XML_ERR_TAG_NAME_MISMATCH -->
+    <entry key="libxml_76"> <!-- XML_ERR_TAG_NAME_MISMATCH -->
       <value>"&lt;/$6>": closing tag mismatch for "&lt;$5>"</value>
     </entry>
 
-    <entry key="libxml_ERR_77"> <!-- XML_ERR_TAG_NOT_FINISHED -->
+    <entry key="libxml_77"> <!-- XML_ERR_TAG_NOT_FINISHED -->
       <value>"$5": premature end of content for tag starting on line $8</value>
     </entry>
 
-    <entry key="libxml_ERR_78"> <!-- XML_ERR_STANDALONE_VALUE -->
+    <entry key="libxml_78"> <!-- XML_ERR_STANDALONE_VALUE -->
       <value>"yes" or "no" expected for "standalone"</value>
     </entry>
 
-    <entry key="libxml_ERR_79"> <!-- XML_ERR_ENCODING_NAME -->
+    <entry key="libxml_79"> <!-- XML_ERR_ENCODING_NAME -->
       <value>invalid XML encoding name</value>
     </entry>
 
-    <entry key="libxml_ERR_80"> <!-- XML_ERR_HYPHEN_IN_COMMENT -->
+    <entry key="libxml_80"> <!-- XML_ERR_HYPHEN_IN_COMMENT -->
       <value>"--" forbidden within XML comment</value>
     </entry>
 
-    <entry key="libxml_ERR_81"> <!-- XML_ERR_INVALID_ENCODING -->
+    <entry key="libxml_81"> <!-- XML_ERR_INVALID_ENCODING -->
       <value>document labelled UTF-16 but has UTF-8 content</value>
     </entry>
 
     <!-- 82: XML_ERR_EXT_ENTITY_STANDALONE not used -->
 
-    <entry key="libxml_ERR_83"> <!-- XML_ERR_CONDSEC_INVALID -->
+    <entry key="libxml_83"> <!-- XML_ERR_CONDSEC_INVALID -->
       <value>'[' expected in XML condition section</value>
     </entry>
 
-    <entry key="libxml_ERR_84"> <!-- XML_ERR_VALUE_REQUIRED -->
+    <entry key="libxml_84"> <!-- XML_ERR_VALUE_REQUIRED -->
       <value>entity value expected</value>
     </entry>
 
-    <entry key="libxml_ERR_85"> <!-- XML_ERR_NOT_WELL_BALANCED -->
+    <entry key="libxml_85"> <!-- XML_ERR_NOT_WELL_BALANCED -->
       <value>XML chunk is not well-balanced</value>
     </entry>
 
-    <entry key="libxml_ERR_86"> <!-- XML_ERR_EXTRA_CONTENT -->
+    <entry key="libxml_86"> <!-- XML_ERR_EXTRA_CONTENT -->
       <value>extra content at end of well-balanced chunk</value>
     </entry>
 
-    <entry key="libxml_ERR_87"> <!-- XML_ERR_ENTITY_CHAR_ERROR -->
+    <entry key="libxml_87"> <!-- XML_ERR_ENTITY_CHAR_ERROR -->
       <value>'$8' forbidden except for entity references</value>
     </entry>
 
-    <entry key="libxml_ERR_88"> <!-- XML_ERR_ENTITY_PE_INTERNAL -->
+    <entry key="libxml_88"> <!-- XML_ERR_ENTITY_PE_INTERNAL -->
       <value>invalid entity type</value>
     </entry>
 
-    <entry key="libxml_ERR_89"> <!-- XML_ERR_ENTITY_LOOP -->
+    <entry key="libxml_89"> <!-- XML_ERR_ENTITY_LOOP -->
       <value>entity reference loop</value>
     </entry>
 
-    <entry key="libxml_ERR_90"> <!-- XML_ERR_ENTITY_BOUNDARY -->
+    <entry key="libxml_90"> <!-- XML_ERR_ENTITY_BOUNDARY -->
       <value>declaration must start and end in the same entity</value>
     </entry>
 
-    <entry key="libxml_ERR_91"> <!-- XML_ERR_INVALID_URI -->
+    <entry key="libxml_91"> <!-- XML_ERR_INVALID_URI -->
       <value>"$5": invalid URI</value>
     </entry>
 
-    <entry key="libxml_ERR_92"> <!-- XML_ERR_URI_FRAGMENT -->
+    <entry key="libxml_92"> <!-- XML_ERR_URI_FRAGMENT -->
       <value>URI fragment not allowed</value>
     </entry>
 
-    <entry key="libxml_WAR_93"> <!-- XML_WAR_CATALOG_PI -->
+    <entry key="libxml_93"> <!-- XML_WAR_CATALOG_PI -->
       <value>"$5": catalog processing instruction syntax error</value>
     </entry>
 
-    <entry key="libxml_ERR_94"> <!-- XML_ERR_NO_DTD -->
+    <entry key="libxml_94"> <!-- XML_ERR_NO_DTD -->
       <value>validation failed: no DTD found</value>
     </entry>
 
-    <entry key="libxml_ERR_95"> <!-- XML_ERR_CONDSEC_INVALID_KEYWORD -->
+    <entry key="libxml_95"> <!-- XML_ERR_CONDSEC_INVALID_KEYWORD -->
       <value>"IGNORE" or "INCLUDE" expected</value>
     </entry>
 
-    <entry key="libxml_ERR_96"> <!-- XML_ERR_VERSION_MISSING -->
+    <entry key="libxml_96"> <!-- XML_ERR_VERSION_MISSING -->
       <value>XML version expected</value>
     </entry>
 
-    <entry key="libxml_ERR_99"> <!-- XML_ERR_NS_URI -->
+    <entry key="libxml_99"> <!-- XML_ERR_NS_URI -->
       <value>xmlns$6?{:5}\: URI "$6?6:5": invalid URI</value>
     </entry>
 
-    <entry key="libxml_WAR_97"> <!-- XML_WAR_UNKNOWN_VERSION -->
+    <entry key="libxml_97"> <!-- XML_WAR_UNKNOWN_VERSION -->
       <value>"$5": unsupported XML version</value>
     </entry>
 
-    <entry key="libxml_WAR_98"> <!-- XML_WAR_LANG_VALUE -->
+    <entry key="libxml_98"> <!-- XML_WAR_LANG_VALUE -->
       <value>"$5": malformed xml:lang value</value>
     </entry>
 
-    <entry key="libxml_WAR_99"> <!-- XML_WAR_NS_URI -->
+    <entry key="libxml_99"> <!-- XML_WAR_NS_URI -->
       <value>xmlns$6?{:5}\: URI "$6?6:5": invalid URI</value>
     </entry>
 
-    <entry key="libxml_WAR_100"> <!-- XML_WAR_NS_URI_RELATIVE -->
+    <entry key="libxml_100"> <!-- XML_WAR_NS_URI_RELATIVE -->
       <value>xmlns$6?{:5}\: URI "$6?6:5": invalid URI</value>
     </entry>
 
-    <entry key="libxml_ERR_101"> <!-- XML_ERR_MISSING_ENCODING -->
+    <entry key="libxml_101"> <!-- XML_ERR_MISSING_ENCODING -->
       <value>encoding expected in text declaration</value>
     </entry>
 
-    <entry key="libxml_WAR_102"> <!-- XML_WAR_SPACE_VALUE -->
+    <entry key="libxml_102"> <!-- XML_WAR_SPACE_VALUE -->
       <value>"$5": invalid value for "xml:space"; either "default" or "preserve" expected</value>
     </entry>
 
-    <entry key="libxml_ERR_103"> <!-- XML_ERR_NOT_STANDALONE -->
+    <entry key="libxml_103"> <!-- XML_ERR_NOT_STANDALONE -->
       <value>"$5": entity marked standalone but requires external subset</value>
     </entry>
 
-    <entry key="libxml_ERR_104"> <!-- XML_ERR_ENTITY_PROCESSING -->
+    <entry key="libxml_104"> <!-- XML_ERR_ENTITY_PROCESSING -->
       <value>"$5": failed to process entity or called while not in subset</value>
     </entry>
 
-    <entry key="libxml_ERR_105"> <!-- XML_ERR_NOTATION_PROCESSING -->
+    <entry key="libxml_105"> <!-- XML_ERR_NOTATION_PROCESSING -->
       <value>"$5": external or public ID missing or called while not in subset</value>
     </entry>
 
-    <entry key="libxml_WAR_106"> <!-- XML_WAR_NS_COLUMN -->
+    <entry key="libxml_106"> <!-- XML_WAR_NS_COLUMN -->
       <value>"$5": avoid attribute ending with ':'</value>
     </entry>
 
-    <entry key="libxml_WAR_107"> <!-- XML_WAR_ENTITY_REDEFINED -->
+    <entry key="libxml_107"> <!-- XML_WAR_ENTITY_REDEFINED -->
       <value>"$5": entity already defined in the internal subset</value>
     </entry>
 
-    <entry key="libxml_ERR_108"> <!-- XML_ERR_UNKNOWN_VERSION -->
+    <entry key="libxml_108"> <!-- XML_ERR_UNKNOWN_VERSION -->
       <value>"$5": unsupprted XML version</value>
     </entry>
 
-    <entry key="libxml_ERR_109"> <!-- XML_ERR_VERSION_MISMATCH -->
+    <entry key="libxml_109"> <!-- XML_ERR_VERSION_MISMATCH -->
       <value>document/entity version mismatch</value>
     </entry>
 
-    <entry key="libxml_ERR_110"> <!-- XML_ERR_NAME_TOO_LONG -->
+    <entry key="libxml_110"> <!-- XML_ERR_NAME_TOO_LONG -->
       <value>$5 too long (use XML_PARSE_HUGE option)</value>
     </entry>
 
-    <entry key="libxml_ERR_200"> <!-- XML_NS_ERR_XML_NAMESPACE -->
+    <entry key="libxml_200"> <!-- XML_NS_ERR_XML_NAMESPACE -->
       <value>${"5": }invalid namespace or prefix</value>
     </entry>
 
-    <entry key="libxml_ERR_201"> <!-- XML_NS_ERR_UNDEFINED_NAMESPACE -->
+    <entry key="libxml_201"> <!-- XML_NS_ERR_UNDEFINED_NAMESPACE -->
       <value>${"5": }namespace prefix${ for "7?6"}${ on "7?7:6"} not defined</value>
     </entry>
 
-    <entry key="libxml_ERR_202"> <!-- XML_NS_ERR_QNAME -->
+    <entry key="libxml_202"> <!-- XML_NS_ERR_QNAME -->
       <value>"$5${:6}": invalid XML QName</value>
     </entry>
 
-    <entry key="libxml_ERR_203"> <!-- XML_NS_ERR_ATTRIBUTE_REDEFINED -->
+    <entry key="libxml_203"> <!-- XML_NS_ERR_ATTRIBUTE_REDEFINED -->
       <value>"$5": attribute in namespace "$6" redefined</value>
     </entry>
 
-    <entry key="libxml_ERR_204"> <!-- XML_NS_ERR_EMPTY -->
+    <entry key="libxml_204"> <!-- XML_NS_ERR_EMPTY -->
       <value>empty namespace for prefix "$5"</value>
     </entry>
 
-    <entry key="libxml_ERR_205"> <!-- XML_NS_ERR_COLON -->
+    <entry key="libxml_205"> <!-- XML_NS_ERR_COLON -->
       <value>"$5": colon is forbidden in entity, notation, and processing instruction names</value>
     </entry>
 
-    <entry key="libxml_ERR_500"> <!-- XML_DTD_ATTRIBUTE_DEFAULT -->
+    <entry key="libxml_500"> <!-- XML_DTD_ATTRIBUTE_DEFAULT -->
       <!--
        ! We can't do better here since libxml uses puts different things in the
        ! positional parameters.
@@ -5264,11 +5264,11 @@
       <value>"$5": invalid attribute value</value>
     </entry>
 
-    <entry key="libxml_ERR_501"> <!-- XML_DTD_ATTRIBUTE_REDEFINED -->
+    <entry key="libxml_501"> <!-- XML_DTD_ATTRIBUTE_REDEFINED -->
       <value>"$5": attribute of element "$6" already defined</value>
     </entry>
 
-    <entry key="libxml_ERR_502"> <!-- XML_DTD_ATTRIBUTE_VALUE -->
+    <entry key="libxml_502"> <!-- XML_DTD_ATTRIBUTE_VALUE -->
       <!--
        ! We can't do better here since libxml uses puts different things in the
        ! positional parameters.
@@ -5276,11 +5276,11 @@
       <value>"$5": invalid attribute value</value>
     </entry>
 
-    <entry key="libxml_ERR_503"> <!-- XML_DTD_CONTENT_ERROR -->
+    <entry key="libxml_503"> <!-- XML_DTD_CONTENT_ERROR -->
       <value>"$5": defintion has duplicate references to "$6"</value>
     </entry>
 
-    <entry key="libxml_ERR_504"> <!-- XML_DTD_CONTENT_MODEL -->
+    <entry key="libxml_504"> <!-- XML_DTD_CONTENT_MODEL -->
       <!--
        ! We can't do better here since libxml uses puts different things in the
        ! positional parameters.
@@ -5288,19 +5288,19 @@
       <value>${"5:" }element content does not follow DTD</value>
     </entry>
 
-    <entry key="libxml_ERR_505"> <!-- XML_DTD_CONTENT_NOT_DETERMINIST -->
+    <entry key="libxml_505"> <!-- XML_DTD_CONTENT_NOT_DETERMINIST -->
       <value>"$5": content model is not deteministic</value>
     </entry>
 
-    <entry key="libxml_ERR_506"> <!-- XML_DTD_DIFFERENT_PREFIX -->
+    <entry key="libxml_506"> <!-- XML_DTD_DIFFERENT_PREFIX -->
       <value>element "$5" required attribute "$6:$7" has different prefix</value>
     </entry>
 
-    <entry key="libxml_ERR_507"> <!-- XML_DTD_ELEM_DEFAULT_NAMESPACE -->
+    <entry key="libxml_507"> <!-- XML_DTD_ELEM_DEFAULT_NAMESPACE -->
       <value>"$5": element namespace name for default namespace does not match DTD</value>
     </entry>
 
-    <entry key="libxml_ERR_508"> <!-- XML_DTD_ELEM_NAMESPACE -->
+    <entry key="libxml_508"> <!-- XML_DTD_ELEM_NAMESPACE -->
       <!--
        ! We can't do better here since libxml uses puts different things in the
        ! positional parameters.
@@ -5308,117 +5308,117 @@
       <value>"$7?6:5": invalid attribute value or element namespace name does not match DTD</value>
     </entry>
 
-    <entry key="libxml_ERR_509"> <!-- XML_DTD_ELEM_REDEFINED -->
+    <entry key="libxml_509"> <!-- XML_DTD_ELEM_REDEFINED -->
       <value>"$5": element redefined</value>
     </entry>
 
-    <entry key="libxml_ERR_510"> <!-- XML_DTD_EMPTY_NOTATION -->
+    <entry key="libxml_510"> <!-- XML_DTD_EMPTY_NOTATION -->
       <value>"$5": notation attribute declared "EMPTY" for element "$6"</value>
     </entry>
 
-    <entry key="libxml_ERR_511"> <!-- XML_DTD_ENTITY_TYPE -->
+    <entry key="libxml_511"> <!-- XML_DTD_ENTITY_TYPE -->
       <value>"$5": ENTITY attribute references an entity "$6" of wrong type</value>
     </entry>
 
-    <entry key="libxml_ERR_512"> <!-- XML_DTD_ID_FIXED -->
+    <entry key="libxml_512"> <!-- XML_DTD_ID_FIXED -->
       <value>"$5": invalid ID attribute of "$6" ("#IMPLIED" or "#REQUIRED" expected)</value>
     </entry>
 
-    <entry key="libxml_ERR_513"> <!-- XML_DTD_ID_REDEFINED -->
+    <entry key="libxml_513"> <!-- XML_DTD_ID_REDEFINED -->
       <value>"$5": ID already defined</value>
     </entry>
 
-    <entry key="libxml_ERR_514"> <!-- XML_DTD_ID_SUBSET -->
+    <entry key="libxml_514"> <!-- XML_DTD_ID_SUBSET -->
       <value>"$5": element has${ 8} attribute(s) defined in the internal subset: "$6"</value>
     </entry>
 
-    <entry key="libxml_ERR_515"> <!-- XML_DTD_INVALID_CHILD -->
+    <entry key="libxml_515"> <!-- XML_DTD_INVALID_CHILD -->
       <value>"$5": element not declared in list of possible children of "$6"</value>
     </entry>
 
-    <entry key="libxml_ERR_516"> <!-- XML_DTD_INVALID_DEFAULT -->
+    <entry key="libxml_516"> <!-- XML_DTD_INVALID_DEFAULT -->
       <value>"xmlns$6?{:5}" invalid attribute of "$6?6:5"</value>
     </entry>
 
-    <entry key="libxml_ERR_517"> <!-- XML_DTD_LOAD_ERROR -->
+    <entry key="libxml_517"> <!-- XML_DTD_LOAD_ERROR -->
       <value>"$5": could not load external subset</value>
     </entry>
 
-    <entry key="libxml_ERR_518"> <!-- XML_DTD_MISSING_ATTRIBUTE -->
+    <entry key="libxml_518"> <!-- XML_DTD_MISSING_ATTRIBUTE -->
       <value>"$7?{6:}$7?7:6": attribute not carried by element "$5"</value>
     </entry>
 
-    <entry key="libxml_ERR_519"> <!-- XML_DTD_MIXED_CORRUPT -->
+    <entry key="libxml_519"> <!-- XML_DTD_MIXED_CORRUPT -->
       <value>internal MIXED struct corrupted</value>
     </entry>
 
-    <entry key="libxml_ERR_520"> <!-- XML_DTD_MULTIPLE_ID -->
+    <entry key="libxml_520"> <!-- XML_DTD_MULTIPLE_ID -->
       <value>"$5": element has too many ID attributes defined: "$6"</value>
     </entry>
 
-    <entry key="libxml_ERR_521"> <!-- XML_DTD_NO_DOC -->
+    <entry key="libxml_521"> <!-- XML_DTD_NO_DOC -->
       <value>document is null</value>
     </entry>
 
-    <entry key="libxml_ERR_522"> <!-- XML_DTD_NO_DTD -->
+    <entry key="libxml_522"> <!-- XML_DTD_NO_DTD -->
       <value>document without internal/external subset or no DTD found</value>
     </entry>
 
     <!-- 523: XML_DTD_NO_ELEM_NAME not used -->
 
-    <entry key="libxml_ERR_524"> <!-- XML_DTD_NO_PREFIX -->
+    <entry key="libxml_524"> <!-- XML_DTD_NO_PREFIX -->
       <value>"$6:$7": required attribute of element "$5" has no prefix</value>
     </entry>
 
-    <entry key="libxml_ERR_525"> <!-- XML_DTD_NO_ROOT -->
+    <entry key="libxml_525"> <!-- XML_DTD_NO_ROOT -->
       <value>no root element</value>
     </entry>
 
-    <entry key="libxml_ERR_526"> <!-- XML_DTD_NOTATION_REDEFINED -->
+    <entry key="libxml_526"> <!-- XML_DTD_NOTATION_REDEFINED -->
       <value>"$5": notation already defined</value>
     </entry>
 
-    <entry key="libxml_ERR_527"> <!-- XML_DTD_NOTATION_VALUE -->
+    <entry key="libxml_527"> <!-- XML_DTD_NOTATION_VALUE -->
       <value>"$5": value for attribute "xmlns$7?{:6}" of element "$7?7:6" is not among the enumerated notations</value>
     </entry>
 
-    <entry key="libxml_ERR_528"> <!-- XML_DTD_NOT_EMPTY -->
+    <entry key="libxml_528"> <!-- XML_DTD_NOT_EMPTY -->
       <value>"$5": element declared empty but has content</value>
     </entry>
 
-    <entry key="libxml_ERR_529"> <!-- XML_DTD_NOT_PCDATA -->
+    <entry key="libxml_529"> <!-- XML_DTD_NOT_PCDATA -->
       <value>"$5": element declared "#PCDATA" but has non-text nodes</value>
     </entry>
 
-    <entry key="libxml_ERR_530"> <!-- XML_DTD_NOT_STANDALONE -->
+    <entry key="libxml_530"> <!-- XML_DTD_NOT_STANDALONE -->
       <value>"$5" on "$6" value has to be normalized based on external subset declaration</value>
     </entry>
 
-    <entry key="libxml_ERR_531"> <!-- XML_DTD_ROOT_NAME -->
+    <entry key="libxml_531"> <!-- XML_DTD_ROOT_NAME -->
       <value>"$5"/"$6": root/DTD name mismatch</value>
     </entry>
 
-    <entry key="libxml_ERR_532"> <!-- XML_DTD_STANDALONE_WHITE_SPACE -->
+    <entry key="libxml_532"> <!-- XML_DTD_STANDALONE_WHITE_SPACE -->
       <value>"$5": element declared in external subset contains whitespace nodes</value>
     </entry>
 
-    <entry key="libxml_ERR_533"> <!-- XML_DTD_UNKNOWN_ATTRIBUTE -->
+    <entry key="libxml_533"> <!-- XML_DTD_UNKNOWN_ATTRIBUTE -->
       <value>"$6?5:{xmlns}": attribute not declared for element "$6?6:5"</value>
     </entry>
 
-    <entry key="libxml_ERR_534"> <!-- XML_DTD_UNKNOWN_ELEM -->
+    <entry key="libxml_534"> <!-- XML_DTD_UNKNOWN_ELEM -->
       <value>"$6?6:5": undeclared element$6?{ for attribute "5"}</value>
     </entry>
 
-    <entry key="libxml_ERR_535"> <!-- XML_DTD_UNKNOWN_ENTITY -->
+    <entry key="libxml_535"> <!-- XML_DTD_UNKNOWN_ENTITY -->
       <value>$5?{"6": unknown entity referenced by attribute "5"}:{unknown entity type}</value>
     </entry>
 
-    <entry key="libxml_ERR_536"> <!-- XML_DTD_UNKNOWN_ID -->
+    <entry key="libxml_536"> <!-- XML_DTD_UNKNOWN_ID -->
       <value>"$5": attribute references an unknown ID "$6"${ on line 8}"</value>
     </entry>
 
-    <entry key="libxml_ERR_537"> <!-- XML_DTD_UNKNOWN_NOTATION -->
+    <entry key="libxml_537"> <!-- XML_DTD_UNKNOWN_NOTATION -->
       <!--
        ! We can't do better here since libxml uses puts different things in the
        ! positional parameters.
@@ -5426,19 +5426,19 @@
       <value>"$5": unknown notation</value>
     </entry>
 
-    <entry key="libxml_ERR_538"> <!-- XML_DTD_STANDALONE_DEFAULTED -->
+    <entry key="libxml_538"> <!-- XML_DTD_STANDALONE_DEFAULTED -->
       <value>"$5": attribute on "$7" defaulted from external subset</value>
     </entry>
 
-    <entry key="libxml_ERR_539"> <!-- XML_DTD_XMLID_VALUE -->
+    <entry key="libxml_539"> <!-- XML_DTD_XMLID_VALUE -->
       <value>"$5": xml:id attribute value is not an NCName</value>
     </entry>
 
-    <entry key="libxml_ERR_540"> <!-- XML_DTD_XMLID_TYPE -->
+    <entry key="libxml_540"> <!-- XML_DTD_XMLID_TYPE -->
       <value>"$5": xml:id attribute type must be ID</value>
     </entry>
 
-    <entry key="libxml_ERR_541"> <!-- XML_DTD_DUP_TOKEN -->
+    <entry key="libxml_541"> <!-- XML_DTD_DUP_TOKEN -->
       <value>"$5": duplicate attribute enumeration value token</value>
     </entry>
 

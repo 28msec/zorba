@@ -1,0 +1,2465 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Language" content="ja" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css; charset=UTF-8" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
+    <meta name="description" content="The Nikkei Indexes provide the information regarding all of the indexes calculated by Nikkei Inc., represented by Nikkei Stock Average." />
+    <meta name="keywords" content="Nikkei,225,index,indices" />
+    <title>Components - Nikkei Indexes </title>
+    <link href="/en/nkave/assets/import.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="/en/nkave/assets/styles_en.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="/en/nkave/assets/jquery-1.5.2.js" type="text/javascript"></script>
+    <script src="/en/nkave/assets/jquery.common.js" type="text/javascript"></script>
+
+    <meta content="authenticity_token" name="csrf-param" />
+<meta content="0H02GQL1B23EU4hDRAoe/SmdvNb8Crju7tYAq8zz6gg=" name="csrf-token" />
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+  </head>
+  <body>
+
+  <div id="HEAD_WRAP">
+    <div id="HEADER">
+      <h1><a href="http://indexes.nikkei.co.jp/en/nkave" class="logo">日経平均プロフィル 日経が伝える指数のすべてを紹介</a></h1>
+      <div id="SITE_SEARCH" class="cmn-clearfix">
+        <div class="cmn-searchbox">
+          <div id="cse-search-form" style="width: 100%;">Loading</div>
+<script src="//www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript"> 
+  google.load('search', '1', {language : 'en', style : google.loader.themes.V2_DEFAULT});
+  google.setOnLoadCallback(function() {
+    var customSearchOptions = {};
+    customSearchOptions['adoptions'] = {'layout': 'noTop'};
+    var customSearchControl = new google.search.CustomSearchControl(
+      '016727024075069819134:g21itgfiuwe', customSearchOptions);
+    customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+    var options = new google.search.DrawOptions();
+    options.enableSearchboxOnly("/en/nkave/search");
+    customSearchControl.draw('cse-search-form', options);
+  }, true);
+</script>
+
+<style type="text/css">
+  input.gsc-input, .gsc-input-box, .gsc-input-box-hover, .gsc-input-box-focus {
+    border-color: #D9D9D9;
+  }
+  input.gsc-search-button, input.gsc-search-button:hover, input.gsc-search-button:focus {
+    border-color: #2F5BB7;
+    background-color: #357AE8;
+    background-image: none;
+    filter: none;
+  }
+  .gsc-input input.gsc-input {
+    background: none repeat scroll 0% 0% white !important; 
+  }
+
+  .gsib_a {
+    padding-right: 8px;
+    padding-left: 4px;
+  }
+  .gsc-search-box-tools .gsc-search-box .gsc-input {
+    padding-right: 4px;
+  }
+  .cse .gsc-search-button input.gsc-search-button-v2,
+  input.gsc-search-button-v2 {
+    width: 13px;
+    height: 13px;
+    padding: 6px 30px;
+    min-width: 13px;
+    margin-top: 0px;
+  }
+</style>
+
+        </div>
+        <ul>
+          <li><a href="http://indexes.nikkei.co.jp/"><img alt="日本語" class="over" height="23" src="/en/nkave/assets/common/hd_bt003.gif" width="72" /></a></li>
+          <li><a href="http://indexes.nikkei.co.jp/cz/nkave/index/profile?idx=nk225"><img alt="簡体中文" class="over" height="23" src="/en/nkave/assets/common/hd_bt002.gif" width="72" /></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <ul id="NAV">
+      <li class="nav-01">
+        <a href="http://indexes.nikkei.co.jp/en/nkave" >TOP</a>
+      </li>
+      <li class="nav-02">
+        <a href="http://indexes.nikkei.co.jp/en/nkave/index" class="on">Indexes</a>
+      </li>
+      <li class="nav-03">
+        <a href="http://indexes.nikkei.co.jp/en/nkave/newsroom" >News Room</a>
+      </li>
+      <li class="nav-04">
+        <a href="http://indexes.nikkei.co.jp/en/nkave/archives/data" >Archives</a>
+      </li>
+      <li class="nav-05">
+        <a href="http://indexes.nikkei.co.jp/en/nkave/info" >Information</a>
+      </li>
+      <li class="nav-06">
+        <a href="https://indexes.nikkei.co.jp/en/nkave/alertmail" >Alert Mail</a>
+      </li>
+      <li class="nav-07">
+        <a href="https://indexes.nikkei.co.jp/en/nkave/service" >Data Service</a>
+      </li>
+    </ul>
+  </div>
+
+    <div id="CONTENTS">
+    <div id="CONTENTS_INNER" class="cmn-clearfix">
+      <div id="JSID_baseBreaking_normal">
+      </div>
+      <h1 class="cmn-page_title">Components:Nikkei Stock Average</h1>
+
+      <div id="CONTENTS_SUB">
+        <div class="cmn-sub-center cmn-clearfix">
+          <table id="top" width="100%">
+            <tr>
+              <td align="right">&nbsp;</td>
+            </tr>
+          </table>
+          
+          <table width="100%" cellspacing="0" style="margin-top:-15px;">
+
+
+                <tr height="15"><td></td></tr>
+                <tr>
+                  <td align="center" width="100%" colspan="2">
+                    <div class="cmn-headline">
+                      <div class="cmn-headline_inner">
+                        <h2 class="cmn-headline_title">Technology</h2>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#09">Pharmaceuticals</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#23">Electric Machinery</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#27">Automobiles &amp; Auto parts</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#31">Precision Instruments</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#65">Communications</a></td>
+
+
+
+                  <td class="cmn-stock_border cmn-stocknames_odd">&nbsp;</td>
+                </tr>
+                <tr height="15"><td></td></tr>
+                <tr>
+                  <td align="center" width="100%" colspan="2">
+                    <div class="cmn-headline">
+                      <div class="cmn-headline_inner">
+                        <h2 class="cmn-headline_title">Financials</h2>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#47">Banking</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#52">Other Financial Services</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#49">Securities</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#51">Insurance</a></td>
+
+                </tr>
+
+
+                <tr height="15"><td></td></tr>
+                <tr>
+                  <td align="center" width="100%" colspan="2">
+                    <div class="cmn-headline">
+                      <div class="cmn-headline_inner">
+                        <h2 class="cmn-headline_title">Consumer Goods</h2>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#35">Fishery</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#01">Foods</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#45">Retail</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#71">Services</a></td>
+
+                </tr>
+
+
+                <tr height="15"><td></td></tr>
+                <tr>
+                  <td align="center" width="100%" colspan="2">
+                    <div class="cmn-headline">
+                      <div class="cmn-headline_inner">
+                        <h2 class="cmn-headline_title">Materials</h2>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#37">Mining</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#03">Textiles &amp; Apparel</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#05">Pulp &amp; Paper</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#07">Chemicals</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#11">Petroleum</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#13">Rubber</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#15">Glass &amp; Ceramics</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#17">Steel</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#19">Nonferrous Metals</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#43">Trading Companies</a></td>
+
+                </tr>
+
+
+                <tr height="15"><td></td></tr>
+                <tr>
+                  <td align="center" width="100%" colspan="2">
+                    <div class="cmn-headline">
+                      <div class="cmn-headline_inner">
+                        <h2 class="cmn-headline_title">Capital Goods/Others</h2>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#41">Construction</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#21">Machinery</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#25">Shipbuilding</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#29">Transportation Equipment</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#33">Other Manufacturing</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#53">Real Estate</a></td>
+
+                </tr>
+
+
+                <tr height="15"><td></td></tr>
+                <tr>
+                  <td align="center" width="100%" colspan="2">
+                    <div class="cmn-headline">
+                      <div class="cmn-headline_inner">
+                        <h2 class="cmn-headline_title">Transportation and Utilities</h2>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#55">Railway &amp; Bus</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#57">Land Transport</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#59">Marine Transport</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#61">Air Transport</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#63">Warehousing</a></td>
+
+
+
+
+
+
+                  <td class="cmn-stock_border cmn-stockmenu_odd"><a href="#67">Electric Power</a></td>
+
+                </tr>
+
+
+
+
+                <tr>
+
+                  <td class="cmn-stock_border cmn-stockmenu_even"><a href="#69">Gas</a></td>
+
+
+                
+                  <td class="cmn-stock_border cmn-stocknames_even">&nbsp;</td>
+                </tr>
+          </table>
+        </div>
+      </div>
+      
+      <div id="CONTENTS_MAIN">
+        <div class="cmn-main-center cmn-clearfix">
+          <hr class="cmn-hide" />
+          <table id="top" cellspacing="0" width="100%">
+            <tr>
+              <td align="right">Update:Dec/04/2014</td>
+            </tr>
+          </table>
+
+            <table class="cmn-table" cellspacing="0" width="100%" style="margin-top:-15px;">                                        
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="09">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Pharmaceuticals<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4151</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KYOWA HAKKO KIRIN CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4502</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TAKEDA PHARMACEUTICAL CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4503</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ASTELLAS PHARMA INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4506</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMITOMO DAINIPPON PHARMA CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4507</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SHIONOGI &amp; CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4519</td>
+                      <td class="cmn-character cmn-stock_border">
+                        CHUGAI PHARMACEUTICAL CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4523</td>
+                      <td class="cmn-character cmn-stock_border">
+                        EISAI CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4568</td>
+                      <td class="cmn-character cmn-stock_border">
+                        DAIICHI SANKYO CO., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="23">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Electric Machinery<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6479</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MINEBEA CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6501</td>
+                      <td class="cmn-character cmn-stock_border">
+                        HITACHI, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6502</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOSHIBA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6503</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUBISHI ELECTRIC CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6504</td>
+                      <td class="cmn-character cmn-stock_border">
+                        FUJI ELECTRIC CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6506</td>
+                      <td class="cmn-character cmn-stock_border">
+                        YASKAWA ELECTRIC CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6508</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MEIDENSHA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6674</td>
+                      <td class="cmn-character cmn-stock_border">
+                        GS YUASA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6701</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NEC CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6702</td>
+                      <td class="cmn-character cmn-stock_border">
+                        FUJITSU LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6703</td>
+                      <td class="cmn-character cmn-stock_border">
+                        OKI ELECTRIC IND. CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6752</td>
+                      <td class="cmn-character cmn-stock_border">
+                        PANASONIC CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6753</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SHARP CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6758</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SONY CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6762</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TDK CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6767</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUMI ELECTRIC CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6770</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ALPS ELECTRIC CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6773</td>
+                      <td class="cmn-character cmn-stock_border">
+                        PIONEER CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6841</td>
+                      <td class="cmn-character cmn-stock_border">
+                        YOKOGAWA ELECTRIC CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6857</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ADVANTEST CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6902</td>
+                      <td class="cmn-character cmn-stock_border">
+                        DENSO CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6952</td>
+                      <td class="cmn-character cmn-stock_border">
+                        CASIO COMPUTER CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6954</td>
+                      <td class="cmn-character cmn-stock_border">
+                        FANUC CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6971</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KYOCERA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6976</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TAIYO YUDEN CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7735</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SCREEN HOLDINGS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7751</td>
+                      <td class="cmn-character cmn-stock_border">
+                        CANON INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7752</td>
+                      <td class="cmn-character cmn-stock_border">
+                        RICOH CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8035</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOKYO ELECTRON LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="27">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Automobiles &amp; Auto parts<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7201</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NISSAN MOTOR CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7202</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ISUZU MOTORS LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7203</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOYOTA MOTOR CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7205</td>
+                      <td class="cmn-character cmn-stock_border">
+                        HINO MOTORS, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7211</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUBISHI MOTORS CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7261</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MAZDA MOTOR CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7267</td>
+                      <td class="cmn-character cmn-stock_border">
+                        HONDA MOTOR CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7269</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUZUKI MOTOR CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7270</td>
+                      <td class="cmn-character cmn-stock_border">
+                        FUJI HEAVY INDUSTRIES LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="31">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Precision Instruments<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4543</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TERUMO CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4902</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KONICA MINOLTA, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7731</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIKON CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7733</td>
+                      <td class="cmn-character cmn-stock_border">
+                        OLYMPUS CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7762</td>
+                      <td class="cmn-character cmn-stock_border">
+                        CITIZEN HOLDINGS CO., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="65">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Communications<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9412</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SKY PERFECT JSAT HOLDINGS INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9432</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON TELEGRAPH &amp; TELEPHONE CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9433</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KDDI CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9437</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NTT DOCOMO, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9613</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NTT DATA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9984</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SOFTBANK CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="47">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Banking<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8303</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SHINSEI BANK, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8304</td>
+                      <td class="cmn-character cmn-stock_border">
+                        AOZORA BANK, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8306</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUBISHI UFJ FINANCIAL GROUP, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8308</td>
+                      <td class="cmn-character cmn-stock_border">
+                        RESONA HOLDINGS, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8309</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMITOMO MITSUI TRUST HOLDINGS, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8316</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMITOMO MITSUI FINANCIAL GROUP, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8331</td>
+                      <td class="cmn-character cmn-stock_border">
+                        THE CHIBA BANK, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8332</td>
+                      <td class="cmn-character cmn-stock_border">
+                        THE BANK OF YOKOHAMA, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8354</td>
+                      <td class="cmn-character cmn-stock_border">
+                        FUKUOKA FINANCIAL GROUP, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8355</td>
+                      <td class="cmn-character cmn-stock_border">
+                        THE SHIZUOKA BANK, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8411</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MIZUHO FINANCIAL GROUP, INC.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="52">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Other Financial Services<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8253</td>
+                      <td class="cmn-character cmn-stock_border">
+                        CREDIT SAISON CO., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="49">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Securities<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8601</td>
+                      <td class="cmn-character cmn-stock_border">
+                        DAIWA SECURITIES GROUP INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8604</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NOMURA HOLDINGS, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8628</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MATSUI SECURITIES CO., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="51">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Insurance<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8630</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SOMPO JAPAN NIPPONKOA HOLDINGS, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8725</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MS&amp;AD INSURANCE GROUP HOLDINGS, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8729</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SONY FINANCIAL HOLDINGS INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8750</td>
+                      <td class="cmn-character cmn-stock_border">
+                        THE DAI-ICHI LIFE INSURANCE CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8766</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOKIO MARINE HOLDINGS, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8795</td>
+                      <td class="cmn-character cmn-stock_border">
+                        T&amp;D HOLDINGS, INC.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="35">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Fishery<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">1332</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON SUISAN KAISHA, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">1333</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MARUHA NICHIRO CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="01">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Foods<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">2002</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NISSHIN SEIFUN GROUP INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">2269</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MEIJI HOLDINGS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">2282</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NH FOODS LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">2501</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SAPPORO HOLDINGS LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">2502</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ASAHI GROUP HOLDINGS, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">2503</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KIRIN HOLDINGS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">2531</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TAKARA HOLDINGS INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">2801</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KIKKOMAN CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">2802</td>
+                      <td class="cmn-character cmn-stock_border">
+                        AJINOMOTO CO., INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">2871</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NICHIREI CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">2914</td>
+                      <td class="cmn-character cmn-stock_border">
+                        JAPAN TOBACCO INC.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="45">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Retail<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3086</td>
+                      <td class="cmn-character cmn-stock_border">
+                        J.FRONT RETAILING CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">3099</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ISETAN MITSUKOSHI HOLDINGS LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3382</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SEVEN &amp; I HOLDINGS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8233</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TAKASHIMAYA CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8252</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MARUI GROUP CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8267</td>
+                      <td class="cmn-character cmn-stock_border">
+                        AEON CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8270</td>
+                      <td class="cmn-character cmn-stock_border">
+                        UNY GROUP HOLDINGS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9983</td>
+                      <td class="cmn-character cmn-stock_border">
+                        FAST RETAILING CO., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="71">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Services<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4324</td>
+                      <td class="cmn-character cmn-stock_border">
+                        DENTSU INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4689</td>
+                      <td class="cmn-character cmn-stock_border">
+                        YAHOO JAPAN CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4704</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TREND MICRO INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9602</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOHO CO., LTD
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9681</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOKYO DOME CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9735</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SECOM CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9766</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KONAMI CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="37">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Mining<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">1605</td>
+                      <td class="cmn-character cmn-stock_border">
+                        INPEX CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="03">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Textiles &amp; Apparel<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3101</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOYOBO CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">3103</td>
+                      <td class="cmn-character cmn-stock_border">
+                        UNITIKA, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3105</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NISSHINBO HOLDINGS INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">3401</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TEIJIN LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3402</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TORAY INDUSTRIES, INC.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="05">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Pulp &amp; Paper<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3861</td>
+                      <td class="cmn-character cmn-stock_border">
+                        OJI HOLDINGS CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">3863</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON PAPER INDUSTRIES CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3865</td>
+                      <td class="cmn-character cmn-stock_border">
+                        HOKUETSU KISHU PAPER CO., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="07">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Chemicals<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3405</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KURARAY CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">3407</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ASAHI KASEI CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4004</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SHOWA DENKO K.K.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4005</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMITOMO CHEMICAL CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4021</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NISSAN CHEMICAL IND., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4041</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON SODA CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4042</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOSOH CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4043</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOKUYAMA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4061</td>
+                      <td class="cmn-character cmn-stock_border">
+                        DENKI KAGAKU KOGYO K.K.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4063</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SHIN-ETSU CHEMICAL CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4183</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUI CHEMICALS, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4188</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUBISHI CHEMICAL HOLDINGS CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4208</td>
+                      <td class="cmn-character cmn-stock_border">
+                        UBE INDUSTRIES, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4272</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON KAYAKU CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4452</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KAO CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">4901</td>
+                      <td class="cmn-character cmn-stock_border">
+                        FUJIFILM HOLDINGS CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">4911</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SHISEIDO CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6988</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NITTO DENKO CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="11">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Petroleum<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5002</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SHOWA SHELL SEKIYU K.K.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5020</td>
+                      <td class="cmn-character cmn-stock_border">
+                        JX HOLDINGS, INC.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="13">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Rubber<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5101</td>
+                      <td class="cmn-character cmn-stock_border">
+                        THE YOKOHAMA RUBBER CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5108</td>
+                      <td class="cmn-character cmn-stock_border">
+                        BRIDGESTONE CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="15">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Glass &amp; Ceramics<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3110</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NITTO BOSEKI CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5201</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ASAHI GLASS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5202</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON SHEET GLASS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5214</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON ELECTRIC GLASS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5232</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMITOMO OSAKA CEMENT CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5233</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TAIHEIYO CEMENT CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5301</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOKAI CARBON CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5332</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOTO LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5333</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NGK INSULATORS, LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="17">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Steel<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5401</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON STEEL &amp; SUMITOMO METAL CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5406</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KOBE STEEL, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5411</td>
+                      <td class="cmn-character cmn-stock_border">
+                        JFE HOLDINGS, INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5413</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NISSHIN STEEL CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5541</td>
+                      <td class="cmn-character cmn-stock_border">
+                        PACIFIC METALS CO., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="19">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Nonferrous Metals<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3436</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMCO CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5703</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON LIGHT METAL HOLDINGS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5706</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUI MINING &amp; SMELTING CO.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5707</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOHO ZINC CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5711</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUBISHI MATERIALS CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5713</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMITOMO METAL MINING CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5714</td>
+                      <td class="cmn-character cmn-stock_border">
+                        DOWA HOLDINGS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5715</td>
+                      <td class="cmn-character cmn-stock_border">
+                        FURUKAWA CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5801</td>
+                      <td class="cmn-character cmn-stock_border">
+                        FURUKAWA ELECTRIC CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5802</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMITOMO ELECTRIC IND., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5803</td>
+                      <td class="cmn-character cmn-stock_border">
+                        FUJIKURA LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">5901</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOYO SEIKAN GROUP HOLDINGS, LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="43">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Trading Companies<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">2768</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SOJITZ CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8001</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ITOCHU CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8002</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MARUBENI CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8015</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOYOTA TSUSHO CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8031</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUI &amp; CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8053</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMITOMO CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8058</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUBISHI CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="41">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Construction<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">1721</td>
+                      <td class="cmn-character cmn-stock_border">
+                        COMSYS HOLDINGS CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">1801</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TAISEI CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">1802</td>
+                      <td class="cmn-character cmn-stock_border">
+                        OBAYASHI CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">1803</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SHIMIZU CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">1812</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KAJIMA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">1925</td>
+                      <td class="cmn-character cmn-stock_border">
+                        DAIWA HOUSE IND. CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">1928</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SEKISUI HOUSE, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">1963</td>
+                      <td class="cmn-character cmn-stock_border">
+                        JGC CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="21">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Machinery<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">5631</td>
+                      <td class="cmn-character cmn-stock_border">
+                        THE JAPAN STEEL WORKS, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6103</td>
+                      <td class="cmn-character cmn-stock_border">
+                        OKUMA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6113</td>
+                      <td class="cmn-character cmn-stock_border">
+                        AMADA CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6301</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KOMATSU LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6302</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMITOMO HEAVY IND., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6305</td>
+                      <td class="cmn-character cmn-stock_border">
+                        HITACHI CONST. MACH. CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6326</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KUBOTA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6361</td>
+                      <td class="cmn-character cmn-stock_border">
+                        EBARA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6366</td>
+                      <td class="cmn-character cmn-stock_border">
+                        CHIYODA CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6367</td>
+                      <td class="cmn-character cmn-stock_border">
+                        DAIKIN INDUSTRIES, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6471</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NSK LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">6472</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NTN CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">6473</td>
+                      <td class="cmn-character cmn-stock_border">
+                        JTEKT CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7004</td>
+                      <td class="cmn-character cmn-stock_border">
+                        HITACHI ZOSEN CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7011</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUBISHI HEAVY IND., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7013</td>
+                      <td class="cmn-character cmn-stock_border">
+                        IHI CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="25">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Shipbuilding<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7003</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUI ENG. &amp; SHIPBUILD. CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7012</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KAWASAKI HEAVY IND., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="33">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Other Manufacturing<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7911</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOPPAN PRINTING CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">7912</td>
+                      <td class="cmn-character cmn-stock_border">
+                        DAI NIPPON PRINTING CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">7951</td>
+                      <td class="cmn-character cmn-stock_border">
+                        YAMAHA CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="53">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Real Estate<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">3289</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOKYU FUDOSAN HOLDINGS CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8801</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUI FUDOSAN CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8802</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUBISHI ESTATE CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8803</td>
+                      <td class="cmn-character cmn-stock_border">
+                        HEIWA REAL ESTATE CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">8804</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOKYO TATEMONO CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">8830</td>
+                      <td class="cmn-character cmn-stock_border">
+                        SUMITOMO REALTY &amp; DEVELOPMENT CO., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="55">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Railway &amp; Bus<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9001</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOBU RAILWAY CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9005</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOKYU CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9007</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ODAKYU ELECTRIC RAILWAY CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9008</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KEIO CORP.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9009</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KEISEI ELECTRIC RAILWAY CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9020</td>
+                      <td class="cmn-character cmn-stock_border">
+                        EAST JAPAN RAILWAY CO.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9021</td>
+                      <td class="cmn-character cmn-stock_border">
+                        WEST JAPAN RAILWAY CO.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9022</td>
+                      <td class="cmn-character cmn-stock_border">
+                        CENTRAL JAPAN RAILWAY CO., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="57">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Land Transport<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9062</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON EXPRESS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9064</td>
+                      <td class="cmn-character cmn-stock_border">
+                        YAMATO HOLDINGS CO., LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="59">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Marine Transport<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9101</td>
+                      <td class="cmn-character cmn-stock_border">
+                        NIPPON YUSEN K.K.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9104</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUI O.S.K.LINES, LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9107</td>
+                      <td class="cmn-character cmn-stock_border">
+                        KAWASAKI KISEN KAISHA, LTD.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="61">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Air Transport<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9202</td>
+                      <td class="cmn-character cmn-stock_border">
+                        ANA HOLDINGS INC.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="63">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Warehousing<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9301</td>
+                      <td class="cmn-character cmn-stock_border">
+                        MITSUBISHI LOGISTICS CORP.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="67">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Electric Power<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9501</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOKYO ELECTRIC POWER CO., INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9502</td>
+                      <td class="cmn-character cmn-stock_border">
+                        CHUBU ELECTRIC POWER CO., INC.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9503</td>
+                      <td class="cmn-character cmn-stock_border">
+                        THE KANSAI ELECTRIC POWER CO., INC.
+                      </td>
+                  </tr>
+
+                    <tr height="15"><td></td></tr>
+
+                    <tr style="width:100%;" id="69">
+                        <td colspan="2">
+                        <div class="cmn-headline industry-width">
+                          <div class="cmn-headline_inner">
+                            <h2 class="cmn-headline_title">Gas<a class="brand-position" href="#top">&#9650;</a></h2>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr align="center" class="cmn-table_head">
+                      <td width="17%" class="cmn-stock_border">Code</td>
+                        <td width="83%" class="cmn-stock_border">Company Name</td>
+                    </tr>
+                  <tr align="center" class="cmn-stocknames_odd cmn-charcter">
+                    <td class="cmn-stock_border">9531</td>
+                      <td class="cmn-character cmn-stock_border">
+                        TOKYO GAS CO., LTD.
+                      </td>
+                  </tr>
+                  <tr align="center" class="cmn-stocknames_even cmn-charcter">
+                    <td class="cmn-stock_border">9532</td>
+                      <td class="cmn-character cmn-stock_border">
+                        OSAKA GAS CO., LTD.
+                      </td>
+                  </tr>
+            </table>
+          <br />
+          <br />
+        </div>
+      </div>
+    </div>
+</div>
+
+  <div id="ABOUT_NIKKEI">
+    <div id="ABOUT_NIKKEI_BODY">
+      <h2 class="bs-title">Nikkei Indexes</h2>
+      <ul class="cmn-clearfix">
+        <li class="bs-first"><a href="/nkave/archives/file/terms_of_use_en.pdf" onClick="_gaq.push([&#x27;_trackEvent&#x27;, &#x27;stocknames_EN&#x27;, &#x27;.PDF&#x27;, &#x27;terms_of_use_en.pdf&#x27;])" target="_blank">Terms of use</a></li>
+        <li><a href="http://indexes.nikkei.co.jp/en/nkave/sitemap">Sitemap</a></li>
+        <li><a href="http://indexes.nikkei.co.jp/en/nkave/info#SUPPORT">Contact</a></li>
+        <li><a href="http://indexes.nikkei.co.jp/en/nkave/info#FAQ">FAQ</a></li>
+      </ul>
+      <h2 class="bs-title">About Nikkei Inc.</h2>
+      <ul class="cmn-clearfix">
+        <li class="bs-first"><a href="http://www.nikkei.co.jp/nikkeiinfo/english/index.html">Company info </a></li>
+        <li><a href="http://asia.nikkei.com/">Nikkei Asian Review</a></li>
+      </ul>
+      <p class="bs-copyright">Copyright &copy; 2014 Nikkei Inc. All rights reserved.</p>
+    </div>
+  </div>
+    <div id="UNIVERSAL_BAR">
+    <div id="UNIVERSAL_BAR_BODY">
+      <h2 class="cmn-hide">日本経済新聞 関連サイト</h2>
+      <div id="UNIVERSAL_BAR_SERVICE">
+        <ul class="bs-service">
+          <li><a href="http://asia.nikkei.com/">Nikkei Asian Review</a></li>
+          <li><a href="http://asia.nikkei.com/Markets/">Markets</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-28645102-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>

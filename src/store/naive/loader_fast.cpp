@@ -108,7 +108,6 @@ void XmlLoader::error(void* ctx, xmlErrorPtr error)
   ascii::itoa_buf_type itoa_buf;
 
   zstring libxml_dict_key_4( ZED_PREFIX "libxml_" );
-  libxml_dict_key_4 += error->level == XML_ERR_WARNING ? "WAR_" : "ERR_";
   libxml_dict_key_4 += ascii::itoa( error->code, itoa_buf );
 
   char const *const error_str1_5 = error->str1 ? error->str1 : "";
@@ -150,6 +149,7 @@ void XmlLoader::error(void* ctx, xmlErrorPtr error)
 
   xmlErrorLevel errorLevel = error->level;
 
+  //This is a dirty hack to consider a recoverable error a warning
   if (error->code == XML_WAR_NS_URI)
   {
     errorLevel = XML_ERR_WARNING;
