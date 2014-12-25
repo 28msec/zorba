@@ -187,13 +187,12 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result,
       if ( iterator_stack.empty() )
         break;
       POP_ITERATOR();
-      bool fa_popJSON = (IN_STATE(in_array)) ? false : true;
       POP_STATE();
       POP_ITEM_ELEMENT();
       if ( IN_STATE( in_object ) ) {
         POP_ITEM( xml );
       }
-      if(fa_popJSON){ POP_ITEM( json ); }
+      POP_ITEM( json );
       continue;
     }
     if ( IN_STATE( in_object ) ) {
