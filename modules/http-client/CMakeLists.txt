@@ -16,9 +16,14 @@ IF (ZORBA_HAVE_CURL)
   SET(ZorbaUtilCurlModule_DIR "../util-curl")
   FIND_PACKAGE(ZorbaUtilCurlModule REQUIRED)
   IF (ZorbaUtilCurlModule_FOUND)
-    FIND_PACKAGE(Curl)
-    INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}" "${CURL_INCLUDE_DIRS}")
-
+    
+    IF (WIN32)
+      FIND_PACKAGE(Curl)
+      INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}" "${CURL_INCLUDE_DIRS}")
+    ELSE (WIN32)
+      INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}")
+    ENDIF (WIN32)
+    
     DECLARE_ZORBA_MODULE(FILE xml/http-client-error.xq
       URI "http://expath.org/ns/error")
 
