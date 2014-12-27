@@ -21,6 +21,8 @@
 #include <xercesc/util/XMLDouble.hpp>
 #include "../ourlib/ourlib.h"
 
+#pragma warning ( disable: 4005 )
+
 XERCES_CPP_NAMESPACE_USE
 
 namespace zorba { namespace linkmodule {
