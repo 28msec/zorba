@@ -31,18 +31,18 @@ FIND_PACKAGE_WIN32(NAME "CURL" FOUND_VAR "CURL_FOUND" SEARCH_NAMES "curl")
 
 IF (CURL_FOUND)
 
-  IF (EXISTS "${FOUND_LOCATION}/curl.exe")
+  IF (EXISTS "${FOUND_LOCATION}/bin/curl.exe")
 
-    MESSAGE (STATUS "Found CURL binary distribution")
+    MESSAGE (STATUS "Found CURL binary distribution: ${FOUND_LOCATION}}")
 
     # find the needed DLL's
-    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION} "libcurl" "curllib")
-    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION} "libeay32")
-    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION} "openldap")
-    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION} "ssleay32")
-    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION} "libsasl")
+    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION}/dlls "libcurl" "curllib")
+    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION}/dlls "libeay32")
+    #FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION}/dlls "openldap")
+    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION}/dlls "ssleay32")
+    #FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION}/dlls "libsasl")
 
-  ELSE (EXISTS "${FOUND_LOCATION}/curl.exe")
+  ELSE (EXISTS "${FOUND_LOCATION}/bin/curl.exe")
 
     MESSAGE (STATUS "Found CURL source build")
 
@@ -54,6 +54,6 @@ IF (CURL_FOUND)
     FIND_DLL_WIN32 ("ssleay32.dll")
     #FIND_DLL_WIN32 (libsasl.dll)
 
-  ENDIF (EXISTS "${FOUND_LOCATION}/curl.exe")
+  ENDIF (EXISTS "${FOUND_LOCATION}/bin/curl.exe")
 
 ENDIF (CURL_FOUND)

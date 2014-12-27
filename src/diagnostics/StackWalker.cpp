@@ -28,6 +28,7 @@
 #include <tchar.h>
 #include <stdio.h>
 #pragma comment(lib, "version.lib")  // for "VerQueryValue"
+#pragma warning( disable : 4996 ) //for GetVersionExA
 
 #include "StackWalker.h"
 

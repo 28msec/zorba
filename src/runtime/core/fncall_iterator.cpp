@@ -505,7 +505,7 @@ bool UDFunctionCallIterator::nextImplCache(store::Item_t& aResult, PlanState& aP
     // check if the result is already in the cache
     lCacheHit = probeCache(aPlanState, lState, lArguments);
   }
-  catch (ZorbaException& err)
+  catch (const ZorbaException&)
   {
     lSkipCache = true;
   }
@@ -1105,7 +1105,7 @@ bool ExtFunctionCallIterator::nextImplCache(
       // check if the result is already in the cache
       lCacheHit = probeCache(aPlanState, lState, lArgValues);
     }
-    catch (ZorbaException& err)
+    catch (const ZorbaException&)
     {
       lSkipCache = true;
     }

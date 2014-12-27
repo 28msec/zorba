@@ -44,18 +44,12 @@ namespace time {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-/**
- * A type to hold a number of seconds (at least since epoch).
- */
-typedef time_t sec_type;
-
-/**
- * A type to hold a number of microseconds.
- */
 #ifdef WIN32
-typedef unsigned long usec_type;
+typedef long sec_type; // A type to hold a number of seconds (at least since epoch).
+typedef long usec_type; // A type to hold a number of microseconds.
 #else
-typedef suseconds_t usec_type;
+typedef time_t sec_type; // A type to hold a number of seconds (at least since epoch).
+typedef suseconds_t usec_type; // A type to hold a number of microseconds.
 #endif /* WIN32 */
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -278,7 +272,7 @@ void get_epoch( sec_type *sec, usec_type *usec = nullptr );
  * @param tv A pointer to the result.
  */
 inline void get_epoch( timeval *tv ) {
-  return get_epoch( &tv->tv_sec, &tv->tv_usec );
+	return get_epoch(&tv->tv_sec, &tv->tv_usec);
 }
 
 /**

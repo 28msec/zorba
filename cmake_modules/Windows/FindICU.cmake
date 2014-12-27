@@ -56,15 +56,26 @@ IF (ICU_FOUND)
     STRING (REGEX REPLACE "\n" ";" LINES ${INFO})
     FOREACH (LINE ${LINES})
       IF (LINE MATCHES "Runtime-Version: ")
-        STRING (REPLACE "Runtime-Version: " "" VERSION ${LINE})
-      ENDIF (LINE MATCHES "Runtime-Version: ")
+        STRING (REPLACE "Runtime-Version: " "" VERSION ${LINE})		
+      ENDIF (LINE MATCHES "Runtime-Version: ")	  
     ENDFOREACH (LINE)
+	
+	FOREACH (LINE ${LINES})
+      IF (LINE MATCHES "<param name=\"version\">[\\.0-9]*</param>")
+        STRING (REGEX REPLACE " *<param name=\"version\">([\\.0-9]*)</param> *" "\\1" VERSION ${LINE})
+	  ENDIF (LINE MATCHES "<param name=\"version\">[\\.0-9]*</param>")	  
+    ENDFOREACH (LINE)
+	
+	IF (NOT VERSION)
+	  MESSAGE(FATAL_ERROR "Cannot parse output of icuinfo.exe") 
+	ENDIF (NOT VERSION)
   
     STRING (REPLACE "." ";" PARTS ${VERSION})
   
     LIST (GET PARTS 0 MAJOR_VERSION)
-    LIST (GET PARTS 1 MINOR_VERSION)
-    SET (DLL_VERSION "${MAJOR_VERSION}${MINOR_VERSION}")
+    #LIST (GET PARTS 1 MINOR_VERSION)
+    #SET (DLL_VERSION "${MAJOR_VERSION}${MINOR_VERSION}")
+	SET (DLL_VERSION "${MAJOR_VERSION}")
   
     SET (DLL_NAMES
       "icudt${DLL_VERSION}.dll"

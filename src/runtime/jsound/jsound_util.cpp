@@ -2221,7 +2221,7 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
 
 bool union_type::validate( store::Item_t const &validate_item, bool do_cast,
                            store::Item_t *result ) const {
-  if ( !type::validate( validate_item, result ) )
+  if ( !type::validate( validate_item, do_cast, result ) )
     return false;
   //
   // We can't pass "result" to nested called of validate() because:

@@ -124,8 +124,8 @@ private:
 public:
   VariableQName( serialization::Archiver& ) { }
 private:
-  friend void serialization::operator&<>( serialization::Archiver&,
-                                          VariableQName& );
+//  friend void serialization::operator&<>( serialization::Archiver&,
+//                                          VariableQName& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -15,6 +15,7 @@
  */
 
 #include "ourlib.h"
+#pragma warning( disable : 4273 )
 
 Ourlib::Ourlib(int aVal)
   : theVal(aVal)

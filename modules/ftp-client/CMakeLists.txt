@@ -16,7 +16,9 @@ IF (ZORBA_HAVE_CURL)
   SET(ZorbaUtilCurlModule_DIR "../util-curl")
   FIND_PACKAGE(ZorbaUtilCurlModule REQUIRED)
   IF (ZorbaUtilCurlModule_FOUND)
-    INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}")
+    FIND_PACKAGE(Curl)
+    INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}" "${CURL_INCLUDE_DIRS}")
+	
     DECLARE_ZORBA_MODULE( FILE ftp-client.xq VERSION 1.0
       URI "http://zorba.io/modules/ftp-client"
       LINK_LIBRARIES ${CURL_LIBRARIES} ${ZorbaUtilCurlModule_LIBS})

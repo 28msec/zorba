@@ -144,7 +144,7 @@ inline void get_time( time_type *t ) {
   clock_gettime( CLOCK_REALTIME, t );
 #endif /* _POSIX_MONOTONIC_CLOCK */
 #elif defined(WIN32)
-  _ftime_s( &t );
+  _ftime_s( t );
 #else
   gettimeofday( t, nullptr );
 #endif
@@ -161,7 +161,7 @@ inline double operator-( time_type const &t1, time_type const &t0 ) {
 #if defined(ZORBA_HAVE_CLOCKGETTIME)
   return (t1.tv_sec - t0.tv_sec) * 1000 + (t1.tv_nsec - t0.tv_nsec) / 1000000.0;
 #elif defined(WIN32)
-  return (t1.time - t0.time) * 1000 + (t1.millitm - t0.millitm);
+  return static_cast<double>((t1.time - t0.time) * 1000 + (t1.millitm - t0.millitm));
 #else
   return (t1.tv_sec - t0.tv_sec) * 1000 + (t1.tv_usec - t0.tv_usec) / 1000.0;
 #endif
