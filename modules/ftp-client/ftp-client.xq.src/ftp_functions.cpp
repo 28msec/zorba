@@ -300,7 +300,7 @@ static size_t curl_read_callback( void *ptr, size_t size, size_t nmemb,
   size *= nmemb;
   istream *const is = static_cast<istream*>( data );
   is->read( static_cast<char*>( ptr ), static_cast<streamsize>( size ) );
-  return is->gcount();
+  return static_cast<size_t>(is->gcount());
 }
 
 put_function::put_function( module const *m, char const *local_name,
@@ -694,22 +694,33 @@ bool list_iterator::next( Item &result ) {
           break;
       } // switch
 
-      struct tm tm;
-      gmtime_r( &ftp_file.mtime, &tm );
-      int const year = tm.tm_year + 1900;
+      struct tm* tm;
+#ifdef WIN32
+	  tm = gmtime( &ftp_file.mtime );
+#else
+      gmtime_r( &ftp_file.mtime, tm );
+#endif
+      int const year = tm->tm_year + 1900;
       switch ( ftp_file.mtimetype ) {
         case FTPPARSE_MTIME_REMOTEDAY:
-          tm.tm_hour = tm.tm_min = 0;
+          tm->tm_hour = tm->tm_min = 0;
           // no break;
         case FTPPARSE_MTIME_REMOTEMINUTE:
-          tm.tm_sec = 0;
-          tm.tm_gmtoff = 0;
+          tm->tm_sec = 0;
+#ifndef WIN32
+          tm->tm_gmtoff = 0;
+#endif
           // no break;
         case FTPPARSE_MTIME_LOCAL: {
           Item const mtime_value (
             factory_->createDateTime(
-              year, tm.tm_mon, tm.tm_mday,
-              tm.tm_hour, tm.tm_min, tm.tm_sec, (int)tm.tm_gmtoff
+              year, tm->tm_mon, tm->tm_mday,
+              tm->tm_hour, tm->tm_min, tm->tm_sec, 
+#ifdef WIN32
+			  0
+#else
+			  (int)tm->tm_gmtoff
+#endif
             )
           );
           kv.push_back( make_pair( mtime_key, mtime_value ) );

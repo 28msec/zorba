@@ -91,7 +91,7 @@ UtilTestsModule::test01(const Arguments_t& aArgs,
   zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(0)->getItemFactory();
 
   zorba::Item lItem = getOneItemArgument(aArgs, 0);
-  int lParam = lItem.getLongValue();
+  int64_t lParam = lItem.getLongValue();
 
 
   if (lParam < 10)

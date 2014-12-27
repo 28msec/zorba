@@ -69,7 +69,7 @@ static void initnow(void)
   long year;
 
   initbase();
-  now = time((time_t *) 0) - base;
+  now = (long)(time((time_t *) 0) - base);
 
   if (flagneedcurrentyear) {
     day = now / 86400;

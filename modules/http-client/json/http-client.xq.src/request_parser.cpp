@@ -241,7 +241,7 @@ void RequestParser::parseRetrySpecification(const Item& aItem, RetrySpecificatio
   uint64_t lDelaySize = lDelay.getArraySize();
   if (lDelaySize == 0)
     theThrower->raiseException("REQUEST", "The specified request is not valid. The delay array is empty.");
-  for(uint64_t i = 1; i <= lDelaySize; ++i)
+  for(uint32_t i = 1; i <= lDelaySize; ++i)
   {
     Item lMember = lDelay.getArrayValue(i);
     int lValue = parseInteger(lMember, "entry of delay");
@@ -298,7 +298,7 @@ void RequestParser::parseMultipart(const Item& aItem, MultiPart& aMultiPart)
     else
     {
       uint64_t lSize = lParts.getArraySize();
-      for(uint64_t i = 1; i <= lSize; ++i)
+      for(uint32_t i = 1; i <= lSize; ++i)
       {
         Item lMember = lParts.getArrayValue(i);
         if (lMember.isAtomic() || !lMember.isJSONItem() || lMember.getJSONItemKind() != store::StoreConsts::jsonObject)

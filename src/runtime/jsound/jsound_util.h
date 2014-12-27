@@ -204,11 +204,11 @@ private:
   type const* load_type( store::Item_t const& );
   void load_types( store::Item_t const& );
 
-  friend class array_type;
-  friend class atomic_type;
-  friend class object_type;
-  friend class type;
-  friend class union_type;
+  friend struct array_type;
+  friend struct atomic_type;
+  friend struct object_type;
+  friend struct type;
+  friend struct union_type;
 
   // Forbid these since we'd have to copy the entire type* tree and there's no
   // need for this now.
