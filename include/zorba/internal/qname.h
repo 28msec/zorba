@@ -124,8 +124,13 @@ private:
 public:
   VariableQName( serialization::Archiver& ) { }
 private:
+#ifdef WIN32
   friend void serialization::operator&<typename StringType>( serialization::Archiver&,
+                                                             VariableQName& );
+#else
+  friend void serialization::operator&<>( serialization::Archiver&,
                                           VariableQName& );
+#endif
 };
 
 ///////////////////////////////////////////////////////////////////////////////
