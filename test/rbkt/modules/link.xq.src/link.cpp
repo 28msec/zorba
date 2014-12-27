@@ -21,7 +21,9 @@
 #include <xercesc/util/XMLDouble.hpp>
 #include "../ourlib/ourlib.h"
 
+#ifdef _MSC_VER
 #pragma warning ( disable: 4005 )
+#endif
 
 XERCES_CPP_NAMESPACE_USE
 

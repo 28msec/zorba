@@ -25,7 +25,10 @@
 #include <zorba/zorba_exception.h>
 #include <zorba/iterator.h>
 #include <zorba/diagnostic_list.h>
+
+#ifdef _MSC_VER
 #pragma warning (disable: 4723)
+#endif
 
 using namespace zorba;
 

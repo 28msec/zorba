@@ -28,7 +28,10 @@
 #include <tchar.h>
 #include <stdio.h>
 #pragma comment(lib, "version.lib")  // for "VerQueryValue"
+
+#ifdef _MSC_VER
 #pragma warning( disable : 4996 ) //for GetVersionExA
+#endif
 
 #include "StackWalker.h"
 

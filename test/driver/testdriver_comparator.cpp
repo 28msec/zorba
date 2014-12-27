@@ -27,6 +27,10 @@
 #include <cassert>
 #include <string.h>
 
+#ifdef _MSC_VER
+#pragma warning (disable : 4309 ) //0xEF, 0xBB, 0xBF are out of the value space of 
+//char and will be converted to negative values
+#endif
 
 namespace zorba {
 
@@ -277,9 +281,6 @@ bool fileEquals(
   // Consume a leading byte-order-mark
   char bom[3] = { '\0' };
   refStream.read(bom, 3);
-
-#pragma warning (disable : 4309 ) //0xEF, 0xBB, 0xBF are out of the value space of 
-                                  //char and will be converted to negative values
   if (bom[0] != static_cast<char>(0xEF) ||
     bom[1] != static_cast<char>(0xBB) ||
     bom[2] != static_cast<char>(0xBF))
