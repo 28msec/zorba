@@ -372,8 +372,8 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
     if ( !gbuf_.len_ )
       break;
     setg( gbuf_.ptr_, gbuf_.ptr_, gbuf_.ptr_ + gbuf_.len_ );
-    streamsize const n = min( (streamsize)gbuf_.len_, size );
-    traits_type::copy( to, gptr(), n );
+    streamsize const n = min( static_cast<streamsize>(gbuf_.len_), size );
+    traits_type::copy( to, gptr(), static_cast<size_t>(n) );
     gbump( static_cast<int>( n ) );
     to += n;
     size -= n, return_size += n;

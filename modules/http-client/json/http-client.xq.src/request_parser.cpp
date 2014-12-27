@@ -255,7 +255,7 @@ void RequestParser::parseRetrySpecification(const Item& aItem, RetrySpecificatio
   uint64_t lStatusesSize = lDelay.getArraySize();
   if (!aRetrySpec.theRetryOnConnectionError && lStatusesSize == 0)
     theThrower->raiseException("REQUEST", "The specified request is not valid. Retry on connection error is false, and the on-status array is empty.");
-  for(uint64_t i = 1; i <= lStatusesSize; ++i)
+  for(uint32_t i = 1; i <= lStatusesSize; ++i)
   {
     Item lMember = lDelay.getArrayValue(i);
     aRetrySpec.theRetryStatuses.push_back(parseInteger(lMember, "entry of statuses"));

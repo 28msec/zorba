@@ -25,7 +25,7 @@
 #include <zorba/zorba_exception.h>
 #include <zorba/iterator.h>
 #include <zorba/diagnostic_list.h>
-
+#pragma warning (disable: 4723)
 
 using namespace zorba;
 
