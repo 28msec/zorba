@@ -156,8 +156,8 @@ private:
   friend struct atomic_type;
   friend struct min_max_type;
   friend struct object_type;
-  friend struct schema;
   friend struct union_type;
+  friend class schema;  
 
   // forbid these
   type( type const& );
@@ -179,7 +179,7 @@ protected:
 
   min_max_type( kind );
 
-  friend struct schema;
+  friend class schema;
 };
 
 /**
@@ -199,7 +199,7 @@ protected:
 private:
   void load_content( store::Item_t const&, schema& );
 
-  friend struct schema;
+  friend class schema;
 };
 
 /**

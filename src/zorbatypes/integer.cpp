@@ -50,7 +50,7 @@ void integer_traits::throw_error( MAPM const &n, char const *op ) {
 template<class T>
 typename IntegerImpl<T>::value_type IntegerImpl<T>::ftoi( double d ) {
   d = d >= 0 ? floor( d ) : ceil( d );
-  value_type const i = d;
+  value_type const i = static_cast<value_type>(d);
   if ( i != d )
     throw range_error(
       BUILD_STRING( '"', d, "\": value too large/small for integer" )

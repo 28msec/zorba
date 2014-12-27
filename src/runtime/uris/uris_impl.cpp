@@ -45,6 +45,8 @@
 #define QUERY_NAME       "query"
 #define FRAGMENT_NAME    "fragment"
 
+#pragma warning ( disable: 4800 )
+
 using namespace std;
 
 namespace zorba {
