@@ -158,7 +158,7 @@ bool StoreNodeDistinctIterator::next(store::Item_t& result)
     if (!theInput->next(result))
       return false;
 
-    assert(result->isNode());
+    assert(result->isNode() || result->isObject() || result->isArray());
 
     if (theNodeSet.insert(result.getp()))
     {

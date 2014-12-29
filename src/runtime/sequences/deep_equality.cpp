@@ -60,7 +60,7 @@
 
 #include <context/static_context.h>
 
-#include "zorbautils/hashset_node_itemh.h"
+#include "zorbautils/hashset_structured_itemh.h"
 #include "zorbautils/hashset_atomic_itemh.h"
 namespace zorba
 {
