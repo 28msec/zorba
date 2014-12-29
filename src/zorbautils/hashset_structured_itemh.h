@@ -31,7 +31,7 @@ namespace zorba
 
 /*******************************************************************************
   A hash-based set container of item handles, where equality is based on
-  node/object identity (i.e. pointer equality) rather than object value.
+  node/object/array identity (i.e. pointer equality) rather than object value.
 
   It is used 
   1. by the NodeDistinctIterator
