@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_ZORBAUTILS_HASHSET_NODE_ITEMH
-#define ZORBA_ZORBAUTILS_HASHSET_NODE_ITEMH
+#ifndef ZORBA_ZORBAUTILS_HASHSET_STRUCTURED_ITEMH
+#define ZORBA_ZORBAUTILS_HASHSET_STRUCTURED_ITEMH
 
 #include <cassert>
 
@@ -31,7 +31,7 @@ namespace zorba
 
 /*******************************************************************************
   A hash-based set container of item handles, where equality is based on
-  object identity (i.e. pointer equality) rather than object value.
+  node/object identity (i.e. pointer equality) rather than object value.
 
   It is used 
   1. by the NodeDistinctIterator
@@ -41,7 +41,7 @@ namespace zorba
   NOTE: Although the set uses raw item pointers instead of rchandles, reference
         counting is still done, but done manually (see insert and clear methods)
 ********************************************************************************/
-class NodeHandleHashSet
+class StructuredItemHandleHashSet
 {
 public:
 
@@ -63,9 +63,9 @@ private:
   HashSet<store::Item*, CompareFunction>  theSet;
 
 public:
-  NodeHandleHashSet(csize size, bool sync) : theSet(size, sync) { }
+  StructuredItemHandleHashSet(csize size, bool sync) : theSet(size, sync) { }
 
-  ~NodeHandleHashSet() { clear(); }
+  ~StructuredItemHandleHashSet() { clear(); }
 
   void clear();
 
@@ -78,7 +78,7 @@ public:
 
   bool insert(const store::Item_t& key)
   {
-    assert(key->isNode());
+    assert(key->isNode() || key->isObject() || key->isArray());
 
     store::Item* key2 = key.getp();
 

@@ -26,7 +26,7 @@
 #include "json_items.h"
 
 #include "zorbautils/hashfun.h"
-#include "zorbautils/hashset_node_itemh.h"
+#include "zorbautils/hashset_structured_itemh.h"
 
 
 namespace zorba { namespace simplestore {
@@ -371,7 +371,7 @@ class StoreNodeDistinctIterator : public store::Iterator
 {
 protected:
   store::Iterator_t   theInput;
-  NodeHandleHashSet   theNodeSet;
+  StructuredItemHandleHashSet   theNodeSet;
   bool                theCheckOnly;
 
 public:

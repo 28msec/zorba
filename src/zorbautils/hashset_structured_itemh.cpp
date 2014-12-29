@@ -15,15 +15,15 @@
  */
 #include "stdafx.h"
 
-#include "zorbautils/hashset_node_itemh.h"
+#include "zorbautils/hashset_structured_itemh.h"
 
 namespace zorba 
 {
 
-void NodeHandleHashSet::clear()
+void StructuredItemHandleHashSet::clear()
 {
-  HashSet<store::Item*, NodeHandleHashSet::CompareFunction>::iterator ite;
-  HashSet<store::Item*, NodeHandleHashSet::CompareFunction>::iterator end;
+  HashSet<store::Item*, StructuredItemHandleHashSet::CompareFunction>::iterator ite;
+  HashSet<store::Item*, StructuredItemHandleHashSet::CompareFunction>::iterator end;
 
   ite = theSet.begin();
   end = theSet.end();
