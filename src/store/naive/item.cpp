@@ -223,28 +223,58 @@ void Item::removeReference()
 
 long Item::getRefCount() const
 {
-  long refCount;
+  long refCount = 0;
 
+  if (getKind() != ATOMIC)
+    std::cout << "Kind: " << getKind() << std::endl;
   switch (getKind())
   {
-  case ATOMIC:
-  {
-    SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
-    refCount = theRefCount;
-    SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->release());
-    return refCount;
-  }
-  case NODE:
-  case OBJECT:
-  case ARRAY:
-  case ERROR_:
-  case LIST:
-  case FUNCTION:
-  case PUL:
-  default:
-  {
-    ZORBA_ASSERT(false);
-  }
+    case NODE:
+    {
+      SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
+      refCount = theRefCount;
+      SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+      break;
+    }
+    case OBJECT:
+    case ARRAY:
+    {
+      SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
+      refCount = theRefCount;
+      SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+      break;
+    }
+    case ATOMIC:
+    case ERROR_:
+    {
+      SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
+      refCount = theRefCount;
+      SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->release());
+      break;
+    }
+    case LIST:
+    {
+      SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->acquire());
+      refCount = theRefCount;
+      SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->release());
+      break;
+    }
+    case FUNCTION:
+    {
+      SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->acquire());
+      refCount = theRefCount;
+      SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->release());
+      break;
+    }
+    case PUL:
+    {
+      refCount = theRefCount;
+      break;
+    }
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
   }
 
   return refCount;
