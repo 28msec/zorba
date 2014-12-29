@@ -6831,98 +6831,92 @@ namespace zorba {
             (yylhs.value.expr) = NumericLiteral::new_literal(
                 LOC(yylhs.location), ParseConstants::num_decimal, *(yystack_[0].value.decval)
             );
-            if (yyla.value.decval)
-              std::cout << "Deleting decval " << std::endl;
             delete yyla.value.decval;
         }
-#line 6839 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6837 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 507:
-#line 3894 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3892 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = NumericLiteral::new_literal(
                 LOC(yylhs.location), ParseConstants::num_integer, *(yystack_[0].value.ival)
             );
-            if (yyla.value.ival)
-              std::cout << "Deleting ival " << std::endl;
             delete yyla.value.ival;
         }
-#line 6852 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6848 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 508:
-#line 3903 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3899 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = NumericLiteral::new_literal(
                 LOC(yylhs.location), ParseConstants::num_double, *(yystack_[0].value.dval)
             );
-            if (yyla.value.dval)
-              std::cout << "Deleting dval " << std::endl;
             delete yyla.value.dval;
         }
-#line 6865 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6859 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 509:
-#line 3914 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3908 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new VarRef(LOC(yylhs.location), static_cast<QName*>((yystack_[0].value.expr)));
         }
-#line 6873 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6867 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 510:
-#line 3920 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3914 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new ParenthesizedExpr( LOC(yylhs.location), NULL);
         }
-#line 6881 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6875 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 511:
-#line 3924 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3918 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new ParenthesizedExpr( LOC(yylhs.location), (yystack_[1].value.expr) );
         }
-#line 6889 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6883 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 512:
-#line 3930 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3924 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             driver.addCommonLanguageWarning(yystack_[0].location, ZED(ZWST0009_CONTEXT_ITEM_EXPR));
             (yylhs.value.expr) = new ContextItemExpr( LOC(yylhs.location) );
         }
-#line 6898 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6892 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 513:
-#line 3937 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3931 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new OrderedExpr( LOC(yylhs.location), (yystack_[1].value.expr) );
         }
-#line 6906 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6900 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 514:
-#line 3943 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3937 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new UnorderedExpr( LOC(yylhs.location), (yystack_[1].value.expr) );
         }
-#line 6914 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6908 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 515:
-#line 3949 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3943 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new FunctionCall(LOC(yylhs.location), static_cast<QName*>((yystack_[2].value.expr)), NULL);
     }
-#line 6922 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6916 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 516:
-#line 3953 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3947 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       ArgList* argList = dynamic_cast<ArgList*>((yystack_[1].value.node));
       if (argList->has_placeholder())
@@ -6938,75 +6932,75 @@ namespace zorba {
         (yylhs.value.expr) = new FunctionCall(LOC(yylhs.location), static_cast<QName*>((yystack_[3].value.expr)), argList);
       }
     }
-#line 6942 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6936 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 517:
-#line 3971 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3965 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       ArgList* al = new ArgList(LOC(yylhs.location));
       al->push_back(new ArgumentPlaceholder(LOC(yylhs.location)));
       (yylhs.value.node) = al;
     }
-#line 6952 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6946 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 518:
-#line 3977 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3971 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       if (ArgList* al = dynamic_cast<ArgList*>((yystack_[2].value.node)))
         al->push_back(new ArgumentPlaceholder(LOC(yylhs.location)));
       (yylhs.value.node) = (yystack_[2].value.node);
     }
-#line 6962 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6956 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 519:
-#line 3983 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3977 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       ArgList *al = new ArgList( LOC(yylhs.location) );
       al->push_back( (yystack_[0].value.expr) );
       (yylhs.value.node) = al;
     }
-#line 6972 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6966 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 520:
-#line 3989 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3983 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       if ( ArgList *al = dynamic_cast<ArgList*>((yystack_[2].value.node)) )
         al->push_back( (yystack_[0].value.expr) );
       (yylhs.value.node) = (yystack_[2].value.node);
     }
-#line 6982 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6976 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 521:
-#line 3997 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3991 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 6990 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6984 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 522:
-#line 4001 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 3995 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 6998 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 6992 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 523:
-#line 4007 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4001 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new LiteralFunctionItem(LOC (yylhs.location), dynamic_cast<QName*>((yystack_[2].value.expr)), (yystack_[0].value.ival));
     }
-#line 7006 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7000 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 524:
-#line 4013 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4007 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new InlineFunction(LOC(yylhs.location),
                               &*(yystack_[1].value.fnsig)->theParams,
@@ -7014,11 +7008,11 @@ namespace zorba {
                               (yystack_[0].value.expr));
       delete (yystack_[1].value.fnsig);
     }
-#line 7018 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7012 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 530:
-#line 4032 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4026 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirElemConstructor(LOC(yylhs.location),
                                   static_cast<QName*>((yystack_[2].value.expr)),
@@ -7026,11 +7020,11 @@ namespace zorba {
                                   NULL,
                                   NULL);
     }
-#line 7030 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7024 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 531:
-#line 4040 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4034 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       if (static_cast<QName*>((yystack_[6].value.expr))->get_qname() != static_cast<QName*>((yystack_[2].value.expr))->get_qname())
       {
@@ -7046,11 +7040,11 @@ namespace zorba {
                                   NULL,
                                   NULL);
     }
-#line 7050 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7044 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 532:
-#line 4056 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4050 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirElemConstructor(LOC(yylhs.location),
                                   static_cast<QName*>((yystack_[3].value.expr)),
@@ -7058,11 +7052,11 @@ namespace zorba {
                                   dynamic_cast<DirAttributeList*>((yystack_[2].value.node)),
                                   NULL);
     }
-#line 7062 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7056 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 533:
-#line 4064 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4058 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       if (static_cast<QName*>((yystack_[7].value.expr))->get_qname() != static_cast<QName*>((yystack_[2].value.expr))->get_qname())
       {
@@ -7078,11 +7072,11 @@ namespace zorba {
                                   dynamic_cast<DirAttributeList*>((yystack_[6].value.node)),
                                   NULL);
     }
-#line 7082 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7076 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 534:
-#line 4082 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4076 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       if (static_cast<QName*>((yystack_[7].value.expr))->get_qname() != static_cast<QName*>((yystack_[2].value.expr))->get_qname())
       {
@@ -7098,11 +7092,11 @@ namespace zorba {
                                   NULL,
                                   dynamic_cast<DirElemContentList*>((yystack_[4].value.node)));
     }
-#line 7102 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7096 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 535:
-#line 4100 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4094 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       if (static_cast<QName*>((yystack_[8].value.expr))->get_qname() != static_cast<QName*>((yystack_[2].value.expr))->get_qname())
       {
@@ -7118,544 +7112,544 @@ namespace zorba {
                                   dynamic_cast<DirAttributeList*>((yystack_[7].value.node)),
                                   dynamic_cast<DirElemContentList*>((yystack_[4].value.node)));
     }
-#line 7122 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7116 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 536:
-#line 4118 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4112 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       DirElemContentList *decl = new DirElemContentList( LOC(yylhs.location) );
       decl->push_back( dynamic_cast<DirElemContent*>((yystack_[0].value.expr)) );
       (yylhs.value.node) = decl;
     }
-#line 7132 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7126 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 537:
-#line 4124 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4118 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       DirElemContentList *decl = dynamic_cast<DirElemContentList*>((yystack_[1].value.node));
       if ( decl )
         decl->push_back( dynamic_cast<DirElemContent*>((yystack_[0].value.expr)) );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 7143 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7137 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 538:
-#line 4133 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4127 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       DirAttributeList *dal = new DirAttributeList( LOC(yylhs.location) );
       dal->push_back( dynamic_cast<DirAttr*>((yystack_[0].value.node)) );
       (yylhs.value.node) = dal;
     }
-#line 7153 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7147 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 539:
-#line 4139 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4133 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       DirAttributeList *dal = dynamic_cast<DirAttributeList*>((yystack_[1].value.node));
       if ( dal )
         dal->push_back( dynamic_cast<DirAttr*>((yystack_[0].value.node)) );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 7164 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7158 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 540:
-#line 4148 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4142 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DirAttr(LOC(yylhs.location),
                        static_cast<QName*>((yystack_[4].value.expr)),
                        dynamic_cast<DirAttributeValue*>((yystack_[0].value.node)));
     }
-#line 7174 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7168 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 543:
-#line 4158 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4152 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DirAttributeValue(LOC(yylhs.location),
                                  dynamic_cast<QuoteAttrContentList*>((yystack_[1].value.node)));
     }
-#line 7183 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7177 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 544:
-#line 4163 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4157 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DirAttributeValue( LOC(yylhs.location),
                                   dynamic_cast<AposAttrContentList*>((yystack_[1].value.node)));
     }
-#line 7192 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7186 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 545:
-#line 4169 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4163 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new QuoteAttrContentList( LOC(yylhs.location) );
     }
-#line 7200 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7194 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 546:
-#line 4173 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4167 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7208 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7202 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 547:
-#line 4179 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4173 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC(yylhs.location) );
       qacl->push_back( new QuoteAttrValueContent( LOC(yylhs.location), "\"" ) );
       (yylhs.value.node) = qacl;
     }
-#line 7218 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7212 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 548:
-#line 4185 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4179 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC(yylhs.location) );
       qacl->push_back( dynamic_cast<QuoteAttrValueContent*>((yystack_[0].value.node)) );
       (yylhs.value.node) = qacl;
     }
-#line 7228 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7222 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 549:
-#line 4191 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4185 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       QuoteAttrContentList* qacl = dynamic_cast<QuoteAttrContentList*>((yystack_[1].value.node));
       if ( qacl )
         qacl->push_back( new QuoteAttrValueContent( LOC(yylhs.location), "\"" ) );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 7239 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7233 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 550:
-#line 4198 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4192 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       QuoteAttrContentList *qacl = dynamic_cast<QuoteAttrContentList*>((yystack_[1].value.node));
       if ( qacl )
         qacl->push_back( dynamic_cast<QuoteAttrValueContent*>((yystack_[0].value.node)) );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 7250 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7244 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 551:
-#line 4206 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4200 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new AposAttrContentList( LOC(yylhs.location) );
     }
-#line 7258 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7252 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 552:
-#line 4210 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4204 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7266 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7260 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 553:
-#line 4216 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4210 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       AposAttrContentList *aacl = new AposAttrContentList( LOC(yylhs.location) );
       aacl->push_back( new AposAttrValueContent( LOC(yylhs.location),"'") );
       (yylhs.value.node) = aacl;
     }
-#line 7276 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7270 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 554:
-#line 4222 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4216 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       AposAttrContentList *aacl = new AposAttrContentList( LOC(yylhs.location) );
       aacl->push_back( dynamic_cast<AposAttrValueContent*>((yystack_[0].value.node)) );
       (yylhs.value.node) = aacl;
     }
-#line 7286 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7280 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 555:
-#line 4228 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4222 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>((yystack_[1].value.node));
       if (aacl)
         aacl->push_back( new AposAttrValueContent( LOC(yylhs.location),"'") );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 7297 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7291 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 556:
-#line 4235 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4229 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>((yystack_[1].value.node));
       if ( aacl )
         aacl->push_back( dynamic_cast<AposAttrValueContent*>((yystack_[0].value.node)) );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 7308 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7302 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 557:
-#line 4244 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4238 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new QuoteAttrValueContent( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)) );
     }
-#line 7316 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7310 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 558:
-#line 4248 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4242 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new QuoteAttrValueContent(LOC(yylhs.location), dynamic_cast<CommonContent*>((yystack_[0].value.expr)));
     }
-#line 7324 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7318 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 559:
-#line 4254 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4248 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new AposAttrValueContent( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)) );
     }
-#line 7332 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7326 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 560:
-#line 4258 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4252 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new AposAttrValueContent(LOC(yylhs.location), dynamic_cast<CommonContent*>((yystack_[0].value.expr)));
     }
-#line 7340 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7334 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 561:
-#line 4264 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4258 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirElemContent( LOC(yylhs.location), (yystack_[0].value.expr) );
     }
-#line 7348 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7342 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 562:
-#line 4268 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4262 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirElemContent( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)) );
     }
-#line 7356 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7350 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 563:
-#line 4272 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4266 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yystack_[0].value.expr));
       (yylhs.value.expr) = new DirElemContent( LOC(yylhs.location), cdata_h );
     }
-#line 7365 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7359 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 564:
-#line 4277 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4271 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yystack_[0].value.expr));
       (yylhs.value.expr) = new DirElemContent( LOC(yylhs.location), cont_h );
     }
-#line 7374 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7368 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 565:
-#line 4284 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4278 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CommonContent(LOC(yylhs.location), ParseConstants::cont_charref, SYMTAB((yystack_[0].value.sval)));
     }
-#line 7382 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7376 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 566:
-#line 4288 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4282 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CommonContent(LOC(yylhs.location), ParseConstants::cont_escape_lbrace);
     }
-#line 7390 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7384 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 567:
-#line 4292 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4286 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CommonContent(LOC(yylhs.location), ParseConstants::cont_escape_rbrace);
     }
-#line 7398 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7392 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 568:
-#line 4296 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4290 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CommonContent(LOC(yylhs.location), new EnclosedExpr(LOC(yylhs.location), (yystack_[1].value.expr)));
     }
-#line 7406 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7400 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 569:
-#line 4302 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4296 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirCommentConstructor( LOC(yylhs.location), SYMTAB((yystack_[1].value.sval)) );
     }
-#line 7414 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7408 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 570:
-#line 4307 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4301 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirCommentConstructor( LOC(yylhs.location), "" );
     }
-#line 7422 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7416 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 571:
-#line 4313 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4307 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       ERROR_IF_QNAME_NOT_NCNAME((yystack_[1].value.expr), yystack_[1].location);
       (yylhs.value.expr) = new DirPIConstructor( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)) );
     }
-#line 7431 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7425 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 572:
-#line 4319 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4313 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       ERROR_IF_QNAME_NOT_NCNAME((yystack_[1].value.expr), yystack_[1].location);
       (yylhs.value.expr) = new DirPIConstructor( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)), SYMTAB((yystack_[0].value.sval)) );
     }
-#line 7440 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7434 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 573:
-#line 4326 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4320 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CDataSection( LOC(yylhs.location),SYMTAB((yystack_[0].value.sval)) );
     }
-#line 7448 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7442 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 574:
-#line 4332 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4326 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7456 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7450 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 575:
-#line 4337 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4331 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7464 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7458 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 576:
-#line 4342 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4336 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7472 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7466 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 577:
-#line 4347 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4341 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7480 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7474 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 578:
-#line 4352 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4346 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7488 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7482 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 579:
-#line 4357 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4351 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7496 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7490 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 581:
-#line 4365 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4359 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompDocConstructor( LOC(yylhs.location), (yystack_[1].value.expr) );
     }
-#line 7504 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7498 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 582:
-#line 4371 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4365 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompElemConstructor(LOC(yylhs.location), new QName(LOC(yylhs.location), SYMTAB((yystack_[2].value.sval))), (yystack_[1].value.expr));
     }
-#line 7512 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7506 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 583:
-#line 4375 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4369 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompElemConstructor( LOC(yylhs.location), (yystack_[4].value.expr), (yystack_[1].value.expr) );
     }
-#line 7520 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7514 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 584:
-#line 4381 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4375 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompAttrConstructor( LOC(yylhs.location), new QName(LOC(yylhs.location), SYMTAB((yystack_[2].value.sval))), (yystack_[1].value.expr) );
     }
-#line 7528 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7522 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 585:
-#line 4385 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4379 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompAttrConstructor( LOC(yylhs.location), (yystack_[4].value.expr), (yystack_[1].value.expr) );
     }
-#line 7536 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7530 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 586:
-#line 4391 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4385 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompTextConstructor( LOC(yylhs.location), (yystack_[1].value.expr) );
     }
-#line 7544 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7538 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 587:
-#line 4397 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4391 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompCommentConstructor( LOC(yylhs.location), (yystack_[1].value.expr) );
     }
-#line 7552 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7546 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 588:
-#line 4403 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4397 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompPIConstructor(LOC(yylhs.location), SYMTAB((yystack_[2].value.sval)), (yystack_[1].value.expr));
     }
-#line 7560 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7554 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 589:
-#line 4407 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4401 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompPIConstructor(LOC(yylhs.location), (yystack_[4].value.expr), (yystack_[1].value.expr));
     }
-#line 7568 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7562 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 590:
-#line 4413 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4407 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompNamespaceConstructor(LOC(yylhs.location), SYMTAB((yystack_[2].value.sval)), (yystack_[1].value.expr));
     }
-#line 7576 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7570 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 591:
-#line 4417 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4411 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompNamespaceConstructor(LOC(yylhs.location), (yystack_[4].value.expr), (yystack_[1].value.expr));
     }
-#line 7584 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7578 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 592:
-#line 4423 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4417 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7592 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7586 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 593:
-#line 4429 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4423 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new SequenceTypeAST( LOC(yylhs.location), (yystack_[0].value.node), NULL );
         }
-#line 7600 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7594 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 594:
-#line 4433 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4427 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new SequenceTypeAST(LOC(yylhs.location), (yystack_[1].value.node), dynamic_cast<OccurrenceIndicator*>((yystack_[0].value.node)));
         }
-#line 7608 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7602 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 595:
-#line 4437 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4431 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new SequenceTypeAST( LOC(yylhs.location), NULL, NULL );
         }
-#line 7616 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7610 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 596:
-#line 4441 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4435 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             driver.addCommonLanguageWarning(yystack_[1].location, ZED(ZWST0009_JSONIQ_EMPTY_SEQUENCE));
             (yylhs.value.node) = new SequenceTypeAST( LOC(yylhs.location), NULL, NULL );
         }
-#line 7625 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7619 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 597:
-#line 4448 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4442 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new OccurrenceIndicator(
                 LOC(yylhs.location), ParseConstants::occurs_optionally
             );
         }
-#line 7635 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7629 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 598:
-#line 4454 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4448 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new OccurrenceIndicator(
                 LOC(yylhs.location), ParseConstants::occurs_zero_or_more
             );
         }
-#line 7645 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7639 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 599:
-#line 4460 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4454 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new OccurrenceIndicator(
                 LOC(yylhs.location), ParseConstants::occurs_one_or_more
             );
         }
-#line 7655 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7649 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 600:
-#line 4468 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4462 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             GeneralizedAtomicType* gat = static_cast<GeneralizedAtomicType*>((yystack_[0].value.node));
             QName* q = gat->get_qname();
@@ -7694,336 +7688,336 @@ namespace zorba {
               (yylhs.value.node) = (yystack_[0].value.node);
             }
         }
-#line 7698 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7692 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 601:
-#line 4507 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4501 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 7706 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7700 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 602:
-#line 4511 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4505 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ItemType( LOC(yylhs.location), true );
         }
-#line 7714 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7708 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 603:
-#line 4515 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4509 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new StructuredItemType(LOC(yylhs.location));
         }
-#line 7722 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7716 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 604:
-#line 4519 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4513 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 7730 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7724 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 605:
-#line 4523 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4517 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 7738 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7732 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 606:
-#line 4527 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4521 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 7746 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7740 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 607:
-#line 4533 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4527 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           TypeList* aTypeList = new TypeList(LOC (yylhs.location));
           aTypeList->push_back(dynamic_cast<SequenceTypeAST *>((yystack_[0].value.node)));
           (yylhs.value.node) = aTypeList;
         }
-#line 7756 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7750 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 608:
-#line 4539 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4533 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           TypeList* aTypeList = dynamic_cast<TypeList *>((yystack_[2].value.node));
           aTypeList->push_back(dynamic_cast<SequenceTypeAST *>((yystack_[0].value.node)));
           (yylhs.value.node) = (yystack_[2].value.node);
         }
-#line 7766 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7760 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 609:
-#line 4547 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4541 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new GeneralizedAtomicType( LOC(yylhs.location), static_cast<QName*>((yystack_[0].value.expr)) );
     }
-#line 7774 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7768 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 610:
-#line 4553 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4547 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new SimpleType( LOC(yylhs.location), static_cast<QName*>((yystack_[0].value.expr)) );
     }
-#line 7782 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7776 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 611:
-#line 4559 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4553 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7790 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7784 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 612:
-#line 4563 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4557 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7798 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7792 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 613:
-#line 4567 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4561 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7806 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7800 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 614:
-#line 4571 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4565 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7814 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7808 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 615:
-#line 4575 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4569 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7822 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7816 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 616:
-#line 4579 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4573 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7830 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7824 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 617:
-#line 4583 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4577 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7838 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7832 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 618:
-#line 4587 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4581 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7846 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7840 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 619:
-#line 4591 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4585 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7854 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7848 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 620:
-#line 4595 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4589 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7862 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7856 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 621:
-#line 4601 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4595 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new AnyKindTest( LOC(yylhs.location) );
     }
-#line 7870 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7864 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 622:
-#line 4607 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4601 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = NULL;
     }
-#line 7878 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7872 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 623:
-#line 4613 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4607 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DocumentTest(LOC(yylhs.location));
     }
-#line 7886 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7880 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 624:
-#line 4617 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4611 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DocumentTest(LOC(yylhs.location), dynamic_cast<ElementTest*>((yystack_[1].value.node)));
     }
-#line 7894 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7888 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 625:
-#line 4621 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4615 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DocumentTest(LOC(yylhs.location), dynamic_cast<SchemaElementTest*>((yystack_[1].value.node)));
     }
-#line 7902 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7896 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 626:
-#line 4627 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4621 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new NamespaceTest(LOC(yylhs.location));
     }
-#line 7910 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7904 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 627:
-#line 4632 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4626 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new TextTest(LOC(yylhs.location));
     }
-#line 7918 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7912 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 628:
-#line 4638 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4632 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new CommentTest(LOC(yylhs.location));
     }
-#line 7926 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7920 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 629:
-#line 4644 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4638 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new PITest( LOC(yylhs.location), "" );
         }
-#line 7934 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7928 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 630:
-#line 4648 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4642 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             ERROR_IF_QNAME_NOT_NCNAME((yystack_[1].value.expr), yystack_[1].location);
             (yylhs.value.node) = new PITest( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)) );
         }
-#line 7943 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7937 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 631:
-#line 4653 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4647 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new PITest( LOC(yylhs.location), SYMTAB((yystack_[1].value.sval)) );
         }
-#line 7951 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7945 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 632:
-#line 4659 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4653 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new AttributeTest( LOC(yylhs.location), NULL, NULL );
         }
-#line 7959 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7953 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 633:
-#line 4663 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4657 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new AttributeTest(
                 LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)), NULL
             );
         }
-#line 7969 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7963 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 634:
-#line 4669 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4663 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new AttributeTest(
                 LOC(yylhs.location), static_cast<QName*>((yystack_[3].value.expr)), dynamic_cast<TypeName*>((yystack_[1].value.node))
             );
         }
-#line 7979 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7973 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 635:
-#line 4675 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4669 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new AttributeTest( LOC(yylhs.location), NULL, NULL );
         }
-#line 7987 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7981 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 636:
-#line 4679 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4673 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new AttributeTest(
                 LOC(yylhs.location), NULL, dynamic_cast<TypeName*>((yystack_[1].value.node))
             );
         }
-#line 7997 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7991 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 637:
-#line 4687 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4681 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new SchemaAttributeTest( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)) );
         }
-#line 8005 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 7999 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 638:
-#line 4693 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4687 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest( LOC(yylhs.location), NULL, NULL, true );
         }
-#line 8013 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8007 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 639:
-#line 4697 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4691 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)), NULL, true
             );
         }
-#line 8023 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8017 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 640:
-#line 4703 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4697 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location),
@@ -8032,11 +8026,11 @@ namespace zorba {
                 false
             );
         }
-#line 8036 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8030 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 641:
-#line 4712 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4706 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location),
@@ -8045,506 +8039,506 @@ namespace zorba {
                 true
             );
         }
-#line 8049 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8043 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 642:
-#line 4721 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4715 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location), NULL, NULL, true
             );
         }
-#line 8059 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8053 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 643:
-#line 4727 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4721 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location), NULL, dynamic_cast<TypeName*>((yystack_[1].value.node)), false
             );
         }
-#line 8069 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8063 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 644:
-#line 4733 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4727 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location), NULL, dynamic_cast<TypeName*>((yystack_[1].value.node)), true
             );
         }
-#line 8079 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8073 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 645:
-#line 4741 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4735 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new SchemaElementTest( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)) );
         }
-#line 8087 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8081 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 646:
-#line 4747 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4741 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new TypeName( LOC(yylhs.location), static_cast<QName*>((yystack_[0].value.expr)) );
         }
-#line 8095 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8089 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 647:
-#line 4753 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4747 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new TypeName( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)), true );
         }
-#line 8103 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8097 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 648:
-#line 4759 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4753 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new StringLiteral( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)) );
         }
-#line 8111 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8105 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 649:
-#line 4765 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4759 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 8119 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8113 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 650:
-#line 4769 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4763 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 8127 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8121 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 651:
-#line 4775 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4769 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new AnyFunctionTest(LOC(yylhs.location));
     }
-#line 8135 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8129 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 652:
-#line 4781 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4775 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.node) = new TypedFunctionTest(LOC (yylhs.location), dynamic_cast<SequenceTypeAST *>((yystack_[0].value.node)));
         }
-#line 8143 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8137 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 653:
-#line 4785 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4779 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.node) = new TypedFunctionTest(LOC (yylhs.location),
               dynamic_cast<TypeList *>((yystack_[3].value.node)),
               dynamic_cast<SequenceTypeAST *>((yystack_[0].value.node)));
         }
-#line 8153 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8147 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 654:
-#line 4793 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4787 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
            (yylhs.value.node) = (yystack_[1].value.node);
         }
-#line 8161 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8155 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 655:
-#line 4799 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4793 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new RevalidationDecl(
                 LOC(yylhs.location), StaticContextConsts::strict_validation
             );
         }
-#line 8171 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8165 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 656:
-#line 4805 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4799 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new RevalidationDecl(
                 LOC(yylhs.location), StaticContextConsts::lax_validation
             );
         }
-#line 8181 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8175 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 657:
-#line 4811 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4805 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new RevalidationDecl(
                 LOC(yylhs.location), StaticContextConsts::skip_validation
             );
         }
-#line 8191 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8185 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 658:
-#line 4819 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4813 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr( LOC(yylhs.location), store::UpdateConsts::INTO, (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 8199 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8193 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 659:
-#line 4823 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4817 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC(yylhs.location), store::UpdateConsts::AS_FIRST_INTO, (yystack_[4].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8209 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8203 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 660:
-#line 4829 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4823 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC(yylhs.location), store::UpdateConsts::AS_LAST_INTO, (yystack_[4].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8219 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8213 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 661:
-#line 4835 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4829 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr( LOC(yylhs.location), store::UpdateConsts::AFTER, (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 8227 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8221 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 662:
-#line 4839 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4833 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC (yylhs.location), store::UpdateConsts::BEFORE, (yystack_[2].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8237 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8231 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 663:
-#line 4845 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4839 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr( LOC(yylhs.location), store::UpdateConsts::INTO, (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 8245 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8239 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 664:
-#line 4849 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4843 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC(yylhs.location), store::UpdateConsts::AS_FIRST_INTO, (yystack_[4].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8255 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8249 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 665:
-#line 4855 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4849 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                   LOC(yylhs.location), store::UpdateConsts::AS_LAST_INTO, (yystack_[4].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8265 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8259 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 666:
-#line 4861 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4855 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC (yylhs.location),
                 store::UpdateConsts::AFTER, (yystack_[2].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8276 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8270 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 667:
-#line 4868 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4862 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC (yylhs.location), store::UpdateConsts::BEFORE, (yystack_[2].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8286 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8280 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 668:
-#line 4876 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4870 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new DeleteExpr( LOC (yylhs.location), (yystack_[0].value.expr) );
         }
-#line 8294 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8288 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 669:
-#line 4881 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4875 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new DeleteExpr( LOC (yylhs.location), (yystack_[0].value.expr) );
         }
-#line 8302 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8296 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 670:
-#line 4887 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4881 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new ReplaceExpr(
                 LOC(yylhs.location), store::UpdateConsts::NODE, (yystack_[2].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8312 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8306 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 671:
-#line 4893 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4887 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new ReplaceExpr(
                 LOC(yylhs.location), store::UpdateConsts::VALUE_OF_NODE, (yystack_[2].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8322 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8316 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 672:
-#line 4901 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4895 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new RenameExpr( LOC (yylhs.location), (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 8330 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8324 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 673:
-#line 4907 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4901 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       CopyVarList *cvl = dynamic_cast<CopyVarList*>((yystack_[4].value.expr));
       (yylhs.value.expr) = new TransformExpr( LOC(yylhs.location), cvl, (yystack_[2].value.expr), (yystack_[0].value.expr) );
     }
-#line 8339 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8333 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 674:
-#line 4914 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4908 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       CopyVarList* lList = new CopyVarList(LOC(yylhs.location));
       lList->push_back (dynamic_cast<VarBinding*> ((yystack_[0].value.expr)));
       (yylhs.value.expr) = lList;
     }
-#line 8349 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8343 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 675:
-#line 4920 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4914 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       CopyVarList* lList = dynamic_cast<CopyVarList*>((yystack_[3].value.expr));
       VarBinding* lBinding = dynamic_cast<VarBinding*>((yystack_[0].value.expr));
       lList->push_back(lBinding);
       (yylhs.value.expr) = lList;
     }
-#line 8360 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8354 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 676:
-#line 4929 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4923 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
        (yylhs.value.expr) = new VarBinding(LOC(yylhs.location), static_cast<QName*>((yystack_[2].value.expr)), (yystack_[0].value.expr));
     }
-#line 8368 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8362 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 677:
-#line 4935 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4929 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new TryExpr( LOC(yylhs.location), (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 8376 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8370 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 678:
-#line 4941 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4935 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             CatchListExpr *cle = new CatchListExpr( LOC(yylhs.location) );
             cle->push_back( static_cast<CatchExpr*>((yystack_[0].value.expr)) );
             (yylhs.value.expr) = cle;
         }
-#line 8386 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8380 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 679:
-#line 4947 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4941 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             CatchListExpr *cle = dynamic_cast<CatchListExpr*>((yystack_[1].value.expr));
             if ( cle )
                 cle->push_back( static_cast<CatchExpr*>((yystack_[0].value.expr)) );
             (yylhs.value.expr) = (yystack_[1].value.expr);
         }
-#line 8397 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8391 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 680:
-#line 4956 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4950 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
        (yylhs.value.expr) = new CatchExpr(LOC(yylhs.location), *(yystack_[1].value.name_test_list), (yystack_[0].value.expr));
        delete (yystack_[1].value.name_test_list);
     }
-#line 8406 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8400 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 681:
-#line 4963 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4957 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[1].value.expr);
     }
-#line 8414 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8408 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 682:
-#line 4969 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4963 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             CatchExpr::NameTestList *ntl = new CatchExpr::NameTestList;
             ntl->push_back( static_cast<NameTest*>((yystack_[0].value.node)) );
             (yylhs.value.name_test_list) = ntl;
         }
-#line 8424 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8418 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 683:
-#line 4975 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4969 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             CatchExpr::NameTestList *ntl =
                 static_cast<CatchExpr::NameTestList*>((yystack_[2].value.name_test_list));
             ntl->push_back( static_cast<NameTest*>((yystack_[0].value.node)) );
             (yylhs.value.name_test_list) = ntl;
         }
-#line 8435 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8429 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 684:
-#line 4984 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4978 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTSelection( LOC(yylhs.location), (yystack_[1].value.node), (yystack_[0].value.pos_filter_list) );
             delete (yystack_[0].value.pos_filter_list);
         }
-#line 8444 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8438 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 685:
-#line 4991 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4985 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.pos_filter_list) = NULL;
         }
-#line 8452 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8446 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 686:
-#line 4995 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4989 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.pos_filter_list) = (yystack_[0].value.pos_filter_list);
         }
-#line 8460 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8454 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 687:
-#line 5001 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 4995 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.pos_filter_list) = new FTSelection::pos_filter_list_t;
             (yylhs.value.pos_filter_list)->push_back( dynamic_cast<FTPosFilter*>((yystack_[0].value.node)) );
         }
-#line 8469 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8463 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 688:
-#line 5006 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5000 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yystack_[1].value.pos_filter_list)->push_back( dynamic_cast<FTPosFilter*>((yystack_[0].value.node)) );
             (yylhs.value.pos_filter_list) = (yystack_[1].value.pos_filter_list);
         }
-#line 8478 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8472 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 689:
-#line 5013 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5007 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8486 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8480 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 690:
-#line 5017 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5011 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTOr( LOC(yylhs.location), (yystack_[2].value.node), (yystack_[0].value.node) );
         }
-#line 8494 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8488 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 691:
-#line 5023 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5017 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8502 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8496 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 692:
-#line 5027 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5021 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTAnd( LOC(yylhs.location), (yystack_[2].value.node), (yystack_[0].value.node) );
         }
-#line 8510 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8504 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 693:
-#line 5033 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5027 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8518 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8512 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 694:
-#line 5037 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5031 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTMildNot( LOC(yylhs.location), (yystack_[3].value.node), (yystack_[0].value.node) );
         }
-#line 8526 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8520 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 695:
-#line 5043 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5037 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8534 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8528 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 696:
-#line 5047 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5041 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTUnaryNot(
                 LOC(yylhs.location), dynamic_cast<FTPrimaryWithOptions*>((yystack_[0].value.node))
             );
         }
-#line 8544 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8538 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 697:
-#line 5055 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5049 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTPrimaryWithOptions(
                 LOC(yylhs.location),
@@ -8553,51 +8547,51 @@ namespace zorba {
                 dynamic_cast<FTWeight*>((yystack_[0].value.node))
             );
         }
-#line 8557 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8551 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 698:
-#line 5065 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5059 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 8565 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8559 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 699:
-#line 5069 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5063 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8573 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8567 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 700:
-#line 5074 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5068 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 8581 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8575 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 701:
-#line 5078 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5072 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8589 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8583 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 702:
-#line 5084 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5078 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWeight( LOC(yylhs.location), dynamic_cast<exprnode*>((yystack_[1].value.expr)) );
         }
-#line 8597 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8591 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 703:
-#line 5090 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5084 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWordsTimes(
                 LOC(yylhs.location),
@@ -8605,43 +8599,43 @@ namespace zorba {
                 dynamic_cast<FTTimes*>((yystack_[0].value.node))
             );
         }
-#line 8609 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8603 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 704:
-#line 5098 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5092 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[1].value.node);
         }
-#line 8617 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8611 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 705:
-#line 5102 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5096 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8625 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8619 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 706:
-#line 5107 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5101 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 8633 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8627 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 707:
-#line 5111 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5105 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8641 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8635 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 708:
-#line 5117 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5111 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTExtensionSelection(
                 LOC(yylhs.location),
@@ -8649,27 +8643,27 @@ namespace zorba {
                 dynamic_cast<FTSelection*>((yystack_[1].value.node))
             );
         }
-#line 8653 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8647 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 709:
-#line 5126 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5120 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 8661 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8655 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 710:
-#line 5130 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5124 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8669 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8663 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 711:
-#line 5136 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5130 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWords(
                 LOC(yylhs.location),
@@ -8677,151 +8671,151 @@ namespace zorba {
                 dynamic_cast<FTAnyallOption*>((yystack_[0].value.node))
             );
         }
-#line 8681 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8675 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 712:
-#line 5146 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5140 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWordsValue(
                 LOC(yylhs.location), static_cast<StringLiteral*>((yystack_[0].value.expr)), NULL
             );
         }
-#line 8691 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8685 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 713:
-#line 5152 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5146 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWordsValue(
                 LOC(yylhs.location), NULL, dynamic_cast<exprnode*>((yystack_[1].value.expr))
             );
         }
-#line 8701 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8695 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 714:
-#line 5159 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5153 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTAnyallOption( LOC(yylhs.location), ft_anyall_mode::any );
         }
-#line 8709 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8703 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 715:
-#line 5163 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5157 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8717 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8711 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 716:
-#line 5169 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5163 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTAnyallOption( LOC(yylhs.location), (yystack_[0].value.ft_anyall_value) );
         }
-#line 8725 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8719 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 717:
-#line 5173 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5167 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTAnyallOption( LOC(yylhs.location), (yystack_[0].value.ft_anyall_value) );
         }
-#line 8733 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8727 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 718:
-#line 5177 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5171 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTAnyallOption( LOC(yylhs.location), ft_anyall_mode::phrase );
         }
-#line 8741 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8735 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 719:
-#line 5182 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5176 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.ft_anyall_value) = ft_anyall_mode::any;
         }
-#line 8749 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8743 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 720:
-#line 5186 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5180 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.ft_anyall_value) = ft_anyall_mode::any_word;
         }
-#line 8757 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8751 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 721:
-#line 5191 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5185 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.ft_anyall_value) = ft_anyall_mode::all;
         }
-#line 8765 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8759 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 722:
-#line 5195 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5189 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.ft_anyall_value) = ft_anyall_mode::all_words;
         }
-#line 8773 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8767 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 723:
-#line 5201 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5195 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8781 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8775 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 724:
-#line 5205 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5199 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8789 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8783 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 725:
-#line 5209 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5203 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8797 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8791 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 726:
-#line 5213 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5207 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8805 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8799 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 727:
-#line 5217 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5211 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8813 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8807 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 728:
-#line 5223 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5217 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTOrder( LOC(yylhs.location) );
         }
-#line 8821 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8815 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 729:
-#line 5229 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5223 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWindow(
                 LOC(yylhs.location),
@@ -8829,11 +8823,11 @@ namespace zorba {
                 static_cast<FTUnit*>((yystack_[0].value.node))
             );
         }
-#line 8833 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8827 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 730:
-#line 5239 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5233 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTDistance(
                 LOC(yylhs.location),
@@ -8841,197 +8835,197 @@ namespace zorba {
                 dynamic_cast<FTUnit*>((yystack_[0].value.node))
             );
         }
-#line 8845 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8839 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 731:
-#line 5249 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5243 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTUnit( LOC(yylhs.location), ft_unit::words );
         }
-#line 8853 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8847 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 732:
-#line 5253 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5247 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTUnit( LOC(yylhs.location), ft_unit::sentences );
         }
-#line 8861 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8855 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 733:
-#line 5257 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5251 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTUnit( LOC(yylhs.location), ft_unit::paragraphs );
         }
-#line 8869 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8863 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 734:
-#line 5263 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5257 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             FTMatchOptions *mo = new FTMatchOptions( LOC(yylhs.location) );
             mo->push_back( dynamic_cast<FTMatchOption*>((yystack_[0].value.node)) );
             (yylhs.value.node) = mo;
         }
-#line 8879 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8873 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 735:
-#line 5269 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5263 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             FTMatchOptions *mo = dynamic_cast<FTMatchOptions*>((yystack_[2].value.node));
             mo->push_back( dynamic_cast<FTMatchOption*>((yystack_[0].value.node)) );
             (yylhs.value.node) = (yystack_[2].value.node);
         }
-#line 8889 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8883 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 736:
-#line 5277 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5271 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8897 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8891 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 737:
-#line 5281 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5275 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8905 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8899 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 738:
-#line 5285 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5279 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8913 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8907 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 739:
-#line 5289 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5283 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8921 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8915 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 740:
-#line 5293 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5287 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8929 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8923 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 741:
-#line 5297 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5291 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8937 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8931 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 742:
-#line 5301 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5295 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8945 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8939 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 743:
-#line 5305 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5299 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8953 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8947 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 744:
-#line 5311 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5305 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTCaseOption( LOC(yylhs.location), ft_case_mode::sensitive );
         }
-#line 8961 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8955 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 745:
-#line 5315 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5309 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTCaseOption( LOC(yylhs.location), ft_case_mode::insensitive );
         }
-#line 8969 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8963 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 746:
-#line 5319 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5313 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTCaseOption( LOC(yylhs.location), ft_case_mode::lower );
         }
-#line 8977 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8971 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 747:
-#line 5323 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5317 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTCaseOption( LOC(yylhs.location), ft_case_mode::upper );
         }
-#line 8985 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8979 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 748:
-#line 5329 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5323 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTDiacriticsOption(
                 LOC(yylhs.location), ft_diacritics_mode::sensitive
             );
         }
-#line 8995 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8989 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 749:
-#line 5335 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5329 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTDiacriticsOption(
                 LOC(yylhs.location), ft_diacritics_mode::insensitive
             );
         }
-#line 9005 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 8999 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 750:
-#line 5343 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5337 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTExtensionOption(
                 LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)), SYMTAB((yystack_[0].value.sval))
             );
         }
-#line 9015 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9009 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 751:
-#line 5351 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5345 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStemOption( LOC(yylhs.location), ft_stem_mode::stemming );
         }
-#line 9023 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9017 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 752:
-#line 5355 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5349 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStemOption( LOC(yylhs.location), ft_stem_mode::no_stemming );
         }
-#line 9031 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9025 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 753:
-#line 5361 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5355 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             FTThesaurusOption::thesaurus_id_list_t *til = NULL;
             if ( (yystack_[0].value.node) ) {
@@ -9041,11 +9035,11 @@ namespace zorba {
             (yylhs.value.node) = new FTThesaurusOption( LOC(yylhs.location), til, !til );
             delete til;
         }
-#line 9045 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9039 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 754:
-#line 5371 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5365 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             FTThesaurusOption::thesaurus_id_list_t *til = (yystack_[1].value.thesaurus_id_list);
             if ( (yystack_[2].value.node) ) {
@@ -9056,111 +9050,111 @@ namespace zorba {
             (yylhs.value.node) = new FTThesaurusOption( LOC(yylhs.location), til, !(yystack_[2].value.node) );
             delete til;
         }
-#line 9060 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9054 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 755:
-#line 5382 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5376 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTThesaurusOption( LOC(yylhs.location), NULL, false, true );
         }
-#line 9068 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9062 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 756:
-#line 5388 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5382 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 9076 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9070 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 757:
-#line 5392 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5386 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 9084 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9078 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 758:
-#line 5397 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5391 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.thesaurus_id_list) = NULL;
         }
-#line 9092 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9086 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 759:
-#line 5401 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5395 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.thesaurus_id_list) = (yystack_[0].value.thesaurus_id_list);
         }
-#line 9100 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9094 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 760:
-#line 5407 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5401 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.thesaurus_id_list) = new FTThesaurusOption::thesaurus_id_list_t;
             (yylhs.value.thesaurus_id_list)->push_back( dynamic_cast<FTThesaurusID*>((yystack_[0].value.node)) );
         }
-#line 9109 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9103 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 761:
-#line 5412 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5406 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yystack_[2].value.thesaurus_id_list)->push_back( dynamic_cast<FTThesaurusID*>((yystack_[0].value.node)) );
             (yylhs.value.thesaurus_id_list) = (yystack_[2].value.thesaurus_id_list);
         }
-#line 9118 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9112 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 762:
-#line 5419 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5413 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTThesaurusID(
                 LOC(yylhs.location), SYMTAB((yystack_[2].value.sval)), SYMTAB((yystack_[1].value.sval)), dynamic_cast<FTRange*>((yystack_[0].value.node))
             );
         }
-#line 9128 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9122 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 763:
-#line 5426 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5420 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.sval) = 0;
         }
-#line 9136 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9130 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 764:
-#line 5430 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5424 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.sval) = (yystack_[0].value.sval);
         }
-#line 9144 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9138 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 765:
-#line 5436 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5430 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 9152 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9146 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 766:
-#line 5440 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5434 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[1].value.node);
         }
-#line 9160 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9154 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 767:
-#line 5446 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5440 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWordOption(
                 LOC(yylhs.location),
@@ -9169,93 +9163,93 @@ namespace zorba {
             );
             delete (yystack_[0].value.incl_excl_list);
         }
-#line 9173 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9167 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 768:
-#line 5455 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5449 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWordOption(
                 LOC(yylhs.location), NULL, (yystack_[0].value.incl_excl_list), ft_stop_words_mode::with_default
             );
             delete (yystack_[0].value.incl_excl_list);
         }
-#line 9184 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9178 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 769:
-#line 5462 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5456 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWordOption(
                 LOC(yylhs.location), NULL, NULL, ft_stop_words_mode::without
             );
         }
-#line 9194 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9188 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 770:
-#line 5470 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5464 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWords( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)), NULL );
         }
-#line 9202 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9196 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 771:
-#line 5474 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5468 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWords( LOC(yylhs.location), "", (yystack_[1].value.strlist) );
         }
-#line 9210 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9204 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 772:
-#line 5480 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5474 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             string_list_t *sl = new string_list_t;
             sl->push_back( SYMTAB((yystack_[0].value.sval)) );
             (yylhs.value.strlist) = sl;
         }
-#line 9220 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9214 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 773:
-#line 5486 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5480 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             if ( (yystack_[2].value.strlist) )
                 (yystack_[2].value.strlist)->push_back( SYMTAB((yystack_[0].value.sval)) );
             (yylhs.value.strlist) = (yystack_[2].value.strlist);
         }
-#line 9230 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9224 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 774:
-#line 5493 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5487 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.incl_excl_list) = NULL;
         }
-#line 9238 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9232 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 775:
-#line 5497 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5491 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.incl_excl_list) = (yystack_[0].value.incl_excl_list);
         }
-#line 9246 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9240 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 776:
-#line 5503 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5497 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.incl_excl_list) = new FTStopWordOption::incl_excl_list_t;
             (yylhs.value.incl_excl_list)->push_back( dynamic_cast<FTStopWordsInclExcl*>((yystack_[0].value.node)) );
         }
-#line 9255 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9249 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 777:
-#line 5508 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5502 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             FTStopWordOption::incl_excl_list_t *iel = (yystack_[1].value.incl_excl_list);
             if ( !iel )
@@ -9263,11 +9257,11 @@ namespace zorba {
             iel->push_back( dynamic_cast<FTStopWordsInclExcl*>((yystack_[0].value.node)) );
             (yylhs.value.incl_excl_list) = iel;
         }
-#line 9267 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9261 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 778:
-#line 5518 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5512 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWordsInclExcl(
                 LOC(yylhs.location),
@@ -9275,11 +9269,11 @@ namespace zorba {
                 ft_stop_words_unex::union_
             );
         }
-#line 9279 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9273 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 779:
-#line 5526 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5520 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWordsInclExcl(
                 LOC(yylhs.location),
@@ -9287,99 +9281,99 @@ namespace zorba {
                 ft_stop_words_unex::except
             );
         }
-#line 9291 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9285 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 780:
-#line 5536 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5530 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTLanguageOption( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)) );
         }
-#line 9299 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9293 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 781:
-#line 5542 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5536 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWildCardOption( LOC(yylhs.location), ft_wild_card_mode::with );
         }
-#line 9307 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9301 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 782:
-#line 5546 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5540 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWildCardOption( LOC(yylhs.location), ft_wild_card_mode::without );
         }
-#line 9315 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9309 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 783:
-#line 5552 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5546 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTContent( LOC(yylhs.location), ft_content_mode::at_start );
         }
-#line 9323 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9317 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 784:
-#line 5556 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5550 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTContent( LOC(yylhs.location), ft_content_mode::at_end );
         }
-#line 9331 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9325 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 785:
-#line 5560 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5554 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTContent( LOC(yylhs.location), ft_content_mode::entire );
         }
-#line 9339 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9333 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 786:
-#line 5566 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5560 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTTimes( LOC(yylhs.location), dynamic_cast<FTRange*>((yystack_[1].value.node)) );
         }
-#line 9347 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9341 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 787:
-#line 5572 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5566 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTRange( LOC(yylhs.location), ft_range_mode::exactly, (yystack_[0].value.expr) );
         }
-#line 9355 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9349 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 788:
-#line 5576 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5570 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTRange( LOC(yylhs.location), ft_range_mode::at_least, (yystack_[0].value.expr) );
         }
-#line 9363 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9357 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 789:
-#line 5580 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5574 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTRange( LOC(yylhs.location), ft_range_mode::at_most, (yystack_[0].value.expr) );
         }
-#line 9371 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9365 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 790:
-#line 5584 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5578 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTRange( LOC(yylhs.location), ft_range_mode::from_to, (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 9379 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9373 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 791:
-#line 5590 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5584 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTScope(
                 LOC(yylhs.location),
@@ -9387,11 +9381,11 @@ namespace zorba {
                 dynamic_cast<FTBigUnit*>((yystack_[0].value.node))
             );
         }
-#line 9391 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9385 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 792:
-#line 5598 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5592 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTScope(
                 LOC(yylhs.location),
@@ -9399,92 +9393,92 @@ namespace zorba {
                 dynamic_cast<FTBigUnit*>((yystack_[0].value.node))
             );
         }
-#line 9403 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9397 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 793:
-#line 5608 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5602 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTBigUnit( LOC(yylhs.location), ft_big_unit::sentence );
         }
-#line 9411 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9405 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 794:
-#line 5612 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5606 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTBigUnit( LOC(yylhs.location), ft_big_unit::paragraph );
         }
-#line 9419 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9413 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 795:
-#line 5618 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5612 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTIgnoreOption( LOC(yylhs.location), static_cast<UnionExpr*>((yystack_[0].value.expr)) );
         }
-#line 9427 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9421 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 796:
-#line 5624 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5618 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONArrayConstructor( LOC(yylhs.location), NULL );
         }
-#line 9435 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9429 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 797:
-#line 5628 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5622 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONArrayConstructor( LOC(yylhs.location), (yystack_[1].value.expr) );
         }
-#line 9443 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9437 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 798:
-#line 5634 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5628 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONObjectConstructor(LOC(yylhs.location), NULL, false);
         }
-#line 9451 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9445 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 799:
-#line 5638 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5632 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONObjectConstructor(LOC(yylhs.location), (yystack_[1].value.expr), false);
         }
-#line 9459 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9453 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 800:
-#line 5644 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5638 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONObjectConstructor(LOC(yylhs.location), NULL, true);
         }
-#line 9467 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9461 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 801:
-#line 5648 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5642 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONObjectConstructor(LOC(yylhs.location), (yystack_[1].value.expr), true);
         }
-#line 9475 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9469 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 802:
-#line 5654 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5648 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONDirectObjectConstructor(LOC(yylhs.location),
                                                dynamic_cast<JSONPairList*>((yystack_[1].value.node)));
         }
-#line 9484 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9478 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 803:
-#line 5661 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5655 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           ERROR_IF_QNAME_NOT_NCNAME((yystack_[2].value.expr), yystack_[2].location);
           driver.addCommonLanguageWarning(yystack_[2].location, ZED(ZWST0009_OBJECT_KEY_NOT_QUOTED));
@@ -9493,32 +9487,32 @@ namespace zorba {
           jpl->push_back(new JSONPairConstructor(LOC(yylhs.location), sl, (yystack_[0].value.expr)));
           (yylhs.value.node) = jpl;
         }
-#line 9497 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9491 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 804:
-#line 5671 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5665 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           JSONPairList* jpl = new JSONPairList(LOC(yylhs.location));
           jpl->push_back(new JSONPairConstructor(LOC(yylhs.location), (yystack_[2].value.expr), (yystack_[0].value.expr)));
           (yylhs.value.node) = jpl;
         }
-#line 9507 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9501 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 805:
-#line 5677 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5671 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yystack_[4].value.node));
           assert(jpl);
           jpl->push_back(new JSONPairConstructor(LOC(yylhs.location), (yystack_[2].value.expr), (yystack_[0].value.expr)));
           (yylhs.value.node) = jpl;
         }
-#line 9518 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9512 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 806:
-#line 5684 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5678 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           ERROR_IF_QNAME_NOT_NCNAME((yystack_[2].value.expr), yystack_[2].location);
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yystack_[4].value.node));
@@ -9527,21 +9521,21 @@ namespace zorba {
           jpl->push_back(new JSONPairConstructor(LOC(yylhs.location), sl, (yystack_[0].value.expr)));
           (yylhs.value.node) = jpl;
         }
-#line 9531 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9525 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 807:
-#line 5695 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5689 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONObjectInsertExpr(LOC(yylhs.location),
                                         (yystack_[2].value.expr),
                                         (yystack_[0].value.expr));
         }
-#line 9541 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9535 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 808:
-#line 5701 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5695 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yystack_[2].value.node));
           (yylhs.value.expr) = new JSONObjectInsertExpr(
@@ -9551,27 +9545,27 @@ namespace zorba {
                   jpl),
               (yystack_[0].value.expr));
         }
-#line 9555 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9549 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 809:
-#line 5711 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5705 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONArrayInsertExpr(LOC(yylhs.location), (yystack_[5].value.expr), (yystack_[3].value.expr), (yystack_[0].value.expr));
         }
-#line 9563 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9557 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 810:
-#line 5717 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5711 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONArrayAppendExpr(LOC(yylhs.location), (yystack_[2].value.expr), (yystack_[0].value.expr));
         }
-#line 9571 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9565 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 811:
-#line 5723 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5717 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
@@ -9586,11 +9580,11 @@ namespace zorba {
               lTargetExpr,
               lSelectorExpr);
         }
-#line 9590 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9584 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 812:
-#line 5740 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5734 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
@@ -9612,11 +9606,11 @@ namespace zorba {
                 lSelectorExpr,
                 (yystack_[0].value.expr));
         }
-#line 9616 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9610 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 813:
-#line 5764 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5758 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
@@ -9633,1403 +9627,1403 @@ namespace zorba {
                 lSelectorExpr,
                 (yystack_[0].value.expr));
         }
-#line 9637 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9631 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 814:
-#line 5783 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5777 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.node) = new JSON_Test(LOC(yylhs.location), store::StoreConsts::jsonItem);
         }
-#line 9645 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9639 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 815:
-#line 5787 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5781 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.node) = new JSON_Test(LOC(yylhs.location), store::StoreConsts::jsonArray);
         }
-#line 9653 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9647 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 816:
-#line 5791 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5785 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     {
           (yylhs.value.node) = new JSON_Test(LOC(yylhs.location), store::StoreConsts::jsonObject);
         }
-#line 9661 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9655 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 819:
-#line 5800 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5794 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB((yystack_[0].value.sval))); }
-#line 9667 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9661 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 820:
-#line 5801 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5795 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("attribute"))); }
-#line 9673 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9667 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 821:
-#line 5802 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5796 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("comment"))); }
-#line 9679 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9673 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 822:
-#line 5803 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5797 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("document-node"))); }
-#line 9685 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9679 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 823:
-#line 5804 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5798 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("namespace-node"))); }
-#line 9691 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9685 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 824:
-#line 5805 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5799 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("element"))); }
-#line 9697 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9691 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 825:
-#line 5806 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5800 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("item"))); }
-#line 9703 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9697 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 826:
-#line 5807 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5801 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("if"))); }
-#line 9709 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9703 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 827:
-#line 5808 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5802 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("node"))); }
-#line 9715 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9709 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 828:
-#line 5809 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5803 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("processing-instruction"))); }
-#line 9721 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9715 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 829:
-#line 5810 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5804 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("schema-attribute"))); }
-#line 9727 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9721 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 830:
-#line 5811 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5805 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("schema-element"))); }
-#line 9733 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9727 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 831:
-#line 5812 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5806 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("text"))); }
-#line 9739 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9733 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 832:
-#line 5813 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5807 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("typeswitch"))); }
-#line 9745 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9739 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 833:
-#line 5814 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5808 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("switch"))); }
-#line 9751 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9745 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 834:
-#line 5815 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5809 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("empty-sequence"))); }
-#line 9757 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9751 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 835:
-#line 5816 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5810 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("while"))); }
-#line 9763 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9757 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 836:
-#line 5817 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5811 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("json"))); }
-#line 9769 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9763 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 837:
-#line 5818 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5812 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("array"))); }
-#line 9775 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9769 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 838:
-#line 5819 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5813 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("object"))); }
-#line 9781 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9775 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 839:
-#line 5820 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5814 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("json-item"))); }
-#line 9787 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9781 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 840:
-#line 5821 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5815 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("structured-item"))); }
-#line 9793 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9787 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 842:
-#line 5825 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5819 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB((yystack_[0].value.sval))); }
-#line 9799 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9793 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 843:
-#line 5826 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5820 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("xquery"))); }
-#line 9805 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9799 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 844:
-#line 5827 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5821 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("empty"))); }
-#line 9811 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9805 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 845:
-#line 5828 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5822 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("boundary-space"))); }
-#line 9817 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9811 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 846:
-#line 5829 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5823 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ft-option"))); }
-#line 9823 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9817 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 847:
-#line 5830 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5824 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("base-uri"))); }
-#line 9829 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9823 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 848:
-#line 5831 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5825 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("lax"))); }
-#line 9835 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9829 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 849:
-#line 5832 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5826 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("strict"))); }
-#line 9841 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9835 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 850:
-#line 5833 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5827 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("idiv"))); }
-#line 9847 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9841 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 851:
-#line 5834 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5828 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("document"))); }
-#line 9853 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9847 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 852:
-#line 5835 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5829 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ftnot"))); }
-#line 9859 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9853 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 853:
-#line 5836 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5830 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("not"))); }
-#line 9865 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9859 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 854:
-#line 5837 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5831 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("sensitive"))); }
-#line 9871 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9865 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 855:
-#line 5838 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5832 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("insensitive"))); }
-#line 9877 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9871 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 856:
-#line 5839 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5833 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("diacritics"))); }
-#line 9883 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9877 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 857:
-#line 5840 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5834 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("without"))); }
-#line 9889 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9883 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 858:
-#line 5841 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5835 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("stemming"))); }
-#line 9895 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9889 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 859:
-#line 5842 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5836 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("thesaurus"))); }
-#line 9901 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9895 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 860:
-#line 5843 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5837 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("stop"))); }
-#line 9907 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9901 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 861:
-#line 5844 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5838 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("wildcards"))); }
-#line 9913 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9907 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 862:
-#line 5845 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5839 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("entire"))); }
-#line 9919 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9913 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 863:
-#line 5846 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5840 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("content"))); }
-#line 9925 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9919 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 864:
-#line 5847 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5841 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("word"))); }
-#line 9931 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9925 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 865:
-#line 5848 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5842 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("start"))); }
-#line 9937 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9931 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 866:
-#line 5849 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5843 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("end"))); }
-#line 9943 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9937 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 867:
-#line 5850 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5844 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("most"))); }
-#line 9949 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9943 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 868:
-#line 5851 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5845 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("skip"))); }
-#line 9955 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9949 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 869:
-#line 5852 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5846 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("copy"))); }
-#line 9961 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9955 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 870:
-#line 5853 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5847 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("general"))); }
-#line 9967 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9961 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 871:
-#line 5854 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5848 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("value"))); }
-#line 9973 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9967 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 872:
-#line 5855 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5849 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("eq"))); }
-#line 9979 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9973 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 873:
-#line 5856 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5850 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ne"))); }
-#line 9985 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9979 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 874:
-#line 5857 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5851 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("lt"))); }
-#line 9991 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9985 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 875:
-#line 5858 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5852 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("le"))); }
-#line 9997 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9991 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 876:
-#line 5859 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5853 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("gt"))); }
-#line 10003 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 9997 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 877:
-#line 5860 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5854 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ge"))); }
-#line 10009 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10003 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 878:
-#line 5861 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5855 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("at"))); }
-#line 10015 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10009 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 879:
-#line 5862 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5856 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("context"))); }
-#line 10021 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10015 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 880:
-#line 5863 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5857 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("variable"))); }
-#line 10027 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10021 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 881:
-#line 5864 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5858 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("return"))); }
-#line 10033 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10027 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 882:
-#line 5865 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5859 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("for"))); }
-#line 10039 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10033 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 883:
-#line 5866 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5860 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("from"))); }
-#line 10045 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10039 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 884:
-#line 5867 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5861 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("allowing"))); }
-#line 10051 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10045 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 885:
-#line 5868 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5862 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("sliding"))); }
-#line 10057 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10051 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 886:
-#line 5869 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5863 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("tumbling"))); }
-#line 10063 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10057 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 887:
-#line 5870 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5864 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("previous"))); }
-#line 10069 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10063 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 888:
-#line 5871 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5865 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("next"))); }
-#line 10075 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10069 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 889:
-#line 5872 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5866 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("only"))); }
-#line 10081 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10075 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 890:
-#line 5873 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5867 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("when"))); }
-#line 10087 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10081 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 891:
-#line 5874 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5868 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("count"))); }
-#line 10093 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10087 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 892:
-#line 5875 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5869 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("in"))); }
-#line 10099 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10093 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 893:
-#line 5876 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5870 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("let"))); }
-#line 10105 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10099 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 894:
-#line 5877 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5871 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("where"))); }
-#line 10111 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10105 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 895:
-#line 5878 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5872 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("by"))); }
-#line 10117 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10111 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 896:
-#line 5879 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5873 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("group"))); }
-#line 10123 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10117 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 897:
-#line 5880 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5874 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("order"))); }
-#line 10129 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10123 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 898:
-#line 5881 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5875 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("stable"))); }
-#line 10135 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10129 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 899:
-#line 5882 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5876 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ascending"))); }
-#line 10141 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10135 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 900:
-#line 5883 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5877 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("descending"))); }
-#line 10147 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10141 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 901:
-#line 5884 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5878 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("greatest"))); }
-#line 10153 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10147 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 902:
-#line 5885 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5879 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("least"))); }
-#line 10159 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10153 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 903:
-#line 5886 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5880 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("collation"))); }
-#line 10165 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10159 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 904:
-#line 5887 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5881 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("some"))); }
-#line 10171 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10165 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 905:
-#line 5888 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5882 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("every"))); }
-#line 10177 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10171 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 906:
-#line 5889 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5883 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("satisfies"))); }
-#line 10183 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10177 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 907:
-#line 5890 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5884 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("case"))); }
-#line 10189 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10183 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 908:
-#line 5891 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5885 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("as"))); }
-#line 10195 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10189 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 909:
-#line 5892 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5886 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("then"))); }
-#line 10201 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10195 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 910:
-#line 5893 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5887 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("else"))); }
-#line 10207 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10201 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 911:
-#line 5894 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5888 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("or"))); }
-#line 10213 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10207 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 912:
-#line 5895 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5889 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("and"))); }
-#line 10219 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10213 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 913:
-#line 5896 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5890 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("instance"))); }
-#line 10225 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10219 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 914:
-#line 5897 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5891 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("of"))); }
-#line 10231 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10225 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 915:
-#line 5898 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5892 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("castable"))); }
-#line 10237 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10231 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 916:
-#line 5899 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5893 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("to"))); }
-#line 10243 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10237 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 917:
-#line 5900 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5894 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("div"))); }
-#line 10249 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10243 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 918:
-#line 5901 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5895 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("mod"))); }
-#line 10255 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10249 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 919:
-#line 5902 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5896 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("union"))); }
-#line 10261 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10255 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 920:
-#line 5903 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5897 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("intersect"))); }
-#line 10267 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10261 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 921:
-#line 5904 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5898 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("except"))); }
-#line 10273 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10267 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 922:
-#line 5905 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5899 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("validate"))); }
-#line 10279 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10273 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 923:
-#line 5906 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5900 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("type"))); }
-#line 10285 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10279 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 924:
-#line 5907 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5901 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("cast"))); }
-#line 10291 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10285 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 925:
-#line 5908 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5902 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("treat"))); }
-#line 10297 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10291 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 926:
-#line 5909 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5903 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("is"))); }
-#line 10303 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10297 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 927:
-#line 5910 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5904 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("preserve"))); }
-#line 10309 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10303 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 928:
-#line 5911 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5905 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("strip"))); }
-#line 10315 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10309 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 929:
-#line 5912 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5906 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("namespace"))); }
-#line 10321 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10315 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 930:
-#line 5913 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5907 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("external"))); }
-#line 10327 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10321 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 931:
-#line 5914 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5908 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("encoding"))); }
-#line 10333 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10327 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 932:
-#line 5915 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5909 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("no-preserve"))); }
-#line 10339 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10333 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 933:
-#line 5916 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5910 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("inherit"))); }
-#line 10345 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10339 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 934:
-#line 5917 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5911 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("no-inherit"))); }
-#line 10351 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10345 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 935:
-#line 5918 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5912 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("declare"))); }
-#line 10357 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10351 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 936:
-#line 5919 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5913 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("construction"))); }
-#line 10363 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10357 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 937:
-#line 5920 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5914 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ordering"))); }
-#line 10369 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10363 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 938:
-#line 5921 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5915 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("default"))); }
-#line 10375 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10369 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 939:
-#line 5922 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5916 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("copy-namespaces"))); }
-#line 10381 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10375 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 940:
-#line 5923 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5917 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("option"))); }
-#line 10387 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10381 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 941:
-#line 5924 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5918 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("version"))); }
-#line 10393 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10387 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 942:
-#line 5925 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5919 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("import"))); }
-#line 10399 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10393 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 943:
-#line 5926 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5920 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("schema"))); }
-#line 10405 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10399 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 944:
-#line 5927 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5921 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("module"))); }
-#line 10411 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10405 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 945:
-#line 5928 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5922 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("function"))); }
-#line 10417 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10411 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 946:
-#line 5929 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5923 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("score"))); }
-#line 10423 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10417 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 947:
-#line 5930 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5924 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("contains"))); }
-#line 10429 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10423 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 948:
-#line 5931 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5925 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("weight"))); }
-#line 10435 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10429 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 949:
-#line 5932 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5926 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("window"))); }
-#line 10441 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10435 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 950:
-#line 5933 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5927 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("distance"))); }
-#line 10447 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10441 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 951:
-#line 5934 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5928 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("occurs"))); }
-#line 10453 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10447 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 952:
-#line 5935 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5929 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("times"))); }
-#line 10459 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10453 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 953:
-#line 5936 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5930 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("same"))); }
-#line 10465 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10459 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 954:
-#line 5937 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5931 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("different"))); }
-#line 10471 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10465 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 955:
-#line 5938 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5932 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("lowercase"))); }
-#line 10477 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10471 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 956:
-#line 5939 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5933 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("uppercase"))); }
-#line 10483 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10477 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 957:
-#line 5940 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5934 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("relationship"))); }
-#line 10489 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10483 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 958:
-#line 5941 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5935 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("levels"))); }
-#line 10495 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10489 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 959:
-#line 5942 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5936 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("language"))); }
-#line 10501 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10495 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 960:
-#line 5943 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5937 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("any"))); }
-#line 10507 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10501 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 961:
-#line 5944 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5938 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("all"))); }
-#line 10513 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10507 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 962:
-#line 5945 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5939 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("exactly"))); }
-#line 10519 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10513 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 963:
-#line 5946 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5940 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("words"))); }
-#line 10525 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10519 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 964:
-#line 5947 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5941 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("sentences"))); }
-#line 10531 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10525 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 965:
-#line 5948 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5942 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("sentence"))); }
-#line 10537 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10531 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 966:
-#line 5949 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5943 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("phrase"))); }
-#line 10543 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10537 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 967:
-#line 5950 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5944 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("paragraph"))); }
-#line 10549 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10543 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 968:
-#line 5951 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5945 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("paragraphs"))); }
-#line 10555 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10549 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 969:
-#line 5952 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5946 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("modify"))); }
-#line 10561 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10555 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 970:
-#line 5953 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5947 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("first"))); }
-#line 10567 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10561 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 971:
-#line 5954 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5948 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("append"))); }
-#line 10573 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10567 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 972:
-#line 5955 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5949 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("insert"))); }
-#line 10579 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10573 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 973:
-#line 5956 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5950 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("replace"))); }
-#line 10585 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10579 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 974:
-#line 5957 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5951 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("rename"))); }
-#line 10591 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10585 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 975:
-#line 5958 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5952 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("delete"))); }
-#line 10597 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10591 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 976:
-#line 5959 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5953 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("before"))); }
-#line 10603 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10597 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 977:
-#line 5960 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5954 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("after"))); }
-#line 10609 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10603 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 978:
-#line 5961 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5955 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("revalidation"))); }
-#line 10615 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10609 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 979:
-#line 5962 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5956 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("with"))); }
-#line 10621 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10615 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 980:
-#line 5963 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5957 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("nodes"))); }
-#line 10627 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10621 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 981:
-#line 5964 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5958 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("last"))); }
-#line 10633 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10627 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 982:
-#line 5965 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5959 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("into"))); }
-#line 10639 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10633 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 983:
-#line 5966 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5960 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("simple"))); }
-#line 10645 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10639 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 984:
-#line 5967 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5961 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("sequential"))); }
-#line 10651 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10645 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 985:
-#line 5968 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5962 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("updating"))); }
-#line 10657 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10651 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 986:
-#line 5969 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5963 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ordered"))); }
-#line 10663 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10657 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 987:
-#line 5970 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5964 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("unordered"))); }
-#line 10669 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10663 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 988:
-#line 5971 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5965 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("returning"))); }
-#line 10675 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10669 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 989:
-#line 5972 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5966 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("exit"))); }
-#line 10681 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10675 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 990:
-#line 5973 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5967 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("loop"))); }
-#line 10687 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10681 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 991:
-#line 5974 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5968 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("break"))); }
-#line 10693 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10687 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 992:
-#line 5975 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5969 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("continue"))); }
-#line 10699 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10693 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 993:
-#line 5976 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5970 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("try"))); }
-#line 10705 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10699 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 994:
-#line 5977 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5971 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("catch"))); }
-#line 10711 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10705 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 995:
-#line 5978 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5972 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("using"))); }
-#line 10717 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10711 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 996:
-#line 5979 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5973 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("set"))); }
-#line 10723 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10717 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 997:
-#line 5980 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5974 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("index"))); }
-#line 10729 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10723 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 998:
-#line 5981 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5975 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("unique"))); }
-#line 10735 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10729 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 999:
-#line 5982 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5976 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("non"))); }
-#line 10741 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10735 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1000:
-#line 5983 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5977 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("on"))); }
-#line 10747 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10741 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1001:
-#line 5984 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5978 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("range"))); }
-#line 10753 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10747 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1002:
-#line 5985 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5979 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("equality"))); }
-#line 10759 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10753 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1003:
-#line 5986 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5980 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("manually"))); }
-#line 10765 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10759 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1004:
-#line 5987 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5981 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("automatically"))); }
-#line 10771 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10765 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1005:
-#line 5988 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5982 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("maintained"))); }
-#line 10777 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10771 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1006:
-#line 5989 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5983 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("decimal-format"))); }
-#line 10783 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10777 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1007:
-#line 5990 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5984 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("decimal-separator"))); }
-#line 10789 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10783 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1008:
-#line 5991 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5985 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("grouping-separator"))); }
-#line 10795 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10789 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1009:
-#line 5992 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5986 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("infinity"))); }
-#line 10801 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10795 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1010:
-#line 5993 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5987 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("minus-sign"))); }
-#line 10807 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10801 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1011:
-#line 5994 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5988 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("NaN"))); }
-#line 10813 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10807 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1012:
-#line 5995 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5989 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("percent"))); }
-#line 10819 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10813 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1013:
-#line 5996 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5990 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("per-mille"))); }
-#line 10825 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10819 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1014:
-#line 5997 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5991 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("zero-digit"))); }
-#line 10831 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10825 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1015:
-#line 5998 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5992 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("digit"))); }
-#line 10837 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10831 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1016:
-#line 5999 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5993 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("pattern-separator"))); }
-#line 10843 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10837 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1017:
-#line 6000 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5994 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("collection"))); }
-#line 10849 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10843 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1018:
-#line 6001 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5995 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("const"))); }
-#line 10855 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10849 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1019:
-#line 6002 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5996 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("append-only"))); }
-#line 10861 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10855 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1020:
-#line 6003 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5997 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("queue"))); }
-#line 10867 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10861 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1021:
-#line 6004 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5998 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("mutable"))); }
-#line 10873 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10867 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1022:
-#line 6005 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 5999 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("read-only"))); }
-#line 10879 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10873 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1023:
-#line 6006 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6000 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("integrity"))); }
-#line 10885 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10879 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1024:
-#line 6007 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6001 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("constraint"))); }
-#line 10891 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10885 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1025:
-#line 6008 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6002 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("check"))); }
-#line 10897 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10891 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1026:
-#line 6009 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6003 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("key"))); }
-#line 10903 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10897 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1027:
-#line 6010 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6004 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("foreach"))); }
-#line 10909 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10903 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1028:
-#line 6011 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6005 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("foreign"))); }
-#line 10915 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10909 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1029:
-#line 6012 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6006 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("keys"))); }
-#line 10921 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10915 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1030:
-#line 6013 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6007 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ancestor"))); }
-#line 10927 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10921 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1031:
-#line 6014 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6008 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("child"))); }
-#line 10933 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10927 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1032:
-#line 6015 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6009 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("descendant"))); }
-#line 10939 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10933 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1033:
-#line 6016 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6010 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("parent"))); }
-#line 10945 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10939 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1034:
-#line 6017 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6011 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("preceding"))); }
-#line 10951 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10945 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1035:
-#line 6018 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6012 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("self"))); }
-#line 10957 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10951 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1036:
-#line 6019 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6013 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("following"))); }
-#line 10963 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10957 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1037:
-#line 6020 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6014 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ancestor-or-self"))); }
-#line 10969 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10963 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1038:
-#line 6021 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6015 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
-#line 10975 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10969 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1039:
-#line 6022 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6016 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("following-sibling"))); }
-#line 10981 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10975 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1040:
-#line 6023 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6017 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
-#line 10987 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10981 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1041:
-#line 6024 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6018 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("position"))); }
-#line 10993 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10987 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1042:
-#line 6025 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6019 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("null"))); }
-#line 10999 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10993 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1043:
-#line 6026 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6020 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("true"))); }
-#line 11005 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 10999 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1044:
-#line 6027 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6021 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("false"))); }
-#line 11011 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 11005 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1045:
-#line 6028 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6022 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("select"))); }
-#line 11017 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 11011 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1046:
-#line 6029 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6023 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("jsoniq"))); }
-#line 11023 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 11017 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
   case 1047:
-#line 6032 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
+#line 6026 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)), true); }
-#line 11029 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 11023 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
     break;
 
 
-#line 11033 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
+#line 11027 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:847
             default:
               break;
             }
@@ -16318,61 +16312,61 @@ namespace zorba {
     3758,  3762,  3768,  3772,  3776,  3780,  3786,  3790,  3794,  3798,
     3802,  3806,  3812,  3818,  3824,  3828,  3832,  3838,  3844,  3852,
     3858,  3859,  3860,  3861,  3862,  3863,  3864,  3865,  3866,  3867,
-    3868,  3869,  3870,  3871,  3874,  3878,  3884,  3893,  3902,  3913,
-    3919,  3923,  3929,  3936,  3942,  3948,  3952,  3970,  3976,  3982,
-    3988,  3996,  4000,  4006,  4012,  4022,  4023,  4026,  4027,  4028,
-    4031,  4039,  4055,  4063,  4079,  4097,  4117,  4123,  4132,  4138,
-    4147,  4154,  4155,  4157,  4162,  4169,  4172,  4178,  4184,  4190,
-    4197,  4206,  4209,  4215,  4221,  4227,  4234,  4243,  4247,  4253,
-    4257,  4263,  4267,  4271,  4276,  4283,  4287,  4291,  4295,  4301,
-    4306,  4312,  4318,  4325,  4331,  4336,  4341,  4346,  4351,  4356,
-    4361,  4364,  4370,  4374,  4380,  4384,  4390,  4396,  4402,  4406,
-    4412,  4416,  4422,  4428,  4432,  4436,  4440,  4447,  4453,  4459,
-    4467,  4506,  4510,  4514,  4518,  4522,  4526,  4532,  4538,  4546,
-    4552,  4558,  4562,  4566,  4570,  4574,  4578,  4582,  4586,  4590,
-    4594,  4600,  4606,  4612,  4616,  4620,  4626,  4631,  4637,  4643,
-    4647,  4652,  4658,  4662,  4668,  4674,  4678,  4686,  4692,  4696,
-    4702,  4711,  4720,  4726,  4732,  4740,  4746,  4752,  4758,  4764,
-    4768,  4774,  4780,  4784,  4792,  4798,  4804,  4810,  4818,  4822,
-    4828,  4834,  4838,  4844,  4848,  4854,  4860,  4867,  4875,  4880,
-    4886,  4892,  4900,  4906,  4913,  4919,  4928,  4934,  4940,  4946,
-    4955,  4962,  4968,  4974,  4983,  4990,  4994,  5000,  5005,  5012,
-    5016,  5022,  5026,  5032,  5036,  5042,  5046,  5054,  5065,  5068,
-    5074,  5077,  5083,  5089,  5097,  5101,  5107,  5110,  5116,  5126,
-    5129,  5135,  5145,  5151,  5159,  5162,  5168,  5172,  5176,  5182,
-    5185,  5191,  5194,  5200,  5204,  5208,  5212,  5216,  5222,  5228,
-    5238,  5248,  5252,  5256,  5262,  5268,  5276,  5280,  5284,  5288,
-    5292,  5296,  5300,  5304,  5310,  5314,  5318,  5322,  5328,  5334,
-    5342,  5350,  5354,  5360,  5370,  5381,  5387,  5391,  5397,  5400,
-    5406,  5411,  5418,  5426,  5429,  5435,  5439,  5445,  5454,  5461,
-    5469,  5473,  5479,  5485,  5493,  5496,  5502,  5507,  5517,  5525,
-    5535,  5541,  5545,  5551,  5555,  5559,  5565,  5571,  5575,  5579,
-    5583,  5589,  5597,  5607,  5611,  5617,  5623,  5627,  5633,  5637,
-    5643,  5647,  5653,  5660,  5670,  5676,  5683,  5694,  5700,  5710,
-    5716,  5722,  5739,  5763,  5782,  5786,  5790,  5796,  5799,  5800,
-    5801,  5802,  5803,  5804,  5805,  5806,  5807,  5808,  5809,  5810,
-    5811,  5812,  5813,  5814,  5815,  5816,  5817,  5818,  5819,  5820,
-    5821,  5824,  5825,  5826,  5827,  5828,  5829,  5830,  5831,  5832,
-    5833,  5834,  5835,  5836,  5837,  5838,  5839,  5840,  5841,  5842,
-    5843,  5844,  5845,  5846,  5847,  5848,  5849,  5850,  5851,  5852,
-    5853,  5854,  5855,  5856,  5857,  5858,  5859,  5860,  5861,  5862,
-    5863,  5864,  5865,  5866,  5867,  5868,  5869,  5870,  5871,  5872,
-    5873,  5874,  5875,  5876,  5877,  5878,  5879,  5880,  5881,  5882,
-    5883,  5884,  5885,  5886,  5887,  5888,  5889,  5890,  5891,  5892,
-    5893,  5894,  5895,  5896,  5897,  5898,  5899,  5900,  5901,  5902,
-    5903,  5904,  5905,  5906,  5907,  5908,  5909,  5910,  5911,  5912,
-    5913,  5914,  5915,  5916,  5917,  5918,  5919,  5920,  5921,  5922,
-    5923,  5924,  5925,  5926,  5927,  5928,  5929,  5930,  5931,  5932,
-    5933,  5934,  5935,  5936,  5937,  5938,  5939,  5940,  5941,  5942,
-    5943,  5944,  5945,  5946,  5947,  5948,  5949,  5950,  5951,  5952,
-    5953,  5954,  5955,  5956,  5957,  5958,  5959,  5960,  5961,  5962,
-    5963,  5964,  5965,  5966,  5967,  5968,  5969,  5970,  5971,  5972,
-    5973,  5974,  5975,  5976,  5977,  5978,  5979,  5980,  5981,  5982,
-    5983,  5984,  5985,  5986,  5987,  5988,  5989,  5990,  5991,  5992,
-    5993,  5994,  5995,  5996,  5997,  5998,  5999,  6000,  6001,  6002,
-    6003,  6004,  6005,  6006,  6007,  6008,  6009,  6010,  6011,  6012,
-    6013,  6014,  6015,  6016,  6017,  6018,  6019,  6020,  6021,  6022,
-    6023,  6024,  6025,  6026,  6027,  6028,  6029,  6032
+    3868,  3869,  3870,  3871,  3874,  3878,  3884,  3891,  3898,  3907,
+    3913,  3917,  3923,  3930,  3936,  3942,  3946,  3964,  3970,  3976,
+    3982,  3990,  3994,  4000,  4006,  4016,  4017,  4020,  4021,  4022,
+    4025,  4033,  4049,  4057,  4073,  4091,  4111,  4117,  4126,  4132,
+    4141,  4148,  4149,  4151,  4156,  4163,  4166,  4172,  4178,  4184,
+    4191,  4200,  4203,  4209,  4215,  4221,  4228,  4237,  4241,  4247,
+    4251,  4257,  4261,  4265,  4270,  4277,  4281,  4285,  4289,  4295,
+    4300,  4306,  4312,  4319,  4325,  4330,  4335,  4340,  4345,  4350,
+    4355,  4358,  4364,  4368,  4374,  4378,  4384,  4390,  4396,  4400,
+    4406,  4410,  4416,  4422,  4426,  4430,  4434,  4441,  4447,  4453,
+    4461,  4500,  4504,  4508,  4512,  4516,  4520,  4526,  4532,  4540,
+    4546,  4552,  4556,  4560,  4564,  4568,  4572,  4576,  4580,  4584,
+    4588,  4594,  4600,  4606,  4610,  4614,  4620,  4625,  4631,  4637,
+    4641,  4646,  4652,  4656,  4662,  4668,  4672,  4680,  4686,  4690,
+    4696,  4705,  4714,  4720,  4726,  4734,  4740,  4746,  4752,  4758,
+    4762,  4768,  4774,  4778,  4786,  4792,  4798,  4804,  4812,  4816,
+    4822,  4828,  4832,  4838,  4842,  4848,  4854,  4861,  4869,  4874,
+    4880,  4886,  4894,  4900,  4907,  4913,  4922,  4928,  4934,  4940,
+    4949,  4956,  4962,  4968,  4977,  4984,  4988,  4994,  4999,  5006,
+    5010,  5016,  5020,  5026,  5030,  5036,  5040,  5048,  5059,  5062,
+    5068,  5071,  5077,  5083,  5091,  5095,  5101,  5104,  5110,  5120,
+    5123,  5129,  5139,  5145,  5153,  5156,  5162,  5166,  5170,  5176,
+    5179,  5185,  5188,  5194,  5198,  5202,  5206,  5210,  5216,  5222,
+    5232,  5242,  5246,  5250,  5256,  5262,  5270,  5274,  5278,  5282,
+    5286,  5290,  5294,  5298,  5304,  5308,  5312,  5316,  5322,  5328,
+    5336,  5344,  5348,  5354,  5364,  5375,  5381,  5385,  5391,  5394,
+    5400,  5405,  5412,  5420,  5423,  5429,  5433,  5439,  5448,  5455,
+    5463,  5467,  5473,  5479,  5487,  5490,  5496,  5501,  5511,  5519,
+    5529,  5535,  5539,  5545,  5549,  5553,  5559,  5565,  5569,  5573,
+    5577,  5583,  5591,  5601,  5605,  5611,  5617,  5621,  5627,  5631,
+    5637,  5641,  5647,  5654,  5664,  5670,  5677,  5688,  5694,  5704,
+    5710,  5716,  5733,  5757,  5776,  5780,  5784,  5790,  5793,  5794,
+    5795,  5796,  5797,  5798,  5799,  5800,  5801,  5802,  5803,  5804,
+    5805,  5806,  5807,  5808,  5809,  5810,  5811,  5812,  5813,  5814,
+    5815,  5818,  5819,  5820,  5821,  5822,  5823,  5824,  5825,  5826,
+    5827,  5828,  5829,  5830,  5831,  5832,  5833,  5834,  5835,  5836,
+    5837,  5838,  5839,  5840,  5841,  5842,  5843,  5844,  5845,  5846,
+    5847,  5848,  5849,  5850,  5851,  5852,  5853,  5854,  5855,  5856,
+    5857,  5858,  5859,  5860,  5861,  5862,  5863,  5864,  5865,  5866,
+    5867,  5868,  5869,  5870,  5871,  5872,  5873,  5874,  5875,  5876,
+    5877,  5878,  5879,  5880,  5881,  5882,  5883,  5884,  5885,  5886,
+    5887,  5888,  5889,  5890,  5891,  5892,  5893,  5894,  5895,  5896,
+    5897,  5898,  5899,  5900,  5901,  5902,  5903,  5904,  5905,  5906,
+    5907,  5908,  5909,  5910,  5911,  5912,  5913,  5914,  5915,  5916,
+    5917,  5918,  5919,  5920,  5921,  5922,  5923,  5924,  5925,  5926,
+    5927,  5928,  5929,  5930,  5931,  5932,  5933,  5934,  5935,  5936,
+    5937,  5938,  5939,  5940,  5941,  5942,  5943,  5944,  5945,  5946,
+    5947,  5948,  5949,  5950,  5951,  5952,  5953,  5954,  5955,  5956,
+    5957,  5958,  5959,  5960,  5961,  5962,  5963,  5964,  5965,  5966,
+    5967,  5968,  5969,  5970,  5971,  5972,  5973,  5974,  5975,  5976,
+    5977,  5978,  5979,  5980,  5981,  5982,  5983,  5984,  5985,  5986,
+    5987,  5988,  5989,  5990,  5991,  5992,  5993,  5994,  5995,  5996,
+    5997,  5998,  5999,  6000,  6001,  6002,  6003,  6004,  6005,  6006,
+    6007,  6008,  6009,  6010,  6011,  6012,  6013,  6014,  6015,  6016,
+    6017,  6018,  6019,  6020,  6021,  6022,  6023,  6026
   };
 
   // Print the state stack on the debug stream.
@@ -16487,8 +16481,8 @@ namespace zorba {
 
 
 } // zorba
-#line 16491 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:1155
-#line 6034 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:1156
+#line 16485 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.cpp" // lalr1.cc:1155
+#line 6028 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:1156
 
 namespace zorba {
 static bool contains(const zstring& msg, const char* str1, const char* str2)

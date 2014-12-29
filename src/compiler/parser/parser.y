@@ -44,9 +44,9 @@
 
 
 #ifdef XQUERY_PARSER
-%define "parser_class_name" "xquery_parser"
+%define "parser_class_name" {xquery_parser}
 #else
-%define "parser_class_name" "jsoniq_parser"
+%define "parser_class_name" {jsoniq_parser}
 #endif
 
 
@@ -4633,27 +4633,21 @@ NumericLiteral :
         {
             $$ = NumericLiteral::new_literal(
                 LOC(@$), ParseConstants::num_decimal, *$1
-            );
-            if (yylval.decval)
-              std::cout << "Deleting decval " << std::endl;
+            );            
             delete yylval.decval;
         }
     |   INTEGER_LITERAL
         {
             $$ = NumericLiteral::new_literal(
                 LOC(@$), ParseConstants::num_integer, *$1
-            );
-            if (yylval.ival)
-              std::cout << "Deleting ival " << std::endl;
+            );            
             delete yylval.ival;
         }
     |   DOUBLE_LITERAL
         {
             $$ = NumericLiteral::new_literal(
                 LOC(@$), ParseConstants::num_double, *$1
-            );
-            if (yylval.dval)
-              std::cout << "Deleting dval " << std::endl;
+            );            
             delete yylval.dval;
         }
     ;

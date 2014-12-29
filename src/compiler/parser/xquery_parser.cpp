@@ -6663,98 +6663,92 @@ namespace zorba {
             (yylhs.value.expr) = NumericLiteral::new_literal(
                 LOC(yylhs.location), ParseConstants::num_decimal, *(yystack_[0].value.decval)
             );
-            if (yyla.value.decval)
-              std::cout << "Deleting decval " << std::endl;
             delete yyla.value.decval;
         }
-#line 6671 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6669 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 496:
-#line 3756 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3754 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = NumericLiteral::new_literal(
                 LOC(yylhs.location), ParseConstants::num_integer, *(yystack_[0].value.ival)
             );
-            if (yyla.value.ival)
-              std::cout << "Deleting ival " << std::endl;
             delete yyla.value.ival;
         }
-#line 6684 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6680 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 497:
-#line 3765 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3761 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = NumericLiteral::new_literal(
                 LOC(yylhs.location), ParseConstants::num_double, *(yystack_[0].value.dval)
             );
-            if (yyla.value.dval)
-              std::cout << "Deleting dval " << std::endl;
             delete yyla.value.dval;
         }
-#line 6697 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6691 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 498:
-#line 3776 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3770 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new VarRef(LOC(yylhs.location), static_cast<QName*>((yystack_[0].value.expr)));
         }
-#line 6705 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6699 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 499:
-#line 3782 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3776 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new ParenthesizedExpr( LOC(yylhs.location), NULL);
         }
-#line 6713 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6707 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 500:
-#line 3786 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3780 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new ParenthesizedExpr( LOC(yylhs.location), (yystack_[1].value.expr) );
         }
-#line 6721 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6715 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 501:
-#line 3792 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3786 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             driver.addCommonLanguageWarning(yystack_[0].location, ZED(ZWST0009_CONTEXT_ITEM_EXPR));
             (yylhs.value.expr) = new ContextItemExpr( LOC(yylhs.location) );
         }
-#line 6730 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6724 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 502:
-#line 3799 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3793 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new OrderedExpr( LOC(yylhs.location), (yystack_[1].value.expr) );
         }
-#line 6738 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6732 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 503:
-#line 3805 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3799 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new UnorderedExpr( LOC(yylhs.location), (yystack_[1].value.expr) );
         }
-#line 6746 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6740 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 504:
-#line 3811 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3805 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new FunctionCall(LOC(yylhs.location), static_cast<QName*>((yystack_[2].value.expr)), NULL);
     }
-#line 6754 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6748 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 505:
-#line 3815 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3809 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       ArgList* argList = dynamic_cast<ArgList*>((yystack_[1].value.node));
       if (argList->has_placeholder())
@@ -6770,75 +6764,75 @@ namespace zorba {
         (yylhs.value.expr) = new FunctionCall(LOC(yylhs.location), static_cast<QName*>((yystack_[3].value.expr)), argList);
       }
     }
-#line 6774 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6768 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 506:
-#line 3833 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3827 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       ArgList* al = new ArgList(LOC(yylhs.location));
       al->push_back(new ArgumentPlaceholder(LOC(yylhs.location)));
       (yylhs.value.node) = al;
     }
-#line 6784 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6778 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 507:
-#line 3839 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3833 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       if (ArgList* al = dynamic_cast<ArgList*>((yystack_[2].value.node)))
         al->push_back(new ArgumentPlaceholder(LOC(yylhs.location)));
       (yylhs.value.node) = (yystack_[2].value.node);
     }
-#line 6794 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6788 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 508:
-#line 3845 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3839 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       ArgList *al = new ArgList( LOC(yylhs.location) );
       al->push_back( (yystack_[0].value.expr) );
       (yylhs.value.node) = al;
     }
-#line 6804 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6798 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 509:
-#line 3851 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3845 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       if ( ArgList *al = dynamic_cast<ArgList*>((yystack_[2].value.node)) )
         al->push_back( (yystack_[0].value.expr) );
       (yylhs.value.node) = (yystack_[2].value.node);
     }
-#line 6814 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6808 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 510:
-#line 3859 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3853 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 6822 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6816 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 511:
-#line 3863 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3857 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 6830 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6824 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 512:
-#line 3869 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3863 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new LiteralFunctionItem(LOC (yylhs.location), dynamic_cast<QName*>((yystack_[2].value.expr)), (yystack_[0].value.ival));
     }
-#line 6838 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6832 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 513:
-#line 3875 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3869 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new InlineFunction(LOC(yylhs.location),
                               &*(yystack_[1].value.fnsig)->theParams,
@@ -6846,11 +6840,11 @@ namespace zorba {
                               (yystack_[0].value.expr));
       delete (yystack_[1].value.fnsig);
     }
-#line 6850 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6844 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 519:
-#line 3894 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3888 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirElemConstructor(LOC(yylhs.location),
                                   static_cast<QName*>((yystack_[2].value.expr)),
@@ -6858,11 +6852,11 @@ namespace zorba {
                                   NULL,
                                   NULL);
     }
-#line 6862 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6856 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 520:
-#line 3902 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3896 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       if (static_cast<QName*>((yystack_[6].value.expr))->get_qname() != static_cast<QName*>((yystack_[2].value.expr))->get_qname())
       {
@@ -6878,11 +6872,11 @@ namespace zorba {
                                   NULL,
                                   NULL);
     }
-#line 6882 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6876 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 521:
-#line 3918 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3912 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirElemConstructor(LOC(yylhs.location),
                                   static_cast<QName*>((yystack_[3].value.expr)),
@@ -6890,11 +6884,11 @@ namespace zorba {
                                   dynamic_cast<DirAttributeList*>((yystack_[2].value.node)),
                                   NULL);
     }
-#line 6894 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6888 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 522:
-#line 3926 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3920 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       if (static_cast<QName*>((yystack_[7].value.expr))->get_qname() != static_cast<QName*>((yystack_[2].value.expr))->get_qname())
       {
@@ -6910,11 +6904,11 @@ namespace zorba {
                                   dynamic_cast<DirAttributeList*>((yystack_[6].value.node)),
                                   NULL);
     }
-#line 6914 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6908 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 523:
-#line 3944 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3938 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       if (static_cast<QName*>((yystack_[7].value.expr))->get_qname() != static_cast<QName*>((yystack_[2].value.expr))->get_qname())
       {
@@ -6930,11 +6924,11 @@ namespace zorba {
                                   NULL,
                                   dynamic_cast<DirElemContentList*>((yystack_[4].value.node)));
     }
-#line 6934 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6928 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 524:
-#line 3962 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3956 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       if (static_cast<QName*>((yystack_[8].value.expr))->get_qname() != static_cast<QName*>((yystack_[2].value.expr))->get_qname())
       {
@@ -6950,868 +6944,868 @@ namespace zorba {
                                   dynamic_cast<DirAttributeList*>((yystack_[7].value.node)),
                                   dynamic_cast<DirElemContentList*>((yystack_[4].value.node)));
     }
-#line 6954 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6948 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 525:
-#line 3980 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3974 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       DirElemContentList *decl = new DirElemContentList( LOC(yylhs.location) );
       decl->push_back( dynamic_cast<DirElemContent*>((yystack_[0].value.expr)) );
       (yylhs.value.node) = decl;
     }
-#line 6964 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6958 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 526:
-#line 3986 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3980 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       DirElemContentList *decl = dynamic_cast<DirElemContentList*>((yystack_[1].value.node));
       if ( decl )
         decl->push_back( dynamic_cast<DirElemContent*>((yystack_[0].value.expr)) );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 6975 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6969 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 527:
-#line 3995 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3989 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       DirAttributeList *dal = new DirAttributeList( LOC(yylhs.location) );
       dal->push_back( dynamic_cast<DirAttr*>((yystack_[0].value.node)) );
       (yylhs.value.node) = dal;
     }
-#line 6985 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6979 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 528:
-#line 4001 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 3995 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       DirAttributeList *dal = dynamic_cast<DirAttributeList*>((yystack_[1].value.node));
       if ( dal )
         dal->push_back( dynamic_cast<DirAttr*>((yystack_[0].value.node)) );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 6996 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 6990 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 529:
-#line 4010 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4004 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DirAttr(LOC(yylhs.location),
                        static_cast<QName*>((yystack_[4].value.expr)),
                        dynamic_cast<DirAttributeValue*>((yystack_[0].value.node)));
     }
-#line 7006 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7000 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 532:
-#line 4020 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4014 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DirAttributeValue(LOC(yylhs.location),
                                  dynamic_cast<QuoteAttrContentList*>((yystack_[1].value.node)));
     }
-#line 7015 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7009 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 533:
-#line 4025 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4019 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DirAttributeValue( LOC(yylhs.location),
                                   dynamic_cast<AposAttrContentList*>((yystack_[1].value.node)));
     }
-#line 7024 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7018 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 534:
-#line 4031 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4025 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new QuoteAttrContentList( LOC(yylhs.location) );
     }
-#line 7032 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7026 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 535:
-#line 4035 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4029 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7040 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7034 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 536:
-#line 4041 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4035 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC(yylhs.location) );
       qacl->push_back( new QuoteAttrValueContent( LOC(yylhs.location), "\"" ) );
       (yylhs.value.node) = qacl;
     }
-#line 7050 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7044 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 537:
-#line 4047 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4041 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC(yylhs.location) );
       qacl->push_back( dynamic_cast<QuoteAttrValueContent*>((yystack_[0].value.node)) );
       (yylhs.value.node) = qacl;
     }
-#line 7060 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7054 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 538:
-#line 4053 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4047 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       QuoteAttrContentList* qacl = dynamic_cast<QuoteAttrContentList*>((yystack_[1].value.node));
       if ( qacl )
         qacl->push_back( new QuoteAttrValueContent( LOC(yylhs.location), "\"" ) );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 7071 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7065 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 539:
-#line 4060 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4054 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       QuoteAttrContentList *qacl = dynamic_cast<QuoteAttrContentList*>((yystack_[1].value.node));
       if ( qacl )
         qacl->push_back( dynamic_cast<QuoteAttrValueContent*>((yystack_[0].value.node)) );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 7082 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7076 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 540:
-#line 4068 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4062 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new AposAttrContentList( LOC(yylhs.location) );
     }
-#line 7090 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7084 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 541:
-#line 4072 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4066 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7098 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7092 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 542:
-#line 4078 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4072 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       AposAttrContentList *aacl = new AposAttrContentList( LOC(yylhs.location) );
       aacl->push_back( new AposAttrValueContent( LOC(yylhs.location),"'") );
       (yylhs.value.node) = aacl;
     }
-#line 7108 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7102 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 543:
-#line 4084 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4078 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       AposAttrContentList *aacl = new AposAttrContentList( LOC(yylhs.location) );
       aacl->push_back( dynamic_cast<AposAttrValueContent*>((yystack_[0].value.node)) );
       (yylhs.value.node) = aacl;
     }
-#line 7118 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7112 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 544:
-#line 4090 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4084 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>((yystack_[1].value.node));
       if (aacl)
         aacl->push_back( new AposAttrValueContent( LOC(yylhs.location),"'") );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 7129 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7123 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 545:
-#line 4097 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4091 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>((yystack_[1].value.node));
       if ( aacl )
         aacl->push_back( dynamic_cast<AposAttrValueContent*>((yystack_[0].value.node)) );
       (yylhs.value.node) = (yystack_[1].value.node);
     }
-#line 7140 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7134 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 546:
-#line 4106 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4100 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new QuoteAttrValueContent( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)) );
     }
-#line 7148 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7142 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 547:
-#line 4110 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4104 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new QuoteAttrValueContent(LOC(yylhs.location), dynamic_cast<CommonContent*>((yystack_[0].value.expr)));
     }
-#line 7156 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7150 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 548:
-#line 4116 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4110 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new AposAttrValueContent( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)) );
     }
-#line 7164 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7158 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 549:
-#line 4120 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4114 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new AposAttrValueContent(LOC(yylhs.location), dynamic_cast<CommonContent*>((yystack_[0].value.expr)));
     }
-#line 7172 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7166 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 550:
-#line 4126 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4120 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirElemContent( LOC(yylhs.location), (yystack_[0].value.expr) );
     }
-#line 7180 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7174 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 551:
-#line 4130 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4124 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirElemContent( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)) );
     }
-#line 7188 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7182 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 552:
-#line 4134 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4128 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yystack_[0].value.expr));
       (yylhs.value.expr) = new DirElemContent( LOC(yylhs.location), cdata_h );
     }
-#line 7197 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7191 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 553:
-#line 4139 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4133 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yystack_[0].value.expr));
       (yylhs.value.expr) = new DirElemContent( LOC(yylhs.location), cont_h );
     }
-#line 7206 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7200 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 554:
-#line 4146 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4140 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CommonContent(LOC(yylhs.location), ParseConstants::cont_charref, SYMTAB((yystack_[0].value.sval)));
     }
-#line 7214 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7208 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 555:
-#line 4150 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4144 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CommonContent(LOC(yylhs.location), ParseConstants::cont_escape_lbrace);
     }
-#line 7222 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7216 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 556:
-#line 4154 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4148 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CommonContent(LOC(yylhs.location), ParseConstants::cont_escape_rbrace);
     }
-#line 7230 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7224 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 557:
-#line 4158 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4152 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CommonContent(LOC(yylhs.location), new EnclosedExpr(LOC(yylhs.location), (yystack_[1].value.expr)));
     }
-#line 7238 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7232 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 558:
-#line 4164 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4158 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirCommentConstructor( LOC(yylhs.location), SYMTAB((yystack_[1].value.sval)) );
     }
-#line 7246 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7240 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 559:
-#line 4169 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4163 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new DirCommentConstructor( LOC(yylhs.location), "" );
     }
-#line 7254 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7248 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 560:
-#line 4175 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4169 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       ERROR_IF_QNAME_NOT_NCNAME((yystack_[1].value.expr), yystack_[1].location);
       (yylhs.value.expr) = new DirPIConstructor( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)) );
     }
-#line 7263 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7257 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 561:
-#line 4181 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4175 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       ERROR_IF_QNAME_NOT_NCNAME((yystack_[1].value.expr), yystack_[1].location);
       (yylhs.value.expr) = new DirPIConstructor( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)), SYMTAB((yystack_[0].value.sval)) );
     }
-#line 7272 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7266 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 562:
-#line 4188 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4182 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CDataSection( LOC(yylhs.location),SYMTAB((yystack_[0].value.sval)) );
     }
-#line 7280 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7274 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 563:
-#line 4194 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4188 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7288 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7282 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 564:
-#line 4199 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4193 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7296 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7290 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 565:
-#line 4204 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4198 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7304 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7298 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 566:
-#line 4209 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4203 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7312 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7306 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 567:
-#line 4214 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4208 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7320 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7314 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 568:
-#line 4219 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4213 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[0].value.expr);
     }
-#line 7328 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7322 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 570:
-#line 4227 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4221 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompDocConstructor( LOC(yylhs.location), (yystack_[1].value.expr) );
     }
-#line 7336 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7330 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 571:
-#line 4233 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4227 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompElemConstructor(LOC(yylhs.location), new QName(LOC(yylhs.location), SYMTAB((yystack_[2].value.sval))), (yystack_[1].value.expr));
     }
-#line 7344 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7338 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 572:
-#line 4237 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4231 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompElemConstructor( LOC(yylhs.location), (yystack_[4].value.expr), (yystack_[1].value.expr) );
     }
-#line 7352 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7346 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 573:
-#line 4243 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4237 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompAttrConstructor( LOC(yylhs.location), new QName(LOC(yylhs.location), SYMTAB((yystack_[2].value.sval))), (yystack_[1].value.expr) );
     }
-#line 7360 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7354 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 574:
-#line 4247 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4241 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompAttrConstructor( LOC(yylhs.location), (yystack_[4].value.expr), (yystack_[1].value.expr) );
     }
-#line 7368 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7362 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 575:
-#line 4253 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4247 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompTextConstructor( LOC(yylhs.location), (yystack_[1].value.expr) );
     }
-#line 7376 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7370 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 576:
-#line 4259 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4253 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompCommentConstructor( LOC(yylhs.location), (yystack_[1].value.expr) );
     }
-#line 7384 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7378 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 577:
-#line 4265 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4259 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompPIConstructor(LOC(yylhs.location), SYMTAB((yystack_[2].value.sval)), (yystack_[1].value.expr));
     }
-#line 7392 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7386 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 578:
-#line 4269 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4263 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompPIConstructor(LOC(yylhs.location), (yystack_[4].value.expr), (yystack_[1].value.expr));
     }
-#line 7400 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7394 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 579:
-#line 4275 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4269 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompNamespaceConstructor(LOC(yylhs.location), SYMTAB((yystack_[2].value.sval)), (yystack_[1].value.expr));
     }
-#line 7408 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7402 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 580:
-#line 4279 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4273 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = new CompNamespaceConstructor(LOC(yylhs.location), (yystack_[4].value.expr), (yystack_[1].value.expr));
     }
-#line 7416 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7410 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 581:
-#line 4285 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4279 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7424 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7418 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 582:
-#line 4291 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4285 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new SequenceTypeAST( LOC(yylhs.location), (yystack_[0].value.node), NULL );
         }
-#line 7432 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7426 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 583:
-#line 4295 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4289 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new SequenceTypeAST(LOC(yylhs.location), (yystack_[1].value.node), dynamic_cast<OccurrenceIndicator*>((yystack_[0].value.node)));
         }
-#line 7440 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7434 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 584:
-#line 4299 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4293 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new SequenceTypeAST( LOC(yylhs.location), NULL, NULL );
         }
-#line 7448 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7442 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 585:
-#line 4305 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4299 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new OccurrenceIndicator(
                 LOC(yylhs.location), ParseConstants::occurs_optionally
             );
         }
-#line 7458 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7452 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 586:
-#line 4311 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4305 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new OccurrenceIndicator(
                 LOC(yylhs.location), ParseConstants::occurs_zero_or_more
             );
         }
-#line 7468 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7462 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 587:
-#line 4317 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4311 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new OccurrenceIndicator(
                 LOC(yylhs.location), ParseConstants::occurs_one_or_more
             );
         }
-#line 7478 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7472 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 588:
-#line 4325 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4319 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 7486 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7480 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 589:
-#line 4329 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4323 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 7494 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7488 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 590:
-#line 4333 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4327 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ItemType( LOC(yylhs.location), true );
         }
-#line 7502 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7496 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 591:
-#line 4337 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4331 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new StructuredItemType(LOC(yylhs.location));
         }
-#line 7510 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7504 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 592:
-#line 4341 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4335 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 7518 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7512 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 593:
-#line 4345 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4339 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 7526 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7520 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 594:
-#line 4349 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4343 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 7534 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7528 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 595:
-#line 4355 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4349 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           TypeList* aTypeList = new TypeList(LOC (yylhs.location));
           aTypeList->push_back(dynamic_cast<SequenceTypeAST *>((yystack_[0].value.node)));
           (yylhs.value.node) = aTypeList;
         }
-#line 7544 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7538 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 596:
-#line 4361 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4355 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           TypeList* aTypeList = dynamic_cast<TypeList *>((yystack_[2].value.node));
           aTypeList->push_back(dynamic_cast<SequenceTypeAST *>((yystack_[0].value.node)));
           (yylhs.value.node) = (yystack_[2].value.node);
         }
-#line 7554 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7548 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 597:
-#line 4369 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4363 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new GeneralizedAtomicType( LOC(yylhs.location), static_cast<QName*>((yystack_[0].value.expr)) );
     }
-#line 7562 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7556 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 598:
-#line 4375 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4369 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new SimpleType( LOC(yylhs.location), static_cast<QName*>((yystack_[0].value.expr)) );
     }
-#line 7570 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7564 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 599:
-#line 4381 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4375 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7578 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7572 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 600:
-#line 4385 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4379 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7586 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7580 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 601:
-#line 4389 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4383 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7594 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7588 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 602:
-#line 4393 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4387 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7602 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7596 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 603:
-#line 4397 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4391 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7610 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7604 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 604:
-#line 4401 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4395 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7618 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7612 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 605:
-#line 4405 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4399 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7626 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7620 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 606:
-#line 4409 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4403 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7634 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7628 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 607:
-#line 4413 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4407 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7642 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7636 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 608:
-#line 4417 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4411 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7650 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7644 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 609:
-#line 4423 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4417 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new AnyKindTest( LOC(yylhs.location) );
     }
-#line 7658 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7652 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 610:
-#line 4429 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4423 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = NULL;
     }
-#line 7666 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7660 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 611:
-#line 4435 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4429 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DocumentTest(LOC(yylhs.location));
     }
-#line 7674 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7668 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 612:
-#line 4439 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4433 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DocumentTest(LOC(yylhs.location), dynamic_cast<ElementTest*>((yystack_[1].value.node)));
     }
-#line 7682 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7676 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 613:
-#line 4443 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4437 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new DocumentTest(LOC(yylhs.location), dynamic_cast<SchemaElementTest*>((yystack_[1].value.node)));
     }
-#line 7690 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7684 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 614:
-#line 4449 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4443 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new NamespaceTest(LOC(yylhs.location));
     }
-#line 7698 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7692 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 615:
-#line 4454 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4448 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new TextTest(LOC(yylhs.location));
     }
-#line 7706 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7700 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 616:
-#line 4460 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4454 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new CommentTest(LOC(yylhs.location));
     }
-#line 7714 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7708 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 617:
-#line 4466 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4460 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new PITest( LOC(yylhs.location), "" );
         }
-#line 7722 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7716 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 618:
-#line 4470 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4464 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             ERROR_IF_QNAME_NOT_NCNAME((yystack_[1].value.expr), yystack_[1].location);
             (yylhs.value.node) = new PITest( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)) );
         }
-#line 7731 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7725 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 619:
-#line 4475 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4469 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new PITest( LOC(yylhs.location), SYMTAB((yystack_[1].value.sval)) );
         }
-#line 7739 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7733 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 620:
-#line 4481 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4475 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new AttributeTest( LOC(yylhs.location), NULL, NULL );
         }
-#line 7747 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7741 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 621:
-#line 4485 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4479 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new AttributeTest(
                 LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)), NULL
             );
         }
-#line 7757 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7751 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 622:
-#line 4491 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4485 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new AttributeTest(
                 LOC(yylhs.location), static_cast<QName*>((yystack_[3].value.expr)), dynamic_cast<TypeName*>((yystack_[1].value.node))
             );
         }
-#line 7767 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7761 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 623:
-#line 4497 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4491 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new AttributeTest( LOC(yylhs.location), NULL, NULL );
         }
-#line 7775 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7769 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 624:
-#line 4501 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4495 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new AttributeTest(
                 LOC(yylhs.location), NULL, dynamic_cast<TypeName*>((yystack_[1].value.node))
             );
         }
-#line 7785 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7779 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 625:
-#line 4509 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4503 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new SchemaAttributeTest( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)) );
         }
-#line 7793 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7787 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 626:
-#line 4515 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4509 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest( LOC(yylhs.location), NULL, NULL, true );
         }
-#line 7801 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7795 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 627:
-#line 4519 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4513 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)), NULL, true
             );
         }
-#line 7811 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7805 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 628:
-#line 4525 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4519 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location),
@@ -7820,11 +7814,11 @@ namespace zorba {
                 false
             );
         }
-#line 7824 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7818 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 629:
-#line 4534 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4528 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location),
@@ -7833,506 +7827,506 @@ namespace zorba {
                 true
             );
         }
-#line 7837 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7831 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 630:
-#line 4543 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4537 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location), NULL, NULL, true
             );
         }
-#line 7847 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7841 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 631:
-#line 4549 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4543 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location), NULL, dynamic_cast<TypeName*>((yystack_[1].value.node)), false
             );
         }
-#line 7857 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7851 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 632:
-#line 4555 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4549 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new ElementTest(
                 LOC(yylhs.location), NULL, dynamic_cast<TypeName*>((yystack_[1].value.node)), true
             );
         }
-#line 7867 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7861 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 633:
-#line 4563 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4557 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new SchemaElementTest( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)) );
         }
-#line 7875 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7869 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 634:
-#line 4569 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4563 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new TypeName( LOC(yylhs.location), static_cast<QName*>((yystack_[0].value.expr)) );
         }
-#line 7883 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7877 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 635:
-#line 4575 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4569 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new TypeName( LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)), true );
         }
-#line 7891 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7885 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 636:
-#line 4581 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4575 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new StringLiteral( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)) );
         }
-#line 7899 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7893 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 637:
-#line 4587 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4581 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7907 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7901 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 638:
-#line 4591 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4585 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = (yystack_[0].value.node);
     }
-#line 7915 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7909 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 639:
-#line 4597 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4591 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.node) = new AnyFunctionTest(LOC(yylhs.location));
     }
-#line 7923 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7917 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 640:
-#line 4603 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4597 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.node) = new TypedFunctionTest(LOC (yylhs.location), dynamic_cast<SequenceTypeAST *>((yystack_[0].value.node)));
         }
-#line 7931 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7925 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 641:
-#line 4607 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4601 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.node) = new TypedFunctionTest(LOC (yylhs.location),
               dynamic_cast<TypeList *>((yystack_[3].value.node)),
               dynamic_cast<SequenceTypeAST *>((yystack_[0].value.node)));
         }
-#line 7941 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7935 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 642:
-#line 4615 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4609 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
            (yylhs.value.node) = (yystack_[1].value.node);
         }
-#line 7949 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7943 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 643:
-#line 4621 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4615 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new RevalidationDecl(
                 LOC(yylhs.location), StaticContextConsts::strict_validation
             );
         }
-#line 7959 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7953 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 644:
-#line 4627 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4621 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new RevalidationDecl(
                 LOC(yylhs.location), StaticContextConsts::lax_validation
             );
         }
-#line 7969 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7963 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 645:
-#line 4633 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4627 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new RevalidationDecl(
                 LOC(yylhs.location), StaticContextConsts::skip_validation
             );
         }
-#line 7979 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7973 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 646:
-#line 4641 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4635 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr( LOC(yylhs.location), store::UpdateConsts::INTO, (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 7987 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7981 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 647:
-#line 4645 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4639 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC(yylhs.location), store::UpdateConsts::AS_FIRST_INTO, (yystack_[4].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 7997 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 7991 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 648:
-#line 4651 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4645 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC(yylhs.location), store::UpdateConsts::AS_LAST_INTO, (yystack_[4].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8007 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8001 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 649:
-#line 4657 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4651 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr( LOC(yylhs.location), store::UpdateConsts::AFTER, (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 8015 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8009 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 650:
-#line 4661 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4655 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC (yylhs.location), store::UpdateConsts::BEFORE, (yystack_[2].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8025 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8019 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 651:
-#line 4667 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4661 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr( LOC(yylhs.location), store::UpdateConsts::INTO, (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 8033 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8027 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 652:
-#line 4671 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4665 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC(yylhs.location), store::UpdateConsts::AS_FIRST_INTO, (yystack_[4].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8043 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8037 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 653:
-#line 4677 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4671 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                   LOC(yylhs.location), store::UpdateConsts::AS_LAST_INTO, (yystack_[4].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8053 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8047 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 654:
-#line 4683 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4677 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC (yylhs.location),
                 store::UpdateConsts::AFTER, (yystack_[2].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8064 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8058 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 655:
-#line 4690 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4684 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new InsertExpr(
                 LOC (yylhs.location), store::UpdateConsts::BEFORE, (yystack_[2].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8074 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8068 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 656:
-#line 4698 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4692 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new DeleteExpr( LOC (yylhs.location), (yystack_[0].value.expr) );
         }
-#line 8082 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8076 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 657:
-#line 4703 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4697 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new DeleteExpr( LOC (yylhs.location), (yystack_[0].value.expr) );
         }
-#line 8090 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8084 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 658:
-#line 4709 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4703 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new ReplaceExpr(
                 LOC(yylhs.location), store::UpdateConsts::NODE, (yystack_[2].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8100 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8094 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 659:
-#line 4715 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4709 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new ReplaceExpr(
                 LOC(yylhs.location), store::UpdateConsts::VALUE_OF_NODE, (yystack_[2].value.expr), (yystack_[0].value.expr)
             );
         }
-#line 8110 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8104 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 660:
-#line 4723 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4717 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new RenameExpr( LOC (yylhs.location), (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 8118 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8112 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 661:
-#line 4729 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4723 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       CopyVarList *cvl = dynamic_cast<CopyVarList*>((yystack_[4].value.expr));
       (yylhs.value.expr) = new TransformExpr( LOC(yylhs.location), cvl, (yystack_[2].value.expr), (yystack_[0].value.expr) );
     }
-#line 8127 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8121 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 662:
-#line 4736 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4730 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       CopyVarList* lList = new CopyVarList(LOC(yylhs.location));
       lList->push_back (dynamic_cast<VarBinding*> ((yystack_[0].value.expr)));
       (yylhs.value.expr) = lList;
     }
-#line 8137 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8131 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 663:
-#line 4742 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4736 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       CopyVarList* lList = dynamic_cast<CopyVarList*>((yystack_[3].value.expr));
       VarBinding* lBinding = dynamic_cast<VarBinding*>((yystack_[0].value.expr));
       lList->push_back(lBinding);
       (yylhs.value.expr) = lList;
     }
-#line 8148 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8142 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 664:
-#line 4751 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4745 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
        (yylhs.value.expr) = new VarBinding(LOC(yylhs.location), static_cast<QName*>((yystack_[2].value.expr)), (yystack_[0].value.expr));
     }
-#line 8156 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8150 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 665:
-#line 4757 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4751 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.expr) = new TryExpr( LOC(yylhs.location), (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 8164 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8158 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 666:
-#line 4763 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4757 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             CatchListExpr *cle = new CatchListExpr( LOC(yylhs.location) );
             cle->push_back( static_cast<CatchExpr*>((yystack_[0].value.expr)) );
             (yylhs.value.expr) = cle;
         }
-#line 8174 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8168 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 667:
-#line 4769 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4763 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             CatchListExpr *cle = dynamic_cast<CatchListExpr*>((yystack_[1].value.expr));
             if ( cle )
                 cle->push_back( static_cast<CatchExpr*>((yystack_[0].value.expr)) );
             (yylhs.value.expr) = (yystack_[1].value.expr);
         }
-#line 8185 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8179 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 668:
-#line 4778 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4772 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
        (yylhs.value.expr) = new CatchExpr(LOC(yylhs.location), *(yystack_[1].value.name_test_list), (yystack_[0].value.expr));
        delete (yystack_[1].value.name_test_list);
     }
-#line 8194 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8188 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 669:
-#line 4785 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4779 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
       (yylhs.value.expr) = (yystack_[1].value.expr);
     }
-#line 8202 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8196 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 670:
-#line 4791 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4785 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             CatchExpr::NameTestList *ntl = new CatchExpr::NameTestList;
             ntl->push_back( static_cast<NameTest*>((yystack_[0].value.node)) );
             (yylhs.value.name_test_list) = ntl;
         }
-#line 8212 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8206 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 671:
-#line 4797 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4791 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             CatchExpr::NameTestList *ntl =
                 static_cast<CatchExpr::NameTestList*>((yystack_[2].value.name_test_list));
             ntl->push_back( static_cast<NameTest*>((yystack_[0].value.node)) );
             (yylhs.value.name_test_list) = ntl;
         }
-#line 8223 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8217 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 672:
-#line 4806 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4800 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTSelection( LOC(yylhs.location), (yystack_[1].value.node), (yystack_[0].value.pos_filter_list) );
             delete (yystack_[0].value.pos_filter_list);
         }
-#line 8232 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8226 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 673:
-#line 4813 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4807 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.pos_filter_list) = NULL;
         }
-#line 8240 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8234 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 674:
-#line 4817 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4811 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.pos_filter_list) = (yystack_[0].value.pos_filter_list);
         }
-#line 8248 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8242 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 675:
-#line 4823 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4817 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.pos_filter_list) = new FTSelection::pos_filter_list_t;
             (yylhs.value.pos_filter_list)->push_back( dynamic_cast<FTPosFilter*>((yystack_[0].value.node)) );
         }
-#line 8257 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8251 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 676:
-#line 4828 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4822 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yystack_[1].value.pos_filter_list)->push_back( dynamic_cast<FTPosFilter*>((yystack_[0].value.node)) );
             (yylhs.value.pos_filter_list) = (yystack_[1].value.pos_filter_list);
         }
-#line 8266 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8260 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 677:
-#line 4835 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4829 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8274 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8268 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 678:
-#line 4839 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4833 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTOr( LOC(yylhs.location), (yystack_[2].value.node), (yystack_[0].value.node) );
         }
-#line 8282 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8276 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 679:
-#line 4845 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4839 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8290 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8284 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 680:
-#line 4849 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4843 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTAnd( LOC(yylhs.location), (yystack_[2].value.node), (yystack_[0].value.node) );
         }
-#line 8298 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8292 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 681:
-#line 4855 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4849 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8306 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8300 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 682:
-#line 4859 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4853 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTMildNot( LOC(yylhs.location), (yystack_[3].value.node), (yystack_[0].value.node) );
         }
-#line 8314 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8308 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 683:
-#line 4865 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4859 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8322 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8316 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 684:
-#line 4869 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4863 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTUnaryNot(
                 LOC(yylhs.location), dynamic_cast<FTPrimaryWithOptions*>((yystack_[0].value.node))
             );
         }
-#line 8332 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8326 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 685:
-#line 4877 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4871 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTPrimaryWithOptions(
                 LOC(yylhs.location),
@@ -8341,51 +8335,51 @@ namespace zorba {
                 dynamic_cast<FTWeight*>((yystack_[0].value.node))
             );
         }
-#line 8345 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8339 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 686:
-#line 4887 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4881 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 8353 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8347 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 687:
-#line 4891 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4885 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8361 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8355 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 688:
-#line 4896 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4890 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 8369 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8363 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 689:
-#line 4900 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4894 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8377 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8371 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 690:
-#line 4906 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4900 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWeight( LOC(yylhs.location), dynamic_cast<exprnode*>((yystack_[1].value.expr)) );
         }
-#line 8385 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8379 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 691:
-#line 4912 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4906 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWordsTimes(
                 LOC(yylhs.location),
@@ -8393,43 +8387,43 @@ namespace zorba {
                 dynamic_cast<FTTimes*>((yystack_[0].value.node))
             );
         }
-#line 8397 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8391 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 692:
-#line 4920 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4914 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[1].value.node);
         }
-#line 8405 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8399 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 693:
-#line 4924 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4918 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8413 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8407 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 694:
-#line 4929 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4923 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 8421 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8415 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 695:
-#line 4933 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4927 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8429 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8423 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 696:
-#line 4939 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4933 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTExtensionSelection(
                 LOC(yylhs.location),
@@ -8437,27 +8431,27 @@ namespace zorba {
                 dynamic_cast<FTSelection*>((yystack_[1].value.node))
             );
         }
-#line 8441 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8435 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 697:
-#line 4948 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4942 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 8449 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8443 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 698:
-#line 4952 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4946 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8457 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8451 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 699:
-#line 4958 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4952 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWords(
                 LOC(yylhs.location),
@@ -8465,151 +8459,151 @@ namespace zorba {
                 dynamic_cast<FTAnyallOption*>((yystack_[0].value.node))
             );
         }
-#line 8469 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8463 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 700:
-#line 4968 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4962 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWordsValue(
                 LOC(yylhs.location), static_cast<StringLiteral*>((yystack_[0].value.expr)), NULL
             );
         }
-#line 8479 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8473 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 701:
-#line 4974 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4968 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWordsValue(
                 LOC(yylhs.location), NULL, dynamic_cast<exprnode*>((yystack_[1].value.expr))
             );
         }
-#line 8489 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8483 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 702:
-#line 4981 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4975 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTAnyallOption( LOC(yylhs.location), ft_anyall_mode::any );
         }
-#line 8497 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8491 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 703:
-#line 4985 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4979 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8505 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8499 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 704:
-#line 4991 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4985 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTAnyallOption( LOC(yylhs.location), (yystack_[0].value.ft_anyall_value) );
         }
-#line 8513 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8507 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 705:
-#line 4995 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4989 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTAnyallOption( LOC(yylhs.location), (yystack_[0].value.ft_anyall_value) );
         }
-#line 8521 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8515 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 706:
-#line 4999 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4993 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTAnyallOption( LOC(yylhs.location), ft_anyall_mode::phrase );
         }
-#line 8529 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8523 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 707:
-#line 5004 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 4998 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.ft_anyall_value) = ft_anyall_mode::any;
         }
-#line 8537 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8531 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 708:
-#line 5008 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5002 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.ft_anyall_value) = ft_anyall_mode::any_word;
         }
-#line 8545 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8539 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 709:
-#line 5013 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5007 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.ft_anyall_value) = ft_anyall_mode::all;
         }
-#line 8553 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8547 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 710:
-#line 5017 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5011 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.ft_anyall_value) = ft_anyall_mode::all_words;
         }
-#line 8561 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8555 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 711:
-#line 5023 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5017 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8569 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8563 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 712:
-#line 5027 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5021 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8577 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8571 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 713:
-#line 5031 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5025 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8585 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8579 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 714:
-#line 5035 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5029 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8593 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8587 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 715:
-#line 5039 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5033 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8601 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8595 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 716:
-#line 5045 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5039 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTOrder( LOC(yylhs.location) );
         }
-#line 8609 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8603 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 717:
-#line 5051 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5045 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWindow(
                 LOC(yylhs.location),
@@ -8617,11 +8611,11 @@ namespace zorba {
                 static_cast<FTUnit*>((yystack_[0].value.node))
             );
         }
-#line 8621 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8615 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 718:
-#line 5061 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5055 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTDistance(
                 LOC(yylhs.location),
@@ -8629,197 +8623,197 @@ namespace zorba {
                 dynamic_cast<FTUnit*>((yystack_[0].value.node))
             );
         }
-#line 8633 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8627 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 719:
-#line 5071 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5065 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTUnit( LOC(yylhs.location), ft_unit::words );
         }
-#line 8641 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8635 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 720:
-#line 5075 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5069 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTUnit( LOC(yylhs.location), ft_unit::sentences );
         }
-#line 8649 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8643 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 721:
-#line 5079 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5073 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTUnit( LOC(yylhs.location), ft_unit::paragraphs );
         }
-#line 8657 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8651 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 722:
-#line 5085 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5079 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             FTMatchOptions *mo = new FTMatchOptions( LOC(yylhs.location) );
             mo->push_back( dynamic_cast<FTMatchOption*>((yystack_[0].value.node)) );
             (yylhs.value.node) = mo;
         }
-#line 8667 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8661 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 723:
-#line 5091 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5085 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             FTMatchOptions *mo = dynamic_cast<FTMatchOptions*>((yystack_[2].value.node));
             mo->push_back( dynamic_cast<FTMatchOption*>((yystack_[0].value.node)) );
             (yylhs.value.node) = (yystack_[2].value.node);
         }
-#line 8677 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8671 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 724:
-#line 5099 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5093 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8685 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8679 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 725:
-#line 5103 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5097 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8693 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8687 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 726:
-#line 5107 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5101 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8701 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8695 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 727:
-#line 5111 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5105 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8709 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8703 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 728:
-#line 5115 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5109 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8717 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8711 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 729:
-#line 5119 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5113 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8725 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8719 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 730:
-#line 5123 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5117 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8733 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8727 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 731:
-#line 5127 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5121 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8741 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8735 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 732:
-#line 5133 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5127 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTCaseOption( LOC(yylhs.location), ft_case_mode::sensitive );
         }
-#line 8749 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8743 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 733:
-#line 5137 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5131 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTCaseOption( LOC(yylhs.location), ft_case_mode::insensitive );
         }
-#line 8757 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8751 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 734:
-#line 5141 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5135 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTCaseOption( LOC(yylhs.location), ft_case_mode::lower );
         }
-#line 8765 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8759 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 735:
-#line 5145 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5139 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTCaseOption( LOC(yylhs.location), ft_case_mode::upper );
         }
-#line 8773 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8767 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 736:
-#line 5151 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5145 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTDiacriticsOption(
                 LOC(yylhs.location), ft_diacritics_mode::sensitive
             );
         }
-#line 8783 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8777 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 737:
-#line 5157 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5151 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTDiacriticsOption(
                 LOC(yylhs.location), ft_diacritics_mode::insensitive
             );
         }
-#line 8793 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8787 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 738:
-#line 5165 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5159 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTExtensionOption(
                 LOC(yylhs.location), static_cast<QName*>((yystack_[1].value.expr)), SYMTAB((yystack_[0].value.sval))
             );
         }
-#line 8803 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8797 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 739:
-#line 5173 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5167 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStemOption( LOC(yylhs.location), ft_stem_mode::stemming );
         }
-#line 8811 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8805 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 740:
-#line 5177 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5171 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStemOption( LOC(yylhs.location), ft_stem_mode::no_stemming );
         }
-#line 8819 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8813 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 741:
-#line 5183 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5177 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             FTThesaurusOption::thesaurus_id_list_t *til = NULL;
             if ( (yystack_[0].value.node) ) {
@@ -8829,11 +8823,11 @@ namespace zorba {
             (yylhs.value.node) = new FTThesaurusOption( LOC(yylhs.location), til, !til );
             delete til;
         }
-#line 8833 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8827 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 742:
-#line 5193 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5187 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             FTThesaurusOption::thesaurus_id_list_t *til = (yystack_[1].value.thesaurus_id_list);
             if ( (yystack_[2].value.node) ) {
@@ -8844,111 +8838,111 @@ namespace zorba {
             (yylhs.value.node) = new FTThesaurusOption( LOC(yylhs.location), til, !(yystack_[2].value.node) );
             delete til;
         }
-#line 8848 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8842 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 743:
-#line 5204 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5198 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTThesaurusOption( LOC(yylhs.location), NULL, false, true );
         }
-#line 8856 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8850 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 744:
-#line 5210 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5204 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[0].value.node);
         }
-#line 8864 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8858 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 745:
-#line 5214 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5208 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 8872 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8866 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 746:
-#line 5219 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5213 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.thesaurus_id_list) = NULL;
         }
-#line 8880 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8874 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 747:
-#line 5223 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5217 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.thesaurus_id_list) = (yystack_[0].value.thesaurus_id_list);
         }
-#line 8888 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8882 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 748:
-#line 5229 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5223 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.thesaurus_id_list) = new FTThesaurusOption::thesaurus_id_list_t;
             (yylhs.value.thesaurus_id_list)->push_back( dynamic_cast<FTThesaurusID*>((yystack_[0].value.node)) );
         }
-#line 8897 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8891 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 749:
-#line 5234 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5228 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yystack_[2].value.thesaurus_id_list)->push_back( dynamic_cast<FTThesaurusID*>((yystack_[0].value.node)) );
             (yylhs.value.thesaurus_id_list) = (yystack_[2].value.thesaurus_id_list);
         }
-#line 8906 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8900 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 750:
-#line 5241 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5235 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTThesaurusID(
                 LOC(yylhs.location), SYMTAB((yystack_[2].value.sval)), SYMTAB((yystack_[1].value.sval)), dynamic_cast<FTRange*>((yystack_[0].value.node))
             );
         }
-#line 8916 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8910 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 751:
-#line 5248 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5242 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.sval) = 0;
         }
-#line 8924 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8918 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 752:
-#line 5252 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5246 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.sval) = (yystack_[0].value.sval);
         }
-#line 8932 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8926 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 753:
-#line 5258 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5252 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = NULL;
         }
-#line 8940 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8934 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 754:
-#line 5262 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5256 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = (yystack_[1].value.node);
         }
-#line 8948 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8942 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 755:
-#line 5268 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5262 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWordOption(
                 LOC(yylhs.location),
@@ -8957,93 +8951,93 @@ namespace zorba {
             );
             delete (yystack_[0].value.incl_excl_list);
         }
-#line 8961 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8955 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 756:
-#line 5277 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5271 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWordOption(
                 LOC(yylhs.location), NULL, (yystack_[0].value.incl_excl_list), ft_stop_words_mode::with_default
             );
             delete (yystack_[0].value.incl_excl_list);
         }
-#line 8972 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8966 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 757:
-#line 5284 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5278 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWordOption(
                 LOC(yylhs.location), NULL, NULL, ft_stop_words_mode::without
             );
         }
-#line 8982 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8976 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 758:
-#line 5292 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5286 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWords( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)), NULL );
         }
-#line 8990 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8984 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 759:
-#line 5296 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5290 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWords( LOC(yylhs.location), "", (yystack_[1].value.strlist) );
         }
-#line 8998 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 8992 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 760:
-#line 5302 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5296 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             string_list_t *sl = new string_list_t;
             sl->push_back( SYMTAB((yystack_[0].value.sval)) );
             (yylhs.value.strlist) = sl;
         }
-#line 9008 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9002 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 761:
-#line 5308 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5302 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             if ( (yystack_[2].value.strlist) )
                 (yystack_[2].value.strlist)->push_back( SYMTAB((yystack_[0].value.sval)) );
             (yylhs.value.strlist) = (yystack_[2].value.strlist);
         }
-#line 9018 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9012 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 762:
-#line 5315 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5309 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.incl_excl_list) = NULL;
         }
-#line 9026 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9020 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 763:
-#line 5319 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5313 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.incl_excl_list) = (yystack_[0].value.incl_excl_list);
         }
-#line 9034 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9028 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 764:
-#line 5325 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5319 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.incl_excl_list) = new FTStopWordOption::incl_excl_list_t;
             (yylhs.value.incl_excl_list)->push_back( dynamic_cast<FTStopWordsInclExcl*>((yystack_[0].value.node)) );
         }
-#line 9043 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9037 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 765:
-#line 5330 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5324 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             FTStopWordOption::incl_excl_list_t *iel = (yystack_[1].value.incl_excl_list);
             if ( !iel )
@@ -9051,11 +9045,11 @@ namespace zorba {
             iel->push_back( dynamic_cast<FTStopWordsInclExcl*>((yystack_[0].value.node)) );
             (yylhs.value.incl_excl_list) = iel;
         }
-#line 9055 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9049 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 766:
-#line 5340 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5334 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWordsInclExcl(
                 LOC(yylhs.location),
@@ -9063,11 +9057,11 @@ namespace zorba {
                 ft_stop_words_unex::union_
             );
         }
-#line 9067 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9061 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 767:
-#line 5348 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5342 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTStopWordsInclExcl(
                 LOC(yylhs.location),
@@ -9075,99 +9069,99 @@ namespace zorba {
                 ft_stop_words_unex::except
             );
         }
-#line 9079 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9073 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 768:
-#line 5358 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5352 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTLanguageOption( LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)) );
         }
-#line 9087 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9081 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 769:
-#line 5364 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5358 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWildCardOption( LOC(yylhs.location), ft_wild_card_mode::with );
         }
-#line 9095 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9089 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 770:
-#line 5368 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5362 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTWildCardOption( LOC(yylhs.location), ft_wild_card_mode::without );
         }
-#line 9103 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9097 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 771:
-#line 5374 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5368 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTContent( LOC(yylhs.location), ft_content_mode::at_start );
         }
-#line 9111 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9105 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 772:
-#line 5378 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5372 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTContent( LOC(yylhs.location), ft_content_mode::at_end );
         }
-#line 9119 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9113 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 773:
-#line 5382 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5376 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTContent( LOC(yylhs.location), ft_content_mode::entire );
         }
-#line 9127 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9121 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 774:
-#line 5388 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5382 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTTimes( LOC(yylhs.location), dynamic_cast<FTRange*>((yystack_[1].value.node)) );
         }
-#line 9135 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9129 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 775:
-#line 5394 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5388 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTRange( LOC(yylhs.location), ft_range_mode::exactly, (yystack_[0].value.expr) );
         }
-#line 9143 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9137 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 776:
-#line 5398 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5392 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTRange( LOC(yylhs.location), ft_range_mode::at_least, (yystack_[0].value.expr) );
         }
-#line 9151 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9145 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 777:
-#line 5402 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5396 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTRange( LOC(yylhs.location), ft_range_mode::at_most, (yystack_[0].value.expr) );
         }
-#line 9159 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9153 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 778:
-#line 5406 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5400 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTRange( LOC(yylhs.location), ft_range_mode::from_to, (yystack_[2].value.expr), (yystack_[0].value.expr) );
         }
-#line 9167 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9161 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 779:
-#line 5412 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5406 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTScope(
                 LOC(yylhs.location),
@@ -9175,11 +9169,11 @@ namespace zorba {
                 dynamic_cast<FTBigUnit*>((yystack_[0].value.node))
             );
         }
-#line 9179 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9173 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 780:
-#line 5420 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5414 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTScope(
                 LOC(yylhs.location),
@@ -9187,123 +9181,123 @@ namespace zorba {
                 dynamic_cast<FTBigUnit*>((yystack_[0].value.node))
             );
         }
-#line 9191 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9185 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 781:
-#line 5430 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5424 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTBigUnit( LOC(yylhs.location), ft_big_unit::sentence );
         }
-#line 9199 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9193 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 782:
-#line 5434 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5428 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTBigUnit( LOC(yylhs.location), ft_big_unit::paragraph );
         }
-#line 9207 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9201 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 783:
-#line 5440 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5434 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
             (yylhs.value.node) = new FTIgnoreOption( LOC(yylhs.location), static_cast<UnionExpr*>((yystack_[0].value.expr)) );
         }
-#line 9215 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9209 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 784:
-#line 5446 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5440 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONArrayConstructor( LOC(yylhs.location), NULL );
         }
-#line 9223 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9217 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 785:
-#line 5450 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5444 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONArrayConstructor( LOC(yylhs.location), (yystack_[1].value.expr) );
         }
-#line 9231 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9225 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 786:
-#line 5456 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5450 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONObjectConstructor(LOC(yylhs.location), NULL, false);
         }
-#line 9239 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9233 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 787:
-#line 5460 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5454 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONObjectConstructor(LOC(yylhs.location), (yystack_[1].value.expr), false);
         }
-#line 9247 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9241 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 788:
-#line 5466 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5460 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONObjectConstructor(LOC(yylhs.location), NULL, true);
         }
-#line 9255 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9249 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 789:
-#line 5470 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5464 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONObjectConstructor(LOC(yylhs.location), (yystack_[1].value.expr), true);
         }
-#line 9263 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9257 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 790:
-#line 5476 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5470 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONDirectObjectConstructor(LOC(yylhs.location),
                                                dynamic_cast<JSONPairList*>((yystack_[1].value.node)));
         }
-#line 9272 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9266 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 791:
-#line 5483 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5477 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           JSONPairList* jpl = new JSONPairList(LOC(yylhs.location));
           jpl->push_back(new JSONPairConstructor(LOC(yylhs.location), (yystack_[2].value.expr), (yystack_[0].value.expr)));
           (yylhs.value.node) = jpl;
         }
-#line 9282 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9276 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 792:
-#line 5489 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5483 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yystack_[4].value.node));
           assert(jpl);
           jpl->push_back(new JSONPairConstructor(LOC(yylhs.location), (yystack_[2].value.expr), (yystack_[0].value.expr)));
           (yylhs.value.node) = jpl;
         }
-#line 9293 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9287 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 793:
-#line 5498 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5492 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONObjectInsertExpr(LOC(yylhs.location),
                                         (yystack_[2].value.expr),
                                         (yystack_[0].value.expr));
         }
-#line 9303 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9297 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 794:
-#line 5504 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5498 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yystack_[2].value.node));
           (yylhs.value.expr) = new JSONObjectInsertExpr(
@@ -9313,27 +9307,27 @@ namespace zorba {
                   jpl),
               (yystack_[0].value.expr));
         }
-#line 9317 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9311 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 795:
-#line 5514 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5508 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONArrayInsertExpr(LOC(yylhs.location), (yystack_[5].value.expr), (yystack_[3].value.expr), (yystack_[0].value.expr));
         }
-#line 9325 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9319 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 796:
-#line 5520 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5514 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.expr) = new JSONArrayAppendExpr(LOC(yylhs.location), (yystack_[2].value.expr), (yystack_[0].value.expr));
         }
-#line 9333 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9327 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 797:
-#line 5526 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5520 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
@@ -9348,11 +9342,11 @@ namespace zorba {
               lTargetExpr,
               lSelectorExpr);
         }
-#line 9352 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9346 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 798:
-#line 5543 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5537 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
@@ -9374,11 +9368,11 @@ namespace zorba {
                 lSelectorExpr,
                 (yystack_[0].value.expr));
         }
-#line 9378 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9372 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 799:
-#line 5567 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5561 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
@@ -9395,1373 +9389,1373 @@ namespace zorba {
                 lSelectorExpr,
                 (yystack_[0].value.expr));
         }
-#line 9399 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9393 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 800:
-#line 5586 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5580 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.node) = new JSON_Test(LOC(yylhs.location), store::StoreConsts::jsonItem);
         }
-#line 9407 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9401 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 801:
-#line 5590 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5584 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.node) = new JSON_Test(LOC(yylhs.location), store::StoreConsts::jsonArray);
         }
-#line 9415 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9409 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 802:
-#line 5594 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5588 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     {
           (yylhs.value.node) = new JSON_Test(LOC(yylhs.location), store::StoreConsts::jsonObject);
         }
-#line 9423 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9417 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 805:
-#line 5603 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5597 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB((yystack_[0].value.sval))); }
-#line 9429 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9423 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 806:
-#line 5604 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5598 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("attribute"))); }
-#line 9435 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9429 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 807:
-#line 5605 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5599 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("comment"))); }
-#line 9441 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9435 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 808:
-#line 5606 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5600 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("document-node"))); }
-#line 9447 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9441 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 809:
-#line 5607 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5601 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("namespace-node"))); }
-#line 9453 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9447 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 810:
-#line 5608 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5602 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("element"))); }
-#line 9459 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9453 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 811:
-#line 5609 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5603 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("item"))); }
-#line 9465 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9459 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 812:
-#line 5610 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5604 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("if"))); }
-#line 9471 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9465 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 813:
-#line 5611 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5605 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("node"))); }
-#line 9477 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9471 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 814:
-#line 5612 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5606 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("processing-instruction"))); }
-#line 9483 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9477 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 815:
-#line 5613 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5607 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("schema-attribute"))); }
-#line 9489 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9483 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 816:
-#line 5614 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5608 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("schema-element"))); }
-#line 9495 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9489 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 817:
-#line 5615 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5609 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("text"))); }
-#line 9501 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9495 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 818:
-#line 5616 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5610 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("typeswitch"))); }
-#line 9507 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9501 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 819:
-#line 5617 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5611 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("switch"))); }
-#line 9513 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9507 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 820:
-#line 5618 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5612 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("empty-sequence"))); }
-#line 9519 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9513 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 821:
-#line 5619 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5613 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("while"))); }
-#line 9525 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9519 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 822:
-#line 5620 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5614 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("json"))); }
-#line 9531 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9525 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 823:
-#line 5621 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5615 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("array"))); }
-#line 9537 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9531 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 824:
-#line 5622 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5616 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("object"))); }
-#line 9543 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9537 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 825:
-#line 5623 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5617 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("json-item"))); }
-#line 9549 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9543 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 826:
-#line 5624 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5618 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("structured-item"))); }
-#line 9555 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9549 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 828:
-#line 5628 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5622 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB((yystack_[0].value.sval))); }
-#line 9561 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9555 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 829:
-#line 5629 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5623 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("xquery"))); }
-#line 9567 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9561 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 830:
-#line 5630 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5624 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("empty"))); }
-#line 9573 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9567 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 831:
-#line 5631 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5625 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("boundary-space"))); }
-#line 9579 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9573 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 832:
-#line 5632 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5626 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ft-option"))); }
-#line 9585 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9579 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 833:
-#line 5633 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5627 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("base-uri"))); }
-#line 9591 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9585 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 834:
-#line 5634 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5628 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("lax"))); }
-#line 9597 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9591 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 835:
-#line 5635 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5629 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("strict"))); }
-#line 9603 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9597 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 836:
-#line 5636 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5630 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("idiv"))); }
-#line 9609 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9603 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 837:
-#line 5637 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5631 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("document"))); }
-#line 9615 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9609 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 838:
-#line 5638 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5632 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ftnot"))); }
-#line 9621 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9615 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 839:
-#line 5639 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5633 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("not"))); }
-#line 9627 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9621 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 840:
-#line 5640 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5634 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("sensitive"))); }
-#line 9633 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9627 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 841:
-#line 5641 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5635 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("insensitive"))); }
-#line 9639 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9633 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 842:
-#line 5642 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5636 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("diacritics"))); }
-#line 9645 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9639 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 843:
-#line 5643 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5637 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("without"))); }
-#line 9651 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9645 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 844:
-#line 5644 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5638 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("stemming"))); }
-#line 9657 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9651 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 845:
-#line 5645 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5639 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("thesaurus"))); }
-#line 9663 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9657 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 846:
-#line 5646 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5640 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("stop"))); }
-#line 9669 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9663 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 847:
-#line 5647 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5641 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("wildcards"))); }
-#line 9675 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9669 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 848:
-#line 5648 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5642 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("entire"))); }
-#line 9681 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9675 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 849:
-#line 5649 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5643 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("content"))); }
-#line 9687 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9681 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 850:
-#line 5650 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5644 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("word"))); }
-#line 9693 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9687 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 851:
-#line 5651 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5645 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("start"))); }
-#line 9699 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9693 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 852:
-#line 5652 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5646 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("end"))); }
-#line 9705 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9699 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 853:
-#line 5653 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5647 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("most"))); }
-#line 9711 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9705 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 854:
-#line 5654 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5648 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("skip"))); }
-#line 9717 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9711 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 855:
-#line 5655 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5649 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("copy"))); }
-#line 9723 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9717 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 856:
-#line 5656 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5650 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("general"))); }
-#line 9729 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9723 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 857:
-#line 5657 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5651 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("value"))); }
-#line 9735 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9729 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 858:
-#line 5658 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5652 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("eq"))); }
-#line 9741 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9735 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 859:
-#line 5659 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5653 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ne"))); }
-#line 9747 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9741 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 860:
-#line 5660 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5654 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("lt"))); }
-#line 9753 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9747 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 861:
-#line 5661 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5655 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("le"))); }
-#line 9759 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9753 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 862:
-#line 5662 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5656 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("gt"))); }
-#line 9765 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9759 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 863:
-#line 5663 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5657 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ge"))); }
-#line 9771 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9765 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 864:
-#line 5664 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5658 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("at"))); }
-#line 9777 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9771 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 865:
-#line 5665 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5659 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("context"))); }
-#line 9783 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9777 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 866:
-#line 5666 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5660 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("variable"))); }
-#line 9789 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9783 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 867:
-#line 5667 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5661 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("return"))); }
-#line 9795 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9789 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 868:
-#line 5668 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5662 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("for"))); }
-#line 9801 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9795 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 869:
-#line 5669 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5663 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("from"))); }
-#line 9807 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9801 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 870:
-#line 5670 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5664 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("allowing"))); }
-#line 9813 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9807 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 871:
-#line 5671 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5665 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("sliding"))); }
-#line 9819 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9813 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 872:
-#line 5672 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5666 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("tumbling"))); }
-#line 9825 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9819 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 873:
-#line 5673 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5667 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("previous"))); }
-#line 9831 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9825 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 874:
-#line 5674 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5668 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("next"))); }
-#line 9837 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9831 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 875:
-#line 5675 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5669 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("only"))); }
-#line 9843 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9837 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 876:
-#line 5676 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5670 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("when"))); }
-#line 9849 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9843 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 877:
-#line 5677 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5671 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("count"))); }
-#line 9855 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9849 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 878:
-#line 5678 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5672 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("in"))); }
-#line 9861 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9855 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 879:
-#line 5679 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5673 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("let"))); }
-#line 9867 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9861 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 880:
-#line 5680 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5674 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("where"))); }
-#line 9873 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9867 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 881:
-#line 5681 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5675 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("by"))); }
-#line 9879 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9873 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 882:
-#line 5682 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5676 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("group"))); }
-#line 9885 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9879 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 883:
-#line 5683 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5677 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("order"))); }
-#line 9891 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9885 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 884:
-#line 5684 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5678 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("stable"))); }
-#line 9897 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9891 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 885:
-#line 5685 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5679 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ascending"))); }
-#line 9903 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9897 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 886:
-#line 5686 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5680 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("descending"))); }
-#line 9909 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9903 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 887:
-#line 5687 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5681 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("greatest"))); }
-#line 9915 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9909 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 888:
-#line 5688 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5682 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("least"))); }
-#line 9921 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9915 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 889:
-#line 5689 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5683 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("collation"))); }
-#line 9927 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9921 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 890:
-#line 5690 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5684 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("some"))); }
-#line 9933 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9927 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 891:
-#line 5691 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5685 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("every"))); }
-#line 9939 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9933 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 892:
-#line 5692 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5686 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("satisfies"))); }
-#line 9945 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9939 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 893:
-#line 5693 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5687 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("case"))); }
-#line 9951 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9945 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 894:
-#line 5694 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5688 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("as"))); }
-#line 9957 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9951 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 895:
-#line 5695 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5689 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("then"))); }
-#line 9963 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9957 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 896:
-#line 5696 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5690 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("else"))); }
-#line 9969 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9963 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 897:
-#line 5697 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5691 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("or"))); }
-#line 9975 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9969 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 898:
-#line 5698 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5692 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("and"))); }
-#line 9981 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9975 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 899:
-#line 5699 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5693 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("instance"))); }
-#line 9987 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9981 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 900:
-#line 5700 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5694 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("of"))); }
-#line 9993 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9987 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 901:
-#line 5701 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5695 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("castable"))); }
-#line 9999 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9993 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 902:
-#line 5702 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5696 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("to"))); }
-#line 10005 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 9999 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 903:
-#line 5703 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5697 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("div"))); }
-#line 10011 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10005 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 904:
-#line 5704 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5698 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("mod"))); }
-#line 10017 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10011 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 905:
-#line 5705 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5699 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("union"))); }
-#line 10023 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10017 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 906:
-#line 5706 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5700 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("intersect"))); }
-#line 10029 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10023 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 907:
-#line 5707 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5701 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("except"))); }
-#line 10035 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10029 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 908:
-#line 5708 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5702 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("validate"))); }
-#line 10041 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10035 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 909:
-#line 5709 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5703 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("type"))); }
-#line 10047 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10041 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 910:
-#line 5710 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5704 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("cast"))); }
-#line 10053 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10047 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 911:
-#line 5711 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5705 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("treat"))); }
-#line 10059 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10053 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 912:
-#line 5712 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5706 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("is"))); }
-#line 10065 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10059 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 913:
-#line 5713 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5707 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("preserve"))); }
-#line 10071 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10065 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 914:
-#line 5714 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5708 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("strip"))); }
-#line 10077 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10071 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 915:
-#line 5715 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5709 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("namespace"))); }
-#line 10083 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10077 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 916:
-#line 5716 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5710 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("external"))); }
-#line 10089 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10083 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 917:
-#line 5717 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5711 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("encoding"))); }
-#line 10095 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10089 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 918:
-#line 5718 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5712 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("no-preserve"))); }
-#line 10101 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10095 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 919:
-#line 5719 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5713 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("inherit"))); }
-#line 10107 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10101 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 920:
-#line 5720 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5714 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("no-inherit"))); }
-#line 10113 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10107 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 921:
-#line 5721 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5715 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("declare"))); }
-#line 10119 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10113 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 922:
-#line 5722 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5716 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("construction"))); }
-#line 10125 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10119 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 923:
-#line 5723 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5717 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ordering"))); }
-#line 10131 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10125 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 924:
-#line 5724 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5718 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("default"))); }
-#line 10137 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10131 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 925:
-#line 5725 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5719 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("copy-namespaces"))); }
-#line 10143 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10137 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 926:
-#line 5726 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5720 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("option"))); }
-#line 10149 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10143 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 927:
-#line 5727 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5721 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("version"))); }
-#line 10155 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10149 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 928:
-#line 5728 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5722 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("import"))); }
-#line 10161 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10155 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 929:
-#line 5729 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5723 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("schema"))); }
-#line 10167 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10161 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 930:
-#line 5730 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5724 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("module"))); }
-#line 10173 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10167 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 931:
-#line 5731 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5725 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("function"))); }
-#line 10179 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10173 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 932:
-#line 5732 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5726 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("score"))); }
-#line 10185 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10179 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 933:
-#line 5733 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5727 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("contains"))); }
-#line 10191 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10185 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 934:
-#line 5734 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5728 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("weight"))); }
-#line 10197 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10191 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 935:
-#line 5735 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5729 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("window"))); }
-#line 10203 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10197 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 936:
-#line 5736 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5730 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("distance"))); }
-#line 10209 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10203 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 937:
-#line 5737 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5731 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("occurs"))); }
-#line 10215 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10209 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 938:
-#line 5738 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5732 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("times"))); }
-#line 10221 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10215 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 939:
-#line 5739 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5733 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("same"))); }
-#line 10227 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10221 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 940:
-#line 5740 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5734 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("different"))); }
-#line 10233 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10227 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 941:
-#line 5741 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5735 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("lowercase"))); }
-#line 10239 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10233 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 942:
-#line 5742 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5736 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("uppercase"))); }
-#line 10245 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10239 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 943:
-#line 5743 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5737 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("relationship"))); }
-#line 10251 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10245 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 944:
-#line 5744 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5738 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("levels"))); }
-#line 10257 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10251 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 945:
-#line 5745 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5739 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("language"))); }
-#line 10263 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10257 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 946:
-#line 5746 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5740 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("any"))); }
-#line 10269 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10263 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 947:
-#line 5747 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5741 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("all"))); }
-#line 10275 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10269 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 948:
-#line 5748 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5742 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("exactly"))); }
-#line 10281 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10275 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 949:
-#line 5749 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5743 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("words"))); }
-#line 10287 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10281 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 950:
-#line 5750 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5744 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("sentences"))); }
-#line 10293 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10287 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 951:
-#line 5751 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5745 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("sentence"))); }
-#line 10299 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10293 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 952:
-#line 5752 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5746 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("phrase"))); }
-#line 10305 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10299 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 953:
-#line 5753 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5747 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("paragraph"))); }
-#line 10311 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10305 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 954:
-#line 5754 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5748 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("paragraphs"))); }
-#line 10317 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10311 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 955:
-#line 5755 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5749 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("modify"))); }
-#line 10323 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10317 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 956:
-#line 5756 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5750 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("first"))); }
-#line 10329 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10323 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 957:
-#line 5757 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5751 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("append"))); }
-#line 10335 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10329 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 958:
-#line 5758 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5752 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("insert"))); }
-#line 10341 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10335 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 959:
-#line 5759 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5753 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("replace"))); }
-#line 10347 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10341 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 960:
-#line 5760 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5754 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("rename"))); }
-#line 10353 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10347 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 961:
-#line 5761 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5755 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("delete"))); }
-#line 10359 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10353 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 962:
-#line 5762 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5756 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("before"))); }
-#line 10365 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10359 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 963:
-#line 5763 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5757 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("after"))); }
-#line 10371 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10365 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 964:
-#line 5764 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5758 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("revalidation"))); }
-#line 10377 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10371 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 965:
-#line 5765 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5759 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("with"))); }
-#line 10383 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10377 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 966:
-#line 5766 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5760 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("nodes"))); }
-#line 10389 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10383 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 967:
-#line 5767 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5761 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("last"))); }
-#line 10395 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10389 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 968:
-#line 5768 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5762 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("into"))); }
-#line 10401 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10395 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 969:
-#line 5769 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5763 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("simple"))); }
-#line 10407 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10401 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 970:
-#line 5770 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5764 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("sequential"))); }
-#line 10413 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10407 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 971:
-#line 5771 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5765 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("updating"))); }
-#line 10419 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10413 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 972:
-#line 5772 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5766 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ordered"))); }
-#line 10425 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10419 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 973:
-#line 5773 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5767 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("unordered"))); }
-#line 10431 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10425 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 974:
-#line 5774 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5768 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("returning"))); }
-#line 10437 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10431 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 975:
-#line 5775 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5769 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("exit"))); }
-#line 10443 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10437 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 976:
-#line 5776 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5770 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("loop"))); }
-#line 10449 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10443 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 977:
-#line 5777 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5771 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("break"))); }
-#line 10455 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10449 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 978:
-#line 5778 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5772 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("continue"))); }
-#line 10461 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10455 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 979:
-#line 5779 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5773 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("try"))); }
-#line 10467 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10461 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 980:
-#line 5780 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5774 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("catch"))); }
-#line 10473 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10467 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 981:
-#line 5781 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5775 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("using"))); }
-#line 10479 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10473 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 982:
-#line 5782 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5776 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("set"))); }
-#line 10485 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10479 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 983:
-#line 5783 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5777 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("index"))); }
-#line 10491 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10485 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 984:
-#line 5784 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5778 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("unique"))); }
-#line 10497 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10491 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 985:
-#line 5785 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5779 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("non"))); }
-#line 10503 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10497 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 986:
-#line 5786 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5780 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("on"))); }
-#line 10509 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10503 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 987:
-#line 5787 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5781 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("range"))); }
-#line 10515 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10509 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 988:
-#line 5788 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5782 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("equality"))); }
-#line 10521 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10515 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 989:
-#line 5789 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5783 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("manually"))); }
-#line 10527 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10521 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 990:
-#line 5790 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5784 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("automatically"))); }
-#line 10533 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10527 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 991:
-#line 5791 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5785 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("maintained"))); }
-#line 10539 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10533 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 992:
-#line 5792 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5786 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("decimal-format"))); }
-#line 10545 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10539 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 993:
-#line 5793 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5787 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("decimal-separator"))); }
-#line 10551 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10545 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 994:
-#line 5794 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5788 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("grouping-separator"))); }
-#line 10557 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10551 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 995:
-#line 5795 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5789 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("infinity"))); }
-#line 10563 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10557 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 996:
-#line 5796 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5790 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("minus-sign"))); }
-#line 10569 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10563 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 997:
-#line 5797 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5791 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("NaN"))); }
-#line 10575 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10569 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 998:
-#line 5798 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5792 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("percent"))); }
-#line 10581 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10575 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 999:
-#line 5799 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5793 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("per-mille"))); }
-#line 10587 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10581 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1000:
-#line 5800 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5794 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("zero-digit"))); }
-#line 10593 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10587 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1001:
-#line 5801 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5795 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("digit"))); }
-#line 10599 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10593 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1002:
-#line 5802 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5796 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("pattern-separator"))); }
-#line 10605 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10599 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1003:
-#line 5803 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5797 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("collection"))); }
-#line 10611 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10605 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1004:
-#line 5804 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5798 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("const"))); }
-#line 10617 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10611 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1005:
-#line 5805 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5799 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("append-only"))); }
-#line 10623 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10617 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1006:
-#line 5806 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5800 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("queue"))); }
-#line 10629 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10623 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1007:
-#line 5807 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5801 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("mutable"))); }
-#line 10635 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10629 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1008:
-#line 5808 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5802 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("read-only"))); }
-#line 10641 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10635 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1009:
-#line 5809 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5803 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("integrity"))); }
-#line 10647 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10641 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1010:
-#line 5810 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5804 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("constraint"))); }
-#line 10653 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10647 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1011:
-#line 5811 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5805 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("check"))); }
-#line 10659 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10653 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1012:
-#line 5812 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5806 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("key"))); }
-#line 10665 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10659 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1013:
-#line 5813 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5807 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("foreach"))); }
-#line 10671 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10665 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1014:
-#line 5814 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5808 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("foreign"))); }
-#line 10677 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10671 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1015:
-#line 5815 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5809 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("keys"))); }
-#line 10683 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10677 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1016:
-#line 5816 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5810 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ancestor"))); }
-#line 10689 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10683 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1017:
-#line 5817 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5811 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("child"))); }
-#line 10695 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10689 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1018:
-#line 5818 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5812 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("descendant"))); }
-#line 10701 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10695 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1019:
-#line 5819 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5813 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("parent"))); }
-#line 10707 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10701 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1020:
-#line 5820 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5814 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("preceding"))); }
-#line 10713 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10707 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1021:
-#line 5821 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5815 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("self"))); }
-#line 10719 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10713 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1022:
-#line 5822 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5816 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("following"))); }
-#line 10725 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10719 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1023:
-#line 5823 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5817 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("ancestor-or-self"))); }
-#line 10731 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10725 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1024:
-#line 5824 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5818 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
-#line 10737 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10731 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1025:
-#line 5825 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5819 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("following-sibling"))); }
-#line 10743 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10737 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1026:
-#line 5826 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5820 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
-#line 10749 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10743 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1027:
-#line 5827 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5821 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB(SYMTAB_PUT("position"))); }
-#line 10755 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10749 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
   case 1028:
-#line 5830 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
+#line 5824 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:847
     { (yylhs.value.expr) = new QName(LOC(yylhs.location), SYMTAB((yystack_[0].value.sval)), true); }
-#line 10761 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10755 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
     break;
 
 
-#line 10765 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
+#line 10759 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:847
             default:
               break;
             }
@@ -15572,60 +15566,60 @@ namespace zorba {
     3628,  3632,  3638,  3642,  3650,  3651,  3654,  3658,  3664,  3668,
     3672,  3676,  3682,  3686,  3690,  3694,  3700,  3706,  3714,  3720,
     3721,  3722,  3723,  3724,  3725,  3726,  3727,  3728,  3729,  3730,
-    3731,  3732,  3733,  3736,  3740,  3746,  3755,  3764,  3775,  3781,
-    3785,  3791,  3798,  3804,  3810,  3814,  3832,  3838,  3844,  3850,
-    3858,  3862,  3868,  3874,  3884,  3885,  3888,  3889,  3890,  3893,
-    3901,  3917,  3925,  3941,  3959,  3979,  3985,  3994,  4000,  4009,
-    4016,  4017,  4019,  4024,  4031,  4034,  4040,  4046,  4052,  4059,
-    4068,  4071,  4077,  4083,  4089,  4096,  4105,  4109,  4115,  4119,
-    4125,  4129,  4133,  4138,  4145,  4149,  4153,  4157,  4163,  4168,
-    4174,  4180,  4187,  4193,  4198,  4203,  4208,  4213,  4218,  4223,
-    4226,  4232,  4236,  4242,  4246,  4252,  4258,  4264,  4268,  4274,
-    4278,  4284,  4290,  4294,  4298,  4304,  4310,  4316,  4324,  4328,
-    4332,  4336,  4340,  4344,  4348,  4354,  4360,  4368,  4374,  4380,
-    4384,  4388,  4392,  4396,  4400,  4404,  4408,  4412,  4416,  4422,
-    4428,  4434,  4438,  4442,  4448,  4453,  4459,  4465,  4469,  4474,
-    4480,  4484,  4490,  4496,  4500,  4508,  4514,  4518,  4524,  4533,
-    4542,  4548,  4554,  4562,  4568,  4574,  4580,  4586,  4590,  4596,
-    4602,  4606,  4614,  4620,  4626,  4632,  4640,  4644,  4650,  4656,
-    4660,  4666,  4670,  4676,  4682,  4689,  4697,  4702,  4708,  4714,
-    4722,  4728,  4735,  4741,  4750,  4756,  4762,  4768,  4777,  4784,
-    4790,  4796,  4805,  4812,  4816,  4822,  4827,  4834,  4838,  4844,
-    4848,  4854,  4858,  4864,  4868,  4876,  4887,  4890,  4896,  4899,
-    4905,  4911,  4919,  4923,  4929,  4932,  4938,  4948,  4951,  4957,
-    4967,  4973,  4981,  4984,  4990,  4994,  4998,  5004,  5007,  5013,
-    5016,  5022,  5026,  5030,  5034,  5038,  5044,  5050,  5060,  5070,
-    5074,  5078,  5084,  5090,  5098,  5102,  5106,  5110,  5114,  5118,
-    5122,  5126,  5132,  5136,  5140,  5144,  5150,  5156,  5164,  5172,
-    5176,  5182,  5192,  5203,  5209,  5213,  5219,  5222,  5228,  5233,
-    5240,  5248,  5251,  5257,  5261,  5267,  5276,  5283,  5291,  5295,
-    5301,  5307,  5315,  5318,  5324,  5329,  5339,  5347,  5357,  5363,
-    5367,  5373,  5377,  5381,  5387,  5393,  5397,  5401,  5405,  5411,
-    5419,  5429,  5433,  5439,  5445,  5449,  5455,  5459,  5465,  5469,
-    5475,  5482,  5488,  5497,  5503,  5513,  5519,  5525,  5542,  5566,
-    5585,  5589,  5593,  5599,  5602,  5603,  5604,  5605,  5606,  5607,
-    5608,  5609,  5610,  5611,  5612,  5613,  5614,  5615,  5616,  5617,
-    5618,  5619,  5620,  5621,  5622,  5623,  5624,  5627,  5628,  5629,
-    5630,  5631,  5632,  5633,  5634,  5635,  5636,  5637,  5638,  5639,
-    5640,  5641,  5642,  5643,  5644,  5645,  5646,  5647,  5648,  5649,
-    5650,  5651,  5652,  5653,  5654,  5655,  5656,  5657,  5658,  5659,
-    5660,  5661,  5662,  5663,  5664,  5665,  5666,  5667,  5668,  5669,
-    5670,  5671,  5672,  5673,  5674,  5675,  5676,  5677,  5678,  5679,
-    5680,  5681,  5682,  5683,  5684,  5685,  5686,  5687,  5688,  5689,
-    5690,  5691,  5692,  5693,  5694,  5695,  5696,  5697,  5698,  5699,
-    5700,  5701,  5702,  5703,  5704,  5705,  5706,  5707,  5708,  5709,
-    5710,  5711,  5712,  5713,  5714,  5715,  5716,  5717,  5718,  5719,
-    5720,  5721,  5722,  5723,  5724,  5725,  5726,  5727,  5728,  5729,
-    5730,  5731,  5732,  5733,  5734,  5735,  5736,  5737,  5738,  5739,
-    5740,  5741,  5742,  5743,  5744,  5745,  5746,  5747,  5748,  5749,
-    5750,  5751,  5752,  5753,  5754,  5755,  5756,  5757,  5758,  5759,
-    5760,  5761,  5762,  5763,  5764,  5765,  5766,  5767,  5768,  5769,
-    5770,  5771,  5772,  5773,  5774,  5775,  5776,  5777,  5778,  5779,
-    5780,  5781,  5782,  5783,  5784,  5785,  5786,  5787,  5788,  5789,
-    5790,  5791,  5792,  5793,  5794,  5795,  5796,  5797,  5798,  5799,
-    5800,  5801,  5802,  5803,  5804,  5805,  5806,  5807,  5808,  5809,
-    5810,  5811,  5812,  5813,  5814,  5815,  5816,  5817,  5818,  5819,
-    5820,  5821,  5822,  5823,  5824,  5825,  5826,  5827,  5830
+    3731,  3732,  3733,  3736,  3740,  3746,  3753,  3760,  3769,  3775,
+    3779,  3785,  3792,  3798,  3804,  3808,  3826,  3832,  3838,  3844,
+    3852,  3856,  3862,  3868,  3878,  3879,  3882,  3883,  3884,  3887,
+    3895,  3911,  3919,  3935,  3953,  3973,  3979,  3988,  3994,  4003,
+    4010,  4011,  4013,  4018,  4025,  4028,  4034,  4040,  4046,  4053,
+    4062,  4065,  4071,  4077,  4083,  4090,  4099,  4103,  4109,  4113,
+    4119,  4123,  4127,  4132,  4139,  4143,  4147,  4151,  4157,  4162,
+    4168,  4174,  4181,  4187,  4192,  4197,  4202,  4207,  4212,  4217,
+    4220,  4226,  4230,  4236,  4240,  4246,  4252,  4258,  4262,  4268,
+    4272,  4278,  4284,  4288,  4292,  4298,  4304,  4310,  4318,  4322,
+    4326,  4330,  4334,  4338,  4342,  4348,  4354,  4362,  4368,  4374,
+    4378,  4382,  4386,  4390,  4394,  4398,  4402,  4406,  4410,  4416,
+    4422,  4428,  4432,  4436,  4442,  4447,  4453,  4459,  4463,  4468,
+    4474,  4478,  4484,  4490,  4494,  4502,  4508,  4512,  4518,  4527,
+    4536,  4542,  4548,  4556,  4562,  4568,  4574,  4580,  4584,  4590,
+    4596,  4600,  4608,  4614,  4620,  4626,  4634,  4638,  4644,  4650,
+    4654,  4660,  4664,  4670,  4676,  4683,  4691,  4696,  4702,  4708,
+    4716,  4722,  4729,  4735,  4744,  4750,  4756,  4762,  4771,  4778,
+    4784,  4790,  4799,  4806,  4810,  4816,  4821,  4828,  4832,  4838,
+    4842,  4848,  4852,  4858,  4862,  4870,  4881,  4884,  4890,  4893,
+    4899,  4905,  4913,  4917,  4923,  4926,  4932,  4942,  4945,  4951,
+    4961,  4967,  4975,  4978,  4984,  4988,  4992,  4998,  5001,  5007,
+    5010,  5016,  5020,  5024,  5028,  5032,  5038,  5044,  5054,  5064,
+    5068,  5072,  5078,  5084,  5092,  5096,  5100,  5104,  5108,  5112,
+    5116,  5120,  5126,  5130,  5134,  5138,  5144,  5150,  5158,  5166,
+    5170,  5176,  5186,  5197,  5203,  5207,  5213,  5216,  5222,  5227,
+    5234,  5242,  5245,  5251,  5255,  5261,  5270,  5277,  5285,  5289,
+    5295,  5301,  5309,  5312,  5318,  5323,  5333,  5341,  5351,  5357,
+    5361,  5367,  5371,  5375,  5381,  5387,  5391,  5395,  5399,  5405,
+    5413,  5423,  5427,  5433,  5439,  5443,  5449,  5453,  5459,  5463,
+    5469,  5476,  5482,  5491,  5497,  5507,  5513,  5519,  5536,  5560,
+    5579,  5583,  5587,  5593,  5596,  5597,  5598,  5599,  5600,  5601,
+    5602,  5603,  5604,  5605,  5606,  5607,  5608,  5609,  5610,  5611,
+    5612,  5613,  5614,  5615,  5616,  5617,  5618,  5621,  5622,  5623,
+    5624,  5625,  5626,  5627,  5628,  5629,  5630,  5631,  5632,  5633,
+    5634,  5635,  5636,  5637,  5638,  5639,  5640,  5641,  5642,  5643,
+    5644,  5645,  5646,  5647,  5648,  5649,  5650,  5651,  5652,  5653,
+    5654,  5655,  5656,  5657,  5658,  5659,  5660,  5661,  5662,  5663,
+    5664,  5665,  5666,  5667,  5668,  5669,  5670,  5671,  5672,  5673,
+    5674,  5675,  5676,  5677,  5678,  5679,  5680,  5681,  5682,  5683,
+    5684,  5685,  5686,  5687,  5688,  5689,  5690,  5691,  5692,  5693,
+    5694,  5695,  5696,  5697,  5698,  5699,  5700,  5701,  5702,  5703,
+    5704,  5705,  5706,  5707,  5708,  5709,  5710,  5711,  5712,  5713,
+    5714,  5715,  5716,  5717,  5718,  5719,  5720,  5721,  5722,  5723,
+    5724,  5725,  5726,  5727,  5728,  5729,  5730,  5731,  5732,  5733,
+    5734,  5735,  5736,  5737,  5738,  5739,  5740,  5741,  5742,  5743,
+    5744,  5745,  5746,  5747,  5748,  5749,  5750,  5751,  5752,  5753,
+    5754,  5755,  5756,  5757,  5758,  5759,  5760,  5761,  5762,  5763,
+    5764,  5765,  5766,  5767,  5768,  5769,  5770,  5771,  5772,  5773,
+    5774,  5775,  5776,  5777,  5778,  5779,  5780,  5781,  5782,  5783,
+    5784,  5785,  5786,  5787,  5788,  5789,  5790,  5791,  5792,  5793,
+    5794,  5795,  5796,  5797,  5798,  5799,  5800,  5801,  5802,  5803,
+    5804,  5805,  5806,  5807,  5808,  5809,  5810,  5811,  5812,  5813,
+    5814,  5815,  5816,  5817,  5818,  5819,  5820,  5821,  5824
   };
 
   // Print the state stack on the debug stream.
@@ -15739,8 +15733,8 @@ namespace zorba {
 
 
 } // zorba
-#line 15743 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:1155
-#line 5832 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:1156
+#line 15737 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.cpp" // lalr1.cc:1155
+#line 5826 "/home/vagrant/zorba/build/src/compiler/parser/xquery_parser.y" // lalr1.cc:1156
 
 namespace zorba {
 static bool contains(const zstring& msg, const char* str1, const char* str2)
