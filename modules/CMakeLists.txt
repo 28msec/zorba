@@ -12,7 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#Utility modules that should be loaded first
 ADD_SUBDIRECTORY(util-tests)
+ADD_DEFINITIONS(-Dzorba_EXPORTS)
+ADD_SUBDIRECTORY(util-curl)
+REMOVE_DEFINITIONS(-Dzorba_EXPORTS)
+
 ADD_SUBDIRECTORY(atomic)
 ADD_SUBDIRECTORY(full-text)
 ADD_SUBDIRECTORY(functx)
@@ -40,10 +45,6 @@ ADD_SUBDIRECTORY(reflection)
 IF (ZORBA_WITH_DEBUGGER)
   ADD_SUBDIRECTORY(debugger)
 ENDIF (ZORBA_WITH_DEBUGGER)
-
-ADD_DEFINITIONS(-Dzorba_EXPORTS)
-ADD_SUBDIRECTORY(util-curl)
-REMOVE_DEFINITIONS(-Dzorba_EXPORTS)
 
 # Add external module projects - any subdirectories of a directory
 # named "zorba_modules" as a sibling to the main Zorba source
