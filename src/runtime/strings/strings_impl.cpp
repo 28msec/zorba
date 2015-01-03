@@ -17,6 +17,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <thread>
+#include <chrono>
 
 #include "common/common.h"
 
@@ -2431,7 +2433,7 @@ static void add_json_non_match( utf8_string<zstring const> const &u_input,
 }
 
 bool StringAnalyzeStringIterator::nextImpl( store::Item_t& result,
-                                            PlanState& planState ) const {
+                                            PlanState& planState ) const {  
   vector<store::Item_t> array_items;
   int g_count;
   vector<int> g_parents;
@@ -2442,7 +2444,7 @@ bool StringAnalyzeStringIterator::nextImpl( store::Item_t& result,
   istringstream iss;
   mem_streambuf mbuf;
 #endif
-  int m_start, m_end, m_end_prev = 0;
+  int m_start, m_end = 0, m_end_prev = 0;
   unicode::regex regex;
   utf8_string<zstring const> u_input;
   utf8_string<zstring const>::size_type u_size;
