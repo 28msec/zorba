@@ -53,7 +53,9 @@ namespace fs = boost::filesystem;
 
 
 std::string rbkt_src_dir = zorba::RBKT_SRC_DIR;
+std::string rbkt_src_dir_uri = zorba::RBKT_SRC_DIR_URI;
 std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
+std::string rbkt_bin_dir_uri = zorba::RBKT_BINARY_DIR_URI;
 std::string module_path;
 
 /*******************************************************************************
@@ -491,9 +493,9 @@ DWORD WINAPI thread_main(LPVOID param)
     if (fs::exists(specPath))
     {
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
-      querySpec.parseFile(specPath.file_string(), rbkt_src_dir, rbkt_bin_dir); 
+      querySpec.parseFile(specPath.file_string(), rbkt_src_dir, rbkt_src_dir_uri, rbkt_bin_dir, rbkt_bin_dir_uri);
 #else
-      querySpec.parseFile(specPath.generic_string(), rbkt_src_dir, rbkt_bin_dir);
+      querySpec.parseFile(specPath.generic_string(), rbkt_src_dir, rbkt_src_dir_uri, rbkt_bin_dir, rbkt_bin_dir_uri);
 #endif
     }
 
