@@ -309,8 +309,9 @@ public:
     return c;
   }
 
-  bool parseFile(std::string str, std::string rbkt_src_dir,
-    std::string rbkt_binary_dir)
+  bool parseFile(std::string str, std::string rbkt_src_dir, 
+    std::string rbkt_src_dir_uri, std::string rbkt_binary_dir,
+    std::string rbkt_binary_dir_uri)
   {
     std::ifstream lFile(str.c_str(), std::ifstream::in);
     std::stringstream lContent;
@@ -330,9 +331,10 @@ public:
     std::string one_space(" ");
     for(it = lines.begin(); it != lines.end(); ++it)
     {
-      // Replace $RBKT_SRC_DIR and $RBKT_BINARY_DIR
+      zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR_URI", one_space + rbkt_src_dir_uri);
       zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", one_space + rbkt_src_dir);
-      zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);
+      zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR_URI", rbkt_binary_dir_uri);
+      zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);      
 
       std::vector<std::string> tokens;
       std::vector<std::string>::iterator lIter;
@@ -346,8 +348,10 @@ public:
         {
           for(++it; (it!=lines.end()) &&  !isKeyword(*it); ++it)
           {
-            zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", rbkt_src_dir);
-            zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);
+            zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR_URI", rbkt_src_dir_uri);
+            zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", rbkt_src_dir);            
+            zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR_URI", rbkt_binary_dir_uri);
+            zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);        
             trim(*it);
             std::string lArg = *it;
             if ( (lArg == "-x") ||
@@ -356,8 +360,10 @@ public:
               // Argument binding and stop-words/thesaurus URI binding are
               // very similar, so use the same code path for most of it.
               it++;
+              zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR_URI", rbkt_src_dir_uri);
               zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", rbkt_src_dir);
-              zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);
+              zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR_URI", rbkt_binary_dir_uri);
+              zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);              
               trim(*it);
               if(it->find(":=") == std::string::npos) {
                 setInline(true);
