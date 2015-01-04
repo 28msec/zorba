@@ -1,4 +1,1 @@
-3 
- true 
- true 
- 3 
+3 true true 3

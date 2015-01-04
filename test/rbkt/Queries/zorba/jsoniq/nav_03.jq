@@ -4,6 +4,5 @@ declare variable $o2 := { "array" : [10, {"foo" : 30}, 40] };
 
 ($o1, $o2)."array"[][2].foo,
 ($o1, $o2)."array"[][6],
-"
-",
+"\n",
 ($o1, $o2)."array"[]
