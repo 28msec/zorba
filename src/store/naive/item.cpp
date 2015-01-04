@@ -225,8 +225,6 @@ long Item::getRefCount() const
 {
   long refCount = 0;
 
-  if (getKind() != ATOMIC)
-    std::cout << "Kind: " << getKind() << std::endl;
   switch (getKind())
   {
     case NODE:
