@@ -1884,7 +1884,7 @@ bool Schema::parseUserAtomicTypes(
 
           XSTypeDefinition* typeDef = theGrammarPool->getXSModel(modified)->
               getTypeDefinition(localPart, uriStr);
-          std::cout << localPart << std::endl;
+
           ZORBA_ASSERT(typeDef);
           ZORBA_ASSERT(typeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE);
           XSSimpleTypeDefinition* simpleTypeDef =
