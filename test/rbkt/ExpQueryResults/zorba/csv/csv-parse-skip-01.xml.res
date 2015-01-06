@@ -1,7 +1,7 @@
 {
   "first" : "quoted", 
   "second" : "embedded \" quote", 
-  "third" : "embedded\r\nnewline"
+  "third" : "embedded\nnewline"
 }{
   "first" : "\" leading quote", 
   "second" : "", 
