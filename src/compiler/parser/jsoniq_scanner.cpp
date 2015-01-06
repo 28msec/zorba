@@ -192,7 +192,15 @@ typedef unsigned int flex_uint32_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
 #define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -3629,7 +3637,7 @@ std::string start_xquery_state(int);   /* forward declaration, used by YY_USER_A
 
 #line 378 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_scanner.l"
   typedef zorba::PARSER_CLASS::token token;
-#line 3633 "jsoniq_scanner.yy.cpp"
+#line 3641 "jsoniq_scanner.yy.cpp"
 
 #define INITIAL 0
 #define MODE_SHEBANG 1
@@ -3706,7 +3714,12 @@ static int yy_flex_strlen (yyconst char * );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
+#else
 #define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -3843,7 +3856,7 @@ YY_DECL
 /* %% [7.0] user's declarations go here */
 #line 380 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_scanner.l"
 
-#line 3847 "jsoniq_scanner.yy.cpp"
+#line 3860 "jsoniq_scanner.yy.cpp"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -5827,7 +5840,7 @@ YY_RULE_SETUP
 #line 827 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_scanner.l"
 ECHO;
 	YY_BREAK
-#line 5831 "jsoniq_scanner.yy.cpp"
+#line 5844 "jsoniq_scanner.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(MODE_SHEBANG):
 case YY_STATE_EOF(INITIAL_ACCUMULATOR):
@@ -6879,7 +6892,7 @@ void ZorbaJSONiqfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 827 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_scanner.l"
+#line 826 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_scanner.l"
 
 
 namespace zorba {

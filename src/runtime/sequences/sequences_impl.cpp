@@ -59,7 +59,7 @@
 
 #include <context/static_context.h>
 
-#include "zorbautils/hashset_node_itemh.h"
+#include "zorbautils/hashset_structured_itemh.h"
 #include "zorbautils/hashset_atomic_itemh.h"
 
 namespace zorbatm = zorba::time;
@@ -888,7 +888,7 @@ bool FnDeepEqualIterator::nextImpl(
 ********************************************************************************/
 HashSemiJoinIteratorState::HashSemiJoinIteratorState()
 {
-  theRightInput = new NodeHandleHashSet(1024, false);
+  theRightInput = new StructuredItemHandleHashSet(1024, false);
 }
 
 

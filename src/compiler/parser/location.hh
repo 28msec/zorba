@@ -1,34 +1,34 @@
-/* A Bison parser, made by GNU Bison 2.6.5.  */
+// A Bison parser, made by GNU Bison 3.0.2.
 
-/* Locations for Bison parsers in C++
-   
-      Copyright (C) 2002-2007, 2009-2012 Free Software Foundation, Inc.
-   
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-   
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+// Locations for Bison parsers in C++
 
-/* As a special exception, you may create a larger work that contains
-   part or all of the Bison parser skeleton and distribute that work
-   under terms of your choice, so long as that work isn't itself a
-   parser generator using the skeleton or a modified version thereof
-   as a parser skeleton.  Alternatively, if you modify or redistribute
-   the parser skeleton itself, you may (at your option) remove this
-   special exception, which will cause the skeleton and the resulting
-   Bison output files to be licensed under the GNU General Public
-   License without this special exception.
-   
-   This special exception was added by the Free Software Foundation in
-   version 2.2 of Bison.  */
+// Copyright (C) 2002-2013 Free Software Foundation, Inc.
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// As a special exception, you may create a larger work that contains
+// part or all of the Bison parser skeleton and distribute that work
+// under terms of your choice, so long as that work isn't itself a
+// parser generator using the skeleton or a modified version thereof
+// as a parser skeleton.  Alternatively, if you modify or redistribute
+// the parser skeleton itself, you may (at your option) remove this
+// special exception, which will cause the skeleton and the resulting
+// Bison output files to be licensed under the GNU General Public
+// License without this special exception.
+
+// This special exception was added by the Free Software Foundation in
+// version 2.2 of Bison.
 
 /**
  ** \file /home/vagrant/zorba/build/src/compiler/parser/location.hh
@@ -42,9 +42,7 @@
 
 
 namespace zorba {
-/* Line 164 of location.cc  */
-#line 47 "/home/vagrant/zorba/build/src/compiler/parser/location.hh"
-
+#line 46 "/home/vagrant/zorba/build/src/compiler/parser/location.hh" // location.cc:291
   /// Abstract a location.
   class location
   {
@@ -75,7 +73,7 @@ namespace zorba {
 
 
     /// Initialization.
-    void initialize (std::string* f = YY_NULL,
+    void initialize (std::string* f = YY_NULLPTR,
                      unsigned int l = 1u,
                      unsigned int c = 1u)
     {
@@ -93,13 +91,13 @@ namespace zorba {
     }
 
     /// Extend the current location to the COUNT next columns.
-    void columns (unsigned int count = 1)
+    void columns (int count = 1)
     {
       end += count;
     }
 
     /// Extend the current location to the COUNT next lines.
-    void lines (unsigned int count = 1)
+    void lines (int count = 1)
     {
       end.lines (count);
     }
@@ -114,26 +112,35 @@ namespace zorba {
   };
 
   /// Join two location objects to create a location.
-  inline const location operator+ (const location& begin, const location& end)
+  inline location operator+ (location res, const location& end)
   {
-    location res = begin;
     res.end = end.end;
     return res;
   }
 
-  /// Add two location objects.
-  inline const location operator+ (const location& begin, unsigned int width)
+  /// Change end position in place.
+  inline location& operator+= (location& res, int width)
   {
-    location res = begin;
     res.columns (width);
     return res;
   }
 
-  /// Add and assign a location.
-  inline location& operator+= (location& res, unsigned int width)
+  /// Change end position.
+  inline location operator+ (location res, int width)
   {
-    res.columns (width);
-    return res;
+    return res += width;
+  }
+
+  /// Change end position in place.
+  inline location& operator-= (location& res, int width)
+  {
+    return res += -width;
+  }
+
+  /// Change end position.
+  inline location operator- (const location& begin, int width)
+  {
+    return begin + -width;
   }
 
   /// Compare two location objects.
@@ -156,24 +163,25 @@ namespace zorba {
    **
    ** Avoid duplicate information.
    */
-  inline std::ostream& operator<< (std::ostream& ostr, const location& loc)
+  template <typename YYChar>
+  inline std::basic_ostream<YYChar>&
+  operator<< (std::basic_ostream<YYChar>& ostr, const location& loc)
   {
-    position last = loc.end - 1;
-    ostr << loc.begin;
-    if (last.filename
-	&& (!loc.begin.filename
-	    || *loc.begin.filename != *last.filename))
-      ostr << '-' << last;
-    else if (loc.begin.line != last.line)
-      ostr << '-' << last.line  << '.' << last.column;
-    else if (loc.begin.column != last.column)
-      ostr << '-' << last.column;
+    unsigned int end_col = 0 < loc.end.column ? loc.end.column - 1 : 0;
+    ostr << loc.begin// << "(" << loc.end << ") "
+;
+    if (loc.end.filename
+        && (!loc.begin.filename
+            || *loc.begin.filename != *loc.end.filename))
+      ostr << '-' << loc.end.filename << ':' << loc.end.line << '.' << end_col;
+    else if (loc.begin.line < loc.end.line)
+      ostr << '-' << loc.end.line << '.' << end_col;
+    else if (loc.begin.column < end_col)
+      ostr << '-' << end_col;
     return ostr;
   }
 
 
 } // zorba
-/* Line 292 of location.cc  */
-#line 178 "/home/vagrant/zorba/build/src/compiler/parser/location.hh"
-
-#endif /* !YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_LOCATION_HH_INCLUDED  */
+#line 187 "/home/vagrant/zorba/build/src/compiler/parser/location.hh" // location.cc:291
+#endif // !YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_LOCATION_HH_INCLUDED

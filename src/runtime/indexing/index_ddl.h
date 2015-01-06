@@ -29,7 +29,7 @@ namespace zorba
 {
 
 class IndexDecl;
-class NodeHandleHashSet;
+class StructuredItemHandleHashSet;
 
 
 /*******************************************************************************
@@ -569,7 +569,7 @@ public:
 
   store::IndexProbeIterator_t          theIterator;
 
-  NodeHandleHashSet                  * theNodeHashSet;
+  StructuredItemHandleHashSet                  * theNodeHashSet;
 
 public:
   ProbeIndexRangeGeneralIteratorState();
