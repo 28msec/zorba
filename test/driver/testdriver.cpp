@@ -50,8 +50,8 @@
 
 std::string rbkt_src_dir = zorba::RBKT_SRC_DIR;
 std::string rbkt_src_dir_uri = zorba::RBKT_SRC_DIR_URI;
-std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
-std::string rbkt_bin_dir_uri = zorba::RBKT_BINARY_DIR_URI;
+std::string rbkt_bin_dir = zorba::RBKT_BIN_DIR;
+std::string rbkt_bin_dir_uri = zorba::RBKT_BIN_DIR_URI;
 std::string w3c_ts = "w3c_testsuite/";
 
 

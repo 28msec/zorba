@@ -310,8 +310,8 @@ public:
   }
 
   bool parseFile(std::string str, std::string rbkt_src_dir, 
-    std::string rbkt_src_dir_uri, std::string rbkt_binary_dir,
-    std::string rbkt_binary_dir_uri)
+    std::string rbkt_src_dir_uri, std::string rbkt_bin_dir,
+	std::string rbkt_bin_dir_uri)
   {
     std::ifstream lFile(str.c_str(), std::ifstream::in);
     std::stringstream lContent;
@@ -333,8 +333,8 @@ public:
     {
       zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR_URI", one_space + rbkt_src_dir_uri);
       zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", one_space + rbkt_src_dir);
-      zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR_URI", rbkt_binary_dir_uri);
-      zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);      
+	  zorba::ascii::replace_all(*it, "$RBKT_BIN_DIR_URI", rbkt_bin_dir_uri);
+	  zorba::ascii::replace_all(*it, "$RBKT_BIN_DIR", rbkt_bin_dir);
 
       std::vector<std::string> tokens;
       std::vector<std::string>::iterator lIter;
@@ -350,8 +350,8 @@ public:
           {
             zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR_URI", rbkt_src_dir_uri);
             zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", rbkt_src_dir);            
-            zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR_URI", rbkt_binary_dir_uri);
-            zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);        
+			zorba::ascii::replace_all(*it, "$RBKT_BIN_DIR_URI", rbkt_bin_dir_uri);
+			zorba::ascii::replace_all(*it, "$RBKT_BIN_DIR", rbkt_bin_dir);
             trim(*it);
             std::string lArg = *it;
             if ( (lArg == "-x") ||
@@ -362,8 +362,8 @@ public:
               it++;
               zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR_URI", rbkt_src_dir_uri);
               zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", rbkt_src_dir);
-              zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR_URI", rbkt_binary_dir_uri);
-              zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);              
+			  zorba::ascii::replace_all(*it, "$RBKT_BIN_DIR_URI", rbkt_bin_dir_uri);
+			  zorba::ascii::replace_all(*it, "$RBKT_BIN_DIR", rbkt_bin_dir);
               trim(*it);
               if(it->find(":=") == std::string::npos) {
                 setInline(true);

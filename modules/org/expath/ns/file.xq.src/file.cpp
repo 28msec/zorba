@@ -115,6 +115,7 @@ CopyFileImplFunction::evaluate(
   try {
     std::ifstream fin( src_path.c_str(), std::ios_base::binary );
     std::ofstream fout( dst_path.c_str(), std::ios_base::binary | std::ios_base::trunc );
+	std::string str = dst_path.c_str();
     char buf[ 8192 ];
     while ( !fin.eof() ) {
       fin.read( buf, sizeof buf );

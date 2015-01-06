@@ -1,3 +1,3 @@
 Args: 
 -x
-ZorbaManifestPath:=$RBKT_BINARY_DIR/../../ZorbaManifest.xml
+ZorbaManifestPath:=$RBKT_BIN_DIR/../../ZorbaManifest.xml
