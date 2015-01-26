@@ -7,6 +7,4 @@ declare variable $jsnTree := jsdi:parse-json('{
 }'); 
 declare variable $asXML := jsd:json-to-xml($jsnTree);
 
-[
-  $asXML
-]
+$asXML
