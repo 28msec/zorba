@@ -1,3 +1,1 @@
-<test>
-  <type>temporary</type>
-</test>
+<test xmlns="http://ns.example.com/anonsimpletype"><type>free</type></test>
