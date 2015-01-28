@@ -1,0 +1,1 @@
+<test xmlns="http://ns.example.com/anonsimpletype"><type>free</type></test>

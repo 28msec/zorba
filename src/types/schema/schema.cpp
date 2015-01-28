@@ -1885,33 +1885,43 @@ bool Schema::parseUserAtomicTypes(
           XSTypeDefinition* typeDef = theGrammarPool->getXSModel(modified)->
               getTypeDefinition(localPart, uriStr);
 
-          ZORBA_ASSERT(typeDef);
-          ZORBA_ASSERT(typeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE);
-          XSSimpleTypeDefinition* simpleTypeDef =
-              static_cast<XSSimpleTypeDefinition*>(typeDef);
-
-          if (simpleTypeDef->isDefinedFacet(XSSimpleTypeDefinition::FACET_PATTERN) &&
-              simpleTypeDef->getLexicalPattern())
+          if (typeDef)
           {
-            /*
-             * The type has an actual, user-defined pattern associated.
-             * We need to canonicalize the value we are trying to validate respect
-             * to the base type and validate the canonicalized value.
-             */
-            XMLChArray canonicalValue((XMLCh*) xsiTypeDV->getCanonicalRepresentation(
-                xchTextValue.get(), NULL, false));
-            if (canonicalValue.get())
+            ZORBA_ASSERT(typeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE);
+            XSSimpleTypeDefinition* simpleTypeDef =
+                static_cast<XSSimpleTypeDefinition*>(typeDef);
+
+            if (simpleTypeDef->isDefinedFacet(XSSimpleTypeDefinition::FACET_PATTERN) &&
+                simpleTypeDef->getLexicalPattern())
             {
               /*
-               * Validate against canonical value
+               * The type has an actual, user-defined pattern associated.
+               * We need to canonicalize the value we are trying to validate respect
+               * to the base type and validate the canonicalized value.
                */
-              xsiTypeDV->validate(canonicalValue.get());
+              XMLChArray canonicalValue((XMLCh*) xsiTypeDV->getCanonicalRepresentation(
+                  xchTextValue.get(), NULL, false));
+              if (canonicalValue.get())
+              {
+                /*
+                 * Validate against canonical value
+                 */
+                xsiTypeDV->validate(canonicalValue.get());
+              }
+              else
+              {
+                /*
+                 * The value is invalid for its base type, we need to perform the validation
+                 * against the required type to raise proper errors
+                 */
+                xsiTypeDV->validate(xchTextValue.get());
+              }
             }
             else
             {
               /*
-               * The value is invalid for its base type, we need to perform the validation
-               * against the required type to raise proper errors
+               * The type has no actual, user-defined pattern associated.
+               * We can validate against the raw value provided.
                */
               xsiTypeDV->validate(xchTextValue.get());
             }
@@ -1919,7 +1929,7 @@ bool Schema::parseUserAtomicTypes(
           else
           {
             /*
-             * The type has no actual, user-defined pattern associated.
+             * We cannot locate the type definition,
              * We can validate against the raw value provided.
              */
             xsiTypeDV->validate(xchTextValue.get());
