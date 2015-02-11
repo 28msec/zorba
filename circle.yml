@@ -9,10 +9,8 @@ machine:
     - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/libfl-dev_2.5.39-8_amd64.deb
     - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/flex_2.5.39-8_amd64.deb
   environment:
-    ZORBA_SRC_DIR: |
-      "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    ZORBA_BUILD_DIR: |
-      "${ZORBA_SRC_DIR}/build"
+    ZORBA_SRC_DIR: /home/ubuntu/zorba
+    ZORBA_BUILD_DIR: /home/ubuntu/zorba/build
     ZORBA_MODULE_DIR: |
       "${ZORBA_SRC_DIR}/../zorba_modules"
 dependencies:
