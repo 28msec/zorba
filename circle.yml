@@ -20,6 +20,7 @@ dependencies:
     - echo "ZORBA_MODULE_DIR ${ZORBA_MODULE_DIR}"
     - mkdir -p "${ZORBA_MODULE_DIR}"
     - cmake -Doutdir="${ZORBA_MODULE_DIR}" -Dallmodules=1 -P "${ZORBA_SRC_DIR}/modules/DownloadModules.cmake"
+    - mkdir -p "${ZORBA_BUILD_DIR}"
     - cd "${ZORBA_BUILD_DIR}"
     - cmake -DZORBA_XQUERYX:BOOL=1 -DZORBA_TEST_XQUERYX:BOOL=1 -DZORBA_WITH_BIG_INTEGER=1 -DCMAKE_BUILD_TYPE=Release -DZORBA_TEST_PLAN_SERIALIZATION:BOOL=1 -DZORBATEST_USE_MT_XQTS:BOOL=1 "${ZORBA_SRC_DIR}"
     - make -j8
