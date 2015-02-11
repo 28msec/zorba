@@ -9,11 +9,17 @@ machine:
     - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/libfl-dev_2.5.39-8_amd64.deb
     - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/flex_2.5.39-8_amd64.deb
   environment:
-    ZORBA_SRC_DIR: "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    ZORBA_BUILD_DIR: "${ZORBA_SRC_DIR}/build"
-    ZORBA_MODULE_DIR: "${ZORBA_SRC_DIR}/../zorba_modules"
+    ZORBA_SRC_DIR: |
+      "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    ZORBA_BUILD_DIR: |
+      "${ZORBA_SRC_DIR}/build"
+    ZORBA_MODULE_DIR: |
+      "${ZORBA_SRC_DIR}/../zorba_modules"
 dependencies:
   override:
+    - echo "ZORBA_SRC_DIR ${ZORBA_SRC_DIR}"
+    - echo "ZORBA_BUILD_DIR ${ZORBA_BUILD_DIR}"
+    - echo "ZORBA_MODULE_DIR ${ZORBA_MODULE_DIR}"
     - mkdir -p "${ZORBA_MODULE_DIR}"
     - cmake -Doutdir="${ZORBA_MODULE_DIR}" -Dallmodules=1 -P "${ZORBA_SRC_DIR}/modules/DownloadModules.cmake"
     - cd "${ZORBA_BUILD_DIR}"
@@ -27,7 +33,4 @@ dependencies:
     - cd "${ZORBA_BUILD_DIR}"
 test:
   override:
-    - export ZORBA_SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    - export ZORBA_BUILD_DIR="${ZORBA_SRC_DIR}/build"
-    - export ZORBA_MODULE_DIR="${ZORBA_SRC_DIR}/../zorba_modules"
     - env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure
