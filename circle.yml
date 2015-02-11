@@ -16,6 +16,12 @@ machine:
     ZORBA_MODULE_DIR: "${ZORBA_SRC_DIR}/../zorba_modules"
   test:
     override:
+      - export ZORBA_SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+      - export ZORBA_BUILD_DIR="${ZORBA_SRC_DIR}/build"
+      - export ZORBA_MODULE_DIR="${ZORBA_SRC_DIR}/../zorba_modules"
+      - echo "ZORBA_SRC_DIR ${ZORBA_SRC_DIR}"
+      - echo "ZORBA_BUILD_DIR ${ZORBA_BUILD_DIR}"
+      - echo "ZORBA_MODULE_DIR ${ZORBA_MODULE_DIR}"
       - mkdir -p "${ZORBA_MODULE_DIR}"
       - cmake -Doutdir="${ZORBA_MODULE_DIR}" -Dallmodules=1 -P "${ZORBA_SRC_DIR}/modules/DownloadModules.cmake"
       - cd "${ZORBA_BUILD_DIR}"
