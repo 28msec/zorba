@@ -15,8 +15,6 @@ machine:
       "${ZORBA_SRC_DIR}/../zorba_modules"
 dependencies:
   override:
-    - pwd
-    - ls
     - echo "ZORBA_SRC_DIR ${ZORBA_SRC_DIR}"
     - echo "ZORBA_BUILD_DIR ${ZORBA_BUILD_DIR}"
     - echo "ZORBA_MODULE_DIR ${ZORBA_MODULE_DIR}"
