@@ -1,4 +1,6 @@
 machine:
+  pre:
+    - gem install package_cloud
   post:
     - apt-get update -qq
     - apt-get install python-pip libicu-dev libxml2-dev uuid-dev libxerces-c-dev graphviz libboost-filesystem-dev libgeos++-dev imagemagick libmagick++-dev libmagickwand-dev libfop-java libpdfbox-java libtidy-dev libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev swig python-dev php5-dev ruby-dev openjdk-6-jdk libaccess-bridge-java-jni libxslt-dev libcurl4-openssl-dev libxerces-c-dev php5-dev doxygen libedit-dev php5 python-dev libkvutils-dev
@@ -10,7 +12,7 @@ machine:
     - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/flex_2.5.39-8_amd64.deb
     - dpkg -i libfl-dev_2.5.39-8_amd64.deb flex_2.5.39-8_amd64.deb
     - pip install awscli
-test:
+dependencies:
   override:
     - export ZORBA_SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     - export ZORBA_BUILD_DIR="${ZORBA_SRC_DIR}/build"
@@ -29,4 +31,9 @@ test:
     - cd "${ZORBA_BUILD_DIR}"
     - make fots-activate-sets
     - cd "${ZORBA_BUILD_DIR}"
+test:
+  override:
+    - export ZORBA_SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    - export ZORBA_BUILD_DIR="${ZORBA_SRC_DIR}/build"
+    - export ZORBA_MODULE_DIR="${ZORBA_SRC_DIR}/../zorba_modules"
     - env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure
