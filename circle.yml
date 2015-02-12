@@ -1,5 +1,6 @@
 machine:
   post:
+    - sudo apt-get --purge remove libboost-all-dev libboost-dev libboost-doc
     - wget http://cz.archive.ubuntu.com/ubuntu/pool/main/b/boost1.54/libboost1.54-dev_1.54.0-4ubuntu3_amd64.deb
     - sudo dpkg -i --force-overwrite libboost1.54-dev_1.54.0-4ubuntu3_amd64.deb
     - sudo apt-get install doxygen libboost-filesystem-dev -f
