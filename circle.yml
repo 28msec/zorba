@@ -18,11 +18,11 @@ dependencies:
 #    - cmake -Doutdir="${ZORBA_MODULE_DIR}" -Dallmodules=1 -P "${ZORBA_SRC_DIR}/modules/DownloadModules.cmake"
     - mkdir -p "${ZORBA_BUILD_DIR}"
     - cd "${ZORBA_BUILD_DIR}" && cmake -DZORBA_MODULES_DIR="${ZORBA_MODULE_DIR}" -DZORBA_XQUERYX:BOOL=1 -DZORBA_TEST_XQUERYX:BOOL=1 -DZORBA_WITH_BIG_INTEGER=1 -DCMAKE_BUILD_TYPE=Release -DZORBA_TEST_PLAN_SERIALIZATION:BOOL=1 -DZORBATEST_USE_MT_XQTS:BOOL=1 "${ZORBA_SRC_DIR}"
-    - cd "${ZORBA_BUILD_DIR}" && make -j8
+    - cd "${ZORBA_BUILD_DIR}" && make -j2
     - bash "${ZORBA_SRC_DIR}/import_tests.sh"
     - cd "${ZORBA_BUILD_DIR}" && make fots-activate-sets
 test:
   override:
-    - case $CIRCLE_NODE_INDEX in 0) cd "${ZORBA_BUILD_DIR}" && env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -I 1, 4000,1 -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure ;; 1) cd "${ZORBA_BUILD_DIR}" && env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -I 4001,,1 -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure ;; esac:
+    - case $CIRCLE_NODE_INDEX in 0) cd "${ZORBA_BUILD_DIR}" && env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j2 -T Test -I 1, 4000,1 -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure ;; 1) cd "${ZORBA_BUILD_DIR}" && env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -I 4001,,1 -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure ;; esac:
         parallel: true
         timeout: 600
