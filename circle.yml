@@ -22,4 +22,4 @@ dependencies:
 test:
   override:
     - cd "${ZORBA_BUILD_DIR}" && env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure:
-      timeout: 600
+        timeout: 600
