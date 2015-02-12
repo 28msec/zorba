@@ -2,7 +2,7 @@ machine:
   post:
     - sudo add-apt-repository -y ppa:boost-latest/ppa
     - sudo apt-get update -qq
-    - sudo apt-get install doxygen libboost1.55-all-dev libfop-java libpdfbox-java libjempbox-java libfontbox-java
+    - sudo apt-get install doxygen libboost1.55-all-dev libfop-java libpdfbox-java libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev
     - sudo locale-gen de_DE && sudo locale-gen de_DE.UTF-8 && sudo locale-gen fr_FR && sudo locale-gen fr_FR.UTF-8 && sudo update-locale
   environment:
     ZORBA_SRC_DIR: /home/ubuntu/zorba
