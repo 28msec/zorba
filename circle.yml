@@ -17,6 +17,7 @@ dependencies:
     - echo "ZORBA_SRC_DIR ${ZORBA_SRC_DIR}"
     - echo "ZORBA_BUILD_DIR ${ZORBA_BUILD_DIR}"
     - echo "ZORBA_MODULE_DIR ${ZORBA_MODULE_DIR}"
+    - lscpu
     - mkdir -p "${ZORBA_MODULE_DIR}"
     - cmake -Doutdir="${ZORBA_MODULE_DIR}" -Dallmodules=1 -P "${ZORBA_SRC_DIR}/modules/DownloadModules.cmake"
     - mkdir -p "${ZORBA_BUILD_DIR}"
