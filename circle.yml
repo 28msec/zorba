@@ -21,5 +21,6 @@ dependencies:
     - cd "${ZORBA_BUILD_DIR}" && make fots-activate-sets
 test:
   override:
-    - cd "${ZORBA_BUILD_DIR}" && env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure:
+    - case $CIRCLE_NODE_INDEX in 0) cd "${ZORBA_BUILD_DIR}" && env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -l [1, 4000, 1] -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure ;; 1) cd "${ZORBA_BUILD_DIR}" && env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -l [4001, , 1] -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure ;; esac:
+        parallel: true
         timeout: 600
