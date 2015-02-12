@@ -1,9 +1,8 @@
 machine:
   post:
-    - wget http://cz.archive.ubuntu.com/ubuntu/pool/main/b/boost1.54/libboost1.54-dev_1.54.0-4ubuntu3_amd64.deb
-    - sudo dpkg -i --force-overwrite libboost1.54-dev_1.54.0-4ubuntu3_amd64.deb
-    - sudo apt-get install doxygen libboost-filesystem-dev -f
-    - sudo apt-get autoremove
+    - sudo add-apt-repository ppa:boost-latest/ppa
+    - sudo apt-get update -qq
+    - libboost1X.55-all-dev
     - sudo locale-gen de_DE && sudo locale-gen de_DE.UTF-8 && sudo locale-gen fr_FR && sudo locale-gen fr_FR.UTF-8 && sudo update-locale
   environment:
     ZORBA_SRC_DIR: /home/ubuntu/zorba
