@@ -6,6 +6,7 @@ machine:
     ZORBA_SRC_DIR: /home/ubuntu/zorba
     ZORBA_BUILD_DIR: /home/ubuntu/zorba/build
     ZORBA_MODULE_DIR: /home/ubuntu/zorba_modules"
+  timeout: 600
 dependencies:
   override:
     - echo "ZORBA_SRC_DIR ${ZORBA_SRC_DIR}"
