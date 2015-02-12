@@ -6,7 +6,6 @@ machine:
     ZORBA_SRC_DIR: /home/ubuntu/zorba
     ZORBA_BUILD_DIR: /home/ubuntu/zorba/build
     ZORBA_MODULE_DIR: /home/ubuntu/zorba_modules"
-  timeout: 600
 dependencies:
   override:
     - echo "ZORBA_SRC_DIR ${ZORBA_SRC_DIR}"
@@ -22,4 +21,5 @@ dependencies:
     - cd "${ZORBA_BUILD_DIR}" && make fots-activate-sets
 test:
   override:
-    - cd "${ZORBA_BUILD_DIR}" && env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure
+    - cd "${ZORBA_BUILD_DIR}" && env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure:
+      timeout: 600
