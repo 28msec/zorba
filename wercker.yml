@@ -38,4 +38,5 @@ build:
             name: Run Tests
             code: |
                 cd "${ZORBA_BUILD_DIR}"
-                env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure
+                env QTTEST=42 QTTEST2=other QTTESTEMPTY='' ctest -j8 -T Test -E '^zorba_info-extraction_module|conversion/currency-convert' --output-on-failure 2>&1 | tee "${WERCKER_OUTPUT_DIR}/ctest_log.txt"
+                aws s3 cp "${WERCKER_OUTPUT_DIR}/ctest_log.txt" "s3://w3c-tests/results/${WERCKER_GIT_COMMIT}.txt" --region us-east-1

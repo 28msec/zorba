@@ -41,7 +41,7 @@ ELSE(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
   LIST (GET _dlstat 0 _dlcode)
   IF (NOT _dlcode EQUAL 0)
     LIST (GET _dlstat 1 _dlmsg)
-    MESSAGE (FATAL_ERROR "Error downloading FOTS archive: ${_dlmsg}")
+    MESSAGE (FATAL_ERROR "Error downloading FOTS archive http://w3c-tests.s3.amazonaws.com/${FOTS_ARCHIVE}: ${_dlmsg}")
   ENDIF (NOT _dlcode EQUAL 0)
 ENDIF(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
 
