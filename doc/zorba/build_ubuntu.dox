@@ -31,18 +31,43 @@ Recommended libraries for core Zorba:
 \code
 sudo apt-get install libicu-dev libxerces-c-dev
 \endcode
+Note that, to compile without these libraries you must specify the following cmake arguments:
+\code
+-DZORBA_NO_ICU=ON -D ZORBA_NO_XMLSCHEMA=ON
+\endcode
 
 Optional libraries for core Zorba:
 \code
-sudo apt-get install libxslt-dev libcurl4-openssl-dev libxerces-c-dev
+sudo apt-get install libxslt-dev libcurl4-openssl-dev libedit-dev
+\endcode
+
+Optional libraries to regenerate the Zorba documentation:
+\code
+sudo apt-get install doxygen texlive openjdk-7-jdk
 \endcode
 
 SWIG and development requirements for Zorba language bindings:
 \code
-sudo apt-get install swig python-dev php5-dev ruby-dev openjdk-6-jdk libaccess-bridge-java-jni
+sudo apt-get install swig python-dev php5-dev ruby-dev openjdk-7-jdk
+\endcode
+
+Libraries useful for developement (multithreaded testdriver and to regerenate lexer and parser).
+Note that on older ubuntu versions (e.g.:12.04) the installed version of flex/bison might be too old, check your cmake output.
+\code
+sudo apt-get install libboost-filesystem-dev flex bison 
 \endcode
 
 \subsection ubuntu_noncore_libs Non-Core Module Library Dependencies
+
+\subsubsection ubuntu_html Archive Module:
+\code
+sudo apt-get install libarchive-dev
+\endcode
+
+\subsubsection ubuntu_html Graphviz Module:
+\code
+sudo apt-get install graphviz-dev???
+\endcode
 
 \subsubsection ubuntu_html HTML Module (data-converters package)
 \code
