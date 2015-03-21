@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1CollectionManager" kind="class" prot="public">
+    <compoundname>zorba::CollectionManager</compoundname>
+    <derivedcompoundref refid="classzorba_1_1StaticCollectionManager" prot="public" virt="non-virtual">zorba::StaticCollectionManager</derivedcompoundref>
+    <includes refid="collection__manager_8h" local="no">zorba/collection_manager.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1CollectionManager_1ae092e1d90290a89fc0a164b547b8db95" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref></type>
+        <definition>virtual ItemSequence_t zorba::CollectionManager::availableCollections</definition>
+        <argsstring>() const =0</argsstring>
+        <name>availableCollections</name>
+        <briefdescription>
+<para>This function returns a sequence of names of the collections that are available. </para>        </briefdescription>
+        <detaileddescription>
+<para>If this is an instance of the <ref refid="classzorba_1_1StaticCollectionManager" kindref="compound">StaticCollectionManager</ref> class (i.e. returned by any of the getStaticCollectionManager methods), the collections returned by this function are also statically declared.</para><para><simplesect kind="return"><para>The list of names of the available collections. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" line="90"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1CollectionManager_1a0090d330828f209cbe927e8dabcd253c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::CollectionManager::createCollection</definition>
+        <argsstring>(const Item &amp;aName)=0</argsstring>
+        <name>createCollection</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <briefdescription>
+<para>This function creates the collection with the given name. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the collection to create.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0002</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if a collection with the given name already exists. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" line="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1CollectionManager_1a0dead76c9de24d4334a69b85e1fcb19f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::CollectionManager::createCollection</definition>
+        <argsstring>(const Item &amp;aName, const ItemSequence_t &amp;aContents)=0</argsstring>
+        <name>createCollection</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref> &amp;</type>
+          <declname>aContents</declname>
+        </param>
+        <briefdescription>
+<para>This function creates the collection with the given name. </para>        </briefdescription>
+        <detaileddescription>
+<para>Moreover, it adds copies of the sequence aContents to the new collection.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the collection to create. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aContents</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The sequence of items.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0002</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if a collection with the given name already exists. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" line="55"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1CollectionManager_1a61404aa5dddddd6f13c5cc8629893ccc" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::CollectionManager::deleteCollection</definition>
+        <argsstring>(const Item &amp;aName)=0</argsstring>
+        <name>deleteCollection</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <briefdescription>
+<para>This function removes the collection with the given name. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the collection to delete.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0003</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the collection does not exist. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" line="65"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1CollectionManager_1ad2c74e30228bdaa0e6eb18d282e0142a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1a291189546e49e82a0c583e69665fab70" kindref="member">Collection_t</ref></type>
+        <definition>virtual Collection_t zorba::CollectionManager::getCollection</definition>
+        <argsstring>(const Item &amp;aName) const =0</argsstring>
+        <name>getCollection</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <briefdescription>
+<para>Returns a instance of the <ref refid="classzorba_1_1Collection" kindref="compound">Collection</ref> class which can be used to modify and retrieve the contents of the collection identified by the given name. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the collection to retrieve.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0003</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the collection does not exist. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" line="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1CollectionManager_1a1a52dbc88a8487c58b6183a129d86b0e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::CollectionManager::isAvailableCollection</definition>
+        <argsstring>(const Item &amp;aName) const =0</argsstring>
+        <name>isAvailableCollection</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <briefdescription>
+<para>This function returns true if a collection with the given name is available. </para>        </briefdescription>
+        <detaileddescription>
+<para>If this is an instance of the <ref refid="classzorba_1_1StaticCollectionManager" kindref="compound">StaticCollectionManager</ref> class (i.e. returned by any of the getStaticCollectionManager() methods), the collection also needs to be statically declared.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the collection that is being checked.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the collection is available and false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" line="104"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1CollectionManager_1a9102fa29ec8b2841fa86723e7da1ad32" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::CollectionManager::registerDiagnosticHandler</definition>
+        <argsstring>(DiagnosticHandler *aDiagnosticHandler)=0</argsstring>
+        <name>registerDiagnosticHandler</name>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+        </param>
+        <briefdescription>
+<para>Register a <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors occuring during the management of collections are reported. </para>        </briefdescription>
+        <detaileddescription>
+<para>If no <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> has been set using this function or the corresponding function of the <ref refid="classzorba_1_1XmlDataManager" kindref="compound">XmlDataManager</ref> then subclasses of the <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> class are thrown to report errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors are reported. The caller retains ownership over the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> passed as parameter. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" line="119"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1CollectionManager_1a48736d7c1c7aae93f4176c44f73bf5c7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::CollectionManager::~CollectionManager</definition>
+        <argsstring>()</argsstring>
+        <name>~CollectionManager</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" line="124" bodyfile="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" bodystart="124" bodyend="124"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>This class defines a set of functions for managing persistent collections. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="549">
+        <label>zorba::StaticCollectionManager</label>
+        <link refid="classzorba_1_1StaticCollectionManager"/>
+        <childnode refid="548" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="548">
+        <label>zorba::CollectionManager</label>
+        <link refid="classzorba_1_1CollectionManager"/>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" line="29" bodyfile="/home/wcandillon/deadlinks/include/zorba/collection_manager.h" bodystart="28" bodyend="126"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1CollectionManager_1ae092e1d90290a89fc0a164b547b8db95" prot="public" virt="pure-virtual"><scope>zorba::CollectionManager</scope><name>availableCollections</name></member>
+      <member refid="classzorba_1_1CollectionManager_1a0090d330828f209cbe927e8dabcd253c" prot="public" virt="pure-virtual"><scope>zorba::CollectionManager</scope><name>createCollection</name></member>
+      <member refid="classzorba_1_1CollectionManager_1a0dead76c9de24d4334a69b85e1fcb19f" prot="public" virt="pure-virtual"><scope>zorba::CollectionManager</scope><name>createCollection</name></member>
+      <member refid="classzorba_1_1CollectionManager_1a61404aa5dddddd6f13c5cc8629893ccc" prot="public" virt="pure-virtual"><scope>zorba::CollectionManager</scope><name>deleteCollection</name></member>
+      <member refid="classzorba_1_1CollectionManager_1ad2c74e30228bdaa0e6eb18d282e0142a" prot="public" virt="pure-virtual"><scope>zorba::CollectionManager</scope><name>getCollection</name></member>
+      <member refid="classzorba_1_1CollectionManager_1a1a52dbc88a8487c58b6183a129d86b0e" prot="public" virt="pure-virtual"><scope>zorba::CollectionManager</scope><name>isAvailableCollection</name></member>
+      <member refid="classzorba_1_1CollectionManager_1a9102fa29ec8b2841fa86723e7da1ad32" prot="public" virt="pure-virtual"><scope>zorba::CollectionManager</scope><name>registerDiagnosticHandler</name></member>
+      <member refid="classzorba_1_1CollectionManager_1a48736d7c1c7aae93f4176c44f73bf5c7" prot="public" virt="virtual"><scope>zorba::CollectionManager</scope><name>~CollectionManager</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

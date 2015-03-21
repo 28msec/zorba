@@ -1,0 +1,245 @@
+<div class="container" id="documentation">
+    <div class="row">
+        <div id="docnav">
+            <div class="container">
+        <script type="text/ng-template" id="doc-search-typeahead.html">
+<div class="match">
+    <div>
+        <h4>
+            <span ng-switch on="match.model.type.toLowerCase()">
+                <i ng-switch-when="api" class="type-api type icon-th-large"></i>
+                <i ng-switch-when="resource" class="type-resource type icon-link"></i>
+                <i ng-switch-when="module" class="type-module type icon-puzzle-piece"></i>
+                <i ng-switch-when="function" class="type-function type">f(x)</i>
+            </span>
+            <span ng-bind="match.model.label"></span>
+        </h4>
+    </div>
+    <div ng-bind-html="match.model.highlight"></div>
+</div>
+</script><!--                          -->
+            <!--div ng-controller="DocSearchCtrl">
+                <input type="text" class="form-control input-lg" id="docsearch"
+                        ng-model="query"
+                        placeholder="Search"
+                        typeahead="result for result in getResults($viewValue)"
+                        typeahead-template-url="doc-search-typeahead.html"
+                        typeahead-loading="loading"
+                        typeahead-on-select="onSelect($item, $model, $label)"
+                        typeahead-input-formatter="format($viewValue)" />
+            </div-->
+	    <ol class="breadcrumb">
+                <li>
+                    <a ng-href="/documentation/{{currentVersion.latest ? 'latest' : currentVersion.version }}">
+                        {{currentVersion.version}} Documentation
+                    </a>
+                </li>
+                <li ng-repeat="crumb in getBreadCrumbs()" ng-class="{ active: $last }">
+                    <a ng-href="/documentation/{{currentVersion.latest ? 'latest' : currentVersion.version }}/{{crumb.breadcumbs.join('/')}}">
+                        <span ng-bind="crumb.label"></span>
+                    </a>
+                </li>
+            </ol>
+        </div>
+        </div>
+        <div class="content" ng-switch="" on="state">
+            <div ng-switch-when="zorba">
+                <p>View as <a ng-href="{{getDoxygenURL()}}" target="_blank">source file</a> or <a ng-href="{{getDoxygenXMLURL()}}" target="_blank">XML</a>.</p>
+                <div ng-bind-html="content">
+                </div>
+                <div id="disqus" class="disqus" disqus="">
+                    <div id="disqus_thread" class="content-panel-content"></div>
+                </div>
+            </div>
+            <div ng-switch-when="loading">
+                <h1 class="text-center">Loading</h1>
+                <h1 class="text-center"><i class="icon-spinner icon-spin icon-large"></i></h1>
+            </div>
+            <div ng-switch-when="api">
+                <h1 ng-bind="item.label"></h1>
+                <p>View as <a ng-href="{{getAPIJSONURL()}}" target="_blank">JSON</a>.</p>
+                <div ng-bind-html="content.description"></div>
+                <!--div ng-show="content.resourcePath !== '/api/session'">
+                    <h2>Authorization</h2>
+                    <p>
+                    Some of these resources are protected.
+                    In order to make authorized requests, checkout the <a ng-href="{{path}}/auth">authorization endpoint</a>.
+                    
+                    </p>
+                </div-->
+                <div ng-repeat="api in content.apis">
+                    <h2 ng-bind="api.description"></h2>
+                    <article ng-hide="operation.implemented === false" ng-repeat="operation in api.operations" class="operation" id="{{operation.nickname}}" accordion="">
+                        <a class="accordion-header">
+                            <p class="monospace">
+                                <span ng-bind="operation.method" ng-class="'method-' + operation.method"></span>
+                                <span ng-bind="api.path" ng-class="'path-' + operation.method"></span>
+                            </p>
+                            <p ng-bind="operation.summary"></p>
+                        </a>
+                        <div class="accordion-content accordion-slide">
+                        <div class="accordion-content-inner">
+                            <p class="callout-info" ng-if="needsAuth(operation)">
+                            This method requires a valid project token. In order to make authorized requests, checkout <a ng-href="/documentation/{{currentVersion.latest ? 'latest' : currentVersion.version}}/api/auth">the authorization API section</a>.
+                            </p>
+                            <div ng-bind-html="operation.notes"></div>
+                            <h3>Request Parameters</h3>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Name</th>
+                                        <th>Value</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="parameter in operation.parameters">
+                                        <td ng-switch="" on="parameter.paramType">
+                                            <span ng-switch-when="query" class="label label-query" tooltip-html-unsafe="<p class='text-left'>This parameter must be specified as a URL query string parameter.</p>" tooltip-trigger="mouseenter" tooltip-placement="left" tooltip-popup-delay="250">query</span>
+                                            <span ng-switch-when="path" class="label label-path" tooltip-html-unsafe="<p class='text-left'>This parameter must be specified in the URL path.</p" tooltip-trigger="mouseenter" tooltip-placement="left" tooltip-popup-delay="250">path</span>
+                                            <span ng-switch-when="body" class="label label-body" tooltip-html-unsafe="<p class='text-left'>This parameter must be specified in the request body.</p" tooltip-trigger="mouseenter" tooltip-placement="left" tooltip-popup-delay="250">body</span>
+                                        </td><td>
+                                            <code><span ng-bind="parameter.name"></span><span class="text-danger" ng-show="parameter.required">*</span></code>
+                                        </td>
+                                        <td>
+                                            <code ng-repeat="value in parameter.enum" ng-bind="value" style="display:block"></code>
+                                        </td>
+                                        <td ng-switch="" on="parameter.name">
+                                            <span ng-switch-when="token">An authorization token. <a ng-href="/documentation/{{currentVersion.latest ? 'latest' : currentVersion.version}}/api/auth">See authorization API section.</a></span>
+                                            <span ng-switch-default="" ng-bind-html="parameter.description"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h3>Response Status Codes</h3>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="resp in operation.successMessages">
+                                        <td ng-bind="resp.code"></td>
+                                        <td ng-bind="resp.message"></td>
+                                    </tr>
+                                    <tr ng-repeat="resp in operation.responseMessages">
+                                        <td ng-bind="resp.code"></td>
+                                        <td ng-bind="resp.message"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div ng-if="operation.examples">
+                                <!--h3 ng-show="operation.examples.length === 1">Example</h3>
+                                <h3 ng-show="operation.examples.length > 1">Examples</h3-->
+                                <div ng-repeat="example in operation.examples">
+                                    <h3>Example <span ng-show="example.title">&#8212;</span> <span ng-bind="example.title"></span></h3>
+                                    <p ng-bind-html="example.description"></p>
+                                    <h4>Request</h4>
+                                    <pre ng-bind="example.request"></pre>
+                                    <h4>Response</h4>
+                                    <pre ng-bind="example.response"></pre>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </article>
+                </div>
+                <div id="disqus" class="disqus" disqus="">
+                    <div id="disqus_thread" class="content-panel-content"></div>
+                </div>
+            </div>
+            <div ng-switch-when="data-sources">
+                <ng-include src="'/views/documentation/data-sources.html'">
+            </div>
+            <!--div ng-switch-when="schemas">
+                <ng-include src="'/views/documentation/schemas.html'" />
+            </div-->
+            <div ng-switch-when="modules">
+                <h1>{{content.ns}}</h1>
+                <p>View as <a ng-href="{{getXMLURL(content.ns)}}" target="_blank">XML</a> or <a ng-href="{{getJSONURL(content.ns)}}" target="_blank">JSON</a>.</p>
+                <div ng-bind-html="normalizeAnchor(content.description)"></div>
+                <div ng-show="content.functions.length > 0" class="function-summary">
+                    <h2>Function Summary</h2>
+                    <table class="table">
+                        <tr ng-repeat="fn in content.functions">
+                            <td>
+                                <div>
+                                    <code>
+                                        <a href="{{locationPath}}?anchor={{fn.name}}-{{fn.arity}}" ng-bind="fn.name"></a>
+                                        <span ng-bind="fn.signature"></span>
+                                    </code>
+                                    <div ng-bind-html="normalizeAnchor(fn.summary)"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div ng-show="content.variables.length > 0" class="variable-summary">
+                    <h2>Variable Summary</h2>
+                    <ul class="list-unstyled">
+                        <li ng-repeat="var in content.variables">
+                        <a href="{{locationPath}}?anchor={{var.name}}">${{var.name}}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div ng-show="content.functions.length > 0" class="functions">
+                    <h2>Functions</h2>
+                    <div ng-repeat="fn in content.functions" class="function" id="{{fn.name}}-{{fn.arity}}">
+                        <h3>{{fn.name}}#{{fn.arity}}</h3>
+                        <pre highlight-as="jsoniq" source="declare{{fn.annotation_str}} function {{fn.qname}}{{fn.signature}}"></pre>
+                        <div ng-bind-html="normalizeAnchor(fn.description)"></div>
+                        <h4 ng-show="fn.parameters.length">Parameters</h4>
+                        <dl ng-repeat="param in fn.parameters">
+                            <dt>{{param.name}} as {{param.type}}</dt>
+                            <dd ng-bind-html="normalizeAnchor(param.description)"></dd>
+                        </dl>
+                        <h4>Returns</h4>
+                        <dl>
+                            <dt>{{fn.returns.type}}</dt>
+                            <dd ng-bind-html="normalizeAnchor(fn.returns.description)"></dd>
+                        </dl>
+                    </div>
+                </div>
+                <div ng-show="content.variables.length > 0" class="variables">
+                    <h2>Variables</h2>
+                    <div ng-repeat="var in content.variables" id="{{var.name}}" class="variable">
+                        <pre>${{var.name}} as {{var.type}}</pre>
+                        <div ng-bind-html-unsafe="normalizeAnchor(var.description)"></div>
+                    </div>
+                </div>
+                <div id="disqus" class="disqus" disqus="">
+                    <div id="disqus_thread" class="content-panel-content"></div>
+                </div>
+            </div>
+            <div ng-switch-when="notfound">
+                <ng-include src="'/views/404.html'"></ng-include>
+            </div>
+            <div ng-switch-default="">
+                <h2 class="section">
+                    <span ng-bind="currentItem.label" ng-show="currentItem.label"></span>
+                    <span ng-show="currentItem.codename">
+                        Zorba <span ng-bind="currentItem.version"></span>
+                        &ldquo;<span ng-bind="currentItem.codename"></span>&rdquo;
+                        Documentation
+                    </span>
+                </h2>
+                <div class="row">
+                    <div class="col-sm-6 col-md-4 col-lg-3" ng-repeat="child in currentItem.children">
+                        <div class="thumbnail toc">
+                            <div class="inner">
+                                <a ng-href="{{getItemHref(path, child)}}" ng-bind="child.label" class="text-color"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="disqus" class="disqus" disqus="">
+                    <div id="disqus_thread" class="content-panel-content"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

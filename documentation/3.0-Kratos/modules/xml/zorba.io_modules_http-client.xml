@@ -1,0 +1,321 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>http-client</xqdoc:name><xqdoc:comment><xqdoc:description> <p>
+ This module provides functions for performing HTTP requests.
+ </p>
+ <h2>A simple GET request using the get#1 convenience function</h2>
+ <pre class="ace-static" ace-mode="xquery">
+ import module namespace http="http://zorba.io/modules/http-client";
+ http:get("http://www.example.com")
+ </pre>
+ <p>
+ This example makes a GET request to example.com and returns the server's response
+ as a JSON object.
+ </p>
+ <pre class="ace-static" ace-mode="java">
+ {
+   "status" : 200,
+   "message" : "OK",
+   "headers" : {
+     "Content-Length" : "1270",
+     "Date" : "Tue, 11 Jun 2013 22:27:10 GMT",
+     ...
+   },
+   "body" : {
+     "media-type" : "text/html",
+     "content" : "..."
+   }
+ }
+ </pre>
+ <h2 id="standard_return">Response format</h2>
+ <p>Most functions in this module (all except <a href="#options-1">options#1</a>)
+ return a single JSON item, describing the server's response, as in the previous
+ example.
+ The server status (integer) and message (string) fields are always present.
+ If the server replied sending one or more headers, they are reported
+ in an optional headers object. Each header is represented as a single (string)
+ field.</p>
+ <p>For non-multipart responses, as in the previous example, the response body,
+ if any, is reported as a body object. This object contains both the (string)
+ media-type returned by the server and its content.
+ The type of the content field is determined by the media-type returned by the
+ server. If the media-type indicates that the body content is textual,
+ then the content has type string, base64Binary otherwise.
+ Specifically, the body content is considered textual only if the MIME-type specified in
+ the media-type is one of:
+ <ul>
+   <li>"application/json"</li>
+   <li>"application/x-javascript"</li>
+   <li>"application/xml"</li>
+   <li>"application/xml-external-parsed-entity"</li>
+ </ul>
+ or if the MIME-type starts with "text/" or ends with "+xml".</p>
+ <p>For multipart responses, multiple bodies are returned, as in the following example: </p>
+ <pre class="ace-static" ace-mode="java">
+ {
+   "status" : 200,
+   "message" : "OK",
+   "headers" : {
+     "Date" : "Tue, 11 Jun 2013 22:34:13 GMT",
+     ...
+   },
+   "multipart" : {
+     "boundary": "--AaB03x",
+     "parts": [
+       {
+         "headers" : {
+            "Content Disposition: file",
+            ...
+         },
+         "body": {
+           "media-type" : "image/gif",
+           "content" : "..."
+         }
+       },
+       {
+         "body" : {
+           "media-type" : "text/html",
+           "content" : "..."
+         }
+       }
+    ]
+ }
+ </pre>
+ <p>The multipart field contains both the boundary used to separate parts
+ and an array containing all parts. Each part contains its specific headers,
+ if any, and the corresponding body.</p>
+ <h2 id="nondeterministic_warning">Important Notice Regarding Nondeterministic Functions</h2>
+ <p>
+ The following functions in this module -
+ <a href="#get-1">get#1</a>,
+ <a href="#get-text-1">get-text#1</a>,
+ <a href="#get-binary-1">get-binary#1</a>,
+ <a href="#send-nondeterministic-request-1">send-nondeterministic-request-1</a>,
+ <a href="#head-1">head#1</a>, and
+ <a href="#options-1">options#1</a>
+ are declared to be <i>nondeterministic</i>, which means that their results
+ will not be cached.
+ However, they are <b>not</b> declared to be
+ <i>sequential</i>, which means that they may be re-ordered during query optimization.
+ According to the HTTP RFC, GET, HEAD an OPTIONS requests should not have any side-effects.
+ However, in practice it is not uncommon, especially for GET requests, to have side-effects.
+ If your application depends on the ordering of side-effects from requests issued through
+ these functions, you should either use the <a href="#send-request-3">send-request()</a>
+ function (which is declared <i>sequential</i>), or alternatively
+ wrap each call to get() in your own sequential function, to ensure
+ that the requests are not reordered.
+ </p>
+ <h2 id="url_string">$href Arguments to Functions</h2>
+ <p>Several functions in this module accept a URL argument named $href. In
+ all cases, the value passed to $href must be a valid anyURI.
+ However, all functions declare $href to be of type string. This
+ is for convenience, since you can pass a string literal value (that
+ is, a URL in double-quotes spelled out explicitly in your query)
+ to an string parameter.</p>
+ <h2 id="expath_relation">Relation to the EXPath http-client module</h2>
+ <p><a href="http://expath.org/">EXPath</a> defines its own http-client
+ module, which is available separately.
+ There are two primary differences between EXPath's http-client and
+ this module:
+ <ol>
+   <li>EXPath defines only the send-request() function, although it
+ does include convenient 1- and 2-argument forms in addition to the
+ full 3-argument form. EXPath does not include the simpler get(),
+ post(), put(), delete(), head(), and options() functions defined by
+ this module.</li>
+ <li>EXPath uses XML to represent request for its send-request() function,
+ whereas this module uses JSON.</li>
+ <li>EXPath specifies that all XML content returned by an HTTP server
+ will be parsed and returned as an XML document, whereas all HTML content
+ will be <i>tidied up</i> into valid XML, and then parsed into an element.
+ This module returns any textual content as string and any binary content
+ as base6Binary.</li>
+ <li>EXPath accepts XML nodes as body in the send-request() function and
+ automatically serializes them into a string. The send-request() function
+ defined in this module only allows string, base64Binary, and hexBinary
+ as body types.
+ </li>
+ </ol>
+ </p>
+ <p>
+ See <a href="http://www.expath.org/spec/http-client">the full spec
+ of the EXPath http-client module</a> for more information.
+ </p>
+</xqdoc:description><xqdoc:author>Federico Cavalieri</xqdoc:author><xqdoc:see><a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a></xqdoc:see><xqdoc:custom tag="library"><a href="http://curl.haxx.se/">cURL Library</a></xqdoc:custom><xqdoc:custom tag="project">Zorba/Input Output/HTTP Client</xqdoc:custom><xqdoc:custom tag="language">jsoniq</xqdoc:custom><xqdoc:custom tag="version">1.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="an" uri="http://zorba.io/annotations" isSchema="false"/><xqdoc:namespace prefix="err" uri="http://www.w3.org/2005/xqt-errors" isSchema="false"/><xqdoc:namespace prefix="http" uri="http://zorba.io/modules/http-client" isSchema="false"/><xqdoc:namespace prefix="libjn" uri="http://jsoniq.org/function-library" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports><xqdoc:import type="library"><xqdoc:uri>http://jsoniq.org/function-library</xqdoc:uri></xqdoc:import></xqdoc:imports><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>
+ This function sends an HTTP request and returns the corresponding response.
+ </p>
+ <p>
+ This function is declared as sequential and should be used whenever the
+ request may have side-effects.
+ </p>
+ <p>
+ The request parameters are specified in the $request JSON object, which
+ has the following minimal structure:
+ <pre class="ace-static" ace-mode="java">
+   {
+     "href": "http://www.example.com"
+   }
+ </pre>
+ </p>
+ <p>This object specifies a GET request of the URI "http://www.example.com"</p>
+ <p>Additional optional parameters can be specified when issuing a request,
+ using the following structure:</p>
+ <pre class="ace-static" ace-mode="java">
+  {
+    "method": "POST",
+    "href": "http://www.example.com",
+    "authentication":
+    {
+      "username" : "user",
+      "password" : "pass",
+      "auth-method" : "Basic"
+    },
+    "options":
+    {
+      "status-only": true,
+      "override-media-type": "text/plain",
+      "follow-redirect": false,
+      "timeout": 30,
+      "user-agent": "Mozilla/5.0"
+    },
+    "headers":
+    {
+      "name": "value",
+      ...
+    },
+    "body":
+    {
+      "media-type": "text/plain",
+      "content": "..."
+    }
+  }
+</pre>
+ <p>
+ The method field (string) defines the HTTP verb to use in the HTTP request (i.e., GET, HEAD, OPTIONS,
+ POST, PUT, DELETE). If not specified GET will be used.
+ The authentication field can be used to specify the credentials and authentication method
+ used when issuing a request (e.g, Basic). If the authentication field is specified, all its (string)
+ subfields must be specified. If an authentication object is provided, it overrides any
+ Authorization header specified in the request.
+ Additionally, the following options can be specified:
+ <ul>
+    <li>status-only. If true, the response body contents are omitted from the response object.</li>
+    <li>override-media-type. Is a MIME type that will override the Content-Type header returned
+        by the server. It affects the type of the result body content.</li>
+    <li>follow-redirect. Control whether an http redirect is automatically followed or not. If
+        it is false, the http redirect is returned as the response. If it is
+        true (the default) the function tries to follow the redirect, by
+        sending the same request to the new address (including body, headers,
+         and authentication credentials.) Maximum one redirect is followed
+        (there is no attempt to follow a redirect in response to following a
+          first redirect).</li>
+    <li>timeout. Is the maximum number of seconds to wait for the server to respond.
+         If no response is received withing this time duration, an error is thrown.</li>
+    <li>user-agent. The user agent sent to the server when issuing the request.
+        If not specified libcurl-agent/1.0 is used.</li>
+ </ul>
+ </p>
+ <p>One or more headers can be sent to the server, specifying them in an optional headers object.
+ Each header is represented as a single (string) field. These headers are overridden if the corresponding
+ option/authentication has been specified in the request.</p>
+ <p>For non-multipart request a body object can be specified.
+ This object must contain both the desired (string) media-type and its content.
+ The type of the content field must be either string, base64Binary, or hexBinary. </p>
+ <p>For multipart requests, multipart object can be specified in place of the body object.
+ The multipart object has the following structure: </p>
+ <pre class="ace-static" ace-mode="java">
+  "multipart" : {
+    "boundary": "--AaB03x",
+    "parts": [
+      {
+        "headers" : {
+           "Content Disposition: file",
+           ...
+        },
+        "body": {
+          "media-type" : "image/gif",
+          "content" : "..."
+        }
+      },
+      {
+        "body" : {
+          "media-type" : "text/html",
+          "content" : "..."
+        }
+      }
+   ]
+ }
+ </pre>
+ <p>The multipart field contains an optional (string) field which specifies
+ the boundary used to separate each part and an array containing all parts.
+ Each part contains its specific headers, if any, and the corresponding body.
+ </p>
+</xqdoc:description><xqdoc:param>$request a JSON http-client request object</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified request is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error><xqdoc:error>http:FOLLOW Cannot follow a redirect of a POST, PUT, or DELETE request.</xqdoc:error><xqdoc:error>http:CHARSET The specified charset is unsupported.</xqdoc:error></xqdoc:comment><xqdoc:name>http:send-request</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:send-request($request as object()) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>request</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>check-request</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>http-sequential-impl</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>
+ This function sends an HTTP request and returns the corresponding response.
+ </p>
+ <p>
+ This function has the same semantics of <a href="#send-request-1">send-request-1</a>,
+ but is declared as nondeterministic and thus should only be used when
+ the request has no side-effects.
+ </p>
+</xqdoc:description><xqdoc:param>$request see request parameter of <a href="#send-request-1">send-request#1</a></xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified request is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error><xqdoc:error>http:FOLLOW Cannot follow a redirect of a POST, PUT, or DELETE request.</xqdoc:error><xqdoc:error>http:CHARSET The specified charset is unsupported.</xqdoc:error><xqdoc:see><a href="#nondeterministic_warning">Notice about nondeterministic functions</a></xqdoc:see></xqdoc:comment><xqdoc:name>http:send-nondeterministic-request</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:send-nondeterministic-request($request as object()) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>request</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>check-request</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>http-nondeterministic-impl</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>
+ This function makes a GET request to a given URL.
+ </p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified href is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error><xqdoc:see><a href="#nondeterministic_warning">Notice about nondeterministic functions</a></xqdoc:see></xqdoc:comment><xqdoc:name>http:get</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:get($href as string) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>send-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>
+ This function makes a GET request to a given URL. All returned bodies
+ are forced to be interpreted as textual, with a UTF-8 charset and will
+ be returned as string items.
+ </p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified href is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error><xqdoc:see><a href="#nondeterministic_warning">Notice about nondeterministic functions</a></xqdoc:see></xqdoc:comment><xqdoc:name>http:get-text</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:get-text($href as string) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>send-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>
+ This function makes a GET request on a given URL. All returned bodies
+ are forced to be interpreted as binary data, and will be returned
+ as base64Binary items.
+ </p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified href is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error><xqdoc:see><a href="#nondeterministic_warning">Notice about nondeterministic functions</a></xqdoc:see></xqdoc:comment><xqdoc:name>http:get-binary</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:get-binary($href as string) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>send-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>
+ This function makes an HTTP HEAD request on a given URL.
+ </p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified href is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error><xqdoc:see><a href="#nondeterministic_warning">Notice about nondeterministic functions</a></xqdoc:see></xqdoc:comment><xqdoc:name>http:head</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:head($href as string) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>send-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>
+ This function makes an HTTP OPTIONS request, which asks the server
+ which operations it supports.
+ </p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return>A sequence of string values of the allowed operations.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified href is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error><xqdoc:see><a href="#nondeterministic_warning">Notice about nondeterministic functions</a></xqdoc:see></xqdoc:comment><xqdoc:name>http:options</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:options($href as string) as string*</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">string*</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>tokenize</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>send-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> <p>
+ This function makes an HTTP PUT request to a given URL.
+ </p>
+ <p>
+ The body passed to this function must be either a string, a base64Binary or
+ an hexBinary.
+ If it is a string, the Content-Type sent to the server will be "text/plain",
+ "application/octet-stream" otherwise.
+ </p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:param>$body The body which will be sent to the server.</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified request is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error></xqdoc:comment><xqdoc:name>http:put</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:put($href as string, $body as atomic) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>body</xqdoc:name><xqdoc:type>atomic</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>QName</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>error</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>put</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> <p>
+ This function makes an HTTP PUT request to a given URL.
+ </p>
+ <p>
+ The body passed to this function must be either a string, a base64Binary, or
+ an hexBinary.
+ In any case, Content-Type of the request sent to the server will
+ be $content-type.
+ </p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:param>$body The body which will be sent to the server.</xqdoc:param><xqdoc:param>$content-type The content type of $body to send to the server.</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified request is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error><xqdoc:error>http:CHARSET The specified charset is unsupported.</xqdoc:error></xqdoc:comment><xqdoc:name>http:put</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:put($href as string, $body as atomic, $content-type as string) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>body</xqdoc:name><xqdoc:type>atomic</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>content-type</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>send-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>
+ This function makes an HTTP DELETE request to a given URL.
+ </p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified request is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error></xqdoc:comment><xqdoc:name>http:delete</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:delete($href as string) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>send-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> <p>
+ This function makes an HTTP POST request to a given URL.
+ </p>
+ <p>
+ The body passed to this function must be either a string, a base64Binary, or an
+ hexBinary.
+ If it is a string, the Content-Type sent to the server will be "text/plain",
+ "application/octet-stream" otherwise.
+ </p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:param>$body The body which will be sent to the server.</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified request is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error></xqdoc:comment><xqdoc:name>http:post</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:post($href as string, $body as atomic) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>body</xqdoc:name><xqdoc:type>atomic</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>QName</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>error</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>post</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> <p>
+ This function makes an HTTP POST request to a given URL.
+ </p>
+ <p>
+ The body passed to this function must be either a string, a base64Binary,
+ or an hexBinary.
+ In any case, Content-Type of the request sent to the server will
+ be $content-type.
+ </p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:param>$body The body which will be sent to the server</xqdoc:param><xqdoc:param>$content-type The content type of the body as described above.</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>http:HTTP An HTTP error occurred.</xqdoc:error><xqdoc:error>http:REQUEST The specified request is not valid.</xqdoc:error><xqdoc:error>http:TIMEOUT A timeout occurred waiting for the response.</xqdoc:error><xqdoc:error>http:CHARSET The specified charset is unsupported.</xqdoc:error></xqdoc:comment><xqdoc:name>http:post</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:post($href as string, $body as atomic, $content-type as string) as object()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>body</xqdoc:name><xqdoc:type>atomic</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>content-type</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri><xqdoc:name>send-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Private function used internally by this module.
+ This function checks if the request, href, and bodies parameters
+ are consistent.
+</xqdoc:description><xqdoc:error>http:REQUEST The specified request is not valid.</xqdoc:error></xqdoc:comment><xqdoc:name>http:check-request</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/></xqdoc:annotations><xqdoc:signature>declare %private function http:check-request($request as object()) as boolean</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>request</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>boolean</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://jsoniq.org/function-library</xqdoc:uri><xqdoc:name>descendant-objects</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>QName</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>count</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>error</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>exists</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>not</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="0"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>true</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:name>http:http-sequential-impl</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %private %an:sequential function http:http-sequential-impl($request as object()) as object() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>request</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:name>http:http-nondeterministic-impl</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %private %an:nondeterministic function http:http-nondeterministic-impl($request as object()) as object() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>request</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

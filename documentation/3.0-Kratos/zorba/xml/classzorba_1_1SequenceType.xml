@@ -1,0 +1,949 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1SequenceType" kind="class" prot="public">
+    <compoundname>zorba::SequenceType</compoundname>
+    <includes refid="typeident_8h" local="no">zorba/typeident.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5" prot="public" static="no">
+        <name>Kind</name>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aeb8e0b26d64df3e8a7ee5ec634d7b3d2" prot="public">
+          <name>EMPTY_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5af64e34411dd620ad681b30a5c9458c85" prot="public">
+          <name>ITEM_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a94a20a427da80bc8e18e570965577605" prot="public">
+          <name>ATOMIC_OR_UNION_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5ad5b3260820cdb0e77bc7c990f531b43d" prot="public">
+          <name>FUNCTION_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5af155f4ef5243d84a80786ea944c32cf7" prot="public">
+          <name>STRUCTURED_ITEM_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a21085de965b4613e20969cd5f2344b7b" prot="public">
+          <name>NODE_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a125c6a646275c950eefa864afd7f8b1b" prot="public">
+          <name>DOCUMENT_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aa21e249d12485bcabc9b275ed83d6e4e" prot="public">
+          <name>ELEMENT_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5abef49fe23d76cd4cb7fd8a30b9af9623" prot="public">
+          <name>SCHEMA_ELEMENT_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a937cc8c631cfd69afa47f88da07ec17f" prot="public">
+          <name>ATTRIBUTE_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a50fb30cb95bf3af4af3d6e9b65d1917e" prot="public">
+          <name>SCHEMA_ATTRIBUTE_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aac4228ac2113af4df3fecbf8eddc3f57" prot="public">
+          <name>PI_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aafc1c881edaec28dbeab54eeef0ccd7d" prot="public">
+          <name>TEXT_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5ab7a3007339a4f69168b2d068b09f1ea3" prot="public">
+          <name>COMMENT_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a548febdfaa0a8132af4265fd119b22a5" prot="public">
+          <name>NAMESPACE_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a653a33761fd1aa53db251f7b3ca2655f" prot="public">
+          <name>JSON_ITEM_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a66472454aeebb35b4e42bcc7e397b16c" prot="public">
+          <name>JSON_OBJECT_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a992de00ebc86f77b19020a3dca78635d" prot="public">
+          <name>JSON_ARRAY_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5abffa95297b7fb4944526d58b8374f212" prot="public">
+          <name>INVALID_TYPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="43" bodyfile="/home/wcandillon/deadlinks/include/zorba/typeident.h" bodystart="42" bodyend="63"/>
+      </memberdef>
+      <memberdef kind="enum" id="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" prot="public" static="no">
+        <name>Quantifier</name>
+        <enumvalue id="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" prot="public">
+          <name>QUANT_ONE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066aef23c702e820d91711cd03cbb9ca4941" prot="public">
+          <name>QUANT_QUESTION</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a733900d8e032eb5b420c99012aa22bb3" prot="public">
+          <name>QUANT_STAR</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066aedfec7f088f6cdeb5c36e9a5c3177616" prot="public">
+          <name>QUANT_PLUS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066ab93c33d7b0a012f8f6cf479c5dc44992" prot="public">
+          <name>QUANT_INVALID</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="67" bodyfile="/home/wcandillon/deadlinks/include/zorba/typeident.h" bodystart="66" bodyend="73"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SequenceType_1a04be66dbeeb779697acff7c3897832a3" prot="public" static="yes" mutable="no">
+        <type>char const *const</type>
+        <definition>char const* const zorba::SequenceType::kind_string_of[]</definition>
+        <argsstring>[]</argsstring>
+        <name>kind_string_of</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="307" bodyfile="/home/wcandillon/deadlinks/include/zorba/typeident.h" bodystart="307" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1SequenceType_1a4caa9374aba976920cdb541c29b1a1b8" prot="public" static="yes" mutable="no">
+        <type>char const *const</type>
+        <definition>char const* const zorba::SequenceType::quantifier_string_of[]</definition>
+        <argsstring>[]</argsstring>
+        <name>quantifier_string_of</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="309" bodyfile="/home/wcandillon/deadlinks/include/zorba/typeident.h" bodystart="309" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classzorba_1_1SequenceType_1a3e0633ac5ec941d1abf1a7b5b6ffce25" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class Unmarshaller</definition>
+        <argsstring></argsstring>
+        <name>Unmarshaller</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="312" bodyfile="/home/wcandillon/deadlinks/include/zorba/typeident.h" bodystart="312" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SequenceType_1a729c0500be8e414699c6b9f1b988a967" prot="private" static="no" mutable="no">
+        <type>const XQType *</type>
+        <definition>const XQType* zorba::SequenceType::theType</definition>
+        <argsstring></argsstring>
+        <name>theType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="314" bodyfile="/home/wcandillon/deadlinks/include/zorba/typeident.h" bodystart="314" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a5e032fa13af4f1c5be0de8c964c14382" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createAnyNodeType</definition>
+        <argsstring>(Quantifier q=QUANT_ONE)</argsstring>
+        <name>createAnyNodeType</name>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+<para>Create an node() type with quantifier. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="115"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a965107aad83797057ca4717dbd896b48" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createAtomicOrUnionType</definition>
+        <argsstring>(const StaticContext_t &amp;sctx, const String &amp;uri, const String &amp;localName, Quantifier q=QUANT_ONE)</argsstring>
+        <name>createAtomicOrUnionType</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>sctx</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>localName</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+<para>Create a generalized atomic type (see <ulink url="http://www.w3.org/TR/xquery-30/#dt-generalized-atomic-type">http://www.w3.org/TR/xquery-30/#dt-generalized-atomic-type</ulink> ) with quantifier. </para>        </briefdescription>
+        <detaileddescription>
+<para>A generalized atomic type is specified simply as a QName, which may identify an XMLSchema builtin atomic type or a user-defined atomic or pure union type. In the case of user-defined types, the QName must be among the in-scope type names of a given static context. Otherwise, for builtin types, the given sctx may be NULL.</para><para>If the given QName (uri and local name pair) does not specify a generalized atomic type among the in-scope type names of a given static context, an invalid <ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref> is returned. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="105"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1abd1b1b64040b0387db05d5647eda46dd" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createAttributeType</definition>
+        <argsstring>(const StaticContext_t &amp;sctx, const String &amp;nodeUri, const String &amp;nodeLocalName, const String &amp;contentTypeUri, const String &amp;contentTypeLocalName, Quantifier quant=QUANT_ONE)</argsstring>
+        <name>createAttributeType</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>sctx</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>nodeUri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>nodeLocalName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>contentTypeUri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>contentTypeLocalName</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>quant</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="154"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a95b94fbda03aada030f1adb958d054d6" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createCommentType</definition>
+        <argsstring>(Quantifier q=QUANT_ONE)</argsstring>
+        <name>createCommentType</name>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a6b106692ade6c38876b05652386642e9" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createDocumentType</definition>
+        <argsstring>(const SequenceType &amp;contentType, Quantifier q=QUANT_ONE)</argsstring>
+        <name>createDocumentType</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref> &amp;</type>
+          <declname>contentType</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+<para>Create a document-node() type or subtype with quantifier. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="122"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1ae2811070d1de535e32c2f3137d57ec4f" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createElementType</definition>
+        <argsstring>(const StaticContext_t &amp;sctx, const String &amp;nodeUri, const String &amp;nodeLocalName, const String &amp;contentTypeUri, const String &amp;contentTypeLocalName, bool nillable, Quantifier quant=QUANT_ONE)</argsstring>
+        <name>createElementType</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>sctx</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>nodeUri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>nodeLocalName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>contentTypeUri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>contentTypeLocalName</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>nillable</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>quant</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+<para>Create an element() type or subtype with quantifier. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="134"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a055cc4ed78701c992db9181cb97c0bd2" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createEmptyType</definition>
+        <argsstring>()</argsstring>
+        <name>createEmptyType</name>
+        <briefdescription>
+<para>Create an empty-sequence() type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="80"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a054bd641be7c36372eef93b029ca8cb2" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createItemType</definition>
+        <argsstring>(Quantifier q=QUANT_ONE)</argsstring>
+        <name>createItemType</name>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+<para>Create an item() type with quantifier. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="85"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1ac025ce5b82ff00dea39fe80ed2ae0959" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createJSONArrayType</definition>
+        <argsstring>(Quantifier q=QUANT_ONE)</argsstring>
+        <name>createJSONArrayType</name>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="198"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a471a62619ce70820590763768286088c" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createJSONItemType</definition>
+        <argsstring>(Quantifier q=QUANT_ONE)</argsstring>
+        <name>createJSONItemType</name>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="188"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a0e18b3618bad2b0a23dc9819bca6c601" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createJSONObjectType</definition>
+        <argsstring>(Quantifier q=QUANT_ONE)</argsstring>
+        <name>createJSONObjectType</name>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="193"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a0b7f6f23f3bf2887250726f38eb3726c" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createNamespaceType</definition>
+        <argsstring>(Quantifier q=QUANT_ONE)</argsstring>
+        <name>createNamespaceType</name>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="183"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a35d97aaf69fbdb1739f094d6b38e9a38" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createPIType</definition>
+        <argsstring>(Quantifier q=QUANT_ONE)</argsstring>
+        <name>createPIType</name>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="168"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1af8b274428f3896e235ab2d06b6b7748e" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createSchemaAttributeType</definition>
+        <argsstring>(const StaticContext_t &amp;sctx, const String &amp;uri, const String &amp;localName, Quantifier quant=QUANT_ONE)</argsstring>
+        <name>createSchemaAttributeType</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>sctx</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>localName</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>quant</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="163"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a2c30272d7fdfd6e2e78a5fa8098da33d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createSchemaElementType</definition>
+        <argsstring>(const StaticContext_t &amp;sctx, const String &amp;uri, const String &amp;localName, Quantifier quant=QUANT_ONE)</argsstring>
+        <name>createSchemaElementType</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>sctx</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>localName</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>quant</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="143"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a8e6bef84f68096ec39c1481f236d03d1" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createStructuredItemType</definition>
+        <argsstring>(Quantifier q=QUANT_ONE)</argsstring>
+        <name>createStructuredItemType</name>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+<para>Create an structured-item() type with quantifier. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="110"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a5320aefb48462e4343fa999b35c8d502" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>static SequenceType zorba::SequenceType::createTextType</definition>
+        <argsstring>(Quantifier q=QUANT_ONE)</argsstring>
+        <name>createTextType</name>
+        <param>
+          <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+          <declname>q</declname>
+          <defval><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="173"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1aff0cb28555bff204d0476274f0131b7d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; zorba::SequenceType::emit</definition>
+        <argsstring>(std::ostream &amp;) const </argsstring>
+        <name>emit</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="301"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a89c83c4c9e480f6aef1d6d502c5ee802" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>SequenceType zorba::SequenceType::getContentType</definition>
+        <argsstring>() const </argsstring>
+        <name>getContentType</name>
+        <briefdescription>
+<para>If this is an document-node() type that contains an embedded element() type, this method returns the embedded element() type. </para>        </briefdescription>
+        <detaileddescription>
+<para>In all other cases, an invalid <ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref> is returned. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="272"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a0d7839482eb1cc0e2f0234597ce4a058" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>String zorba::SequenceType::getContentTypeLocalName</definition>
+        <argsstring>() const </argsstring>
+        <name>getContentTypeLocalName</name>
+        <briefdescription>
+<para>If this is an element() or attribute() type that contains a TypeName, this method returns the local name of that TypeName. </para>        </briefdescription>
+        <detaileddescription>
+<para>If this is a schema-element(N) or schema-attribute(N) type, the method returns the local name of the XMLSchema type associated with the global element or attribute declaration N. In all other cases, it returns an empty string. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="290"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a98b398884124c13cded1aeaf226a85ca" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>String zorba::SequenceType::getContentTypeUri</definition>
+        <argsstring>() const </argsstring>
+        <name>getContentTypeUri</name>
+        <briefdescription>
+<para>If this is an element() or attribute() type that contains a TypeName, this method returns the URI of that TypeName. </para>        </briefdescription>
+        <detaileddescription>
+<para>If this is a schema-element(N) or schema-attribute(N) type, the method returns the URI of the XMLSchema type associated with the global element or attribute declaration N. In all other cases, it returns an empty string. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="281"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a73d9b7083ca7e2b2842e48d98dc5bfb0" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5" kindref="member">Kind</ref></type>
+        <definition>Kind zorba::SequenceType::getKind</definition>
+        <argsstring>() const </argsstring>
+        <name>getKind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="224"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a1ee587b120ade17f4be4b4fa26fefec4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>String zorba::SequenceType::getNodeLocalName</definition>
+        <argsstring>() const </argsstring>
+        <name>getNodeLocalName</name>
+        <briefdescription>
+<para>If this is an element() or attribute() type that contains a NodeName, this method returns the local part of that NodeName. </para>        </briefdescription>
+        <detaileddescription>
+<para>If this is a schema-element(N) or schema-attribute(N) type, the method returns the local part of N. If this is a processing-instruction() that contains a TargetName, that TargetName is returned. In all other cases, an empty string is returned. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="259"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1ab912fb02d2c44b2eafb1d8cfe35fe83f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>String zorba::SequenceType::getNodeUri</definition>
+        <argsstring>() const </argsstring>
+        <name>getNodeUri</name>
+        <briefdescription>
+<para>If this is an element() or attribute() type that contains a NodeName, this method returns the URI of that NodeName. </para>        </briefdescription>
+        <detaileddescription>
+<para>If this is a schema-element(N) or schema-attribute(N) type, the method returns the URI of N. In all other cases, an empty string is returned. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="249"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1adf5f4aa502795c82a7941db25be9d615" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">Quantifier</ref></type>
+        <definition>Quantifier zorba::SequenceType::getQuantifier</definition>
+        <argsstring>() const </argsstring>
+        <name>getQuantifier</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="229"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a3708d6057b35a79f14d52e764ed75888" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>String zorba::SequenceType::getTypeLocalName</definition>
+        <argsstring>() const </argsstring>
+        <name>getTypeLocalName</name>
+        <briefdescription>
+<para>If this is a generalized atomic type, this method returns the local part of the type name. </para>        </briefdescription>
+        <detaileddescription>
+<para>For other kinds of types, an empty string is returned. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="241"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a4be9e5cdda03110f37baf0980de36b62" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>String zorba::SequenceType::getTypeUri</definition>
+        <argsstring>() const </argsstring>
+        <name>getTypeUri</name>
+        <briefdescription>
+<para>If this is a generalized atomic type, this method returns the URI of the type name. </para>        </briefdescription>
+        <detaileddescription>
+<para>For other kinds of types, an empty string is returned. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="235"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a3d6c7272fe5c01d2bd20576b634ddecc" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::SequenceType::isSchemaTest</definition>
+        <argsstring>() const </argsstring>
+        <name>isSchemaTest</name>
+        <briefdescription>
+<para>Return true if this type is a schema-element() or schema-attribute() type, Otherwise return false. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="296"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a8f5e92a69e7cff0077091275a5eace92" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::SequenceType::isValid</definition>
+        <argsstring>() const </argsstring>
+        <name>isValid</name>
+        <briefdescription>
+<para>Returns true if this a valid (non-NULL) type; otherwise, returns false. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="219"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a28ae24f4733ae08b2f3d8333bba2ba84" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::SequenceType::isWildcard</definition>
+        <argsstring>() const </argsstring>
+        <name>isWildcard</name>
+        <briefdescription>
+<para>If this is an element() or attribute() type that does not contain a NodeName, this method returns true. </para>        </briefdescription>
+        <detaileddescription>
+<para>In all other cases, false is returned. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="265"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a02ab2fedd42ca757e43d1423507dfdac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SequenceType::SequenceType</definition>
+        <argsstring>()</argsstring>
+        <name>SequenceType</name>
+        <briefdescription>
+<para>Constructor for an invalid (NULL) type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="204"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1a01085e7ed109483cdfe617bac0ac0e63" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SequenceType::SequenceType</definition>
+        <argsstring>(const SequenceType &amp;other)</argsstring>
+        <name>SequenceType</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Copy constructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="209"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1aadee0f1392b671b0e6d241e1ca63361a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SequenceType::~SequenceType</definition>
+        <argsstring>()</argsstring>
+        <name>~SequenceType</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="214"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1SequenceType_1abe41e8bcea1f16fd75189297c89dc7d0" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SequenceType::SequenceType</definition>
+        <argsstring>(const XQType *t)</argsstring>
+        <name>SequenceType</name>
+        <param>
+          <type>const XQType *</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="304"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Representation and factory for xquery sequence types. </para>    </briefdescription>
+    <detaileddescription>
+<para>Class <ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref> represents xquery sequence types, as defined in <ulink url="http://www.w3.org/TR/xquery-30/#id-sequencetype-syntax">http://www.w3.org/TR/xquery-30/#id-sequencetype-syntax</ulink>. Instances of <ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref> may be returned by methods of <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>&apos;s C++ API. The class also provides static methods to create instances of <ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref>, which can then be passed as arguments to other methods of <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>&apos;s C++ API. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/typeident.h" bodystart="39" bodyend="315"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a94a20a427da80bc8e18e570965577605" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>ATOMIC_OR_UNION_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a937cc8c631cfd69afa47f88da07ec17f" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>ATTRIBUTE_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5ab7a3007339a4f69168b2d068b09f1ea3" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>COMMENT_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1a5e032fa13af4f1c5be0de8c964c14382" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createAnyNodeType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a965107aad83797057ca4717dbd896b48" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createAtomicOrUnionType</name></member>
+      <member refid="classzorba_1_1SequenceType_1abd1b1b64040b0387db05d5647eda46dd" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createAttributeType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a95b94fbda03aada030f1adb958d054d6" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createCommentType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a6b106692ade6c38876b05652386642e9" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createDocumentType</name></member>
+      <member refid="classzorba_1_1SequenceType_1ae2811070d1de535e32c2f3137d57ec4f" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createElementType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a055cc4ed78701c992db9181cb97c0bd2" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createEmptyType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a054bd641be7c36372eef93b029ca8cb2" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createItemType</name></member>
+      <member refid="classzorba_1_1SequenceType_1ac025ce5b82ff00dea39fe80ed2ae0959" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createJSONArrayType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a471a62619ce70820590763768286088c" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createJSONItemType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a0e18b3618bad2b0a23dc9819bca6c601" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createJSONObjectType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a0b7f6f23f3bf2887250726f38eb3726c" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createNamespaceType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a35d97aaf69fbdb1739f094d6b38e9a38" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createPIType</name></member>
+      <member refid="classzorba_1_1SequenceType_1af8b274428f3896e235ab2d06b6b7748e" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createSchemaAttributeType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a2c30272d7fdfd6e2e78a5fa8098da33d" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createSchemaElementType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a8e6bef84f68096ec39c1481f236d03d1" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createStructuredItemType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a5320aefb48462e4343fa999b35c8d502" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>createTextType</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a125c6a646275c950eefa864afd7f8b1b" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>DOCUMENT_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aa21e249d12485bcabc9b275ed83d6e4e" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>ELEMENT_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aff0cb28555bff204d0476274f0131b7d" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>emit</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aeb8e0b26d64df3e8a7ee5ec634d7b3d2" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>EMPTY_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5ad5b3260820cdb0e77bc7c990f531b43d" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>FUNCTION_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1a89c83c4c9e480f6aef1d6d502c5ee802" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>getContentType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a0d7839482eb1cc0e2f0234597ce4a058" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>getContentTypeLocalName</name></member>
+      <member refid="classzorba_1_1SequenceType_1a98b398884124c13cded1aeaf226a85ca" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>getContentTypeUri</name></member>
+      <member refid="classzorba_1_1SequenceType_1a73d9b7083ca7e2b2842e48d98dc5bfb0" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>getKind</name></member>
+      <member refid="classzorba_1_1SequenceType_1a1ee587b120ade17f4be4b4fa26fefec4" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>getNodeLocalName</name></member>
+      <member refid="classzorba_1_1SequenceType_1ab912fb02d2c44b2eafb1d8cfe35fe83f" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>getNodeUri</name></member>
+      <member refid="classzorba_1_1SequenceType_1adf5f4aa502795c82a7941db25be9d615" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>getQuantifier</name></member>
+      <member refid="classzorba_1_1SequenceType_1a3708d6057b35a79f14d52e764ed75888" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>getTypeLocalName</name></member>
+      <member refid="classzorba_1_1SequenceType_1a4be9e5cdda03110f37baf0980de36b62" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>getTypeUri</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5abffa95297b7fb4944526d58b8374f212" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>INVALID_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1a3d6c7272fe5c01d2bd20576b634ddecc" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>isSchemaTest</name></member>
+      <member refid="classzorba_1_1SequenceType_1a8f5e92a69e7cff0077091275a5eace92" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>isValid</name></member>
+      <member refid="classzorba_1_1SequenceType_1a28ae24f4733ae08b2f3d8333bba2ba84" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>isWildcard</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5af64e34411dd620ad681b30a5c9458c85" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>ITEM_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a992de00ebc86f77b19020a3dca78635d" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>JSON_ARRAY_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a653a33761fd1aa53db251f7b3ca2655f" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>JSON_ITEM_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a66472454aeebb35b4e42bcc7e397b16c" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>JSON_OBJECT_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>Kind</name></member>
+      <member refid="classzorba_1_1SequenceType_1a04be66dbeeb779697acff7c3897832a3" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>kind_string_of</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a548febdfaa0a8132af4265fd119b22a5" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>NAMESPACE_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a21085de965b4613e20969cd5f2344b7b" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>NODE_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aac4228ac2113af4df3fecbf8eddc3f57" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>PI_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066ab93c33d7b0a012f8f6cf479c5dc44992" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>QUANT_INVALID</name></member>
+      <member refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>QUANT_ONE</name></member>
+      <member refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066aedfec7f088f6cdeb5c36e9a5c3177616" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>QUANT_PLUS</name></member>
+      <member refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066aef23c702e820d91711cd03cbb9ca4941" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>QUANT_QUESTION</name></member>
+      <member refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a733900d8e032eb5b420c99012aa22bb3" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>QUANT_STAR</name></member>
+      <member refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>Quantifier</name></member>
+      <member refid="classzorba_1_1SequenceType_1a4caa9374aba976920cdb541c29b1a1b8" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>quantifier_string_of</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a50fb30cb95bf3af4af3d6e9b65d1917e" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>SCHEMA_ATTRIBUTE_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5abef49fe23d76cd4cb7fd8a30b9af9623" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>SCHEMA_ELEMENT_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1a02ab2fedd42ca757e43d1423507dfdac" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>SequenceType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a01085e7ed109483cdfe617bac0ac0e63" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>SequenceType</name></member>
+      <member refid="classzorba_1_1SequenceType_1abe41e8bcea1f16fd75189297c89dc7d0" prot="private" virt="non-virtual"><scope>zorba::SequenceType</scope><name>SequenceType</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5af155f4ef5243d84a80786ea944c32cf7" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>STRUCTURED_ITEM_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aafc1c881edaec28dbeab54eeef0ccd7d" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>TEXT_TYPE</name></member>
+      <member refid="classzorba_1_1SequenceType_1a729c0500be8e414699c6b9f1b988a967" prot="private" virt="non-virtual"><scope>zorba::SequenceType</scope><name>theType</name></member>
+      <member refid="classzorba_1_1SequenceType_1a3e0633ac5ec941d1abf1a7b5b6ffce25" prot="private" virt="non-virtual"><scope>zorba::SequenceType</scope><name>Unmarshaller</name></member>
+      <member refid="classzorba_1_1SequenceType_1aadee0f1392b671b0e6d241e1ca63361a" prot="public" virt="non-virtual"><scope>zorba::SequenceType</scope><name>~SequenceType</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

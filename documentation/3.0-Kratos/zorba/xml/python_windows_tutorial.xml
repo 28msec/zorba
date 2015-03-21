@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="python_windows_tutorial" kind="page">
+    <compoundname>python_windows_tutorial</compoundname>
+    <title>Zorba with Python - Windows Installation</title>
+    <detaileddescription>
+<para>These steps were checked on Windows 7 and Python 2.7 (32bits) with the Zorba Revision 10986 from Jun 29th, 2011, this revision has important bug fixing and it requires at least this version to work.</para><para>It should work fine with any Python 2.7.X (32 bits) version.</para><sect1 id="python_windows_tutorial_1install_python">
+<title>Install Python</title>
+<para>Download and install Python binaries from <ulink url="http://www.python.org/getit/">http://www.python.org/getit/</ulink>. If you want to debug the python binding you will need to download the sources and compile python in order to get the debug library of python: <emphasis>python_d.lib</emphasis>.</para></sect1>
+<sect1 id="python_windows_tutorial_1install_swig">
+<title>Install Swig</title>
+<para>Zorba uses Swig to create the binding in python language, you only need the binary to create it, download from <ulink url="http://www.swig.org/download.html">http://www.swig.org/download.html</ulink> and install.</para></sect1>
+<sect1 id="python_windows_tutorial_1install_zorba">
+<title>Installing Zorba</title>
+<para>Get Zorba sources and follow the <ref refid="build" kindref="compound">Zorba Build Instructions</ref>.</para></sect1>
+<sect1 id="python_windows_tutorial_1compiling_zorba">
+<title>Compiling the Zorba Python Library</title>
+<para>In order to compile the Python binding you need first to follow the steps to compile Zorba, but before compiling, you must need to add one extra variable to the CMAKE command line:</para><para>-D ZORBA_USE_SWIG=ON Turn on the Swig library, in case you have other bindings, this flag will help to activate them.</para><para>You should not need any other extra flag, cmake should be able to detect python at this point, but in case cmake can&apos;t find python installation you can add these two flags:</para><para>-D PYTHON_LIBRARIES=... Specify where the libs directory is located, i.e. &quot;C:\Python27\libs&quot;</para><para>-D PYTHON_INCLUDE_PATH=... Specify where the include directory is located, i.e. &quot;C:\Python27\include&quot;.</para><para>After adding those lines CMAKE will add automatically the Python binding project and after compiling you will get two files:<emphasis> _zorba_api.pyd</emphasis> and <emphasis>zorba_api.py</emphasis>, these files are the binding for zorba.</para></sect1>
+<sect1 id="python_windows_tutorial_1testing">
+<title>Testing</title>
+<para>Verify that Zorba is working by command line: <programlisting><codeline><highlight class="normal">C:\&gt;zorba.exe<sp/>-q<sp/></highlight><highlight class="stringliteral">&apos;2+1&apos;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">&lt;?xml<sp/>version=</highlight><highlight class="stringliteral">&quot;1.0&quot;</highlight><highlight class="normal"><sp/>encoding=</highlight><highlight class="stringliteral">&quot;UTF-8&quot;</highlight><highlight class="normal">?&gt;</highlight></codeline>
+<codeline><highlight class="normal">3</highlight></codeline>
+</programlisting></para><para>Test the following example in python, this example contains a direct path to the two files generated, you can change this according to your configuration or by moving those files to libs directory:</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>sys</highlight></codeline>
+<codeline><highlight class="normal">sys.path.insert(0,<sp/></highlight><highlight class="stringliteral">&apos;C:\\zorba\\vs2010\\swig\\python&apos;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>zorba_api</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">def<sp/>example1(zorba):</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>xquery<sp/>=<sp/>zorba.compileQuery(</highlight><highlight class="stringliteral">&quot;1+2&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>print<sp/>xquery.printPlanAsXML()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>print<sp/>xquery.execute()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>return</highlight></codeline>
+<codeline><highlight class="normal">def<sp/>example2(zorba):</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>xquery<sp/>=<sp/>zorba.compileQuery(</highlight><highlight class="stringliteral">&quot;(1,2,3,4,5)&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>iter<sp/>=<sp/>xquery.iterator()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>iter.open()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>item<sp/>=<sp/>zorba_api.Item_createEmptyItem()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>while<sp/>iter.next(item):</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>print<sp/>item.getStringValue()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>iter.close()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>iter.destroy()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>return</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">def<sp/>example3(zorba):</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>try:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>xquery<sp/>=<sp/>zorba.compileQuery(</highlight><highlight class="stringliteral">&quot;1<sp/>div<sp/>0&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>print<sp/>xquery.execute()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>except<sp/>RuntimeError,<sp/>e:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>print<sp/>e</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>return</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">def<sp/>example4(zorba):</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>try:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>xquery<sp/>=<sp/>zorba.compileQuery(</highlight><highlight class="stringliteral">&quot;for<sp/>$i<sp/>in<sp/>(1,2,&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>print<sp/>xquery.execute()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>except<sp/>RuntimeError,<sp/>e:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>print<sp/>e</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>return</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">store<sp/>=<sp/>zorba_api.InMemoryStore_getInstance()</highlight></codeline>
+<codeline><highlight class="normal">zorba<sp/>=<sp/>zorba_api.Zorba_getInstance(store)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">print<sp/></highlight><highlight class="stringliteral">&quot;Example1:&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">example1(zorba)</highlight></codeline>
+<codeline><highlight class="normal">print<sp/></highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">print<sp/></highlight><highlight class="stringliteral">&quot;Example2:&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/>example2(zorba)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">print<sp/></highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">print<sp/></highlight><highlight class="stringliteral">&quot;Example3:&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/>example3(zorba)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">print<sp/></highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">print<sp/></highlight><highlight class="stringliteral">&quot;Example4:&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/>example4(zorba)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">print<sp/></highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">zorba.shutdown()</highlight></codeline>
+<codeline><highlight class="normal">zorba_api.InMemoryStore_shutdown(store)</highlight></codeline>
+</programlisting></para><para><bold> Useful links</bold> <ulink url="/documentation/2.9/python/">Zorba Python API Documentation</ulink> </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

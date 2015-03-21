@@ -1,0 +1,704 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1diagnostic_1_1location" kind="class" prot="public">
+    <compoundname>zorba::internal::diagnostic::location</compoundname>
+    <includes refid="internal_2diagnostic_8h" local="no">zorba/internal/diagnostic.h</includes>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a06ab152b25fbb62ef47ab9db55e7854a" prot="private" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool" kindref="compound">ztd::explicit_bool</ref></type>
+        <definition>typedef ztd::explicit_bool zorba::internal::diagnostic::location::explicit_bool</definition>
+        <argsstring></argsstring>
+        <name>explicit_bool</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="52" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" prot="public" static="no">
+        <type>unsigned short</type>
+        <definition>typedef unsigned short zorba::internal::diagnostic::location::column_type</definition>
+        <argsstring></argsstring>
+        <name>column_type</name>
+        <briefdescription>
+<para>The column-number type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="62" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned zorba::internal::diagnostic::location::line_type</definition>
+        <argsstring></argsstring>
+        <name>line_type</name>
+        <briefdescription>
+<para>The line-number type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="57" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1diagnostic_1_1location_1ade5a7d100f14b9d6121d9e5b340110b9" prot="public" static="yes" mutable="no">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location" kindref="compound">location</ref> const</type>
+        <definition>location const zorba::internal::diagnostic::location::empty</definition>
+        <argsstring></argsstring>
+        <name>empty</name>
+        <briefdescription>
+<para>A empty instance for convenience. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="67" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a2917b34813a066bcc07778a38ad8b75c" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+        <definition>column_type zorba::internal::diagnostic::location::column_</definition>
+        <argsstring></argsstring>
+        <name>column_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="237" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="237" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a60b2d71833fe962806ac23a10b47cc81" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+        <definition>column_type zorba::internal::diagnostic::location::column_end_</definition>
+        <argsstring></argsstring>
+        <name>column_end_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="239" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="239" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a98636463a00158a36396847b3faa7c14" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string zorba::internal::diagnostic::location::file_</definition>
+        <argsstring></argsstring>
+        <name>file_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="235" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="235" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a429dd0f6431755e6478ddc841ea36fa3" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::internal::diagnostic::location::line_</definition>
+        <argsstring></argsstring>
+        <name>line_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="236" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="236" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a4ceb695d173d3e71517e791c176681ff" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::internal::diagnostic::location::line_end_</definition>
+        <argsstring></argsstring>
+        <name>line_end_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="238" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="238" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1abd91d2c819212c18a3079af2b141735c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+        <definition>column_type zorba::internal::diagnostic::location::column</definition>
+        <argsstring>() const </argsstring>
+        <name>column</name>
+        <briefdescription>
+<para>Gets the column number, if any. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns the column number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="140" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="140" bodyend="142"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a96888960677865d7f6cf4a1be4d7ced1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+        <definition>column_type zorba::internal::diagnostic::location::column_end</definition>
+        <argsstring>() const </argsstring>
+        <name>column_end</name>
+        <briefdescription>
+<para>Gets the ending column number, if any. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns the column number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="158" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="158" bodyend="160"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1aa59ce33b8e0354664fdf7f64d810bc32" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::internal::diagnostic::location::file</definition>
+        <argsstring>() const </argsstring>
+        <name>file</name>
+        <briefdescription>
+<para>Gets the file name, if any. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns the file name or the empty string if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="122" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="122" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a052b164f51d58f8424aa9218d56130c6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::internal::diagnostic::location::line</definition>
+        <argsstring>() const </argsstring>
+        <name>line</name>
+        <briefdescription>
+<para>Gets the line number, if any. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns the line number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="131" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="131" bodyend="133"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a0bf774071fb418aa0fa2df6cd3fa4ca0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::internal::diagnostic::location::line_end</definition>
+        <argsstring>() const </argsstring>
+        <name>line_end</name>
+        <briefdescription>
+<para>Gets the ending line number, if any. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns the line number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="149" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="149" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a25bc48ce462f5d53203ba6c57698d47e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::diagnostic::location::location</definition>
+        <argsstring>()</argsstring>
+        <name>location</name>
+        <briefdescription>
+<para>Constructs a default (empty) location. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="72" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="72" bodyend="73"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1aba817c40565bc038ded403e5f0683207" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::diagnostic::location::location</definition>
+        <argsstring>(char const *file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</argsstring>
+        <name>location</name>
+        <param>
+          <type>char const *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+          <declname>column</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+          <declname>line_end</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+          <declname>column_end</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Constructs a location. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>file</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the file where the expression causing the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The line number of the file where the expression causing the error begins. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The column number, if any, of the file where the expression causing the error begins. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The end line number, if any, of the file where the expression causing the error ends. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The end column number, if any, of the file where the expression causing the error ends. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="93" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="89" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1ae467d7347a045de55bb6353f82923933" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class StringType</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>zorba::internal::diagnostic::location::location</definition>
+        <argsstring>(StringType const &amp;file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</argsstring>
+        <name>location</name>
+        <param>
+          <type>StringType const &amp;</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+          <declname>column</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+          <declname>line_end</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+          <declname>column_end</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Constructs a location. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type for <emphasis>file</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>file</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The line number of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The column number, if any, of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The end line number, if any, of the file where the expression causing the error ends. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The end column number, if any, of the file where the xpression causing the error ends. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="114" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="110" bodyend="115"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1af732f7f87c9201d510153da52b612d6e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::diagnostic::location::operator explicit_bool::type</definition>
+        <argsstring>() const </argsstring>
+        <name>operator explicit_bool::type</name>
+        <briefdescription>
+<para>Conversion to <computeroutput>bool</computeroutput> for testing whether this location has been set. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if this location has been set. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="167" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="167" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1ab32fc315d0fc2b32baea90841eb4bc41" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::internal::diagnostic::location::operator!</definition>
+        <argsstring>() const </argsstring>
+        <name>operator!</name>
+        <briefdescription>
+<para>Checks whether this location has not been set. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if this location has not been set. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="176" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="176" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a9b10a6d9d422c01482850eeaf3e54397" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::internal::diagnostic::location::set</definition>
+        <argsstring>(line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</argsstring>
+        <name>set</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+          <declname>column</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+          <declname>line_end</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+          <declname>column_end</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Sets the location information. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The line number of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The column number, if any, of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The end line of the file where the error occured. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The column number, if any, where the error ends. occurred. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="191" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="190" bodyend="196"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a0fe3abd26fbd49658d95f66a2a1012eb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::internal::diagnostic::location::set</definition>
+        <argsstring>(char const *file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</argsstring>
+        <name>set</name>
+        <param>
+          <type>char const *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+          <declname>column</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+          <declname>line_end</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+          <declname>column_end</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Sets the location information. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>file</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The line number of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The column number, if any, of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The end line of the file where the error occured. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The column number, if any, where the error ends. occurred. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="210" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="209" bodyend="213"/>
+        <references refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" compoundref="fs__util_8h" startline="74">zorba::fs::file</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1location_1a3dee6aa96f70b1768379fa5345e65e77" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class StringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a67def45b6f7f4daa8a69dcfb6a66008b" kindref="member">ZORBA_HAS_C_STR</ref>(StringType), void &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_HAS_C_STR(StringType),void&gt;::type zorba::internal::diagnostic::location::set</definition>
+        <argsstring>(StringType const &amp;file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</argsstring>
+        <name>set</name>
+        <param>
+          <type>StringType const &amp;</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+          <declname>column</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">line_type</ref></type>
+          <declname>line_end</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">column_type</ref></type>
+          <declname>column_end</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Sets the location information. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type for <emphasis>file</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>file</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The line number of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The column number, if any, of the file where the error occurred. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The end line of the file where the error occured. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The column number, if any, where the error ends. occurred. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="230" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="229" bodyend="232"/>
+        <references refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" compoundref="fs__util_8h" startline="74">zorba::fs::file</references>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classzorba_1_1internal_1_1diagnostic_1_1location_1af5829a47768fc70d8a59ba5114c90b9e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(location const &amp;, location const &amp;)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location" kindref="compound">location</ref> const &amp;</type>
+          <defname>i</defname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location" kindref="compound">location</ref> const &amp;</type>
+          <defname>j</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="241"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1internal_1_1diagnostic_1_1location_1ae724d809d888b302abad651aa3e109ca" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend void</type>
+        <definition>void serialization::operator&amp;</definition>
+        <argsstring>(serialization::Archiver &amp;, location &amp;)</argsstring>
+        <name>serialization::operator&amp;</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location" kindref="compound">location</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="244"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="718">
+        <label>zorba::internal::diagnostic::location</label>
+        <link refid="classzorba_1_1internal_1_1diagnostic_1_1location"/>
+        <childnode refid="718" relation="usage">
+          <edgelabel>empty</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="51" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="51" bodyend="245"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1abd91d2c819212c18a3079af2b141735c" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>column</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a2917b34813a066bcc07778a38ad8b75c" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>column_</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a96888960677865d7f6cf4a1be4d7ced1" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>column_end</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a60b2d71833fe962806ac23a10b47cc81" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>column_end_</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>column_type</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1ade5a7d100f14b9d6121d9e5b340110b9" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>empty</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a06ab152b25fbb62ef47ab9db55e7854a" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>explicit_bool</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1aa59ce33b8e0354664fdf7f64d810bc32" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>file</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a98636463a00158a36396847b3faa7c14" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>file_</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a052b164f51d58f8424aa9218d56130c6" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>line</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a429dd0f6431755e6478ddc841ea36fa3" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>line_</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a0bf774071fb418aa0fa2df6cd3fa4ca0" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>line_end</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a4ceb695d173d3e71517e791c176681ff" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>line_end_</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>line_type</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a25bc48ce462f5d53203ba6c57698d47e" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>location</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1aba817c40565bc038ded403e5f0683207" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>location</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1ae467d7347a045de55bb6353f82923933" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>location</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1af732f7f87c9201d510153da52b612d6e" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>operator explicit_bool::type</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1ab32fc315d0fc2b32baea90841eb4bc41" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>operator!</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1af5829a47768fc70d8a59ba5114c90b9e" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>operator==</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1ae724d809d888b302abad651aa3e109ca" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>serialization::operator&amp;</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a9b10a6d9d422c01482850eeaf3e54397" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>set</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a0fe3abd26fbd49658d95f66a2a1012eb" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>set</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3dee6aa96f70b1768379fa5345e65e77" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::location</scope><name>set</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

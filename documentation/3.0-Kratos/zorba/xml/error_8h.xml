@@ -1,0 +1,291 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="error_8h" kind="file">
+    <compoundname>error.h</compoundname>
+    <includes refid="internal_2diagnostic_8h" local="no">zorba/internal/diagnostic.h</includes>
+    <includes refid="qname_8h" local="no">zorba/internal/qname.h</includes>
+    <includedby refid="user__exception_8h" local="no">user_exception.h</includedby>
+    <includedby refid="zorba__exception_8h" local="no">zorba_exception.h</includedby>
+    <incdepgraph>
+      <node id="1732">
+        <label>functional</label>
+      </node>
+      <node id="1734">
+        <label>cxx_util.h</label>
+        <link refid="cxx__util_8h"/>
+        <childnode refid="1728" relation="include">
+        </childnode>
+      </node>
+      <node id="1725">
+        <label>zorba/diagnostic.h</label>
+        <link refid="diagnostic_8h"/>
+        <childnode refid="1726" relation="include">
+        </childnode>
+        <childnode refid="1727" relation="include">
+        </childnode>
+        <childnode refid="1728" relation="include">
+        </childnode>
+        <childnode refid="1729" relation="include">
+        </childnode>
+        <childnode refid="1737" relation="include">
+        </childnode>
+      </node>
+      <node id="1737">
+        <label>zorba/internal/qname.h</label>
+        <link refid="qname_8h"/>
+        <childnode refid="1728" relation="include">
+        </childnode>
+        <childnode refid="1725" relation="include">
+        </childnode>
+        <childnode refid="1731" relation="include">
+        </childnode>
+        <childnode refid="1738" relation="include">
+        </childnode>
+      </node>
+      <node id="1723">
+        <label>string</label>
+      </node>
+      <node id="1730">
+        <label>map</label>
+      </node>
+      <node id="1721">
+        <label>error.h</label>
+        <link refid="error.h"/>
+        <childnode refid="1722" relation="include">
+        </childnode>
+        <childnode refid="1737" relation="include">
+        </childnode>
+      </node>
+      <node id="1735">
+        <label>type_traits.h</label>
+        <link refid="type__traits_8h"/>
+        <childnode refid="1728" relation="include">
+        </childnode>
+        <childnode refid="1736" relation="include">
+        </childnode>
+      </node>
+      <node id="1722">
+        <label>zorba/internal/diagnostic.h</label>
+        <link refid="internal_2diagnostic_8h"/>
+        <childnode refid="1723" relation="include">
+        </childnode>
+        <childnode refid="1724" relation="include">
+        </childnode>
+        <childnode refid="1725" relation="include">
+        </childnode>
+        <childnode refid="1731" relation="include">
+        </childnode>
+      </node>
+      <node id="1738">
+        <label>zorba/internal/qnames.h</label>
+      </node>
+      <node id="1724">
+        <label>vector</label>
+      </node>
+      <node id="1729">
+        <label>zorba/internal/system_diagnostic.h</label>
+        <link refid="system__diagnostic_8h"/>
+        <childnode refid="1730" relation="include">
+        </childnode>
+        <childnode refid="1725" relation="include">
+        </childnode>
+        <childnode refid="1731" relation="include">
+        </childnode>
+      </node>
+      <node id="1733">
+        <label>sstream</label>
+      </node>
+      <node id="1727">
+        <label>iostream</label>
+      </node>
+      <node id="1731">
+        <label>ztd.h</label>
+        <link refid="ztd_8h"/>
+        <childnode refid="1726" relation="include">
+        </childnode>
+        <childnode refid="1732" relation="include">
+        </childnode>
+        <childnode refid="1733" relation="include">
+        </childnode>
+        <childnode refid="1723" relation="include">
+        </childnode>
+        <childnode refid="1728" relation="include">
+        </childnode>
+        <childnode refid="1734" relation="include">
+        </childnode>
+        <childnode refid="1735" relation="include">
+        </childnode>
+      </node>
+      <node id="1736">
+        <label>type_traits</label>
+      </node>
+      <node id="1728">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="1726">
+        <label>cstring</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1745">
+        <label>xquery_warning.h</label>
+        <link refid="xquery__warning_8h"/>
+        <childnode refid="1746" relation="include">
+        </childnode>
+      </node>
+      <node id="1743">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="1742" relation="include">
+        </childnode>
+      </node>
+      <node id="1741">
+        <label>zorba_exception.h</label>
+        <link refid="zorba__exception_8h"/>
+        <childnode refid="1742" relation="include">
+        </childnode>
+        <childnode refid="1744" relation="include">
+        </childnode>
+      </node>
+      <node id="1739">
+        <label>error.h</label>
+        <link refid="error.h"/>
+        <childnode refid="1740" relation="include">
+        </childnode>
+        <childnode refid="1741" relation="include">
+        </childnode>
+      </node>
+      <node id="1740">
+        <label>user_exception.h</label>
+        <link refid="user__exception_8h"/>
+      </node>
+      <node id="1744">
+        <label>xquery_exception.h</label>
+        <link refid="xquery__exception_8h"/>
+        <childnode refid="1740" relation="include">
+        </childnode>
+        <childnode refid="1745" relation="include">
+        </childnode>
+      </node>
+      <node id="1746">
+        <label>diagnostic_handler.h</label>
+        <link refid="diagnostic__handler_8h"/>
+        <childnode refid="1743" relation="include">
+        </childnode>
+      </node>
+      <node id="1742">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="1743" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1UserError" prot="public">zorba::UserError</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <innernamespace refid="namespacezorba_1_1serialization">zorba::serialization</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_ERROR_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_ERROR_API_H</highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="internal_2diagnostic_8h" kindref="compound">zorba/internal/diagnostic.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="qname_8h" kindref="compound">zorba/internal/qname.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25" refid="namespacezorba_1_1serialization" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">serialization<sp/>{</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Archiver;</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1serialization_1a9fec1c09ccaafac6e86011328cb54ae6" kindref="member">operator&amp;</ref>(<sp/>serialization::Archiver&amp;,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref>*&amp;<sp/>);</highlight></codeline>
+<codeline lineno="28"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="30"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="namespacezorba_1a0299a82ee3cd6825cc41a5794e257c48" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref><sp/><ref refid="namespacezorba_1a0299a82ee3cd6825cc41a5794e257c48" kindref="member">Error</ref>;</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="34"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/>*<sp/>A<sp/>%UserError<sp/>is-a<sp/>Diagnostic<sp/>for<sp/>user-defined<sp/>errors<sp/>via<sp/>\c<sp/>fn:error().</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="classzorba_1_1UserError" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1UserError" kindref="compound" tooltip="A UserError is-a Diagnostic for user-defined errors via fn:error().">UserError</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref><sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Copy-constructs<sp/>a<sp/>%UserError.</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>from<sp/>The<sp/>%UserError<sp/>to<sp/>copy<sp/>from.</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1UserError" kindref="compound" tooltip="A UserError is-a Diagnostic for user-defined errors via fn:error().">UserError</ref>(<sp/><ref refid="classzorba_1_1UserError" kindref="compound" tooltip="A UserError is-a Diagnostic for user-defined errors via fn:error().">UserError</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;from<sp/>);</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Destroys<sp/>this<sp/>%UserError.</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/>~<ref refid="classzorba_1_1UserError" kindref="compound" tooltip="A UserError is-a Diagnostic for user-defined errors via fn:error().">UserError</ref>();</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Assigns<sp/>this<sp/>%UserError<sp/>from<sp/>another.</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>from<sp/>The<sp/>%UserError<sp/>to<sp/>assign<sp/>from.</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>\c<sp/>*this.</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1UserError" kindref="compound" tooltip="A UserError is-a Diagnostic for user-defined errors via fn:error().">UserError</ref>&amp;<sp/>operator=(<sp/><ref refid="classzorba_1_1UserError" kindref="compound" tooltip="A UserError is-a Diagnostic for user-defined errors via fn:error().">UserError</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;from<sp/>);</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>inherited</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound" tooltip="A QName is the abstract base class for a QName.">diagnostic::QName</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>qname()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>inherited</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>clone()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">internal::VariableQName&lt;std::string&gt;</ref><sp/><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">QName</ref>;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">QName</ref><sp/>qname_;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Constructs<sp/>a<sp/>%UserError.</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>ns<sp/>The<sp/>error&apos;s<sp/>namespace<sp/>URI.</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>prefix<sp/>The<sp/>error&apos;s<sp/>prefix.</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>localname<sp/>The<sp/>error&apos;s<sp/>local-name.</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1UserError" kindref="compound" tooltip="A UserError is-a Diagnostic for user-defined errors via fn:error().">UserError</ref>(<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*ns,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*prefix,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*localname<sp/>);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79" refid="classzorba_1_1UserError_1a3009c2a8bb8f1e567c4607147d8c11aa" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1UserException" kindref="compound" tooltip="A UserException is-an XQueryException for errors raised via fn:error().">UserException</ref>;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1UserError" kindref="compound" tooltip="A UserError is-a Diagnostic for user-defined errors via fn:error().">UserError</ref><sp/>make_user_error(<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>plan<sp/>serialization</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1UserError" kindref="compound" tooltip="A UserError is-a Diagnostic for user-defined errors via fn:error().">UserError</ref>(<sp/>serialization::Archiver&amp;<sp/>);</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1serialization_1a9fec1c09ccaafac6e86011328cb54ae6" kindref="member">serialization::operator&amp;</ref>(<sp/>serialization::Archiver&amp;,</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref>*&amp;<sp/>);</highlight></codeline>
+<codeline lineno="86"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="88"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_ERROR_API_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"><sp/>*<sp/>Local<sp/>variables:</highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/>*<sp/>mode:<sp/>c++</highlight></codeline>
+<codeline lineno="95"><highlight class="comment"><sp/>*<sp/>End:</highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/error.h"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build__windows_8dox" kind="file">
+    <compoundname>build_windows.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>build_windows<sp/>Zorba<sp/>Build<sp/>Notes<sp/>for<sp/>Windows<sp/>Users</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">\section<sp/>windows_requirements<sp/>Requirements<sp/>for<sp/>Windows<sp/>Builds</highlight></codeline>
+<codeline lineno="4"><highlight class="comment">-<sp/>In<sp/>order<sp/>to<sp/>compile<sp/>Zorba<sp/>on<sp/>Windows,</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/><sp/>you<sp/>need<sp/>a<sp/>working<sp/>Visual<sp/>Studio<sp/>(Express)<sp/>installation<sp/>(2008,<sp/>2010).</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">-<sp/>If<sp/>you<sp/>want<sp/>to<sp/>compile<sp/>Zorba<sp/>using<sp/>Visual<sp/>Studio<sp/>2008,</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/><sp/>you<sp/>will<sp/>need<sp/>to<sp/>install<sp/>the</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/><sp/>&lt;a<sp/>href=&quot;http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7&quot;<sp/>target=&quot;_blank&quot;&gt;Visual<sp/>C++<sp/>2008<sp/>Feature<sp/>Pack<sp/>Release&lt;/a&gt;.</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">-<sp/>Make<sp/>sure<sp/>that<sp/>the<sp/>libraries<sp/>required<sp/>for<sp/>Zorba</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/><sp/>are<sp/>built<sp/>with<sp/>the<sp/>same<sp/>version<sp/>of<sp/>Visual<sp/>Studio<sp/>that<sp/>you<sp/>use.</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">-<sp/>The<sp/>Windows<sp/>version<sp/>of<sp/>some<sp/>required<sp/>packages</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/><sp/>are<sp/>distributed<sp/>by<sp/>other<sp/>web<sp/>sites</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/><sp/>(all<sp/>of<sp/>them<sp/>are<sp/>pointed<sp/>to<sp/>from<sp/>the<sp/>main<sp/>package<sp/>web<sp/>sites</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/><sp/>indicated<sp/>in<sp/>the<sp/>\ref<sp/>third_party_libs<sp/>section):</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/>-<sp/>Libxml2<sp/>and<sp/>Iconv:<sp/>http://www.zlatkovic.com/libxml.en.html</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/><sp/>-<sp/>CURL:<sp/>http://curl.haxx.se/download.html</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"><sp/><sp/>-<sp/>Libxslt:<sp/>http://www.zlatkovic.com/pub/libxml/</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"></highlight></codeline>
+<codeline lineno="19"><highlight class="comment">\section<sp/>windows_autodll<sp/>Zorba&apos;s<sp/>Automatic<sp/>DLL<sp/>Detection<sp/>Mechanism</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"></highlight></codeline>
+<codeline lineno="21"><highlight class="comment">Zorba<sp/>has<sp/>in<sp/>place<sp/>an<sp/>automatic<sp/>DLL<sp/>detection<sp/>mechanism.<sp/><sp/>This<sp/>will</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">try<sp/>to<sp/>automatically<sp/>gather<sp/>all<sp/>the<sp/>DLLs<sp/>from<sp/>the<sp/>third<sp/>party</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">libraries<sp/>and<sp/>install<sp/>them<sp/>with<sp/>Zorba<sp/>when<sp/>you<sp/>do<sp/>&quot;make<sp/>install&quot;<sp/>or</highlight></codeline>
+<codeline lineno="24"><highlight class="comment">you<sp/>build<sp/>the<sp/>Visual<sp/>Studio<sp/>INSTALL<sp/>project,<sp/>to<sp/>ensure<sp/>that<sp/>your</highlight></codeline>
+<codeline lineno="25"><highlight class="comment">installation<sp/>will<sp/>function<sp/>regardless<sp/>of<sp/>the<sp/>system<sp/>or<sp/>user&apos;s<sp/>PATH.</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"></highlight></codeline>
+<codeline lineno="27"><highlight class="comment">Zorba<sp/>will<sp/>search<sp/>for<sp/>the<sp/>third<sp/>party<sp/>libraries<sp/>in<sp/>order<sp/>in:</highlight></codeline>
+<codeline lineno="28"><highlight class="comment">-#<sp/>all<sp/>the<sp/>directories<sp/>pointed<sp/>by<sp/>the<sp/>\c<sp/>ZORBA_THIRD_PARTY_REQUIREMENTS</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/><sp/>CMake<sp/>configuration<sp/>parameter</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/><sp/><sp/>-<sp/>e.g.<sp/>if<sp/>you<sp/>have<sp/>Xerces<sp/>in<sp/>&quot;C:\tools&quot;<sp/>and<sp/>IConv<sp/>in<sp/>&quot;D:\tools&quot;,</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>you<sp/>must<sp/>configure<sp/>your<sp/>build<sp/>as<sp/>follows:</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>cmake<sp/>-D<sp/>ZORBA_THIRD_PARTY_REQUIREMENTS=C:\tools;D:\tool<sp/>{ZORBASRC}</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>and<sp/>Zorba<sp/>will<sp/>find<sp/>all<sp/>it<sp/>needs<sp/>from<sp/>Xerces<sp/>and<sp/>Iconv.</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>(The<sp/>directory<sp/>names<sp/>must<sp/>contain<sp/>&quot;xerces&quot;<sp/>and<sp/>&quot;iconv&quot;<sp/>respectively,<sp/>case<sp/>insensitive)</highlight></codeline>
+<codeline lineno="37"><highlight class="comment">-#<sp/>the<sp/>&lt;tt&gt;Program<sp/>Files&lt;/tt&gt;<sp/>directory<sp/>on<sp/>your<sp/>system</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/><sp/>-<sp/>e.g.<sp/>if<sp/>you<sp/>have<sp/>cURL<sp/>installed<sp/>in<sp/>&quot;C:\Program<sp/>Files\*cURL*&quot;,</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>Zorba<sp/>will<sp/>find<sp/>all<sp/>it<sp/>needs<sp/>from<sp/>cURL.</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>(The<sp/>directory<sp/>must<sp/>contain<sp/>&quot;curl&quot;,<sp/>case<sp/>insensitive.)</highlight></codeline>
+<codeline lineno="41"><highlight class="comment">-#<sp/>all<sp/>the<sp/>paths<sp/>in<sp/>the<sp/>\c<sp/>PATH<sp/>variable</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/><sp/>-<sp/>e.g.<sp/>if<sp/>you<sp/>have<sp/>&quot;C:\tools\*ICU*\bin&quot;<sp/>in<sp/>your<sp/>path,</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>Zorba<sp/>will<sp/>find<sp/>all<sp/>it<sp/>needs<sp/>from<sp/>ICU.</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>(The<sp/>directory<sp/>must<sp/>only<sp/>contain<sp/>&quot;icu&quot;.)</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"></highlight></codeline>
+<codeline lineno="46"><highlight class="comment">The<sp/>important<sp/>thing<sp/>to<sp/>note<sp/>here<sp/>is<sp/>that<sp/>if<sp/>you<sp/>have<sp/>any<sp/>third-party</highlight></codeline>
+<codeline lineno="47"><highlight class="comment">requirements<sp/>installed<sp/>in<sp/>unusual<sp/>locations,<sp/>you<sp/>should<sp/>use<sp/>the<sp/>CMake</highlight></codeline>
+<codeline lineno="48"><highlight class="comment">configuration<sp/>parameter<sp/>\c<sp/>ZORBA_THIRD_PARTY_REQUIREMENTS<sp/>instead<sp/>of</highlight></codeline>
+<codeline lineno="49"><highlight class="comment">\c<sp/>CMAKE_PREFIX_PATH<sp/>to<sp/>specify<sp/>those<sp/>locations<sp/>when<sp/>configuring</highlight></codeline>
+<codeline lineno="50"><highlight class="comment">Zorba.</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"></highlight></codeline>
+<codeline lineno="52"><highlight class="comment">\section<sp/>windows_nmake<sp/>Building<sp/>Zorba<sp/>using<sp/>a<sp/>NMake<sp/>Project</highlight></codeline>
+<codeline lineno="53"><highlight class="comment">-#<sp/>Start<sp/>a<sp/>Visual<sp/>Studio<sp/>Command<sp/>Line.</highlight></codeline>
+<codeline lineno="54"><highlight class="comment">-#<sp/>Change<sp/>the<sp/>current<sp/>working<sp/>directory<sp/>to<sp/>the<sp/>\c<sp/>{ZORBABUILD}<sp/>directory<sp/>(as<sp/>described<sp/>in<sp/>\ref<sp/>create_build_dir).</highlight></codeline>
+<codeline lineno="55"><highlight class="comment">-#<sp/>Execute<sp/>CMake<sp/>as<sp/>follows:</highlight></codeline>
+<codeline lineno="56"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="57"><highlight class="comment">cmake<sp/>-G<sp/>&quot;NMake<sp/>Makefiles&quot;<sp/>{ZORBASRC}</highlight></codeline>
+<codeline lineno="58"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="59"><highlight class="comment">-#<sp/>Now<sp/>you<sp/>are<sp/>ready<sp/>to<sp/>call<sp/>\&quot;\c<sp/>nmake\&quot;<sp/>from<sp/>the<sp/>\c<sp/>{ZORBABUILD}<sp/>directory.</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"></highlight></codeline>
+<codeline lineno="61"><highlight class="comment">\section<sp/>windows_visualstudio<sp/>Building<sp/>Zorba<sp/>using<sp/>a<sp/>Visual<sp/>Studio<sp/>Project</highlight></codeline>
+<codeline lineno="62"><highlight class="comment">-#<sp/>Start<sp/>Visual<sp/>Studio<sp/>Command<sp/>Line</highlight></codeline>
+<codeline lineno="63"><highlight class="comment">-#<sp/>Change<sp/>the<sp/>current<sp/>working<sp/>directory<sp/>into<sp/>the<sp/>\c<sp/>{ZORBABUILD}<sp/>directory<sp/>(as<sp/>described<sp/>in<sp/>\ref<sp/>create_build_dir).</highlight></codeline>
+<codeline lineno="64"><highlight class="comment">-#<sp/>Execute<sp/>CMake<sp/>with<sp/>the<sp/>appropriate<sp/>CMake<sp/>Visual<sp/>Studio<sp/>generator<sp/>for<sp/>your<sp/>installation<sp/>(see<sp/>&lt;tt&gt;cmake<sp/>--help&lt;/tt&gt;<sp/>for<sp/>a<sp/>list<sp/>of<sp/>generators).<sp/>For<sp/>instance,</highlight></codeline>
+<codeline lineno="65"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="66"><highlight class="comment">cmake<sp/>-G<sp/>&quot;Visual<sp/>Studio<sp/>10&quot;<sp/>{ZORBASRC}</highlight></codeline>
+<codeline lineno="67"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="68"><highlight class="comment">-#<sp/>Start<sp/>Visual<sp/>Studio,</highlight></codeline>
+<codeline lineno="69"><highlight class="comment"><sp/><sp/><sp/>open<sp/>the<sp/>generated<sp/>\c<sp/>zorba.sln<sp/>project<sp/>file<sp/>in<sp/>\c<sp/>{ZORBABUILD},</highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/><sp/>and<sp/>build<sp/>the<sp/>\c<sp/>ALL<sp/>project.</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"></highlight></codeline>
+<codeline lineno="72"><highlight class="comment">\section<sp/>windows_https_support<sp/>HTTPS<sp/>support</highlight></codeline>
+<codeline lineno="73"><highlight class="comment">-<sp/>In<sp/>order<sp/>to<sp/>have<sp/>SSL<sp/>support<sp/>in<sp/>Zorba,</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/>you<sp/>have<sp/>to<sp/>use<sp/>the<sp/>CURL<sp/>library<sp/>that<sp/>has<sp/>SSL<sp/>support.<sp/></highlight></codeline>
+<codeline lineno="75"><highlight class="comment">-<sp/>There<sp/>is<sp/>one<sp/>more<sp/>thing:</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/>in<sp/>order<sp/>to<sp/>validate<sp/>the<sp/>server&apos;s<sp/>certificate,</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/>CURL+SSL<sp/>needs<sp/>to<sp/>know<sp/>about<sp/>the<sp/>root<sp/>Certificates<sp/>of<sp/>Authenticity<sp/>(CA):</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/>a<sp/>set<sp/>of<sp/>public<sp/>keys<sp/>freely<sp/>available<sp/>on<sp/>the<sp/>internet.<sp/></highlight></codeline>
+<codeline lineno="79"><highlight class="comment">-<sp/>On<sp/>Windows,</highlight></codeline>
+<codeline lineno="80"><highlight class="comment"><sp/><sp/>Zorba<sp/>expects<sp/>this<sp/>file<sp/>to<sp/>be<sp/>called<sp/>\c<sp/>cacert.pem</highlight></codeline>
+<codeline lineno="81"><highlight class="comment"><sp/><sp/>and<sp/>searches<sp/>for<sp/>it<sp/>in<sp/>the<sp/>current<sp/>directory<sp/>and<sp/>system<sp/>paths.<sp/></highlight></codeline>
+<codeline lineno="82"><highlight class="comment">-<sp/>This<sp/>\c<sp/>cacert.pem<sp/>file<sp/>can<sp/>be<sp/>found<sp/>on<sp/>the<sp/>curl<sp/>page:</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/>http://curl.haxx.se/docs/caextract.html<sp/>.</highlight></codeline>
+<codeline lineno="84"><highlight class="comment">-<sp/>In<sp/>order<sp/>to<sp/>disable<sp/>the<sp/>validation<sp/>of<sp/>the<sp/>server<sp/>certificate,</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"><sp/><sp/>the<sp/>\c<sp/>ZORBA_VERIFY_PEER_SSL_CERTIFICATE<sp/>can<sp/>be<sp/>set<sp/>to<sp/>\c<sp/>OFF</highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/>in<sp/>cmake<sp/></highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/>(and<sp/>actually<sp/>this<sp/>is<sp/>the<sp/>default<sp/>value).</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/>Set<sp/>it<sp/>to<sp/>\c<sp/>ON<sp/>to<sp/>validate<sp/>server<sp/>certificate<sp/>chain</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/>on<sp/>every<sp/>access<sp/>to<sp/>\c<sp/>https://<sp/>.</highlight></codeline>
+<codeline lineno="90"><highlight class="comment">-<sp/>To<sp/>read<sp/>more<sp/>about<sp/>CURL+SSL:<sp/>http://curl.haxx.se/docs/sslcerts.html<sp/>.</highlight></codeline>
+<codeline lineno="91"><highlight class="comment">-<sp/>As<sp/>an<sp/>\c<sp/>https<sp/>test<sp/>page,</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/><sp/>we<sp/>used<sp/>for<sp/>example<sp/>the<sp/>rss<sp/>feed</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"><sp/><sp/>fn:doc(&apos;https://www.npr.org/rss/rss.php?id=1001&apos;)<sp/>.</highlight></codeline>
+<codeline lineno="94"><highlight class="comment"></highlight></codeline>
+<codeline lineno="95"><highlight class="comment">\section<sp/>windows_noncore_modules<sp/>Downloads<sp/>for<sp/>Non-Core<sp/>Modules</highlight></codeline>
+<codeline lineno="96"><highlight class="comment"></highlight></codeline>
+<codeline lineno="97"><highlight class="comment">\subsection<sp/>windows_imagemagick<sp/>ImageMagick<sp/>(image-processing<sp/>modules)</highlight></codeline>
+<codeline lineno="98"><highlight class="comment"></highlight></codeline>
+<codeline lineno="99"><highlight class="comment">Just<sp/>download<sp/>the<sp/>ImageMagick<sp/>Windows<sp/>binary<sp/>from<sp/>http://www.imagemagick.org/script/binary-releases.php<sp/>and<sp/>install<sp/>it.<sp/>We<sp/>recommend<sp/>the<sp/>latest<sp/>&quot;Q8-windows-dll&quot;<sp/>version.</highlight></codeline>
+<codeline lineno="100"><highlight class="comment"></highlight></codeline>
+<codeline lineno="101"><highlight class="comment"></highlight></codeline>
+<codeline lineno="102"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/build_windows.dox"/>
+  </compounddef>
+</doxygen>

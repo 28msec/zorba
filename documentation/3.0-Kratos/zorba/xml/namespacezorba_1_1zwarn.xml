@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1zwarn" kind="namespace">
+    <compoundname>zorba::zwarn</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacezorba_1_1zwarn_1aa00044a27cf50cfff6e45f49f82c7416" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a3d266c3a858a16ec06c2ef3a77af2df1" kindref="member">ZorbaWarningCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaWarningCode zorba::zwarn::ZWST0002_UNKNOWN_ANNOTATION</definition>
+        <argsstring></argsstring>
+        <name>ZWST0002_UNKNOWN_ANNOTATION</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="936"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zwarn_1ac7c1c7ec65da9b4f6bb1361c800cb52b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a3d266c3a858a16ec06c2ef3a77af2df1" kindref="member">ZorbaWarningCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaWarningCode zorba::zwarn::ZWST0003_FAKE_SEQUENTIAL_FUNCTION</definition>
+        <argsstring></argsstring>
+        <name>ZWST0003_FAKE_SEQUENTIAL_FUNCTION</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="938"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zwarn_1abb60db35d13722b5acf06fb3ecc0a04d" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a3d266c3a858a16ec06c2ef3a77af2df1" kindref="member">ZorbaWarningCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaWarningCode zorba::zwarn::ZWST0004_AMBIGUOUS_SEQUENTIAL_FLWOR</definition>
+        <argsstring></argsstring>
+        <name>ZWST0004_AMBIGUOUS_SEQUENTIAL_FLWOR</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="940"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zwarn_1ab36d6c2d830f7196545a4c299a131e1d" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a3d266c3a858a16ec06c2ef3a77af2df1" kindref="member">ZorbaWarningCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaWarningCode zorba::zwarn::ZWST0005_CACHING_NOT_POSSIBLE</definition>
+        <argsstring></argsstring>
+        <name>ZWST0005_CACHING_NOT_POSSIBLE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="942"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zwarn_1ad077119927fea2ba3e19d3d1462e56d1" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a3d266c3a858a16ec06c2ef3a77af2df1" kindref="member">ZorbaWarningCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaWarningCode zorba::zwarn::ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED</definition>
+        <argsstring></argsstring>
+        <name>ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="944"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zwarn_1a6ebc479e3895570fe8097748c3cd4359" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a3d266c3a858a16ec06c2ef3a77af2df1" kindref="member">ZorbaWarningCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaWarningCode zorba::zwarn::ZWST0007_LOADER_PARSING_WARNING</definition>
+        <argsstring></argsstring>
+        <name>ZWST0007_LOADER_PARSING_WARNING</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="946"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zwarn_1a215328e3b1fa4c91cb2b456c9b34f916" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a3d266c3a858a16ec06c2ef3a77af2df1" kindref="member">ZorbaWarningCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaWarningCode zorba::zwarn::ZWST0008_DEPRECATED</definition>
+        <argsstring></argsstring>
+        <name>ZWST0008_DEPRECATED</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="948"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zwarn_1aa2e9e547d2bbfabe4e185304a332d2fb" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a3d266c3a858a16ec06c2ef3a77af2df1" kindref="member">ZorbaWarningCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaWarningCode zorba::zwarn::ZWST0009_COMMON_LANGUAGE_WARNING</definition>
+        <argsstring></argsstring>
+        <name>ZWST0009_COMMON_LANGUAGE_WARNING</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="950"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="934"/>
+  </compounddef>
+</doxygen>

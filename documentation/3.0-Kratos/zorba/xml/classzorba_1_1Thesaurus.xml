@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Thesaurus" kind="class" prot="public">
+    <compoundname>zorba::Thesaurus</compoundname>
+    <includes refid="thesaurus_8h" local="no">zorba/thesaurus.h</includes>
+    <innerclass refid="classzorba_1_1Thesaurus_1_1iterator" prot="public">zorba::Thesaurus::iterator</innerclass>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1Thesaurus_1a84970de9a5c647fcdd7ac56c3244bfb7" prot="public" static="no">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref>&lt; <ref refid="classzorba_1_1Thesaurus" kindref="compound">Thesaurus</ref> const, <ref refid="structzorba_1_1internal_1_1ztd_1_1destroy__delete" kindref="compound">internal::ztd::destroy_delete</ref>&lt; <ref refid="classzorba_1_1Thesaurus" kindref="compound">Thesaurus</ref> const  &gt; &gt;</type>
+        <definition>typedef std::unique_ptr&lt; Thesaurus const,internal::ztd::destroy_delete&lt;Thesaurus const&gt; &gt; zorba::Thesaurus::ptr</definition>
+        <argsstring></argsstring>
+        <name>ptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="43" bodyfile="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1Thesaurus_1a8996f5f2ed3842dda28b5ef989dbb7ff" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned zorba::Thesaurus::range_type</definition>
+        <argsstring></argsstring>
+        <name>range_type</name>
+        <briefdescription>
+<para>The integral type for &quot;at least&quot; and &quot;at most&quot; values. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="48" bodyfile="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Thesaurus_1a380788e76c82b10e9638f38f31a9b311" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Thesaurus::destroy</definition>
+        <argsstring>() const =0</argsstring>
+        <name>destroy</name>
+        <briefdescription>
+<para>Destroys this Thesaurus. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is called by <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> when the Thesaurus is no longer needed.</para><para>If your implementation dynamically allocates Thesaurus objects, then your implementation can simply be (and usually is) <computeroutput>delete this</computeroutput>.</para><para>If your implementation returns a pointer to a static Thesaurus object, then your implementation should do nothing. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="86"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Thesaurus_1a0157de16ecf4afc4a8895d9bf437372f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Thesaurus_1_1iterator_1a2d404bc5c65201236a67ededd2895104" kindref="member">iterator::ptr</ref></type>
+        <definition>virtual iterator::ptr zorba::Thesaurus::lookup</definition>
+        <argsstring>(String const &amp;phrase, String const &amp;relationship, range_type at_least, range_type at_most) const =0</argsstring>
+        <name>lookup</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>phrase</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>relationship</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Thesaurus_1a8996f5f2ed3842dda28b5ef989dbb7ff" kindref="member">range_type</ref></type>
+          <declname>at_least</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Thesaurus_1a8996f5f2ed3842dda28b5ef989dbb7ff" kindref="member">range_type</ref></type>
+          <declname>at_most</declname>
+        </param>
+        <briefdescription>
+<para>Looks-up the given phrase. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>phrase</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The phrase to look up. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>relationship</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The relationship the synonyms are to have to the given <emphasis>phrase</emphasis>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>at_least</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The minimum number of levels within the thesaurus to be traversed. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>at_most</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The maximum number of levels within the thesaurus to be traversed. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns a pointer to an iterator for the results or <computeroutput>NULL</computeroutput> if the phrase was not found. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="103"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1Thesaurus_1a4a18978e627bcf0c3e896be511842557" prot="protected" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::Thesaurus::~Thesaurus</definition>
+        <argsstring>()</argsstring>
+        <name>~Thesaurus</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="106"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A Thesaurus provides a way to look up related phrases for a given phrase. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" bodystart="38" bodyend="107"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1Thesaurus_1a380788e76c82b10e9638f38f31a9b311" prot="public" virt="pure-virtual"><scope>zorba::Thesaurus</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1Thesaurus_1a0157de16ecf4afc4a8895d9bf437372f" prot="public" virt="pure-virtual"><scope>zorba::Thesaurus</scope><name>lookup</name></member>
+      <member refid="classzorba_1_1Thesaurus_1a84970de9a5c647fcdd7ac56c3244bfb7" prot="public" virt="non-virtual"><scope>zorba::Thesaurus</scope><name>ptr</name></member>
+      <member refid="classzorba_1_1Thesaurus_1a8996f5f2ed3842dda28b5ef989dbb7ff" prot="public" virt="non-virtual"><scope>zorba::Thesaurus</scope><name>range_type</name></member>
+      <member refid="classzorba_1_1Thesaurus_1a4a18978e627bcf0c3e896be511842557" prot="protected" virt="virtual"><scope>zorba::Thesaurus</scope><name>~Thesaurus</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

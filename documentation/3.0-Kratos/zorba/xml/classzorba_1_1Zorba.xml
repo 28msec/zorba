@@ -1,0 +1,596 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Zorba" kind="class" prot="public">
+    <compoundname>zorba::Zorba</compoundname>
+    <includes refid="zorba_8h" local="no">zorba/zorba.h</includes>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a2ce37d64e730e40875576d2e80b02b78" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> *</type>
+        <definition>static Zorba* zorba::Zorba::getInstance</definition>
+        <argsstring>(void *store)</argsstring>
+        <name>getInstance</name>
+        <param>
+          <type>void *</type>
+          <declname>store</declname>
+        </param>
+        <briefdescription>
+<para>Gets the singleton instance of the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> object. </para>        </briefdescription>
+        <detaileddescription>
+<para>The <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> object provides factory methods for creating and/or compiling <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> objects, creating <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> objects, and accessing components as, for example, the <ref refid="classzorba_1_1ItemFactory" kindref="compound">ItemFactory</ref> or the <ref refid="classzorba_1_1XmlDataManager" kindref="compound">XmlDataManager</ref>.</para><para>The first time this function is called, the Zorba Engine is initialized. Thereby, it initializes all the libraries that are used in the system, i.e. ICU, libxml2, xerces, and libcurl.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> the singleton <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> object </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="68"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a521a08fd4e30c5c10e9be2f3e5ebd834" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="classzorba_1_1Version" kindref="compound">Version</ref> &amp;</type>
+        <definition>static const Version&amp; zorba::Zorba::version</definition>
+        <argsstring>()</argsstring>
+        <name>version</name>
+        <briefdescription>
+<para>Get information about the used version of Zorba. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1Version" kindref="compound">Version</ref> information about the used Zorba version. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="75"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a76a2f22394bd4b83d8d1e7f0c3c5e78b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref></type>
+        <definition>virtual XQuery_t zorba::Zorba::compileQuery</definition>
+        <argsstring>(const String &amp;aQuery, DiagnosticHandler *aDiagnosticHandler=0)=0</argsstring>
+        <name>compileQuery</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Creates and compiles an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This methods creates an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object and compiles the query string passed to this method.</para><para>Optionally, this method takes an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> as parameter. In the case an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is passed as parameter, each error that occurs during compiling or executing the query, is reported to the passed error handler. If not <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is given, exceptions are thrown for each of these errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query string for the new <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors should be reported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> the newly created and compiled <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="132"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1aadbcb70fe82d2d99e9fd45e267b4aa03" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref></type>
+        <definition>virtual XQuery_t zorba::Zorba::compileQuery</definition>
+        <argsstring>(const String &amp;aQuery, const StaticContext_t &amp;aContext, DiagnosticHandler *aDiagnosticHandler=0)=0</argsstring>
+        <name>compileQuery</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>aContext</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Creates and compiles an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object using a <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>This methods creates an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object and compiles the query string passed to this method. Compilation is done using the information contained in the <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> that is passed as parameter.</para><para>Optionally, this method takes an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> as parameter. In the case an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is passed as parameter, each error that occurs during compiling or executing the query, is reported to the passed error handler. If not <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is given, exceptions are thrown for each of these errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query string for the new <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aContext</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> that contains information used for compiling the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors should be reported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> the newly created and compiled <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="153"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a4d80325336fb406b7bc0ab60ad6224f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref></type>
+        <definition>virtual XQuery_t zorba::Zorba::compileQuery</definition>
+        <argsstring>(const String &amp;aQuery, const Zorba_CompilerHints_t &amp;aCompilerHints, DiagnosticHandler *aDiagnosticHandler=0)=0</argsstring>
+        <name>compileQuery</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1afb707279f21bf8e9df26d5ec459b8ede" kindref="member">Zorba_CompilerHints_t</ref> &amp;</type>
+          <declname>aCompilerHints</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Creates and compiles an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object using the given CompilerHints. </para>        </briefdescription>
+        <detaileddescription>
+<para>This methods creates an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object and compiles the query string passed to this method. Compilation and optimization is done with respect to the given CompilerHints.</para><para>Optionally, this method takes an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> as parameter. In the case an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is passed as parameter, each error that occurs during compiling or executing the query, is reported to the passed error handler. If not <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is given, exceptions are thrown for each of these errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query string for the new <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCompilerHints</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the CompilerHints used to compile the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors should be reported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> the newly created and compiled <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="174"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a3765824c7d99bf86f6a7f05a8d03ede5" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref></type>
+        <definition>virtual XQuery_t zorba::Zorba::compileQuery</definition>
+        <argsstring>(const String &amp;aQuery, const StaticContext_t &amp;aContext, const Zorba_CompilerHints_t &amp;aCompilerHints, DiagnosticHandler *aDiagnosticHandler=0)=0</argsstring>
+        <name>compileQuery</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>aContext</declname>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1afb707279f21bf8e9df26d5ec459b8ede" kindref="member">Zorba_CompilerHints_t</ref> &amp;</type>
+          <declname>aCompilerHints</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Creates and compiles an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object using the given CompilerHints and <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>This methods creates an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object and compiles the query string passed to this method. Compilation and optimization is done with respect to the given CompilerHints. Moreover, compilation is done using the information contained in the <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref>.</para><para>Optionally, this method takes an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> as parameter. In the case an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is passed as parameter, each error that occurs during compiling or executing the query, is reported to the passed error handler. If not <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is given, exceptions are thrown for each of these errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query string for the new <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aContext</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> that contains information used for compiling the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCompilerHints</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the CompilerHints used to compile the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors should be reported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> the newly created and compiled <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="199"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a195d4587b6f1c8e2eefb1b4e0be868c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref></type>
+        <definition>virtual XQuery_t zorba::Zorba::compileQuery</definition>
+        <argsstring>(std::istream &amp;aQuery, DiagnosticHandler *aDiagnosticHandler=0)=0</argsstring>
+        <name>compileQuery</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Creates and compiles an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This methods creates an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object and compiles the query that is passed to this method as an input stream.</para><para>Optionally, this method takes an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> as parameter. In the case an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is passed as parameter, each error that occurs during compiling or executing the query, is reported to the passed error handler. If not <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is given, exceptions are thrown for each of these errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the input stream providing the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors should be reported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> the newly created and compiled <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="216"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a15ee9df7b2eb08069ce81c4fdd60ca2b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref></type>
+        <definition>virtual XQuery_t zorba::Zorba::compileQuery</definition>
+        <argsstring>(std::istream &amp;aQuery, const StaticContext_t &amp;aContext, DiagnosticHandler *aDiagnosticHandler=0)=0</argsstring>
+        <name>compileQuery</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>aContext</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Creates and compiles an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object using a <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>This methods creates an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object and compiles the query that is passed to this method as an input stream. Compilation is done using the information contained in the <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> that is passed as parameter.</para><para>Optionally, this method takes an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> as parameter. In the case an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is passed as parameter, each error that occurs during compiling or executing the query, is reported to the passed error handler. If not <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is given, exceptions are thrown for each of these errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the input stream providing the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aContext</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> that contains information used for compiling the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors should be reported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> the newly created and compiled <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="238"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a3154c3fddef631e36ccd62c58da41e26" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref></type>
+        <definition>virtual XQuery_t zorba::Zorba::compileQuery</definition>
+        <argsstring>(std::istream &amp;aQuery, const Zorba_CompilerHints_t &amp;aCompilerHints, DiagnosticHandler *aDiagnosticHandler=0)=0</argsstring>
+        <name>compileQuery</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1afb707279f21bf8e9df26d5ec459b8ede" kindref="member">Zorba_CompilerHints_t</ref> &amp;</type>
+          <declname>aCompilerHints</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Creates and compiles an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object using the given CompilerHints. </para>        </briefdescription>
+        <detaileddescription>
+<para>This methods creates an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object and compiles the query that is passed to this method as an input stream. Compilation and optimization is done with respect to the given CompilerHints.</para><para>Optionally, this method takes an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> as parameter. In the case an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is passed as parameter, each error that occurs during compiling or executing the query, is reported to the passed error handler. If not <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is given, exceptions are thrown for each of these errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the input stream providing the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCompilerHints</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the CompilerHints used to compile the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors should be reported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> the newly created and compiled <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="259"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a24d7a69dd353946db8839803b265d18c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref></type>
+        <definition>virtual XQuery_t zorba::Zorba::compileQuery</definition>
+        <argsstring>(std::istream &amp;aQuery, const StaticContext_t &amp;aContext, const Zorba_CompilerHints_t &amp;aCompilerHints, DiagnosticHandler *aDiagnosticHandler=0)=0</argsstring>
+        <name>compileQuery</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>aContext</declname>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1afb707279f21bf8e9df26d5ec459b8ede" kindref="member">Zorba_CompilerHints_t</ref> &amp;</type>
+          <declname>aCompilerHints</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Creates and compiles an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object using the given CompilerHints and <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>This methods creates an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object and compiles the query that is passed to this method as an input stream. Compilation and optimization is done with respect to the given CompilerHints. Moreover, compilation is done using the information contained in the <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref>.</para><para>Optionally, this method takes an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> as parameter. In the case an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is passed as parameter, each error that occurs during compiling or executing the query, is reported to the passed error handler. If not <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is given, exceptions are thrown for each of these errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the input stream providing the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aContext</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> that contains information used for compiling the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCompilerHints</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the CompilerHints used to compile the query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors should be reported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> the newly created and compiled <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="284"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1ae4a9c8431845c0516adda26ceaaff8e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref></type>
+        <definition>virtual XQuery_t zorba::Zorba::createQuery</definition>
+        <argsstring>(DiagnosticHandler *aDiagnosticHandler=0)=0</argsstring>
+        <name>createQuery</name>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Creates an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This methods creates an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object without implicitliy assigning it a query. An object returned by this method can be compiled (see compileQuery).</para><para>Optionally, this method takes an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> as parameter. In the case an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is passed as parameter, each error that occurs during compiling or executing the query, is reported to the passed error handler. If no <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is given, exceptions are thrown for each of these errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors should be reported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> the newly created <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="115"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a9c2f950f6c68a948683ae15d587d756c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref></type>
+        <definition>virtual StaticContext_t zorba::Zorba::createStaticContext</definition>
+        <argsstring>(DiagnosticHandler *aDiagnosticHandler=0)=0</argsstring>
+        <name>createStaticContext</name>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Creates a new <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>The method returns a smart pointer to a new <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> object that can be used for compiling a query.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors should be reported. If not <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is given, exceptions are thrown for each of these errors. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>StaticContext_t a smart pointer to a new <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="297"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a2197d4d63b119e4d97eeabacc71ab7cb" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1audit_1_1Provider" kindref="compound">audit::Provider</ref> *</type>
+        <definition>virtual audit::Provider* zorba::Zorba::getAuditProvider</definition>
+        <argsstring>()=0</argsstring>
+        <name>getAuditProvider</name>
+        <briefdescription>
+<para>Gets the singleton instance of <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>&apos;s audit provider object. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1audit_1_1Provider" kindref="compound">audit::Provider</ref> the singeleton instance of <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>&apos;s audit provider. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="318"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1ae52dcce86fa7023b3ca761c4d1eaea47" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1ItemFactory" kindref="compound">ItemFactory</ref> *</type>
+        <definition>virtual ItemFactory* zorba::Zorba::getItemFactory</definition>
+        <argsstring>()=0</argsstring>
+        <name>getItemFactory</name>
+        <briefdescription>
+<para>Gets the singleton instance of the <ref refid="classzorba_1_1ItemFactory" kindref="compound">ItemFactory</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1ItemFactory" kindref="compound">ItemFactory</ref> the singleton instance of the <ref refid="classzorba_1_1ItemFactory" kindref="compound">ItemFactory</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="311"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1ad4123727065bcb975c9e2bb8aa1793b4" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1PropertiesGlobal" kindref="compound">PropertiesGlobal</ref> *</type>
+        <definition>virtual PropertiesGlobal* zorba::Zorba::getPropertiesGlobal</definition>
+        <argsstring>()=0</argsstring>
+        <name>getPropertiesGlobal</name>
+        <briefdescription>
+<para>Gets the singleton instance of <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>&apos;s properties object. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>zorba::Properties the singleton instance of <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>&apos;s properties object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="324"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a0bb7b04fa792aed7ef9c9ad9f9863524" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1a71ab77999abc9a60012b2c63a848c2ce" kindref="member">XmlDataManager_t</ref></type>
+        <definition>virtual XmlDataManager_t zorba::Zorba::getXmlDataManager</definition>
+        <argsstring>()=0</argsstring>
+        <name>getXmlDataManager</name>
+        <briefdescription>
+<para>Returns an <ref refid="classzorba_1_1XmlDataManager" kindref="compound">XmlDataManager</ref> object. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1XmlDataManager" kindref="compound">XmlDataManager</ref> an <ref refid="classzorba_1_1XmlDataManager" kindref="compound">XmlDataManager</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="304"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a8cd51689f4e6a1639709aadceda21aa6" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Zorba::shutdown</definition>
+        <argsstring>()=0</argsstring>
+        <name>shutdown</name>
+        <briefdescription>
+<para>Releases all resources aquired by the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> XQuery Engine. </para>        </briefdescription>
+        <detaileddescription>
+<para>Also releases resources aquired by the libraries used (i.e. icu, libxml2, xerces, libcurl).</para><para>Before calling shutdown, all xquery objects, items, contexts, ... have to be closed or gone out of scope; otherwise this call may fail.</para><para>After shutdown has been called, any calls to zorba are invalid.</para><para>getInstance may be used to reinitialize the engine. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="99"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Zorba_1a421d9f3276b0ce9e06cef2997330d21e" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::Zorba::~Zorba</definition>
+        <argsstring>()</argsstring>
+        <name>~Zorba</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+<para>The destructor is called during static deinitialization if getInstance has been called at least once before. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="83"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> class is the single point of access to the Zorba engine. </para>    </briefdescription>
+    <detaileddescription>
+<para>There exists one instance of the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> class per process. It can be used to (1) create and compile queries, (2) create static contexts, (3) provides access to the <ref refid="classzorba_1_1XmlDataManager" kindref="compound">XmlDataManager</ref>, (4) provides access to the <ref refid="classzorba_1_1ItemFactory" kindref="compound">ItemFactory</ref>, and (5) provides access to the <ref refid="classzorba_1_1PropertiesGlobal" kindref="compound">PropertiesGlobal</ref>. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/zorba.h" line="51" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba.h" bodystart="50" bodyend="326"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1Zorba_1a76a2f22394bd4b83d8d1e7f0c3c5e78b" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>compileQuery</name></member>
+      <member refid="classzorba_1_1Zorba_1aadbcb70fe82d2d99e9fd45e267b4aa03" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>compileQuery</name></member>
+      <member refid="classzorba_1_1Zorba_1a4d80325336fb406b7bc0ab60ad6224f5" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>compileQuery</name></member>
+      <member refid="classzorba_1_1Zorba_1a3765824c7d99bf86f6a7f05a8d03ede5" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>compileQuery</name></member>
+      <member refid="classzorba_1_1Zorba_1a195d4587b6f1c8e2eefb1b4e0be868c1" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>compileQuery</name></member>
+      <member refid="classzorba_1_1Zorba_1a15ee9df7b2eb08069ce81c4fdd60ca2b" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>compileQuery</name></member>
+      <member refid="classzorba_1_1Zorba_1a3154c3fddef631e36ccd62c58da41e26" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>compileQuery</name></member>
+      <member refid="classzorba_1_1Zorba_1a24d7a69dd353946db8839803b265d18c" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>compileQuery</name></member>
+      <member refid="classzorba_1_1Zorba_1ae4a9c8431845c0516adda26ceaaff8e2" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>createQuery</name></member>
+      <member refid="classzorba_1_1Zorba_1a9c2f950f6c68a948683ae15d587d756c" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>createStaticContext</name></member>
+      <member refid="classzorba_1_1Zorba_1a2197d4d63b119e4d97eeabacc71ab7cb" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>getAuditProvider</name></member>
+      <member refid="classzorba_1_1Zorba_1a2ce37d64e730e40875576d2e80b02b78" prot="public" virt="non-virtual"><scope>zorba::Zorba</scope><name>getInstance</name></member>
+      <member refid="classzorba_1_1Zorba_1ae52dcce86fa7023b3ca761c4d1eaea47" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>getItemFactory</name></member>
+      <member refid="classzorba_1_1Zorba_1ad4123727065bcb975c9e2bb8aa1793b4" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>getPropertiesGlobal</name></member>
+      <member refid="classzorba_1_1Zorba_1a0bb7b04fa792aed7ef9c9ad9f9863524" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>getXmlDataManager</name></member>
+      <member refid="classzorba_1_1Zorba_1a8cd51689f4e6a1639709aadceda21aa6" prot="public" virt="pure-virtual"><scope>zorba::Zorba</scope><name>shutdown</name></member>
+      <member refid="classzorba_1_1Zorba_1a521a08fd4e30c5c10e9be2f3e5ebd834" prot="public" virt="non-virtual"><scope>zorba::Zorba</scope><name>version</name></member>
+      <member refid="classzorba_1_1Zorba_1a421d9f3276b0ce9e06cef2997330d21e" prot="public" virt="virtual"><scope>zorba::Zorba</scope><name>~Zorba</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

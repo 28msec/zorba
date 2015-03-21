@@ -1,0 +1,729 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1fs" kind="namespace">
+    <compoundname>zorba::fs</compoundname>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22" prot="public" static="no">
+        <name>type</name>
+        <enumvalue id="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22a637b277cc22bd780594a429a89474d33" prot="public">
+          <name>non_existent</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22af89a5bc95208c01b9f59b3193d67a3f2" prot="public">
+          <name>directory</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" prot="public">
+          <name>file</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22af20e9b610b976e6d27b9c105c39b9dd0" prot="public">
+          <name>link</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22a71fbdd6a7275a839c1d470ffe5a31827" prot="public">
+          <name>volume</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22a695149cd22831c06e408b1101e4075f1" prot="public">
+          <name>other</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>File type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="71" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="71" bodyend="78"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacezorba_1_1fs_1aa8105bb284bd6467038629d03be1f466" prot="public" static="no">
+        <type><ref refid="classzorba_1_1os__error_1_1exception" kindref="compound">os_error::exception</ref></type>
+        <definition>typedef os_error::exception zorba::fs::exception</definition>
+        <argsstring></argsstring>
+        <name>exception</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="43" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1_1fs_1a446e28a0bf0f117168b81fbefc0865ea" prot="public" static="no">
+        <type>off_t</type>
+        <definition>typedef off_t zorba::fs::size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+<para>File size type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="65" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacezorba_1_1fs_1aaf0bb705192d1baef70c508e482eca05" prot="public" static="no" mutable="no">
+        <type>char const</type>
+        <definition>char const zorba::fs::dir_separator</definition>
+        <argsstring></argsstring>
+        <name>dir_separator</name>
+        <initializer> &apos;/&apos;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="52" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="52" bodyend="-1"/>
+        <referencedby refid="namespacezorba_1_1fs_1aaa69709d8ced4b6aa9cc7873f369a832" compoundref="fs__util_8h" startline="549" endline="559">append</referencedby>
+        <referencedby refid="namespacezorba_1_1fs_1a1c6f80ccdcd89d5ebd1056ed128740e5" compoundref="fs__util_8h" startline="211" endline="214">base_name</referencedby>
+        <referencedby refid="namespacezorba_1_1fs_1a14a3314ca40055f7af30b3fd02ea5af4" compoundref="fs__util_8h" startline="241" endline="246">dir_name</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1fs_1ad855b4fdcc6a7efb4cd2fac70adeda7b" prot="public" static="no" mutable="no">
+        <type>char const</type>
+        <definition>char const zorba::fs::newline[]</definition>
+        <argsstring>[]</argsstring>
+        <name>newline</name>
+        <initializer>&quot;\n&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="54" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1fs_1a5c7737bfe572ccf85dd928a96bf4cb6f" prot="public" static="no" mutable="no">
+        <type>char const</type>
+        <definition>char const zorba::fs::path_separator</definition>
+        <argsstring></argsstring>
+        <name>path_separator</name>
+        <initializer> &apos;:&apos;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="53" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1fs_1aaa69709d8ced4b6aa9cc7873f369a832" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PathStringType1</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(PathStringType1), void &gt;::<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22" kindref="member">type</ref></type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(PathStringType1),void&gt;::type zorba::fs::append</definition>
+        <argsstring>(PathStringType1 &amp;path1, char const *path2)</argsstring>
+        <name>append</name>
+        <param>
+          <type>PathStringType1 &amp;</type>
+          <declname>path1</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>path2</declname>
+        </param>
+        <briefdescription>
+<para>Appends a path component onto another path ensuring that exactly one separator is used. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>PathStringType1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>path1</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path to append to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>path2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path to append. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="549" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="549" bodyend="559"/>
+        <references refid="namespacezorba_1_1fs_1aaf0bb705192d1baef70c508e482eca05" compoundref="fs__util_8h" startline="52">dir_separator</references>
+        <referencedby refid="namespacezorba_1_1fs_1ae578a7902fb0aad009ec08fc2d5ee165" compoundref="fs__util_8h" startline="573" endline="575">append</referencedby>
+        <referencedby refid="classzorba_1_1String_1a6da78e8d706c543b980e853a7fee351f" compoundref="zorba__string_8h" startline="304" endline="306">zorba::String::operator+=</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1ae578a7902fb0aad009ec08fc2d5ee165" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PathStringType1</type>
+          </param>
+          <param>
+            <type>class PathStringType2</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(PathStringType1)&amp;&amp;<ref refid="ztd_8h_1a67def45b6f7f4daa8a69dcfb6a66008b" kindref="member">ZORBA_HAS_C_STR</ref>(PathStringType2), void &gt;::<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22" kindref="member">type</ref></type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(PathStringType1) &amp;&amp; ZORBA_HAS_C_STR(PathStringType2), void&gt;::type zorba::fs::append</definition>
+        <argsstring>(PathStringType1 &amp;path1, PathStringType2 const &amp;path2)</argsstring>
+        <name>append</name>
+        <param>
+          <type>PathStringType1 &amp;</type>
+          <declname>path1</declname>
+        </param>
+        <param>
+          <type>PathStringType2 const &amp;</type>
+          <declname>path2</declname>
+        </param>
+        <briefdescription>
+<para>Appends a path component onto another path. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>PathStringType1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>path1</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>PathStringType2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>path2</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path to append to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>path2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path to append. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="573" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="573" bodyend="575"/>
+        <references refid="namespacezorba_1_1fs_1aaa69709d8ced4b6aa9cc7873f369a832" compoundref="fs__util_8h" startline="549" endline="559">append</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1a1c6f80ccdcd89d5ebd1056ed128740e5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::fs::base_name</definition>
+        <argsstring>(char const *path)</argsstring>
+        <name>base_name</name>
+        <param>
+          <type>char const *</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Gets the base name of the given path name, i.e., the file name without the path leading up to it. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The full path to get the base name of. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the base name. Note that if <emphasis>path</emphasis> is just a file name, then returns <emphasis>path</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="211" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="211" bodyend="214"/>
+        <references refid="namespacezorba_1_1fs_1aaf0bb705192d1baef70c508e482eca05" compoundref="fs__util_8h" startline="52">dir_separator</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1a3d6dea2cbaf239df4871df0d3799e4bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PathStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(PathStringType), PathStringType &gt;::<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22" kindref="member">type</ref></type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(PathStringType),PathStringType&gt;::type zorba::fs::base_name</definition>
+        <argsstring>(PathStringType const &amp;path)</argsstring>
+        <name>base_name</name>
+        <param>
+          <type>PathStringType const &amp;</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Gets the base name of the given path name, i.e., the file name without the path leading up to it. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>PathStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>path</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The full path to get the base name of. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the base name. If <emphasis>path</emphasis> is just a file name, returns <emphasis>path</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="227" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="227" bodyend="231"/>
+        <references refid="namespacezorba_1_1fs_1aaf0bb705192d1baef70c508e482eca05" compoundref="fs__util_8h" startline="52">dir_separator</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1a6d54649caf5c90fa3714e5025507e1f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::string</type>
+        <definition>ZORBA_DLL_PUBLIC std::string zorba::fs::curdir</definition>
+        <argsstring>()</argsstring>
+        <name>curdir</name>
+        <briefdescription>
+<para>Gets the current directory. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said directory. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>with a diagnostic of <ref refid="namespacezorba_1_1zerr_1ad50ffec1fa8e180dd0e1816075844bbe" kindref="member">zerr::ZOSE0004_IO_ERROR</ref> if it fails. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="100"/>
+        <referencedby refid="namespacezorba_1_1fs_1ae323f59361a3a0bfb5951a8ae1beb21f" compoundref="fs__util_8h" startline="591" endline="603">make_absolute</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1a14a3314ca40055f7af30b3fd02ea5af4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string zorba::fs::dir_name</definition>
+        <argsstring>(char const *path)</argsstring>
+        <name>dir_name</name>
+        <param>
+          <type>char const *</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Gets the directory name of the given path name, i.e., the path up to but not including the last path component. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path to get the directory name of. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the direcory path. If <emphasis>path</emphasis> is just a file name, returns <computeroutput>&apos;.&apos;</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="241" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="241" bodyend="246"/>
+        <references refid="namespacezorba_1_1fs_1aaf0bb705192d1baef70c508e482eca05" compoundref="fs__util_8h" startline="52">dir_separator</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1adc6f740266e5be1d72924744b306d435" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PathStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(PathStringType), PathStringType &gt;::<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22" kindref="member">type</ref></type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(PathStringType),PathStringType&gt;::type zorba::fs::dir_name</definition>
+        <argsstring>(PathStringType const &amp;path)</argsstring>
+        <name>dir_name</name>
+        <param>
+          <type>PathStringType const &amp;</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Gets the directory name of the given path name, i.e., the path up to but not including the last path component. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>PathStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>path</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path to get the directory name of. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the direcory path. If <emphasis>path</emphasis> is just a file name, returns <computeroutput>&apos;.&apos;</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="259" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="259" bodyend="270"/>
+        <references refid="namespacezorba_1_1fs_1aaf0bb705192d1baef70c508e482eca05" compoundref="fs__util_8h" startline="52">dir_separator</references>
+        <references refid="namespacezorba_1_1fs_1a8f7fb962c78c731ab7f8ca4463a1f5bf" compoundref="fs__util_8h" startline="178" endline="188">is_absolute</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1a8f7fb962c78c731ab7f8ca4463a1f5bf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::fs::is_absolute</definition>
+        <argsstring>(char const *path)</argsstring>
+        <name>is_absolute</name>
+        <param>
+          <type>char const *</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Checks whether the given path is an absolute path. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The full path to check. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the path is absolute. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="178" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="178" bodyend="188"/>
+        <referencedby refid="namespacezorba_1_1fs_1adc6f740266e5be1d72924744b306d435" compoundref="fs__util_8h" startline="259" endline="270">dir_name</referencedby>
+        <referencedby refid="namespacezorba_1_1fs_1a3581ed2625a379f3facc309714efcabe" compoundref="fs__util_8h" startline="199" endline="201">is_absolute</referencedby>
+        <referencedby refid="namespacezorba_1_1fs_1ae323f59361a3a0bfb5951a8ae1beb21f" compoundref="fs__util_8h" startline="591" endline="603">make_absolute</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1a3581ed2625a379f3facc309714efcabe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PathStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a67def45b6f7f4daa8a69dcfb6a66008b" kindref="member">ZORBA_HAS_C_STR</ref>(PathStringType), bool &gt;::<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22" kindref="member">type</ref></type>
+        <definition>std::enable_if&lt;ZORBA_HAS_C_STR(PathStringType),bool&gt;::type zorba::fs::is_absolute</definition>
+        <argsstring>(PathStringType const &amp;path)</argsstring>
+        <name>is_absolute</name>
+        <param>
+          <type>PathStringType const &amp;</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Checks whether the given path is an absolute path. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>PathStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>path</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The full path to check. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the path is absolute. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="199" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="199" bodyend="201"/>
+        <references refid="namespacezorba_1_1fs_1a8f7fb962c78c731ab7f8ca4463a1f5bf" compoundref="fs__util_8h" startline="178" endline="188">is_absolute</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1ae323f59361a3a0bfb5951a8ae1beb21f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PathStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(PathStringType), void &gt;::<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22" kindref="member">type</ref></type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(PathStringType),void&gt;::type zorba::fs::make_absolute</definition>
+        <argsstring>(PathStringType *path)</argsstring>
+        <name>make_absolute</name>
+        <param>
+          <type>PathStringType *</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Makes a relative path into an absolute path. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>PathStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>path</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the path to make absolute. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="591" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="591" bodyend="603"/>
+        <references refid="namespacezorba_1_1internal_1_1ztd_1aab6211f3f098e27c67a814d90ca66224" compoundref="ztd_8h" startline="180" endline="182">zorba::internal::ztd::c_str</references>
+        <references refid="namespacezorba_1_1fs_1a6d54649caf5c90fa3714e5025507e1f6">curdir</references>
+        <references refid="namespacezorba_1_1fs_1a8f7fb962c78c731ab7f8ca4463a1f5bf" compoundref="fs__util_8h" startline="178" endline="188">is_absolute</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1a18c539686aa53560219cdbbddb8f4315" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::string</type>
+        <definition>ZORBA_DLL_PUBLIC std::string zorba::fs::normalize_path</definition>
+        <argsstring>(char const *path, char const *base=nullptr)</argsstring>
+        <name>normalize_path</name>
+        <param>
+          <type>char const *</type>
+          <declname>path</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>base</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+<para>Gets the normalized path of the given path. </para>        </briefdescription>
+        <detaileddescription>
+<para>A normalized path is one that:<itemizedlist>
+<listitem><para>has <computeroutput><ulink url="file://">file://</ulink></computeroutput> URIs converted to paths</para></listitem><listitem><para>has directory separators corrected for the host operating system</para></listitem><listitem><para>has adjacent directory separators combined, e.g., <computeroutput>/a//b</computeroutput> becomes <computeroutput>/a/b</computeroutput> </para></listitem><listitem><para>has <computeroutput></computeroutput>./ removed, e.g., <computeroutput>/a/</computeroutput>./b becomes <computeroutput>/a/b</computeroutput> </para></listitem><listitem><para>has <computeroutput></computeroutput>../ removed, e.g., <computeroutput>/a/b/</computeroutput>../c becomes <computeroutput>/a/c</computeroutput> </para></listitem></itemizedlist>
+</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path to normalize. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>base</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The base path. If not empty, is prepended to <emphasis>path</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the normalized path. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>for malformed paths. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="493"/>
+        <referencedby refid="namespacezorba_1_1fs_1aaa9d9cf12b4580d76e108e81ee7971f2" compoundref="fs__util_8h" startline="510" endline="512">normalize_path</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1aaa9d9cf12b4580d76e108e81ee7971f2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PathStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a67def45b6f7f4daa8a69dcfb6a66008b" kindref="member">ZORBA_HAS_C_STR</ref>(PathStringType), std::string &gt;::<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22" kindref="member">type</ref></type>
+        <definition>std::enable_if&lt;ZORBA_HAS_C_STR(PathStringType),std::string&gt;::type zorba::fs::normalize_path</definition>
+        <argsstring>(PathStringType const &amp;path)</argsstring>
+        <name>normalize_path</name>
+        <param>
+          <type>PathStringType const &amp;</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Gets the normalized path of the given path. </para>        </briefdescription>
+        <detaileddescription>
+<para>A normalized path is one that:<itemizedlist>
+<listitem><para>has <computeroutput><ulink url="file://">file://</ulink></computeroutput> URIs converted to paths</para></listitem><listitem><para>has directory separators corrected for the host operating system</para></listitem><listitem><para>has adjacent directory separators combined, e.g., <computeroutput>/a//b</computeroutput> becomes <computeroutput>/a/b</computeroutput> </para></listitem><listitem><para>has <computeroutput></computeroutput>./ removed, e.g., <computeroutput>/a/</computeroutput>./b becomes <computeroutput>/a/b</computeroutput> </para></listitem><listitem><para>has <computeroutput></computeroutput>../ removed, e.g., <computeroutput>/a/b/</computeroutput>../c becomes <computeroutput>/a/c</computeroutput> </para></listitem></itemizedlist>
+</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>PathStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>path</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path to normalize. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the normalized path. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>for malformed paths. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="510" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="510" bodyend="512"/>
+        <references refid="namespacezorba_1_1fs_1a18c539686aa53560219cdbbddb8f4315">normalize_path</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1abb6a0c20b484b9435cce33dd3ba42ffc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PathStringType</type>
+          </param>
+          <param>
+            <type>class BaseStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a67def45b6f7f4daa8a69dcfb6a66008b" kindref="member">ZORBA_HAS_C_STR</ref>(PathStringType)&amp;&amp;<ref refid="ztd_8h_1a67def45b6f7f4daa8a69dcfb6a66008b" kindref="member">ZORBA_HAS_C_STR</ref>(BaseStringType), std::string &gt;::<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22" kindref="member">type</ref></type>
+        <definition>std::enable_if&lt;ZORBA_HAS_C_STR(PathStringType) &amp;&amp; ZORBA_HAS_C_STR(BaseStringType), std::string&gt;::type zorba::fs::normalize_path</definition>
+        <argsstring>(PathStringType const &amp;path, BaseStringType const &amp;base)</argsstring>
+        <name>normalize_path</name>
+        <param>
+          <type>PathStringType const &amp;</type>
+          <declname>path</declname>
+        </param>
+        <param>
+          <type>BaseStringType const &amp;</type>
+          <declname>base</declname>
+        </param>
+        <briefdescription>
+<para>Gets the normalized path of the given path. </para>        </briefdescription>
+        <detaileddescription>
+<para>A normalized path is one that:<itemizedlist>
+<listitem><para>has <computeroutput><ulink url="file://">file://</ulink></computeroutput> URIs converted to paths</para></listitem><listitem><para>has directory separators corrected for the host operating system</para></listitem><listitem><para>has adjacent directory separators combined, e.g., <computeroutput>/a//b</computeroutput> becomes <computeroutput>/a/b</computeroutput> </para></listitem><listitem><para>has <computeroutput></computeroutput>./ removed, e.g., <computeroutput>/a/</computeroutput>./b becomes <computeroutput>/a/b</computeroutput> </para></listitem><listitem><para>has <computeroutput></computeroutput>../ removed, e.g., <computeroutput>/a/b/</computeroutput>../c becomes <computeroutput>/a/c</computeroutput> </para></listitem></itemizedlist>
+</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>PathStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>path</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>BaseStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>base</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path to normalize. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>base</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The base path. If not empty, is prepended to <emphasis>path</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the normalized path. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>for malformed paths. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="533" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" bodystart="533" bodyend="535"/>
+        <references refid="namespacezorba_1_1fs_1a18c539686aa53560219cdbbddb8f4315">normalize_path</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fs_1a9fd307e396205a949cd360d0bac02d17" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::fs::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;o, type t)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22" kindref="member">type</ref></type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+<para>Emits the string representation of a file type to the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to emit to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>t</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The file type to emit. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>o</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="88"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/fs_util.h" line="39"/>
+  </compounddef>
+</doxygen>

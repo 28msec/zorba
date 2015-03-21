@@ -1,0 +1,20 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::internal::ztd::destroy_delete</h1><p class="include">
+            #include &lt;zorba/internal/ztd.h&gt;
+        </p>
+A deleter class that can be used with unique_ptr.     
+Instead of calling <tt>delete</tt> on the pointed-to object, it calls its <tt>destroy()</tt> member function.     <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#af1fcc41a918a94ca12f39c5e3c92d759">destroy_delete</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a845e441cee09c22ac33452061a8a31aa">destroy_delete</a>(destroy_delete&lt; U &gt; const &amp;, typename std::enable_if&lt; ZORBA_TR1_NS::is_convertible&lt; U *, T * &gt;::value &gt;::type *=nullptr)</p><span class="signature-description">
+Copy constructor.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a13b0183a198704fe0c543f05f40f10d9">operator()</a>(T *p)</p><span class="signature-description">
+Calls the <tt>destroy()</tt> member function of the pointed-to object.         </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="af1fcc41a918a94ca12f39c5e3c92d759" class="sect1"><div><h3>destroy_delete</h3></div><div class="signature-box"><span> </span>destroy_delete()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a845e441cee09c22ac33452061a8a31aa" class="sect1"><div><h3>destroy_delete</h3></div><div class="signature-box"><span> </span>destroy_delete(destroy_delete&lt; U &gt; const &amp;, typename std::enable_if&lt; ZORBA_TR1_NS::is_convertible&lt; U *, T * &gt;::value &gt;::type *=nullptr)</div><div><p class="signature-description">
+Copy constructor.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>U</td><td>
+The delete type of the deleter to copy-construct from such that <tt>U*</tt> is convertible to <tt>T*</tt>. </td></tr></table></div>
+        </p></div></div><div id="a13b0183a198704fe0c543f05f40f10d9" class="sect1"><div><h3>operator()</h3></div><div class="signature-box">void<span> </span>operator()(T *p)</div><div><p class="signature-description">
+Calls the <tt>destroy()</tt> member function of the pointed-to object.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>p</td><td>
+A pointer to the object. </td></tr></table></div>
+        </p></div></div></div></div></div>
+</div>

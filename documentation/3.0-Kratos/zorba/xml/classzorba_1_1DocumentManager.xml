@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1DocumentManager" kind="class" prot="public">
+    <compoundname>zorba::DocumentManager</compoundname>
+    <includes refid="document__manager_8h" local="no">zorba/document_manager.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1DocumentManager_1af54e1176a6d116ce0430c049375e66f4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref></type>
+        <definition>virtual ItemSequence_t zorba::DocumentManager::availableDocuments</definition>
+        <argsstring>() const =0</argsstring>
+        <name>availableDocuments</name>
+        <briefdescription>
+<para>Returns an iterator over the root nodes of all the available documents (i.e., all the documents that have been added to the store via the <ref refid="classzorba_1_1DocumentManager_1acfa8eb91e0af4ae1401e8db5536c42fd" kindref="member">DocumentManager::put()</ref> method). </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/document_manager.h" line="71"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DocumentManager_1a9e2a95e7c209ace4b3aa9792ca8aedd2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::DocumentManager::document</definition>
+        <argsstring>(const String &amp;aURI) const =0</argsstring>
+        <name>document</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Return a reference to the root node of the document with the given URI. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/document_manager.h" line="63"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DocumentManager_1a04958a556d951af55f176e85178f3120" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DocumentManager::isAvailableDocument</definition>
+        <argsstring>(const String &amp;aURI) const =0</argsstring>
+        <name>isAvailableDocument</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Check if a document with a given URI is among the available documents (i.e., the documents that have been added to the store via the <ref refid="classzorba_1_1DocumentManager_1acfa8eb91e0af4ae1401e8db5536c42fd" kindref="member">DocumentManager::put()</ref> method). </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/document_manager.h" line="79"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DocumentManager_1acfa8eb91e0af4ae1401e8db5536c42fd" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DocumentManager::put</definition>
+        <argsstring>(const String &amp;aURI, const Item &amp;aDoc)=0</argsstring>
+        <name>put</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aDoc</declname>
+        </param>
+        <briefdescription>
+<para>Add a document to the store, associating it with the given URI. </para>        </briefdescription>
+        <detaileddescription>
+<para>This method adds the document to the &quot;available documents&quot; component of the dynamic context. This means that the document will remain in the store and be accessible to queries via the associated URI (e.g., by using the fn:doc() function) until it is explicitly removed via the <ref refid="classzorba_1_1DocumentManager_1a1243c8228036864b383e5bb037326d12" kindref="member">DocumentManager::remove()</ref> method. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/document_manager.h" line="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DocumentManager_1a1243c8228036864b383e5bb037326d12" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DocumentManager::remove</definition>
+        <argsstring>(const String &amp;aURI)=0</argsstring>
+        <name>remove</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Remove the document with the given URI from the store. </para>        </briefdescription>
+        <detaileddescription>
+<para>This method removes the document from the &quot;available documents&quot; component of the dynamic context. This means that the document will no longer be accessible to queries via the associated URI. However, the document is not necessarily destroyed by this method. It will be destroyed if/when no more references to it exist. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/document_manager.h" line="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DocumentManager_1a71ce5c0872e6cfb4e215086c39414573" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::DocumentManager::~DocumentManager</definition>
+        <argsstring>()</argsstring>
+        <name>~DocumentManager</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/document_manager.h" line="33" bodyfile="/home/wcandillon/deadlinks/include/zorba/document_manager.h" bodystart="33" bodyend="33"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>An instance of <ref refid="classzorba_1_1DocumentManager" kindref="compound">DocumentManager</ref> provides methods for adding, removing, or accessing XML documents in the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> store. </para>    </briefdescription>
+    <detaileddescription>
+<para>There is a single instance of <ref refid="classzorba_1_1DocumentManager" kindref="compound">DocumentManager</ref> per XmlDataManger; this single instance is accessible via the XmlDataManger::getDocumentManager() method. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/document_manager.h" line="31" bodyfile="/home/wcandillon/deadlinks/include/zorba/document_manager.h" bodystart="30" bodyend="80"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1DocumentManager_1af54e1176a6d116ce0430c049375e66f4" prot="public" virt="pure-virtual"><scope>zorba::DocumentManager</scope><name>availableDocuments</name></member>
+      <member refid="classzorba_1_1DocumentManager_1a9e2a95e7c209ace4b3aa9792ca8aedd2" prot="public" virt="pure-virtual"><scope>zorba::DocumentManager</scope><name>document</name></member>
+      <member refid="classzorba_1_1DocumentManager_1a04958a556d951af55f176e85178f3120" prot="public" virt="pure-virtual"><scope>zorba::DocumentManager</scope><name>isAvailableDocument</name></member>
+      <member refid="classzorba_1_1DocumentManager_1acfa8eb91e0af4ae1401e8db5536c42fd" prot="public" virt="pure-virtual"><scope>zorba::DocumentManager</scope><name>put</name></member>
+      <member refid="classzorba_1_1DocumentManager_1a1243c8228036864b383e5bb037326d12" prot="public" virt="pure-virtual"><scope>zorba::DocumentManager</scope><name>remove</name></member>
+      <member refid="classzorba_1_1DocumentManager_1a71ce5c0872e6cfb4e215086c39414573" prot="public" virt="virtual"><scope>zorba::DocumentManager</scope><name>~DocumentManager</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

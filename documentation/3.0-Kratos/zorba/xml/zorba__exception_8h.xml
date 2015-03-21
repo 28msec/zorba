@@ -1,0 +1,456 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="zorba__exception_8h" kind="file">
+    <compoundname>zorba_exception.h</compoundname>
+    <includes local="no">iostream</includes>
+    <includes local="no">exception</includes>
+    <includes local="no">string</includes>
+    <includes local="no">zorba/config.h</includes>
+    <includes refid="unique__ptr_8h" local="no">zorba/internal/unique_ptr.h</includes>
+    <includes refid="error_8h" local="no">zorba/error.h</includes>
+    <includedby refid="static__context_8h" local="no">static_context.h</includedby>
+    <includedby refid="xquery__exception_8h" local="no">xquery_exception.h</includedby>
+    <incdepgraph>
+      <node id="2682">
+        <label>functional</label>
+      </node>
+      <node id="2677">
+        <label>cxx_util.h</label>
+        <link refid="cxx__util_8h"/>
+        <childnode refid="2674" relation="include">
+        </childnode>
+      </node>
+      <node id="2687">
+        <label>zorba/diagnostic.h</label>
+        <link refid="diagnostic_8h"/>
+        <childnode refid="2681" relation="include">
+        </childnode>
+        <childnode refid="2671" relation="include">
+        </childnode>
+        <childnode refid="2674" relation="include">
+        </childnode>
+        <childnode refid="2688" relation="include">
+        </childnode>
+        <childnode refid="2690" relation="include">
+        </childnode>
+      </node>
+      <node id="2690">
+        <label>zorba/internal/qname.h</label>
+        <link refid="qname_8h"/>
+        <childnode refid="2674" relation="include">
+        </childnode>
+        <childnode refid="2687" relation="include">
+        </childnode>
+        <childnode refid="2680" relation="include">
+        </childnode>
+        <childnode refid="2691" relation="include">
+        </childnode>
+      </node>
+      <node id="2673">
+        <label>string</label>
+      </node>
+      <node id="2689">
+        <label>map</label>
+      </node>
+      <node id="2670">
+        <label>zorba_exception.h</label>
+        <link refid="zorba_exception.h"/>
+        <childnode refid="2671" relation="include">
+        </childnode>
+        <childnode refid="2672" relation="include">
+        </childnode>
+        <childnode refid="2673" relation="include">
+        </childnode>
+        <childnode refid="2674" relation="include">
+        </childnode>
+        <childnode refid="2675" relation="include">
+        </childnode>
+        <childnode refid="2684" relation="include">
+        </childnode>
+      </node>
+      <node id="2684">
+        <label>zorba/error.h</label>
+        <link refid="error_8h"/>
+        <childnode refid="2685" relation="include">
+        </childnode>
+        <childnode refid="2690" relation="include">
+        </childnode>
+      </node>
+      <node id="2672">
+        <label>exception</label>
+      </node>
+      <node id="2678">
+        <label>type_traits.h</label>
+        <link refid="type__traits_8h"/>
+        <childnode refid="2674" relation="include">
+        </childnode>
+        <childnode refid="2679" relation="include">
+        </childnode>
+      </node>
+      <node id="2685">
+        <label>zorba/internal/diagnostic.h</label>
+        <link refid="internal_2diagnostic_8h"/>
+        <childnode refid="2673" relation="include">
+        </childnode>
+        <childnode refid="2686" relation="include">
+        </childnode>
+        <childnode refid="2687" relation="include">
+        </childnode>
+        <childnode refid="2680" relation="include">
+        </childnode>
+      </node>
+      <node id="2691">
+        <label>zorba/internal/qnames.h</label>
+      </node>
+      <node id="2686">
+        <label>vector</label>
+      </node>
+      <node id="2688">
+        <label>zorba/internal/system_diagnostic.h</label>
+        <link refid="system__diagnostic_8h"/>
+        <childnode refid="2689" relation="include">
+        </childnode>
+        <childnode refid="2687" relation="include">
+        </childnode>
+        <childnode refid="2680" relation="include">
+        </childnode>
+      </node>
+      <node id="2683">
+        <label>sstream</label>
+      </node>
+      <node id="2671">
+        <label>iostream</label>
+      </node>
+      <node id="2675">
+        <label>zorba/internal/unique_ptr.h</label>
+        <link refid="unique__ptr_8h"/>
+        <childnode refid="2674" relation="include">
+        </childnode>
+        <childnode refid="2676" relation="include">
+        </childnode>
+        <childnode refid="2677" relation="include">
+        </childnode>
+        <childnode refid="2678" relation="include">
+        </childnode>
+        <childnode refid="2680" relation="include">
+        </childnode>
+      </node>
+      <node id="2680">
+        <label>ztd.h</label>
+        <link refid="ztd_8h"/>
+        <childnode refid="2681" relation="include">
+        </childnode>
+        <childnode refid="2682" relation="include">
+        </childnode>
+        <childnode refid="2683" relation="include">
+        </childnode>
+        <childnode refid="2673" relation="include">
+        </childnode>
+        <childnode refid="2674" relation="include">
+        </childnode>
+        <childnode refid="2677" relation="include">
+        </childnode>
+        <childnode refid="2678" relation="include">
+        </childnode>
+      </node>
+      <node id="2679">
+        <label>type_traits</label>
+      </node>
+      <node id="2674">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="2676">
+        <label>algorithm</label>
+      </node>
+      <node id="2681">
+        <label>cstring</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2697">
+        <label>xquery_warning.h</label>
+        <link refid="xquery__warning_8h"/>
+        <childnode refid="2698" relation="include">
+        </childnode>
+      </node>
+      <node id="2694">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="2693" relation="include">
+        </childnode>
+      </node>
+      <node id="2692">
+        <label>zorba_exception.h</label>
+        <link refid="zorba_exception.h"/>
+        <childnode refid="2693" relation="include">
+        </childnode>
+        <childnode refid="2695" relation="include">
+        </childnode>
+      </node>
+      <node id="2696">
+        <label>user_exception.h</label>
+        <link refid="user__exception_8h"/>
+      </node>
+      <node id="2695">
+        <label>xquery_exception.h</label>
+        <link refid="xquery__exception_8h"/>
+        <childnode refid="2696" relation="include">
+        </childnode>
+        <childnode refid="2697" relation="include">
+        </childnode>
+      </node>
+      <node id="2698">
+        <label>diagnostic_handler.h</label>
+        <link refid="diagnostic__handler_8h"/>
+        <childnode refid="2694" relation="include">
+        </childnode>
+      </node>
+      <node id="2693">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="2694" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1ZorbaException" prot="public">zorba::ZorbaException</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <innernamespace refid="namespacezorba_1_1serialization">zorba::serialization</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_ZORBA_EXCEPTION_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_ZORBA_EXCEPTION_API_H</highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;exception&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="unique__ptr_8h" kindref="compound">zorba/internal/unique_ptr.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="error_8h" kindref="compound">zorba/error.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZorbaException;</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">serialization<sp/>{</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Archiver;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1serialization_1a9fec1c09ccaafac6e86011328cb54ae6" kindref="member">operator&amp;</ref>(<sp/>Archiver&amp;,<sp/>ZorbaException*&amp;<sp/>);</highlight></codeline>
+<codeline lineno="35"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="37"><highlight class="comment">//////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="39"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/>*<sp/>A<sp/>%ZorbaException<sp/>is<sp/>the<sp/>base<sp/>class<sp/>for<sp/>all<sp/>Zorba<sp/>exceptions.</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42" refid="classzorba_1_1ZorbaException" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>std::<ref refid="namespacezorba_1_1fs_1aa8105bb284bd6467038629d03be1f466" kindref="member">exception</ref><sp/>{</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="44" refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member" tooltip="The line-number type.">internal::diagnostic::location::line_type</ref><sp/><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref>;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/><sp/><sp/>*<sp/>The<sp/>format<sp/>to<sp/>print<sp/>exceptions<sp/>as<sp/>to<sp/>an<sp/>ostream.</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49" refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" kindref="member" tooltip="The format to print exceptions as to an ostream.">print_format</ref><sp/>{</highlight></codeline>
+<codeline lineno="50" refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eaa06aae456821a23f9edac3506ce303d9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>format_text<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>0,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>plain<sp/>text</highlight></codeline>
+<codeline lineno="51" refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eae8425bd8d157137536b9c28f2932361e" refkind="member"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/>format_xml<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>1,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>XML<sp/>without<sp/>unnecessary<sp/>whitespace</highlight></codeline>
+<codeline lineno="52" refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eae16f287a3ad3a6149045673f2fbdefe4" refkind="member"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/>format_xml_indented<sp/>=<sp/>3<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>XML<sp/>with<sp/>newlines<sp/>and<sp/>indentation</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Copy-constructs<sp/>a<sp/>%ZorbaException.</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>from<sp/>The<sp/>%ZorbaException<sp/>to<sp/>copy<sp/>from.</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref>(<sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;from<sp/>);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Destroys<sp/>this<sp/>%ZorbaException.</highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/>~<ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref>()<sp/>throw();</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Assigns<sp/>this<sp/>%ZorbaException<sp/>from<sp/>another.</highlight></codeline>
+<codeline lineno="69"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>from<sp/>The<sp/>%ZorbaException<sp/>to<sp/>assign<sp/>from.</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>\c<sp/>*this.</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref>&amp;<sp/>operator=(<sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref><sp/>const<sp/>&amp;from<sp/>);</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Gets<sp/>the<sp/>diagnostic<sp/>carried<sp/>by<sp/>this<sp/>exception.</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>diagnostic.</highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80" refid="classzorba_1_1ZorbaException_1aa65d6b38bb602256104499c3807185b1" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref><sp/>const&amp;<sp/>diagnostic()<sp/>const<sp/>throw()<sp/>{</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>*diagnostic_;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Gets<sp/>the<sp/>current<sp/>print_format<sp/>associated<sp/>with<sp/>the<sp/>given<sp/>ostream.</highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>o<sp/>The<sp/>ostream<sp/>to<sp/>get<sp/>the<sp/>print_format<sp/>of.</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>print_format.</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90" refid="classzorba_1_1ZorbaException_1ae5e8c070b2b96a9a5c2926956f49a9a9" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" kindref="member" tooltip="The format to print exceptions as to an ostream.">print_format</ref><sp/><ref refid="classzorba_1_1ZorbaException_1ae5e8c070b2b96a9a5c2926956f49a9a9" kindref="member" tooltip="Gets the current print_format associated with the given ostream.">get_print_format</ref>(<sp/>std::ostream<sp/>&amp;o<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="normal"><ref refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" kindref="member" tooltip="The format to print exceptions as to an ostream.">print_format</ref></highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<sp/>o.iword(<sp/>get_ios_format_index()<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="95"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Throws<sp/>itself<sp/>polymorphically;<sp/>see</highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/><sp/><sp/>*<sp/>http://www.parashift.com/c++-faq-lite/exceptions.html#faq-17.16</highlight></codeline>
+<codeline lineno="97"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>polymorphic_throw()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="100"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Sets<sp/>the<sp/>diagnostic.</highlight></codeline>
+<codeline lineno="102"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="103"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>diagnostic<sp/>The<sp/>diagnostic.</highlight></codeline>
+<codeline lineno="104"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="105" refid="classzorba_1_1ZorbaException_1ab17a11fa7a552fd4a2c9ac1033183b01" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1ZorbaException_1ab17a11fa7a552fd4a2c9ac1033183b01" kindref="member" tooltip="Sets the diagnostic.">set_diagnostic</ref>(<sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;diagnostic<sp/>)<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal">()<sp/>{</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/>diagnostic_<sp/>=<sp/>&amp;diagnostic;</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Gets<sp/>the<sp/>C++<sp/>source-code<sp/>file<sp/>name<sp/>whence<sp/>this<sp/>exception<sp/>was<sp/>raised.</highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="112"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>file<sp/>name.</highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="114" refid="classzorba_1_1ZorbaException_1a6b5e2e711fe5a54ed08d51d6dbbad8ef" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/><ref refid="classzorba_1_1ZorbaException_1a6b5e2e711fe5a54ed08d51d6dbbad8ef" kindref="member" tooltip="Gets the C++ source-code file name whence this exception was raised.">raise_file</ref>()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>throw()<sp/>{</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>raise_file_.c_str();</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="119"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Gets<sp/>the<sp/>C++<sp/>source-code<sp/>line<sp/>number<sp/>whence<sp/>this<sp/>exception<sp/>was<sp/>raised.</highlight></codeline>
+<codeline lineno="120"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>line<sp/>number.</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="123" refid="classzorba_1_1ZorbaException_1ac8566af4cbcece74394cfd528a257781" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref><sp/><ref refid="classzorba_1_1ZorbaException_1ac8566af4cbcece74394cfd528a257781" kindref="member" tooltip="Gets the C++ source-code line number whence this exception was raised.">raise_line</ref>()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>throw()<sp/>{</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>raise_line_;</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Sets<sp/>the<sp/>print_format<sp/>of<sp/>the<sp/>given<sp/>ostream.</highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>o<sp/>The<sp/>ostream<sp/>to<sp/>set<sp/>the<sp/>print_format<sp/>of.</highlight></codeline>
+<codeline lineno="131"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>f<sp/>The<sp/>print_format<sp/>value.</highlight></codeline>
+<codeline lineno="132"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133" refid="classzorba_1_1ZorbaException_1ab13a584d2d9398fc0285ee44d8c26e27" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1ZorbaException_1ab13a584d2d9398fc0285ee44d8c26e27" kindref="member" tooltip="Sets the print_format of the given ostream.">set_print_format</ref>(<sp/>std::ostream<sp/>&amp;o,<sp/><ref refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" kindref="member" tooltip="The format to print exceptions as to an ostream.">print_format</ref><sp/>f<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/>o.iword(<sp/>get_ios_format_index()<sp/>)<sp/>=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">long</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<sp/>f<sp/>);</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>inherited</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>what()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>throw();</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal">protected:</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="141"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="142"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Constructs<sp/>a<sp/>%ZorbaException.</highlight></codeline>
+<codeline lineno="143"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="144"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>diagnostic<sp/>The<sp/>diagnostic.</highlight></codeline>
+<codeline lineno="145"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>raise_file<sp/>The<sp/>C++<sp/>source-code<sp/>file<sp/>name<sp/>whence<sp/>the<sp/>exception<sp/>was</highlight></codeline>
+<codeline lineno="146"><highlight class="comment"><sp/><sp/><sp/>*<sp/>raised.</highlight></codeline>
+<codeline lineno="147"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>raise_line<sp/>The<sp/>C++<sp/>source-code<sp/>line<sp/>number<sp/>whence<sp/>the<sp/>exception<sp/>was</highlight></codeline>
+<codeline lineno="148"><highlight class="comment"><sp/><sp/><sp/>*<sp/>raised.</highlight></codeline>
+<codeline lineno="149"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>message<sp/>The<sp/>diagnostic<sp/>message.</highlight></codeline>
+<codeline lineno="150"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref>(<sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref><sp/>const<sp/>&amp;diagnostic,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>const<sp/>*raise_file,</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>line_type<sp/>raise_line,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>const<sp/>*message<sp/>);</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="154"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="155"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Clones<sp/>this<sp/>exception<sp/>object.</highlight></codeline>
+<codeline lineno="156"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="157"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>a<sp/>clone<sp/>of<sp/>this<sp/>exception.</highlight></codeline>
+<codeline lineno="158"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/>virtual<sp/>std::unique_ptr&lt;<ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref>&gt;<sp/>clone()<sp/>const;</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="161"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="162"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Prints<sp/>the<sp/>exception<sp/>to<sp/>the<sp/>given<sp/>ostream.</highlight></codeline>
+<codeline lineno="163"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="164"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>o<sp/>The<sp/>ostream<sp/>to<sp/>print<sp/>to.</highlight></codeline>
+<codeline lineno="165"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>\a<sp/>o.</highlight></codeline>
+<codeline lineno="166"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/>std::ostream&amp;<sp/>print(<sp/>std::ostream&amp;<sp/>)<sp/>const;</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/>virtual<sp/>std::ostream&amp;<sp/>print_impl(<sp/>std::ostream<sp/>&amp;o<sp/>)<sp/>const;</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"></highlight></codeline>
+<codeline lineno="171"><highlight class="normal">private:</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref><sp/>const<sp/>*diagnostic_;</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/>std::</highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>raise_file_;</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/>line_type<sp/>raise_line_;</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/>std::</highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>message_;</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"></highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/>static<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>get_ios_format_index();</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/>friend<sp/>std::unique_ptr&lt;<ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref>&gt;<sp/>clone(<sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref><sp/>const&amp;<sp/>);</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/>friend<sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref><sp/>make_zorba_exception(</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>const*,<sp/>line_type,<sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref><sp/>const&amp;,</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/>internal::diagnostic::parameters<sp/>const&amp;</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/>);</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"></highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/>friend<sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref>*<sp/>new_zorba_exception(</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>const*,<sp/>line_type,<sp/><ref refid="classzorba_1_1Diagnostic" kindref="compound" tooltip="A Diagnostic is the base class for all Zorba diagnostics (errors and warnings).">Diagnostic</ref><sp/>const&amp;,</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/>internal::diagnostic::parameters<sp/>const&amp;</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/>);</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"></highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/>friend<sp/>std::ostream&amp;<sp/>operator&lt;&lt;(<sp/>std::ostream&amp;,<sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref><sp/>const&amp;<sp/>);</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"></highlight></codeline>
+<codeline lineno="193"><highlight class="normal">protected:</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>plan<sp/>serialization</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref>(<sp/>serialization::Archiver&amp;<sp/>);</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/>friend<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>serialization::operator&amp;(<sp/>serialization::Archiver&amp;,</highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref>*&amp;<sp/>);</highlight></codeline>
+<codeline lineno="198"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="200"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="201"><highlight class="comment"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="202"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="203"><highlight class="comment"><sp/>*<sp/>Emits<sp/>the<sp/>given<sp/>ZorbaException<sp/>to<sp/>the<sp/>given<sp/>ostream.</highlight></codeline>
+<codeline lineno="204"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="205"><highlight class="comment"><sp/>*<sp/>@param<sp/>o<sp/>The<sp/>ostream<sp/>to<sp/>emit<sp/>to.</highlight></codeline>
+<codeline lineno="206"><highlight class="comment"><sp/>*<sp/>@param<sp/>e<sp/>The<sp/>ZorbaException<sp/>to<sp/>emit.</highlight></codeline>
+<codeline lineno="207"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>\a<sp/>o.</highlight></codeline>
+<codeline lineno="208"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="209" refid="namespacezorba_1a007d6f87e8af759b818adf8fe40e2c82" refkind="member"><highlight class="normal">inline<sp/>std::ostream&amp;<sp/>operator&lt;&lt;(<sp/>std::ostream<sp/>&amp;o,<sp/>ZorbaException<sp/>const<sp/>&amp;e<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>e.<ref refid="classzorba_1_1ZorbaException_1adc4984f60a8efd83c117e7288c49a2cb" kindref="member" tooltip="Prints the exception to the given ostream.">print</ref>(<sp/>o<sp/>);</highlight></codeline>
+<codeline lineno="211"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="213"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="214"><highlight class="comment"><sp/>*<sp/>Sets<sp/>the<sp/>format<sp/>for<sp/>the<sp/>next<sp/>ZorbaException<sp/>that&apos;s<sp/>printed.</highlight></codeline>
+<codeline lineno="215"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="216"><highlight class="comment"><sp/>*<sp/>@param<sp/>o<sp/>The<sp/>ostream<sp/>to<sp/>affect.</highlight></codeline>
+<codeline lineno="217"><highlight class="comment"><sp/>*<sp/>@param<sp/>f<sp/>The<sp/>print_format<sp/>to<sp/>use.</highlight></codeline>
+<codeline lineno="218"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>\a<sp/>o.</highlight></codeline>
+<codeline lineno="219"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="220" refid="namespacezorba_1a113f31a4428f49866ff67b707bad1b1f" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>std::ostream&amp;<sp/><ref refid="namespacezorba_1aec67c4279177892eaa9d14c9ca0c0374" kindref="member">operator&lt;&lt;</ref>(<sp/>std::ostream<sp/>&amp;o,</highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" kindref="member" tooltip="The format to print exceptions as to an ostream.">ZorbaException::print_format</ref><sp/>f<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1ZorbaException_1ab13a584d2d9398fc0285ee44d8c26e27" kindref="member" tooltip="Sets the print_format of the given ostream.">ZorbaException::set_print_format</ref>(<sp/>o,<sp/>f<sp/>);</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>o;</highlight></codeline>
+<codeline lineno="224"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="226"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="227"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="229"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_ZORBA_EXCEPTION_API_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h"/>
+  </compounddef>
+</doxygen>

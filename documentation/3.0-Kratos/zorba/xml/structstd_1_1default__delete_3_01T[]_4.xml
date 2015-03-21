@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structstd_1_1default__delete_3_01T[]_4" kind="struct" prot="public">
+    <compoundname>std::default_delete&lt; T[]&gt;</compoundname>
+    <includes refid="unique__ptr_8h" local="no">zorba/internal/unique_ptr.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structstd_1_1default__delete_3_01T[]_4_1ae7983e43ca686816b46a3c096ad8b48a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>std::default_delete&lt; T[]&gt;::default_delete</definition>
+        <argsstring>()</argsstring>
+        <name>default_delete</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="191" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="191" bodyend="191"/>
+      </memberdef>
+      <memberdef kind="function" id="structstd_1_1default__delete_3_01T[]_4_1aa24416f8fcc391d22e16c4ed8188e9ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void std::default_delete&lt; T[]&gt;::operator()</definition>
+        <argsstring>(T *p) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>T *</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="192" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="192" bodyend="194"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="190" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="190" bodyend="195"/>
+    <listofallmembers>
+      <member refid="structstd_1_1default__delete_3_01T[]_4_1ae7983e43ca686816b46a3c096ad8b48a" prot="public" virt="non-virtual"><scope>std::default_delete&lt; T[]&gt;</scope><name>default_delete</name></member>
+      <member refid="structstd_1_1default__delete_3_01T[]_4_1aa24416f8fcc391d22e16c4ed8188e9ca" prot="public" virt="non-virtual"><scope>std::default_delete&lt; T[]&gt;</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

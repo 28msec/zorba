@@ -1,0 +1,146 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://zorba.io/modules/zorba-query</xqdoc:uri><xqdoc:name>zorba-query</xqdoc:name><xqdoc:comment><xqdoc:description> This module contains functions to compile and evaluate queries
+ written in either JSONiq or XQuery. Also, it contains function that
+ allow to parameterize the static or dynamic evaluation phase.
+</xqdoc:description><xqdoc:author>Juan Zacarias</xqdoc:author><xqdoc:custom tag="project">Zorba/Programming Languages/ZQ</xqdoc:custom><xqdoc:custom tag="language">xquery</xqdoc:custom><xqdoc:custom tag="version">3.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="an" uri="http://zorba.io/annotations" isSchema="false"/><xqdoc:namespace prefix="f" uri="http://zorba.io/features" isSchema="false"/><xqdoc:namespace prefix="op" uri="http://zorba.io/options/features" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/><xqdoc:namespace prefix="zq" uri="http://zorba.io/modules/zorba-query" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports/><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>The function prepares a given a query for execution.</p>
+ <p>If the query was successfully compiled, the function returns an
+ identifier as xs:anyURI. This URI can be passed to other functions
+ of this module (e.g. to actually evaluate the query). The URI
+ is opaque and its lifetime is bound by the lifetime of the query
+ that invoked this function. Further reference or uses
+ of the identifier lead to unexpected results.</p>
+ <p/>
+ <p>Successfully prepared queries need to be deleted by passing the resulting
+ identifier to the zq:delete-query function of this module.</p>
+</xqdoc:description><xqdoc:param>$main-module-text the query that should be prepared. The query needs to be a XQuery or JSONiq main module.</xqdoc:param><xqdoc:return>an identifier for the compiled query that can be passed as arguments to other functions of this module.</xqdoc:return><xqdoc:error>any (static or type) error that may be raised during the compilation of the query. For example, err:XPST0003 if the given query could not be parsed.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:prepare-main-module</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function zq:prepare-main-module($main-module-text as xs:string) as xs:anyURI external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>main-module-text</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> <p>The function prepares a given query for execution.</p>
+ <p>If the query was successfully compiled, the function returns an
+ identifier as xs:anyURI. This URI can be passed to other functions
+ of this module (e.g. to actually evaluate the query). The URI
+ is opaque and its lifetime is bound by the lifetime of the query
+ that invoked this function. Further reference or uses
+ of the identifier lead to unexpected results.</p>
+ <p/>
+ <p>Important notes regarding the second and third parameters of the function:</p>
+ <p>--------------------------------------------------------------------------</p>
+ <p/>
+ <p>These parameters allow you to specify a URL resolver and a URI mapper
+ for Zorba to use when executing this query. See
+ <a href="http://www.zorba-xquery.com/html/documentation/2.7.0/zorba/uriresolvers">here</a></p>
+ <p/>
+ <ul>The second parameter is a function item for a URL
+ resolver. The URL resolver function must recive 2 parameters:
+ <li>A $namespace as xs:string that will contain the url to be resolved.</li>
+ <li>A $entity as xs:string that will contain the type of resolving needed.
+   This can be one of two values: "module" or "schema".</li>
+ </ul>
+ <p>The function must return the empty sequence when the specified $namespace
+ or $entity are not the ones to be resolved.</p>
+ <p/>
+ <p>Example:</p>
+ <p/>
+ <pre class="ace-static" ace-mode="xquery">declare function mymod:url-resolver($namespace as xs:string, $entity as xs:string) as item()?
+ {
+  if($namespace = 'http://test.xq')
+  then "module namespace test = 'http://test'; declare function test:foo(){'foo'};"
+  else ()
+ };</pre>
+ <p/>
+ <p>The URL resolver function's namespace, name, and parameter naming are
+ not restricted by ZQ.</p>
+ <p/>
+ <p>The URL resolver function's return type is not restricted, it could be a string, a sequence,
+ a node, etc. All the outputs types are to be serialized as a string.</p>
+ <p/>
+ <p>The third parameter is a function item for a URI mapper.</p>
+ <ul>The URI mapper function, just like the URL resolver, receives 2 parameters:
+ <li>A $namespace as xs:string that will contain the URI to be mapped.</li>
+ <li>A $entity as xs:string that will contain the type of resolving needed.
+   This can be one of two values: "module" or "schema".</li>
+ </ul>
+ <p>The URI mapper must return an empty sequence when the specified $namesapce or $entity
+ are not to be mapped. Unlike the URL resolver this function must return a sequence of strings.</p>
+ <p/>
+ <p>Example:</p>
+ <p/>
+ <pre class="ace-static" ace-mode="xquery">declare function mymod:uri-mapper($namespace as xs:string, $entity as xs:string)
+ {
+  if($namespace = 'http://test')
+  then ("http://zorba.io/test", "http://foo.com/schema/test")
+  else ()
+ };</pre>
+ <p/>
+ <p>The URI mapper function's namespace, name, and parameter naming are
+ not restricted by ZQ.</p>
+ <p/>
+ <p>In order to pass the above URL resolver and URI mapper to this function,
+ use the following syntax:</p>
+ <p/>
+   <pre class="ace-static" ace-mode="xquery">variable $queryID := zq:prepare-main-module("..query text..",
+      mymod:url-resolver#2, mymod:uri-mapper#2);</pre>
+ <p/>
+ <p>That is, the QName of the function followed by "#2". This is XQuery
+ "higher-order function" syntax, meaning the function with the specified
+ QName which takes two arguments. Since URL resolvers and URI mappers
+ must take two arguments, both will always be specified with "#2".</p>
+ <p/>
+ <p>Both the URL resolver and URI mapper functions are optional, meaning you
+ may pass the empty-sequence () for either.</p>
+ <p/>
+ <p>Successfully prepared queries need to be deleted by passing the resulting
+ identifier to the zq:delete-query function of this module.</p>
+</xqdoc:description><xqdoc:param>$main-module-text the query that should be prepared. The query needs to be a XQuery or JSONiq main module.</xqdoc:param><xqdoc:param>$resolver the URL resolver function.</xqdoc:param><xqdoc:param>$mapper the URI mapper function.</xqdoc:param><xqdoc:return>an identifier for the compiled query that can be passed as arguments to other functions of this module.</xqdoc:return><xqdoc:error>any (static or type) error that may be raised during the compilation of the query. For example, err:XPST0003 if the given query could not be parsed.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:prepare-main-module</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function zq:prepare-main-module($main-module-text as xs:string, $resolver as function (xs:string, xs:string) as item()??, $mapper as function (xs:string, xs:string) as xs:string*?) as xs:anyURI external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>main-module-text</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>resolver</xqdoc:name><xqdoc:type occurrence="?">function (xs:string, xs:string) as item()?</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>mapper</xqdoc:name><xqdoc:type occurrence="?">function (xs:string, xs:string) as xs:string*</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>This function compiles a given XQuery or JSONiq library module.
+ It can be used to compile-check a module.</p>
+</xqdoc:description><xqdoc:param>$library-module-text the library module that should be prepared.</xqdoc:param><xqdoc:return>the empty-sequence.</xqdoc:return><xqdoc:error>any (static or type) error that may be raised during the compilation of the library module. For example, err:XPST0003 if the given library module could not be parsed.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:prepare-library-module</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function zq:prepare-library-module($library-module-text as xs:string) as empty-sequence() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>library-module-text</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>The function tests if the context-item is bound for the
+ execution of the query referred to by the given query identifier.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:return>true if the context-item is bound, false otherwise.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:is-bound-context-item</xqdoc:name><xqdoc:signature>declare function zq:is-bound-context-item($query-key as xs:anyURI) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> <p>The function tests if the given variable is bound for the
+ execution of the query referred to by the given query identifier.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:param>$var-name the name of the variable</xqdoc:param><xqdoc:return>true if the variable is bound, false otherwise.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error><xqdoc:error>zq:UNDECLARED_VARIABLE if the given variable is not declared in the query.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:is-bound-variable</xqdoc:name><xqdoc:signature>declare function zq:is-bound-variable($query-key as xs:anyURI, $var-name as xs:QName) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>var-name</xqdoc:name><xqdoc:type>xs:QName</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>The function returns the names of the external variables that
+ are declared in the given query (either in the main module or
+ in any of the imported library modules).</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:return>the sequence of names of the said external variables.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:external-variables</xqdoc:name><xqdoc:signature>declare function zq:external-variables($query-key as xs:anyURI) as xs:QName* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">xs:QName*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>The function tests if the query identified by the given key
+ is an updating query.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:return>true if the query is an updating query, false otherwise.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:is-updating</xqdoc:name><xqdoc:signature>declare function zq:is-updating($query-key as xs:anyURI) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>The function tests if the query identified by the given key
+ is sequential query.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:return>true if the query is a sequential, false otherwise.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:is-sequential</xqdoc:name><xqdoc:signature>declare function zq:is-sequential($query-key as xs:anyURI) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> <p>This function binds the context-item of the prepared query
+ identified by the given key to the $dot argument.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:param>$dot the context item to bind</xqdoc:param><xqdoc:return>the function has side effects and returns the empty sequence.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:bind-context-item</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function zq:bind-context-item($query-key as xs:anyURI, $dot as item()) as empty-sequence() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>dot</xqdoc:name><xqdoc:type>item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> <p>This function binds the variable with name $name of
+ the prepared query identified by $query-key to the given sequence.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:param>$name the name of the external variable to bind</xqdoc:param><xqdoc:param>$value the sequence to which the external variable $name should be bound</xqdoc:param><xqdoc:return>the function has side effects and returns the empty sequence.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error><xqdoc:error>zq:UNDECLARED_VARIABLE if the given variable is not declared in the query.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:bind-variable</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function zq:bind-variable($query-key as xs:anyURI, $var as xs:QName, $value as item()*) as empty-sequence() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>var</xqdoc:name><xqdoc:type>xs:QName</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>value</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>Evaluates the given prepared query and returns the result
+ of the evaluation. The query must not be sequential or
+ updating.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:return>the result of evaluating the given query</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error><xqdoc:error>zq:QUERY_IS_UPDATING if the query is an updating query.</xqdoc:error><xqdoc:error>zq:QUERY_IS_SEQUENTIAL if the query is sequential.</xqdoc:error><xqdoc:error>any dynamic error that is raised by evaluating the given query.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:evaluate</xqdoc:name><xqdoc:signature>declare function zq:evaluate($query-key as xs:anyURI) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>Evaluates the given prepared query and applies the updates
+ computed by this query. The query must be an updating query.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:return>the function has side effects because it applies the updates of the query. It returns the empty sequence.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error><xqdoc:error>zq:QUERY_NOT_UPDATING if the query is not an updating query.</xqdoc:error><xqdoc:error>zq:QUERY_IS_SEQUENTIAL if the query is sequential.</xqdoc:error><xqdoc:error>any dynamic error that is raised by evaluating the given query or applying its updates.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:evaluate-updating</xqdoc:name><xqdoc:signature>declare updating function zq:evaluate-updating($query-key as xs:anyURI) external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter></xqdoc:parameters></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>Evaluates the given prepared query and returns the result
+ of the evaluation. The query must be sequential.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:return>the result of evaluating the query.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error><xqdoc:error>zq:QUERY_NOT_SEQUENTIAL if the query is not sequential.</xqdoc:error><xqdoc:error>zq:QUERY_IS_UPDATING if the query is an updating query.</xqdoc:error><xqdoc:error>any dynamic error that is raised by evaluating the given query.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:evaluate-sequential</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function zq:evaluate-sequential($query-key as xs:string) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>Deletes the prepared query associated with the given identifier.</p>
+ <p>After the query is deleted, the corresponding identifier should
+ not be used as argument to any of the functions of this module.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier for a compiled query</xqdoc:param><xqdoc:return>the function has side effects and returns the empty sequence.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:delete-query</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function zq:delete-query($query-key as xs:anyURI) as empty-sequence() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> <p>This function returns the value of a variable that is bound in the
+ given query.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier of a compiled query.</xqdoc:param><xqdoc:param>$var-name the name of the variable whose value should be returned.</xqdoc:param><xqdoc:return>the value bound to the given variable.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error><xqdoc:error>zq:UNDECLARED_VARIABLE if the given variable is not declared in the query.</xqdoc:error><xqdoc:error>zq:UNBOUND_VARIABLE if the given variable doesn't have a value.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:variable-value</xqdoc:name><xqdoc:signature>declare function zq:variable-value($query-key as xs:anyURI, $var-name as xs:QName) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>var-name</xqdoc:name><xqdoc:type>xs:QName</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>Returns the compiled query identified by the given query-key
+ as binary data.</p>
+</xqdoc:description><xqdoc:param>$query-key the identifier of a compiled query.</xqdoc:param><xqdoc:return>the query as xs:base64Binary.</xqdoc:return><xqdoc:error>zq:NO_QUERY_MATCH if no query with the given identifier was prepared.</xqdoc:error><xqdoc:error>zq:NO_QUERY_PLAN if there is an error serializing the query.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:query-plan</xqdoc:name><xqdoc:signature>declare function zq:query-plan($query-key as xs:anyURI) as xs:base64Binary external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>query-key</xqdoc:name><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:base64Binary</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>The function loads a given query for execution from a
+ xs:base64Binary query plan, obtained through the zq:query-plan function.</p>
+ <p>If the query was successfully loaded, the function returns an
+ identifier as xs:anyURI. This URI can be passed to other functions
+ of this module (e.g. to actually evaluate the query). The URI
+ is opaque and its lifetime is bound by the lifetime of the query
+ that invoked this function. Further reference or uses
+ of the identifier lead to unexpected results.</p>
+ <p/>
+ <p>Successfully prepared queries need to be deleted by passing the resulting
+ identifier to the zq:delete-query function of this module.</p>
+</xqdoc:description><xqdoc:param>$plan the binary query plan.</xqdoc:param><xqdoc:return>an identifier for the compiled query that can be passed as arguments to other functions of this module.</xqdoc:return><xqdoc:error>any (static or type) error that may be raised during the compilation of the query. For example, err:XPST0003 if the given query could not be parsed.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:load-from-query-plan</xqdoc:name><xqdoc:signature>declare function zq:load-from-query-plan($plan as xs:base64Binary) as xs:anyURI external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>plan</xqdoc:name><xqdoc:type>xs:base64Binary</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> <p>The function loads a given query for execution from a
+ xs:base64Binary query plan, obtained through the zq:query-plan function.</p>
+ <p>If the query was successfully loaded, the function returns an
+ identifier as xs:anyURI. This URI can be passed to other functions
+ of this module (e.g. to actually evaluate the query). The URI
+ is opaque and its lilfetime is bound by the lifetime of the query
+ that invoked this function. Further reference or uses
+ of the identifier lead to unexpected results.</p>
+ <p/>
+ <p>For important notes regarding the second and third parameters of the
+ function, review the comments in zq:prepare-main-module#3.</p>
+ <p/>
+ <p>Successfully prepared queries need to be deleted by passing the resulting
+ identifier to the zq:delete-query function of this module.</p>
+</xqdoc:description><xqdoc:param>$plan the binary query plan.</xqdoc:param><xqdoc:param>$resolver the URL resolver function.</xqdoc:param><xqdoc:param>$mapper the URI mapper function.</xqdoc:param><xqdoc:return>an identifier for the compiled query that can be passed as arguments to other functions of this module.</xqdoc:return><xqdoc:error>any (static or type) error that may be raised during the compilation of the query. For example, err:XPST0003 if the given query could not be parsed.</xqdoc:error></xqdoc:comment><xqdoc:name>zq:load-from-query-plan</xqdoc:name><xqdoc:signature>declare function zq:load-from-query-plan($plan as xs:base64Binary, $resolver as item()?, $mapper as item()?) as xs:anyURI external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>plan</xqdoc:name><xqdoc:type>xs:base64Binary</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>resolver</xqdoc:name><xqdoc:type occurrence="?">item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>mapper</xqdoc:name><xqdoc:type occurrence="?">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:anyURI</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

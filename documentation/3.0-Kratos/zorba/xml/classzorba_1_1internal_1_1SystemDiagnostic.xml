@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1SystemDiagnostic" kind="class" prot="public">
+    <compoundname>zorba::internal::SystemDiagnostic</compoundname>
+    <basecompoundref refid="classzorba_1_1internal_1_1SystemDiagnosticBase" prot="public" virt="non-virtual">zorba::internal::SystemDiagnosticBase</basecompoundref>
+    <includes refid="system__diagnostic_8h" local="no">zorba/internal/system_diagnostic.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class QNameType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1SystemDiagnostic_1aca789bc6e4c4cdcb3bb5f7cbd75c9948" prot="private" static="no" mutable="no">
+        <type>QNameType</type>
+        <definition>QNameType zorba::internal::SystemDiagnostic&lt; QNameType &gt;::qname_</definition>
+        <argsstring></argsstring>
+        <name>qname_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" line="95" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1SystemDiagnostic_1ae8d86c62f67ac02e066c20d1c8b2b47e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type><ref refid="namespacezorba_1_1diagnostic_1a5709afb398f65a318160aa7613abfa9e" kindref="member">zorba::diagnostic::kind</ref></type>
+        <definition>zorba::diagnostic::kind zorba::internal::SystemDiagnostic&lt; QNameType &gt;::kind</definition>
+        <argsstring>() const </argsstring>
+        <name>kind</name>
+        <reimplements refid="classzorba_1_1Diagnostic_1a26bf8331471f50f339a748b67006591b">kind</reimplements>
+        <briefdescription>
+<para>Gets the kind of this diagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said kind. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" line="86" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" bodystart="86" bodyend="86"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Diagnostic_1a26d37747968b7e16cc3bbb564124ab66" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>char const *</type>
+        <definition>virtual char const* zorba::Diagnostic::message</definition>
+        <argsstring>() const </argsstring>
+        <name>message</name>
+        <briefdescription>
+<para>Gets the message of this diagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said message. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="302"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1SystemDiagnostic_1a87c995adba48030eab64b815ae712b2f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">zorba::diagnostic::QName</ref> const &amp;</type>
+        <definition>zorba::diagnostic::QName const&amp; zorba::internal::SystemDiagnostic&lt; QNameType &gt;::qname</definition>
+        <argsstring>() const </argsstring>
+        <name>qname</name>
+        <reimplements refid="classzorba_1_1Diagnostic_1ae32b80d36d617c9d142aeec331dd92c6">qname</reimplements>
+        <briefdescription>
+<para>Gets the QName for this diagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said QName. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" line="87" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" bodystart="87" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1SystemDiagnostic_1af4d8b1404f8d581722b607b19f1ed1fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::SystemDiagnostic&lt; QNameType &gt;::SystemDiagnostic</definition>
+        <argsstring>(char const *localname)</argsstring>
+        <name>SystemDiagnostic</name>
+        <param>
+          <type>char const *</type>
+          <declname>localname</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a SystemDiagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>localname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The local-name of the diagnostic. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" line="82" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" bodystart="80" bodyend="83"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1SystemDiagnostic_1a460536c65f301d8a3669c14396259eb1" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const *</type>
+        <definition>Diagnostic const* zorba::internal::SystemDiagnostic&lt; QNameType &gt;::clone</definition>
+        <argsstring>() const </argsstring>
+        <name>clone</name>
+        <reimplements refid="classzorba_1_1Diagnostic_1a26384c8cc836e3aedaafee7e73e1cac0">clone</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" line="91" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" bodystart="91" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1SystemDiagnostic_1aa3514301f262258b64fb7c9aa34490cd" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::internal::SystemDiagnostic&lt; QNameType &gt;::destroy</definition>
+        <argsstring>() const </argsstring>
+        <name>destroy</name>
+        <reimplements refid="classzorba_1_1Diagnostic_1ace559dde0d2a2f708ce7af94cb767e7e">destroy</reimplements>
+        <briefdescription>
+<para>Destroys a Diagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is the only way a Diagnostic should be destroyed. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" line="92" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" bodystart="92" bodyend="92"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1SystemDiagnosticBase_1a100fbd9f5d338881cc42472199dcf0f6" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const *</type>
+        <definition>static Diagnostic const* zorba::internal::SystemDiagnosticBase::find</definition>
+        <argsstring>(char const *localname)</argsstring>
+        <name>find</name>
+        <param>
+          <type>char const *</type>
+          <declname>localname</declname>
+        </param>
+        <briefdescription>
+<para>Given a diagnostic&apos;s local-name, finds its corresponding Diagnostic object. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>localname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The local-name. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the corresponding Diagnostic object or <computeroutput>NULL</computeroutput> if not found. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" line="45" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" bodystart="45" bodyend="49"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classzorba_1_1Diagnostic_1afb81a2ab07a82ca366124911d4d6d09a" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class ZorbaException</definition>
+        <argsstring></argsstring>
+        <name>ZorbaException</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="316" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="316" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="882">
+        <label>zorba::internal::SystemDiagnosticBase</label>
+        <link refid="classzorba_1_1internal_1_1SystemDiagnosticBase"/>
+        <childnode refid="883" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="881">
+        <label>zorba::internal::SystemDiagnostic&lt; QNameType &gt;</label>
+        <link refid="classzorba_1_1internal_1_1SystemDiagnostic"/>
+        <childnode refid="882" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="883">
+        <label>zorba::Diagnostic</label>
+        <link refid="classzorba_1_1Diagnostic"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="885">
+        <label>zorba::internal::SystemDiagnosticBase</label>
+        <link refid="classzorba_1_1internal_1_1SystemDiagnosticBase"/>
+        <childnode refid="886" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="884">
+        <label>zorba::internal::SystemDiagnostic&lt; QNameType &gt;</label>
+        <link refid="classzorba_1_1internal_1_1SystemDiagnostic"/>
+        <childnode refid="885" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="886">
+        <label>zorba::Diagnostic</label>
+        <link refid="classzorba_1_1Diagnostic"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" line="72" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/system_diagnostic.h" bodystart="72" bodyend="96"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1SystemDiagnostic_1a460536c65f301d8a3669c14396259eb1" prot="protected" virt="virtual"><scope>zorba::internal::SystemDiagnostic</scope><name>clone</name></member>
+      <member refid="classzorba_1_1internal_1_1SystemDiagnostic_1aa3514301f262258b64fb7c9aa34490cd" prot="protected" virt="virtual"><scope>zorba::internal::SystemDiagnostic</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1internal_1_1SystemDiagnosticBase_1a100fbd9f5d338881cc42472199dcf0f6" prot="public" virt="non-virtual"><scope>zorba::internal::SystemDiagnostic</scope><name>find</name></member>
+      <member refid="classzorba_1_1internal_1_1SystemDiagnostic_1ae8d86c62f67ac02e066c20d1c8b2b47e" prot="public" virt="virtual"><scope>zorba::internal::SystemDiagnostic</scope><name>kind</name></member>
+      <member refid="classzorba_1_1Diagnostic_1a26d37747968b7e16cc3bbb564124ab66" prot="public" virt="virtual"><scope>zorba::internal::SystemDiagnostic</scope><name>message</name></member>
+      <member refid="classzorba_1_1internal_1_1SystemDiagnostic_1a87c995adba48030eab64b815ae712b2f" prot="public" virt="virtual"><scope>zorba::internal::SystemDiagnostic</scope><name>qname</name></member>
+      <member refid="classzorba_1_1internal_1_1SystemDiagnostic_1aca789bc6e4c4cdcb3bb5f7cbd75c9948" prot="private" virt="non-virtual"><scope>zorba::internal::SystemDiagnostic</scope><name>qname_</name></member>
+      <member refid="classzorba_1_1internal_1_1SystemDiagnostic_1af4d8b1404f8d581722b607b19f1ed1fb" prot="public" virt="non-virtual"><scope>zorba::internal::SystemDiagnostic</scope><name>SystemDiagnostic</name></member>
+      <member refid="classzorba_1_1Diagnostic_1afb81a2ab07a82ca366124911d4d6d09a" prot="protected" virt="non-virtual"><scope>zorba::internal::SystemDiagnostic</scope><name>ZorbaException</name></member>
+      <member refid="classzorba_1_1Diagnostic_1ab3e86cf75df94f0b02c2dbc1acbafdd1" prot="protected" virt="virtual"><scope>zorba::internal::SystemDiagnostic</scope><name>~Diagnostic</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

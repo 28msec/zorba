@@ -1,0 +1,195 @@
+<div class="doxygen">
+  <div><h1 class="title">Schema Lifecycle</h1>
+<div id="intro" class="sect1"><h2>Introduction</h2>
+This page is a quick presentation on how to use Zorba with XMLSchema type information.</div>
+<div id="slsoverview" class="sect1"><h2>Overview</h2>
+Zorba supports <a href="http://www.w3.org/TR/xmlschema11-1/" target="_blank">W3C XML Schema (XSD) 1.1</a> including dateTimeStamp, +/-0, +/-INF. But due to the missing support from Xerces-C validation is still using only XSD 1.0, which is compatible with XSD 1.1 for the vast majority of the features with a few exceptions. Check out <a href="http://www.w3.org/TR/xmlschema11-1/#changes" target="_blank">the full list</a>.</div>
+<div id="immport" class="sect1"><h2>How to import a schema</h2>
+In order to use XMLSchema type information in a query a schema file needs to be imported. Note the URI must match the target namespace of schema file.<pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>schema<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">r<span> </span>=<span> </span></span><span class="stringliteral">"http://example"</span><span class="normal"><span> </span>at<span> </span></span><span class="stringliteral">"example.xsd"</span><span class="normal">;</span>
+</pre>For a full example see the <a href="/pages/3.0/zorba/schema_lifecycle?anchor=example1">Example 1</a> below.Note: for simplicity, the examples on this page make use of the "at &lt;filename&gt;" clause of <tt>import schema</tt> to explicitly load a specific schema file. However, when developing applications, it is usually better to omit this clause, and make use of Zorba's extensive URI-resolution mechanisms to load schema documents by URI. For details on this, see <a href="/pages/3.0/zorba/uriresolvers">URI Resolvers</a>.</div>
+<div id="validateExpr" class="sect1"><h2>Validate expression</h2>
+Use validate expression to validate an untyped document against an XMLSchema.<pre class="ace-static" ace-mode="xquery"><span class="normal"><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=a91fa177bec263667b9c1187018a0ff43">validate</a><span> </span>{$untypeDoc}</span>
+</pre>For a full example see the <a href="/pages/3.0/zorba/schema_lifecycle?anchor=example1">Example 1</a> below.</div>
+<div id="example1" class="sect1"><h2>Example 1</h2>
+The script <tt>example.xq</tt>: <pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>schema<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">r<span> </span>=<span> </span></span><span class="stringliteral">"http://example"</span><span class="normal"><span> </span>at<span> </span></span><span class="stringliteral">"example.xsd"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal"><a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0">file</a><span> </span>=<span> </span></span><span class="stringliteral">"http://expath.org/ns/file"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal">let<span> </span>$untypeDoc<span> </span>:=<span> </span>fn:parse-xml(<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0">file</a>:read-text(</span><span class="stringliteral">"example.xml"</span><span class="normal">))</span>
+<span class="normal">let<span> </span>$validatedDoc<span> </span>:=<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=a91fa177bec263667b9c1187018a0ff43">validate</a><span> </span>{$untypeDoc}</span>
+<span class="normal"/><span class="keywordflow">return</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>$validatedDoc</span>
+</pre>Assuming there is an <tt>example.xsd</tt> file with this content:<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;xs:schema<span> </span>xmlns:xs=</span><span class="stringliteral">"http://www.w3.org/2001/XMLSchema"</span><span class="normal"><span> </span></span>
+<span class="normal"><span> </span><span> </span>targetNamespace=</span><span class="stringliteral">"http://example"</span><span class="normal"><span> </span></span>
+<span class="normal"><span> </span><span> </span>xmlns=</span><span class="stringliteral">"http://example"</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>elementFormDefault=</span><span class="stringliteral">"qualified"</span><span class="normal"><span> </span>attributeFormDefault=</span><span class="stringliteral">"unqualified"</span><span class="normal">&gt;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>&lt;xs:element<span> </span>name=</span><span class="stringliteral">"a"</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a>=</span><span class="stringliteral">"TypeA"</span><span class="normal">/&gt;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>&lt;xs:complexType<span> </span>name=</span><span class="stringliteral">"TypeA"</span><span class="normal">&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>&lt;xs:sequence&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>&lt;xs:element<span> </span>name=</span><span class="stringliteral">"b"</span><span class="normal"><span> </span>maxOccurs=</span><span class="stringliteral">"unbounded"</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a>=</span><span class="stringliteral">"xs:string"</span><span class="normal">/&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>&lt;/xs:sequence&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;/xs:complexType&gt;</span>
+<span class="normal"/>
+<span class="normal">&lt;/xs:schema&gt;</span>
+</pre>And this <tt>example.xml</tt> instance XML document:<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;a<span> </span>xmlns=</span><span class="stringliteral">"http://example"</span><span class="normal">&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;b&gt;Hello<span> </span>world!&lt;/b&gt;</span>
+<span class="normal">&lt;/a&gt;</span>
+</pre>Zorba can execute the query to get the result: <pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>zorba<span> </span>--trailing-<a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a7579d790d4faed7ccbe127b2459c834d">nl</a><span> </span>-i<span> </span>-f<span> </span>-q<span> </span>example.xq<span> </span></span>
+<span class="normal">&lt;?xml<span> </span>version=</span><span class="stringliteral">"1.0"</span><span class="normal"><span> </span>encoding=</span><span class="stringliteral">"UTF-8"</span><span class="normal">?&gt;</span>
+<span class="normal">&lt;a<span> </span>xmlns=</span><span class="stringliteral">"http://example"</span><span class="normal">&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;b&gt;Hello<span> </span>world!&lt;/b&gt;</span>
+<span class="normal">&lt;/a&gt;</span>
+</pre></div>
+<div id="schema-type" class="sect1"><h2>Schema type name</h2>
+Using the <a href="/modules/latest/www.zorba-xquery.com/modules/schema" target="_blank">schema module</a> it is possible to find out the QName of a certain schema type.<a href="/pages/3.0/zorba/schema_lifecycle?anchor=example1">Example 1</a> can be adapted to the following: <pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>schema<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">r<span> </span>=<span> </span></span><span class="stringliteral">"http://example"</span><span class="normal"><span> </span>at<span> </span></span><span class="stringliteral">"example.xsd"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal"><a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0">file</a><span> </span>=<span> </span></span><span class="stringliteral">"http://expath.org/ns/file"</span><span class="normal">;</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">schema<span> </span>=<span> </span></span><span class="stringliteral">"http://zorba.io/modules/schema"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal"/>
+<span class="normal">let<span> </span>$untypeDoc<span> </span>:=<span> </span>fn:parse-xml(<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0">file</a>:read-text(</span><span class="stringliteral">"example.xml"</span><span class="normal">))</span>
+<span class="normal">let<span> </span>$validatedDoc<span> </span>:=<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=a91fa177bec263667b9c1187018a0ff43">validate</a><span> </span>{$untypeDoc}</span>
+<span class="normal"/><span class="keywordflow">return</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>let<span> </span>$qname<span> </span>:=<span> </span>schema:schema-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a>($validatedDoc/r:a)</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>(</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>fn:prefix-from-QName($qname),</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>fn:local-name-from-QName($qname),</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>fn:</span><span class="keyword">namespace</span><span class="normal">-uri-from-QName($qname)</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>)</span>
+</pre>Output: <pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>zorba<span> </span>--trailing-<a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a7579d790d4faed7ccbe127b2459c834d">nl</a><span> </span>-i<span> </span>-f<span> </span>-q<span> </span>example.xq<span> </span></span>
+<span class="normal">&lt;?xml<span> </span>version=</span><span class="stringliteral">"1.0"</span><span class="normal"><span> </span>encoding=</span><span class="stringliteral">"UTF-8"</span><span class="normal">?&gt;</span>
+<span class="normal">TypeA<span> </span>http:</span><span class="comment">//example</span>
+</pre></div>
+<div id="validateApi" class="sect1"><h2>Validate using the C++ Zorba API</h2>
+The C++ Zorba API can be used by an application to validate a document and later passed as a valid input into another query.In the <a href="/pages/3.0/zorba/schema_lifecycle?anchor=example2">Example 2</a> first loadProlog method on the static context was used to import the required schema file and than validate method was called to get the new validated item.<pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781acf706a3915939cf09e5b332770a20321">sc</a>-&gt;loadProlog(</span><span class="stringliteral">"import<span> </span>schema<span> </span>namespace<span> </span>s='http://test.org'<span> </span>at<span> </span>'schema.xsd';"</span><span class="normal">,<span> </span>hints);</span>
+</pre><pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781acf706a3915939cf09e5b332770a20321">sc</a>-&gt;validate(lChild,<span> </span>vItem);</span>
+</pre></div>
+<div id="example2" class="sect1"><h2>Example 2</h2>
+<pre class="ace-static" ace-mode="xquery"><span class="preprocessor">#include<span> </span>&lt;iostream&gt;</span><span class="normal"/>
+<span class="normal"/><span class="preprocessor">#include<span> </span>&lt;sstream&gt;</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal"/><span class="preprocessor">#include<span> </span>&lt;<a href="/pages/3.0/zorba/zorba_8h">zorba/zorba.h</a>&gt;</span><span class="normal"/>
+<span class="normal"/><span class="preprocessor">#include<span> </span>&lt;<a href="/pages/3.0/zorba/store__manager_8h">zorba/store_manager.h</a>&gt;</span><span class="normal"/>
+<span class="normal"/><span class="preprocessor">#include<span> </span>&lt;<a href="/pages/3.0/zorba/serializer_8h">zorba/serializer.h</a>&gt;</span><span class="normal"/>
+<span class="normal"/><span class="preprocessor">#include<span> </span>&lt;<a href="/pages/3.0/zorba/singleton__item__sequence_8h">zorba/singleton_item_sequence.h</a>&gt;</span><span class="normal"/>
+<span class="normal"/><span class="preprocessor">#include<span> </span>&lt;<a href="/pages/3.0/zorba/zorba__exception_8h">zorba/zorba_exception.h</a>&gt;</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal"/><span class="keyword">using<span> </span>namespace<span> </span></span><span class="normal">zorba;</span>
+<span class="normal"/>
+<span class="normal"/><span class="keywordtype">void</span><span class="normal"><span> </span>printItem(<a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a>&amp;<span> </span>lChild,<span> </span><a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>pre);</span>
+<span class="normal"/><span class="keywordtype">void</span><span class="normal"><span> </span>printIter(<a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">Iterator_t</a><span> </span>lIter,<span> </span><a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>pre);</span>
+<span class="normal"/>
+<span class="normal"/>
+<span class="normal"/><span class="keywordtype">void</span><span class="normal"><span> </span>printIter(<a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">Iterator_t</a><span> </span>lIter,<span> </span><a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>pre)</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span>lIter-&gt;open();</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>lChild;</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">while</span><span class="normal"><span> </span>(lIter-&gt;next(lChild))</span>
+<span class="normal"><span> </span><span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>printItem(lChild,<span> </span>pre);</span>
+<span class="normal"><span> </span><span> </span>}</span>
+<span class="normal"><span> </span><span> </span>lIter-&gt;close();</span>
+<span class="normal">}</span>
+<span class="normal"/>
+<span class="normal"/>
+<span class="normal"/><span class="keywordtype">void</span><span class="normal"><span> </span>printItem(<a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a>&amp;<span> </span>lChild,<span> </span><a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>pre)</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>lNodeName;</span>
+<span class="normal"><span> </span><span> </span>lChild.<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=a73940d41ef3d48bb1ce88788194a9db3">getNodeName</a>(lNodeName);</span>
+<span class="normal"><span> </span><span> </span>std::cout<span> </span>&lt;&lt;<span> </span>pre<span> </span>&lt;&lt;<span> </span></span><span class="stringliteral">"node<span> </span>"</span><span class="normal"><span> </span>&lt;&lt;<span> </span>lNodeName.<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=a137321bd5067bd0a29715fb31fefd208">getStringValue</a>()<span> </span>&lt;&lt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="stringliteral">"<span> </span><span> </span><span> </span>-type<span> </span>"</span><span class="normal"><span> </span>&lt;&lt;<span> </span>lChild.<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=a7978f58f6c14046d56e8f07277997a83">getType</a>().<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=a137321bd5067bd0a29715fb31fefd208">getStringValue</a>()<span> </span>&lt;&lt;<span> </span>std::endl;</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">Iterator_t</a><span> </span>lAttrIter<span> </span>=<span> </span>lChild.<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=ac766311b163b6887c22cccb48f251058">getAttributes</a>();</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>lAttrIter-&gt;open();</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>lAttr;</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">while</span><span class="normal"><span> </span>(lAttrIter-&gt;next(lAttr))</span>
+<span class="normal"><span> </span><span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>lNodeName;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>lAttr.<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=a73940d41ef3d48bb1ce88788194a9db3">getNodeName</a>(lNodeName);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>std::cout<span> </span>&lt;&lt;<span> </span>pre<span> </span>&lt;&lt;<span> </span></span><span class="stringliteral">"<span> </span><span> </span>@"</span><span class="normal"><span> </span>&lt;&lt;<span> </span>lNodeName.<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=a137321bd5067bd0a29715fb31fefd208">getStringValue</a>()<span> </span>&lt;&lt;<span> </span></span><span class="stringliteral">"="</span><span class="normal"><span> </span>&lt;&lt;<span> </span>lAttr.<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=a137321bd5067bd0a29715fb31fefd208">getStringValue</a>()<span> </span>&lt;&lt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="stringliteral">"<span> </span><span> </span><span> </span>-type<span> </span>"</span><span class="normal"><span> </span>&lt;&lt;<span> </span>lAttr.<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=a7978f58f6c14046d56e8f07277997a83">getType</a>().<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=a137321bd5067bd0a29715fb31fefd208">getStringValue</a>()<span> </span>&lt;&lt;<span> </span>std::endl;</span>
+<span class="normal"><span> </span><span> </span>}</span>
+<span class="normal"><span> </span><span> </span>lAttrIter-&gt;close();</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">Iterator_t</a><span> </span>lChildIter<span> </span>=<span> </span>lChild.<a href="/pages/3.0/zorba/classzorba_1_1Item?anchor=a76e302fd4d47717df2cb90a35955f664">getChildren</a>();</span>
+<span class="normal"><span> </span><span> </span>printIter(lChildIter,<span> </span>pre<span> </span>+<span> </span></span><span class="stringliteral">"<span> </span><span> </span>"</span><span class="normal">);</span>
+<span class="normal">}</span>
+<span class="normal"/>
+<span class="normal"/>
+<span class="normal"/><span class="keywordtype">bool</span><span class="normal"><span> </span>example_12(<a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a>*<span> </span>aZorba)</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span></span><span class="comment">//<span> </span>without<span> </span>validation</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>query<span> </span>=<span> </span></span><span class="stringliteral">"&lt;a<span> </span>xmlns='http://test.org'&gt;&lt;b<span> </span>attr='1'/&gt;&lt;b<span> </span>attr='2'/&gt;&lt;/a&gt;"</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">XQuery_t</a><span> </span>lQuery1<span> </span>=<span> </span>aZorba-&gt;<a href="/pages/3.0/zorba/classzorba_1_1Zorba?anchor=a76a2f22394bd4b83d8d1e7f0c3c5e78b">compileQuery</a>(query);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">Iterator_t</a><span> </span>lIterator1<span> </span>=<span> </span>lQuery1-&gt;iterator();</span>
+<span class="normal"><span> </span><span> </span>printIter(lIterator1,<span> </span></span><span class="stringliteral">"<span> </span><span> </span>"</span><span class="normal">);</span>
+<span class="normal"/>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="comment">//with<span> </span>validation</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">XQuery_t</a><span> </span>lQuery2<span> </span>=<span> </span>aZorba-&gt;<a href="/pages/3.0/zorba/classzorba_1_1Zorba?anchor=a76a2f22394bd4b83d8d1e7f0c3c5e78b">compileQuery</a>(query);</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">Iterator_t</a><span> </span>lIterator2<span> </span>=<span> </span>lQuery2-&gt;iterator();</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>lIterator2-&gt;open();</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>lChild;</span>
+<span class="normal"><span> </span><span> </span>lIterator2-&gt;next(lChild);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">StaticContext_t</a><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781acf706a3915939cf09e5b332770a20321">sc</a><span> </span>=<span> </span>aZorba<span> </span>-&gt;<span> </span>createStaticContext();</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">const</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/structZorba__CompilerHints">Zorba_CompilerHints_t</a><span> </span>hints;</span>
+<span class="normal"><span> </span><span> </span>sc-&gt;loadProlog(</span><span class="stringliteral">"import<span> </span>schema<span> </span>namespace<span> </span>s='http://test.org'<span> </span>at<span> </span>'schema.xsd';"</span><span class="normal">,<span> </span>hints);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>vItem;</span>
+<span class="normal"><span> </span><span> </span>std::cout<span> </span>&lt;&lt;<span> </span></span><span class="stringliteral">"Validate:<span> </span>"</span><span class="normal"><span> </span>&lt;&lt;std::endl;<span> </span>std::cout.flush();</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>vres<span> </span>=<span> </span>sc-&gt;validate(lChild,<span> </span>vItem);</span>
+<span class="normal"><span> </span><span> </span>std::cout<span> </span>&lt;&lt;<span> </span></span><span class="stringliteral">"<span> </span><span> </span>res<span> </span><span> </span>:<span> </span>"</span><span class="normal"><span> </span>&lt;&lt;<span> </span>(vres<span> </span>?<span> </span></span><span class="stringliteral">"true"</span><span class="normal"><span> </span>:<span> </span></span><span class="stringliteral">"false"</span><span class="normal">)<span> </span>&lt;&lt;<span> </span>std::endl;<span> </span>std::cout.flush();</span>
+<span class="normal"/>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>printItem(vItem,<span> </span></span><span class="stringliteral">"<span> </span><span> </span>"</span><span class="normal">);</span>
+<span class="normal"><span> </span><span> </span>lIterator2-&gt;close();</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span></span><span class="keyword">true</span><span class="normal">;</span>
+<span class="normal">}</span>
+<span class="normal"/>
+<span class="normal"/><span class="keywordtype">int</span><span class="normal"><span> </span>main(</span><span class="keywordtype">int</span><span class="normal"><span> </span>argc,<span> </span></span><span class="keywordtype">char</span><span class="normal"><span> </span>**argv)</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span>std::cout<span> </span>&lt;&lt;<span> </span></span><span class="stringliteral">"Start"</span><span class="normal"><span> </span>&lt;&lt;<span> </span>std::endl;<span> </span>std::cout.flush();</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal">*<span> </span>lStore<span> </span>=<span> </span><a href="/pages/3.0/zorba/classzorba_1_1StoreManager?anchor=a9be91dfe800748ca7d955a88f9d85ed9">StoreManager::getStore</a>();</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a><span> </span>*lZorba<span> </span>=<span> </span><a href="/pages/3.0/zorba/classzorba_1_1Zorba?anchor=a2ce37d64e730e40875576d2e80b02b78">Zorba::getInstance</a>(lStore);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>res<span> </span>=<span> </span></span><span class="keyword">false</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>std::cout<span> </span>&lt;&lt;<span> </span></span><span class="stringliteral">"executing<span> </span>example<span> </span>12"</span><span class="normal"><span> </span>&lt;&lt;<span> </span>std::endl;</span>
+<span class="normal"><span> </span><span> </span>res<span> </span>=<span> </span>example_12(lZorba);</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">if</span><span class="normal"><span> </span>(!res)<span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span>1;</span>
+<span class="normal"><span> </span><span> </span>std::cout<span> </span>&lt;&lt;<span> </span>std::endl;</span>
+<span class="normal"/>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>lZorba-&gt;<a href="/pages/3.0/zorba/classzorba_1_1Zorba?anchor=a8cd51689f4e6a1639709aadceda21aa6">shutdown</a>();</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1StoreManager?anchor=a8aeeb96827e683d5f498c7a8a767357e">StoreManager::shutdownStore</a>(lStore);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>std::cout<span> </span>&lt;&lt;<span> </span></span><span class="stringliteral">"Done!"</span><span class="normal"><span> </span>&lt;&lt;<span> </span>std::endl;<span> </span>std::cout.flush();</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span>0;</span>
+<span class="normal">}</span>
+</pre>Output: <pre class="ace-static" ace-mode="xquery"><span class="normal">Start</span>
+<span class="normal">executing<span> </span>example<span> </span>12</span>
+<span class="normal"><span> </span><span> </span>node<span> </span>a<span> </span><span> </span><span> </span>-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a><span> </span>xs:anyType</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>node<span> </span>b<span> </span><span> </span><span> </span>-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a><span> </span>xs:anyType</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>@attr=1<span> </span><span> </span><span> </span>-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a><span> </span>xs:untypedAtomic</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>node<span> </span>b<span> </span><span> </span><span> </span>-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a><span> </span>xs:anyType</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>@attr=2<span> </span><span> </span><span> </span>-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a><span> </span>xs:untypedAtomic</span>
+<span class="normal">Validate:</span>
+<span class="normal"><span> </span><span> </span>res<span> </span><span> </span>:<span> </span></span><span class="keyword">true</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>node<span> </span>a<span> </span><span> </span><span> </span>-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a><span> </span>__AnonC2</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>node<span> </span>b<span> </span><span> </span><span> </span>-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a><span> </span>__AnonC3</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>@attr=1<span> </span><span> </span><span> </span>-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a><span> </span>xs:</span><span class="keywordtype">int</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>node<span> </span>b<span> </span><span> </span><span> </span>-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a><span> </span>__AnonC3</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>@attr=2<span> </span><span> </span><span> </span>-<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a><span> </span>xs:</span><span class="keywordtype">int</span>
+</pre> </div>
+    </div>
+</div>

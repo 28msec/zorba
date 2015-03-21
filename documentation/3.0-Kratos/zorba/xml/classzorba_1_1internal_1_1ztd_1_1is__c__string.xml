@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1ztd_1_1is__c__string" kind="class" prot="public">
+    <compoundname>zorba::internal::ztd::is_c_string</compoundname>
+    <includes refid="ztd_8h" local="no">zorba/internal/ztd.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1ztd_1_1is__c__string_1a1f5b14320c535e91399e46764e88db24" prot="private" static="no">
+        <type>ZORBA_TR1_NS::remove_pointer&lt; T &gt;::type</type>
+        <definition>typedef ZORBA_TR1_NS::remove_pointer&lt;T&gt;::type zorba::internal::ztd::is_c_string&lt; T &gt;::T_base</definition>
+        <argsstring></argsstring>
+        <name>T_base</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="289" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="289" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1ztd_1_1is__c__string_1a8f3ada2b31c6e374cf4440203f89d2dc" prot="private" static="no">
+        <type>ZORBA_TR1_NS::add_const&lt; T_base &gt;::type</type>
+        <definition>typedef ZORBA_TR1_NS::add_const&lt;T_base&gt;::type zorba::internal::ztd::is_c_string&lt; T &gt;::T_base_const</definition>
+        <argsstring></argsstring>
+        <name>T_base_const</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="290" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="290" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1ztd_1_1is__c__string_1a37283ba9ba69b4df7d8b75a640829453" prot="public" static="yes" mutable="no">
+        <type>bool const</type>
+        <definition>bool const zorba::internal::ztd::is_c_string&lt; T &gt;::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer>
+       ZORBA_TR1_NS::is_same&lt;T_base_const*,char const*&gt;::<ref refid="classzorba_1_1internal_1_1ztd_1_1is__c__string_1a37283ba9ba69b4df7d8b75a640829453" kindref="member">value</ref>
+    || ZORBA_TR1_NS::is_same&lt;T_base_const*,unsigned char const*&gt;::<ref refid="classzorba_1_1internal_1_1ztd_1_1is__c__string_1a37283ba9ba69b4df7d8b75a640829453" kindref="member">value</ref>
+    || ZORBA_TR1_NS::is_same&lt;T_base_const*,signed char const*&gt;::<ref refid="classzorba_1_1internal_1_1ztd_1_1is__c__string_1a37283ba9ba69b4df7d8b75a640829453" kindref="member">value</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="295" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="292" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="288" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="288" bodyend="296"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1is__c__string_1a1f5b14320c535e91399e46764e88db24" prot="private" virt="non-virtual"><scope>zorba::internal::ztd::is_c_string</scope><name>T_base</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1is__c__string_1a8f3ada2b31c6e374cf4440203f89d2dc" prot="private" virt="non-virtual"><scope>zorba::internal::ztd::is_c_string</scope><name>T_base_const</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1is__c__string_1a37283ba9ba69b4df7d8b75a640829453" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::is_c_string</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

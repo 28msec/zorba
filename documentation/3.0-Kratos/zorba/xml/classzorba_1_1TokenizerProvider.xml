@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1TokenizerProvider" kind="class" prot="public">
+    <compoundname>zorba::TokenizerProvider</compoundname>
+    <includes refid="tokenizer_8h" local="no">zorba/tokenizer.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1TokenizerProvider_1a78e1162efa415d86a6cd3e52c31300b8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::TokenizerProvider::getTokenizer</definition>
+        <argsstring>(locale::iso639_1::type lang, Tokenizer::State *state=nullptr, Tokenizer::ptr *t=nullptr) const =0</argsstring>
+        <name>getTokenizer</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref></type>
+          <declname>lang</declname>
+        </param>
+        <param>
+          <type><ref refid="structzorba_1_1Tokenizer_1_1State" kindref="compound">Tokenizer::State</ref> *</type>
+          <declname>state</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Tokenizer_1aca3811e6d2e00c3b1a16d262ee4c0049" kindref="member">Tokenizer::ptr</ref> *</type>
+          <declname>t</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+<para>Creates a new Tokenizer. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>lang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The language of the text that the tokenizer will tokenize. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>state</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The State to use. If <computeroutput>null</computeroutput>, <emphasis>t</emphasis> is not set. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>t</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If not <computeroutput>null</computeroutput>, set to point to a <ref refid="classzorba_1_1Tokenizer" kindref="compound">Tokenizer</ref> for <emphasis>lang</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if this provider can provide a tokenizer for <emphasis>lang</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="301"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1TokenizerProvider_1a9d9258d9a15d72d0f5595f48bde56981" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::TokenizerProvider::~TokenizerProvider</definition>
+        <argsstring>()</argsstring>
+        <name>~TokenizerProvider</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="288"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A TokenizerProvider provides a <ref refid="classzorba_1_1Tokenizer" kindref="compound">Tokenizer</ref> for a given language. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="286" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="286" bodyend="302"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1TokenizerProvider_1a78e1162efa415d86a6cd3e52c31300b8" prot="public" virt="pure-virtual"><scope>zorba::TokenizerProvider</scope><name>getTokenizer</name></member>
+      <member refid="classzorba_1_1TokenizerProvider_1a9d9258d9a15d72d0f5595f48bde56981" prot="public" virt="virtual"><scope>zorba::TokenizerProvider</scope><name>~TokenizerProvider</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1base64_1_1exception" kind="class" prot="public">
+    <compoundname>zorba::base64::exception</compoundname>
+    <includes refid="base64__util_8h" local="no">zorba/util/base64_util.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1base64_1_1exception_1a590c1dc19b5e4aada45d390e876c9529" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char zorba::base64::exception::char_</definition>
+        <argsstring></argsstring>
+        <name>char_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="69" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1base64_1_1exception_1a5f56e49bcd767c1b208a68c563fe632a" prot="private" static="no" mutable="no">
+        <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::base64::exception::offset_</definition>
+        <argsstring></argsstring>
+        <name>offset_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="70" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1base64_1_1exception_1ab0cd7934031589d83f4180f6dfd3de32" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::base64::exception::char_offset</definition>
+        <argsstring>() const </argsstring>
+        <name>char_offset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="64" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="64" bodyend="66"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1exception_1aaa1adcbd49d3a32dfe0b083113ac3cf8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::base64::exception::exception</definition>
+        <argsstring>(char c, size_type offset, std::string const &amp;msg)</argsstring>
+        <name>exception</name>
+        <param>
+          <type>char</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>msg</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="58" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="57" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1exception_1a887a819b73e75e4f28bd78f034e2676e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char</type>
+        <definition>char zorba::base64::exception::invalid_char</definition>
+        <argsstring>() const </argsstring>
+        <name>invalid_char</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="60" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="60" bodyend="62"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A base64::exception is-an invalid_argument that contains additional details about the exception such as the invalid character and its offset. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="55" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="55" bodyend="71"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1base64_1_1exception_1a590c1dc19b5e4aada45d390e876c9529" prot="private" virt="non-virtual"><scope>zorba::base64::exception</scope><name>char_</name></member>
+      <member refid="classzorba_1_1base64_1_1exception_1ab0cd7934031589d83f4180f6dfd3de32" prot="public" virt="non-virtual"><scope>zorba::base64::exception</scope><name>char_offset</name></member>
+      <member refid="classzorba_1_1base64_1_1exception_1aaa1adcbd49d3a32dfe0b083113ac3cf8" prot="public" virt="non-virtual"><scope>zorba::base64::exception</scope><name>exception</name></member>
+      <member refid="classzorba_1_1base64_1_1exception_1a887a819b73e75e4f28bd78f034e2676e" prot="public" virt="non-virtual"><scope>zorba::base64::exception</scope><name>invalid_char</name></member>
+      <member refid="classzorba_1_1base64_1_1exception_1a5f56e49bcd767c1b208a68c563fe632a" prot="private" virt="non-virtual"><scope>zorba::base64::exception</scope><name>offset_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

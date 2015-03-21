@@ -1,0 +1,83 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::uuid</h1><p class="include">
+            #include &lt;zorba/util/uuid.h&gt;
+        </p>
+A uuid contains the raw bytes for a UUID.     
+Note that this is intentially a <tt>struct</tt> with no constructors, no destructor, and no user-defined assignment operators so that it remains a POD.See also:<ul>
+<li>RFC 4122: A Universally Unique IDentifier (UUID) URN Namespace.</li><li><a href="http://en.wikipedia.org/wiki/Universally_unique_identifier" target="_blank">http://en.wikipedia.org/wiki/Universally_unique_identifier</a></li></ul>
+The UUID data is stored as an array of 16 8-bit bytes comprising the 128 bits that is a UUID. The data is intentionally <em>not</em> stored as shown in "Appendix A - Sample Implementation" of RFC 4122 (the <tt>struct</tt> with individial fields such as <tt>time_low</tt>, <tt>time_mid</tt>, etc.) since C++ does not guarantee that the <tt>struct</tt> fields will be laid out in memory as shown in section "4.1.2. Layout and Byte Order" due to possible padding.     <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=afa76cf80f256b37865aad4b0e7f9be2f">const_pointer</a></p></td><td><p class="signature"><a href="#aefabb8f65444edb7be9caf445e1069b4">const_iterator</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a48ec908583be9c92f95e35c93cad4a4b">value_type</a> const *</p></td><td><p class="signature"><a href="#afa76cf80f256b37865aad4b0e7f9be2f">const_pointer</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a48ec908583be9c92f95e35c93cad4a4b">value_type</a> const &amp;</p></td><td><p class="signature"><a href="#a27135dec13308dbe5a509267dd961bab">const_reference</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::ptrdiff_t</p></td><td><p class="signature"><a href="#ab3e22d69eb7986e417ebca99d0480896">difference_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a6e1ff9ac3afd0504c1bf0b9c075b1e6e">pointer</a></p></td><td><p class="signature"><a href="#a689d34d0f7315e86c5e44b117f0c83be">iterator</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a48ec908583be9c92f95e35c93cad4a4b">value_type</a> *</p></td><td><p class="signature"><a href="#a6e1ff9ac3afd0504c1bf0b9c075b1e6e">pointer</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a48ec908583be9c92f95e35c93cad4a4b">value_type</a> &amp;</p></td><td><p class="signature"><a href="#a792eb4d9e74a81eab35d983bf028f8fb">reference</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a7871a098b1978880a827f03225f2d2b1">size_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">unsigned char</p></td><td><p class="signature"><a href="#a48ec908583be9c92f95e35c93cad4a4b">value_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#afc3fd70575f919057ee2a30bc1cb37d0">variant</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aa3449ee36dee9c914cf08fb60b22c473">version</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a48ec908583be9c92f95e35c93cad4a4b">value_type</a></p></td><td><p class="signature"><a href="#ac46d76bf7250e3579c4b74cf213bf4fa">data</a>[16]</p><span class="signature-description">
+The raw UUID data.         </span></td></tr></table></div><div class="section"><h2>Public Static Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ab12c27e02e6513e589dbf039b6bbd472">create</a>(uuid *result)</p><span class="signature-description">
+Creates a UUID.         </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a689d34d0f7315e86c5e44b117f0c83be">iterator</a></p></td><td><p class="signature"><a href="#ae7e96f06e0325e2747a1f69a5306827e">begin</a>()</p><span class="signature-description">
+Creates an iterator to the beginning of the data.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=aefabb8f65444edb7be9caf445e1069b4">const_iterator</a></p></td><td><p class="signature"><a href="#a93b18f310b922e1b307c9f74e29bdb77">begin</a>() const </p><span class="signature-description">
+Creates a const_iterator to the beginning of the data.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a689d34d0f7315e86c5e44b117f0c83be">iterator</a></p></td><td><p class="signature"><a href="#aa9bb45e592ebb865c5a53c5dca2aa181">end</a>()</p><span class="signature-description">
+Creates an iterator to one past the end of the data.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=aefabb8f65444edb7be9caf445e1069b4">const_iterator</a></p></td><td><p class="signature"><a href="#a0f720c08f3c86ea0f16c459fb0d4894f">end</a>() const </p><span class="signature-description">
+Creates a const_iterator to one past the end of the data.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=afc3fd70575f919057ee2a30bc1cb37d0">variant</a></p></td><td><p class="signature"><a href="#ab808134f7d7a4d70f1bb7e6ae796abad">get_variant</a>() const </p><span class="signature-description">
+Gets the variant of this UUID.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=aa3449ee36dee9c914cf08fb60b22c473">version</a></p></td><td><p class="signature"><a href="#a91538b9dcdcfc9927f94ea606d7569c2">get_version</a>() const </p><span class="signature-description">
+Gets the version of this UUID.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a7871a098b1978880a827f03225f2d2b1">size_type</a></p></td><td><p class="signature"><a href="#a3fd156f96357cd809635b4231554d342">size</a>() const </p><span class="signature-description">
+Gets the size of the UUID data.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aeb822b1fd2491191fdb7235f3d84c848">swap</a>(uuid &amp;that)</p><span class="signature-description">
+Swaps this UUID's data with that of another.         </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="aefabb8f65444edb7be9caf445e1069b4" class="sect1"><div><h3>const_iterator</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=afa76cf80f256b37865aad4b0e7f9be2f">const_pointer</a><span> </span>const_iterator</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="afa76cf80f256b37865aad4b0e7f9be2f" class="sect1"><div><h3>const_pointer</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a48ec908583be9c92f95e35c93cad4a4b">value_type</a> const *<span> </span>const_pointer</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a27135dec13308dbe5a509267dd961bab" class="sect1"><div><h3>const_reference</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a48ec908583be9c92f95e35c93cad4a4b">value_type</a> const &amp;<span> </span>const_reference</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab3e22d69eb7986e417ebca99d0480896" class="sect1"><div><h3>difference_type</h3></div><div class="signature-box">std::ptrdiff_t<span> </span>difference_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a689d34d0f7315e86c5e44b117f0c83be" class="sect1"><div><h3>iterator</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a6e1ff9ac3afd0504c1bf0b9c075b1e6e">pointer</a><span> </span>iterator</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a6e1ff9ac3afd0504c1bf0b9c075b1e6e" class="sect1"><div><h3>pointer</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a48ec908583be9c92f95e35c93cad4a4b">value_type</a> *<span> </span>pointer</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a792eb4d9e74a81eab35d983bf028f8fb" class="sect1"><div><h3>reference</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a48ec908583be9c92f95e35c93cad4a4b">value_type</a> &amp;<span> </span>reference</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a7871a098b1978880a827f03225f2d2b1" class="sect1"><div><h3>size_type</h3></div><div class="signature-box">std::size_t<span> </span>size_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a48ec908583be9c92f95e35c93cad4a4b" class="sect1"><div><h3>value_type</h3></div><div class="signature-box">unsigned char<span> </span>value_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="afc3fd70575f919057ee2a30bc1cb37d0" class="sect1"><div><h3>variant</h3></div><div class="signature-box"><span> </span>variant</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa3449ee36dee9c914cf08fb60b22c473" class="sect1"><div><h3>version</h3></div><div class="signature-box"><span> </span>version</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Attributes</h2><div class="detailed"><div id="ac46d76bf7250e3579c4b74cf213bf4fa" class="sect1"><div><h3>data</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a48ec908583be9c92f95e35c93cad4a4b">value_type</a><span> </span>data[16]</div><div><p class="signature-description">
+The raw UUID data.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Static Functions</h2><div class="detailed"><div id="ab12c27e02e6513e589dbf039b6bbd472" class="sect1"><div><h3>create</h3></div><div class="signature-box">void<span> </span>create(uuid *result)</div><div><p class="signature-description">
+Creates a UUID.         </p><p class="signature-description">
+The variant and version of the UUID created is platform-dependent.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>result</td><td>
+A pointer to the result. </td></tr></table></div>
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="ae7e96f06e0325e2747a1f69a5306827e" class="sect1"><div><h3>begin</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a689d34d0f7315e86c5e44b117f0c83be">iterator</a><span> </span>begin()</div><div><p class="signature-description">
+Creates an iterator to the beginning of the data.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said iterator. </div>
+        </p></div></div><div id="a93b18f310b922e1b307c9f74e29bdb77" class="sect1"><div><h3>begin</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=aefabb8f65444edb7be9caf445e1069b4">const_iterator</a><span> </span>begin() const </div><div><p class="signature-description">
+Creates a const_iterator to the beginning of the data.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said iterator. </div>
+        </p></div></div><div id="aa9bb45e592ebb865c5a53c5dca2aa181" class="sect1"><div><h3>end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a689d34d0f7315e86c5e44b117f0c83be">iterator</a><span> </span>end()</div><div><p class="signature-description">
+Creates an iterator to one past the end of the data.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said iterator. </div>
+        </p></div></div><div id="a0f720c08f3c86ea0f16c459fb0d4894f" class="sect1"><div><h3>end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=aefabb8f65444edb7be9caf445e1069b4">const_iterator</a><span> </span>end() const </div><div><p class="signature-description">
+Creates a const_iterator to one past the end of the data.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said iterator. </div>
+        </p></div></div><div id="ab808134f7d7a4d70f1bb7e6ae796abad" class="sect1"><div><h3>get_variant</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=afc3fd70575f919057ee2a30bc1cb37d0">variant</a><span> </span>get_variant() const </div><div><p class="signature-description">
+Gets the variant of this UUID.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said variant. </div>
+        </p></div></div><div id="a91538b9dcdcfc9927f94ea606d7569c2" class="sect1"><div><h3>get_version</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=aa3449ee36dee9c914cf08fb60b22c473">version</a><span> </span>get_version() const </div><div><p class="signature-description">
+Gets the version of this UUID.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said version. </div>
+        </p></div></div><div id="a3fd156f96357cd809635b4231554d342" class="sect1"><div><h3>size</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1uuid?anchor=a7871a098b1978880a827f03225f2d2b1">size_type</a><span> </span>size() const </div><div><p class="signature-description">
+Gets the size of the UUID data.         </p><p class="signature-description">
+<div><h4>Returns</h4>Always returns 16. </div>
+        </p></div></div><div id="aeb822b1fd2491191fdb7235f3d84c848" class="sect1"><div><h3>swap</h3></div><div class="signature-box">void<span> </span>swap(uuid &amp;that)</div><div><p class="signature-description">
+Swaps this UUID's data with that of another.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>that</td><td>
+The other UUID to swap data with. </td></tr></table></div>
+        </p></div></div></div></div></div>
+</div>

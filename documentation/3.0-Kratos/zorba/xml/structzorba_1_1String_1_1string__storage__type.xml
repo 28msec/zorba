@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1String_1_1string__storage__type" kind="struct" prot="private">
+    <compoundname>zorba::String::string_storage_type</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structzorba_1_1String_1_1string__storage__type_1a2df0fd635fc270d5fa47164a05caff8d" prot="public" static="no" mutable="no">
+        <type>union zorba::String::string_storage_type::@0</type>
+        <definition>union zorba::String::string_storage_type::@0 zorba::String::string_storage_type::@1</definition>
+        <argsstring></argsstring>
+        <name>@1</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1279"/>
+      </memberdef>
+      <memberdef kind="variable" id="structzorba_1_1String_1_1string__storage__type_1aa906892c9379fe69698d58e540bc4c8f" prot="public" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* zorba::String::string_storage_type::rep_</definition>
+        <argsstring></argsstring>
+        <name>rep_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1277" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1277" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structzorba_1_1String_1_1string__storage__type_1a5b9c5a4440734f309b48057aa640b213" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char zorba::String::string_storage_type::storage_[1]</definition>
+        <argsstring>[1]</argsstring>
+        <name>storage_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1278" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1278" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1271" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1271" bodyend="1283"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1String_1_1string__storage__type_1aa906892c9379fe69698d58e540bc4c8f" prot="public" virt="non-virtual"><scope>zorba::String::string_storage_type</scope><name>rep_</name></member>
+      <member refid="structzorba_1_1String_1_1string__storage__type_1a5b9c5a4440734f309b48057aa640b213" prot="public" virt="non-virtual"><scope>zorba::String::string_storage_type</scope><name>storage_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

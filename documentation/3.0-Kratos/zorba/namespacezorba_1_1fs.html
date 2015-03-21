@@ -1,0 +1,139 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::fs</h1>
+    
+    <div class="section"><h2>Enumerations</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a33bc6a07dd3ac39c5107606fc21bea22">type</a></p><span class="signature-description">
+File type.         </span></td></tr></table></div><div class="section"><h2>Type Definitions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1os__error_1_1exception">os_error::exception</a></p></td><td><p class="signature"><a href="#aa8105bb284bd6467038629d03be1f466">exception</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">off_t</p></td><td><p class="signature"><a href="#a446e28a0bf0f117168b81fbefc0865ea">size_type</a></p><span class="signature-description">
+File size type.         </span></td></tr></table></div><div class="section"><h2>Variables</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">char const</p></td><td><p class="signature"><a href="#aaf0bb705192d1baef70c508e482eca05">dir_separator</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">char const</p></td><td><p class="signature"><a href="#ad855b4fdcc6a7efb4cd2fac70adeda7b">newline</a>[]</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">char const</p></td><td><p class="signature"><a href="#a5c7737bfe572ccf85dd928a96bf4cb6f">path_separator</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(PathStringType1), void &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a></p></td><td><p class="signature"><a href="#aaa69709d8ced4b6aa9cc7873f369a832">append</a>(PathStringType1 &amp;path1, char const *path2)</p><span class="signature-description">
+Appends a path component onto another path ensuring that exactly one separator is used.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(PathStringType1)&amp;&amp;<a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(PathStringType2), void &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a></p></td><td><p class="signature"><a href="#ae578a7902fb0aad009ec08fc2d5ee165">append</a>(PathStringType1 &amp;path1, PathStringType2 const &amp;path2)</p><span class="signature-description">
+Appends a path component onto another path.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#a1c6f80ccdcd89d5ebd1056ed128740e5">base_name</a>(char const *path)</p><span class="signature-description">
+Gets the base name of the given path name, i.e., the file name without the path leading up to it.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(PathStringType), PathStringType &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a></p></td><td><p class="signature"><a href="#a3d6dea2cbaf239df4871df0d3799e4bd">base_name</a>(PathStringType const &amp;path)</p><span class="signature-description">
+Gets the base name of the given path name, i.e., the file name without the path leading up to it.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC std::string</p></td><td><p class="signature"><a href="#a6d54649caf5c90fa3714e5025507e1f6">curdir</a>()</p><span class="signature-description">
+Gets the current directory.         </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a14a3314ca40055f7af30b3fd02ea5af4">dir_name</a>(char const *path)</p><span class="signature-description">
+Gets the directory name of the given path name, i.e., the path up to but not including the last path component.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(PathStringType), PathStringType &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a></p></td><td><p class="signature"><a href="#adc6f740266e5be1d72924744b306d435">dir_name</a>(PathStringType const &amp;path)</p><span class="signature-description">
+Gets the directory name of the given path name, i.e., the path up to but not including the last path component.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a8f7fb962c78c731ab7f8ca4463a1f5bf">is_absolute</a>(char const *path)</p><span class="signature-description">
+Checks whether the given path is an absolute path.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(PathStringType), bool &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a></p></td><td><p class="signature"><a href="#a3581ed2625a379f3facc309714efcabe">is_absolute</a>(PathStringType const &amp;path)</p><span class="signature-description">
+Checks whether the given path is an absolute path.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(PathStringType), void &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a></p></td><td><p class="signature"><a href="#ae323f59361a3a0bfb5951a8ae1beb21f">make_absolute</a>(PathStringType *path)</p><span class="signature-description">
+Makes a relative path into an absolute path.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC std::string</p></td><td><p class="signature"><a href="#a18c539686aa53560219cdbbddb8f4315">normalize_path</a>(char const *path, char const *base=nullptr)</p><span class="signature-description">
+Gets the normalized path of the given path.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(PathStringType), std::string &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a></p></td><td><p class="signature"><a href="#aaa9d9cf12b4580d76e108e81ee7971f2">normalize_path</a>(PathStringType const &amp;path)</p><span class="signature-description">
+Gets the normalized path of the given path.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(PathStringType)&amp;&amp;<a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(BaseStringType), std::string &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a></p></td><td><p class="signature"><a href="#abb6a0c20b484b9435cce33dd3ba42ffc">normalize_path</a>(PathStringType const &amp;path, BaseStringType const &amp;base)</p><span class="signature-description">
+Gets the normalized path of the given path.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC std::ostream &amp;</p></td><td><p class="signature"><a href="#a9fd307e396205a949cd360d0bac02d17">operator&lt;&lt;</a>(std::ostream &amp;o, type t)</p><span class="signature-description">
+Emits the string representation of a file type to the given ostream.         </span></td></tr></table></div><div class="section"><h2>Enumerations</h2><div class="detailed"><div id="a33bc6a07dd3ac39c5107606fc21bea22" class="sect1"><div><h3>type</h3></div><div class="signature-box"><span> </span>type</div><div><p class="signature-description">
+File type.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Type Definitions</h2><div class="detailed"><div id="aa8105bb284bd6467038629d03be1f466" class="sect1"><div><h3>exception</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1os__error_1_1exception">os_error::exception</a><span> </span>exception</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a446e28a0bf0f117168b81fbefc0865ea" class="sect1"><div><h3>size_type</h3></div><div class="signature-box">off_t<span> </span>size_type</div><div><p class="signature-description">
+File size type.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Variables</h2><div class="detailed"><div id="aaf0bb705192d1baef70c508e482eca05" class="sect1"><div><h3>dir_separator</h3></div><div class="signature-box">char const<span> </span>dir_separator</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ad855b4fdcc6a7efb4cd2fac70adeda7b" class="sect1"><div><h3>newline</h3></div><div class="signature-box">char const<span> </span>newline[]</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a5c7737bfe572ccf85dd928a96bf4cb6f" class="sect1"><div><h3>path_separator</h3></div><div class="signature-box">char const<span> </span>path_separator</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Functions</h2><div class="detailed"><div id="aaa69709d8ced4b6aa9cc7873f369a832" class="sect1"><div><h3>append</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(PathStringType1), void &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a><span> </span>append(PathStringType1 &amp;path1, char const *path2)</div><div><p class="signature-description">
+Appends a path component onto another path ensuring that exactly one separator is used.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>PathStringType1</td><td>
+The <em>path1</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path1</td><td>
+The path to append to. </td></tr><tr><td>path2</td><td>
+The path to append. </td></tr></table></div>
+        </p></div></div><div id="ae578a7902fb0aad009ec08fc2d5ee165" class="sect1"><div><h3>append</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(PathStringType1)&amp;&amp;<a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(PathStringType2), void &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a><span> </span>append(PathStringType1 &amp;path1, PathStringType2 const &amp;path2)</div><div><p class="signature-description">
+Appends a path component onto another path.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>PathStringType1</td><td>
+The <em>path1</em> string type. </td></tr><tr><td>PathStringType2</td><td>
+The <em>path2</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path1</td><td>
+The path to append to. </td></tr><tr><td>path2</td><td>
+The path to append. </td></tr></table></div>
+        </p></div></div><div id="a1c6f80ccdcd89d5ebd1056ed128740e5" class="sect1"><div><h3>base_name</h3></div><div class="signature-box">char const *<span> </span>base_name(char const *path)</div><div><p class="signature-description">
+Gets the base name of the given path name, i.e., the file name without the path leading up to it.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path</td><td>
+The full path to get the base name of. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the base name. Note that if <em>path</em> is just a file name, then returns <em>path</em>. </div>
+        </p></div></div><div id="a3d6dea2cbaf239df4871df0d3799e4bd" class="sect1"><div><h3>base_name</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(PathStringType), PathStringType &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a><span> </span>base_name(PathStringType const &amp;path)</div><div><p class="signature-description">
+Gets the base name of the given path name, i.e., the file name without the path leading up to it.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>PathStringType</td><td>
+The <em>path</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path</td><td>
+The full path to get the base name of. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the base name. If <em>path</em> is just a file name, returns <em>path</em>. </div>
+        </p></div></div><div id="a6d54649caf5c90fa3714e5025507e1f6" class="sect1"><div><h3>curdir</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC std::string<span> </span>curdir()</div><div><p class="signature-description">
+Gets the current directory.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said directory. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+with a diagnostic of <a href="/pages/3.0/zorba/namespacezorba_1_1zerr?anchor=ad50ffec1fa8e180dd0e1816075844bbe">zerr::ZOSE0004_IO_ERROR</a> if it fails. </td></tr></table></div>
+        </p></div></div><div id="a14a3314ca40055f7af30b3fd02ea5af4" class="sect1"><div><h3>dir_name</h3></div><div class="signature-box">std::string<span> </span>dir_name(char const *path)</div><div><p class="signature-description">
+Gets the directory name of the given path name, i.e., the path up to but not including the last path component.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path</td><td>
+The path to get the directory name of. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the direcory path. If <em>path</em> is just a file name, returns <tt>'.'</tt>. </div>
+        </p></div></div><div id="adc6f740266e5be1d72924744b306d435" class="sect1"><div><h3>dir_name</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(PathStringType), PathStringType &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a><span> </span>dir_name(PathStringType const &amp;path)</div><div><p class="signature-description">
+Gets the directory name of the given path name, i.e., the path up to but not including the last path component.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>PathStringType</td><td>
+The <em>path</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path</td><td>
+The path to get the directory name of. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the direcory path. If <em>path</em> is just a file name, returns <tt>'.'</tt>. </div>
+        </p></div></div><div id="a8f7fb962c78c731ab7f8ca4463a1f5bf" class="sect1"><div><h3>is_absolute</h3></div><div class="signature-box">bool<span> </span>is_absolute(char const *path)</div><div><p class="signature-description">
+Checks whether the given path is an absolute path.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path</td><td>
+The full path to check. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <tt>true</tt> only if the path is absolute. </div>
+        </p></div></div><div id="a3581ed2625a379f3facc309714efcabe" class="sect1"><div><h3>is_absolute</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(PathStringType), bool &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a><span> </span>is_absolute(PathStringType const &amp;path)</div><div><p class="signature-description">
+Checks whether the given path is an absolute path.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>PathStringType</td><td>
+The <em>path</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path</td><td>
+The full path to check. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <tt>true</tt> only if the path is absolute. </div>
+        </p></div></div><div id="ae323f59361a3a0bfb5951a8ae1beb21f" class="sect1"><div><h3>make_absolute</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(PathStringType), void &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a><span> </span>make_absolute(PathStringType *path)</div><div><p class="signature-description">
+Makes a relative path into an absolute path.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>PathStringType</td><td>
+The <em>path</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path</td><td>
+A pointer to the path to make absolute. </td></tr></table></div>
+        </p></div></div><div id="a18c539686aa53560219cdbbddb8f4315" class="sect1"><div><h3>normalize_path</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC std::string<span> </span>normalize_path(char const *path, char const *base=nullptr)</div><div><p class="signature-description">
+Gets the normalized path of the given path.         </p><p class="signature-description">
+A normalized path is one that:<ul>
+<li>has  URIs converted to paths</li><li>has directory separators corrected for the host operating system</li><li>has adjacent directory separators combined, e.g., <tt>/a//b</tt> becomes <tt>/a/b</tt> </li><li>has ./ removed, e.g., <tt>/a/</tt>./b becomes <tt>/a/b</tt> </li><li>has ../ removed, e.g., <tt>/a/b/</tt>../c becomes <tt>/a/c</tt> </li></ul>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path</td><td>
+The path to normalize. </td></tr><tr><td>base</td><td>
+The base path. If not empty, is prepended to <em>path</em>. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the normalized path. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::invalid_argument</td><td>
+for malformed paths. </td></tr></table></div>
+        </p></div></div><div id="aaa9d9cf12b4580d76e108e81ee7971f2" class="sect1"><div><h3>normalize_path</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(PathStringType), std::string &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a><span> </span>normalize_path(PathStringType const &amp;path)</div><div><p class="signature-description">
+Gets the normalized path of the given path.         </p><p class="signature-description">
+A normalized path is one that:<ul>
+<li>has  URIs converted to paths</li><li>has directory separators corrected for the host operating system</li><li>has adjacent directory separators combined, e.g., <tt>/a//b</tt> becomes <tt>/a/b</tt> </li><li>has ./ removed, e.g., <tt>/a/</tt>./b becomes <tt>/a/b</tt> </li><li>has ../ removed, e.g., <tt>/a/b/</tt>../c becomes <tt>/a/c</tt> </li></ul>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>PathStringType</td><td>
+The <em>path</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path</td><td>
+The path to normalize. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the normalized path. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::invalid_argument</td><td>
+for malformed paths. </td></tr></table></div>
+        </p></div></div><div id="abb6a0c20b484b9435cce33dd3ba42ffc" class="sect1"><div><h3>normalize_path</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(PathStringType)&amp;&amp;<a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(BaseStringType), std::string &gt;::<a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22">type</a><span> </span>normalize_path(PathStringType const &amp;path, BaseStringType const &amp;base)</div><div><p class="signature-description">
+Gets the normalized path of the given path.         </p><p class="signature-description">
+A normalized path is one that:<ul>
+<li>has  URIs converted to paths</li><li>has directory separators corrected for the host operating system</li><li>has adjacent directory separators combined, e.g., <tt>/a//b</tt> becomes <tt>/a/b</tt> </li><li>has ./ removed, e.g., <tt>/a/</tt>./b becomes <tt>/a/b</tt> </li><li>has ../ removed, e.g., <tt>/a/b/</tt>../c becomes <tt>/a/c</tt> </li></ul>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>PathStringType</td><td>
+The <em>path</em> string type. </td></tr><tr><td>BaseStringType</td><td>
+The <em>base</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>path</td><td>
+The path to normalize. </td></tr><tr><td>base</td><td>
+The base path. If not empty, is prepended to <em>path</em>. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the normalized path. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::invalid_argument</td><td>
+for malformed paths. </td></tr></table></div>
+        </p></div></div><div id="a9fd307e396205a949cd360d0bac02d17" class="sect1"><div><h3>operator&lt;&lt;</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC std::ostream &amp;<span> </span>operator&lt;&lt;(std::ostream &amp;o, type t)</div><div><p class="signature-description">
+Emits the string representation of a file type to the given ostream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>o</td><td>
+The ostream to emit to. </td></tr><tr><td>t</td><td>
+The file type to emit. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <em>o</em>. </div>
+        </p></div></div></div></div></div>
+</div>

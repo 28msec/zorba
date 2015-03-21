@@ -1,0 +1,139 @@
+<div class="doxygen">
+  <div><h1 class="title">Full Text Tokenizer</h1>
+<div id="ft_tokenizer_intro" class="sect1"><h2>Introduction</h2>
+The Zorba XQuery processor implements the <a href="http://www.w3.org/TR/xpath-full-text-10/" target="_blank">XQuery and XPath Full Text 1.0</a> specification that, among other things, tokenizes a string into a sequence of tokens.</div>
+<div id="ft_tokenizer_tokization" class="sect1"><h2>Tokenization</h2>
+By default, Zorba uses the <a href="http://site.icu-project.org/" target="_blank">ICU library</a> for tokenization. For Roman alphabets, Zorba (ICU) considers only alpha-numeric sequences of characters to be part of a token; whitespace and punctuation characters are not and separate tokens. However, alpha-numeric sequences matching the regular expression <tt>[0-9][.,][0-9]</tt> are retained as part of a token, e.g.: "98.6" and "1,432.58" are tokens.Alternatively, you can implement your own tokenizer by deriving from the <tt>Tokenizer</tt> class.</div>
+<div id="ft_class_tokenizer" class="sect1"><h2>The Tokenizer Class</h2>
+The <tt>Tokenizer</tt> class is:<pre class="ace-static" ace-mode="xquery"><span class="keyword">class<span> </span></span><span class="normal">Tokenizer<span> </span>{</span>
+<span class="normal"/><span class="keyword">public</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">typedef</span><span class="normal"><span> </span></span><span class="comment">/*<span> </span>implementation-defined<span> </span>*/</span><span class="normal"><span> </span>ptr;</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">typedef</span><span class="normal"><span> </span></span><span class="comment">/*<span> </span>implementation-defined<span> </span>*/</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a>;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">struct<span> </span></span><span class="normal">State<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keyword">typedef</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">Tokenizer::size_type</a><span> </span>value_type;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>value_type<span> </span>token;<span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>Token<span> </span>number.</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>value_type<span> </span>sent;<span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>Sentence<span> </span>number.</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>value_type<span> </span>para;<span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>Paragraph<span> </span>number.</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>State();</span>
+<span class="normal"><span> </span><span> </span>};</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">class<span> </span></span><span class="normal">Callback<span> </span>{</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">public</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keyword">typedef</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">Tokenizer::size_type</a><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a>;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span>~Callback();</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>token(<span> </span></span><span class="keywordtype">char</span><span class="normal"><span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>*utf8_s,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>utf8_len,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang,</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>token_no,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>sent_no,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>para_no,</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>Item<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>*item<span> </span>=<span> </span>0<span> </span>)<span> </span>=<span> </span>0;</span>
+<span class="normal"><span> </span><span> </span>};</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">struct<span> </span></span><span class="normal">Properties<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keyword">typedef</span><span class="normal"><span> </span>std::vector&lt;locale::iso639_1::type&gt;<span> </span>languages_type;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>comments_separate_tokens;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>elements_separate_tokens;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>processing_instructions_separate_tokens;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>languages_type<span> </span>languages;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordtype">char</span><span class="normal"><span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>*uri;</span>
+<span class="normal"><span> </span><span> </span>};</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>properties(<span> </span>Properties<span> </span>*result<span> </span>)<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>=<span> </span>0;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>destroy()<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>=<span> </span>0;</span>
+<span class="normal"><span> </span><span> </span>State&amp;<span> </span>state();</span>
+<span class="normal"><span> </span><span> </span>State<span> </span></span><span class="keyword">const</span><span class="normal">&amp;<span> </span>state()<span> </span></span><span class="keyword">const</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>tokenize_node(<span> </span>Item<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>&amp;node,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang,<span> </span>Callback<span> </span>&amp;callback<span> </span>);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>tokenize_string(<span> </span></span><span class="keywordtype">char</span><span class="normal"><span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>*utf8_s,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>utf8_len,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang,</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>wildcards,<span> </span>Callback<span> </span>&amp;callback,<span> </span>Item<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>*item<span> </span>=<span> </span>0<span> </span>)<span> </span>=<span> </span>0;</span>
+<span class="normal"/>
+<span class="normal"/><span class="keyword">protected</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span>Tokenizer(<span> </span>State&amp;<span> </span>);</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span>~Tokenizer();</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>find_lang_attribute(<span> </span>Item<span> </span></span><span class="keyword">const</span><span class="normal">&amp;,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>*lang<span> </span>);</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>item(<span> </span>Item<span> </span></span><span class="keyword">const</span><span class="normal">&amp;,<span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>entering<span> </span>);</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>tokenize_node_impl(<span> </span>Item<span> </span></span><span class="keyword">const</span><span class="normal">&amp;,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a>,<span> </span>Callback&amp;,<span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>tokenize_acp<span> </span>);</span>
+<span class="normal">};</span>
+</pre>For details about the <tt>ptr</tt> type, the <tt>destroy()</tt> function, and why the destructor is <tt>protected</tt>, see the <a href="/pages/3.0/zorba/memory_management">Memory Management</a> document.The <tt>State</tt> <tt>struct</tt> is created by Zorba and passed to your constructor. It simply keeps track of the current token, sentence, and paragraph numbers.To implement a <tt>Tokenizer</tt>, you need to implement the <tt>tokenize_string</tt>() function where:<table class="table table-bordered"><tr>
+<td><tt>utf8_s</tt>  </td><td>A pointer to the UTF-8 byte sequence comprising the string to be tokenized.   </td></tr>
+<tr>
+<td><tt>utf8_len</tt>  </td><td>The number of bytes in the string to be tokenized.   </td></tr>
+<tr>
+<td><tt>lang</tt>  </td><td>The <a href="http://www.w3.org/TR/xmlschema-2/#language" target="_blank">language</a> of the string.   </td></tr>
+<tr>
+<td><tt>wildcards</tt>  </td><td>If <tt>true</tt>, allows XQuery <a href="http://www.w3.org/TR/xpath-full-text-10/#ftwildcardoption" target="_blank">wildcard syntax characters</a> to be part of tokens.   </td></tr>
+<tr>
+<td><tt>callback</tt>  </td><td>The <tt>Callback</tt> to call once per token.   </td></tr>
+<tr>
+<td><tt>item</tt>  </td><td>The <tt>Item</tt> whence this token came. If the token occurred within an element, the <tt>Item</tt> is the text node. If the token occurred within an attribute, the <tt>Item</tt> is the attribute node.   </td></tr>
+</table>
+A complete implementation of <tt>tokenize_string</tt>() is non-trivial and therefore an example is beyond the scope of this API documentation. However, the things a tokenizer should take into consideration include:<ul>
+<li>Detecting sentence termination ('.', '?', and '!' characters).</li><li>Handling floating-point numbers with possible thousands separators in US and European formats, e.g. "98.7", "98,7", "10,000", etc.</li><li>Distinguishing '.' used as a sentence terminator from '.' used as a decimal point.</li><li>Handling apostrophies, e.g., "men's".</li><li>Handling acronyms, e.g., "AT&amp;T".</li></ul>
+The task of iterating over an XML element's child nodes is done by <tt>tokenize_node_impl()</tt>. Its default implementation treats XML elements, comments, and processing instructions as token separators. (See <a href="/pages/3.0/zorba/ft_tokenizer?anchor=ft_tokenizer_properties">Properties</a>.) If you want to change that, you need to override <tt>tokenize_node_impl()</tt>.<div id="ft_tokenizer_paragraphs" class="sect2"><h3>Paragraphs</h3>
+By default, Zorba increments the current paragraph number once for each XML element encountered. However, this doesn't work well for mixed content. For example, in the XHTML: <pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;p&gt;The<span> </span>&lt;em&gt;best&lt;/em&gt;<span> </span>thing<span> </span>ever!&lt;/p&gt;</span>
+</pre> all the tokens are both in the same sentence and paragraph, but Zorba will consider that 3 paragraphs by default.Your tokenizer can take control over when the paragraph number is incremented by overriding the <tt>item()</tt> function. The <tt>item()</tt> function is passed the <tt>Item</tt> of the current XML element and whether the item is being entered or exited.For example, the <tt>item()</tt> function for tokenizing XHTML would be along the lines of: <pre class="ace-static" ace-mode="xquery"><span class="keywordtype">void</span><span class="normal"><span> </span>MyTokenizer::item(<span> </span>Item<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>&amp;item,<span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>entering<span> </span>)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">if</span><span class="normal"><span> </span>(<span> </span>entering<span> </span>&amp;&amp;<span> </span>item.isNode()<span> </span>&amp;&amp;<span> </span>item.getNodeKind()<span> </span>==<span> </span>store::StoreConsts::elementNode<span> </span>)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>Item<span> </span>qname;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>item.getNodeName(<span> </span>qname<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">if</span><span class="normal"><span> </span>(<span> </span></span><span class="comment">/*<span> </span>qname<span> </span>matches<span> </span>an<span> </span>XHTML<span> </span>block-level<span> </span>element's<span> </span>name<span> </span>*/</span><span class="normal"><span> </span>)</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>++state().para;</span>
+<span class="normal">}</span>
+</pre></div>
+<div id="ft_tokenizer_properties" class="sect2"><h3>Properties</h3>
+To implement a <tt>Tokenizer</tt>, you need also to implement the <tt>properties</tt>() function that fills in the <tt>Properties</tt> struct where:<table class="table table-bordered"><tr>
+<td><tt>comments_separate_tokens</tt>  </td><td>If <tt>true</tt>, XML comments separate tokens. For example, <tt>net&lt;!-- --&gt;work</tt> would be 2 tokens instead of 1.   </td></tr>
+<tr>
+<td><tt>elements_separate_tokens</tt>  </td><td>If <tt>true</tt>, XML elements separate tokens. For example, <tt>&lt;b&gt;B&lt;/b&gt;old</tt> would be 2 tokens instead of 1.   </td></tr>
+<tr>
+<td><tt>processing_instructions_separate_tokens</tt>  </td><td>If <tt>true</tt>, XML processing instructions separate tokens. For example, <tt>net&lt;?PI pi?&gt;work</tt> would be 2 tokens instead of 1.   </td></tr>
+<tr>
+<td><tt>languages</tt>  </td><td>The list of <a href="http://www.w3.org/TR/xmlschema-2/#language" target="_blank">languages</a> supported by the tokenizer.   </td></tr>
+<tr>
+<td><tt>uri</tt>  </td><td>The URI that uniquely identifies the Tokenizer.   </td></tr>
+</table>
+</div>
+</div>
+<div id="ft_class_tokenizer_provider" class="sect1"><h2>The TokenizerProviderClass</h2>
+In addition to a <tt>Tokenizer</tt>, you must also implement a <tt>TokenizerProvider</tt> that, given a <a href="http://www.w3.org/TR/xmlschema-2/#language" target="_blank">language</a>, provides a <tt>Tokenizer</tt> for that language:<pre class="ace-static" ace-mode="xquery"><span class="keyword">class<span> </span></span><span class="normal">TokenizerProvider<span> </span>{</span>
+<span class="normal"/><span class="keyword">public</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span>~TokenizerProvider();</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>getTokenizer(<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang,<span> </span>Tokenizer::State<span> </span>*state<span> </span>=<span> </span>0,<span> </span>Tokenizer::ptr*<span> </span>=<span> </span>0<span> </span>)<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>=<span> </span>0;</span>
+<span class="normal">};</span>
+</pre>Specifically, you need to implement the <tt>getTokenizer()</tt> function where:<table class="table table-bordered"><tr>
+<td><tt>lang</tt>  </td><td>The <a href="http://www.w3.org/TR/xmlschema-2/#language" target="_blank">language</a> to tokenize.   </td></tr>
+<tr>
+<td><tt>state</tt>  </td><td>The <tt>State</tt> to use. If <tt>null</tt>, <em>t</em> is not set.   </td></tr>
+<tr>
+<td><tt>t</tt>  </td><td>If not <tt>null</tt>, set to point to a Tokenizer for <em>lang</em>.   </td></tr>
+</table>
+A simple <tt>TokenizerProvider</tt> for our tokenizer can be implemented as:<pre class="ace-static" ace-mode="xquery"><span class="keyword">class<span> </span></span><span class="normal">MyTokenizerProvider<span> </span>:<span> </span></span><span class="keyword">public</span><span class="normal"><span> </span>TokenizerProvider<span> </span>{</span>
+<span class="normal"/><span class="keyword">public</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span>getTokenizer(<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang,<span> </span>Tokenizer::State*<span> </span>=<span> </span>0,<span> </span>Tokenizer::ptr*<span> </span>=<span> </span>0<span> </span>)<span> </span></span><span class="keyword">const</span><span class="normal">;</span>
+<span class="normal">};</span>
+<span class="normal"/>
+<span class="normal"/><span class="keywordtype">bool</span><span class="normal"><span> </span>MyTokenizerProvider::getTokenizer(<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang,<span> </span>Tokenizer::State<span> </span>*state,<span> </span>Tokenizer::ptr<span> </span>*t<span> </span>)</span><span class="keyword"><span> </span>const<span> </span></span><span class="normal">{</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">switch</span><span class="normal"><span> </span>(<span> </span>lang<span> </span>)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">case</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11f5307e1dac2a5918c6cdf5097e6961">iso639_1::en</a>:</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">if</span><span class="normal"><span> </span>(<span> </span>state<span> </span>&amp;&amp;<span> </span>t<span> </span>)</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>t-&gt;reset(<span> </span></span><span class="keyword">new</span><span class="normal"><span> </span>MyTokenizer<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span></span><span class="keyword">true</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">default</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span></span><span class="keyword">false</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span>}</span>
+<span class="normal">}</span>
+</pre></div>
+<div id="ft_tokenizer_enable" class="sect1"><h2>Using Your Tokenizer</h2>
+To enable your tokenizer to be used, you need to register it with the <tt>XmlDataManager:</tt> <pre class="ace-static" ace-mode="xquery"><span class="keywordtype">void</span><span class="normal"><span> </span>*</span><span class="keyword">const</span><span class="normal"><span> </span>store<span> </span>=<span> </span>StoreManager::getStore();</span>
+<span class="normal">Zorba<span> </span>*</span><span class="keyword">const</span><span class="normal"><span> </span>zorba<span> </span>=<span> </span>Zorba::getInstance(<span> </span>store<span> </span>);</span>
+<span class="normal"/>
+<span class="normal">MyTokenizerProvider<span> </span>provider;</span>
+<span class="normal">zorba-&gt;getXmlDataManager()-&gt;registerTokenizerProvider(<span> </span>&amp;provider<span> </span>);</span>
+</pre> </div>
+    </div>
+</div>

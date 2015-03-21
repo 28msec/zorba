@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1internal_1_1transcode" kind="namespace">
+    <compoundname>zorba::internal::transcode</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1transcode_1a7f2f4671edbf73d331febcdf5cbdfb4f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::streambuf *</type>
+        <definition>ZORBA_DLL_PUBLIC std::streambuf* zorba::internal::transcode::alloc_streambuf</definition>
+        <argsstring>(char const *charset, std::streambuf *orig)</argsstring>
+        <name>alloc_streambuf</name>
+        <param>
+          <type>char const *</type>
+          <declname>charset</declname>
+        </param>
+        <param>
+          <type>std::streambuf *</type>
+          <declname>orig</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="120"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1transcode_1a989d6f09c7a73875993e27b08e2017ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC int</type>
+        <definition>ZORBA_DLL_PUBLIC int zorba::internal::transcode::get_streambuf_index</definition>
+        <argsstring>()</argsstring>
+        <name>get_streambuf_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="123"/>
+        <referencedby refid="namespacezorba_1_1transcode_1ad5b79bb09335a231a7f6cb69a5fc01c7" compoundref="transcode__stream_8h" startline="187" endline="189">zorba::transcode::is_attached</referencedby>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="117"/>
+  </compounddef>
+</doxygen>

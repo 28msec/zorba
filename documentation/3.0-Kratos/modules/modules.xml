@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<modules>
+    <namespace prefix="an" uri="http://zorba.io/annotations" />
+    <namespace prefix="db" uri="http://www.28msec.com/modules/collections" />
+    <section id="modules" label="Modules">
+        
+        <section id="jsoniq" label="JSONiq">
+            <module id="core" label="JSONiq Core" ns="http://jsoniq.org/functions" />
+            <module id="extensions" label="JSONiq Extensions" ns="http://jsoniq.org/function-library" />
+        </section>
+        
+        <section id="jsound" label="JSound">
+          <module id="validation" label="Validation" ns="http://jsound.io/modules/validate" />
+          <module id="map" label="Map Utility" ns="http://jsound.io/modules/validate/map" />
+        </section>
+
+        <module id="functx" label="FunctX" ns="http://www.functx.com" />
+        
+        <section id="w3c" label="W3C">
+            <module id="xpath-functions" label="XPath Functions" ns="http://www.w3.org/2005/xpath-functions" file="/vagrant/xpath_functions.xq" />
+            <module id="xpath-functions-math" label="XPath Math Functions" ns="http://www.w3.org/2005/xpath-functions/math" file="/vagrant/xpath_functions_math.xq" />
+            <module id="xpath-error-codes" label="XPath Error Codes" ns="http://www.w3.org/2005/xqt-errors" />
+        </section>
+        
+        <section id="expath" label="EXPath">
+            <module id="http" label="HTTP" ns="http://expath.org/ns/http-client" />
+            <module id="file" label="File" ns="http://expath.org/ns/file" />
+            <module id="geo" label="Geo" ns="http://expath.org/ns/geo" />
+            <module id="error-codes" label="Error Codes" ns="http://expath.org/ns/error" />
+        </section>
+        
+        <section id="connectors" label="Data Connectors">
+            <module id="couchbase" label="Couchbase" ns="http://zorba.io/modules/couchbase" />
+            <module id="jdbc" label="JDBC" ns="http://zorba.io/modules/jdbc" />
+            <module id="sqlite" label="SQLite" ns="http://zorba.io/modules/sqlite" />
+            <module id="oracle-nosql" label="Oracle NoSQL" ns="http://zorba.io/modules/oracle-nosqldb" />
+        </section>
+        
+        <section id="zorba" label="Zorba">
+            <module id="error-codes" label="Error Codes" ns="http://zorba.io/errors" />
+            <module id="warning-codes" label="Warning Codes" ns="http://zorba.io/warnings" />
+            
+            <section id="xdm" label="XML &amp; JSON Data Model">
+                <section id="atomic" label="Atomic">
+                    <module id="datetime" label="Datetime" ns="http://zorba.io/modules/datetime"  />
+                    <module id="math" label="Math" ns="http://zorba.io/modules/math"  />
+                    <module id="random" label="Random" ns="http://zorba.io/modules/random"  />
+                    <module id="string" label="String" ns="http://zorba.io/modules/string"  />
+                    <module id="uri" label="URI" ns="http://zorba.io/modules/uri" />
+                </section>
+                <module id="item" label="Item" ns="http://zorba.io/modules/item" />
+                <section id="node" label="Node">
+                    <module id="xml-node" label="XML Node" ns="http://zorba.io/modules/node" />
+                    <module id="xml-schema" label="XML Schema" ns="http://zorba.io/modules/schema" />
+                    <module id="node-position" label="Node Position" ns="http://zorba.io/modules/node-position" />
+                    <!--module id="node-reference" label="Node Reference" ns="http://zorba.io/modules/node-reference" /-->
+                </section>
+            </section>
+            
+            <module id="full-text" label="Full Text" ns="http://zorba.io/modules/full-text" />
+            <module id="sctx" label="Static Context" ns="http://zorba.io/modules/sctx" />
+            <module id="reflection" label="Reflection" ns="http://zorba.io/modules/reflection" />
+            <module id="process" label="Process" ns="http://zorba.io/modules/process" />
+            
+            <section id="io" label="Input / Output">
+                <module id="fetch" label="Fetch" ns="http://zorba.io/modules/fetch" />
+                <module id="http-client" label="HTTP Client" ns="http://zorba.io/modules/http-client" />
+                <module id="system" label="System" ns="http://zorba.io/modules/system" />
+                <module id="imap" label="IMAP" ns="http://www.zorba-xquery.com/modules/email/imap" />
+                <module id="smtp" label="SMTP" ns="http://www.zorba-xquery.com/modules/email/smtp" />
+            </section>
+            
+            <section id="data-store" label="Data Store">
+                
+                <section id="collections" label="Collections">
+                    <module id="dynamic-ddl" label="Dynamic Data Definition" ns="http://zorba.io/modules/store/dynamic/collections/ddl" />
+                    <module id="dynamic-dml" label="Dynamic Data Manipulation" ns="http://zorba.io/modules/store/dynamic/collections/dml" />
+                    <module id="static-ddl" label="Static Data Definition" ns="http://zorba.io/modules/store/static/collections/ddl" />
+                    <module id="static-dml" label="Static Data Manipulation" ns="http://zorba.io/modules/store/static/collections/dml" />
+                    <module id="w3c-ddl" label="W3C Data Definition" ns="http://zorba.io/modules/store/dynamic/collections/w3c/ddl" />
+                    <module id="w3c-dml" label="W3C Data Manipulation" ns="http://zorba.io/modules/store/dynamic/collections/w3c/dml" />
+                </section>
+                
+                <module id="documents" label="Documents" ns="http://zorba.io/modules/store/documents" />
+                
+                <section id="data-structures" label="Data Structures">
+                    <module id="unordered-map" label="Unordered Map" ns="http://zorba.io/modules/unordered-maps" />
+                    <module id="stack" label="Stack" ns="http://zorba.io/modules/stack" />
+                    <module id="queue" label="Queue" ns="http://zorba.io/modules/queue" />
+                </section>
+                
+                <section id="indexes" label="Indexes">
+                    <module id="static-ddl" label="Static Data Definition" ns="http://zorba.io/modules/store/static/indexes/ddl" />
+                    <module id="static-dml" label="Static Data Manipulation" ns="http://zorba.io/modules/store/static/indexes/dml" />
+                </section>
+                
+                <section id="integrity-constraints" label="Integrity Constraints">
+                    <module id="static-ddl" label="Static Data Definition" ns="http://zorba.io/modules/store/static/integrity-constraints/ddl" />
+                    <module id="static-dml" label="Static Data Manipulation" ns="http://zorba.io/modules/store/static/integrity-constraints/dml" />
+                </section>
+            </section>
+            
+            <section id="data-processing" label="Data Processing">
+                <module id="schema-tools" label="Schema Tools" ns="http://www.zorba-xquery.com/modules/schema-tools" />
+                <module id="pdf-reader" label="PDF Reader" ns="http://www.zorba-xquery.com/modules/read-pdf" />
+            </section>
+            
+            <section id="data-converters" label="Data Converters">
+                <module id="base64" label="Base 64" ns="http://zorba.io/modules/base64" />
+                <module id="csv" label="CSV" ns="http://zorba.io/modules/json-csv" />
+                <module id="html" label="HTML" ns="http://www.zorba-xquery.com/modules/converters/html" />
+                <module id="json" label="JSON" ns="http://zorba.io/modules/json-xml" />
+                <module id="xml" label="XML" ns="http://zorba.io/modules/xml" />
+            </section>
+            
+            <section id="data-formatting" label="Data Formatting">
+                <module id="xsl-fo" label="XSL-FO" ns="http://zorba.io/modules/xsl-fo" />
+            </section>
+            
+            <section id="data-cleaning" label="Data Cleaning">
+                <module id="info-extraction" label="Info Extraction" ns="http://zorba.io/modules/info-extraction" />
+                <module id="phonetic-string-similarity" label="Phonectic String Similarity" ns="http://zorba.io/modules/data-cleaning/phonetic-string-similarity" />
+                <module id="conversion" label="Conversion" ns="http://zorba.io/modules/data-cleaning/conversion" />
+                <module id="set-similarity" label="Set Similarity" ns="http://zorba.io/modules/data-cleaning/set-similarity" />
+                <module id="token-based-string-similarity" label="Token-Based String Similarity" ns="http://zorba.io/modules/data-cleaning/token-based-string-similarity" />
+                <module id="normalization" label="Normalization" ns="http://zorba.io/modules/data-cleaning/normalization" />
+                <module id="hybrid-string-similarity" label="Hybrid String Similarity" ns="http://zorba.io/modules/data-cleaning/hybrid-string-similarity" />
+                <module id="consolidation" label="Consolidation" ns="http://zorba.io/modules/data-cleaning/consolidation" />
+                <module id="character-based-string-similarity" label="Character-Based String Similarity" ns="http://zorba.io/modules/data-cleaning/character-based-string-similarity" />
+            </section>
+            
+            <section id="languages" label="Programming Languages">
+                <module id="xslt" label="XSLT" ns="http://www.zorba-xquery.com/modules/languages/xslt" />
+                <module id="xqxq" label="XQuery" ns="http://zorba.io/modules/zorba-query" />
+            </section>
+            
+            <section id="excel" label="Excel">
+                <module id="math-sumproduct" label="Math Sumproduct" ns="http://zorba.io/modules/excel/math-sumproduct" />
+                <module id="math" label="Math" ns="http://zorba.io/modules/excel/math" />
+                <module id="statistical-zorba" label="Statistical Zorba" ns="http://zorba.io/modules/excel/statistical-zorba" />
+                <module id="statistical" label="Statistical" ns="http://zorba.io/modules/excel/statistical" />
+                <module id="text" label="Text" ns="http://zorba.io/modules/excel/text" />
+                <module id="logical" label="Logical" ns="http://zorba.io/modules/excel/logical" />
+                <module id="information" label="Information" ns="http://zorba.io/modules/excel/information" />
+                <module id="engineering" label="Engineering" ns="http://zorba.io/modules/excel/engineering" />
+                <module id="datetime" label="Datetime" ns="http://zorba.io/modules/excel/datetime" />
+                <module id="lookup" label="Lookup" ns="http://zorba.io/modules/excel/lookup" />
+            </section>
+            
+            <section id="cryptography" label="Cryptography">
+                <module id="hash" label="Hash" ns="http://zorba.io/modules/hash" />
+                <module id="hmac" label="HMAC" ns="http://zorba.io/modules/hmac" />
+            </section>
+            
+            <module id="geo-prj" label="Geo Projection" ns="http://zorba.io/modules/geoproj" />
+            
+            <section id="image" label="Image">
+                <module id="animation" label="Animation" ns="http://zorba.io/modules/image/animation" />
+                <module id="basic" label="Basic" ns="http://zorba.io/modules/image/basic" />
+                <!--module id="graphviz" label="Graphviz" ns="http://zorba.io/modules/image/graphviz" /-->
+                <module id="manipulation" label="Manipulaton" ns="http://zorba.io/modules/image/manipulation" />
+                <module id="paint" label="Paint" ns="http://zorba.io/modules/image/paint" />
+            </section>
+            
+            <section id="oauth" label="OAuth">
+                <module id="error" label="Errors" ns="http://www.zorba-xquery.com/modules/oauth/error" />
+                <module id="client" label="Client" ns="http://www.zorba-xquery.com/modules/oauth/client" />
+            </section>
+            
+            <module id="xqdoc" label="XQDoc" ns="http://zorba.io/modules/xqdoc" />
+            <module id="util-jvm" label="JVM Utility" ns="http://www.zorba-xquery.com/modules/util-jvm" />
+        </section>
+    </section>
+</modules>

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="deprecated" kind="page">
+    <compoundname>deprecated</compoundname>
+    <title>Deprecated List</title>
+    <detaileddescription>
+<para><variablelist>
+<varlistentry><term><anchor id="deprecated_1_deprecated000004"/>Member <ref refid="classzorba_1_1StaticContext_1ab43a64d55ff5b43c7d12f498339bc7fd" kindref="member">zorba::StaticContext::getFullModulePaths</ref>  (std::vector&lt; String &gt; &amp;aFullModulePaths) const =0</term></varlistentry>
+<listitem><para>Use StaticContext::getFullURIPath() and StaticContext::getFullLibPath().  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000003"/>Member <ref refid="classzorba_1_1StaticContext_1a0843da0799abf0fb7fc5f9aca262bf04" kindref="member">zorba::StaticContext::getModulePaths</ref>  (std::vector&lt; String &gt; &amp;aModulePaths) const =0</term></varlistentry>
+<listitem><para>Use StaticContext::getURIPath() and StaticContext::getLibPath(). </para><para>Use StaticContext::getURIPath() and StaticContext::getLibPath(). </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000001"/>Member <ref refid="classzorba_1_1StaticContext_1a79950cf93d1b12598ac9e4930611f5a4" kindref="member">zorba::StaticContext::getNamespaceURIByPrefix</ref>  (const String &amp;aPrefix) const =0</term></varlistentry>
+<listitem><para>This function is deprecated. Use getNamespaceBindings instead.  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000002"/>Member <ref refid="classzorba_1_1StaticContext_1ae3ed41589012358118015573ef80be5a" kindref="member">zorba::StaticContext::setModulePaths</ref>  (const std::vector&lt; String &gt; &amp;aModulePaths)=0</term></varlistentry>
+<listitem><para>Use StaticContext::setURIPath() and StaticContext::setLibPath().</para></listitem>
+</variablelist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

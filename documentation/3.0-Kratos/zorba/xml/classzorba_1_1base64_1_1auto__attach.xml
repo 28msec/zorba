@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1base64_1_1auto__attach" kind="class" prot="public">
+    <compoundname>zorba::base64::auto_attach</compoundname>
+    <includes refid="base64__stream_8h" local="no">zorba/util/base64_stream.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class StreamType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1base64_1_1auto__attach_1a569096c8305ae0f9201348af9b81c2d6" prot="private" static="no" mutable="no">
+        <type>StreamType *</type>
+        <definition>StreamType* zorba::base64::auto_attach&lt; StreamType &gt;::stream_</definition>
+        <argsstring></argsstring>
+        <name>stream_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="294" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="294" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1base64_1_1auto__attach_1a143067e84c03aaf2a9f0ac6c5b0edea2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::base64::auto_attach&lt; StreamType &gt;::attach</definition>
+        <argsstring>(StreamType &amp;stream, char const *charset)</argsstring>
+        <name>attach</name>
+        <param>
+          <type>StreamType &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>charset</declname>
+        </param>
+        <briefdescription>
+<para>Calls <ref refid="namespacezorba_1_1base64_1acc02be7e81c24ef6fdffb8f0f16c189d" kindref="member">base64::attach()</ref> on the given stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to attach the <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> to. If the stream already has a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> attached to it, this contructor does nothing. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>charset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the character encoding to convert from/to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> was attached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="275" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="275" bodyend="281"/>
+        <references refid="namespacezorba_1_1base64_1acc02be7e81c24ef6fdffb8f0f16c189d" compoundref="base64__stream_8h" startline="155" endline="167">zorba::base64::attach</references>
+        <referencedby refid="classzorba_1_1base64_1_1auto__attach_1add0e585c95931992991130876b05927d" compoundref="base64__stream_8h" startline="231" endline="233">zorba::base64::auto_attach&lt; StreamType &gt;::auto_attach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1auto__attach_1a1e98dd9416ed86d32dc6030c5bdd6b03" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::base64::auto_attach&lt; StreamType &gt;::auto_attach</definition>
+        <argsstring>()</argsstring>
+        <name>auto_attach</name>
+        <briefdescription>
+<para>Default constructor; does nothing. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="221" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="221" bodyend="222"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1auto__attach_1add0e585c95931992991130876b05927d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::base64::auto_attach&lt; StreamType &gt;::auto_attach</definition>
+        <argsstring>(StreamType &amp;stream)</argsstring>
+        <name>auto_attach</name>
+        <param>
+          <type>StreamType &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <briefdescription>
+<para>Constructs an auto_attach object calling <ref refid="classzorba_1_1base64_1_1auto__attach_1a143067e84c03aaf2a9f0ac6c5b0edea2" kindref="member">attach()</ref> on the given stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to attach the <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> to. If the stream already has a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> attached to it, this contructor does nothing. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="231" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="231" bodyend="233"/>
+        <references refid="classzorba_1_1base64_1_1auto__attach_1a143067e84c03aaf2a9f0ac6c5b0edea2" compoundref="base64__stream_8h" startline="275" endline="281">zorba::base64::auto_attach&lt; StreamType &gt;::attach</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1auto__attach_1a1379823861c37e29d255331cf71138ee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::base64::auto_attach&lt; StreamType &gt;::auto_attach</definition>
+        <argsstring>(auto_attach &amp;from)</argsstring>
+        <name>auto_attach</name>
+        <param>
+          <type><ref refid="classzorba_1_1base64_1_1auto__attach" kindref="compound">auto_attach</ref> &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Copy constructor that takes ownership of the stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The auto_attach to take ownership from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="240" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="240" bodyend="242"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1auto__attach_1ab298037ed95340d42adec9d2f21e9309" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::base64::auto_attach&lt; StreamType &gt;::detach</definition>
+        <argsstring>()</argsstring>
+        <name>detach</name>
+        <briefdescription>
+<para>Calls <ref refid="namespacezorba_1_1base64_1a31c5d6cf41a6ad8c82178853e7c0bcfc" kindref="member">base64::detach()</ref>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="286" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="286" bodyend="291"/>
+        <referencedby refid="classzorba_1_1base64_1_1auto__attach_1a3e2c0d870f42890891bf440800347e58" compoundref="base64__stream_8h" startline="248" endline="250">zorba::base64::auto_attach&lt; StreamType &gt;::~auto_attach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1auto__attach_1a206f2de112fa8b42cee6e0eae1c659c1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1base64_1_1auto__attach" kindref="compound">auto_attach</ref> &amp;</type>
+        <definition>auto_attach&amp; zorba::base64::auto_attach&lt; StreamType &gt;::operator=</definition>
+        <argsstring>(auto_attach &amp;from)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1base64_1_1auto__attach" kindref="compound">auto_attach</ref> &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Assignment operator that takes ownership of the stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The auto_attach to take ownership from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>*this</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="258" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="258" bodyend="264"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1auto__attach_1a3e2c0d870f42890891bf440800347e58" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::base64::auto_attach&lt; StreamType &gt;::~auto_attach</definition>
+        <argsstring>()</argsstring>
+        <name>~auto_attach</name>
+        <briefdescription>
+<para>Destroys this auto_attach object calling <ref refid="classzorba_1_1base64_1_1auto__attach_1ab298037ed95340d42adec9d2f21e9309" kindref="member">detach()</ref> on the previously attached stream, if any. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="248" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="248" bodyend="250"/>
+        <references refid="classzorba_1_1base64_1_1auto__attach_1ab298037ed95340d42adec9d2f21e9309" compoundref="base64__stream_8h" startline="286" endline="291">zorba::base64::auto_attach&lt; StreamType &gt;::detach</references>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A base64::auto_attach is a class that attaches a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> to a stream and automatically detaches it when the auto_attach object is destroyed. </para>    </briefdescription>
+    <detaileddescription>
+<para><programlisting><codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f(<sp/>ostream<sp/>&amp;<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abd9d340f17925d6dcfdf23e0ff40ddf1" kindref="member" tooltip="Ossetian; Ossetic.">os</ref><sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>base64::auto_attach&lt;ostream&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>raii(<sp/>os<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+</programlisting> A base64::auto_attach is useful for streams not created by you.</para><para><simplesect kind="see"><para><ulink url="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization">http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization</ulink> </para></simplesect>
+</para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="216" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="216" bodyend="295"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1base64_1_1auto__attach_1a143067e84c03aaf2a9f0ac6c5b0edea2" prot="public" virt="non-virtual"><scope>zorba::base64::auto_attach</scope><name>attach</name></member>
+      <member refid="classzorba_1_1base64_1_1auto__attach_1a1e98dd9416ed86d32dc6030c5bdd6b03" prot="public" virt="non-virtual"><scope>zorba::base64::auto_attach</scope><name>auto_attach</name></member>
+      <member refid="classzorba_1_1base64_1_1auto__attach_1add0e585c95931992991130876b05927d" prot="public" virt="non-virtual"><scope>zorba::base64::auto_attach</scope><name>auto_attach</name></member>
+      <member refid="classzorba_1_1base64_1_1auto__attach_1a1379823861c37e29d255331cf71138ee" prot="public" virt="non-virtual"><scope>zorba::base64::auto_attach</scope><name>auto_attach</name></member>
+      <member refid="classzorba_1_1base64_1_1auto__attach_1ab298037ed95340d42adec9d2f21e9309" prot="public" virt="non-virtual"><scope>zorba::base64::auto_attach</scope><name>detach</name></member>
+      <member refid="classzorba_1_1base64_1_1auto__attach_1a206f2de112fa8b42cee6e0eae1c659c1" prot="public" virt="non-virtual"><scope>zorba::base64::auto_attach</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1base64_1_1auto__attach_1a569096c8305ae0f9201348af9b81c2d6" prot="private" virt="non-virtual"><scope>zorba::base64::auto_attach</scope><name>stream_</name></member>
+      <member refid="classzorba_1_1base64_1_1auto__attach_1a3e2c0d870f42890891bf440800347e58" prot="public" virt="non-virtual"><scope>zorba::base64::auto_attach</scope><name>~auto_attach</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

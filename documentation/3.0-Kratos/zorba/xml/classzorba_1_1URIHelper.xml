@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1URIHelper" kind="class" prot="public">
+    <compoundname>zorba::URIHelper</compoundname>
+    <includes refid="uri_8h" local="no">zorba/util/uri.h</includes>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1URIHelper_1a684f0f37fa1b8e9a58ca76b8a8aa3381" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>static String zorba::URIHelper::decodeFileURI</definition>
+        <argsstring>(const String &amp;uri)</argsstring>
+        <name>decodeFileURI</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>uri</declname>
+        </param>
+        <briefdescription>
+<para>Decodes a <ulink url="file://">file://</ulink> URI to a filesystem path in native form. </para>        </briefdescription>
+        <detaileddescription>
+<para><itemizedlist>
+<listitem><para>uri A <ulink url="file://">file://</ulink> URI. <simplesect kind="return"><para>The filesystem path. </para></simplesect>
+</para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uri.h" line="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1URIHelper_1a461e4a386b8bf6d65493eef69a793d2a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>static String zorba::URIHelper::encodeFileURI</definition>
+        <argsstring>(const String &amp;filepath)</argsstring>
+        <name>encodeFileURI</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>filepath</declname>
+        </param>
+        <briefdescription>
+<para>Encodes a native filesystem path to a <ulink url="file://">file://</ulink> URI. </para>        </briefdescription>
+        <detaileddescription>
+<para><itemizedlist>
+<listitem><para>filepath The filesystem path. <simplesect kind="return"><para>The encoded URI of the file. </para></simplesect>
+</para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uri.h" line="45"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A helper class to do uri conversions. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/uri.h" line="30" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uri.h" bodystart="29" bodyend="46"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1URIHelper_1a684f0f37fa1b8e9a58ca76b8a8aa3381" prot="public" virt="non-virtual"><scope>zorba::URIHelper</scope><name>decodeFileURI</name></member>
+      <member refid="classzorba_1_1URIHelper_1a461e4a386b8bf6d65493eef69a793d2a" prot="public" virt="non-virtual"><scope>zorba::URIHelper</scope><name>encodeFileURI</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

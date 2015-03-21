@@ -1,0 +1,90 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://expath.org/ns/http-client</xqdoc:uri><xqdoc:name>http-client</xqdoc:name><xqdoc:comment><xqdoc:description> <p>
+ This module provides an implementation of the
+ <a href="http://expath.org/modules/http-client/">EXPath Http Client</a>.
+ It provides functions for making HTTP requests and is a superset of the
+ module specified by EXPath.
+ Specifically, it implements the <code>http:send-request()</code> functions
+ as specified by EXPath. Moreover, it adds an additional function
+ <code>http:read()</code> (with several arities for the sake of ease).
+ </p>
+ <p>
+ In general, both functions take a description of the HTTP request to make
+ as parameter, execute the request, and return a representation of the HTTP
+ response. For instance, in the following code snippet, we fetch the Zorba
+ home page:
+ </p>
+ <pre class="ace-static" ace-mode="xquery">import module namespace http = "http://expath.org/ns/http-client";
+ http:send-request(
+  &lt;http:request href="http://zorba.io" method="get" /&gt;
+ )
+ </pre>
+ <p>
+ The <code>http:send-request()</code> functions are declared as sequential.
+ Sequential functions are allowed to have side effects. For example, most probably,
+ an HTTP POST request is a request that has side effects because it adds/changes
+ a remote resource. Sequential functions are specified in the
+ <a href="http://zorba.io/documentation/2.9/zorba/scripting_tutorial.html">XQuery Scripting Extension</a>.
+ In contrast, the http:read() functions are not declared as sequential -
+ they are declared as nondeterministic though, which
+ means that several calls may return different results.
+ HTTP requests performed using these functions are <b>not</b> allowed to have
+ side effects.
+ </p>
+ <p>
+ The response is returned as a sequence of one or more items. The first
+ one is an <code>http:response</code> element with quite the same
+ structure as an http:request, but without the content itself.
+ The content is returned as the second item (or several items in case of
+ a multipart response) as a string, a document node, or a binary item.
+ This depends on the content-type returned.
+ Specifically, the rules are as follows:
+ <ul>
+  <li>A document node is returned if the media type has a MIME type of
+     text/xml, application/xml, text/xml-external-parsed-entity, or
+     application/xml-external-parsed-entity, as defined in [RFC 3023]
+     (except that application/xml-dtd is considered a text media type).
+     MIME types ending by +xml are also XML media types.</li>
+  <li>A document node is returned if the media type has a MIME type of
+      text/html. In order to be able to make HTML parseable, tidy is automatically
+      invoked. If you want to prevent that, you can also set your own content-type
+      by setting the override-media-type attribute in the request element.
+       For tidying, the following <a href="http://tidy.sourceforge.net/docs/quickref.html">options</a>
+       will be used:
+       <ul>
+         <li>TidyXmlOut=yes</li>
+         <li>TidyDoctypeMode=TidyDoctypeOmit</li>
+         <li>TidyQuoteNbsp=yes</li>
+         <li>TidyCharEncoding="utf8"</li>
+         <li>TidyNewline="LF"</li>
+       </ul>
+  </li>
+  <li>An xs:string item is returned if the media type has a text MIME type,
+     i.e. beginning with text/.</li>
+  <li>An xs:base64Binary item is returned for all the other media types.</li>
+ </ul>
+ </p>
+ <p>
+ The structure of a request element is defined in the schema that is imported
+ by this module. The details are described in the
+ <a href="http://expath.org/spec/http-client#d2e183">specification</a>.
+ Analogously, the response element is also described in this
+ <a href="http://expath.org/spec/http-client#d2e491">specification</a>.
+ </p>
+</xqdoc:description><xqdoc:author>Federico Cavalieri, Markus Pilman</xqdoc:author><xqdoc:see><a href="http://www.w3.org/TR/xquery-3/#FunctionDeclns">XQuery 3.0: Function Declaration</a></xqdoc:see><xqdoc:custom tag="library"><a href="http://curl.haxx.se/">cURL Library</a></xqdoc:custom><xqdoc:custom tag="project">EXPath/EXPath HTTP Client</xqdoc:custom><xqdoc:custom tag="language">xquery</xqdoc:custom><xqdoc:custom tag="version">3.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="an" uri="http://zorba.io/annotations" isSchema="false"/><xqdoc:namespace prefix="err" uri="http://expath.org/ns/error" isSchema="false"/><xqdoc:namespace prefix="http" uri="http://expath.org/ns/http-client" isSchema="false"/><xqdoc:namespace prefix="http-wrapper" uri="http://zorba.io/modules/http-client-wrapper" isSchema="false"/><xqdoc:namespace prefix="https" uri="http://expath.org/ns/http-client" isSchema="true"/><xqdoc:namespace prefix="tidy" uri="http://www.zorba-xquery.com/modules/converters/html" isSchema="false"/><xqdoc:namespace prefix="tidy-options" uri="http://www.zorba-xquery.com/modules/converters/html-options" isSchema="true"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports><xqdoc:import type="schema"><xqdoc:uri>http://www.zorba-xquery.com/modules/converters/html-options</xqdoc:uri></xqdoc:import><xqdoc:import type="schema"><xqdoc:uri>http://expath.org/ns/http-client</xqdoc:uri></xqdoc:import><xqdoc:import type="library"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri></xqdoc:import><xqdoc:import type="library"><xqdoc:uri>http://expath.org/ns/error</xqdoc:uri></xqdoc:import><xqdoc:import type="library"><xqdoc:uri>http://www.zorba-xquery.com/modules/converters/html</xqdoc:uri></xqdoc:import></xqdoc:imports><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> This function sends an HTTP request and returns the corresponding response.
+ <p>
+ This function is declared as sequential (see XQuery Scripting).
+ Sequential functions are allowed to have side effects. For example, most probably,
+ an HTTP POST request is a request that has side effects because it adds/changes
+ a remote resource.
+ </p>
+</xqdoc:description><xqdoc:param>$request Contains the various parameters of the request. See the <a href="http://expath.org/spec/http-client#d2e183">specification</a>. for a full description of the structure of this element.</xqdoc:param><xqdoc:param>$href is the HTTP or HTTPS URI to send the request to. It must be a valid xs:anyURI, but is declared as a string to be able to pass literal strings (without requiring to explicitly cast it to an xs:anyURI.)</xqdoc:param><xqdoc:param>$content is the request body content, for HTTP methods that can contain a body in the request (i.e. POST and PUT). It is an error, if this param is not the empty sequence for methods other then DELETE, GET, HEAD and OPTIONS.</xqdoc:param><xqdoc:return>a sequence of items, where the first item is a element of type http:responseType. The response element is also described in the <a href="http://expath.org/spec/http-client#d2e483">specification</a>. If there is one (or several, in case of multipart) response body, the response bodies are the next items in the sequence.</xqdoc:return></xqdoc:comment><xqdoc:name>http:send-request</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:send-request($request as element(*)?, $href as xs:string?, $bodies as item()*) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>request</xqdoc:name><xqdoc:type occurrence="?">element(*)</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type occurrence="?">xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>bodies</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://expath.org/ns/http-client</xqdoc:uri><xqdoc:name>tidy-result</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>data</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>error</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-sequential-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Function for convenience.
+ Calling this function is equivalent to calling
+ <code>
+ http:send-request($request, (), ())
+ </code>
+</xqdoc:description><xqdoc:param>$request see request parameter of the sequential <a href="#send-request-3">send-request</a> function with three parameters.</xqdoc:param><xqdoc:return>see return value of the sequential <a href="#send-request-3">send-request</a> function with three parameters.</xqdoc:return><xqdoc:see>documentation of <a href="#send-request-3">send-request</a> with three parameters.</xqdoc:see></xqdoc:comment><xqdoc:name>http:send-request</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:send-request($request as element(*)) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>request</xqdoc:name><xqdoc:type>element(*)</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://expath.org/ns/http-client</xqdoc:uri><xqdoc:name>send-request</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>error</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Function for convenience.
+ Calling this function is equivalent to calling
+ <code>
+ http:send-request($request, $href, ())
+ </code>
+</xqdoc:description><xqdoc:param>$request see request parameter of the sequential <a href="#send-request-3">send-request</a> function with three parameters.</xqdoc:param><xqdoc:param>$href see href parameter of the sequential <a href="#send-request-3">send-request</a> function with three parameters.</xqdoc:param><xqdoc:return>see return of <a href="#send-request-3">send-request</a></xqdoc:return><xqdoc:see>documentation of <a href="#send-request-3">send-request</a> with three parameters.</xqdoc:see></xqdoc:comment><xqdoc:name>http:send-request</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:send-request($request as element(*)?, $href as xs:string?) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>request</xqdoc:name><xqdoc:type occurrence="?">element(*)</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type occurrence="?">xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://expath.org/ns/http-client</xqdoc:uri><xqdoc:name>send-request</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>error</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:name>http:tidy-result</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/></xqdoc:annotations><xqdoc:signature>declare %private function http:tidy-result($result as item()+, $override-media-type as xs:string?) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>result</xqdoc:name><xqdoc:type occurrence="+">item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>override-media-type</xqdoc:name><xqdoc:type occurrence="?">xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>data</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>subsequence</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="1"><xqdoc:uri>http://www.zorba-xquery.com/modules/converters/html</xqdoc:uri><xqdoc:name>parse</xqdoc:name></xqdoc:invoked></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

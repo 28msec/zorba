@@ -1,0 +1,11 @@
+<div class="doxygen">
+  <div><h1 class="title">Zorba Build Notes for Mac OS X Users</h1>
+<div id="macos_macports" class="sect1"><h2>Using Macports</h2>
+The easiest way to install the required packages (like CMake or Xerces-C) is to use Macports (<a href="http://macports.org/" target="_blank">http://macports.org/</a>). You can install various tools and libraries using e.g. <pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>port<span> </span>install<span> </span>cmake</span>
+</pre>Once all the required packages are installed you can execute CMake. By default, CMake on Mac OS X uses the Makefile generator. Alternatively, you can specify different generators (e.g., Xcode) by starting CMake using the <b>-G</b> option (e.g., <b>-G Xcode</b>).</div>
+<div id="macos_swig" class="sect1"><h2>Swig Version</h2>
+Due to a bug in older swig version, Zorba with SWIG support requires SWIG version 1.3.40 or later. SWIG is included in stock MacOS, but in at least some versions of MacOS it is an older version. Therefore, you must install a newer SWIG from Macports. This will be installed in <tt>/opt/local</tt>, so you then must point CMake at that directory to ensure it finds the newer version:<pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>port<span> </span>install<span> </span>swig</span>
+<span class="normal">cmake<span> </span>-DCMAKE_PREFIX_PATH=/opt/local<span> </span>{ZORBASRC}</span>
+</pre> </div>
+    </div>
+</div>

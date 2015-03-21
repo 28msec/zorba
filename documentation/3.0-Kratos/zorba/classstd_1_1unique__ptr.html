@@ -1,0 +1,137 @@
+<div class="doxygen">
+  <div><h1 class="title">std::unique_ptr</h1><p class="include">
+            #include &lt;zorba/internal/unique_ptr.h&gt;
+        </p>
+    
+    <div class="section"><h2>Private Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">ZORBA_TR1_NS::add_reference&lt; D const  &gt;::type</p></td><td><p class="signature"><a href="#a397b4aeff6e0efe8485f5383ffc2737c">deleter_const_reference</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_TR1_NS::add_reference&lt; D &gt;::type</p></td><td><p class="signature"><a href="#aa7bbb9640ffa388627372f3e68f73faf">deleter_reference</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool">zorba::internal::ztd::explicit_bool</a></p></td><td><p class="signature"><a href="#a7d8742f12bfc1b4d77056260a5f7e682">explicit_bool</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">D</p></td><td><p class="signature"><a href="#a0173822d0efb055fe769b3af2cc675c1">deleter_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">T</p></td><td><p class="signature"><a href="#aa75d4cd6d29aa993a3a4e6a2e65f65b1">element_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">T *</p></td><td><p class="signature"><a href="#a42ef37e17e1558386f0116c6d862310b">pointer</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr__storage">unique_ptr_storage</a>&lt; T, D &gt;</p></td><td><p class="signature"><a href="#a199b43280be71090fb2ca35a42680b34">storage_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr?anchor=a42ef37e17e1558386f0116c6d862310b">pointer</a></p></td><td><p class="signature"><a href="#ac49c1d319060bdfff94a3a82402342dc">get</a>() const </p><span class="signature-description">
+Gets the pointer.         </span></td></tr><tr><td class="return-type"><p class="signature">deleter_reference</p></td><td><p class="signature"><a href="#a60643bf34d2700dee88c7a9ed164c8c3">get_deleter</a>()</p><span class="signature-description">
+Gets the deleter in use.         </span></td></tr><tr><td class="return-type"><p class="signature">deleter_const_reference</p></td><td><p class="signature"><a href="#a15e7147ddb2817ea045999005d148231">get_deleter</a>() const </p><span class="signature-description">
+Gets the deleter in use.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a7650d43d8c3e0b3b07b94013b85fd833">operator explicit_bool::type</a>() const </p><span class="signature-description">
+Conversion to <tt>bool</tt>.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr?anchor=aa75d4cd6d29aa993a3a4e6a2e65f65b1">element_type</a> &amp;</p></td><td><p class="signature"><a href="#a4796b44ccbd145dff61e6add67e83ef3">operator*</a>() const </p><span class="signature-description">
+Dereferences the pointer.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr?anchor=a42ef37e17e1558386f0116c6d862310b">pointer</a></p></td><td><p class="signature"><a href="#a7eef945a0201a6919db03eb5efdd1576">operator-&gt;</a>() const </p><span class="signature-description">
+Gets the pointer.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a3e903402f7e996d4de552ba33d0833c9">operator::zorba::internal::rv</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#adde29eaf655f86ca8e18cb6a371ce3de">operator::zorba::internal::rv</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;</p></td><td><p class="signature"><a href="#a2fcbd0e8ec3aa619f444bc25d11675b1">operator=</a>(zorba::internal::rv&lt; unique_ptr &gt; &amp;p)</p><span class="signature-description">
+Destructive assignment: moves ownership of the object pointed-to by <em>p</em> to this unique_ptr.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;</p></td><td><p class="signature"><a href="#aa7bf4e93a9831c85e028713d04d0c851">operator=</a>(zorba::internal::rv&lt; unique_ptr&lt; U, E &gt; &gt; &amp;p)</p><span class="signature-description">
+Destructive assignment: moves ownership of the object pointed-to by <em>p</em> to this unique_ptr.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;</p></td><td><p class="signature"><a href="#a718be713c6c5535ea527d526b1eec23b">operator=</a>(int)</p><span class="signature-description">
+Assignment from null: equivalent to .         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr?anchor=a42ef37e17e1558386f0116c6d862310b">pointer</a></p></td><td><p class="signature"><a href="#afcc631781d2bf472dad301927de4ffed">release</a>()</p><span class="signature-description">
+Releases ownership of the pointed-to object.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ae87a32ca64200615fec8e2219336a502">reset</a>(pointer p=nullptr)</p><span class="signature-description">
+Sets the pointer to the given value or null if none.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a9d972355cbc02ff72735e29aa771e197">swap</a>(unique_ptr &amp;p)</p><span class="signature-description">
+Swaps the pointer and deleter with that of another unique_ptr.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a18b9bba24966d45257126250b70783fe">unique_ptr</a>(pointer p=nullptr)</p><span class="signature-description">
+Default constructor.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a7edf85c4e8ace8e30ec7a36ab6189510">unique_ptr</a>(pointer p, deleter_reference d)</p><span class="signature-description">
+Constructs a unique_ptr using a specific deleter.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ad18a80010b90d39d099a45432faabf87">unique_ptr</a>(zorba::internal::rv&lt; unique_ptr &gt; &amp;p)</p><span class="signature-description">
+Constructs a unique_ptr from an existing unique_ptr.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a1d640cacc1cfff7181d2dedaaf810750">unique_ptr</a>(zorba::internal::rv&lt; unique_ptr&lt; U, E &gt; &gt; &amp;p, typename enable_if&lt; ZORBA_TR1_NS::is_convertible&lt; typename unique_ptr&lt; U &gt;::pointer, pointer &gt;::value &amp;&amp;ZORBA_TR1_NS::is_convertible&lt; E, D &gt;::value &amp;&amp;(!ZORBA_TR1_NS::is_reference&lt; D &gt;::value||ZORBA_TR1_NS::is_same&lt; D, E &gt;::value) &gt;::type *=nullptr)</p><span class="signature-description">
+Constructs a unique_ptr from an existing unique_ptr.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a4b7ef2507f1f1694adb428448325d53b">~unique_ptr</a>()</p><span class="signature-description">
+Destroys the pointed-to object by calling the deleter (if the pointer is not null).         </span></td></tr></table></div><div class="section"><h2>Private Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a2469cbb3b7d08ad0f51fe04f5b5294dd">call_deleter</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;</p></td><td><p class="signature"><a href="#a75c2403228b963119795727ca07bf760">operator=</a>(unique_ptr &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;</p></td><td><p class="signature"><a href="#ad5fba0ef75045f0b840327eab0bc162f">operator=</a>(unique_ptr&lt; U, E &gt; &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a684c67e45eae4f7e215d324290b3fbed">unique_ptr</a>(unique_ptr &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ae900b6c0d2be68e88ed523ea564141b7">unique_ptr</a>(unique_ptr&lt; U, E &gt; &amp;)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Types</h2><div class="detailed"><div id="a397b4aeff6e0efe8485f5383ffc2737c" class="sect1"><div><h3>deleter_const_reference</h3></div><div class="signature-box">ZORBA_TR1_NS::add_reference&lt; D const  &gt;::type<span> </span>deleter_const_reference</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa7bbb9640ffa388627372f3e68f73faf" class="sect1"><div><h3>deleter_reference</h3></div><div class="signature-box">ZORBA_TR1_NS::add_reference&lt; D &gt;::type<span> </span>deleter_reference</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a7d8742f12bfc1b4d77056260a5f7e682" class="sect1"><div><h3>explicit_bool</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool">zorba::internal::ztd::explicit_bool</a><span> </span>explicit_bool</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a0173822d0efb055fe769b3af2cc675c1" class="sect1"><div><h3>deleter_type</h3></div><div class="signature-box">D<span> </span>deleter_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa75d4cd6d29aa993a3a4e6a2e65f65b1" class="sect1"><div><h3>element_type</h3></div><div class="signature-box">T<span> </span>element_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a42ef37e17e1558386f0116c6d862310b" class="sect1"><div><h3>pointer</h3></div><div class="signature-box">T *<span> </span>pointer</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a199b43280be71090fb2ca35a42680b34" class="sect1"><div><h3>storage_</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr__storage">unique_ptr_storage</a>&lt; T, D &gt;<span> </span>storage_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="ac49c1d319060bdfff94a3a82402342dc" class="sect1"><div><h3>get</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr?anchor=a42ef37e17e1558386f0116c6d862310b">pointer</a><span> </span>get() const </div><div><p class="signature-description">
+Gets the pointer.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said pointer. </div>
+        </p></div></div><div id="a60643bf34d2700dee88c7a9ed164c8c3" class="sect1"><div><h3>get_deleter</h3></div><div class="signature-box">deleter_reference<span> </span>get_deleter()</div><div><p class="signature-description">
+Gets the deleter in use.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said deleter. </div>
+        </p></div></div><div id="a15e7147ddb2817ea045999005d148231" class="sect1"><div><h3>get_deleter</h3></div><div class="signature-box">deleter_const_reference<span> </span>get_deleter() const </div><div><p class="signature-description">
+Gets the deleter in use.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said deleter. </div>
+        </p></div></div><div id="a7650d43d8c3e0b3b07b94013b85fd833" class="sect1"><div><h3>operator explicit_bool::type</h3></div><div class="signature-box"><span> </span>operator explicit_bool::type() const </div><div><p class="signature-description">
+Conversion to <tt>bool</tt>.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns <tt>true</tt> only if the pointer is not null; <tt>false</tt> only if the pointer is null. </div>
+        </p></div></div><div id="a4796b44ccbd145dff61e6add67e83ef3" class="sect1"><div><h3>operator*</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr?anchor=aa75d4cd6d29aa993a3a4e6a2e65f65b1">element_type</a> &amp;<span> </span>operator*() const </div><div><p class="signature-description">
+Dereferences the pointer.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns a reference to the pointed-to object. </div>
+        </p></div></div><div id="a7eef945a0201a6919db03eb5efdd1576" class="sect1"><div><h3>operator-&gt;</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr?anchor=a42ef37e17e1558386f0116c6d862310b">pointer</a><span> </span>operator-&gt;() const </div><div><p class="signature-description">
+Gets the pointer.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said pointer. </div>
+        </p></div></div><div id="a3e903402f7e996d4de552ba33d0833c9" class="sect1"><div><h3>operator::zorba::internal::rv</h3></div><div class="signature-box"><span> </span>operator::zorba::internal::rv()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="adde29eaf655f86ca8e18cb6a371ce3de" class="sect1"><div><h3>operator::zorba::internal::rv</h3></div><div class="signature-box"><span> </span>operator::zorba::internal::rv() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a2fcbd0e8ec3aa619f444bc25d11675b1" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;<span> </span>operator=(zorba::internal::rv&lt; unique_ptr &gt; &amp;p)</div><div><p class="signature-description">
+Destructive assignment: moves ownership of the object pointed-to by <em>p</em> to this unique_ptr.         </p><p class="signature-description">
+The object pointed-to by this unique_ptr, if any, is deleted.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>p</td><td>
+The unique_ptr to move from. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <tt>*this</tt>. </div>
+        </p></div></div><div id="aa7bf4e93a9831c85e028713d04d0c851" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;<span> </span>operator=(zorba::internal::rv&lt; unique_ptr&lt; U, E &gt; &gt; &amp;p)</div><div><p class="signature-description">
+Destructive assignment: moves ownership of the object pointed-to by <em>p</em> to this unique_ptr.         </p><p class="signature-description">
+The object pointed-to by this unique_ptr, if any, is deleted.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>U</td><td>
+The pointed-to type such that <tt>U*</tt> is convertible to <tt>T*</tt>. </td></tr><tr><td>E</td><td>
+The deleter of <em>p</em>. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>p</td><td>
+The unique_ptr to move from. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <tt>*this</tt>. </div>
+        </p></div></div><div id="a718be713c6c5535ea527d526b1eec23b" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;<span> </span>operator=(int)</div><div><p class="signature-description">
+Assignment from null: equivalent to .         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns <tt>*this</tt>. </div>
+        </p></div></div><div id="afcc631781d2bf472dad301927de4ffed" class="sect1"><div><h3>release</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr?anchor=a42ef37e17e1558386f0116c6d862310b">pointer</a><span> </span>release()</div><div><p class="signature-description">
+Releases ownership of the pointed-to object.         </p><p class="signature-description">
+Said object will now be the responsibility of the caller.<div><h4>Returns</h4>Returns a pointer to the object. </div>
+        </p></div></div><div id="ae87a32ca64200615fec8e2219336a502" class="sect1"><div><h3>reset</h3></div><div class="signature-box">void<span> </span>reset(pointer p=nullptr)</div><div><p class="signature-description">
+Sets the pointer to the given value or null if none.         </p><p class="signature-description">
+The previosly pointed-to object, if any, is deleted. However, if <em>p</em> equals the current pointer value, then this function does nothing.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>p</td><td>
+The new pointer value, if any. </td></tr></table></div>
+        </p></div></div><div id="a9d972355cbc02ff72735e29aa771e197" class="sect1"><div><h3>swap</h3></div><div class="signature-box">void<span> </span>swap(unique_ptr &amp;p)</div><div><p class="signature-description">
+Swaps the pointer and deleter with that of another unique_ptr.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>p</td><td>
+The unique_ptr to swap with. </td></tr></table></div>
+        </p></div></div><div id="a18b9bba24966d45257126250b70783fe" class="sect1"><div><h3>unique_ptr</h3></div><div class="signature-box"><span> </span>unique_ptr(pointer p=nullptr)</div><div><p class="signature-description">
+Default constructor.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>p</td><td>
+A pointer to the object to point to, if any. </td></tr></table></div>
+        </p></div></div><div id="a7edf85c4e8ace8e30ec7a36ab6189510" class="sect1"><div><h3>unique_ptr</h3></div><div class="signature-box"><span> </span>unique_ptr(pointer p, deleter_reference d)</div><div><p class="signature-description">
+Constructs a unique_ptr using a specific deleter.         </p><p class="signature-description">
+This unique_ptr now has ownership of the pointed-to object.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>p</td><td>
+A pointer to the object to own. </td></tr><tr><td>d</td><td>
+The deleter to use. </td></tr></table></div>
+        </p></div></div><div id="ad18a80010b90d39d099a45432faabf87" class="sect1"><div><h3>unique_ptr</h3></div><div class="signature-box"><span> </span>unique_ptr(zorba::internal::rv&lt; unique_ptr &gt; &amp;p)</div><div><p class="signature-description">
+Constructs a unique_ptr from an existing unique_ptr.         </p><p class="signature-description">
+Note that: <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span>unique_ptr&lt;int&gt;<span> </span>a(<span> </span></span><span class="keyword">new</span><span class="normal"><span> </span></span><span class="keywordtype">int</span><span class="normal">(1)<span> </span>);</span>
+<span class="normal"><span> </span><span> </span>unique_ptr&lt;int&gt;<span> </span>b(<span> </span>a<span> </span>);<span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>compile-time<span> </span>error</span>
+</pre> Instead, you must use the  function: <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span>unique_ptr&lt;int&gt;<span> </span>a(<span> </span></span><span class="keyword">new</span><span class="normal"><span> </span></span><span class="keywordtype">int</span><span class="normal">(1)<span> </span>);</span>
+<span class="normal"><span> </span><span> </span>unique_ptr&lt;int&gt;<span> </span>b(<span> </span><a href="/pages/3.0/zorba/namespacestd?anchor=ae27ad1e46de908333a2e28e540ea0b46">move</a>(a)<span> </span>);<span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>ok<span> </span>now</span>
+</pre><div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>p</td><td>
+The unique_ptr to move from. </td></tr></table></div>
+        </p></div></div><div id="a1d640cacc1cfff7181d2dedaaf810750" class="sect1"><div><h3>unique_ptr</h3></div><div class="signature-box"><span> </span>unique_ptr(zorba::internal::rv&lt; unique_ptr&lt; U, E &gt; &gt; &amp;p, typename enable_if&lt; ZORBA_TR1_NS::is_convertible&lt; typename unique_ptr&lt; U &gt;::pointer, pointer &gt;::value &amp;&amp;ZORBA_TR1_NS::is_convertible&lt; E, D &gt;::value &amp;&amp;(!ZORBA_TR1_NS::is_reference&lt; D &gt;::value||ZORBA_TR1_NS::is_same&lt; D, E &gt;::value) &gt;::type *=nullptr)</div><div><p class="signature-description">
+Constructs a unique_ptr from an existing unique_ptr.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>U</td><td>
+The pointed-to type such that <tt>U*</tt> is convertible to <tt>T*</tt>. </td></tr><tr><td>E</td><td>
+The deleter such that <tt>E</tt> is convertible to <tt>D</tt>. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>p</td><td>
+The unique_ptr to move from. </td></tr></table></div>
+        </p></div></div><div id="a4b7ef2507f1f1694adb428448325d53b" class="sect1"><div><h3>~unique_ptr</h3></div><div class="signature-box"><span> </span>~unique_ptr()</div><div><p class="signature-description">
+Destroys the pointed-to object by calling the deleter (if the pointer is not null).         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Functions</h2><div class="detailed"><div id="a2469cbb3b7d08ad0f51fe04f5b5294dd" class="sect1"><div><h3>call_deleter</h3></div><div class="signature-box">void<span> </span>call_deleter()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a75c2403228b963119795727ca07bf760" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;<span> </span>operator=(unique_ptr &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ad5fba0ef75045f0b840327eab0bc162f" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;<span> </span>operator=(unique_ptr&lt; U, E &gt; &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a684c67e45eae4f7e215d324290b3fbed" class="sect1"><div><h3>unique_ptr</h3></div><div class="signature-box"><span> </span>unique_ptr(unique_ptr &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ae900b6c0d2be68e88ed523ea564141b7" class="sect1"><div><h3>unique_ptr</h3></div><div class="signature-box"><span> </span>unique_ptr(unique_ptr&lt; U, E &gt; &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

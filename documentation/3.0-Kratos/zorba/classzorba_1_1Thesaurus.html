@@ -1,0 +1,28 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Thesaurus</h1><p class="include">
+            #include &lt;zorba/thesaurus.h&gt;
+        </p>
+A Thesaurus provides a way to look up related phrases for a given phrase.     
+    <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Thesaurus">Thesaurus</a> const, <a href="/pages/3.0/zorba/structzorba_1_1internal_1_1ztd_1_1destroy__delete">internal::ztd::destroy_delete</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Thesaurus">Thesaurus</a> const  &gt; &gt;</p></td><td><p class="signature"><a href="#a84970de9a5c647fcdd7ac56c3244bfb7">ptr</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">unsigned</p></td><td><p class="signature"><a href="#a8996f5f2ed3842dda28b5ef989dbb7ff">range_type</a></p><span class="signature-description">
+The integral type for "at least" and "at most" values.         </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a380788e76c82b10e9638f38f31a9b311">destroy</a>() const =0</p><span class="signature-description">
+Destroys this Thesaurus.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1Thesaurus_1_1iterator?anchor=a2d404bc5c65201236a67ededd2895104">iterator::ptr</a></p></td><td><p class="signature"><a href="#a0157de16ecf4afc4a8895d9bf437372f">lookup</a>(String const &amp;phrase, String const &amp;relationship, range_type at_least, range_type at_most) const =0</p><span class="signature-description">
+Looks-up the given phrase.         </span></td></tr></table></div><div class="section"><h2>Protected Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a4a18978e627bcf0c3e896be511842557">~Thesaurus</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a84970de9a5c647fcdd7ac56c3244bfb7" class="sect1"><div><h3>ptr</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Thesaurus">Thesaurus</a> const, <a href="/pages/3.0/zorba/structzorba_1_1internal_1_1ztd_1_1destroy__delete">internal::ztd::destroy_delete</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Thesaurus">Thesaurus</a> const  &gt; &gt;<span> </span>ptr</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a8996f5f2ed3842dda28b5ef989dbb7ff" class="sect1"><div><h3>range_type</h3></div><div class="signature-box">unsigned<span> </span>range_type</div><div><p class="signature-description">
+The integral type for "at least" and "at most" values.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a380788e76c82b10e9638f38f31a9b311" class="sect1"><div><h3>destroy</h3></div><div class="signature-box">void<span> </span>destroy() const =0</div><div><p class="signature-description">
+Destroys this Thesaurus.         </p><p class="signature-description">
+This function is called by <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> when the Thesaurus is no longer needed.If your implementation dynamically allocates Thesaurus objects, then your implementation can simply be (and usually is) <tt>delete this</tt>.If your implementation returns a pointer to a static Thesaurus object, then your implementation should do nothing.         </p></div></div><div id="a0157de16ecf4afc4a8895d9bf437372f" class="sect1"><div><h3>lookup</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1Thesaurus_1_1iterator?anchor=a2d404bc5c65201236a67ededd2895104">iterator::ptr</a><span> </span>lookup(String const &amp;phrase, String const &amp;relationship, range_type at_least, range_type at_most) const =0</div><div><p class="signature-description">
+Looks-up the given phrase.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>phrase</td><td>
+The phrase to look up. </td></tr><tr><td>relationship</td><td>
+The relationship the synonyms are to have to the given <em>phrase</em>. </td></tr><tr><td>at_least</td><td>
+The minimum number of levels within the thesaurus to be traversed. </td></tr><tr><td>at_most</td><td>
+The maximum number of levels within the thesaurus to be traversed. </td></tr></table></div>
+<div><h4>Returns</h4>Returns a pointer to an iterator for the results or <tt>NULL</tt> if the phrase was not found. </div>
+        </p></div></div></div></div><div class="section"><h2>Protected Functions</h2><div class="detailed"><div id="a4a18978e627bcf0c3e896be511842557" class="sect1"><div><h3>~Thesaurus</h3></div><div class="signature-box"><span> </span>~Thesaurus()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

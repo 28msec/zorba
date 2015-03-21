@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="document__manager_8h" kind="file">
+    <compoundname>document_manager.h</compoundname>
+    <includes local="no">zorba/config.h</includes>
+    <includes refid="api__shared__types_8h" local="no">zorba/api_shared_types.h</includes>
+    <includedby refid="zorba_8h" local="no">zorba.h</includedby>
+    <incdepgraph>
+      <node id="1690">
+        <label>zorba/util/smart_ptr.h</label>
+        <link refid="smart__ptr_8h"/>
+        <childnode refid="1688" relation="include">
+        </childnode>
+      </node>
+      <node id="1687">
+        <label>document_manager.h</label>
+        <link refid="document_manager.h"/>
+        <childnode refid="1688" relation="include">
+        </childnode>
+        <childnode refid="1689" relation="include">
+        </childnode>
+      </node>
+      <node id="1688">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="1689">
+        <label>zorba/api_shared_types.h</label>
+        <link refid="api__shared__types_8h"/>
+        <childnode refid="1688" relation="include">
+        </childnode>
+        <childnode refid="1690" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1691">
+        <label>document_manager.h</label>
+        <link refid="document_manager.h"/>
+        <childnode refid="1692" relation="include">
+        </childnode>
+      </node>
+      <node id="1692">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="1693" relation="include">
+        </childnode>
+      </node>
+      <node id="1693">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="1692" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1DocumentManager" prot="public">zorba::DocumentManager</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2011<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_DOCUMENTMANAGER_API_H</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_DOCUMENTMANAGER_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="api__shared__types_8h" kindref="compound">zorba/api_shared_types.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="24"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/>*<sp/>\brief<sp/>An<sp/>instance<sp/>of<sp/>DocumentManager<sp/>provides<sp/>methods<sp/>for<sp/>adding,<sp/>removing,</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/>*<sp/>or<sp/>accessing<sp/>XML<sp/>documents<sp/>in<sp/>the<sp/>Zorba<sp/>store.<sp/>There<sp/>is<sp/>a<sp/>single<sp/>instance<sp/>of</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/>*<sp/>DocumentManager<sp/>per<sp/>XmlDataManger;<sp/>this<sp/>single<sp/>instance<sp/>is<sp/>accessible<sp/>via<sp/>the</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/>*<sp/>XmlDataManger::getDocumentManager()<sp/>method.</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30" refid="classzorba_1_1DocumentManager" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1DocumentManager" kindref="compound" tooltip="An instance of DocumentManager provides methods for adding, removing, or accessing XML documents in t...">DocumentManager</ref></highlight></codeline>
+<codeline lineno="31"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="33" refid="classzorba_1_1DocumentManager_1a71ce5c0872e6cfb4e215086c39414573" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1DocumentManager_1a71ce5c0872e6cfb4e215086c39414573" kindref="member">~DocumentManager</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Add<sp/>a<sp/>document<sp/>to<sp/>the<sp/>store,<sp/>associating<sp/>it<sp/>with<sp/>the<sp/>given<sp/>URI.</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/>*<sp/>This<sp/>method<sp/>adds<sp/>the<sp/>document<sp/>to<sp/>the<sp/>&quot;available<sp/>documents&quot;<sp/>component<sp/>of</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/><sp/>*<sp/>the<sp/>dynamic<sp/>context.<sp/>This<sp/>means<sp/>that<sp/>the<sp/>document<sp/>will<sp/>remain<sp/>in<sp/>the</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/>*<sp/>store<sp/>and<sp/>be<sp/>accessible<sp/>to<sp/>queries<sp/>via<sp/>the<sp/>associated<sp/>URI<sp/>(e.g.,<sp/>by<sp/>using</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/><sp/>*<sp/>the<sp/>fn:doc()<sp/>function)<sp/>until<sp/>it<sp/>is<sp/>explicitly<sp/>removed<sp/>via<sp/>the</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/>*<sp/>DocumentManager::remove()<sp/>method.</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/>put(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>aURI,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref>&amp;<sp/>aDoc)<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Remove<sp/>the<sp/>document<sp/>with<sp/>the<sp/>given<sp/>URI<sp/>from<sp/>the<sp/>store.</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/><sp/><sp/>*<sp/>This<sp/>method<sp/>removes<sp/>the<sp/>document<sp/>from<sp/>the<sp/>&quot;available<sp/>documents&quot;<sp/>component</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/><sp/>*<sp/>of<sp/>the<sp/>dynamic<sp/>context.<sp/>This<sp/>means<sp/>that<sp/>the<sp/>document<sp/>will<sp/>no<sp/>longer<sp/>be</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/><sp/>*<sp/>accessible<sp/>to<sp/>queries<sp/>via<sp/>the<sp/>associated<sp/>URI.<sp/>However,<sp/>the<sp/>document<sp/>is<sp/>not</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/>*<sp/>necessarily<sp/>destroyed<sp/>by<sp/>this<sp/>method.<sp/>It<sp/>will<sp/>be<sp/>destroyed<sp/>if/when<sp/>no<sp/>more</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/>*<sp/>references<sp/>to<sp/>it<sp/>exist.</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">remove</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>aURI)<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Return<sp/>a<sp/>reference<sp/>to<sp/>the<sp/>root<sp/>node<sp/>of<sp/>the<sp/>document<sp/>with<sp/>the<sp/>given<sp/>URI.</highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/>document(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>aURI)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Returns<sp/>an<sp/>iterator<sp/>over<sp/>the<sp/>root<sp/>nodes<sp/>of<sp/>all<sp/>the<sp/>available<sp/>documents</highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/><sp/>*<sp/>(i.e.,<sp/>all<sp/>the<sp/>documents<sp/>that<sp/>have<sp/>been<sp/>added<sp/>to<sp/>the<sp/>store<sp/>via<sp/>the</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/><sp/>*<sp/>DocumentManager::put()<sp/>method).</highlight></codeline>
+<codeline lineno="69"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">ItemSequence_t</ref></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/>availableDocuments()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Check<sp/>if<sp/>a<sp/>document<sp/>with<sp/>a<sp/>given<sp/>URI<sp/>is<sp/>among<sp/>the<sp/>available<sp/>documents</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/>*<sp/>(i.e.,<sp/>the<sp/>documents<sp/>that<sp/>have<sp/>been<sp/>added<sp/>to<sp/>the<sp/>store<sp/>via<sp/>the</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/>*<sp/>DocumentManager::put()<sp/>method).</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/>isAvailableDocument(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>aURI)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>zorba<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="84"><highlight class="preprocessor"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/document_manager.h"/>
+  </compounddef>
+</doxygen>

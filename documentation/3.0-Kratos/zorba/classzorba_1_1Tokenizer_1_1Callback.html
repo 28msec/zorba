@@ -1,0 +1,30 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Tokenizer::Callback</h1><p class="include">
+            #include &lt;zorba/tokenizer.h&gt;
+        </p>
+A Callback is called once per token.     
+This is only internally by <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a>. You do not need to derive from this class.     <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1Tokenizer?anchor=aa5e55ee2bd87d3ec759382c6bb104656">Tokenizer::size_type</a></p></td><td><p class="signature"><a href="#a766a0079d32feae9976f4d3f1f823b29">size_type</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aae48d8aadc5cecb6f2429a1aee437bab">item</a>(Item const &amp;item, bool entering)</p><span class="signature-description">
+This member-function is called whenever an item that is being tokenized is entered or exited.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aaaa54025ed848c415ef725d63bbd0bb8">token</a>(char const *utf8_s, size_type utf8_len, locale::iso639_1::type lang, size_type token_no, size_type sent_no, size_type para_no, Item const *item=nullptr)=0</p><span class="signature-description">
+This member-function is called once per token.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a757166d55a57fe1f85606eee5d7cc2c3">~Callback</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a766a0079d32feae9976f4d3f1f823b29" class="sect1"><div><h3>size_type</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1Tokenizer?anchor=aa5e55ee2bd87d3ec759382c6bb104656">Tokenizer::size_type</a><span> </span>size_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="aae48d8aadc5cecb6f2429a1aee437bab" class="sect1"><div><h3>item</h3></div><div class="signature-box">void<span> </span>item(Item const &amp;item, bool entering)</div><div><p class="signature-description">
+This member-function is called whenever an item that is being tokenized is entered or exited.         </p><p class="signature-description">
+The default implementation does nothing.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>item</td><td>
+The item being entered or exited. </td></tr><tr><td>entering</td><td>
+If <tt>true</tt>, the item is being entered; if <tt>false</tt>, the item is being exited. </td></tr></table></div>
+        </p></div></div><div id="aaaa54025ed848c415ef725d63bbd0bb8" class="sect1"><div><h3>token</h3></div><div class="signature-box">void<span> </span>token(char const *utf8_s, size_type utf8_len, locale::iso639_1::type lang, size_type token_no, size_type sent_no, size_type para_no, Item const *item=nullptr)=0</div><div><p class="signature-description">
+This member-function is called once per token.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>utf8_s</td><td>
+The UTF-8 token string. It is not null-terminated. </td></tr><tr><td>utf8_len</td><td>
+The number of bytes in the token string. </td></tr><tr><td>lang</td><td>
+The language of the token. </td></tr><tr><td>token_no</td><td>
+The token number. Token numbers start at 0. </td></tr><tr><td>sent_no</td><td>
+The sentence number. Sentence numbers start at 1. </td></tr><tr><td>para_no</td><td>
+The paragraph number. Paragraph numbers start at 1. </td></tr><tr><td>item</td><td>
+The <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> this token is from, if any. </td></tr></table></div>
+        </p></div></div><div id="a757166d55a57fe1f85606eee5d7cc2c3" class="sect1"><div><h3>~Callback</h3></div><div class="signature-box"><span> </span>~Callback()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

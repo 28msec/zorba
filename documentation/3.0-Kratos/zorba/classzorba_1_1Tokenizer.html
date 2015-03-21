@@ -1,0 +1,78 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Tokenizer</h1><p class="include">
+            #include &lt;zorba/tokenizer.h&gt;
+        </p>
+A Tokenizer breaks a string into a stream of word tokens.     
+Each token is assigned a token, sentence, and paragraph number.A Tokenizer determines word and sentence boundaries automatically, but must be told when to increment the paragraph number.     <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer">Tokenizer</a>, <a href="/pages/3.0/zorba/structzorba_1_1internal_1_1ztd_1_1destroy__delete">internal::ztd::destroy_delete</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer">Tokenizer</a> &gt; &gt;</p></td><td><p class="signature"><a href="#aca3811e6d2e00c3b1a16d262ee4c0049">ptr</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">unsigned</p></td><td><p class="signature"><a href="#aa5e55ee2bd87d3ec759382c6bb104656">size_type</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a> *</p></td><td><p class="signature"><a href="#a53a7758a4adca6ee3a01c2bb511fb380">state_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a28b04557b67830bb0427cc895c45de33">destroy</a>() const =0</p><span class="signature-description">
+Destroys this Tokenizer.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a87df8703ab77464b4fda6cdf60b03e1f">properties</a>(Properties *result) const =0</p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1Properties">Properties</a> of this Tokenizer.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a> &amp;</p></td><td><p class="signature"><a href="#a2cbcc4bb9b9acb72650da650c7e60632">state</a>()</p><span class="signature-description">
+Gets this Tokenizer's associated <a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a>.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a> const &amp;</p></td><td><p class="signature"><a href="#a6e0ab4fd18ac9733aa60a0d180b49838">state</a>() const </p><span class="signature-description">
+Gets this Tokenizer's associated <a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a>.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a91bb0bf2b10141b516de44e501d78d51">tokenize_node</a>(Item const &amp;node, locale::iso639_1::type lang, Callback &amp;callback)</p><span class="signature-description">
+Tokenizes the given node.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a4d8c865b6b8596a9ea405f4877be1db7">tokenize_string</a>(char const *utf8_s, size_type utf8_len, locale::iso639_1::type lang, bool wildcards, Callback &amp;callback, Item const *item=nullptr)=0</p><span class="signature-description">
+Tokenizes the given string.         </span></td></tr></table></div><div class="section"><h2>Protected Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a565ee74326899fb796799f79f8880857">find_lang_attribute</a>(Item const &amp;element, locale::iso639_1::type *lang)</p><span class="signature-description">
+Given an element, finds its <tt>xml:lang</tt> attribute, if any, and gets its value.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a802a3812893f1ce2cdf10f02fc67990b">item</a>(Item const &amp;item, bool entering)</p><span class="signature-description">
+This member-function is called whenever an item that is being tokenized is entered or exited.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a8a9c065343124b0ef37bc21714bcc849">tokenize_node_impl</a>(Item const &amp;node, locale::iso639_1::type lang, Callback &amp;callback, bool tokenize_acp)</p><span class="signature-description">
+Tokenizes the given node and all of its child nodes, if any.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a8a3a36518144be3a6eaadeec541cc477">Tokenizer</a>(State &amp;state)</p><span class="signature-description">
+Constructs a Tokenizer.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#afe50136981c99f4ec1a0d2b463fb5bc8">~Tokenizer</a>()=0</p><span class="signature-description">
+Destroys a Tokenizer.         </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="aca3811e6d2e00c3b1a16d262ee4c0049" class="sect1"><div><h3>ptr</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer">Tokenizer</a>, <a href="/pages/3.0/zorba/structzorba_1_1internal_1_1ztd_1_1destroy__delete">internal::ztd::destroy_delete</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer">Tokenizer</a> &gt; &gt;<span> </span>ptr</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa5e55ee2bd87d3ec759382c6bb104656" class="sect1"><div><h3>size_type</h3></div><div class="signature-box">unsigned<span> </span>size_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a53a7758a4adca6ee3a01c2bb511fb380" class="sect1"><div><h3>state_</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a> *<span> </span>state_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a28b04557b67830bb0427cc895c45de33" class="sect1"><div><h3>destroy</h3></div><div class="signature-box">void<span> </span>destroy() const =0</div><div><p class="signature-description">
+Destroys this Tokenizer.         </p><p class="signature-description">
+This function is called by <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> when the Tokenizer is no longer needed.If your <a href="/pages/3.0/zorba/classzorba_1_1TokenizerProvider">TokenizerProvider</a> dynamically allocates Tokenizer objects, then the implementation can simply be (and usually is) <tt>delete this</tt>.If your <a href="/pages/3.0/zorba/classzorba_1_1TokenizerProvider">TokenizerProvider</a> returns a pointer to a static Tokenizer object, then the implementation should do nothing.         </p></div></div><div id="a87df8703ab77464b4fda6cdf60b03e1f" class="sect1"><div><h3>properties</h3></div><div class="signature-box">void<span> </span>properties(Properties *result) const =0</div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1Properties">Properties</a> of this Tokenizer.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>result</td><td>
+The <a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1Properties">Properties</a> to populate. </td></tr></table></div>
+        </p></div></div><div id="a2cbcc4bb9b9acb72650da650c7e60632" class="sect1"><div><h3>state</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a> &amp;<span> </span>state()</div><div><p class="signature-description">
+Gets this Tokenizer's associated <a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a>.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said <a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a>. </div>
+        </p></div></div><div id="a6e0ab4fd18ac9733aa60a0d180b49838" class="sect1"><div><h3>state</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a> const &amp;<span> </span>state() const </div><div><p class="signature-description">
+Gets this Tokenizer's associated <a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a>.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said <a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a>. </div>
+        </p></div></div><div id="a91bb0bf2b10141b516de44e501d78d51" class="sect1"><div><h3>tokenize_node</h3></div><div class="signature-box">void<span> </span>tokenize_node(Item const &amp;node, locale::iso639_1::type lang, Callback &amp;callback)</div><div><p class="signature-description">
+Tokenizes the given node.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>node</td><td>
+The node to tokenize. </td></tr><tr><td>lang</td><td>
+The default language to use. </td></tr><tr><td>callback</td><td>
+The <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer_1_1Callback">Callback</a> to call once per token. </td></tr></table></div>
+        </p></div></div><div id="a4d8c865b6b8596a9ea405f4877be1db7" class="sect1"><div><h3>tokenize_string</h3></div><div class="signature-box">void<span> </span>tokenize_string(char const *utf8_s, size_type utf8_len, locale::iso639_1::type lang, bool wildcards, Callback &amp;callback, Item const *item=nullptr)=0</div><div><p class="signature-description">
+Tokenizes the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>utf8_s</td><td>
+The UTF-8 string to tokenize. It need not be null-terminated. </td></tr><tr><td>utf8_len</td><td>
+The number of bytes in the string to be tokenized. </td></tr><tr><td>lang</td><td>
+The language of the string. </td></tr><tr><td>wildcards</td><td>
+If <tt>true</tt>, allows <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> wildcard syntax characters to be part of tokens. </td></tr><tr><td>callback</td><td>
+The <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer_1_1Callback">Callback</a> to call once per token. </td></tr><tr><td>item</td><td>
+The <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> this string is from, if any. </td></tr></table></div>
+        </p></div></div></div></div><div class="section"><h2>Protected Functions</h2><div class="detailed"><div id="a565ee74326899fb796799f79f8880857" class="sect1"><div><h3>find_lang_attribute</h3></div><div class="signature-box">bool<span> </span>find_lang_attribute(Item const &amp;element, locale::iso639_1::type *lang)</div><div><p class="signature-description">
+Given an element, finds its <tt>xml:lang</tt> attribute, if any, and gets its value.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>element</td><td>
+The element to check. </td></tr><tr><td>lang</td><td>
+A pointer to where to put the found language, if any. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <tt>true</tt> only if an <tt>xml:lang</tt> attribute is found and the value is a known language. </div>
+        </p></div></div><div id="a802a3812893f1ce2cdf10f02fc67990b" class="sect1"><div><h3>item</h3></div><div class="signature-box">void<span> </span>item(Item const &amp;item, bool entering)</div><div><p class="signature-description">
+This member-function is called whenever an item that is being tokenized is entered or exited.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>item</td><td>
+The item being entered or exited. </td></tr><tr><td>entering</td><td>
+If <tt>true</tt>, the item is being entered; if <tt>false</tt>, the item is being exited. </td></tr></table></div>
+        </p></div></div><div id="a8a9c065343124b0ef37bc21714bcc849" class="sect1"><div><h3>tokenize_node_impl</h3></div><div class="signature-box">void<span> </span>tokenize_node_impl(Item const &amp;node, locale::iso639_1::type lang, Callback &amp;callback, bool tokenize_acp)</div><div><p class="signature-description">
+Tokenizes the given node and all of its child nodes, if any.         </p><p class="signature-description">
+For each node, it is required that this function call the <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer?anchor=a802a3812893f1ce2cdf10f02fc67990b">item()</a> member function of both this Tokenizer and of the <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer_1_1Callback">Callback</a> twice, once each for entrance and exit.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>node</td><td>
+The node to tokenize. </td></tr><tr><td>lang</td><td>
+The default language to use. </td></tr><tr><td>callback</td><td>
+The <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer_1_1Callback">Callback</a> to call per token. </td></tr><tr><td>tokenize_acp</td><td>
+If <tt>true</tt>, additionally tokenize all attribute, comment, and processing-instruction nodes encountered; if <tt>false</tt>, skip them. </td></tr></table></div>
+        </p></div></div><div id="a8a3a36518144be3a6eaadeec541cc477" class="sect1"><div><h3>Tokenizer</h3></div><div class="signature-box"><span> </span>Tokenizer(State &amp;state)</div><div><p class="signature-description">
+Constructs a Tokenizer.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>state</td><td>
+the <a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1State">State</a> to use. </td></tr></table></div>
+        </p></div></div><div id="afe50136981c99f4ec1a0d2b463fb5bc8" class="sect1"><div><h3>~Tokenizer</h3></div><div class="signature-box"><span> </span>~Tokenizer()=0</div><div><p class="signature-description">
+Destroys a Tokenizer.         </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

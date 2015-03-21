@@ -1,0 +1,274 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="conformance" kind="page">
+    <compoundname>conformance</compoundname>
+    <title>Summary: Conformance Results for the W3C Test Suites</title>
+    <detaileddescription>
+<para>The summary of the Zorba conformance results for the <ulink url="http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/">W3C XQuery Test Suite</ulink> is given below.</para><para>For more information, please refer to the following pages that contain detailed testing results:</para><para><itemizedlist>
+<listitem>
+<para><ref refid="conformance_XQ10" kindref="compound">W3C XQuery 1.0 Conformance</ref> </para></listitem>
+<listitem>
+<para><ref refid="conformance_XQ30" kindref="compound">W3C XQuery 3.0 Conformance</ref> </para></listitem>
+<listitem>
+<para><ref refid="conformanceXQUTS" kindref="compound">W3C XQuery Update Facility 1.0 Conformance</ref> </para></listitem>
+<listitem>
+<para><ref refid="conformanceXQFTTS" kindref="compound">W3C XQuery and XPath Full Text 1.0 Conformance.</ref> </para></listitem>
+</itemizedlist>
+</para><sect1 id="conformance_1summary_XQ10">
+<title>Summary conformance W3C XQuery 1.0</title>
+<para><htmlonly> 
+&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot;&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Product
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Version
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Tests passed
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Tests failed
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Tests run
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    % passed
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Zorba
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    1.9.1
+    &lt;/td&gt;
+    &lt;td&gt;
+    21581
+    &lt;/td&gt;
+    &lt;td&gt;
+    101
+    &lt;/td&gt;
+    &lt;td&gt;
+    21682
+    &lt;/td&gt;
+    &lt;td&gt;
+    99.53
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</htmlonly></para></sect1>
+<sect1 id="conformance_1summary_XQ30">
+<title>Summary conformance W3C XQuery 3.0</title>
+<para><htmlonly> 
+&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot;&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Product
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Version
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Tests passed
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Tests failed
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Tests run
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    % passed
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    Zorba
+    &lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;
+    1.9.1
+    &lt;/td&gt;
+    &lt;td&gt;
+    25897
+    &lt;/td&gt;
+    &lt;td&gt;
+    236
+    &lt;/td&gt;
+    &lt;td&gt;
+    26133
+    &lt;/td&gt;
+    &lt;td&gt;
+    99.10
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</htmlonly></para></sect1>
+<sect1 id="conformance_1summaryXQUTS">
+<title>Summary conformance W3C XQuery Update Facility 1.0</title>
+<para>The following table shows the supported features: <htmlonly> 
+&lt;table border=&quot;1&quot;&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;W3C XQuery Update Facility 1.0 feature&lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;supported&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Minimal Conformance&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Update Facility Static Typing Feature&lt;/td&gt;
+    &lt;td bgcolor=&quot;white&quot;&gt;false&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</htmlonly></para><para>This is the W3C XQuery Update Facility 1.0 conformance summary: In generating the report we used Zorba version 2.5 that can be downloaded from <ulink url="https://launchpad.net/zorba/trunk/2.5">https://launchpad.net/zorba/trunk/2.5</ulink> and XQUTS version &apos;current&apos; (XQUTS version taken from CVS as of 2012-01-12). <htmlonly> 
+&lt;table border=&quot;1&quot;&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;W3C XQuery Update Facility 1.0 features&lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;XQuery&lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;XQueryX&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Minimal Conformance&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;mediumseagreen&quot;&gt;667/667 100%&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;mediumseagreen&quot;&gt;667/667 100%&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr bgcolor=&quot;lightcyan&quot;&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Optional Features&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;97/126 76.98%&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;97/126 76.98%&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr bgcolor=&quot;lightcyan&quot;&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;  Revalidation&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;76/77 &lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;76/77 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr bgcolor=&quot;lightcyan&quot;&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;  Update Facility Static Typing Feature&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;white&quot;&gt;0/27 &lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;white&quot;&gt;0/27 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr bgcolor=&quot;lightcyan&quot;&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;  Tests that need the Full Axis Feature&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;mediumseagreen&quot;&gt;14/14 &lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;mediumseagreen&quot;&gt;14/14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr bgcolor=&quot;lightcyan&quot;&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;  fn:put applied to nodes other than document and element nodes&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;7/8 &lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;7/8 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr bgcolor=&quot;lightcyan&quot;&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Use Cases&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;mediumseagreen&quot;&gt;22/22 100%&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;mediumseagreen&quot;&gt;22/22 100%&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</htmlonly></para></sect1>
+<sect1 id="conformance_1summaryXQFTTS">
+<title>Summary conformance W3C XQuery and XPath Full Text 1.0</title>
+<para>The following table shows the supported features: <htmlonly> 
+&lt;table border=&quot;1&quot;&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;W3C XQuery and XPath Full Text 1.0 features&lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;supported&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Minimal Conformance&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTMildNot Operator&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTUnaryNot Operator&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTUnit and FTBigUnit&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTOrder Operator&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTScope Operator&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTWindow Operator&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTDistance Operator&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTTimes Operator&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTContent Operator&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTCaseOption&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTStopwordOption&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTLanguageOption&lt;/td&gt;
+    &lt;td bgcolor=&quot;mediumseagreen&quot;&gt;true&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;FTIgnoreOption&lt;/td&gt;
+    &lt;td bgcolor=&quot;white&quot;&gt;false&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Scoring&lt;/td&gt;
+    &lt;td bgcolor=&quot;white&quot;&gt;false&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Weights&lt;/td&gt;
+    &lt;td bgcolor=&quot;white&quot;&gt;false&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</htmlonly></para><para>This is the W3C XQuery and XPath Full Text 1.0 conformance summary: In generating the report we used Zorba version 2.5 that can be downloaded from <ulink url="https://launchpad.net/zorba/trunk/2.5">https://launchpad.net/zorba/trunk/2.5</ulink> and XQFTTS version &apos;current&apos; (XQFTTS taken from W3C CVS as of 2012-01-12). <htmlonly> 
+&lt;table border=&quot;1&quot;&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;W3C XQuery and XPath Full Text 1.0 features&lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;XQuery&lt;/td&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;XQueryX&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Minimal Conformance&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;384/429 89.51%&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;374/429 87.18%&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Optional Features&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;106/125 84.8%&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;97/125 77.6%&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Use Cases&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;120/135 88.89%&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;palegreen&quot;&gt;102/135 75.56%&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td bgcolor=&quot;lightcyan&quot;&gt;Consistency in XQFTTS Catalog&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;mediumseagreen&quot;&gt;3/3 100%&lt;/td&gt;
+    &lt;td align=&quot;center&quot; bgcolor=&quot;mediumseagreen&quot;&gt;3/3 100%&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</htmlonly> </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

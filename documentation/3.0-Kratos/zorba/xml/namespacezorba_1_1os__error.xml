@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1os__error" kind="namespace">
+    <compoundname>zorba::os_error</compoundname>
+    <innerclass refid="classzorba_1_1os__error_1_1exception" prot="public">zorba::os_error::exception</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" prot="public" static="no">
+        <type>int</type>
+        <definition>typedef int zorba::os_error::code_type</definition>
+        <argsstring></argsstring>
+        <name>code_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="41" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1os__error_1a4c12b41065030ea61a6d53a081f8c3fd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::string</type>
+        <definition>ZORBA_DLL_PUBLIC std::string zorba::os_error::format_err_string</definition>
+        <argsstring>(char const *function, char const *err_string)</argsstring>
+        <name>format_err_string</name>
+        <param>
+          <type>char const *</type>
+          <declname>function</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>err_string</declname>
+        </param>
+        <briefdescription>
+<para>Formats an error string. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>function</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function that failed or <computeroutput>nullptr</computeroutput>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>err_string</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error string. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns said error string. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="107"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1os__error_1a30630db965141de38e94ce92eb4bfbcc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::string</type>
+        <definition>ZORBA_DLL_PUBLIC std::string zorba::os_error::format_err_string</definition>
+        <argsstring>(char const *function, code_type code, char const *err_string)</argsstring>
+        <name>format_err_string</name>
+        <param>
+          <type>char const *</type>
+          <declname>function</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref></type>
+          <declname>code</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>err_string</declname>
+        </param>
+        <briefdescription>
+<para>Formats an error string. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>function</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function that failed or <computeroutput>nullptr</computeroutput>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>code</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The operating system error code. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>err_string</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error string. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns said error string. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="119"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1os__error_1a3e2dfaebb7d03986994e7dc0ffea756e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref></type>
+        <definition>code_type zorba::os_error::get_err_code</definition>
+        <argsstring>()</argsstring>
+        <name>get_err_code</name>
+        <briefdescription>
+<para>Gets the most recent operating system error code. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said error code. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="126" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" bodystart="126" bodyend="132"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1os__error_1a2932d8a5e9e71868bd76a2b10b4b377d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::string</type>
+        <definition>ZORBA_DLL_PUBLIC std::string zorba::os_error::get_err_string</definition>
+        <argsstring>(char const *function, code_type code=get_err_code())</argsstring>
+        <name>get_err_string</name>
+        <param>
+          <type>char const *</type>
+          <declname>function</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref></type>
+          <declname>code</declname>
+          <defval><ref refid="namespacezorba_1_1os__error_1a3e2dfaebb7d03986994e7dc0ffea756e" kindref="member">get_err_code</ref>()</defval>
+        </param>
+        <briefdescription>
+<para>Gets the error string for the given operating system error code. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>function</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function that failed or <computeroutput>nullptr</computeroutput>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>code</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The operating system error code. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns said error string. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="143"/>
+        <referencedby refid="namespacezorba_1_1os__error_1a0cbf17540f8b3fea2dc321f3f7ccb84e" compoundref="error__util_8h" startline="155" endline="157">get_err_string</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1os__error_1a0cbf17540f8b3fea2dc321f3f7ccb84e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class StringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a67def45b6f7f4daa8a69dcfb6a66008b" kindref="member">ZORBA_HAS_C_STR</ref>(StringType), std::string &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_HAS_C_STR(StringType),std::string&gt;::type zorba::os_error::get_err_string</definition>
+        <argsstring>(StringType const &amp;function, code_type code=get_err_code())</argsstring>
+        <name>get_err_string</name>
+        <param>
+          <type>StringType const &amp;</type>
+          <declname>function</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref></type>
+          <declname>code</declname>
+          <defval><ref refid="namespacezorba_1_1os__error_1a3e2dfaebb7d03986994e7dc0ffea756e" kindref="member">get_err_code</ref>()</defval>
+        </param>
+        <briefdescription>
+<para>Gets the error string for the given operating system error code. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>function</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>function</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The function that failed. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>code</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The operating system error code. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns said error string. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="155" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" bodystart="155" bodyend="157"/>
+        <references refid="namespacezorba_1_1internal_1_1ztd_1aab6211f3f098e27c67a814d90ca66224" compoundref="ztd_8h" startline="180" endline="182">zorba::internal::ztd::c_str</references>
+        <references refid="namespacezorba_1_1os__error_1a2932d8a5e9e71868bd76a2b10b4b377d">get_err_string</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1os__error_1a63d5fe343d3df99aeb27e2c60f037475" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string zorba::os_error::get_err_string</definition>
+        <argsstring>(code_type code=get_err_code())</argsstring>
+        <name>get_err_string</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref></type>
+          <declname>code</declname>
+          <defval><ref refid="namespacezorba_1_1os__error_1a3e2dfaebb7d03986994e7dc0ffea756e" kindref="member">get_err_code</ref>()</defval>
+        </param>
+        <briefdescription>
+<para>Gets the error string for the given operating system error code. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>code</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The operating system error code. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns said error string. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="165" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" bodystart="165" bodyend="167"/>
+        <references refid="namespacezorba_1_1os__error_1a2932d8a5e9e71868bd76a2b10b4b377d">get_err_string</references>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="34"/>
+  </compounddef>
+</doxygen>

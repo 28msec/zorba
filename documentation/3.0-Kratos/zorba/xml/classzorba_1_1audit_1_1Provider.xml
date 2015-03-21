@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1audit_1_1Provider" kind="class" prot="public">
+    <compoundname>zorba::audit::Provider</compoundname>
+    <includes refid="audit_8h" local="no">zorba/audit.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Provider_1a9dace85fc547402b87fec3ff107ff52c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1audit_1_1Configuration" kindref="compound">Configuration</ref> *</type>
+        <definition>virtual Configuration* zorba::audit::Provider::createConfiguration</definition>
+        <argsstring>(size_t=0)=0</argsstring>
+        <name>createConfiguration</name>
+        <param>
+          <type>size_t</type>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="124"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Provider_1a98cab9d3aa67d1963601720214b1534e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1audit_1_1Event" kindref="compound">Event</ref> *</type>
+        <definition>virtual Event* zorba::audit::Provider::createEvent</definition>
+        <argsstring>(const Configuration *)=0</argsstring>
+        <name>createEvent</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1audit_1_1Configuration" kindref="compound">Configuration</ref> *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="127"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Provider_1aa7c6b2ad30e335601c8585eca98f8e15" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::audit::Provider::destroyConfiguration</definition>
+        <argsstring>(Configuration *)=0</argsstring>
+        <name>destroyConfiguration</name>
+        <param>
+          <type><ref refid="classzorba_1_1audit_1_1Configuration" kindref="compound">Configuration</ref> *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="125"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Provider_1a94d76a48f744a0a70b72ac7e06768288" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::audit::Provider::submitEvent</definition>
+        <argsstring>(Event *)=0</argsstring>
+        <name>submitEvent</name>
+        <param>
+          <type><ref refid="classzorba_1_1audit_1_1Event" kindref="compound">Event</ref> *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="128"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Provider_1a798afee481a17cbf491b2c2ca109f545" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::audit::Provider::~Provider</definition>
+        <argsstring>()</argsstring>
+        <name>~Provider</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="130"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="122" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit.h" bodystart="122" bodyend="131"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1audit_1_1Provider_1a9dace85fc547402b87fec3ff107ff52c" prot="public" virt="pure-virtual"><scope>zorba::audit::Provider</scope><name>createConfiguration</name></member>
+      <member refid="classzorba_1_1audit_1_1Provider_1a98cab9d3aa67d1963601720214b1534e" prot="public" virt="pure-virtual"><scope>zorba::audit::Provider</scope><name>createEvent</name></member>
+      <member refid="classzorba_1_1audit_1_1Provider_1aa7c6b2ad30e335601c8585eca98f8e15" prot="public" virt="pure-virtual"><scope>zorba::audit::Provider</scope><name>destroyConfiguration</name></member>
+      <member refid="classzorba_1_1audit_1_1Provider_1a94d76a48f744a0a70b72ac7e06768288" prot="public" virt="pure-virtual"><scope>zorba::audit::Provider</scope><name>submitEvent</name></member>
+      <member refid="classzorba_1_1audit_1_1Provider_1a798afee481a17cbf491b2c2ca109f545" prot="public" virt="virtual"><scope>zorba::audit::Provider</scope><name>~Provider</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

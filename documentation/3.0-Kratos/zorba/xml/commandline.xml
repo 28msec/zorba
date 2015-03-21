@@ -1,0 +1,244 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="commandline" kind="page">
+    <compoundname>commandline</compoundname>
+    <title>Command Line Utility</title>
+    <detaileddescription>
+<sect1 id="commandline_1commandLineUsage">
+<title>Usage</title>
+<para>zorba [options] [-q Inline_Query ...] or <linebreak/>
+ zorba [options] -f [-q Query_File ...]</para></sect1>
+<sect1 id="commandline_1commandLineHelp">
+<title>Help</title>
+<para><verbatim>
+Available options:
+
+--timing, -t
+Print timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.
+
+--output-file, -o
+Write the result to the given file.
+
+--serialization-parameter, -z
+Set serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).
+
+--serialize-html
+Serialize the result as HTML.
+
+--serialize-text
+Serialize the result as Text.
+
+--indent, -i
+Indent output.
+
+--print-query
+Print the queries.
+
+--print-errors-as-xml, -x
+Print the errors as XML.
+
+--byte-order-mark
+Set the byte-order-mark for the serializer.
+
+--omit-xml-declaration, -r
+Omit the XML declaration from the result.
+
+--base-uri
+Set the base URI property of the static context.
+
+--boundary-space
+Set the boundary-space policy (&apos;strip&apos; or &apos;preserve&apos;) in the static context.
+
+--default-collation
+Add the given collation and set the value of the default collation in the static context to the given collation.
+
+--construction-mode
+Set the construction mode (&apos;strip&apos; or &apos;preserve&apos;) in the static context.
+
+--ordering-mode
+Set the ordering mode (&apos;ordered&apos; or &apos;unordered&apos;) in the static context.
+
+--multiple, -m
+Execute the given queries multiple times.
+
+--query, -q
+Query test or file URI (file://...)
+
+--as-files, -f
+Treat all -q arguments as file paths instead of URIs or inline queries. This option is deprecated and will be defaulted to true in the future, so any entry in the command line is going to be treated as files.
+
+--external-variable, -e
+Provide the value for a variable given a file (name=file) or a value (name:=value)
+
+--context-item
+Set the context item to the XML document in a given file.
+
+--optimization-level
+Optimization level for the query compiler (O0, O1 or O2 - default: O1)
+
+--lib-module, -l
+Query compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.
+
+--parse-only
+Stop after parsing the query.
+
+--compile-only
+Only compile (don&apos;t execute)
+
+--no-serializer
+Do not serialize (discard) result.
+
+--debug, -d
+Launch the Zorba debugger server and connect to a DBGP-enabled debugger client.
+
+--debug-host, -h
+The host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1
+
+--debug-port, -p
+The port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028
+
+--no-logo
+Print no logo when starting.
+
+--timeout
+Specify a timeout in seconds. After the specified time, the execution of the query will be aborted.
+
+--uri-path
+URI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.
+
+--lib-path
+Library path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.
+
+--module-path
+Path (list of directories) to add to both the URI and Library paths.
+
+--classpath
+JVM classpath to be used by modules using Java implementations
+
+--option
+Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://zorba.io/}option=value
+
+--trailing-nl
+Output a trailing newline after the result of the query.
+
+--stop-words
+Mapping specifying a stop-words URI to another.
+
+--thesaurus
+Mapping specifying a thesaurus URI to another.
+
+--serialize-plan, -s
+Serialize and then load the query execution plan.
+
+--compile-plan,
+Do not execute the query; just compile it and save the execution plan in the file specified with the -o option.
+
+--execute-plan
+Do not compile the query; instead load the execution plan from the file specified by the -f -q options (or by any file specified without any other argument), and execute the loaded plan.
+
+--disable-http-resolution
+Do not use HTTP to resolve URIs
+</verbatim></para></sect1>
+<sect1 id="commandline_1commandlineexamples">
+<title>Examples</title>
+<sect2 id="commandline_1cmdlineExample1">
+<title>Execute inline queries</title>
+<para>This example shows the use of <computeroutput>-t</computeroutput>, <computeroutput>--print-query</computeroutput> output options and <computeroutput>-i</computeroutput> execute option.</para><para>Zorba command: <verbatim>
+zorba -t --print-query -q &quot;1+1&quot; -q &quot;fn:concat(&apos;un&apos;, &apos;grateful&apos;)&quot; -q &quot;fn:matches(&apos;abracadabra&apos;, &apos;^a.*a$&apos;)&quot;
+</verbatim></para><para>Output: <verbatim>
+Query number 1 :
+1+1
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+2
+Number of executions = 1
+Engine Startup Time     : 36.205 (user: 35.949) milliseconds
+Average Compilation Time: 3.035 (user: 3.011) milliseconds
+Average Execution Time  : 0.154 (user: 0.148) milliseconds
+Average Loading Time    : 0.000 (user: 0.000) milliseconds
+Average Unloading Time  : 23.080 (user: 9.798) milliseconds
+Average Total Time      : 31.791 (user: 18.433) milliseconds
+
+Query number 2 :
+fn:concat(&apos;un&apos;, &apos;grateful&apos;)
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+ungrateful
+Number of executions = 1
+Engine Startup Time     : 36.205 (user: 35.949) milliseconds
+Average Compilation Time: 3.971 (user: 3.932) milliseconds
+Average Execution Time  : 0.217 (user: 0.212) milliseconds
+Average Loading Time    : 0.000 (user: 0.000) milliseconds
+Average Unloading Time  : 27.641 (user: 14.319) milliseconds
+Average Total Time      : 37.364 (user: 23.946) milliseconds
+
+Query number 3 :
+fn:matches(&apos;abracadabra&apos;, &apos;^a.*a$&apos;)
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+true
+Number of executions = 1
+Engine Startup Time     : 36.205 (user: 35.949) milliseconds
+Average Compilation Time: 93.269 (user: 11.609) milliseconds
+Average Execution Time  : 0.396 (user: 0.375) milliseconds
+Average Loading Time    : 0.000 (user: 0.000) milliseconds
+Average Unloading Time  : 32.478 (user: 19.128) milliseconds
+Average Total Time      : 131.699 (user: 36.610) milliseconds
+
+Engine Shutdown Time     : 0.007 (user: 0.007) milliseconds
+</verbatim></para></sect2>
+<sect2 id="commandline_1cmdlineExample2">
+<title>Execute update queries</title>
+<para>The purpose of this example is to demonstrate the use of <computeroutput>-f</computeroutput> and <computeroutput>-e</computeroutput> execute options.</para><para>These are the files used in this example and their meaning: <table rows="3" cols="2"><row>
+<entry thead="no"><para><computeroutput>works-mod.xml</computeroutput> </para></entry><entry thead="no"><para>File that will be used as external variable.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>comandline_doc_example_2.xq</computeroutput> </para></entry><entry thead="no"><para>This is an update query. For details please see below.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>comandline_doc_example_2-test.xq</computeroutput> </para></entry><entry thead="no"><para>Query used to see the results of the update query. For details please see below.  </para></entry></row>
+</table>
+</para><para>works-mod.xml : <programlisting><codeline><highlight class="normal">&lt;?xml<sp/>version=</highlight><highlight class="stringliteral">&quot;1.0&quot;</highlight><highlight class="normal">?&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>&lt;works&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;employee<sp/>name=</highlight><highlight class="stringliteral">&quot;Jane<sp/>Doe<sp/>1&quot;</highlight><highlight class="normal"><sp/>gender=</highlight><highlight class="stringliteral">&quot;female&quot;</highlight><highlight class="normal">&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>&lt;empnum&gt;E1&lt;/empnum&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>&lt;pnum&gt;P1&lt;/pnum&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>&lt;hours&gt;40&lt;/hours&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;/employee&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;employee<sp/>name<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;John<sp/>Doe<sp/>2&quot;</highlight><highlight class="normal"><sp/>gender=</highlight><highlight class="stringliteral">&quot;male&quot;</highlight><highlight class="normal">&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>&lt;empnum&gt;E1&lt;/empnum&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>&lt;pnum&gt;P2&lt;/pnum&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>&lt;hours&gt;70&lt;/hours&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>&lt;hours&gt;20&lt;/hours&gt;Text<sp/>data<sp/>from<sp/>Employee[2]</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;/employee&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>&lt;/works&gt;</highlight></codeline>
+</programlisting></para><para>comandline_doc_example_2.xq : <programlisting><codeline><highlight class="normal">(:<sp/>Name:<sp/>comandline_doc_example_2<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>Description:<sp/>Evaluation<sp/>of<sp/>insert<sp/>expression<sp/>used<sp/>with<sp/>typeswitch<sp/>expression<sp/>where<sp/>branch<sp/>(a<sp/></highlight><highlight class="stringliteral">&quot;case&quot;</highlight><highlight class="normal">)<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abdd3c2de1222fd3167e2675969aa694c" kindref="member" tooltip="Aragonese.">an</ref><sp/>updating<sp/>expression.<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>All<sp/><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22a695149cd22831c06e408b1101e4075f1" kindref="member">other</ref><sp/>branches<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="stringliteral">&quot;fn:error()&quot;</highlight><highlight class="normal">.<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>insert-start<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">declare<sp/>variable<sp/>$input-context<sp/>external;</highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>insert-end<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">typeswitch(xs:</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">(1))</highlight></codeline>
+<codeline><highlight class="normal"><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>$i<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>xs:</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(insert<sp/>node<sp/>&lt;hours&gt;30&lt;/hours&gt;<sp/>into<sp/>$input-context/works[1]/employee[1])</highlight></codeline>
+<codeline><highlight class="normal"><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>$i<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>xs:</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>fn:error(fn:QName(</highlight><highlight class="stringliteral">&apos;http://www.w3.org/2005/xqt-errors&apos;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&apos;err:FOER0000&apos;</highlight><highlight class="normal">))</highlight></codeline>
+<codeline><highlight class="normal"><sp/>default</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>return<sp/>fn:error(fn:QName(&apos;http:</highlight><highlight class="comment">//www.w3.org/2005/xqt-errors&apos;,<sp/>&apos;err:FOER0000&apos;))</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para><para>comandline_doc_example_2-test.xq : <programlisting><codeline><highlight class="normal">(:<sp/>Name:<sp/>comandline_doc_example_2-test<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>Description:<sp/>Query<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>verify<sp/>comandline_doc_example_2<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>insert-start<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">declare<sp/>variable<sp/>$input-context<sp/>external;</highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>insert-end<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">$input-context/works[1]/employee[1]</highlight></codeline>
+</programlisting></para><para>Zorba command: <verbatim>
+zorba -e input-context=works-mod.xml -f -q comandline_doc_example_2.xq -q comandline_doc_example_2-test.xq
+</verbatim></para><para>Note: Make sure you give the correct path to the works-mod.xml, comandline_doc_example_2.xq and comandline_doc_example_2-test.xq files.</para><para>Expected result: <programlisting><codeline><highlight class="normal">&lt;employee<sp/>name=</highlight><highlight class="stringliteral">&quot;Jane<sp/>Doe<sp/>1&quot;</highlight><highlight class="normal"><sp/>gender=</highlight><highlight class="stringliteral">&quot;female&quot;</highlight><highlight class="normal">&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>&lt;empnum&gt;E1&lt;/empnum&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>&lt;pnum&gt;P1&lt;/pnum&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>&lt;hours&gt;40&lt;/hours&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;hours&gt;30&lt;/hours&gt;&lt;/employee&gt;</highlight></codeline>
+</programlisting> </para></sect2>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

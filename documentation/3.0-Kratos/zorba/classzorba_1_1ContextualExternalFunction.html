@@ -1,0 +1,33 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::ContextualExternalFunction</h1><p class="include">
+            #include &lt;zorba/function.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1ExternalFunction.html">zorba::ExternalFunction</a></p>
+The <a href="/pages/3.0/zorba/classzorba_1_1ContextualExternalFunction">ContextualExternalFunction</a> class serves as the base of subclasses that represent the implementation of contextual external functions.     
+For each external function, an application must provide a concrete subclass of this class and "store" an instance of the subclass inside an <a href="/pages/3.0/zorba/classzorba_1_1ExternalModule">ExternalModule</a> object, as described <a href="../zorba/external_functions.html" target="_blank">here</a>.     <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba?anchor=ab047eb444ab2bd501dca0b831aac47ac">ItemSequence_t</a></p></td><td><p class="signature"><a href="#a41c13bf23db511ca387a534b2f720350">evaluate</a>(const Arguments_t &amp;, const StaticContext *, const DynamicContext *) const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a></p></td><td><p class="signature"><a href="#a9d36a7d1a9f453478b46ae8a1c73cb1d">getLocalName</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a></p></td><td><p class="signature"><a href="#a29a6d6f9a2768904ff6b898b9094a8b9">getURI</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a5ce3714a68f1688a92676c8b6114502b">isContextual</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ac71d5b7247f33c675596a29386586977">~ContextualExternalFunction</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">std::vector&lt; <a href="/pages/3.0/zorba/classzorba_1_1ItemSequence">ItemSequence</a> * &gt;</p></td><td><p class="signature"><a href="#a6a5ca34441eda62bafea62a67a4b1ee5">Arguments_t</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Protected Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a></p></td><td><p class="signature"><a href="#a69da0bb4c7b3ef96bcd468f95b505ea9">getItem</a>(Arguments_t const &amp;args, unsigned pos) const </p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a41c13bf23db511ca387a534b2f720350" class="sect1"><div><h3>evaluate</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba?anchor=ab047eb444ab2bd501dca0b831aac47ac">ItemSequence_t</a><span> </span>evaluate(const Arguments_t &amp;, const StaticContext *, const DynamicContext *) const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a9d36a7d1a9f453478b46ae8a1c73cb1d" class="sect1"><div><h3>getLocalName</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>getLocalName() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>The local name of the function QName </div>
+        </p></div></div><div id="a29a6d6f9a2768904ff6b898b9094a8b9" class="sect1"><div><h3>getURI</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>getURI() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>The namespace URI of the function QName </div>
+        </p></div></div><div id="a5ce3714a68f1688a92676c8b6114502b" class="sect1"><div><h3>isContextual</h3></div><div class="signature-box">bool<span> </span>isContextual() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>True if the external function is contextual; false otherwise. </div>
+        </p></div></div><div id="ac71d5b7247f33c675596a29386586977" class="sect1"><div><h3>~ContextualExternalFunction</h3></div><div class="signature-box"><span> </span>~ContextualExternalFunction()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a6a5ca34441eda62bafea62a67a4b1ee5" class="sect1"><div><h3>Arguments_t</h3></div><div class="signature-box">std::vector&lt; <a href="/pages/3.0/zorba/classzorba_1_1ItemSequence">ItemSequence</a> * &gt;<span> </span>Arguments_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Protected Functions</h2><div class="detailed"><div id="a69da0bb4c7b3ef96bcd468f95b505ea9" class="sect1"><div><h3>getItem</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>getItem(Arguments_t const &amp;args, unsigned pos) const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

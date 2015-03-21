@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="store__consts_8h" kind="file">
+    <compoundname>store_consts.h</compoundname>
+    <includes local="no">iostream</includes>
+    <includes local="no">string</includes>
+    <includes local="no">zorba/config.h</includes>
+    <includedby refid="item_8h" local="no">item.h</includedby>
+    <incdepgraph>
+      <node id="2179">
+        <label>string</label>
+      </node>
+      <node id="2177">
+        <label>store_consts.h</label>
+        <link refid="store_consts.h"/>
+        <childnode refid="2178" relation="include">
+        </childnode>
+        <childnode refid="2179" relation="include">
+        </childnode>
+        <childnode refid="2180" relation="include">
+        </childnode>
+      </node>
+      <node id="2178">
+        <label>iostream</label>
+      </node>
+      <node id="2180">
+        <label>zorba/config.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2186">
+        <label>empty_sequence.h</label>
+        <link refid="empty__sequence_8h"/>
+      </node>
+      <node id="2182">
+        <label>item.h</label>
+        <link refid="item_8h"/>
+        <childnode refid="2183" relation="include">
+        </childnode>
+        <childnode refid="2186" relation="include">
+        </childnode>
+        <childnode refid="2187" relation="include">
+        </childnode>
+        <childnode refid="2188" relation="include">
+        </childnode>
+        <childnode refid="2189" relation="include">
+        </childnode>
+        <childnode refid="2190" relation="include">
+        </childnode>
+        <childnode refid="2184" relation="include">
+        </childnode>
+      </node>
+      <node id="2184">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="2185" relation="include">
+        </childnode>
+      </node>
+      <node id="2187">
+        <label>item_factory.h</label>
+        <link refid="item__factory_8h"/>
+        <childnode refid="2184" relation="include">
+        </childnode>
+      </node>
+      <node id="2183">
+        <label>collection.h</label>
+        <link refid="collection_8h"/>
+        <childnode refid="2184" relation="include">
+        </childnode>
+      </node>
+      <node id="2188">
+        <label>serializer.h</label>
+        <link refid="serializer_8h"/>
+      </node>
+      <node id="2191">
+        <label>thesaurus.h</label>
+        <link refid="thesaurus_8h"/>
+        <childnode refid="2185" relation="include">
+        </childnode>
+      </node>
+      <node id="2181">
+        <label>store_consts.h</label>
+        <link refid="store_consts.h"/>
+        <childnode refid="2182" relation="include">
+        </childnode>
+      </node>
+      <node id="2185">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="2184" relation="include">
+        </childnode>
+      </node>
+      <node id="2190">
+        <label>uri_resolvers.h</label>
+        <link refid="uri__resolvers_8h"/>
+        <childnode refid="2191" relation="include">
+        </childnode>
+      </node>
+      <node id="2189">
+        <label>singleton_item_sequence.h</label>
+        <link refid="singleton__item__sequence_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1store_1_1StoreConsts" prot="public">zorba::store::StoreConsts</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <innernamespace refid="namespacezorba_1_1store">zorba::store</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_STORE_STORE_CONSTS_H</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_STORE_STORE_CONSTS_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">store<sp/>{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="26"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*******************************************************************************</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/>!!!<sp/>ATTENTION:<sp/>The<sp/>order<sp/>of<sp/>the<sp/>enum<sp/>values<sp/>within<sp/>SchemaTypeCode<sp/>is<sp/>important.</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/>!!!<sp/>DO<sp/>NOT<sp/>change<sp/>this<sp/>order!!!!<sp/>DO<sp/>NOT<sp/>insert<sp/>in<sp/>the<sp/>middle!!!!</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">********************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75" kindref="member">SchemaTypeCode</ref></highlight></codeline>
+<codeline lineno="33"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="34" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a5fa8af3586a98cf4e9b6e5e9dea49f8e" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a5fa8af3586a98cf4e9b6e5e9dea49f8e" kindref="member">XS_ANY_ATOMIC</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>0,</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a53539e7a2eaa6fc03ea7cc61ad1a3c1f" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a53539e7a2eaa6fc03ea7cc61ad1a3c1f" kindref="member">XS_STRING</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>1,</highlight></codeline>
+<codeline lineno="37" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab946b063c9dd7dcf02b976bf8c3f89fb" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab946b063c9dd7dcf02b976bf8c3f89fb" kindref="member">XS_NORMALIZED_STRING</ref><sp/><sp/><sp/><sp/><sp/>=<sp/>2,</highlight></codeline>
+<codeline lineno="38" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a87f27b8ffb25bfa1f2400dde1db05886" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a87f27b8ffb25bfa1f2400dde1db05886" kindref="member">XS_TOKEN</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>3,</highlight></codeline>
+<codeline lineno="39" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a516b054f6c1feb7fbddf56e4f4e0fae2" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a516b054f6c1feb7fbddf56e4f4e0fae2" kindref="member">XS_LANGUAGE</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>4,</highlight></codeline>
+<codeline lineno="40" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a9b2c570f88ea81c3006b43148922e079" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a9b2c570f88ea81c3006b43148922e079" kindref="member">XS_NMTOKEN</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>5,</highlight></codeline>
+<codeline lineno="41" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a76ac1179277bfa4e57ca86542aa16e15" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a76ac1179277bfa4e57ca86542aa16e15" kindref="member">XS_NAME</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>6,</highlight></codeline>
+<codeline lineno="42" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a42849cde7ba7553c7ed9c01964901872" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a42849cde7ba7553c7ed9c01964901872" kindref="member">XS_NCNAME</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>7,</highlight></codeline>
+<codeline lineno="43" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a00d61c56227e8809520d04431eb394a6" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a00d61c56227e8809520d04431eb394a6" kindref="member">XS_ID</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>8,</highlight></codeline>
+<codeline lineno="44" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a49a8ee6fe377ab83b33ebeb47cd05d1e" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a49a8ee6fe377ab83b33ebeb47cd05d1e" kindref="member">XS_IDREF</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>9,</highlight></codeline>
+<codeline lineno="45" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a47f13b6a5f641bbb90772674a390f205" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a47f13b6a5f641bbb90772674a390f205" kindref="member">XS_ENTITY</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>10,</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75accb8f9339b8b67e8deccbc1c7c8f23dd" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75accb8f9339b8b67e8deccbc1c7c8f23dd" kindref="member">XS_UNTYPED_ATOMIC</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>11,</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ac755e4b7bb945c691ae422b9347f8181" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ac755e4b7bb945c691ae422b9347f8181" kindref="member">XS_DATETIME</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>12,</highlight></codeline>
+<codeline lineno="50" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab2ce5f4b83a82d77a7571431a5c55589" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab2ce5f4b83a82d77a7571431a5c55589" kindref="member">XS_DATE</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>13,</highlight></codeline>
+<codeline lineno="51" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a331388676b7b1b2f1ef888d69d646ba6" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a331388676b7b1b2f1ef888d69d646ba6" kindref="member">XS_TIME</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>14,</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab48c798e3740df2e0a174ace6c6ff8f8" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab48c798e3740df2e0a174ace6c6ff8f8" kindref="member">XS_DURATION</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>15,</highlight></codeline>
+<codeline lineno="54" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75afadd35345d03b076d368320e50ddc9ef" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75afadd35345d03b076d368320e50ddc9ef" kindref="member">XS_DT_DURATION</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>16,</highlight></codeline>
+<codeline lineno="55" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a8978c1bbfb892c32dfc771c0cbe63b8a" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a8978c1bbfb892c32dfc771c0cbe63b8a" kindref="member">XS_YM_DURATION</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>17,</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ae0f5a894b13d14d83ae532eba9bfe1ef" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ae0f5a894b13d14d83ae532eba9bfe1ef" kindref="member">XS_FLOAT</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>18,</highlight></codeline>
+<codeline lineno="58" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a337d6d1c0e3c45411afd7c89a8ec11c9" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a337d6d1c0e3c45411afd7c89a8ec11c9" kindref="member">XS_DOUBLE</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>19,</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a96884a6dc63fd7864bc44e5b3f506b34" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a96884a6dc63fd7864bc44e5b3f506b34" kindref="member">XS_DECIMAL</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>20,</highlight></codeline>
+<codeline lineno="61" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1296d71bd5f2d0cfeff52fd185b0b4d2" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1296d71bd5f2d0cfeff52fd185b0b4d2" kindref="member">XS_INTEGER</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>21,</highlight></codeline>
+<codeline lineno="62" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1065cbde851dd30db383cdd719c90bfb" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1065cbde851dd30db383cdd719c90bfb" kindref="member">XS_NON_POSITIVE_INTEGER</ref><sp/><sp/>=<sp/>22,</highlight></codeline>
+<codeline lineno="63" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75aa7e94ff6a287f3bcad1788d5cc3a9e83" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75aa7e94ff6a287f3bcad1788d5cc3a9e83" kindref="member">XS_NEGATIVE_INTEGER</ref><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>23,</highlight></codeline>
+<codeline lineno="64" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a12f0af23dce9e8362cf8389c144b6e35" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a12f0af23dce9e8362cf8389c144b6e35" kindref="member">XS_LONG</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>24,</highlight></codeline>
+<codeline lineno="65" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ac8777e214daf4c5a8f79f840381c7b40" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ac8777e214daf4c5a8f79f840381c7b40" kindref="member">XS_INT</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>25,</highlight></codeline>
+<codeline lineno="66" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ace4b451e3f7396582fb102d031825d89" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ace4b451e3f7396582fb102d031825d89" kindref="member">XS_SHORT</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>26,</highlight></codeline>
+<codeline lineno="67" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75af9d4f4851e13982a2d5ca9e29721d0c8" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75af9d4f4851e13982a2d5ca9e29721d0c8" kindref="member">XS_BYTE</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>27,</highlight></codeline>
+<codeline lineno="68" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab601bf2124b3ead371f79f5dc0f0a713" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab601bf2124b3ead371f79f5dc0f0a713" kindref="member">XS_NON_NEGATIVE_INTEGER</ref><sp/><sp/>=<sp/>28,</highlight></codeline>
+<codeline lineno="69" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ad862bfb2b16bf060886b66f060d4a73a" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ad862bfb2b16bf060886b66f060d4a73a" kindref="member">XS_UNSIGNED_LONG</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>29,</highlight></codeline>
+<codeline lineno="70" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75afe94aaba61473ef08b0238ff91065f50" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75afe94aaba61473ef08b0238ff91065f50" kindref="member">XS_UNSIGNED_INT</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>30,</highlight></codeline>
+<codeline lineno="71" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a2141df3c82dea8cc1d135d8eae6f93e0" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a2141df3c82dea8cc1d135d8eae6f93e0" kindref="member">XS_UNSIGNED_SHORT</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>31,</highlight></codeline>
+<codeline lineno="72" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a940f9b261081f7a6dea1a2812a69bacc" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a940f9b261081f7a6dea1a2812a69bacc" kindref="member">XS_UNSIGNED_BYTE</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>32,</highlight></codeline>
+<codeline lineno="73" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a03f02c6178dc7333ddfb61b108a93a9b" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a03f02c6178dc7333ddfb61b108a93a9b" kindref="member">XS_POSITIVE_INTEGER</ref><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>33,</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1adbcdfb8b70926bb369ac0a8c5f3d2b" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1adbcdfb8b70926bb369ac0a8c5f3d2b" kindref="member">XS_GYEAR_MONTH</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>34,</highlight></codeline>
+<codeline lineno="76" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a723ab330dff9ba1377473d49d1d11375" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a723ab330dff9ba1377473d49d1d11375" kindref="member">XS_GYEAR</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>35,</highlight></codeline>
+<codeline lineno="77" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ad939fec6a295ce96b7d0bd12cd799c93" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ad939fec6a295ce96b7d0bd12cd799c93" kindref="member">XS_GMONTH_DAY</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>36,</highlight></codeline>
+<codeline lineno="78" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ad4651fb145392a8d68bfb69f4a95b32a" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ad4651fb145392a8d68bfb69f4a95b32a" kindref="member">XS_GDAY</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>37,</highlight></codeline>
+<codeline lineno="79" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a798e38593af0debc4026eb084e8a4bb4" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a798e38593af0debc4026eb084e8a4bb4" kindref="member">XS_GMONTH</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>38,</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1adba41464de02db00b19e9a401c050c" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1adba41464de02db00b19e9a401c050c" kindref="member">XS_BOOLEAN</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>39,</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75afa7ac37464c93c32d32baafa75751151" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75afa7ac37464c93c32d32baafa75751151" kindref="member">XS_BASE64BINARY</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>40,</highlight></codeline>
+<codeline lineno="84" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a88b82934627e67dfb97b4dc468a99365" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a88b82934627e67dfb97b4dc468a99365" kindref="member">XS_HEXBINARY</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>41,</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab00135dd8d7d7d8abf369b64d3877da2" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab00135dd8d7d7d8abf369b64d3877da2" kindref="member">XS_ANY_URI</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>42,</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a6b57cf23b117ffded077a48858a8d954" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a6b57cf23b117ffded077a48858a8d954" kindref="member">XS_QNAME</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>43,</highlight></codeline>
+<codeline lineno="89" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a204c539a8fc27e1462b003a54a4a1910" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a204c539a8fc27e1462b003a54a4a1910" kindref="member">XS_NOTATION</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>44,</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a41a22df0609915ab0e1669d71230031d" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a41a22df0609915ab0e1669d71230031d" kindref="member">JS_NULL</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>45,</highlight></codeline>
+<codeline lineno="92" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ac9850d2e47c4ea89b91a787952fae10d" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ac9850d2e47c4ea89b91a787952fae10d" kindref="member">XS_DATETIME_STAMP</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>46,</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94" refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a432b45351299b06e2cf3902e54fbac7e" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a432b45351299b06e2cf3902e54fbac7e" kindref="member">XS_LAST</ref></highlight></codeline>
+<codeline lineno="95"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal">ZORBA_DLL_PUBLIC</highlight></codeline>
+<codeline lineno="98"><highlight class="normal">std::ostream&amp;<sp/><ref refid="namespacezorba_1_1store_1aa2c1609d0d37f413d933de8104562fe0" kindref="member">operator&lt;&lt;</ref>(<sp/>std::ostream&amp;,<sp/><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75" kindref="member">SchemaTypeCode</ref><sp/>);</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="100"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="102" refid="classzorba_1_1store_1_1StoreConsts" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1store_1_1StoreConsts" kindref="compound">StoreConsts</ref></highlight></codeline>
+<codeline lineno="103"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="106"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="107"><highlight class="comment"><sp/><sp/><sp/>*<sp/>NsScoping<sp/>defines<sp/>the<sp/>three<sp/>values<sp/>that<sp/>can<sp/>be<sp/>given<sp/>as<sp/>arguments<sp/>to</highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/><sp/>*<sp/>the<sp/>Item::getNamespaceBindings()<sp/>method.<sp/>The<sp/>semantics<sp/>of<sp/>the<sp/>three</highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/><sp/>*<sp/>values<sp/>are<sp/>as<sp/>follows:</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/><sp/><sp/>*<sp/>ALL_BINDINGS:</highlight></codeline>
+<codeline lineno="112"><highlight class="comment"><sp/><sp/><sp/>*<sp/>All<sp/>the<sp/>namespace<sp/>bindings<sp/>of<sp/>an<sp/>element<sp/>node,<sp/>as<sp/>defined<sp/>by<sp/>the<sp/>W3C</highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/>*<sp/>XQuery<sp/>and<sp/>XPath<sp/>Data<sp/>Model<sp/>specification.</highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/>*<sp/>ONLY_LOCAL_BINDINGS:</highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/><sp/><sp/>*<sp/>The<sp/>bindings<sp/>that<sp/>are<sp/>implied<sp/>by<sp/>the<sp/>qnames<sp/>of<sp/>an<sp/>element<sp/>node<sp/>and<sp/>its</highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/><sp/>*<sp/>attributes,<sp/>plus<sp/>those<sp/>that<sp/>are<sp/>specified<sp/>by<sp/>the<sp/>namespace<sp/>declaration</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/>*<sp/>attributes<sp/>of<sp/>the<sp/>element<sp/>node.</highlight></codeline>
+<codeline lineno="119"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="120"><highlight class="comment"><sp/><sp/><sp/>*<sp/>ONLY_LOCALLY_DECLARED_BINDINGS:</highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/>*<sp/>The<sp/>bindings<sp/>that<sp/>are<sp/>specified<sp/>by<sp/>the<sp/>namespace<sp/>declaration<sp/>attributes</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/>*<sp/>of<sp/>an<sp/>element<sp/>node.</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="124" refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0" kindref="member" tooltip="NsScoping defines the three values that can be given as arguments to the Item::getNamespaceBindings()...">NsScoping</ref></highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline lineno="126" refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0a0bbf36aace11e4ca2bb654141a32459a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0a0bbf36aace11e4ca2bb654141a32459a" kindref="member">ALL_BINDINGS</ref>,</highlight></codeline>
+<codeline lineno="127" refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0af5e58ca608b9dacab8574553e4175753" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0af5e58ca608b9dacab8574553e4175753" kindref="member">ONLY_LOCAL_BINDINGS</ref>,</highlight></codeline>
+<codeline lineno="128" refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0a0177932772b6516b420f09ae8192c07d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>ONLY_LOCALLY_DECLARED_BINDINGS</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight></codeline>
+<codeline lineno="131" refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033" kindref="member">NodeKind</ref></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline lineno="133" refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033af4be102ef5e46a29bcd878d1104c6637" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>anyNode<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>0,</highlight></codeline>
+<codeline lineno="134" refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033ad3d6b4ad4c896e6a3b5149b1d7471787" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>documentNode<sp/><sp/><sp/>=<sp/>1,</highlight></codeline>
+<codeline lineno="135" refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033ab1bac9b3d08613089ea171ed3faaf452" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>elementNode<sp/><sp/><sp/><sp/>=<sp/>2,</highlight></codeline>
+<codeline lineno="136" refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033ad4a9e9f09bb424c7ad43cbbfd241c459" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>attributeNode<sp/><sp/>=<sp/>3,</highlight></codeline>
+<codeline lineno="137" refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a48be07c0e2eeb9476e11aab1707c5e42" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>textNode<sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>4,</highlight></codeline>
+<codeline lineno="138" refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a6e020e8e53103089ccae2d85e677b531" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>piNode<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>5,</highlight></codeline>
+<codeline lineno="139" refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a9de586b60ec8834407c8859bcd77827d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>commentNode<sp/><sp/><sp/><sp/>=<sp/>6,</highlight></codeline>
+<codeline lineno="140" refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a23886489a25e392e8488c134176dd6d9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>namespaceNode<sp/><sp/>=<sp/>7</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::string<sp/>toString(NodeKind);</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::string<sp/>toSchemaString(NodeKind);</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>ATTENTION:<sp/>the<sp/>ordering<sp/>of<sp/>the<sp/>enum<sp/>values<sp/>is<sp/>important.<sp/>Do<sp/>NOT<sp/>change<sp/>it!</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="147" refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2" kindref="member">JSONItemKind</ref></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline lineno="149" refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2ad122ef7ec04d3712025ddc0c8f97f859" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>jsonItem<sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>0,</highlight></codeline>
+<codeline lineno="150" refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2ab8371b9275801cb08ac0011409a24241" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>jsonObject<sp/><sp/><sp/><sp/><sp/>=<sp/>1,</highlight></codeline>
+<codeline lineno="151" refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2a3ede2235f3384042115354b7f4d82eb9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>jsonArray<sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>2</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight></codeline>
+<codeline lineno="156"><highlight class="normal">ZORBA_DLL_PUBLIC</highlight></codeline>
+<codeline lineno="157"><highlight class="normal">std::ostream&amp;<sp/><ref refid="namespacezorba_1_1store_1aa2c1609d0d37f413d933de8104562fe0" kindref="member">operator&lt;&lt;</ref>(<sp/>std::ostream&amp;,<sp/><ref refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033" kindref="member">StoreConsts::NodeKind</ref><sp/>);</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal">ZORBA_DLL_PUBLIC</highlight></codeline>
+<codeline lineno="160"><highlight class="normal">std::ostream&amp;<sp/><ref refid="namespacezorba_1_1store_1aa2c1609d0d37f413d933de8104562fe0" kindref="member">operator&lt;&lt;</ref>(<sp/>std::ostream&amp;,<sp/><ref refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2" kindref="member">StoreConsts::JSONItemKind</ref><sp/>);</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="162"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="163"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>store</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="165"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="167"><highlight class="preprocessor"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h"/>
+  </compounddef>
+</doxygen>

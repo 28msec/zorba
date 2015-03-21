@@ -1,0 +1,108 @@
+<div class="doxygen">
+  <div><h1 class="title">Zorba - Mac OSX Installation</h1>
+<div id="zosx_title" class="sect1"><h2>Guide to Zorba installation on Mac OSX</h2>
+This is a guide to install Zorba on Mac OSX, it was tested on OSX 10.8.5 Mountain Lion with Xcode 5.0 and Zorba 2.9.1. Send us email with the results you had on different versions or platforms.There are 3 ways to get Zorba running on your Mac:<ul>
+<li><a href="/pages/3.0/zorba/install_osx_tutorial?anchor=zosx_pkg">a) Install Zorba binary from .pkg file</a> (Requires macports dependencies, recommended)</li><li><a href="/pages/3.0/zorba/install_osx_tutorial?anchor=zosx_mpkg">b) Install Zorba binary from .mpkg file</a> (.mpkg file contains all it's .pkg dependencies, easiest)</li><li><a href="/pages/3.0/zorba/install_osx_tutorial?anchor=zosx_src">c) Install Zorba from sources</a> (the most complete)</li></ul>
+</div>
+<div id="zosx_prereq" class="sect1"><h2>Prerequisites</h2>
+<ul>
+<li>Apple Mac OSX 10.8.5 Mountain Lion</li><li>Apple Xcode Developer Tools version 5.0 (might work with 4.4 or later too)</li><li>For a) and c) MacPorts 2.2.0 (see below).</li></ul>
+</div>
+<div id="zosx_install_macports" class="sect1"><h2>Install MacPorts</h2>
+Install MacPorts 2.2.0: <a href="http://www.macports.org/install.php" target="_blank">http://www.macports.org/install.php</a> . The easiest way to install MacPorts on a Mac OS X system is by downloading and running the .dmg file.Update MacPorts <pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>sudo<span> </span>port<span> </span>-v<span> </span>selfupdate</span>
+</pre>Upgrade outdated packages (this might take a while depending on the outdated packages).<pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>sudo<span> </span>port<span> </span>upgrade<span> </span>outdated</span>
+</pre></div>
+<div id="zosx_pkg" class="sect1"><h2>a) Install Zorba binary from .pkg file</h2>
+The zorba-2.9.1.pkg file contains only Zorba installation files but not it's dependecies. Unlike Linux and Windows distributions, it contains both Zorba runtime with core modules and most of the external modules. It does not contain the folowing external modules: image, schema-tools, read-pdf and email, due to lack of macports of these modules dependencies. If one of these modules is required, then Zorba must be installed from source.Make sure you have MacPorts installed and up to date. Since .pkg contains only Zorba installation files, it's dependecies need to be installed too.Install dependecies: <pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>port<span> </span>install<span> </span>boost<span> </span>curl<span> </span>icu<span> </span>libiconv<span> </span>libxml2<span> </span>libxslt<span> </span>xerces3<span> </span>tidy<span> </span>fop<span> </span>geos<span> </span>libarchive<span> </span>sqlite3<span> </span>swig<span> </span>swig-python<span> </span>swig-php<span> </span>swig-java<span> </span>swig-ruby</span>
+</pre><b>Note:</b> Use MacPorts installation of the libraries, do not modify the libraries that ships with OSX. Modifying OXS libraries usualy renders your OSX installation unusable.Download the zorba .pkg file (aproximately 12MB) : <a href="http://launchpad.net/zorba/+download" target="_blank">zorba-x.pkg</a>.Install it by running it, a MacPorts gui installer will guide you.after installation Zorba binary should be available in: /opt/local/bin/zorba.To uninstall Zorba files, use the folowing script: <a href="http://my.zorba-xquery.com/tmp/zorba-2.9.1-uninstall.sh" target="_blank">zorba-2.9.1-uninstall.sh</a>.</div>
+<div id="zosx_mpkg" class="sect1"><h2>b) Install Zorba binary from .mpkg file</h2>
+This is the easies way to install Zorba since it doesn't require installation of MacPorts and requires download and installation of only one file.<ul>
+<li>The Zorba .mpkg file contains both the Zorba installation files and also all it's MacPorts dependecies. This makes the zorba-2.9.1.mpkg a 175MB file.</li><li>Similar to .pkg file, the .mpkg file contains the Zorba runtime, core modules and most of the external modules. It does not contain the folowing external modules: image, schema-tools, read-pdf and email, due to lack of macports of these modules dependencies. If one of these modules is required, then Zorba must be installed from source.</li></ul>
+Download the zorba .mpkg file (aproximately 175MB) : <a href="http://launchpad.net/zorba/+download" target="_blank">zorba-x.mpkg</a>.Install it by running it, a MacPorts gui installer will guide you.Zorba binary should be available in: /opt/local/bin/zorbaTo uninstall only Zorba files, use the following script: <a href="http://my.zorba-xquery.com/tmp/zorba-2.9.1-uninstall.sh" target="_blank">zorba-2.9.1-uninstall.sh</a>. For the rest of the packages use their own recommendations.</div>
+<div id="zosx_src" class="sect1"><h2>c) Install Zorba from sources</h2>
+This is the most flexible way of installing Zorba, one has access to all it's build configuration and has the opportunity to select the required external modules including the image, schema-tools and read-pdf.This requires instalation of &lt; href="http://www.macports.org/install.php"&gt;MacPorts 2.2.0 and installation of Zorba dependecy ports:<pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>port<span> </span>install<span> </span>boost<span> </span>curl<span> </span>icu<span> </span>libiconv<span> </span>libxml2<span> </span>libxslt<span> </span>xerces3<span> </span>tidy<span> </span>fop<span> </span>geos<span> </span>libarchive<span> </span>sqlite3<span> </span>swig<span> </span>swig-python<span> </span>swig-php<span> </span>swig-java<span> </span>swig-ruby</span>
+</pre>For more details on configuring and building Zorba from sources see:<ul>
+<li><a href="/pages/3.0/zorba/build">Zorba Build Instructions</a></li><li>or <a href="https://docs.google.com/document/d/14KD51yoT27sK-g4dn0YVSAnCbX8nPsDaF_Gsdi2oWdo/edit" target="_blank">Zachary Graceffa's guide</a>.</li></ul>
+<b>Note:</b> Make sure you don't have any binary Zorba versions instaled, if you do you need to uninstall them in order to have Zorba build correctly from your sources.</div>
+<div id="zosx_python" class="sect1"><h2>Working with Python</h2>
+The installer puts the Zorba python library in: /opt/local/share/python/, so this path needs to be added to system path.The contents of test.py:<pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>sys</span>
+<span class="normal">sys.path.insert(0,<span> </span></span><span class="stringliteral">'/opt/local/share/python/'</span><span class="normal">)</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>zorba_api</span>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">"Running:<span> </span>Get<span> </span>zorba<span> </span>instance<span> </span>and<span> </span>shutdown"</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal">store<span> </span>=<span> </span>zorba_api.InMemoryStore_getInstance()</span>
+<span class="normal">zorba<span> </span>=<span> </span>zorba_api.Zorba_getInstance(store)</span>
+<span class="normal">zorba.shutdown()</span>
+<span class="normal">zorba_api.InMemoryStore_shutdown(store)</span>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">"Success"</span>
+</pre>Since the installer is done by MacPorts, the MacPorts python needs to be used. To run the test python script use:<pre class="ace-static" ace-mode="xquery"><span class="normal">/opt/local/bin/python2.7<span> </span>test.py</span>
+</pre>A list of other python examples can be found in <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/doc/python/examples/" target="_blank">doc/python/examples</a> and <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/swig/python/tests/" target="_blank">swig/python/tests/</a>.</div>
+<div id="zosx_php" class="sect1"><h2>Working with PHP</h2>
+The Zorba library for PHP is installed under: /opt/local/share/php5/. PHP needs a <b>php.ini</b> configuration file that has to contain:<pre class="ace-static" ace-mode="xquery"><span class="normal">extension_dir=/opt/local/share/php5/</span>
+<span class="normal">include_path=/opt/local/share/php5/</span>
+</pre>The test.php file should look like: <pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;?</span>
+<span class="normal">require<span> </span></span><span class="stringliteral">'zorba_api_wrapper.php'</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">"Running:<span> </span>Get<span> </span>zorba<span> </span>instance<span> </span>and<span> </span>shutdown\n"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal">$store<span> </span>=<span> </span>InMemoryStore::getInstance();</span>
+<span class="normal">$zorba<span> </span>=<span> </span>Zorba::getInstance($store);</span>
+<span class="normal"/>
+<span class="normal">$zorba-&gt;shutdown();</span>
+<span class="normal">InMemoryStore::shutdown($store);</span>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">"Success"</span><span class="normal">;</span>
+<span class="normal">?&gt;</span>
+</pre>To run the script use: <pre class="ace-static" ace-mode="xquery"><span class="normal">php<span> </span>-c<span> </span>path/<a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba">to</a>/php.ini/<span> </span>test.php</span>
+</pre>A list of other PHP examples can be found in <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/doc/php/examples/" target="_blank">doc/php/examples</a> and <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/swig/php/tests/" target="_blank">swig/php/tests/</a>.</div>
+<div id="zosx_ruby" class="sect1"><h2>Working with Ruby</h2>
+The Zorba library for Ruby is installed under /opt/local/share/ruby/zorba_api.bundle.The test.rb file contains:<pre class="ace-static" ace-mode="xquery"><span class="normal">require<span> </span></span><span class="stringliteral">'/opt/local/share/ruby/zorba_api'</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">"Running:<span> </span>Get<span> </span>zorba<span> </span>instance<span> </span>and<span> </span>shutdown"</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal">store<span> </span>=<span> </span>Zorba_api::InMemoryStore.getInstance()</span>
+<span class="normal">zorba<span> </span>=<span> </span>Zorba_api::Zorba.getInstance(store)</span>
+<span class="normal">zorba.shutdown()</span>
+<span class="normal">Zorba_api::InMemoryStore.shutdown(store)</span>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">"Success"</span>
+</pre>To run the script execute:<pre class="ace-static" ace-mode="xquery"><span class="normal">ruby<span> </span>test.rb</span>
+</pre>A list of other Ruby examples can be found in <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/doc/ruby/examples/" target="_blank">doc/ruby/examples</a> and <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/swig/ruby/tests/" target="_blank">swig/ruby/tests/</a>.</div>
+<div id="zosx_java" class="sect1"><h2>Working with Java</h2>
+To make Java work with Zorba, the Zorba library needs to be on the path and the Zorba jars need to be on the class path. Zorba library and jars are installed under /opt/local/share/java.<pre class="ace-static" ace-mode="xquery"><span class="normal">export<span> </span>LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/local/share/java</span>
+<span class="normal">export<span> </span>DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/local/share/java</span>
+<span class="normal">export<span> </span>CLASSPATH=$CLASSPATH:/opt/local/share/java/zorba_api.jar:/opt/local/share/java/zorba_xqj.jar:/opt/local/share/java/xqjapi.jar</span>
+</pre>Compile and run your files as usual:<pre class="ace-static" ace-mode="xquery"><span class="normal">javac<span> </span>-cp<span> </span>$CLASSPATH<span> </span>Test.java</span>
+<span class="normal">java<span> </span>-cp<span> </span>$CLASSPATH:.<span> </span>Test</span>
+</pre>A simple source on how to use it in code:<pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>javax.xml.xquery.*;</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>org.zorbaxquery.api.xqj.*;</span>
+<span class="normal"/>
+<span class="normal"/><span class="keyword">class<span> </span></span><span class="normal">Test</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span><span> </span></span><span class="keyword">static</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span>System.loadLibrary<span> </span>(<span> </span></span><span class="stringliteral">"zorba_api"</span><span class="normal"><span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span>}</span>
+<span class="normal"><span> </span><span> </span><span> </span></span>
+<span class="normal"><span> </span><span> </span><span> </span></span><span class="keyword">public</span><span class="normal"><span> </span></span><span class="keyword">static</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>main(String[]<span> </span>args)<span> </span></span><span class="keywordflow">throws</span><span class="normal"><span> </span>XQException</span>
+<span class="normal"><span> </span><span> </span><span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span>System.out.println(</span><span class="stringliteral">"Test<span> </span>Zorba"</span><span class="normal">);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span>ZorbaXQDataSource<span> </span>xqds<span> </span>=<span> </span></span><span class="keyword">new</span><span class="normal"><span> </span>ZorbaXQDataSource();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span>XQConnection<span> </span>xqc<span> </span>=<span> </span>xqds.getConnection();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span>XQExpression<span> </span>xqe<span> </span>=<span> </span>xqc.createExpression();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span>XQResultSequence<span> </span>result<span> </span>=<span> </span>xqe.executeQuery(</span><span class="stringliteral">"1+2"</span><span class="normal">);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">while</span><span class="normal"><span> </span>(result.next())<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>Print<span> </span>the<span> </span>current<span> </span>item<span> </span>in<span> </span>the<span> </span>sequence</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>System.out.println(</span><span class="stringliteral">"&gt;<span> </span><span> </span><span> </span>"</span><span class="normal"><span> </span>+<span> </span>result.getItemAsString(null));</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span>}</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span>xqc.close();</span>
+<span class="normal"><span> </span><span> </span><span> </span>}<span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span>
+<span class="normal">}</span>
+</pre>A list of other Ruby examples can be found in <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/doc/xqj/examples/" target="_blank">doc/xqj/examples</a> and <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/files/head:/swig/xqj/managers/" target="_blank">swig/xqj/managers/</a>. </div>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::DefaultDebuggerEventHandler</h1><p class="include">
+            #include &lt;zorba/debugger_default_event_handler.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1DebuggerEventHandler.html">zorba::DebuggerEventHandler</a></p>
+    
+    <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a9c2140f80f99be86c096561c00c1b501">error</a>(unsigned int errcode, const std::string &amp;msg)=0</p><span class="signature-description">
+Method which gets called if an error occurs.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aa4da116691bf95b5c11a8188c5671a48">evaluated</a>(String &amp;anExpr, std::list&lt; std::pair&lt; String, String &gt; &gt; &amp;aValuesAndTypes)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a142e0235a8b047526637c6cfb6ad0f12">evaluated</a>(String &amp;anExpr, String &amp;anError)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a148f323d5a92d9a3ba351fbab6dd72b2">idle</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a35229f4e00c4f3355610e455281f15aa">parseMessage</a>(const std::string &amp;aMessage)=0</p><span class="signature-description">
+This method gets called whenever the debugger client gets a message from the debug engine.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#afaeb261fef78ac2e93ab93e981d2ced5">resumed</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ad9567b3ab8c57c916aacb5c2edd1b795">started</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a06987f9d58d56ba5e3f0c2f510a60429">suspended</a>(QueryLocation &amp;aLocation, SuspendedBy aCause)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a13ecc12b1e8d3d032cd62dde2e2ccf45">terminated</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aa1daa5fa4459798410c533f93d270aa9">~DefaultDebuggerEventHandler</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a9c2140f80f99be86c096561c00c1b501" class="sect1"><div><h3>error</h3></div><div class="signature-box">void<span> </span>error(unsigned int errcode, const std::string &amp;msg)=0</div><div><p class="signature-description">
+Method which gets called if an error occurs.         </p><p class="signature-description">
+This method gets called if an error occurs. This can be either an error in the client or in the parser.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>errcode</td><td>
+The error code. </td></tr><tr><td>msg</td><td>
+A UI usable message. </td></tr></table></div>
+        </p></div></div><div id="aa4da116691bf95b5c11a8188c5671a48" class="sect1"><div><h3>evaluated</h3></div><div class="signature-box">void<span> </span>evaluated(String &amp;anExpr, std::list&lt; std::pair&lt; String, String &gt; &gt; &amp;aValuesAndTypes)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a142e0235a8b047526637c6cfb6ad0f12" class="sect1"><div><h3>evaluated</h3></div><div class="signature-box">void<span> </span>evaluated(String &amp;anExpr, String &amp;anError)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a148f323d5a92d9a3ba351fbab6dd72b2" class="sect1"><div><h3>idle</h3></div><div class="signature-box">void<span> </span>idle()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a35229f4e00c4f3355610e455281f15aa" class="sect1"><div><h3>parseMessage</h3></div><div class="signature-box">void<span> </span>parseMessage(const std::string &amp;aMessage)=0</div><div><p class="signature-description">
+This method gets called whenever the debugger client gets a message from the debug engine.         </p><p class="signature-description">
+When the client gets a message from the debug engine, it reads the message to a string and calls this method. The message is an XML document - so the implementation has to parse this node.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aMessage</td><td>
+The message recieved from the debug engine. </td></tr></table></div>
+        </p></div></div><div id="afaeb261fef78ac2e93ab93e981d2ced5" class="sect1"><div><h3>resumed</h3></div><div class="signature-box">void<span> </span>resumed()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ad9567b3ab8c57c916aacb5c2edd1b795" class="sect1"><div><h3>started</h3></div><div class="signature-box">void<span> </span>started()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a06987f9d58d56ba5e3f0c2f510a60429" class="sect1"><div><h3>suspended</h3></div><div class="signature-box">void<span> </span>suspended(QueryLocation &amp;aLocation, SuspendedBy aCause)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a13ecc12b1e8d3d032cd62dde2e2ccf45" class="sect1"><div><h3>terminated</h3></div><div class="signature-box">void<span> </span>terminated()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa1daa5fa4459798410c533f93d270aa9" class="sect1"><div><h3>~DefaultDebuggerEventHandler</h3></div><div class="signature-box"><span> </span>~DefaultDebuggerEventHandler()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

@@ -1,0 +1,39 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Serializer</h1><p class="include">
+            #include &lt;zorba/serializer.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1SmartObject.html">zorba::SmartObject</a></p>
+    
+    <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a968d642f8f9df309338fbdd5f680e033">addReference</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a87deaaa73d44b839ada0f7dcc2cc2b13">free</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">long</p></td><td><p class="signature"><a href="#aa76599b249f441747e996d3630b8f5ca">getRefCount</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#a6ef36b446eeec5198fdae0e184a454c0">getSerializationMethod</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a32ce26dcd544b131ef8b024972960ebc">removeReference</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a3d0c9034cc64ff3795bf4134336efbae">serialize</a>(ItemSequence *object, std::ostream &amp;stream) const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ac176517446857206fd1ac45229c8c3c0">~Serializer</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Static Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba?anchor=acdfa38cd908238b68199f29d6c3392f9">Serializer_t</a></p></td><td><p class="signature"><a href="#a8176ea385360a54099367faf168742b3">createSerializer</a>(const Zorba_SerializerOptions_t &amp;options)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba?anchor=acdfa38cd908238b68199f29d6c3392f9">Serializer_t</a></p></td><td><p class="signature"><a href="#a62fef98cf7d2020c3cf7519c1562b152">createSerializer</a>(ItemSequence *options)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Protected Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">unsigned int</p></td><td><p class="signature"><a href="#a066274b33cffdd451a68a2a0754c6044">theRefCount</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a968d642f8f9df309338fbdd5f680e033" class="sect1"><div><h3>addReference</h3></div><div class="signature-box">void<span> </span>addReference() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a87deaaa73d44b839ada0f7dcc2cc2b13" class="sect1"><div><h3>free</h3></div><div class="signature-box">void<span> </span>free()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa76599b249f441747e996d3630b8f5ca" class="sect1"><div><h3>getRefCount</h3></div><div class="signature-box">long<span> </span>getRefCount() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a6ef36b446eeec5198fdae0e184a454c0" class="sect1"><div><h3>getSerializationMethod</h3></div><div class="signature-box">int<span> </span>getSerializationMethod() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a32ce26dcd544b131ef8b024972960ebc" class="sect1"><div><h3>removeReference</h3></div><div class="signature-box">void<span> </span>removeReference()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a3d0c9034cc64ff3795bf4134336efbae" class="sect1"><div><h3>serialize</h3></div><div class="signature-box">void<span> </span>serialize(ItemSequence *object, std::ostream &amp;stream) const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ac176517446857206fd1ac45229c8c3c0" class="sect1"><div><h3>~Serializer</h3></div><div class="signature-box"><span> </span>~Serializer()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Static Functions</h2><div class="detailed"><div id="a8176ea385360a54099367faf168742b3" class="sect1"><div><h3>createSerializer</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba?anchor=acdfa38cd908238b68199f29d6c3392f9">Serializer_t</a><span> </span>createSerializer(const Zorba_SerializerOptions_t &amp;options)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a62fef98cf7d2020c3cf7519c1562b152" class="sect1"><div><h3>createSerializer</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba?anchor=acdfa38cd908238b68199f29d6c3392f9">Serializer_t</a><span> </span>createSerializer(ItemSequence *options)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Protected Attributes</h2><div class="detailed"><div id="a066274b33cffdd451a68a2a0754c6044" class="sect1"><div><h3>theRefCount</h3></div><div class="signature-box">unsigned int<span> </span>theRefCount</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

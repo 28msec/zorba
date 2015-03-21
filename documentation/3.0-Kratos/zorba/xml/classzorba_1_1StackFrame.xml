@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1StackFrame" kind="class" prot="public">
+    <compoundname>zorba::StackFrame</compoundname>
+    <includes refid="debugger__client_8h" local="no">zorba/debugger_client.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1StackFrame_1a66ba452e6fcdad54b4b5afc56f9fd068" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1QueryLocation" kindref="compound">QueryLocation</ref> &amp;</type>
+        <definition>virtual const QueryLocation&amp; zorba::StackFrame::getLocation</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getLocation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StackFrame_1a58b338a6b9b6630db63d7c6b0bf476f9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const std::string &amp;</type>
+        <definition>virtual const std::string&amp; zorba::StackFrame::getSignature</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getSignature</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StackFrame_1a1ae08710fc017d09f83a466bd933947b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::StackFrame::~StackFrame</definition>
+        <argsstring>()</argsstring>
+        <name>~StackFrame</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="37" bodyfile="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" bodystart="37" bodyend="37"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Representation of the runtime stack frame. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="33" bodyfile="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" bodystart="32" bodyend="44"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1StackFrame_1a66ba452e6fcdad54b4b5afc56f9fd068" prot="public" virt="pure-virtual"><scope>zorba::StackFrame</scope><name>getLocation</name></member>
+      <member refid="classzorba_1_1StackFrame_1a58b338a6b9b6630db63d7c6b0bf476f9" prot="public" virt="pure-virtual"><scope>zorba::StackFrame</scope><name>getSignature</name></member>
+      <member refid="classzorba_1_1StackFrame_1a1ae08710fc017d09f83a466bd933947b" prot="public" virt="virtual"><scope>zorba::StackFrame</scope><name>~StackFrame</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

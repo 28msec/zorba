@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1transcode" kind="namespace">
+    <compoundname>zorba::transcode</compoundname>
+    <innerclass refid="classzorba_1_1transcode_1_1auto__attach" prot="public">zorba::transcode::auto_attach</innerclass>
+    <innerclass refid="classzorba_1_1transcode_1_1stream" prot="public">zorba::transcode::stream</innerclass>
+    <innerclass refid="classzorba_1_1transcode_1_1streambuf" prot="public">zorba::transcode::streambuf</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1transcode_1a44eff53620b083f7384c20eea64a534b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename charT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::transcode::attach</definition>
+        <argsstring>(std::basic_ios&lt; charT, Traits &gt; &amp;ios, char const *charset)</argsstring>
+        <name>attach</name>
+        <param>
+          <type>std::basic_ios&lt; charT, Traits &gt; &amp;</type>
+          <declname>ios</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>charset</declname>
+        </param>
+        <briefdescription>
+<para>Attaches a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> to a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para>Unlike using a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> directly, this function will create the streambuf, attach it to the stream, and manage it for the lifetime of the stream automatically.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ios</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to attach the <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> to. If the stream already has a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> attached to it, this function does nothing. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>charset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the character encoding to convert from/to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> was attached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="145" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="145" bodyend="157"/>
+        <references refid="namespacezorba_1_1internal_1_1base64_1a4b337606b06bf9c76d59ec5c064130c6">zorba::internal::base64::alloc_streambuf</references>
+        <references refid="namespacezorba_1_1internal_1_1base64_1a295f0351244ea88a57700f176df82d0c">zorba::internal::base64::get_streambuf_index</references>
+        <references refid="namespacezorba_1_1internal_1aa27d36007cc8c4eb9b8716d24f9330ec">zorba::internal::stream_callback</references>
+        <referencedby refid="classzorba_1_1transcode_1_1auto__attach_1aa3965d631f5331cfc0d71c969615cb56" compoundref="transcode__stream_8h" startline="280" endline="286">zorba::transcode::auto_attach&lt; StreamType &gt;::attach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1transcode_1ac1a9e5e77b37b933a78581467f24ee1d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename charT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::transcode::detach</definition>
+        <argsstring>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</argsstring>
+        <name>detach</name>
+        <param>
+          <type>std::basic_ios&lt; charT, Traits &gt; &amp;</type>
+          <declname>ios</declname>
+        </param>
+        <briefdescription>
+<para>Detaches a previously attached <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> from a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para>The streambuf is destroyed and the stream&apos;s original streambuf is restored.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ios</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to detach the <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> from. If the stream doesn&apos;t have a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> attached to it, this function does nothing. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> was detached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="169" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="169" bodyend="178"/>
+        <references refid="namespacezorba_1_1internal_1afc8a1e1bbdcb0e40c72d110a464ea4e5">zorba::internal::dealloc_streambuf</references>
+        <references refid="namespacezorba_1_1internal_1_1base64_1a295f0351244ea88a57700f176df82d0c">zorba::internal::base64::get_streambuf_index</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1transcode_1ad5b79bb09335a231a7f6cb69a5fc01c7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename charT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::transcode::is_attached</definition>
+        <argsstring>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</argsstring>
+        <name>is_attached</name>
+        <param>
+          <type>std::basic_ios&lt; charT, Traits &gt; &amp;</type>
+          <declname>ios</declname>
+        </param>
+        <briefdescription>
+<para>Checks whether the given stream has a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> attached. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ios</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to check. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> is attached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="187" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="187" bodyend="189"/>
+        <references refid="namespacezorba_1_1internal_1_1transcode_1a989d6f09c7a73875993e27b08e2017ef">zorba::internal::transcode::get_streambuf_index</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1transcode_1ad2adc994f3251b1e9343554f839caaf5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::transcode::is_necessary</definition>
+        <argsstring>(char const *charset)</argsstring>
+        <name>is_necessary</name>
+        <param>
+          <type>char const *</type>
+          <declname>charset</declname>
+        </param>
+        <briefdescription>
+<para>Checks whether it would be necessary to transcode from the given character encoding to UTF-8. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>charset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the character encoding to check. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if it would be necessary to transcode from the given character encoding to UTF-8. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="407"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1transcode_1a3c15efb537bb9bca681ff9a2ab3f6f75" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::transcode::is_supported</definition>
+        <argsstring>(char const *charset)</argsstring>
+        <name>is_supported</name>
+        <param>
+          <type>char const *</type>
+          <declname>charset</declname>
+        </param>
+        <briefdescription>
+<para>Checks whether the given character set is supported for transcoding. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>charset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the character encoding to check. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if the character encoding is supported. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="416"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1transcode_1aa62efff6e4306c33f2fbd78cdb02432e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename charT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>std::streambuf *</type>
+        <definition>std::streambuf* zorba::transcode::orig_streambuf</definition>
+        <argsstring>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</argsstring>
+        <name>orig_streambuf</name>
+        <param>
+          <type>std::basic_ios&lt; charT, Traits &gt; &amp;</type>
+          <declname>ios</declname>
+        </param>
+        <briefdescription>
+<para>Gets the original streambuf of the given iostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ios</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to get the original streambuf of. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the original streambuf. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="198" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="198" bodyend="203"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="26"/>
+  </compounddef>
+</doxygen>

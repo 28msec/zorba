@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1audit_1_1Observation" kind="class" prot="public">
+    <compoundname>zorba::audit::Observation</compoundname>
+    <includes refid="audit_8h" local="no">zorba/audit.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Observation_1a7d11bdbf8a0f5af909d9e7e0c8c1da5a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>long long</type>
+        <definition>virtual long long zorba::audit::Observation::longValue</definition>
+        <argsstring>() const =0</argsstring>
+        <name>longValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="64"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Observation_1a02d7202380e962cb51d07e162b2f6036" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1audit_1_1Property" kindref="compound">Property</ref> &amp;</type>
+        <definition>virtual const Property&amp; zorba::audit::Observation::property</definition>
+        <argsstring>() const =0</argsstring>
+        <name>property</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="62"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Observation_1a7864ba10eb0548d576beca50388b1172" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+        <definition>virtual const String&amp; zorba::audit::Observation::stringValue</definition>
+        <argsstring>() const =0</argsstring>
+        <name>stringValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="63"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Observation_1a43f982abddac025e63e52bd19cd3a9ed" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::audit::Observation::~Observation</definition>
+        <argsstring>()</argsstring>
+        <name>~Observation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="66"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="60" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit.h" bodystart="60" bodyend="67"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1audit_1_1Observation_1a7d11bdbf8a0f5af909d9e7e0c8c1da5a" prot="public" virt="pure-virtual"><scope>zorba::audit::Observation</scope><name>longValue</name></member>
+      <member refid="classzorba_1_1audit_1_1Observation_1a02d7202380e962cb51d07e162b2f6036" prot="public" virt="pure-virtual"><scope>zorba::audit::Observation</scope><name>property</name></member>
+      <member refid="classzorba_1_1audit_1_1Observation_1a7864ba10eb0548d576beca50388b1172" prot="public" virt="pure-virtual"><scope>zorba::audit::Observation</scope><name>stringValue</name></member>
+      <member refid="classzorba_1_1audit_1_1Observation_1a43f982abddac025e63e52bd19cd3a9ed" prot="public" virt="virtual"><scope>zorba::audit::Observation</scope><name>~Observation</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

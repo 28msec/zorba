@@ -1,0 +1,341 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="xquery__stack__trace_8h" kind="file">
+    <compoundname>xquery_stack_trace.h</compoundname>
+    <includes local="no">string</includes>
+    <includes local="no">vector</includes>
+    <includes refid="qname_8h" local="no">zorba/internal/qname.h</includes>
+    <includedby refid="xquery__exception_8h" local="no">xquery_exception.h</includedby>
+    <incdepgraph>
+      <node id="2549">
+        <label>xquery_stack_trace.h</label>
+        <link refid="xquery_stack_trace.h"/>
+        <childnode refid="2550" relation="include">
+        </childnode>
+        <childnode refid="2551" relation="include">
+        </childnode>
+        <childnode refid="2552" relation="include">
+        </childnode>
+      </node>
+      <node id="2560">
+        <label>functional</label>
+      </node>
+      <node id="2562">
+        <label>cxx_util.h</label>
+        <link refid="cxx__util_8h"/>
+        <childnode refid="2553" relation="include">
+        </childnode>
+      </node>
+      <node id="2554">
+        <label>zorba/diagnostic.h</label>
+        <link refid="diagnostic_8h"/>
+        <childnode refid="2555" relation="include">
+        </childnode>
+        <childnode refid="2556" relation="include">
+        </childnode>
+        <childnode refid="2553" relation="include">
+        </childnode>
+        <childnode refid="2557" relation="include">
+        </childnode>
+        <childnode refid="2552" relation="include">
+        </childnode>
+      </node>
+      <node id="2552">
+        <label>zorba/internal/qname.h</label>
+        <link refid="qname_8h"/>
+        <childnode refid="2553" relation="include">
+        </childnode>
+        <childnode refid="2554" relation="include">
+        </childnode>
+        <childnode refid="2559" relation="include">
+        </childnode>
+        <childnode refid="2565" relation="include">
+        </childnode>
+      </node>
+      <node id="2550">
+        <label>string</label>
+      </node>
+      <node id="2558">
+        <label>map</label>
+      </node>
+      <node id="2563">
+        <label>type_traits.h</label>
+        <link refid="type__traits_8h"/>
+        <childnode refid="2553" relation="include">
+        </childnode>
+        <childnode refid="2564" relation="include">
+        </childnode>
+      </node>
+      <node id="2565">
+        <label>zorba/internal/qnames.h</label>
+      </node>
+      <node id="2551">
+        <label>vector</label>
+      </node>
+      <node id="2557">
+        <label>zorba/internal/system_diagnostic.h</label>
+        <link refid="system__diagnostic_8h"/>
+        <childnode refid="2558" relation="include">
+        </childnode>
+        <childnode refid="2554" relation="include">
+        </childnode>
+        <childnode refid="2559" relation="include">
+        </childnode>
+      </node>
+      <node id="2561">
+        <label>sstream</label>
+      </node>
+      <node id="2556">
+        <label>iostream</label>
+      </node>
+      <node id="2559">
+        <label>ztd.h</label>
+        <link refid="ztd_8h"/>
+        <childnode refid="2555" relation="include">
+        </childnode>
+        <childnode refid="2560" relation="include">
+        </childnode>
+        <childnode refid="2561" relation="include">
+        </childnode>
+        <childnode refid="2550" relation="include">
+        </childnode>
+        <childnode refid="2553" relation="include">
+        </childnode>
+        <childnode refid="2562" relation="include">
+        </childnode>
+        <childnode refid="2563" relation="include">
+        </childnode>
+      </node>
+      <node id="2564">
+        <label>type_traits</label>
+      </node>
+      <node id="2553">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="2555">
+        <label>cstring</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2566">
+        <label>xquery_stack_trace.h</label>
+        <link refid="xquery_stack_trace.h"/>
+        <childnode refid="2567" relation="include">
+        </childnode>
+      </node>
+      <node id="2569">
+        <label>xquery_warning.h</label>
+        <link refid="xquery__warning_8h"/>
+        <childnode refid="2570" relation="include">
+        </childnode>
+      </node>
+      <node id="2571">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="2572" relation="include">
+        </childnode>
+      </node>
+      <node id="2568">
+        <label>user_exception.h</label>
+        <link refid="user__exception_8h"/>
+      </node>
+      <node id="2567">
+        <label>xquery_exception.h</label>
+        <link refid="xquery__exception_8h"/>
+        <childnode refid="2568" relation="include">
+        </childnode>
+        <childnode refid="2569" relation="include">
+        </childnode>
+      </node>
+      <node id="2570">
+        <label>diagnostic_handler.h</label>
+        <link refid="diagnostic__handler_8h"/>
+        <childnode refid="2571" relation="include">
+        </childnode>
+      </node>
+      <node id="2572">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="2571" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1XQueryStackTrace_1_1Entry" prot="public">zorba::XQueryStackTrace::Entry</innerclass>
+    <innerclass refid="classzorba_1_1XQueryStackTrace" prot="public">zorba::XQueryStackTrace</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <innernamespace refid="namespacezorba_1_1serialization">zorba::serialization</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_XQUERY_STACK_TRACE_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_XQUERY_STACK_TRACE_API_H</highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="qname_8h" kindref="compound">zorba/internal/qname.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">XQueryStackTrace;</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">serialization<sp/>{</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Archiver;</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1serialization_1a9fec1c09ccaafac6e86011328cb54ae6" kindref="member">operator&amp;</ref>(<sp/>Archiver&amp;,<sp/>XQueryStackTrace&amp;<sp/>);</highlight></codeline>
+<codeline lineno="32"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="34"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36" refid="classzorba_1_1XQueryStackTrace" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1XQueryStackTrace" kindref="compound">XQueryStackTrace</ref><sp/>{</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="38" refid="classzorba_1_1XQueryStackTrace_1a2b138e519d1117218f0b7552aaf0df39" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">internal::VariableQName&lt;std::string&gt;</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a2b138e519d1117218f0b7552aaf0df39" kindref="member">fn_name_type</ref>;</highlight></codeline>
+<codeline lineno="39" refid="classzorba_1_1XQueryStackTrace_1a31276b541b49d9ace4cf08b3c80b3d50" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a31276b541b49d9ace4cf08b3c80b3d50" kindref="member">fn_arity_type</ref>;</highlight></codeline>
+<codeline lineno="40" refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" kindref="member">line_type</ref>;</highlight></codeline>
+<codeline lineno="41" refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">short</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" kindref="member">column_type</ref>;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43" refid="classzorba_1_1XQueryStackTrace_1_1Entry" refkind="compound"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry" kindref="compound">Entry</ref><sp/>{</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a089371e9fab098636cda5d46edd8c5d2" kindref="member">Entry</ref>(<sp/><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">fn_name_type</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;fn_name,<sp/><ref refid="classzorba_1_1XQueryStackTrace_1a31276b541b49d9ace4cf08b3c80b3d50" kindref="member">fn_arity_type</ref><sp/>fn_arity,</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*file_name,<sp/><ref refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" kindref="member">line_type</ref><sp/>line,<sp/><ref refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" kindref="member">column_type</ref><sp/>column,</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" kindref="member">line_type</ref><sp/>line_end,<sp/><ref refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" kindref="member">column_type</ref><sp/>column_end<sp/>);</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a894853428093738c26e71267426a1cdc" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">fn_name_type</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a894853428093738c26e71267426a1cdc" kindref="member">getFnName</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>fn_name_;</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a7f20401e34e490d6f61b353608df71af" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a31276b541b49d9ace4cf08b3c80b3d50" kindref="member">fn_arity_type</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a7f20401e34e490d6f61b353608df71af" kindref="member">getFnArity</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>fn_arity_;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a9efea4d4259690485f7b57cdd8a0ebd1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a9efea4d4259690485f7b57cdd8a0ebd1" kindref="member">getFileName</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>filename_;</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1ab71be7443c42c5728525a3e9e9d68527" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" kindref="member">line_type</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1ab71be7443c42c5728525a3e9e9d68527" kindref="member">getLine</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>line_;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a576a6030163b9ae44569de10f4d91ce4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" kindref="member">column_type</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a576a6030163b9ae44569de10f4d91ce4" kindref="member">getColumn</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>col_;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a8714c3e204aa59e989e95c5e8bbce68e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" kindref="member">line_type</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a8714c3e204aa59e989e95c5e8bbce68e" kindref="member">getLineEnd</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>line_end_;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1ae0fcdd73332c73f3f25ba4443ebea5d3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" kindref="member">column_type</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1ae0fcdd73332c73f3f25ba4443ebea5d3" kindref="member">getColumnEnd</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>col_end_;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a2561b7d6c981ee6884c6997d2b0879cc" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">fn_name_type</ref>&amp;<sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a2561b7d6c981ee6884c6997d2b0879cc" kindref="member">getFnNameRef</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>fn_name_;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a2d014efa15590bc191b2fd7fc4dfed7f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a31276b541b49d9ace4cf08b3c80b3d50" kindref="member">fn_arity_type</ref>&amp;<sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a2d014efa15590bc191b2fd7fc4dfed7f" kindref="member">getFnArityRef</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>fn_arity_;</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1ace12a2bd9734a7134bf94cc13c488daa" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string&amp;<sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1ace12a2bd9734a7134bf94cc13c488daa" kindref="member">getFileNameRef</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>filename_;</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a7981236fed2e9dc4e483a75ae9afa605" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" kindref="member">line_type</ref>&amp;<sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a7981236fed2e9dc4e483a75ae9afa605" kindref="member">getLineRef</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>line_;</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="93" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1ab933aab18001c3d8897a670abcbe235a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" kindref="member">column_type</ref>&amp;<sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1ab933aab18001c3d8897a670abcbe235a" kindref="member">getColumnRef</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>col_;</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a6c97aecaaecfd7388aa8bfab1ca1faf2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" kindref="member">line_type</ref>&amp;<sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a6c97aecaaecfd7388aa8bfab1ca1faf2" kindref="member">getLineEndRef</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>line_end_;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight></codeline>
+<codeline lineno="101" refid="classzorba_1_1XQueryStackTrace_1_1Entry_1ac59236d6e111f6cf80fb6a78390ff662" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" kindref="member">column_type</ref>&amp;<sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1ac59236d6e111f6cf80fb6a78390ff662" kindref="member">getColumnEndRef</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>col_end_;</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">fn_name_type</ref><sp/>fn_name_;</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a31276b541b49d9ace4cf08b3c80b3d50" kindref="member">fn_arity_type</ref><sp/>fn_arity_;</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/>filename_;</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" kindref="member">line_type</ref><sp/>line_;</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" kindref="member">column_type</ref><sp/>col_;</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" kindref="member">line_type</ref><sp/>line_end_;</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" kindref="member">column_type</ref><sp/>col_end_;</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>plan<sp/>serialization</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry_1a089371e9fab098636cda5d46edd8c5d2" kindref="member">Entry</ref>();</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight></codeline>
+<codeline lineno="118" refid="classzorba_1_1XQueryStackTrace_1a4bceee214464cd20f12b8df698ae9ae4" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::vector&lt;Entry&gt;<sp/><ref refid="classzorba_1_1XQueryStackTrace_1a4bceee214464cd20f12b8df698ae9ae4" kindref="member">trace_t</ref>;</highlight></codeline>
+<codeline lineno="119" refid="classzorba_1_1XQueryStackTrace_1ab8e19274de964517eeaad8659c2ce1a9" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">trace_t::size_type</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1ab8e19274de964517eeaad8659c2ce1a9" kindref="member">size_type</ref>;</highlight></codeline>
+<codeline lineno="120" refid="classzorba_1_1XQueryStackTrace_1a4ac4b593e4d1da238438735d678143b8" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>trace_t::const_iterator<sp/><ref refid="classzorba_1_1XQueryStackTrace_1a4ac4b593e4d1da238438735d678143b8" kindref="member">const_iterator</ref>;</highlight></codeline>
+<codeline lineno="121" refid="classzorba_1_1XQueryStackTrace_1ae730cf61a91c35f70e05dc64de21878e" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>trace_t::const_reverse_iterator<sp/><ref refid="classzorba_1_1XQueryStackTrace_1ae730cf61a91c35f70e05dc64de21878e" kindref="member">const_reverse_iterator</ref>;</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"></highlight></codeline>
+<codeline lineno="123" refid="classzorba_1_1XQueryStackTrace_1a7238e996d95372ba62694b0a36d93534" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a7238e996d95372ba62694b0a36d93534" kindref="member">empty</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>trace_.empty();</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+<codeline lineno="127" refid="classzorba_1_1XQueryStackTrace_1ae9909dfb22e03469f0191f80d9b88cb9" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a4ac4b593e4d1da238438735d678143b8" kindref="member">const_iterator</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1ae9909dfb22e03469f0191f80d9b88cb9" kindref="member">begin</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>trace_.begin();</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight></codeline>
+<codeline lineno="131" refid="classzorba_1_1XQueryStackTrace_1a61061e945dc64b989e88f8082b372702" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a4ac4b593e4d1da238438735d678143b8" kindref="member">const_iterator</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a61061e945dc64b989e88f8082b372702" kindref="member">end</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>trace_.end();</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"></highlight></codeline>
+<codeline lineno="135" refid="classzorba_1_1XQueryStackTrace_1a4ccea5746cdf177513208b96743c96b3" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1ae730cf61a91c35f70e05dc64de21878e" kindref="member">const_reverse_iterator</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a4ccea5746cdf177513208b96743c96b3" kindref="member">rbegin</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>trace_.rbegin();</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139" refid="classzorba_1_1XQueryStackTrace_1ae55c4ab229902966ad34953d21a51381" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1ae730cf61a91c35f70e05dc64de21878e" kindref="member">const_reverse_iterator</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1ae55c4ab229902966ad34953d21a51381" kindref="member">rend</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>trace_.rend();</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1XQueryStackTrace_1abb14f7dc4be7e7512caaad082778f0ee" kindref="member">push</ref>(<sp/>Entry<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;entry<sp/>);</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145" refid="classzorba_1_1XQueryStackTrace_1ac38e45f2653e0974c99cbfa07e9d567c" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1ab8e19274de964517eeaad8659c2ce1a9" kindref="member">size_type</ref><sp/><ref refid="classzorba_1_1XQueryStackTrace_1ac38e45f2653e0974c99cbfa07e9d567c" kindref="member">size</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>trace_.size();</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace_1a4bceee214464cd20f12b8df698ae9ae4" kindref="member">trace_t</ref><sp/>trace_;</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1serialization_1a9fec1c09ccaafac6e86011328cb54ae6" kindref="member">serialization::operator&amp;</ref>(<sp/>serialization::Archiver&amp;,</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XQueryStackTrace" kindref="compound">XQueryStackTrace</ref>&amp;<sp/>);</highlight></codeline>
+<codeline lineno="154"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="156"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="157"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_XQUERY_STACK_TRACE_API_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="162"><highlight class="comment"><sp/>*<sp/>Local<sp/>variables:</highlight></codeline>
+<codeline lineno="163"><highlight class="comment"><sp/>*<sp/>mode:<sp/>c++</highlight></codeline>
+<codeline lineno="164"><highlight class="comment"><sp/>*<sp/>End:</highlight></codeline>
+<codeline lineno="165"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1PropertiesBase" kind="class" prot="public">
+    <compoundname>zorba::PropertiesBase</compoundname>
+    <derivedcompoundref refid="classzorba_1_1PropertiesGlobal" prot="public" virt="non-virtual">zorba::PropertiesGlobal</derivedcompoundref>
+    <includes refid="properties__base_8h" local="no">zorba/properties_base.h</includes>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1PropertiesBase_1a6cb66e65447301c623f9c83bf0566856" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; zorba::PropertiesBase::thePositionalArgs</definition>
+        <argsstring></argsstring>
+        <name>thePositionalArgs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="34" bodyfile="/home/wcandillon/deadlinks/include/zorba/properties_base.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1a6bf8e8956a475f3aa84fd4808a741652" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::string</type>
+        <definition>virtual std::string zorba::PropertiesBase::check_args</definition>
+        <argsstring>()</argsstring>
+        <name>check_args</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="69" bodyfile="/home/wcandillon/deadlinks/include/zorba/properties_base.h" bodystart="69" bodyend="69"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1ab0aaa229e8c48c75d8781e8aa470e530" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::PropertiesBase::copy_args</definition>
+        <argsstring>(const char **argv)</argsstring>
+        <name>copy_args</name>
+        <param>
+          <type>const char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="77" bodyfile="/home/wcandillon/deadlinks/include/zorba/properties_base.h" bodystart="76" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1a8b1a5531d8a5bf517ae339c542b429e6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const char **</type>
+        <definition>virtual const char** zorba::PropertiesBase::get_all_options</definition>
+        <argsstring>() const =0</argsstring>
+        <name>get_all_options</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="67"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1a5bd99b3a70afc9387ab8d0565b219d9c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; std::string &gt; &amp;</type>
+        <definition>const std::vector&lt;std::string&gt;&amp; zorba::PropertiesBase::getPositionalArgs</definition>
+        <argsstring>() const </argsstring>
+        <name>getPositionalArgs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="72" bodyfile="/home/wcandillon/deadlinks/include/zorba/properties_base.h" bodystart="71" bodyend="74"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1ad0653a0833e53050e6cda4cf7fa2cf2f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void zorba::PropertiesBase::init_val</definition>
+        <argsstring>(const char *str, T &amp;val, unsigned delta=0)</argsstring>
+        <name>init_val</name>
+        <param>
+          <type>const char *</type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>val</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>delta</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="85" bodyfile="/home/wcandillon/deadlinks/include/zorba/properties_base.h" bodystart="84" bodyend="88"/>
+        <references refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" compoundref="locale_8h" startline="102">zorba::locale::iso639_1::is</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1a68de2a8036862d199e2cd54b8cb1c9a6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+        </templateparamlist>
+        <type>ZORBA_DLL_PUBLIC void</type>
+        <definition>ZORBA_DLL_PUBLIC void zorba::PropertiesBase::init_val</definition>
+        <argsstring>(const char *str, std::string &amp;val, unsigned delta)</argsstring>
+        <name>init_val</name>
+        <param>
+          <type>const char *</type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type>std::string &amp;</type>
+          <declname>val</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>delta</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="96"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1a82a3e746683b8cb2f12750a039a6a951" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+        </templateparamlist>
+        <type>ZORBA_DLL_PUBLIC void</type>
+        <definition>ZORBA_DLL_PUBLIC void zorba::PropertiesBase::init_val</definition>
+        <argsstring>(const char *str, std::vector&lt; std::string &gt; &amp;val, unsigned delta)</argsstring>
+        <name>init_val</name>
+        <param>
+          <type>const char *</type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; std::string &gt; &amp;</type>
+          <declname>val</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>delta</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1a3f6067c8d2f70b43f3bcb8348cd433dd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string zorba::PropertiesBase::load_all</definition>
+        <argsstring>(const char *cfgFilename, const std::string &amp;env_pfx, int argc, const char **argv)</argsstring>
+        <name>load_all</name>
+        <param>
+          <type>const char *</type>
+          <declname>cfgFilename</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>env_pfx</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>const char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="44" bodyfile="/home/wcandillon/deadlinks/include/zorba/properties_base.h" bodystart="39" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1a18914d01209e07febc2073447271749c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::string</type>
+        <definition>virtual std::string zorba::PropertiesBase::load_argv</definition>
+        <argsstring>(int argc, const char **argv)=0</argsstring>
+        <name>load_argv</name>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>const char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="65"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1a047c7b6368948c308a2e1576961874cd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string zorba::PropertiesBase::load_env</definition>
+        <argsstring>(const std::string &amp;env_pfx)</argsstring>
+        <name>load_env</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>env_pfx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="57" bodyfile="/home/wcandillon/deadlinks/include/zorba/properties_base.h" bodystart="56" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1ade47d2c9b872e2371c57d4ea2ec83836" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string zorba::PropertiesBase::load_env</definition>
+        <argsstring>(const std::string &amp;env_pfx, const char **options)</argsstring>
+        <name>load_env</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>env_pfx</declname>
+        </param>
+        <param>
+          <type>const char **</type>
+          <declname>options</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="61"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1ab4046a503ea2c13816cbc3b6792b4c93" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string zorba::PropertiesBase::load_file</definition>
+        <argsstring>(const char *fname)</argsstring>
+        <name>load_file</name>
+        <param>
+          <type>const char *</type>
+          <declname>fname</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="63"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1PropertiesBase_1a0ecfa1abc417c3c3d0b71283b650a7c4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::PropertiesBase::~PropertiesBase</definition>
+        <argsstring>()</argsstring>
+        <name>~PropertiesBase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="37" bodyfile="/home/wcandillon/deadlinks/include/zorba/properties_base.h" bodystart="37" bodyend="37"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="746">
+        <label>zorba::PropertiesBase</label>
+        <link refid="classzorba_1_1PropertiesBase"/>
+      </node>
+      <node id="747">
+        <label>zorba::PropertiesGlobal</label>
+        <link refid="classzorba_1_1PropertiesGlobal"/>
+        <childnode refid="746" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/properties_base.h" line="32" bodyfile="/home/wcandillon/deadlinks/include/zorba/properties_base.h" bodystart="31" bodyend="90"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1PropertiesBase_1a6bf8e8956a475f3aa84fd4808a741652" prot="public" virt="virtual"><scope>zorba::PropertiesBase</scope><name>check_args</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1ab0aaa229e8c48c75d8781e8aa470e530" prot="public" virt="non-virtual"><scope>zorba::PropertiesBase</scope><name>copy_args</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1a8b1a5531d8a5bf517ae339c542b429e6" prot="public" virt="pure-virtual"><scope>zorba::PropertiesBase</scope><name>get_all_options</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1a5bd99b3a70afc9387ab8d0565b219d9c" prot="public" virt="non-virtual"><scope>zorba::PropertiesBase</scope><name>getPositionalArgs</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1ad0653a0833e53050e6cda4cf7fa2cf2f" prot="public" virt="non-virtual"><scope>zorba::PropertiesBase</scope><name>init_val</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1a68de2a8036862d199e2cd54b8cb1c9a6" prot="public" virt="non-virtual"><scope>zorba::PropertiesBase</scope><name>init_val</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1a82a3e746683b8cb2f12750a039a6a951" prot="public" virt="non-virtual"><scope>zorba::PropertiesBase</scope><name>init_val</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1a3f6067c8d2f70b43f3bcb8348cd433dd" prot="public" virt="non-virtual"><scope>zorba::PropertiesBase</scope><name>load_all</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1a18914d01209e07febc2073447271749c" prot="public" virt="pure-virtual"><scope>zorba::PropertiesBase</scope><name>load_argv</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1a047c7b6368948c308a2e1576961874cd" prot="public" virt="non-virtual"><scope>zorba::PropertiesBase</scope><name>load_env</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1ade47d2c9b872e2371c57d4ea2ec83836" prot="public" virt="non-virtual"><scope>zorba::PropertiesBase</scope><name>load_env</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1ab4046a503ea2c13816cbc3b6792b4c93" prot="public" virt="non-virtual"><scope>zorba::PropertiesBase</scope><name>load_file</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1a6cb66e65447301c623f9c83bf0566856" prot="protected" virt="non-virtual"><scope>zorba::PropertiesBase</scope><name>thePositionalArgs</name></member>
+      <member refid="classzorba_1_1PropertiesBase_1a0ecfa1abc417c3c3d0b71283b650a7c4" prot="public" virt="virtual"><scope>zorba::PropertiesBase</scope><name>~PropertiesBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

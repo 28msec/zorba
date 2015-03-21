@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structstd_1_1enable__if_3_01true_00_01T_01_4" kind="struct" prot="public">
+    <compoundname>std::enable_if&lt; true, T &gt;</compoundname>
+    <includes refid="type__traits_8h" local="no">zorba/internal/type_traits.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structstd_1_1enable__if_3_01true_00_01T_01_4_1a393d6c819541dce0cd0d1afcec0ba55d" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T std::enable_if&lt; true, T &gt;::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="48" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="47" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" bodystart="47" bodyend="49"/>
+    <listofallmembers>
+      <member refid="structstd_1_1enable__if_3_01true_00_01T_01_4_1a393d6c819541dce0cd0d1afcec0ba55d" prot="public" virt="non-virtual"><scope>std::enable_if&lt; true, T &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

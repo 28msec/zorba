@@ -1,0 +1,44 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::internal::SystemDiagnostic</h1><p class="include">
+            #include &lt;zorba/internal/system_diagnostic.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1internal_1_1SystemDiagnosticBase.html">zorba::internal::SystemDiagnosticBase</a></p>
+    
+    <div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">QNameType</p></td><td><p class="signature"><a href="#aca789bc6e4c4cdcb3bb5f7cbd75c9948">qname_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1diagnostic?anchor=a5709afb398f65a318160aa7613abfa9e">zorba::diagnostic::kind</a></p></td><td><p class="signature"><a href="#ae8d86c62f67ac02e066c20d1c8b2b47e">kind</a>() const </p><span class="signature-description">
+Gets the kind of this diagnostic.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#a26d37747968b7e16cc3bbb564124ab66">message</a>() const </p><span class="signature-description">
+Gets the message of this diagnostic.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1diagnostic_1_1QName">zorba::diagnostic::QName</a> const &amp;</p></td><td><p class="signature"><a href="#a87c995adba48030eab64b815ae712b2f">qname</a>() const </p><span class="signature-description">
+Gets the QName for this diagnostic.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#af4d8b1404f8d581722b607b19f1ed1fb">SystemDiagnostic</a>(char const *localname)</p><span class="signature-description">
+Constructs a SystemDiagnostic.         </span></td></tr></table></div><div class="section"><h2>Protected Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1Diagnostic">Diagnostic</a> const *</p></td><td><p class="signature"><a href="#a460536c65f301d8a3669c14396259eb1">clone</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aa3514301f262258b64fb7c9aa34490cd">destroy</a>() const </p><span class="signature-description">
+Destroys a Diagnostic.         </span></td></tr></table></div><div class="section"><h2>Public Static Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1Diagnostic">Diagnostic</a> const *</p></td><td><p class="signature"><a href="#a100fbd9f5d338881cc42472199dcf0f6">find</a>(char const *localname)</p><span class="signature-description">
+Given a diagnostic's local-name, finds its corresponding Diagnostic object.         </span></td></tr></table></div><div class="section"><h2>Friend Classes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">friend class</p></td><td><p class="signature"><a href="#afb81a2ab07a82ca366124911d4d6d09a">ZorbaException</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="aca789bc6e4c4cdcb3bb5f7cbd75c9948" class="sect1"><div><h3>qname_</h3></div><div class="signature-box">QNameType<span> </span>qname_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="ae8d86c62f67ac02e066c20d1c8b2b47e" class="sect1"><div><h3>kind</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1diagnostic?anchor=a5709afb398f65a318160aa7613abfa9e">zorba::diagnostic::kind</a><span> </span>kind() const </div><div><p class="signature-description">
+Gets the kind of this diagnostic.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said kind. </div>
+        </p></div></div><div id="a26d37747968b7e16cc3bbb564124ab66" class="sect1"><div><h3>message</h3></div><div class="signature-box">char const *<span> </span>message() const </div><div><p class="signature-description">
+Gets the message of this diagnostic.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said message. </div>
+        </p></div></div><div id="a87c995adba48030eab64b815ae712b2f" class="sect1"><div><h3>qname</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1diagnostic_1_1QName">zorba::diagnostic::QName</a> const &amp;<span> </span>qname() const </div><div><p class="signature-description">
+Gets the QName for this diagnostic.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said QName. </div>
+        </p></div></div><div id="af4d8b1404f8d581722b607b19f1ed1fb" class="sect1"><div><h3>SystemDiagnostic</h3></div><div class="signature-box"><span> </span>SystemDiagnostic(char const *localname)</div><div><p class="signature-description">
+Constructs a SystemDiagnostic.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>localname</td><td>
+The local-name of the diagnostic. </td></tr></table></div>
+        </p></div></div></div></div><div class="section"><h2>Protected Functions</h2><div class="detailed"><div id="a460536c65f301d8a3669c14396259eb1" class="sect1"><div><h3>clone</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1Diagnostic">Diagnostic</a> const *<span> </span>clone() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa3514301f262258b64fb7c9aa34490cd" class="sect1"><div><h3>destroy</h3></div><div class="signature-box">void<span> </span>destroy() const </div><div><p class="signature-description">
+Destroys a Diagnostic.         </p><p class="signature-description">
+This is the only way a Diagnostic should be destroyed.         </p></div></div></div></div><div class="section"><h2>Public Static Functions</h2><div class="detailed"><div id="a100fbd9f5d338881cc42472199dcf0f6" class="sect1"><div><h3>find</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1Diagnostic">Diagnostic</a> const *<span> </span>find(char const *localname)</div><div><p class="signature-description">
+Given a diagnostic's local-name, finds its corresponding Diagnostic object.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>localname</td><td>
+The local-name. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the corresponding Diagnostic object or <tt>NULL</tt> if not found. </div>
+        </p></div></div></div></div><div class="section"><h2>Friend Classes</h2><div class="detailed"><div id="afb81a2ab07a82ca366124911d4d6d09a" class="sect1"><div><h3>ZorbaException</h3></div><div class="signature-box">friend class<span> </span>ZorbaException</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

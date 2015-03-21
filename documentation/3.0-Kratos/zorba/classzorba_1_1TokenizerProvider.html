@@ -1,0 +1,18 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::TokenizerProvider</h1><p class="include">
+            #include &lt;zorba/tokenizer.h&gt;
+        </p>
+A TokenizerProvider provides a <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer">Tokenizer</a> for a given language.     
+    <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a78e1162efa415d86a6cd3e52c31300b8">getTokenizer</a>(locale::iso639_1::type lang, Tokenizer::State *state=nullptr, Tokenizer::ptr *t=nullptr) const =0</p><span class="signature-description">
+Creates a new Tokenizer.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a9d9258d9a15d72d0f5595f48bde56981">~TokenizerProvider</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a78e1162efa415d86a6cd3e52c31300b8" class="sect1"><div><h3>getTokenizer</h3></div><div class="signature-box">bool<span> </span>getTokenizer(locale::iso639_1::type lang, Tokenizer::State *state=nullptr, Tokenizer::ptr *t=nullptr) const =0</div><div><p class="signature-description">
+Creates a new Tokenizer.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>lang</td><td>
+The language of the text that the tokenizer will tokenize. </td></tr><tr><td>state</td><td>
+The State to use. If <tt>null</tt>, <em>t</em> is not set. </td></tr><tr><td>t</td><td>
+If not <tt>null</tt>, set to point to a <a href="/pages/3.0/zorba/classzorba_1_1Tokenizer">Tokenizer</a> for <em>lang</em>. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <tt>true</tt> only if this provider can provide a tokenizer for <em>lang</em>. </div>
+        </p></div></div><div id="a9d9258d9a15d72d0f5595f48bde56981" class="sect1"><div><h3>~TokenizerProvider</h3></div><div class="signature-box"><span> </span>~TokenizerProvider()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

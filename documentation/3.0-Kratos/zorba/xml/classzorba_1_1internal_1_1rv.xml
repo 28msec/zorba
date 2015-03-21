@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1rv" kind="class" prot="public">
+    <compoundname>zorba::internal::rv</compoundname>
+    <includes refid="type__traits_8h" local="no">zorba/internal/type_traits.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classzorba_1_1internal_1_1rv_1aa7b1e6068831fa0ef4de12026e214915" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend struct</type>
+        <definition>friend struct f</definition>
+        <argsstring></argsstring>
+        <name>f</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="75" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1rv_1afe25694dd6ab6b641c42c85d3d4add60" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1internal_1_1rv" kindref="compound">rv</ref> &amp;</type>
+        <definition>rv&amp; zorba::internal::rv&lt; T &gt;::operator=</definition>
+        <argsstring>(rv const &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1rv" kindref="compound">rv</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="69"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1rv_1a0718a1b19325c78e582b0424f22e8b7e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::rv&lt; T &gt;::rv</definition>
+        <argsstring>()</argsstring>
+        <name>rv</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="66"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1rv_1ae03da343de49986020449476ae76d89d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::rv&lt; T &gt;::rv</definition>
+        <argsstring>(rv const &amp;)</argsstring>
+        <name>rv</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1rv" kindref="compound">rv</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="68"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1rv_1a2f42189c0a780677c56f107d4860ddf9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::rv&lt; T &gt;::~rv</definition>
+        <argsstring>()</argsstring>
+        <name>~rv</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="67"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="65" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" bodystart="65" bodyend="76"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1rv_1aa7b1e6068831fa0ef4de12026e214915" prot="private" virt="non-virtual"><scope>zorba::internal::rv</scope><name>f</name></member>
+      <member refid="classzorba_1_1internal_1_1rv_1afe25694dd6ab6b641c42c85d3d4add60" prot="private" virt="non-virtual"><scope>zorba::internal::rv</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1internal_1_1rv_1a0718a1b19325c78e582b0424f22e8b7e" prot="private" virt="non-virtual"><scope>zorba::internal::rv</scope><name>rv</name></member>
+      <member refid="classzorba_1_1internal_1_1rv_1ae03da343de49986020449476ae76d89d" prot="private" virt="non-virtual"><scope>zorba::internal::rv</scope><name>rv</name></member>
+      <member refid="classzorba_1_1internal_1_1rv_1a2f42189c0a780677c56f107d4860ddf9" prot="private" virt="non-virtual"><scope>zorba::internal::rv</scope><name>~rv</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

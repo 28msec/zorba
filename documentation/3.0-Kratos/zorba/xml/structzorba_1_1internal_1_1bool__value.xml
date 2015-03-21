@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1internal_1_1bool__value" kind="struct" prot="public">
+    <compoundname>zorba::internal::bool_value</compoundname>
+    <includes refid="type__traits_8h" local="no">zorba/internal/type_traits.h</includes>
+    <templateparamlist>
+      <param>
+        <type>bool</type>
+        <declname>B</declname>
+        <defname>B</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structzorba_1_1internal_1_1bool__value_1a4200381d9c2f96d3d797a8459de2d1d1" prot="public" static="yes" mutable="no">
+        <type>bool const</type>
+        <definition>bool const zorba::internal::bool_value&lt; B &gt;::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> B</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="80" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" bodystart="80" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="537">
+        <label>zorba::internal::bool_value&lt; false &gt;</label>
+        <link refid="structzorba_1_1internal_1_1bool__value"/>
+        <childnode refid="536" relation="template-instance">
+          <edgelabel>&lt; false &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="536">
+        <label>zorba::internal::bool_value&lt; B &gt;</label>
+        <link refid="structzorba_1_1internal_1_1bool__value"/>
+      </node>
+      <node id="538">
+        <label>zorba::internal::is_movable&lt; rv&lt; T &gt; &gt;</label>
+        <link refid="structzorba_1_1internal_1_1is__movable_3_01rv_3_01T_01_4_01_4"/>
+        <childnode refid="537" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="540">
+        <label>zorba::internal::is_movable&lt; T &gt;</label>
+        <link refid="structzorba_1_1internal_1_1is__movable"/>
+        <childnode refid="539" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="539">
+        <label>zorba::internal::bool_value&lt; ZORBA_TR1_NS::is_convertible&lt; T, rv&lt; T &gt; &amp; &gt;::value &gt;</label>
+        <link refid="structzorba_1_1internal_1_1bool__value"/>
+        <childnode refid="536" relation="template-instance">
+          <edgelabel>&lt; ZORBA_TR1_NS::is_convertible&lt; T, rv&lt; T &gt; &amp; &gt;::value &gt;</edgelabel>
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="79" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" bodystart="79" bodyend="81"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1internal_1_1bool__value_1a4200381d9c2f96d3d797a8459de2d1d1" prot="public" virt="non-virtual"><scope>zorba::internal::bool_value</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

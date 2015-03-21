@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structZorba__opaque__char__ptr" kind="struct" prot="public">
+    <compoundname>Zorba_opaque_char_ptr</compoundname>
+    <includes refid="options_8h" local="no">zorba/options.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structZorba__opaque__char__ptr_1a0484597de6eee5e9917e7dad4d044cd2" prot="public" static="no" mutable="no">
+        <type>char const *</type>
+        <definition>char const* Zorba_opaque_char_ptr::ptr</definition>
+        <argsstring></argsstring>
+        <name>ptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="182" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="182" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Wraps a <computeroutput>char*</computeroutput> to make it a compile-time error to assign to the pointer directly. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="181" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="181" bodyend="188"/>
+    <listofallmembers>
+      <member refid="structZorba__opaque__char__ptr_1a0484597de6eee5e9917e7dad4d044cd2" prot="public" virt="non-virtual"><scope>Zorba_opaque_char_ptr</scope><name>ptr</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

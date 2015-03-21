@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1QueryLocation" kind="class" prot="public">
+    <compoundname>zorba::QueryLocation</compoundname>
+    <basecompoundref refid="classzorba_1_1SmartObject" prot="public" virt="non-virtual">zorba::SmartObject</basecompoundref>
+    <includes refid="query__location_8h" local="no">zorba/query_location.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::addReference</definition>
+        <argsstring>() const </argsstring>
+        <name>addReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SmartObject::free</definition>
+        <argsstring>()</argsstring>
+        <name>free</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1QueryLocation_1afd9994973e5651c537afe9cb2c8c513d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned int</type>
+        <definition>virtual unsigned int zorba::QueryLocation::getColumnBegin</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getColumnBegin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/query_location.h" line="49"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1QueryLocation_1a4059a1cc19e293028dd8ae50a37b2f02" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned int</type>
+        <definition>virtual unsigned int zorba::QueryLocation::getColumnEnd</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getColumnEnd</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/query_location.h" line="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1QueryLocation_1a6d2ab62a5a91d6899e5e21f1445414a9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::QueryLocation::getFileName</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getFileName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/query_location.h" line="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1QueryLocation_1a5f94f11e8de2e4171ba532a82d8d04a1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned int</type>
+        <definition>virtual unsigned int zorba::QueryLocation::getLineBegin</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getLineBegin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/query_location.h" line="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1QueryLocation_1ab16bb86d1a5266d06f6272469dc0b525" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned int</type>
+        <definition>virtual unsigned int zorba::QueryLocation::getLineEnd</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getLineEnd</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/query_location.h" line="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>long zorba::SmartObject::getRefCount</definition>
+        <argsstring>() const </argsstring>
+        <name>getRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::removeReference</definition>
+        <argsstring>()</argsstring>
+        <name>removeReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1QueryLocation_1adad18687cae05a639092233a6ead2ae7" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::QueryLocation::toString</definition>
+        <argsstring>() const =0</argsstring>
+        <name>toString</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/query_location.h" line="55"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1QueryLocation_1a4e7b28a40c2593e3995da78a4a001362" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::QueryLocation::~QueryLocation</definition>
+        <argsstring>()</argsstring>
+        <name>~QueryLocation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/query_location.h" line="37" bodyfile="/home/wcandillon/deadlinks/include/zorba/query_location.h" bodystart="37" bodyend="37"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" static="no" mutable="yes">
+        <type>unsigned int</type>
+        <definition>unsigned int zorba::SmartObject::theRefCount</definition>
+        <argsstring></argsstring>
+        <name>theRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Representation of the current location location in the remote query. </para>    </briefdescription>
+    <detaileddescription>
+<para>This location goes from the starting line and column to the ending line and column. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="780">
+        <label>zorba::QueryLocation</label>
+        <link refid="classzorba_1_1QueryLocation"/>
+        <childnode refid="781" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="781">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="782">
+        <label>zorba::QueryLocation</label>
+        <link refid="classzorba_1_1QueryLocation"/>
+        <childnode refid="783" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="783">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/query_location.h" line="33" bodyfile="/home/wcandillon/deadlinks/include/zorba/query_location.h" bodystart="32" bodyend="56"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" virt="non-virtual"><scope>zorba::QueryLocation</scope><name>addReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" virt="virtual"><scope>zorba::QueryLocation</scope><name>free</name></member>
+      <member refid="classzorba_1_1QueryLocation_1afd9994973e5651c537afe9cb2c8c513d" prot="public" virt="pure-virtual"><scope>zorba::QueryLocation</scope><name>getColumnBegin</name></member>
+      <member refid="classzorba_1_1QueryLocation_1a4059a1cc19e293028dd8ae50a37b2f02" prot="public" virt="pure-virtual"><scope>zorba::QueryLocation</scope><name>getColumnEnd</name></member>
+      <member refid="classzorba_1_1QueryLocation_1a6d2ab62a5a91d6899e5e21f1445414a9" prot="public" virt="pure-virtual"><scope>zorba::QueryLocation</scope><name>getFileName</name></member>
+      <member refid="classzorba_1_1QueryLocation_1a5f94f11e8de2e4171ba532a82d8d04a1" prot="public" virt="pure-virtual"><scope>zorba::QueryLocation</scope><name>getLineBegin</name></member>
+      <member refid="classzorba_1_1QueryLocation_1ab16bb86d1a5266d06f6272469dc0b525" prot="public" virt="pure-virtual"><scope>zorba::QueryLocation</scope><name>getLineEnd</name></member>
+      <member refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" virt="non-virtual"><scope>zorba::QueryLocation</scope><name>getRefCount</name></member>
+      <member refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" virt="non-virtual"><scope>zorba::QueryLocation</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" virt="non-virtual"><scope>zorba::QueryLocation</scope><name>removeReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" virt="non-virtual"><scope>zorba::QueryLocation</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" virt="non-virtual"><scope>zorba::QueryLocation</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" virt="non-virtual"><scope>zorba::QueryLocation</scope><name>theRefCount</name></member>
+      <member refid="classzorba_1_1QueryLocation_1adad18687cae05a639092233a6ead2ae7" prot="public" virt="pure-virtual"><scope>zorba::QueryLocation</scope><name>toString</name></member>
+      <member refid="classzorba_1_1QueryLocation_1a4e7b28a40c2593e3995da78a4a001362" prot="public" virt="virtual"><scope>zorba::QueryLocation</scope><name>~QueryLocation</name></member>
+      <member refid="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" virt="virtual"><scope>zorba::QueryLocation</scope><name>~SmartObject</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

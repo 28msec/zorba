@@ -1,0 +1,256 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1OneToOneURIMapper" kind="class" prot="public">
+    <compoundname>zorba::OneToOneURIMapper</compoundname>
+    <basecompoundref refid="classzorba_1_1URIMapper" prot="public" virt="non-virtual">zorba::URIMapper</basecompoundref>
+    <includes refid="uri__resolvers_8h" local="no">zorba/uri_resolvers.h</includes>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classzorba_1_1OneToOneURIMapper_1a97b9135a092acad2da315c06eaded662" prot="private" static="no">
+        <type>std::map&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref>, <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt;</type>
+        <definition>typedef std::map&lt;String, String&gt; zorba::OneToOneURIMapper::Mapping_t</definition>
+        <argsstring></argsstring>
+        <name>Mapping_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="297" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="297" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1OneToOneURIMapper_1ac6ee6611c954248da1810979d19c13a6" prot="private" static="no">
+        <type>Mapping_t::const_iterator</type>
+        <definition>typedef Mapping_t::const_iterator zorba::OneToOneURIMapper::MappingIter_t</definition>
+        <argsstring></argsstring>
+        <name>MappingIter_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="298" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="298" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1OneToOneURIMapper_1a50e4b0ffb2c175d2ccc99e6398d2ad47" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18a" kindref="member">EntityData::Kind</ref> const</type>
+        <definition>EntityData::Kind const zorba::OneToOneURIMapper::theEntityKind</definition>
+        <argsstring></argsstring>
+        <name>theEntityKind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="295" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="295" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1OneToOneURIMapper_1afb1ac7c0f0ffe5f985479bc2f65b5800" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1URIMapper_1a500b4b621e1d8c88a499dae07ae3c208" kindref="member">URIMapper::Kind</ref> const</type>
+        <definition>URIMapper::Kind const zorba::OneToOneURIMapper::theMapperKind</definition>
+        <argsstring></argsstring>
+        <name>theMapperKind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="296" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="296" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1OneToOneURIMapper_1a9ae1a4b43e6405f7d47cd425fe653a10" prot="private" static="no" mutable="no">
+        <type>Mapping_t</type>
+        <definition>Mapping_t zorba::OneToOneURIMapper::theMappings</definition>
+        <argsstring></argsstring>
+        <name>theMappings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="299" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="299" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1OneToOneURIMapper_1a770cd3006204537e856a995270bab793" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::OneToOneURIMapper::addMapping</definition>
+        <argsstring>(const String &amp;aUri, const String &amp;aMappedUri)</argsstring>
+        <name>addMapping</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aUri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aMappedUri</declname>
+        </param>
+        <briefdescription>
+<para>Add a mapping from a given URI to another URI. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="286"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1OneToOneURIMapper_1ac5f85ace4bc4ec4f9c786c73463cdcda" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="classzorba_1_1URIMapper_1a500b4b621e1d8c88a499dae07ae3c208" kindref="member">Kind</ref></type>
+        <definition>virtual Kind zorba::OneToOneURIMapper::mapperKind</definition>
+        <argsstring>()</argsstring>
+        <name>mapperKind</name>
+        <reimplements refid="classzorba_1_1URIMapper_1aeb6cb6c9eaed687effd3e4daf224bae6">mapperKind</reimplements>
+        <briefdescription>
+<para>Declare whether this is a &quot;component&quot; or &quot;candidate&quot; URI mapper. </para>        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> supports two different kinds of URI mapping. The first, &quot;component URI mapping&quot;, is to allow mapping from an input URI to a set of URIs which, taken together, comprise the entire entity to be resolved. This is currently only supported for module import, where it can be used to load a module which is physically stored in multiple library module files.</para><para>&quot;Candidate URI mapping&quot; is to allow mapping from an input URI to a set or URIs which are *potential* identifiers of the entity being resolved. Each of these URIs will be treated to any subsequent URI mappers, and then treated as URLs and passed in turn to all registered URLResolvers. This type of URI mapping is supported for all uses of URIs in <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>. It can be used for example to redirect http: URIs to locally-cached file: URLs, or to provide several alternative locations for a given resource.</para><para>If you do not override this method, the default is &quot;candidate&quot;. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="288"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1OneToOneURIMapper_1adf33d70bb462dbcda73e23c5ddf733f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::OneToOneURIMapper::mapURI</definition>
+        <argsstring>(const zorba::String aUri, EntityData const *aEntityData, std::vector&lt; zorba::String &gt; &amp;oUris)</argsstring>
+        <name>mapURI</name>
+        <reimplements refid="classzorba_1_1URIMapper_1a6bef9cbe4926f07d9fc57b55568cff83">mapURI</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">zorba::String</ref></type>
+          <declname>aUri</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1EntityData" kindref="compound">EntityData</ref> const *</type>
+          <declname>aEntityData</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">zorba::String</ref> &gt; &amp;</type>
+          <declname>oUris</declname>
+        </param>
+        <briefdescription>
+<para>Transform an input URI into a set of output URIs. </para>        </briefdescription>
+        <detaileddescription>
+<para>The &quot;aEntityData&quot; parameter informs the <ref refid="classzorba_1_1URIMapper" kindref="compound">URIMapper</ref> what kind of entity is being referenced by URI. URIMappers may choose to make use of this information to alter their behaviour.</para><para>Implementers of this method should provide output URIs by adding them to the oUris output parameter, using the push_back() method. They should not otherwise view or manipulate this vector.</para><para>If a <ref refid="classzorba_1_1URIMapper" kindref="compound">URIMapper</ref> does not wish to provide any output URIs for the given input URI, they should simply do nothing and return. In this case, <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> will continue with the original, unmapped URI. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="291"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1OneToOneURIMapper_1ae32906c1581904b52c4612e5d6aeb898" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::OneToOneURIMapper::OneToOneURIMapper</definition>
+        <argsstring>(EntityData::Kind aEntityKind, URIMapper::Kind aMapperKind=URIMapper::CANDIDATE)</argsstring>
+        <name>OneToOneURIMapper</name>
+        <param>
+          <type><ref refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18a" kindref="member">EntityData::Kind</ref></type>
+          <declname>aEntityKind</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1URIMapper_1a500b4b621e1d8c88a499dae07ae3c208" kindref="member">URIMapper::Kind</ref></type>
+          <declname>aMapperKind</declname>
+          <defval><ref refid="classzorba_1_1URIMapper_1a500b4b621e1d8c88a499dae07ae3c208aa4062200dbb01e7a8a4c9d792d4280d5" kindref="member">URIMapper::CANDIDATE</ref></defval>
+        </param>
+        <briefdescription>
+<para>Constructor. </para>        </briefdescription>
+        <detaileddescription>
+<para>Specify the Entity Kind you wish to map. Optionally, specify whether this should be a CANDIDATE or COMPONENT mapper; default is CANDIDATE. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="280"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classzorba_1_1URIMapper_1a500b4b621e1d8c88a499dae07ae3c208" prot="public" static="no">
+        <name>Kind</name>
+        <enumvalue id="classzorba_1_1URIMapper_1a500b4b621e1d8c88a499dae07ae3c208addabab0b473fd59404b67bc113c944a5" prot="public">
+          <name>COMPONENT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1URIMapper_1a500b4b621e1d8c88a499dae07ae3c208aa4062200dbb01e7a8a4c9d792d4280d5" prot="public">
+          <name>CANDIDATE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>enum defining legal return values for <ref refid="classzorba_1_1URIMapper_1aeb6cb6c9eaed687effd3e4daf224bae6" kindref="member">mapperKind()</ref>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="224" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="224" bodyend="227"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classzorba_1_1URIMapper_1ae62d17b1a0092fd21995b84c94387b1b" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">zorba::String</ref></type>
+        <definition>const zorba::String zorba::URIMapper::DENY_ACCESS</definition>
+        <argsstring></argsstring>
+        <name>DENY_ACCESS</name>
+        <briefdescription>
+<para>Constant indicating that <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> should deny access to the given URI. </para>        </briefdescription>
+        <detaileddescription>
+<para>If any kind of <ref refid="classzorba_1_1URIMapper" kindref="compound">URIMapper</ref> returns this value at any point in the vector of URIs, <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> will cause the resolution of this URI to be denied with an error. This can be used, for example, to suppress importing particular modules by URI. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="262" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="262" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Convenience implementation of a mapper that maps URIs to other single URIs. </para>    </briefdescription>
+    <detaileddescription>
+<para>Will only map for one specific Entity Kind. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="731">
+        <label>zorba::OneToOneURIMapper</label>
+        <link refid="classzorba_1_1OneToOneURIMapper"/>
+        <childnode refid="732" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="732">
+        <label>zorba::URIMapper</label>
+        <link refid="classzorba_1_1URIMapper"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="733">
+        <label>zorba::OneToOneURIMapper</label>
+        <link refid="classzorba_1_1OneToOneURIMapper"/>
+        <childnode refid="734" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="734">
+        <label>zorba::URIMapper</label>
+        <link refid="classzorba_1_1URIMapper"/>
+        <childnode refid="735" relation="usage">
+          <edgelabel>DENY_ACCESS</edgelabel>
+        </childnode>
+      </node>
+      <node id="735">
+        <label>zorba::String</label>
+        <link refid="classzorba_1_1String"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="270" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="270" bodyend="300"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1OneToOneURIMapper_1a770cd3006204537e856a995270bab793" prot="public" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>addMapping</name></member>
+      <member refid="classzorba_1_1URIMapper_1a500b4b621e1d8c88a499dae07ae3c208aa4062200dbb01e7a8a4c9d792d4280d5" prot="public" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>CANDIDATE</name></member>
+      <member refid="classzorba_1_1URIMapper_1a500b4b621e1d8c88a499dae07ae3c208addabab0b473fd59404b67bc113c944a5" prot="public" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>COMPONENT</name></member>
+      <member refid="classzorba_1_1URIMapper_1ae62d17b1a0092fd21995b84c94387b1b" prot="public" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>DENY_ACCESS</name></member>
+      <member refid="classzorba_1_1URIMapper_1a500b4b621e1d8c88a499dae07ae3c208" prot="public" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>Kind</name></member>
+      <member refid="classzorba_1_1OneToOneURIMapper_1ac5f85ace4bc4ec4f9c786c73463cdcda" prot="public" virt="virtual"><scope>zorba::OneToOneURIMapper</scope><name>mapperKind</name></member>
+      <member refid="classzorba_1_1OneToOneURIMapper_1a97b9135a092acad2da315c06eaded662" prot="private" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>Mapping_t</name></member>
+      <member refid="classzorba_1_1OneToOneURIMapper_1ac6ee6611c954248da1810979d19c13a6" prot="private" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>MappingIter_t</name></member>
+      <member refid="classzorba_1_1OneToOneURIMapper_1adf33d70bb462dbcda73e23c5ddf733f5" prot="public" virt="virtual"><scope>zorba::OneToOneURIMapper</scope><name>mapURI</name></member>
+      <member refid="classzorba_1_1OneToOneURIMapper_1ae32906c1581904b52c4612e5d6aeb898" prot="public" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>OneToOneURIMapper</name></member>
+      <member refid="classzorba_1_1OneToOneURIMapper_1a50e4b0ffb2c175d2ccc99e6398d2ad47" prot="private" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>theEntityKind</name></member>
+      <member refid="classzorba_1_1OneToOneURIMapper_1afb1ac7c0f0ffe5f985479bc2f65b5800" prot="private" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>theMapperKind</name></member>
+      <member refid="classzorba_1_1OneToOneURIMapper_1a9ae1a4b43e6405f7d47cd425fe653a10" prot="private" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>theMappings</name></member>
+      <member refid="classzorba_1_1URIMapper_1a5f989e1c6db012dc27eac2f48d9b0669" prot="public" virt="non-virtual"><scope>zorba::OneToOneURIMapper</scope><name>URIMapper</name></member>
+      <member refid="classzorba_1_1URIMapper_1a72ff240584544442ad7d7ba04aef41c4" prot="public" virt="virtual"><scope>zorba::OneToOneURIMapper</scope><name>~URIMapper</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

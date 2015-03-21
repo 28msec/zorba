@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Resource" kind="class" prot="public">
+    <compoundname>zorba::Resource</compoundname>
+    <derivedcompoundref refid="classzorba_1_1StreamResource" prot="public" virt="non-virtual">zorba::StreamResource</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1ThesaurusProvider" prot="public" virt="non-virtual">zorba::ThesaurusProvider</derivedcompoundref>
+    <includes refid="uri__resolvers_8h" local="no">zorba/uri_resolvers.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1Resource_1a2fc7456745b8828dd98971e78f85823e" prot="public" static="no">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref>&lt; <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>, <ref refid="structzorba_1_1internal_1_1ztd_1_1destroy__delete" kindref="compound">internal::ztd::destroy_delete</ref>&lt; <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> &gt; &gt;</type>
+        <definition>typedef std::unique_ptr&lt;Resource,internal::ztd::destroy_delete&lt;Resource&gt; &gt; zorba::Resource::ptr</definition>
+        <argsstring></argsstring>
+        <name>ptr</name>
+        <reimplementedby refid="classzorba_1_1ThesaurusProvider_1adba72068d63e7991926faa113d71b021">ptr</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="54" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Resource_1a0cc13ffe1069093bf5bdd28642847d9b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Resource::destroy</definition>
+        <argsstring>() const =0</argsstring>
+        <name>destroy</name>
+        <briefdescription>
+<para>Destroy/clean up this <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> will call this method when it no longer needs the <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>. It is the responsibility of subclasses to clean up appropriate when this method is called, including calling &quot;delete this&quot; if the <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> was allocated with &quot;new&quot;. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="66"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Resource_1abfa3e48b60d8e12b86bd8a0a97309d8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type></type>
+        <definition>virtual zorba::Resource::~Resource</definition>
+        <argsstring>()=0</argsstring>
+        <name>~Resource</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="56"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The class representing the result of URL resolution. </para>    </briefdescription>
+    <detaileddescription>
+<para>This class is the final output of the URI resolution process. All URL resolvers return results using subclasses of this class. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="787">
+        <label>zorba::StreamResource</label>
+        <link refid="classzorba_1_1StreamResource"/>
+        <childnode refid="786" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="788">
+        <label>zorba::ThesaurusProvider</label>
+        <link refid="classzorba_1_1ThesaurusProvider"/>
+        <childnode refid="786" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="786">
+        <label>zorba::Resource</label>
+        <link refid="classzorba_1_1Resource"/>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="51" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="50" bodyend="67"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1Resource_1a0cc13ffe1069093bf5bdd28642847d9b" prot="public" virt="pure-virtual"><scope>zorba::Resource</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1Resource_1a2fc7456745b8828dd98971e78f85823e" prot="public" virt="non-virtual"><scope>zorba::Resource</scope><name>ptr</name></member>
+      <member refid="classzorba_1_1Resource_1abfa3e48b60d8e12b86bd8a0a97309d8c" prot="public" virt="pure-virtual"><scope>zorba::Resource</scope><name>~Resource</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

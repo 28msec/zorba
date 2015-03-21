@@ -1,0 +1,31 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::XmlDataManager::ParseOptions</h1><p class="include">
+            #include &lt;zorba/xmldatamanager.h&gt;
+        </p>
+The <a href="/pages/3.0/zorba/classzorba_1_1XmlDataManager_1_1ParseOptions">ParseOptions</a> class stores various properties that affect how a document is parsed.     
+An instance of this class is passed as input to the parseXML function.     <div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a57ed25cbac0da96ee6e55505cc301400">theDtdValidation</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a34e0e044b99950d7145f51b2558dbe2a">theExternalEntityProcessing</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a2f037d29d5896bd4b27153cdf6bb23e1">isDtdValidationEnabled</a>() const </p><span class="signature-description">
+Returns true if dtd validation is enabled, false otherwise.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#ac1bb15171690244a9e36cb4590b8ada3">isExternalEntityProcessingEnabled</a>() const </p><span class="signature-description">
+Returns true if external entity processig is enabled, false otherwise.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aba66302b85a29c91e79771ce62092ce0">ParseOptions</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a67070663f86891561f82bd530e20487b">setDtdValidation</a>(bool aEnable)</p><span class="signature-description">
+Set the property enableDtd, which specifies whether the document should be validated against its associated DTD (if any).         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a0e5663d89760e5ca44f6740ff21713b2">setExternalEntityProcessing</a>(bool aEnable)</p><span class="signature-description">
+Set the property to enable or disable processing of XML external entities.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a5e414ff8a57e36b79b53d58931081a01">~ParseOptions</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a57ed25cbac0da96ee6e55505cc301400" class="sect1"><div><h3>theDtdValidation</h3></div><div class="signature-box">bool<span> </span>theDtdValidation</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a34e0e044b99950d7145f51b2558dbe2a" class="sect1"><div><h3>theExternalEntityProcessing</h3></div><div class="signature-box">bool<span> </span>theExternalEntityProcessing</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a2f037d29d5896bd4b27153cdf6bb23e1" class="sect1"><div><h3>isDtdValidationEnabled</h3></div><div class="signature-box">bool<span> </span>isDtdValidationEnabled() const </div><div><p class="signature-description">
+Returns true if dtd validation is enabled, false otherwise.         </p><p class="signature-description">
+        </p></div></div><div id="ac1bb15171690244a9e36cb4590b8ada3" class="sect1"><div><h3>isExternalEntityProcessingEnabled</h3></div><div class="signature-box">bool<span> </span>isExternalEntityProcessingEnabled() const </div><div><p class="signature-description">
+Returns true if external entity processig is enabled, false otherwise.         </p><p class="signature-description">
+        </p></div></div><div id="aba66302b85a29c91e79771ce62092ce0" class="sect1"><div><h3>ParseOptions</h3></div><div class="signature-box"><span> </span>ParseOptions()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a67070663f86891561f82bd530e20487b" class="sect1"><div><h3>setDtdValidation</h3></div><div class="signature-box">void<span> </span>setDtdValidation(bool aEnable)</div><div><p class="signature-description">
+Set the property enableDtd, which specifies whether the document should be validated against its associated DTD (if any).         </p><p class="signature-description">
+        </p></div></div><div id="a0e5663d89760e5ca44f6740ff21713b2" class="sect1"><div><h3>setExternalEntityProcessing</h3></div><div class="signature-box">void<span> </span>setExternalEntityProcessing(bool aEnable)</div><div><p class="signature-description">
+Set the property to enable or disable processing of XML external entities.         </p><p class="signature-description">
+If the option is enabled, the input must conform to the syntax _extParsedEnt_ (production [78] in XML 1.0); and since there is no DTD, the content must include no entity references. The result of the function call is a sequence of nodes.         </p></div></div><div id="a5e414ff8a57e36b79b53d58931081a01" class="sect1"><div><h3>~ParseOptions</h3></div><div class="signature-box"><span> </span>~ParseOptions()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build__macos_8dox" kind="file">
+    <compoundname>build_macos.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>build_macos<sp/>Zorba<sp/>Build<sp/>Notes<sp/>for<sp/>Mac<sp/>OS<sp/>X<sp/>Users<sp/></highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">\section<sp/>macos_macports<sp/>Using<sp/>Macports</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"></highlight></codeline>
+<codeline lineno="5"><highlight class="comment">The<sp/>easiest<sp/>way<sp/>to<sp/>install<sp/>the<sp/>required<sp/>packages<sp/>(like<sp/>CMake<sp/>or</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Xerces-C)<sp/>is<sp/>to<sp/>use<sp/>Macports<sp/>(http://macports.org/).<sp/>You<sp/>can<sp/>install</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">various<sp/>tools<sp/>and<sp/>libraries<sp/>using<sp/>e.g.</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">sudo<sp/>port<sp/>install<sp/>cmake</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"></highlight></codeline>
+<codeline lineno="12"><highlight class="comment">Once<sp/>all<sp/>the<sp/>required<sp/>packages<sp/>are<sp/>installed<sp/>you<sp/>can<sp/>execute<sp/>CMake.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment">By<sp/>default,</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">CMake<sp/>on<sp/>Mac<sp/>OS<sp/>X<sp/>uses<sp/>the<sp/>Makefile<sp/>generator.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment">Alternatively,</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">you<sp/>can<sp/>specify<sp/>different<sp/>generators<sp/>(e.g.,<sp/>Xcode)</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">by<sp/>starting<sp/>CMake<sp/>using<sp/>the<sp/>&lt;b&gt;-G&lt;/b&gt;<sp/>option<sp/>(e.g.,<sp/>&lt;b&gt;-G<sp/>Xcode&lt;/b&gt;).</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"></highlight></codeline>
+<codeline lineno="19"><highlight class="comment">\section<sp/>macos_swig<sp/>Swig<sp/>Version</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"></highlight></codeline>
+<codeline lineno="21"><highlight class="comment">Due<sp/>to<sp/>a<sp/>bug<sp/>in<sp/>older<sp/>swig<sp/>version,<sp/>Zorba<sp/>with<sp/>SWIG<sp/>support<sp/>requires</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">SWIG<sp/>version<sp/>1.3.40<sp/>or<sp/>later.<sp/>SWIG<sp/>is<sp/>included<sp/>in<sp/>stock<sp/>MacOS,<sp/>but<sp/>in</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">at<sp/>least<sp/>some<sp/>versions<sp/>of<sp/>MacOS<sp/>it<sp/>is<sp/>an<sp/>older<sp/>version.<sp/>Therefore,<sp/>you</highlight></codeline>
+<codeline lineno="24"><highlight class="comment">must<sp/>install<sp/>a<sp/>newer<sp/>SWIG<sp/>from<sp/>Macports.<sp/>This<sp/>will<sp/>be<sp/>installed<sp/>in</highlight></codeline>
+<codeline lineno="25"><highlight class="comment">&lt;tt&gt;/opt/local&lt;/tt&gt;,<sp/>so<sp/>you<sp/>then<sp/>must<sp/>point<sp/>CMake<sp/>at<sp/>that<sp/>directory<sp/>to</highlight></codeline>
+<codeline lineno="26"><highlight class="comment">ensure<sp/>it<sp/>finds<sp/>the<sp/>newer<sp/>version:</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"></highlight></codeline>
+<codeline lineno="28"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="29"><highlight class="comment">sudo<sp/>port<sp/>install<sp/>swig</highlight></codeline>
+<codeline lineno="30"><highlight class="comment">cmake<sp/>-DCMAKE_PREFIX_PATH=/opt/local<sp/>{ZORBASRC}</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"></highlight></codeline>
+<codeline lineno="33"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/build_macos.dox"/>
+  </compounddef>
+</doxygen>

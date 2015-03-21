@@ -1,0 +1,250 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::UserException</h1><p class="include">
+            #include &lt;zorba/user_exception.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1XQueryException.html">zorba::XQueryException</a></p>
+A UserException is-an <a href="/pages/3.0/zorba/classzorba_1_1XQueryException">XQueryException</a> for errors raised via <tt>fn:error()</tt>.     
+    <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a6fb373e3d8b69d4eb27d32944943e1f8">internal::diagnostic::location::column_type</a></p></td><td><p class="signature"><a href="#a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1internal?anchor=ab19a27981bfc8b4259b67ebd0ec746ac">internal::error_object_type</a></p></td><td><p class="signature"><a href="#ae51e3b671cb44ebf9d90180d8f67d5eb">error_object_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a3aa53b70adc32c0c65c068b6dc7d30d4">internal::diagnostic::location::line_type</a></p></td><td><p class="signature"><a href="#a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a9fd130e012249f5d8ad04d89c5ff549e">print_format</a></p><span class="signature-description">
+The format to print exceptions as to an ostream.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#adf30bab42a7e9e441a42ebb9b4a9b1fe">print_trace</a></p><span class="signature-description">
+Whether to include the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> stack trace for the <a href="/pages/3.0/zorba/classzorba_1_1XQueryException">XQueryException</a> that's printed to an ostream.         </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1UserException?anchor=ae51e3b671cb44ebf9d90180d8f67d5eb">error_object_type</a></p></td><td><p class="signature"><a href="#a343d38e69ec63c859b1fe5290820f61c">error_object_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a></p></td><td><p class="signature"><a href="#a8ee9cb00f5bfbfc73778b20ccfba4e7a">applied_column</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" column number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a></p></td><td><p class="signature"><a href="#a81eb7e06993a711364fef6c8e6e97e60">applied_column_end</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" end column number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a></p></td><td><p class="signature"><a href="#a644dcd0e129bdcda4a794fe84c5f28e0">applied_line</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" line number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a></p></td><td><p class="signature"><a href="#a267ae38b021b10a59595a210adbb8493">applied_line_end</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" end line number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#ae43d238a740212235fd761730d9827d1">applied_uri</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" URI containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a></p></td><td><p class="signature"><a href="#a1c85b236e615f4ddcea2a47a5d32b913">data_column</a>() const </p><span class="signature-description">
+Gets the data column number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a></p></td><td><p class="signature"><a href="#a368d9b65b2006e1962b06f7b4bf7b291">data_column_end</a>() const </p><span class="signature-description">
+Gets the data end column number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a></p></td><td><p class="signature"><a href="#ac2c9cdf6f2bb8e91a521234cffa9b66c">data_line</a>() const </p><span class="signature-description">
+Gets the data line number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a></p></td><td><p class="signature"><a href="#ad6297e8382dcbdedef684d92cd723729">data_line_end</a>() const </p><span class="signature-description">
+Gets the data end line number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#a79c776ccbcf01f5385c226afe0d9f79f">data_uri</a>() const </p><span class="signature-description">
+Gets the data URI containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1Diagnostic">Diagnostic</a> const &amp;</p></td><td><p class="signature"><a href="#aa65d6b38bb602256104499c3807185b1">diagnostic</a>() const </p><span class="signature-description">
+Gets the diagnostic carried by this exception.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1UserException?anchor=ae51e3b671cb44ebf9d90180d8f67d5eb">error_object_type</a> const &amp;</p></td><td><p class="signature"><a href="#a000b95d1d61aad14599d3aa1f21024f8">error_object</a>() const </p><span class="signature-description">
+Gets the error object associated with this exception.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a342c41e836fbd4380ebd46361e59d355">has_applied</a>() const </p><span class="signature-description">
+Checks whether the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> "applied at" location has been set.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a5d721dbaeed15beda021fd094f234f25">has_data</a>() const </p><span class="signature-description">
+Checks whether the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> data location has been set.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a588e57955109c13d3f8b6f49369fbadd">has_source</a>() const </p><span class="signature-description">
+Checks whether the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code location has been set.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1UserException">UserException</a> &amp;</p></td><td><p class="signature"><a href="#a952a492db9c1bce86e00a2b39c9923c7">operator=</a>(UserException const &amp;from)</p><span class="signature-description">
+Assigns this UserException from another.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a4b44e05962489003a608d929ed416e00">polymorphic_throw</a>() const </p><span class="signature-description">
+Throws itself polymorphically; see <a href="http://www.parashift.com/c++-faq-lite/exceptions.html#faq-17.16" target="_blank">http://www.parashift.com/c++-faq-lite/exceptions.html#faq-17.16</a>.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace">XQueryStackTrace</a> &amp;</p></td><td><p class="signature"><a href="#a02dc383a718136164593a1f778337acd">query_trace</a>()</p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> stack trace, if any.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace">XQueryStackTrace</a> const &amp;</p></td><td><p class="signature"><a href="#a4d7e8682bd950991b61dcc397ec073c3">query_trace</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> stack trace, if any.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#a6b5e2e711fe5a54ed08d51d6dbbad8ef">raise_file</a>() const </p><span class="signature-description">
+Gets the C++ source-code file name whence this exception was raised.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a></p></td><td><p class="signature"><a href="#ac8566af4cbcece74394cfd528a257781">raise_line</a>() const </p><span class="signature-description">
+Gets the C++ source-code line number whence this exception was raised.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a7c90ce88252b05934d793d046a46e96e">set_applied</a>(char const *uri, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</p><span class="signature-description">
+Sets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" URI name, line, and column numbers.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a4c3ccd573c7aeb72e3cbd543d32be6be">set_data</a>(char const *uri, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</p><span class="signature-description">
+Sets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code data URI name, line, and column numbers.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ab17a11fa7a552fd4a2c9ac1033183b01">set_diagnostic</a>(Diagnostic const &amp;diagnostic)</p><span class="signature-description">
+Sets the diagnostic.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a443c6d3013eaf91cc680a0f99ab3482e">set_source</a>(char const *uri, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</p><span class="signature-description">
+Sets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code URI name, line, and column numbers.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a></p></td><td><p class="signature"><a href="#a093a3985c87d852aa5f70187137153a4">source_column</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code column number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a></p></td><td><p class="signature"><a href="#a673a725c2e629380cd961ca537abcf02">source_column_end</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code end column number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a></p></td><td><p class="signature"><a href="#aab93a239dd4047d6e4aaa7cba2c9ab47">source_line</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code line number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a></p></td><td><p class="signature"><a href="#acfc67763485cee7f4dffd51e7b2abf90">source_line_end</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code end line number containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#a553ee378d77657617e872347f09d1adc">source_uri</a>() const </p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code URI containing the error.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ae5f840e6668199cc36085e75b219185b">UserException</a>(UserException const &amp;from)</p><span class="signature-description">
+Copy-constructs a UserException.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#a30aa6df89d2188198da3b5cf4a2e95b0">what</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aa47139966e65609c59ea8995f73a91b8">~UserException</a>()</p><span class="signature-description">
+Destroys this UserException.         </span></td></tr></table></div><div class="section"><h2>Protected Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1ZorbaException">ZorbaException</a> &gt;</p></td><td><p class="signature"><a href="#a971d995caaef374a61b11dda5e1d421f">clone</a>() const </p><span class="signature-description">
+Clones this exception object.         </span></td></tr><tr><td class="return-type"><p class="signature">std::ostream &amp;</p></td><td><p class="signature"><a href="#adc4984f60a8efd83c117e7288c49a2cb">print</a>(std::ostream &amp;) const </p><span class="signature-description">
+Prints the exception to the given ostream.         </span></td></tr><tr><td class="return-type"><p class="signature">std::ostream &amp;</p></td><td><p class="signature"><a href="#ae528c5f932510d0a7daf96134150f905">print_impl</a>(std::ostream &amp;) const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::ostream &amp;</p></td><td><p class="signature"><a href="#aca6766a9819de68d5c8c6930ac96f948">print_stack_trace</a>(std::ostream &amp;) const </p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a8617d2a6e30f425330e347d1e39cfb31">UserException</a>(char const *ns, char const *prefix, char const *localname, char const *raise_file, line_type raise_line, char const *description, error_object_type *error_object)</p><span class="signature-description">
+Constructs a UserException.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a8a3a3577d04eb3dc287e3cff6f41c187">UserException</a>(Error const &amp;error, char const *raise_file, line_type raise_line, char const *description, error_object_type *error_object)</p><span class="signature-description">
+Constructs a UserException.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aff593a998eacf3ecf6b475872a126fa9">UserException</a>(serialization::Archiver &amp;)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Friend Classes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">friend <a href="/pages/3.0/zorba/classzorba_1_1UserException">UserException</a></p></td><td><p class="signature"><a href="#ad8550f3d6c4a9a5312bc28207bce5adf">internal::make_user_exception</a>(char const *, line_type, char const *, char const *, char const *, char const *, internal::diagnostic::location const &amp;, error_object_type *)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend <a href="/pages/3.0/zorba/classzorba_1_1UserException">UserException</a></p></td><td><p class="signature"><a href="#ac5d7411619053368ea1e98f685a7ae3b">internal::make_user_exception</a>(char const *, line_type, Error const &amp;, char const *, internal::diagnostic::location const &amp;, error_object_type *)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend void</p></td><td><p class="signature"><a href="#addd8220965a72d41d9fa0ada3ecf562d">serialization::operator&amp;</a>(serialization::Archiver &amp;, ZorbaException *&amp;)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Static Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a9fd130e012249f5d8ad04d89c5ff549e">print_format</a></p></td><td><p class="signature"><a href="#ae5e8c070b2b96a9a5c2926956f49a9a9">get_print_format</a>(std::ostream &amp;o)</p><span class="signature-description">
+Gets the current print_format associated with the given ostream.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a5593dd34d38534dee71f654d018a938b">get_print_trace</a>(std::ostream &amp;o)</p><span class="signature-description">
+Gets whether <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> stack traces will be included when XQueryExceptions are printed to the given ostream.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ab13a584d2d9398fc0285ee44d8c26e27">set_print_format</a>(std::ostream &amp;o, print_format f)</p><span class="signature-description">
+Sets the print_format of the given ostream.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a911f5714ef169dd932982103972b0dab">set_print_trace</a>(std::ostream &amp;o, bool print)</p><span class="signature-description">
+Sets whether <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> stack traces will be included when XQueryExceptions are printed to the given ostream.         </span></td></tr></table></div><div class="section"><h2>Protected Static Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#aaf3519faf6f1b66def3de2a130451c26">print_uri</a>(std::ostream &amp;, char const *uri)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a5d352fc19fbd8fb5a0cd9235336edac5" class="sect1"><div><h3>column_type</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a6fb373e3d8b69d4eb27d32944943e1f8">internal::diagnostic::location::column_type</a><span> </span>column_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ae51e3b671cb44ebf9d90180d8f67d5eb" class="sect1"><div><h3>error_object_type</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1internal?anchor=ab19a27981bfc8b4259b67ebd0ec746ac">internal::error_object_type</a><span> </span>error_object_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a3d8d2c6b2f7f1a5cc892582649c85a4a" class="sect1"><div><h3>line_type</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a3aa53b70adc32c0c65c068b6dc7d30d4">internal::diagnostic::location::line_type</a><span> </span>line_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a9fd130e012249f5d8ad04d89c5ff549e" class="sect1"><div><h3>print_format</h3></div><div class="signature-box"><span> </span>print_format</div><div><p class="signature-description">
+The format to print exceptions as to an ostream.         </p><p class="signature-description">
+        </p></div></div><div id="adf30bab42a7e9e441a42ebb9b4a9b1fe" class="sect1"><div><h3>print_trace</h3></div><div class="signature-box"><span> </span>print_trace</div><div><p class="signature-description">
+Whether to include the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> stack trace for the <a href="/pages/3.0/zorba/classzorba_1_1XQueryException">XQueryException</a> that's printed to an ostream.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a343d38e69ec63c859b1fe5290820f61c" class="sect1"><div><h3>error_object_</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1UserException?anchor=ae51e3b671cb44ebf9d90180d8f67d5eb">error_object_type</a><span> </span>error_object_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a8ee9cb00f5bfbfc73778b20ccfba4e7a" class="sect1"><div><h3>applied_column</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a><span> </span>applied_column() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" column number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said column number or 0 if unset. </div>
+        </p></div></div><div id="a81eb7e06993a711364fef6c8e6e97e60" class="sect1"><div><h3>applied_column_end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a><span> </span>applied_column_end() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" end column number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said column number or 0 if unset. </div>
+        </p></div></div><div id="a644dcd0e129bdcda4a794fe84c5f28e0" class="sect1"><div><h3>applied_line</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a><span> </span>applied_line() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" line number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said line number or 0 if unset. </div>
+        </p></div></div><div id="a267ae38b021b10a59595a210adbb8493" class="sect1"><div><h3>applied_line_end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a><span> </span>applied_line_end() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" end line number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said line number or 0 if unset. </div>
+        </p></div></div><div id="ae43d238a740212235fd761730d9827d1" class="sect1"><div><h3>applied_uri</h3></div><div class="signature-box">char const *<span> </span>applied_uri() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" URI containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said URI or the empty string if unset. </div>
+        </p></div></div><div id="a1c85b236e615f4ddcea2a47a5d32b913" class="sect1"><div><h3>data_column</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a><span> </span>data_column() const </div><div><p class="signature-description">
+Gets the data column number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said column number or 0 if unset. </div>
+        </p></div></div><div id="a368d9b65b2006e1962b06f7b4bf7b291" class="sect1"><div><h3>data_column_end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a><span> </span>data_column_end() const </div><div><p class="signature-description">
+Gets the data end column number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said column number or 0 if unset. </div>
+        </p></div></div><div id="ac2c9cdf6f2bb8e91a521234cffa9b66c" class="sect1"><div><h3>data_line</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a><span> </span>data_line() const </div><div><p class="signature-description">
+Gets the data line number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said line number or 0 if unset. </div>
+        </p></div></div><div id="ad6297e8382dcbdedef684d92cd723729" class="sect1"><div><h3>data_line_end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a><span> </span>data_line_end() const </div><div><p class="signature-description">
+Gets the data end line number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said line number or 0 if unset. </div>
+        </p></div></div><div id="a79c776ccbcf01f5385c226afe0d9f79f" class="sect1"><div><h3>data_uri</h3></div><div class="signature-box">char const *<span> </span>data_uri() const </div><div><p class="signature-description">
+Gets the data URI containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said URI or the empty string if unset. </div>
+        </p></div></div><div id="aa65d6b38bb602256104499c3807185b1" class="sect1"><div><h3>diagnostic</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1Diagnostic">Diagnostic</a> const &amp;<span> </span>diagnostic() const </div><div><p class="signature-description">
+Gets the diagnostic carried by this exception.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said diagnostic. </div>
+        </p></div></div><div id="a000b95d1d61aad14599d3aa1f21024f8" class="sect1"><div><h3>error_object</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1UserException?anchor=ae51e3b671cb44ebf9d90180d8f67d5eb">error_object_type</a> const &amp;<span> </span>error_object() const </div><div><p class="signature-description">
+Gets the error object associated with this exception.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said error object. </div>
+        </p></div></div><div id="a342c41e836fbd4380ebd46361e59d355" class="sect1"><div><h3>has_applied</h3></div><div class="signature-box">bool<span> </span>has_applied() const </div><div><p class="signature-description">
+Checks whether the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> "applied at" location has been set.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns <tt>true</tt> only if the "applied at" location has been set. </div>
+        </p></div></div><div id="a5d721dbaeed15beda021fd094f234f25" class="sect1"><div><h3>has_data</h3></div><div class="signature-box">bool<span> </span>has_data() const </div><div><p class="signature-description">
+Checks whether the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> data location has been set.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns <tt>true</tt> only if the data location has been set. </div>
+        </p></div></div><div id="a588e57955109c13d3f8b6f49369fbadd" class="sect1"><div><h3>has_source</h3></div><div class="signature-box">bool<span> </span>has_source() const </div><div><p class="signature-description">
+Checks whether the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code location has been set.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns <tt>true</tt> only if said has been set. </div>
+        </p></div></div><div id="a952a492db9c1bce86e00a2b39c9923c7" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1UserException">UserException</a> &amp;<span> </span>operator=(UserException const &amp;from)</div><div><p class="signature-description">
+Assigns this UserException from another.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The UserException to assign from. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <tt>*this</tt>. </div>
+        </p></div></div><div id="a4b44e05962489003a608d929ed416e00" class="sect1"><div><h3>polymorphic_throw</h3></div><div class="signature-box">void<span> </span>polymorphic_throw() const </div><div><p class="signature-description">
+Throws itself polymorphically; see <a href="http://www.parashift.com/c++-faq-lite/exceptions.html#faq-17.16" target="_blank">http://www.parashift.com/c++-faq-lite/exceptions.html#faq-17.16</a>.         </p><p class="signature-description">
+        </p></div></div><div id="a02dc383a718136164593a1f778337acd" class="sect1"><div><h3>query_trace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace">XQueryStackTrace</a> &amp;<span> </span>query_trace()</div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> stack trace, if any.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said stack trace. </div>
+        </p></div></div><div id="a4d7e8682bd950991b61dcc397ec073c3" class="sect1"><div><h3>query_trace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace">XQueryStackTrace</a> const &amp;<span> </span>query_trace() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> stack trace, if any.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said stack trace. </div>
+        </p></div></div><div id="a6b5e2e711fe5a54ed08d51d6dbbad8ef" class="sect1"><div><h3>raise_file</h3></div><div class="signature-box">char const *<span> </span>raise_file() const </div><div><p class="signature-description">
+Gets the C++ source-code file name whence this exception was raised.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said file name. </div>
+        </p></div></div><div id="ac8566af4cbcece74394cfd528a257781" class="sect1"><div><h3>raise_line</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a><span> </span>raise_line() const </div><div><p class="signature-description">
+Gets the C++ source-code line number whence this exception was raised.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said line number. </div>
+        </p></div></div><div id="a7c90ce88252b05934d793d046a46e96e" class="sect1"><div><h3>set_applied</h3></div><div class="signature-box">void<span> </span>set_applied(char const *uri, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</div><div><p class="signature-description">
+Sets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code "applied at" URI name, line, and column numbers.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>uri</td><td>
+The source-code "applied at" URI name. If either the null pointer or the empty string,  is used. </td></tr><tr><td>line</td><td>
+The source-code "applied at" URI line number. </td></tr><tr><td>column</td><td>
+The source-code "applied at" URI column number. </td></tr><tr><td>line_end</td><td>
+The source-code "applied at" URI end line number. </td></tr><tr><td>column_end</td><td>
+The source-code "applied at" URI end column number. </td></tr></table></div>
+        </p></div></div><div id="a4c3ccd573c7aeb72e3cbd543d32be6be" class="sect1"><div><h3>set_data</h3></div><div class="signature-box">void<span> </span>set_data(char const *uri, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</div><div><p class="signature-description">
+Sets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code data URI name, line, and column numbers.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>uri</td><td>
+The source-code data URI name. Must not be null. </td></tr><tr><td>line</td><td>
+The source-code data URI line number. </td></tr><tr><td>column</td><td>
+The source-code data URI column number. </td></tr><tr><td>line_end</td><td>
+The source-code data URI end line number. </td></tr><tr><td>column_end</td><td>
+The source-code data URI end column number. </td></tr></table></div>
+        </p></div></div><div id="ab17a11fa7a552fd4a2c9ac1033183b01" class="sect1"><div><h3>set_diagnostic</h3></div><div class="signature-box">void<span> </span>set_diagnostic(Diagnostic const &amp;diagnostic)</div><div><p class="signature-description">
+Sets the diagnostic.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>diagnostic</td><td>
+The diagnostic. </td></tr></table></div>
+        </p></div></div><div id="a443c6d3013eaf91cc680a0f99ab3482e" class="sect1"><div><h3>set_source</h3></div><div class="signature-box">void<span> </span>set_source(char const *uri, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</div><div><p class="signature-description">
+Sets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code URI name, line, and column numbers.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>uri</td><td>
+The source-code URI name. </td></tr><tr><td>line</td><td>
+The source-code URI line number. </td></tr><tr><td>column</td><td>
+The source-code URI column number. </td></tr><tr><td>line_end</td><td>
+The source-code URI end line number. </td></tr><tr><td>column_end</td><td>
+The source-code URI end column number. </td></tr></table></div>
+        </p></div></div><div id="a093a3985c87d852aa5f70187137153a4" class="sect1"><div><h3>source_column</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a><span> </span>source_column() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code column number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said column number or 0 if unset. </div>
+        </p></div></div><div id="a673a725c2e629380cd961ca537abcf02" class="sect1"><div><h3>source_column_end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a5d352fc19fbd8fb5a0cd9235336edac5">column_type</a><span> </span>source_column_end() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code end column number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said column number or 0 if unset. </div>
+        </p></div></div><div id="aab93a239dd4047d6e4aaa7cba2c9ab47" class="sect1"><div><h3>source_line</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a><span> </span>source_line() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code line number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said line number or 0 if unset. </div>
+        </p></div></div><div id="acfc67763485cee7f4dffd51e7b2abf90" class="sect1"><div><h3>source_line_end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a3d8d2c6b2f7f1a5cc892582649c85a4a">line_type</a><span> </span>source_line_end() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code end line number containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said line number or 0 if unset. </div>
+        </p></div></div><div id="a553ee378d77657617e872347f09d1adc" class="sect1"><div><h3>source_uri</h3></div><div class="signature-box">char const *<span> </span>source_uri() const </div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> source-code URI containing the error.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said URI or the empty string if unset. </div>
+        </p></div></div><div id="ae5f840e6668199cc36085e75b219185b" class="sect1"><div><h3>UserException</h3></div><div class="signature-box"><span> </span>UserException(UserException const &amp;from)</div><div><p class="signature-description">
+Copy-constructs a UserException.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The UserException to copy from. </td></tr></table></div>
+        </p></div></div><div id="a30aa6df89d2188198da3b5cf4a2e95b0" class="sect1"><div><h3>what</h3></div><div class="signature-box">char const *<span> </span>what() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa47139966e65609c59ea8995f73a91b8" class="sect1"><div><h3>~UserException</h3></div><div class="signature-box"><span> </span>~UserException()</div><div><p class="signature-description">
+Destroys this UserException.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Protected Functions</h2><div class="detailed"><div id="a971d995caaef374a61b11dda5e1d421f" class="sect1"><div><h3>clone</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1ZorbaException">ZorbaException</a> &gt;<span> </span>clone() const </div><div><p class="signature-description">
+Clones this exception object.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns a clone of this exception. </div>
+        </p></div></div><div id="adc4984f60a8efd83c117e7288c49a2cb" class="sect1"><div><h3>print</h3></div><div class="signature-box">std::ostream &amp;<span> </span>print(std::ostream &amp;) const </div><div><p class="signature-description">
+Prints the exception to the given ostream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>o</td><td>
+The ostream to print to. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <em>o</em>. </div>
+        </p></div></div><div id="ae528c5f932510d0a7daf96134150f905" class="sect1"><div><h3>print_impl</h3></div><div class="signature-box">std::ostream &amp;<span> </span>print_impl(std::ostream &amp;) const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aca6766a9819de68d5c8c6930ac96f948" class="sect1"><div><h3>print_stack_trace</h3></div><div class="signature-box">std::ostream &amp;<span> </span>print_stack_trace(std::ostream &amp;) const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Functions</h2><div class="detailed"><div id="a8617d2a6e30f425330e347d1e39cfb31" class="sect1"><div><h3>UserException</h3></div><div class="signature-box"><span> </span>UserException(char const *ns, char const *prefix, char const *localname, char const *raise_file, line_type raise_line, char const *description, error_object_type *error_object)</div><div><p class="signature-description">
+Constructs a UserException.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ns</td><td>
+The namespace of the error. </td></tr><tr><td>prefix</td><td>
+The prefix of the error. </td></tr><tr><td>locaname</td><td>
+The local-name of the error. </td></tr><tr><td>raise_file</td><td>
+The source-code file name whence the exception was raised. </td></tr><tr><td>raise_line</td><td>
+The source-code line number whence the exception was raised. </td></tr><tr><td>description</td><td>
+The error description. </td></tr><tr><td>error_object</td><td>
+The error object. </td></tr></table></div>
+        </p></div></div><div id="a8a3a3577d04eb3dc287e3cff6f41c187" class="sect1"><div><h3>UserException</h3></div><div class="signature-box"><span> </span>UserException(Error const &amp;error, char const *raise_file, line_type raise_line, char const *description, error_object_type *error_object)</div><div><p class="signature-description">
+Constructs a UserException.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>error</td><td>
+The error. </td></tr><tr><td>raise_file</td><td>
+The source-code file name whence the exception was raised. </td></tr><tr><td>raise_line</td><td>
+The source-code line number whence the exception was raised. </td></tr><tr><td>description</td><td>
+The error description. </td></tr><tr><td>error_object</td><td>
+The error object. </td></tr></table></div>
+        </p></div></div><div id="aff593a998eacf3ecf6b475872a126fa9" class="sect1"><div><h3>UserException</h3></div><div class="signature-box"><span> </span>UserException(serialization::Archiver &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Friend Classes</h2><div class="detailed"><div id="ad8550f3d6c4a9a5312bc28207bce5adf" class="sect1"><div><h3>internal::make_user_exception</h3></div><div class="signature-box">friend <a href="/pages/3.0/zorba/classzorba_1_1UserException">UserException</a><span> </span>internal::make_user_exception(char const *, line_type, char const *, char const *, char const *, char const *, internal::diagnostic::location const &amp;, error_object_type *)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ac5d7411619053368ea1e98f685a7ae3b" class="sect1"><div><h3>internal::make_user_exception</h3></div><div class="signature-box">friend <a href="/pages/3.0/zorba/classzorba_1_1UserException">UserException</a><span> </span>internal::make_user_exception(char const *, line_type, Error const &amp;, char const *, internal::diagnostic::location const &amp;, error_object_type *)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="addd8220965a72d41d9fa0ada3ecf562d" class="sect1"><div><h3>serialization::operator&amp;</h3></div><div class="signature-box">friend void<span> </span>serialization::operator&amp;(serialization::Archiver &amp;, ZorbaException *&amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Static Functions</h2><div class="detailed"><div id="ae5e8c070b2b96a9a5c2926956f49a9a9" class="sect1"><div><h3>get_print_format</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1ZorbaException?anchor=a9fd130e012249f5d8ad04d89c5ff549e">print_format</a><span> </span>get_print_format(std::ostream &amp;o)</div><div><p class="signature-description">
+Gets the current print_format associated with the given ostream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>o</td><td>
+The ostream to get the print_format of. </td></tr></table></div>
+<div><h4>Returns</h4>Returns said print_format. </div>
+        </p></div></div><div id="a5593dd34d38534dee71f654d018a938b" class="sect1"><div><h3>get_print_trace</h3></div><div class="signature-box">bool<span> </span>get_print_trace(std::ostream &amp;o)</div><div><p class="signature-description">
+Gets whether <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> stack traces will be included when XQueryExceptions are printed to the given ostream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>o</td><td>
+The ostream. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <em>true</em> only if stack traces will be included. </div>
+        </p></div></div><div id="ab13a584d2d9398fc0285ee44d8c26e27" class="sect1"><div><h3>set_print_format</h3></div><div class="signature-box">void<span> </span>set_print_format(std::ostream &amp;o, print_format f)</div><div><p class="signature-description">
+Sets the print_format of the given ostream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>o</td><td>
+The ostream to set the print_format of. </td></tr><tr><td>f</td><td>
+The print_format value. </td></tr></table></div>
+        </p></div></div><div id="a911f5714ef169dd932982103972b0dab" class="sect1"><div><h3>set_print_trace</h3></div><div class="signature-box">void<span> </span>set_print_trace(std::ostream &amp;o, bool print)</div><div><p class="signature-description">
+Sets whether <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> stack traces will be included when XQueryExceptions are printed to the given ostream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>o</td><td>
+The ostream to affect. </td></tr><tr><td>print</td><td>
+If <em>true</em>, stack traces will be included. </td></tr></table></div>
+        </p></div></div></div></div><div class="section"><h2>Protected Static Functions</h2><div class="detailed"><div id="aaf3519faf6f1b66def3de2a130451c26" class="sect1"><div><h3>print_uri</h3></div><div class="signature-box">bool<span> </span>print_uri(std::ostream &amp;, char const *uri)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

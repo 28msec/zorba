@@ -1,0 +1,989 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1DynamicContext" kind="class" prot="public">
+    <compoundname>zorba::DynamicContext</compoundname>
+    <includes refid="dynamic__context_8h" local="no">zorba/dynamic_context.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1aaeb3a0dc7a9e4a1a28cfe79ec66c519a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::addExternalFunctionParam</definition>
+        <argsstring>(const String &amp;aName, void *aValue)=0</argsstring>
+        <name>addExternalFunctionParam</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Add a name-value pair to this context. </para>        </briefdescription>
+        <detaileddescription>
+<para>The value can be accessed in the evaluate method of external functions (see <ref refid="classzorba_1_1ContextualExternalFunction" kindref="compound">ContextualExternalFunction</ref>).</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the parameter to add. If an entry with the same name already exists, the existing entry is replaced. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the value that can be accessed in the evaluate method. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>returns true if an entry with the same name did not already exist, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="316"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1aecdf4c714a2a71ac6c3b2dda875dc103" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::addExternalFunctionParameter</definition>
+        <argsstring>(const String &amp;aName, ExternalFunctionParameter *aParam) const =0</argsstring>
+        <name>addExternalFunctionParameter</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ExternalFunctionParameter" kindref="compound">ExternalFunctionParameter</ref> *</type>
+          <declname>aParam</declname>
+        </param>
+        <briefdescription>
+<para>Add a name-value pair to this context. </para>        </briefdescription>
+        <detaileddescription>
+<para>The value can be accessed in the evaluate method of external functions (see <ref refid="classzorba_1_1ContextualExternalFunction" kindref="compound">ContextualExternalFunction</ref>).</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the parameter to add. If an entry with the same name already exists, the existing entry is replaced. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aParam</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the parameter to add </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if an entry with the same name did not exist already, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="342"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a366552303b48532ab29d886825cbf471" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">time::calendar::type</ref></type>
+        <definition>virtual time::calendar::type zorba::DynamicContext::getCalendar</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getCalendar</name>
+        <briefdescription>
+<para>Gets the current calendar. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>the current calendar. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="303"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a32c3f0b0535e1926d0490ffd7632b8e9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::getContextItem</definition>
+        <argsstring>(Item &amp;aItem) const =0</argsstring>
+        <name>getContextItem</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aItem</declname>
+        </param>
+        <briefdescription>
+<para>Returns the current value of the context item. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> representing the current value of the context item. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the variable has been retrieved successfully, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="188"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1ab90900dc02bf7620a3f11485b8b1bc60" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::getContextPosition</definition>
+        <argsstring>(Item &amp;aItem) const =0</argsstring>
+        <name>getContextPosition</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aItem</declname>
+        </param>
+        <briefdescription>
+<para>Returns the current value of the context item position. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> representing the current value of the context item position. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the variable has been retrieved successfully, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="206"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a7ec40fc41e8a6d772ed32d63ceb33c37" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::getContextSize</definition>
+        <argsstring>(Item &amp;aItem) const =0</argsstring>
+        <name>getContextSize</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aItem</declname>
+        </param>
+        <briefdescription>
+<para>Returns the current value of the context item size. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> representing the current value of the context item size. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the variable has been retrieved successfully, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="197"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a05f801768847f0c9d46059bd814438ed" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::DynamicContext::getCurrentDateTime</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getCurrentDateTime</name>
+        <briefdescription>
+<para>Retrieve the dateTime <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> used at the time the query is executed (see <ref refid="classzorba_1_1DynamicContext_1a18706917b4936a76359713f83deeb1ed" kindref="member">setCurrentDateTime()</ref>). </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the dateTime <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> used at the time the query is executed. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="228"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1adeba489a47e347b43c67979f645fcdf3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::DynamicContext::getDefaultCollection</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getDefaultCollection</name>
+        <briefdescription>
+<para>Return the value of the default collection that is used when calling the fn:collection function without a parameter. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the default collection that is set in this dynamic context. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="269"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1ac16f86447ea4a21b6d8eb59d080d6483" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::getExternalFunctionParam</definition>
+        <argsstring>(const String &amp;aName, void *&amp;aValue) const =0</argsstring>
+        <name>getExternalFunctionParam</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <param>
+          <type>void *&amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Get the value of a pair that was registered using the addExternalFunctionParam method. </para>        </briefdescription>
+        <detaileddescription>
+<para>This can be used in the evaluate method of external functions (see <ref refid="classzorba_1_1ContextualExternalFunction" kindref="compound">ContextualExternalFunction</ref>).</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the parameter to retrieve </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the value matching the given name if true is returned. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if an entry with the given name was found, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="329"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1ac92732c6029291dfe4c59492c85294a4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1ExternalFunctionParameter" kindref="compound">ExternalFunctionParameter</ref> *</type>
+        <definition>virtual ExternalFunctionParameter* zorba::DynamicContext::getExternalFunctionParameter</definition>
+        <argsstring>(const String &amp;aName) const =0</argsstring>
+        <name>getExternalFunctionParameter</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <briefdescription>
+<para>Get the value of a pair that was registered using the addExternalFunctionParam method. </para>        </briefdescription>
+        <detaileddescription>
+<para>This can be used in the evaluate method of external functions (see <ref refid="classzorba_1_1ContextualExternalFunction" kindref="compound">ContextualExternalFunction</ref>).</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the parameter to retrieve </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the ExternalFunctionParameter* that was added using addExternalFunctionParameter, or 0 if no entry with the given name was found. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="355"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1ab4da904ba389c8345b0fa41deec7a803" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int zorba::DynamicContext::getImplicitTimezone</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getImplicitTimezone</name>
+        <briefdescription>
+<para>Retrieve the implicit timezone used in comparisons or arithmetic operations of date, time, or dateTime values. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>the implicit timezone as the number of seconds east of the prime medidian. Note that 0 is returned if an error occured and an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> is used. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="250"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1ae1604f9706db691b9ca37f13025df6f9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DynamicContext::getLocale</definition>
+        <argsstring>(locale::iso639_1::type *aLang, locale::iso3166_1::type *aCountry) const =0</argsstring>
+        <name>getLocale</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref> *</type>
+          <declname>aLang</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504" kindref="member">locale::iso3166_1::type</ref> *</type>
+          <declname>aCountry</declname>
+        </param>
+        <briefdescription>
+<para>Gets the locale. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aLang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to a <computeroutput>iso639_1::type</computeroutput> to receive the language. If <computeroutput>null</computeroutput>, this is not set. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCountry</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to a <computeroutput>iso3166_1::type</computeroutput> to receive the country. If <computeroutput>null</computeroutput>, this is not set. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="289"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a0d8d0c9398aaea49f884d1e591f0db31" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::getVariable</definition>
+        <argsstring>(const String &amp;aNamespace, const String &amp;aLocalname, Item &amp;aItem, Iterator_t &amp;aIterator) const =0</argsstring>
+        <name>getVariable</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aNamespace</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aLocalname</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aItem</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref> &amp;</type>
+          <declname>aIterator</declname>
+        </param>
+        <briefdescription>
+<para>Returns the current value of an external variable. </para>        </briefdescription>
+        <detaileddescription>
+<para>Exactly one of the two return values (aItem or aIterator) will be non-null; that is, have isNull() == false.</para><para>The named external variable may be located in the main query or in any modules imported directly or indirectly by the query.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNamespace</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace URI of the variable&apos;s expanded QName </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLocalname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the local name of the variable&apos;s expanded QName </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> representing the current (single-item) value of the external variable. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aIterator</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>an <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> representing the current (possibly multi-item) value of the external variable. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the variable has been retrieved successfully, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="152"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a331115d6083496de95a61e45b868baa8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::isBoundContextItem</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isBoundContextItem</name>
+        <briefdescription>
+<para>Returns true if a context item has been bound to the Dynamic Context. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="368"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a414b6d8ffcaf09aabc1b90519953d937" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::isBoundExternalVariable</definition>
+        <argsstring>(const String &amp;aNamespace, const String &amp;aLocalname) const =0</argsstring>
+        <name>isBoundExternalVariable</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aNamespace</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aLocalname</declname>
+        </param>
+        <briefdescription>
+<para>Returns true if the variable is bound to a value. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNamespace</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace of the qname of the variable to check </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLocalname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the localname of the qname of the variable to check </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="363"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a7d7039a7b939e3eda034d11bbe59250e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DynamicContext::setCalendar</definition>
+        <argsstring>(time::calendar::type aCalendar)=0</argsstring>
+        <name>setCalendar</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">time::calendar::type</ref></type>
+          <declname>aCalendar</declname>
+        </param>
+        <briefdescription>
+<para>Sets the calendar. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aCalendar</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The calendar to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="296"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1ad7613dd6f1cb97e94dcc403e265b57df" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::setContextItem</definition>
+        <argsstring>(const Item &amp;aItem)=0</argsstring>
+        <name>setContextItem</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aItem</declname>
+        </param>
+        <briefdescription>
+<para>Defines the context item. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> that is used as value for the context item. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the context item was set, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the given <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not valid). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="161"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a91717c215e40cf0020467e30fdb870a0" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::setContextPosition</definition>
+        <argsstring>(const Item &amp;aItem)=0</argsstring>
+        <name>setContextPosition</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aItem</declname>
+        </param>
+        <briefdescription>
+<para>Defines the context item position. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> that is used as value for the context item position. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the context item position was set, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the given <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not valid). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="179"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1ab0f266dfd982f4a297046c20880a87a4" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::setContextSize</definition>
+        <argsstring>(const Item &amp;aItem)=0</argsstring>
+        <name>setContextSize</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aItem</declname>
+        </param>
+        <briefdescription>
+<para>Defines the context item size. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> that is used as value for the context item size. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the context item size was set, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the given <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not valid). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="170"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a18706917b4936a76359713f83deeb1ed" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::setCurrentDateTime</definition>
+        <argsstring>(const Item &amp;aDateTimeItem)=0</argsstring>
+        <name>setCurrentDateTime</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aDateTimeItem</declname>
+        </param>
+        <briefdescription>
+<para>Defines the value of the current date time that can be accessed by the fn:current-dateTime() function at the time the query is executed. </para>        </briefdescription>
+        <detaileddescription>
+<para>If the current date time has not been set explicitly the value of the date and time is used at the time the query is created or cloned, respectively.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aDateTimeItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the dateTime <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the variable has been set successfully, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the given <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is invalid or not a <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> of type dateTime) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="220"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a109e269c97fe0ab18e04871cecc065ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::setDefaultCollection</definition>
+        <argsstring>(const Item &amp;aCollectionUri)=0</argsstring>
+        <name>setDefaultCollection</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aCollectionUri</declname>
+        </param>
+        <briefdescription>
+<para>Defines the value of the default collection that is used when calling the fn:collection function without a parameter. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aCollectionUri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the URI of the collection used by the fn:collection function. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the default collection has been set successfully, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="260"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a75f34355ef45a68d1f6186bb884fc5a2" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::setImplicitTimezone</definition>
+        <argsstring>(int aTimezone)=0</argsstring>
+        <name>setImplicitTimezone</name>
+        <param>
+          <type>int</type>
+          <declname>aTimezone</declname>
+        </param>
+        <briefdescription>
+<para>Defines the variable of the implicit timezone to be used when a date, time, or dateTime value that does not have a timezone is used in a comparison or arithmetic operation. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aTimezone</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the number of seconds east of the prime meridian. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the implicit timezone has been set successfully, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="239"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1abad7fc31d41880cd22e2a6428eb9eb76" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DynamicContext::setLocale</definition>
+        <argsstring>(locale::iso639_1::type aLang, locale::iso3166_1::type aCountry)=0</argsstring>
+        <name>setLocale</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref></type>
+          <declname>aLang</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504" kindref="member">locale::iso3166_1::type</ref></type>
+          <declname>aCountry</declname>
+        </param>
+        <briefdescription>
+<para>Sets the locale. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aLang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The language to set. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCountry</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The country to set. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="278"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1adf567bf8b8396bc6cd0cd805bb511a91" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::setVariable</definition>
+        <argsstring>(const String &amp;aQName, const Item &amp;aItem)=0</argsstring>
+        <name>setVariable</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aItem</declname>
+        </param>
+        <briefdescription>
+<para>Defines the external variable identified by aQName and assigns it the value of aItem. </para>        </briefdescription>
+        <detaileddescription>
+<para>aQName may be in one of two forms: A lexical QName (eg. &quot;ns:foo&quot;), or a James Clark-style universal name (eg. &quot;{nsuri}:foo&quot;). If it is a universal name, then this method will find the named external variable in the main query or in any modules imported directly or indirectly by the query. If it is a lexical QName, then it is only possible to resolve the prefix in the the context of the main query, hence only external variables in the main query or those in directly-imported modules may be bound.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the QName that identifies the external variable. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> that is used as value for the variable. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the variable has been set, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the given <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not valid). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="68"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1aae0407571969889e2590ecfedc3ea8fb" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::setVariable</definition>
+        <argsstring>(const String &amp;inNamespace, const String &amp;inLocalname, const Item &amp;inValue)=0</argsstring>
+        <name>setVariable</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>inNamespace</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>inLocalname</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>inValue</declname>
+        </param>
+        <briefdescription>
+<para>Defines the external variable identified by an expanded QName and assigns it the value of aItem. </para>        </briefdescription>
+        <detaileddescription>
+<para>The named external variable may be located in the main query or in any modules imported directly or indirectly by the query.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNamespace</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace URI of the variable&apos;s expanded QName </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLocalname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the local name of the variable&apos;s expanded QName </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> that is used as value for the variable. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the variable has been set successfully, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the given <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not valid). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="87"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1aca600091163f6e9590d80ad04c78d095" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::setVariable</definition>
+        <argsstring>(const String &amp;aQName, const Iterator_t &amp;aIterator)=0</argsstring>
+        <name>setVariable</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref> &amp;</type>
+          <declname>aIterator</declname>
+        </param>
+        <briefdescription>
+<para>Defines the external variable identified by aQName and assigns it the sequence that is returned by evaluating aIterator. </para>        </briefdescription>
+        <detaileddescription>
+<para>aQName may be in one of two forms: A lexical QName (eg. &quot;ns:foo&quot;), or a James Clark-style universal name (eg. &quot;{nsuri}:foo&quot;). If it is a universal name, then this method will find the named external variable in the main query or in any modules imported directly or indirectly by the query. If it is a lexical QName, then it is only possible to resolve the prefix in the the context of the main query, hence only external variables in the main query or those in directly-imported modules may be bound.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the QName that identifies the external variable. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aIterator</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> producing the sequence that is assigned to the variable. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the variable has been set successfully, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the given <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> is not valid). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="110"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a0b8187e2037fc037482d685573536c07" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::DynamicContext::setVariable</definition>
+        <argsstring>(const String &amp;aNamespace, const String &amp;aLocalname, const Iterator_t &amp;aIterator)=0</argsstring>
+        <name>setVariable</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aNamespace</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aLocalname</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref> &amp;</type>
+          <declname>aIterator</declname>
+        </param>
+        <briefdescription>
+<para>Defines the external variable identified by an expanded QName and assigns it the sequence that is returned by evaluating aIterator. </para>        </briefdescription>
+        <detaileddescription>
+<para>The named external variable may be located in the main query or in any modules imported directly or indirectly by the query.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNamespace</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace URI of the variable&apos;s expanded QName </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLocalname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the local name of the variable&apos;s expanded QName </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aIterator</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> producing the sequence that is assigned to the variable. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the variable has been set successfully, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the given <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> is not valid). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="130"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1DynamicContext_1a5ca3479a17daeb5690a6a82d87e0dd3d" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::DynamicContext::~DynamicContext</definition>
+        <argsstring>()</argsstring>
+        <name>~DynamicContext</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="373" bodyfile="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" bodystart="373" bodyend="373"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Instances of the class <ref refid="classzorba_1_1DynamicContext" kindref="compound">DynamicContext</ref> contain the information that is available at the time the query is executed. </para>    </briefdescription>
+    <detaileddescription>
+<para>The class contains the information that is defined in the XQuery specification (see <ulink url="http://www.w3.org/TR/xquery/#eval_context">http://www.w3.org/TR/xquery/#eval_context</ulink>).</para><para>A dynamic context always belongs to a particular query and, hence, can be retrieved by calling getDynamicContext on a compiled query (see <ref refid="classzorba_1_1XQuery_1ade775d63d25f849de4a22297e859354c" kindref="member">XQuery::getDynamicContext()</ref>). </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" line="45" bodyfile="/home/wcandillon/deadlinks/include/zorba/dynamic_context.h" bodystart="44" bodyend="374"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1DynamicContext_1aaeb3a0dc7a9e4a1a28cfe79ec66c519a" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>addExternalFunctionParam</name></member>
+      <member refid="classzorba_1_1DynamicContext_1aecdf4c714a2a71ac6c3b2dda875dc103" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>addExternalFunctionParameter</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a366552303b48532ab29d886825cbf471" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getCalendar</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a32c3f0b0535e1926d0490ffd7632b8e9" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getContextItem</name></member>
+      <member refid="classzorba_1_1DynamicContext_1ab90900dc02bf7620a3f11485b8b1bc60" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getContextPosition</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a7ec40fc41e8a6d772ed32d63ceb33c37" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getContextSize</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a05f801768847f0c9d46059bd814438ed" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getCurrentDateTime</name></member>
+      <member refid="classzorba_1_1DynamicContext_1adeba489a47e347b43c67979f645fcdf3" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getDefaultCollection</name></member>
+      <member refid="classzorba_1_1DynamicContext_1ac16f86447ea4a21b6d8eb59d080d6483" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getExternalFunctionParam</name></member>
+      <member refid="classzorba_1_1DynamicContext_1ac92732c6029291dfe4c59492c85294a4" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getExternalFunctionParameter</name></member>
+      <member refid="classzorba_1_1DynamicContext_1ab4da904ba389c8345b0fa41deec7a803" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getImplicitTimezone</name></member>
+      <member refid="classzorba_1_1DynamicContext_1ae1604f9706db691b9ca37f13025df6f9" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getLocale</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a0d8d0c9398aaea49f884d1e591f0db31" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>getVariable</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a331115d6083496de95a61e45b868baa8" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>isBoundContextItem</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a414b6d8ffcaf09aabc1b90519953d937" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>isBoundExternalVariable</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a7d7039a7b939e3eda034d11bbe59250e" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setCalendar</name></member>
+      <member refid="classzorba_1_1DynamicContext_1ad7613dd6f1cb97e94dcc403e265b57df" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setContextItem</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a91717c215e40cf0020467e30fdb870a0" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setContextPosition</name></member>
+      <member refid="classzorba_1_1DynamicContext_1ab0f266dfd982f4a297046c20880a87a4" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setContextSize</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a18706917b4936a76359713f83deeb1ed" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setCurrentDateTime</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a109e269c97fe0ab18e04871cecc065ca" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setDefaultCollection</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a75f34355ef45a68d1f6186bb884fc5a2" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setImplicitTimezone</name></member>
+      <member refid="classzorba_1_1DynamicContext_1abad7fc31d41880cd22e2a6428eb9eb76" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setLocale</name></member>
+      <member refid="classzorba_1_1DynamicContext_1adf567bf8b8396bc6cd0cd805bb511a91" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setVariable</name></member>
+      <member refid="classzorba_1_1DynamicContext_1aae0407571969889e2590ecfedc3ea8fb" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setVariable</name></member>
+      <member refid="classzorba_1_1DynamicContext_1aca600091163f6e9590d80ad04c78d095" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setVariable</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a0b8187e2037fc037482d685573536c07" prot="public" virt="pure-virtual"><scope>zorba::DynamicContext</scope><name>setVariable</name></member>
+      <member refid="classzorba_1_1DynamicContext_1a5ca3479a17daeb5690a6a82d87e0dd3d" prot="protected" virt="virtual"><scope>zorba::DynamicContext</scope><name>~DynamicContext</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

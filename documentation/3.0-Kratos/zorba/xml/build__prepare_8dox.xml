@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build__prepare_8dox" kind="file">
+    <compoundname>build_prepare.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>build_prepare<sp/>Preparing<sp/>to<sp/>Build<sp/>Zorba</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">The<sp/>following<sp/>outlines<sp/>the<sp/>common<sp/>steps<sp/>for<sp/>building<sp/>Zorba<sp/>once<sp/>the</highlight></codeline>
+<codeline lineno="4"><highlight class="comment">required<sp/>and<sp/>optional<sp/>tools<sp/>and<sp/>libraries<sp/>(as<sp/>described<sp/>in<sp/>\ref</highlight></codeline>
+<codeline lineno="5"><highlight class="comment">build_prerequisites)<sp/>have<sp/>been<sp/>installed.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"></highlight></codeline>
+<codeline lineno="7"><highlight class="comment">\section<sp/>build_gettingsrc<sp/>Getting<sp/>the<sp/>Zorba<sp/>Source<sp/>Code</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"></highlight></codeline>
+<codeline lineno="9"><highlight class="comment">You<sp/>may<sp/>get<sp/>the<sp/>Zorba<sp/>source<sp/>code<sp/>in<sp/>one<sp/>of<sp/>two<sp/>ways:<sp/>downloading<sp/>a</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">released<sp/>source<sp/>distribution,<sp/>or<sp/>getting<sp/>the<sp/>code<sp/>from<sp/>our<sp/>Launchpad</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">code<sp/>repository.<sp/>The<sp/>directory<sp/>that<sp/>the<sp/>Zorba<sp/>source<sp/>code<sp/>is<sp/>placed</highlight></codeline>
+<codeline lineno="12"><highlight class="comment">into<sp/>will<sp/>be<sp/>referred<sp/>to<sp/>as<sp/>\c<sp/>{ZORBASRC}<sp/>in<sp/>later<sp/>instructions.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"></highlight></codeline>
+<codeline lineno="14"><highlight class="comment">\subsection<sp/>download_source<sp/>Getting<sp/>a<sp/>Source<sp/>Code<sp/>Release</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"></highlight></codeline>
+<codeline lineno="16"><highlight class="comment">You<sp/>may<sp/>download<sp/>the<sp/>latest<sp/>Zorba<sp/>release<sp/>source<sp/>code<sp/>as<sp/>either<sp/>a</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">&lt;b&gt;.zip&lt;/b&gt;<sp/>or<sp/>&lt;b&gt;.tar.gz&lt;/b&gt;<sp/>file<sp/>from<sp/>Launchpad:</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">https://launchpad.net/zorba/+download<sp/>.</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"></highlight></codeline>
+<codeline lineno="20"><highlight class="comment">\subsection<sp/>checkout_source<sp/>Getting<sp/>the<sp/>Latest<sp/>Code<sp/>from<sp/>Launchpad</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"></highlight></codeline>
+<codeline lineno="22"><highlight class="comment">If<sp/>you<sp/>want<sp/>the<sp/>very<sp/>latest<sp/>and<sp/>greatest<sp/>Zorba<sp/>source,<sp/>you<sp/>can<sp/>check</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">out<sp/>our<sp/>source<sp/>code<sp/>trunk<sp/>from<sp/>our<sp/>Launchpad<sp/>repository.<sp/>This<sp/>is</highlight></codeline>
+<codeline lineno="24"><highlight class="comment">actually<sp/>a<sp/>pretty<sp/>&quot;safe&quot;<sp/>option,<sp/>compared<sp/>to<sp/>many<sp/>projects,<sp/>as<sp/>Zorba</highlight></codeline>
+<codeline lineno="25"><highlight class="comment">attempts<sp/>to<sp/>enforce<sp/>a<sp/>&quot;trunk<sp/>is<sp/>always<sp/>releasable&quot;<sp/>policy<sp/>through</highlight></codeline>
+<codeline lineno="26"><highlight class="comment">extensive<sp/>regression<sp/>testing<sp/>on<sp/>every<sp/>trunk<sp/>checkin.</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"></highlight></codeline>
+<codeline lineno="28"><highlight class="comment">Launchpad<sp/>uses<sp/>the<sp/>Bazaar<sp/>distributed<sp/>version<sp/>control<sp/>system<sp/>from</highlight></codeline>
+<codeline lineno="29"><highlight class="comment">Canonical,<sp/>the<sp/>producers<sp/>of<sp/>Ubuntu<sp/>Linux<sp/>and<sp/>Launchpad.<sp/>So<sp/>you<sp/>will</highlight></codeline>
+<codeline lineno="30"><highlight class="comment">need<sp/>to<sp/>install<sp/>Bazaar<sp/>in<sp/>order<sp/>to<sp/>check<sp/>out<sp/>our<sp/>code</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">repositories.<sp/>Installers<sp/>are<sp/>available<sp/>from<sp/>Canonical&apos;s<sp/>website,</highlight></codeline>
+<codeline lineno="32"><highlight class="comment">http://bazaar.canonical.com/<sp/>.<sp/>Bazaar<sp/>packages<sp/>are<sp/>also<sp/>available<sp/>for</highlight></codeline>
+<codeline lineno="33"><highlight class="comment">all<sp/>Linux<sp/>distributions<sp/>(the<sp/>package<sp/>name<sp/>may<sp/>be<sp/>&quot;bazaar&quot;<sp/>or<sp/>&quot;bzr&quot;),</highlight></codeline>
+<codeline lineno="34"><highlight class="comment">and<sp/>in<sp/>Macports<sp/>for<sp/>MacOS<sp/>X.</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"></highlight></codeline>
+<codeline lineno="36"><highlight class="comment">Once<sp/>you<sp/>have<sp/>Bazaar<sp/>installed,<sp/>check<sp/>out<sp/>the<sp/>Zorba<sp/>trunk:</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"></highlight></codeline>
+<codeline lineno="38"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="39"><highlight class="comment">bzr<sp/>checkout<sp/>--lightweight<sp/>lp:zorba</highlight></codeline>
+<codeline lineno="40"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"></highlight></codeline>
+<codeline lineno="42"><highlight class="comment">\section<sp/>noncore_download<sp/>Downloading<sp/>source<sp/>code<sp/>for<sp/>non-core<sp/>modules</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"></highlight></codeline>
+<codeline lineno="44"><highlight class="comment">Zorba<sp/>offers<sp/>a<sp/>number<sp/>of<sp/>optional<sp/>(&quot;non-core&quot;)<sp/>modules<sp/>which<sp/>provide</highlight></codeline>
+<codeline lineno="45"><highlight class="comment">additional<sp/>functionality;<sp/>see<sp/>\ref<sp/>non_core_modules<sp/>for<sp/>a<sp/>list.<sp/>When</highlight></codeline>
+<codeline lineno="46"><highlight class="comment">you<sp/>build<sp/>Zorba,<sp/>you<sp/>may<sp/>also<sp/>build<sp/>any<sp/>non-core<sp/>modules<sp/>at<sp/>the<sp/>same</highlight></codeline>
+<codeline lineno="47"><highlight class="comment">time,<sp/>and<sp/>these<sp/>modules<sp/>will<sp/>then<sp/>be<sp/>available<sp/>in<sp/>your<sp/>Zorba</highlight></codeline>
+<codeline lineno="48"><highlight class="comment">installation.</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"></highlight></codeline>
+<codeline lineno="50"><highlight class="comment">Currently,<sp/>the<sp/>Zorba<sp/>team<sp/>does<sp/>not<sp/>provide<sp/>source<sp/>downloads<sp/>for<sp/>the</highlight></codeline>
+<codeline lineno="51"><highlight class="comment">non-core<sp/>modules.<sp/>However,<sp/>there<sp/>is<sp/>a<sp/>simple<sp/>CMake<sp/>script<sp/>inside<sp/>Zorba</highlight></codeline>
+<codeline lineno="52"><highlight class="comment">which<sp/>will<sp/>allow<sp/>you<sp/>to<sp/>check<sp/>out<sp/>these<sp/>modules<sp/>from<sp/>source<sp/>control</highlight></codeline>
+<codeline lineno="53"><highlight class="comment">easily.<sp/>Note<sp/>that<sp/>this<sp/>requires<sp/>having<sp/>the<sp/>Bazaar<sp/>utility<sp/>available</highlight></codeline>
+<codeline lineno="54"><highlight class="comment">on<sp/>your<sp/>system;<sp/>see<sp/>\ref<sp/>checkout_source<sp/>for<sp/>more<sp/>information.</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"></highlight></codeline>
+<codeline lineno="56"><highlight class="comment">From<sp/>your<sp/>{ZORBASRC}<sp/>directory,<sp/>type</highlight></codeline>
+<codeline lineno="57"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/>cmake<sp/>-Doutdir=../zorba_modules<sp/>-Dmodname=NAME<sp/>-P<sp/>modules/DownloadModules.cmake</highlight></codeline>
+<codeline lineno="59"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"></highlight></codeline>
+<codeline lineno="61"><highlight class="comment">to<sp/>download<sp/>the<sp/>particular<sp/>module<sp/>package<sp/>NAME<sp/>(see<sp/>\ref</highlight></codeline>
+<codeline lineno="62"><highlight class="comment">non_core_modules<sp/>for<sp/>a<sp/>complete<sp/>list<sp/>of<sp/>module<sp/>packages<sp/>and<sp/>their</highlight></codeline>
+<codeline lineno="63"><highlight class="comment">contents),<sp/>or</highlight></codeline>
+<codeline lineno="64"><highlight class="comment"></highlight></codeline>
+<codeline lineno="65"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/>cmake<sp/>-Doutdir=../zorba_modules<sp/>-Dallmodules=1<sp/>-P<sp/>modules/DownloadModules.cmake</highlight></codeline>
+<codeline lineno="67"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"></highlight></codeline>
+<codeline lineno="69"><highlight class="comment">to<sp/>download<sp/>all<sp/>the<sp/>modules.<sp/>(On<sp/>Windows,<sp/>you<sp/>will<sp/>need<sp/>to<sp/>use<sp/>backslashes<sp/>instead<sp/>of<sp/>forward<sp/>slashes<sp/>in<sp/>the<sp/>above<sp/>paths.)</highlight></codeline>
+<codeline lineno="70"><highlight class="comment"></highlight></codeline>
+<codeline lineno="71"><highlight class="comment">This<sp/>will<sp/>place<sp/>the<sp/>downloaded<sp/>module<sp/>source<sp/>code<sp/>in<sp/>the<sp/>directory</highlight></codeline>
+<codeline lineno="72"><highlight class="comment">&lt;tt&gt;../zorba_modules&lt;/tt&gt;,<sp/>which<sp/>is<sp/>where<sp/>the<sp/>Zorba<sp/>build<sp/>will<sp/>look</highlight></codeline>
+<codeline lineno="73"><highlight class="comment">for<sp/>them<sp/>by<sp/>default.<sp/>If<sp/>you<sp/>wish<sp/>to<sp/>download<sp/>them<sp/>to<sp/>some<sp/>other</highlight></codeline>
+<codeline lineno="74"><highlight class="comment">location,<sp/>you<sp/>may<sp/>do<sp/>so;<sp/>in<sp/>that<sp/>case,<sp/>when<sp/>you<sp/>configure<sp/>the<sp/>Zorba</highlight></codeline>
+<codeline lineno="75"><highlight class="comment">build<sp/>with<sp/>CMake,<sp/>provide<sp/>the<sp/>\c</highlight></codeline>
+<codeline lineno="76"><highlight class="comment">-DZORBA_MODULES_DIR=/full/path/to/modules<sp/>argument.</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"></highlight></codeline>
+<codeline lineno="78"><highlight class="comment">\note</highlight></codeline>
+<codeline lineno="79"><highlight class="comment">Please<sp/>note<sp/>that<sp/>some<sp/>of<sp/>these<sp/>modules<sp/>depend<sp/>on<sp/>other<sp/>modules.<sp/><sp/>Most</highlight></codeline>
+<codeline lineno="80"><highlight class="comment">notably,<sp/>the<sp/>EXPath<sp/>http-client<sp/>module<sp/>(in<sp/>the</highlight></codeline>
+<codeline lineno="81"><highlight class="comment">&lt;a<sp/>href=&quot;/modules/latest/expath.org/ns/http-client&quot;&gt;http-client&lt;/a&gt;<sp/>module</highlight></codeline>
+<codeline lineno="82"><highlight class="comment">package)<sp/>depends<sp/>on<sp/>the</highlight></codeline>
+<codeline lineno="83"><highlight class="comment">&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/converters/html&quot;&gt;html&lt;/a&gt;</highlight></codeline>
+<codeline lineno="84"><highlight class="comment">module,<sp/>which<sp/>is<sp/>in<sp/>the<sp/>&lt;b&gt;data-converters&lt;/b&gt;<sp/>module<sp/>package.<sp/>So,<sp/>if<sp/>you</highlight></codeline>
+<codeline lineno="85"><highlight class="comment">download<sp/>the<sp/>&lt;b&gt;http-client&lt;/b&gt;<sp/>package,<sp/>you<sp/>must<sp/>also<sp/>download<sp/>the</highlight></codeline>
+<codeline lineno="86"><highlight class="comment">&lt;b&gt;data-converters&lt;/b&gt;<sp/>package<sp/>(and<sp/>ensure<sp/>that</highlight></codeline>
+<codeline lineno="87"><highlight class="comment">&lt;a<sp/>href=&quot;http://tidy.sourceforge.net/&quot;&gt;libtidy&lt;/a&gt;<sp/>is<sp/>installed;<sp/>see<sp/>\ref<sp/>noncore_requirements).</highlight></codeline>
+<codeline lineno="88"><highlight class="comment">\note</highlight></codeline>
+<codeline lineno="89"><highlight class="comment">Please<sp/>see<sp/>our<sp/>&lt;a<sp/>href=&quot;/images/doxygen/modules.svg&quot;&gt;module-interdependency<sp/>graph&lt;/a&gt;<sp/>for<sp/>details.</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"></highlight></codeline>
+<codeline lineno="91"><highlight class="comment">\section<sp/>create_build_dir<sp/>Creating<sp/>a<sp/>Build<sp/>Directory</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"></highlight></codeline>
+<codeline lineno="93"><highlight class="comment">Zorba<sp/>requires<sp/>an<sp/>&lt;a</highlight></codeline>
+<codeline lineno="94"><highlight class="comment">href=&quot;http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F&quot;</highlight></codeline>
+<codeline lineno="95"><highlight class="comment">target=&quot;_blank&quot;&gt;out-of-source<sp/>build&lt;/a&gt;,<sp/>which<sp/>means<sp/>you<sp/>need<sp/>to</highlight></codeline>
+<codeline lineno="96"><highlight class="comment">create<sp/>a<sp/>separate<sp/>(empty)<sp/>build<sp/>directory.<sp/>A<sp/>common<sp/>convention<sp/>is<sp/>to</highlight></codeline>
+<codeline lineno="97"><highlight class="comment">create<sp/>a<sp/>directory<sp/>named<sp/>&lt;b&gt;&quot;build&quot;&lt;/b&gt;<sp/>in<sp/>the<sp/>Zorba<sp/>source<sp/>directory,</highlight></codeline>
+<codeline lineno="98"><highlight class="comment">but<sp/>you<sp/>may<sp/>name<sp/>it<sp/>and<sp/>place<sp/>it<sp/>anywhere<sp/>you<sp/>like.<sp/><sp/>We<sp/>refer<sp/>to<sp/>this</highlight></codeline>
+<codeline lineno="99"><highlight class="comment">directory<sp/>as<sp/>\c<sp/>{ZORBABUILD}<sp/>in<sp/>the<sp/>following<sp/>steps.</highlight></codeline>
+<codeline lineno="100"><highlight class="comment"></highlight></codeline>
+<codeline lineno="101"><highlight class="comment">\section<sp/>prepare_next<sp/>What&apos;s<sp/>next?</highlight></codeline>
+<codeline lineno="102"><highlight class="comment"></highlight></codeline>
+<codeline lineno="103"><highlight class="comment">Now,<sp/>go<sp/>on<sp/>to<sp/>\ref<sp/>configure_zorba.</highlight></codeline>
+<codeline lineno="104"><highlight class="comment"></highlight></codeline>
+<codeline lineno="105"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/build_prepare.dox"/>
+  </compounddef>
+</doxygen>

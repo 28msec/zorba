@@ -1,0 +1,550 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1diagnostic" kind="namespace">
+    <compoundname>zorba::diagnostic</compoundname>
+    <innerclass refid="classzorba_1_1diagnostic_1_1QName" prot="public">zorba::diagnostic::QName</innerclass>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacezorba_1_1diagnostic_1a5709afb398f65a318160aa7613abfa9e" prot="public" static="no">
+        <name>kind</name>
+        <enumvalue id="namespacezorba_1_1diagnostic_1a5709afb398f65a318160aa7613abfa9eaaaca7636da2ca777180d9eda3ad20c62" prot="public">
+          <name>UNKNOWN_KIND</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1diagnostic_1a5709afb398f65a318160aa7613abfa9ea226b1341475c7195d80885e5dc1753fe" prot="public">
+          <name>XQUERY_STATIC</name>
+          <briefdescription>
+<para>A static error is an error that must be detected during the static analysis phase. </para>          </briefdescription>
+          <detaileddescription>
+<para>A syntax error is an example of a static error. </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1diagnostic_1a5709afb398f65a318160aa7613abfa9ea261fca0335957c8fef5a407dc96297a7" prot="public">
+          <name>XQUERY_DYNAMIC</name>
+          <briefdescription>
+<para>A dynamic error is an error that must be detected during the dynamic evaluation phase and may be detected during the static analysis phase. </para>          </briefdescription>
+          <detaileddescription>
+<para>Numeric overflow is an example of a dynamic error. </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1diagnostic_1a5709afb398f65a318160aa7613abfa9ea61d6cd92ad93c057767a1e6ec560c75e" prot="public">
+          <name>XQUERY_TYPE</name>
+          <briefdescription>
+<para>A type error may be raised during the static analysis phase or the dynamic evaluation phase. </para>          </briefdescription>
+          <detaileddescription>
+<para>During the static analysis phase, a type error occurs when the static type of an expression does not match the expected type of the context in which the expression occurs.</para><para>During the dynamic evaluation phase, a type error occurs when the dynamic type of a value does not match the expected type of the context in which the value occurs. </para>          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>An <ref refid="namespacezorba_1_1diagnostic_1a5709afb398f65a318160aa7613abfa9e" kindref="member">diagnostic::kind</ref> is the kind of error. </para>        </briefdescription>
+        <detaileddescription>
+<para>See: <ulink url="http://www.w3.org/TR/xquery-30/#id-kinds-of-errors">http://www.w3.org/TR/xquery-30/#id-kinds-of-errors</ulink> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="227" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="227" bodyend="256"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1a1a7ab0ded4a807bb4298b245b3133b9f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::diagnostic::operator!=</definition>
+        <argsstring>(QName const &amp;q1, QName const &amp;q2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two QNames for inequality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>q1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if either the QNames&apos; namespaces or local names are not equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="151" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="151" bodyend="153"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1abed0664a3698de8b2b693f40bb72766d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::diagnostic::operator!=</definition>
+        <argsstring>(QName const &amp;q1, char const *q2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>q2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two QNames for inequality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>q1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. It can be in Clark notation, <computeroutput>{</computeroutput><emphasis>namespace</emphasis><computeroutput>}</computeroutput><emphasis>local-name</emphasis>, in which case the namespaces and local-names are compared; or as <emphasis>prefix</emphasis><computeroutput>:</computeroutput><emphasis>local-name</emphasis> in which case the prefixes and local-names are compared. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if either the QNames&apos; namespaces or local names are not equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="167" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="167" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1a75777aa492944d9f4c16499783f13a46" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::diagnostic::operator!=</definition>
+        <argsstring>(char const *q1, QName const &amp;q2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>char const *</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two QNames for inequality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>q1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. It can be in Clark notation, <computeroutput>{</computeroutput><emphasis>namespace</emphasis><computeroutput>}</computeroutput><emphasis>local-name</emphasis>, in which case the namespaces and local-names are compared; or as <emphasis>prefix</emphasis><computeroutput>:</computeroutput><emphasis>local-name</emphasis> in which case the prefixes and local-names are compared. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if either the QNames&apos; namespaces or local names are not equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="183" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="183" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1abf3977b033adc7855a78ba35a0ee1663" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class StringType</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::diagnostic::operator!=</definition>
+        <argsstring>(QName const &amp;q1, StringType const &amp;q2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type>StringType const &amp;</type>
+          <declname>q2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two QNames for inequality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type of <emphasis>q2</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>q1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. It can be in Clark notation, <computeroutput>{</computeroutput><emphasis>namespace</emphasis><computeroutput>}</computeroutput><emphasis>local-name</emphasis>, in which case the namespaces and local-names are compared; or as <emphasis>prefix</emphasis><computeroutput>:</computeroutput><emphasis>local-name</emphasis> in which case the prefixes and local-names are compared. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the QNames are not equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="200" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="200" bodyend="202"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1ab9b1dc1e4ffdbc572e14ea442401c7a5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class StringType</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::diagnostic::operator!=</definition>
+        <argsstring>(StringType const &amp;q1, QName const &amp;q2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>StringType const &amp;</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two QNames for inequality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type of <emphasis>q1</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>q1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. It can be in Clark notation, <computeroutput>{</computeroutput><emphasis>namespace</emphasis><computeroutput>}</computeroutput><emphasis>local-name</emphasis>, in which case the namespaces and local-names are compared; or as <emphasis>prefix</emphasis><computeroutput>:</computeroutput><emphasis>local-name</emphasis> in which case the prefixes and local-names are compared. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the QNames are not equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="217" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="217" bodyend="219"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1a7e438e6a3d24b95116fea6fe4aa5517a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::diagnostic::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;o, QName const &amp;qn)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>qn</declname>
+        </param>
+        <briefdescription>
+<para>Emits a <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> to an ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to emit to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>qn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> to emit. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>o</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="67"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1a2b9a65c0b1baf7a1eacd05815af7f0f8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::diagnostic::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;o, kind k)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1diagnostic_1a5709afb398f65a318160aa7613abfa9e" kindref="member">kind</ref></type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+<para>Emits the given <ref refid="namespacezorba_1_1diagnostic_1a5709afb398f65a318160aa7613abfa9e" kindref="member">diagnostic::kind</ref> to the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to emit to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>k</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The kind to emit. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>o</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="266"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1a9f165a17d24c1a4433f39ba063910285" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::diagnostic::operator==</definition>
+        <argsstring>(QName const &amp;q1, QName const &amp;q2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two QNames for equality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>q1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the QNames&apos; namespaces and local names are equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="78"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1a5453817ea76f828f94b0f4f6eb482d8b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::diagnostic::operator==</definition>
+        <argsstring>(QName const &amp;q1, char const *q2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>q2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two QNames for equality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>q1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. It can be in Clark notation, <computeroutput>{</computeroutput><emphasis>namespace</emphasis><computeroutput>}</computeroutput><emphasis>local-name</emphasis>, in which case the namespaces and local-names are compared; or as <emphasis>prefix</emphasis><computeroutput>:</computeroutput><emphasis>local-name</emphasis> in which case the prefixes and local-names are compared. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the QNames are equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="92"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1a27733419a91cd0af81ca1a0a1ecb35d9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::diagnostic::operator==</definition>
+        <argsstring>(char const *q1, QName const &amp;q2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>char const *</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two QNames for equality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>q1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. It can be in Clark notation, <computeroutput>{</computeroutput><emphasis>namespace</emphasis><computeroutput>}</computeroutput><emphasis>local-name</emphasis>, in which case the namespaces and local-names are compared; or as <emphasis>prefix</emphasis><computeroutput>:</computeroutput><emphasis>local-name</emphasis> in which case the prefixes and local-names are compared. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the QNames are equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="105" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="105" bodyend="107"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1a7cbd35793cadd09c35e218294e993a34" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class StringType</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::diagnostic::operator==</definition>
+        <argsstring>(QName const &amp;q1, StringType const &amp;q2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type>StringType const &amp;</type>
+          <declname>q2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two QNames for equality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type of <emphasis>q2</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>q1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. It can be in Clark notation, <computeroutput>{</computeroutput><emphasis>namespace</emphasis><computeroutput>}</computeroutput><emphasis>local-name</emphasis>, in which case the namespaces and local-names are compared; or as <emphasis>prefix</emphasis><computeroutput>:</computeroutput><emphasis>local-name</emphasis> in which case the prefixes and local-names are compared. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the QNames are equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="122" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="122" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1diagnostic_1a761e408accc573836b464c26813e7267" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class StringType</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::diagnostic::operator==</definition>
+        <argsstring>(StringType const &amp;q1, QName const &amp;q2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>StringType const &amp;</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref> const &amp;</type>
+          <declname>q2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two QNames for equality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type of <emphasis>q1</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>q1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. It can be in Clark notation, <computeroutput>{</computeroutput><emphasis>namespace</emphasis><computeroutput>}</computeroutput><emphasis>local-name</emphasis>, in which case the namespaces and local-names are compared; or as <emphasis>prefix</emphasis><computeroutput>:</computeroutput><emphasis>local-name</emphasis> in which case the prefixes and local-names are compared. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the QNames are equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="139" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="139" bodyend="141"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="26"/>
+  </compounddef>
+</doxygen>

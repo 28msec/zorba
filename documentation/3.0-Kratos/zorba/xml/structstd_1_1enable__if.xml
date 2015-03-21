@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structstd_1_1enable__if" kind="struct" prot="public">
+    <compoundname>std::enable_if</compoundname>
+    <includes refid="type__traits_8h" local="no">zorba/internal/type_traits.h</includes>
+    <templateparamlist>
+      <param>
+        <type>bool</type>
+      </param>
+      <param>
+        <type>typename T</type>
+        <defval>void</defval>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" bodystart="39" bodyend="40"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

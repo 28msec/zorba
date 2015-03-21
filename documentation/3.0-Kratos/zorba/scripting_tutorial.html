@@ -1,0 +1,158 @@
+<div class="doxygen">
+  <div><h1 class="title">XQuery Scripting Tutorial</h1>
+Zorba includes its own scripting capabilities.This page gives an overview of this feature.<div id="scripting_xquery_3_0" class="sect1"><h2>XQuery 3.0, XQuery Update Facility 1.0 (later 3.0)</h2>
+All valid expressions from XQuery 3.0 as well as XQuery Update Facility 1.0 (with small adaptation changes for XQuery 3.0, anticipating XQUF 3.0) are allowed.This means that you can write programs like:<pre class="ace-static" ace-mode="xquery"><span class="stringliteral">"Hello,<span> </span>World!"</span>
+</pre>or<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;current-time&gt;{current-dateTime()}&lt;/current-time</span>
+</pre>or the updating expression<pre class="ace-static" ace-mode="xquery"><span class="normal">insert<span> </span>node<span> </span>&lt;</span><span class="keyword">new</span><span class="normal">-node/&gt;<span> </span>into<span> </span>doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root</span>
+</pre>and these programs have the exact same semantics as specified in XQuery 3.0 and XQuery Update Facility 1.0.</div>
+<div id="scripting_side_effects" class="sect1"><h2>Side effects</h2>
+In XQuery 3.0 or XQUF 1.0, an expression never has any side effects other than constructing new nodes (not even updating expressions, which merely produce a pending update list).Zorba Scripting programs may have side effects. Side effects can be made with statements. In a nutshell, statements can be recognized in that they use semi-colons -- just like in C++ or Java. And they can be written in a natural way -- just like in C++ or Java.Statements are executed in the order in which they are written.Let us take the following document file.xml as an example:<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;root&gt;&lt;node/&gt;&lt;/root&gt;</span>
+</pre>In the following XQuery Update query:<pre class="ace-static" ace-mode="xquery"><span class="keyword">delete</span><span class="normal"><span> </span>node<span> </span>doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root/node,</span>
+<span class="normal">insert<span> </span>node<span> </span>doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root/node<span> </span>into<span> </span>doc(</span><span class="stringliteral">"file2.xml"</span><span class="normal">)/root</span>
+</pre>pending updates are accumulated against a given snapshot (the original document) and are only applied at the end. Both subexpressions see the same unaltered document<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;root&gt;&lt;node/&gt;&lt;/root&gt;</span>
+</pre>Now, consider the following scripting program, which consists of two statements (they have semi-colons):<pre class="ace-static" ace-mode="xquery"><span class="keyword">delete</span><span class="normal"><span> </span>node<span> </span>doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root/node;</span>
+<span class="normal">insert<span> </span>node<span> </span>doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root/node<span> </span>into<span> </span>doc(</span><span class="stringliteral">"file2.xml"</span><span class="normal">)/root;</span>
+</pre>The first statement (delete) is executed against the original document:<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;root&gt;&lt;node/&gt;&lt;/root&gt;</span>
+</pre>Its execution has the side effect of deleting the node named "node". This means that the second statement (insert) will see the following document:<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;root&gt;&lt;/root&gt;</span>
+</pre>As a result, nothing will be inserted into file2.xml, as<pre class="ace-static" ace-mode="xquery"><span class="normal">doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root/node</span>
+</pre>will evaluate to the empty sequence.</div>
+<div id="scripting_control_flow" class="sect1"><h2>Control flow</h2>
+The control flow of statements can be controlled in a way very similar to that of imperative programming languages like C++ or Java (while retaining some XQuery spirit in the exact syntax).<div id="scripting_while" class="sect2"><h3>While statements</h3>
+For example, Zorba Scripting introduces while loops. The following query:<pre class="ace-static" ace-mode="xquery"><span class="keywordflow">while</span><span class="normal"><span> </span>(doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root</span><span class="comment">/*)</span>
+<span class="comment"><span> </span><span> </span>delete<span> </span>node<span> </span>doc("file.xml")/root/*[1];</span>
+</pre>repeatedly deletes the first child of the root node, until it has no more children.</div>
+<div id="scripting_conditional" class="sect2"><h3>Conditional statements</h3>
+Zorba Scripting also allows using conditional or FLWOR statements. The following query:<pre class="ace-static" ace-mode="xquery"><span class="keywordflow">if</span><span class="normal"><span> </span>(count(doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root</span><span class="comment">/*)<span> </span>&gt;<span> </span>2)</span>
+<span class="comment">then</span>
+<span class="comment"><span> </span><span> </span>delete<span> </span>node<span> </span>doc("file.xml")/root/*[1];</span>
+<span class="comment">else</span>
+<span class="comment"><span> </span><span> </span>insert<span> </span>node<span> </span>&lt;node/&gt;<span> </span>as<span> </span>last<span> </span>into<span> </span>doc("file.xml")/root;</span>
+</pre>deletes the first child of the root if it has more than two children, otherwise it inserts a new child. Mind the semi-colons in both the then and the else statement. This is a conditional statement. It has side effects. Both its then and else operands are statements. Both operands are required.</div>
+<div id="scripting_flwor" class="sect2"><h3>FLWOR statements</h3>
+Now, consider the following FLWOR statement:<pre class="ace-static" ace-mode="xquery"><span class="keywordflow">for</span><span class="normal"><span> </span>$x<span> </span>in<span> </span>1<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba">to</a><span> </span>5</span>
+<span class="normal"/><span class="keywordflow">return</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>insert<span> </span>node<span> </span>&lt;node&gt;{$x}&lt;/node&gt;<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0">as</a><span> </span>first<span> </span>into<span> </span>doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root;</span>
+</pre>which works very much like a C++ for: for each value of $x between 1 and 5, a new node is inserted as the first child of the root. Each execution of the operand statement for a value of $x sees the previously inserted children. This means that the resulting document will look like:<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;root&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;node&gt;5&lt;/node&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;node&gt;4&lt;/node&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;node&gt;3&lt;/node&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;node&gt;2&lt;/node&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;node&gt;1&lt;/node&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;node/&gt;</span>
+<span class="normal">&lt;/root&gt;</span>
+</pre></div>
+<div id="scripting_other" class="sect2"><h3>Other kinds of control flow statements</h3>
+Zorba Scripting also defines switch statements, typeswitch statements and try-catch statements. It reuses the existing XQuery 3.0 syntax... but with semi-colons.</div>
+</div>
+<div id="scripting_semi_colon" class="sect1"><h2>Where to put the semi-colon?</h2>
+Put in a nutshell: in control flow constructs, just like in C++, the semi-colons "stick" to the operands, not to the entire control flow construct. While conditional statements and FLWOR statements look a lot like conditional expressions and FLWOR expressions, they are different in that their operands are statements. They must use semi-colons. All of them.This is a conditional statement:<pre class="ace-static" ace-mode="xquery"><span class="keywordflow">if</span><span class="normal"><span> </span>(count(doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root</span><span class="comment">/*)<span> </span>&gt;<span> </span>2)</span>
+<span class="comment">then</span>
+<span class="comment"><span> </span><span> </span>delete<span> </span>node<span> </span>doc("file.xml")/root/*[1];</span>
+<span class="comment">else</span>
+<span class="comment"><span> </span><span> </span>insert<span> </span>node<span> </span>&lt;node/&gt;<span> </span>as<span> </span>last<span> </span>into<span> </span>doc("file.xml")/root;</span>
+</pre>This is a conditional expression:<pre class="ace-static" ace-mode="xquery"><span class="keywordflow">if</span><span class="normal"><span> </span>(count(doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root</span><span class="comment">/*)<span> </span>&gt;<span> </span>2)</span>
+<span class="comment">then</span>
+<span class="comment"><span> </span><span> </span>delete<span> </span>node<span> </span>doc("file.xml")/root/*[1]</span>
+<span class="comment">else</span>
+<span class="comment"><span> </span><span> </span>insert<span> </span>node<span> </span>&lt;node/&gt;<span> </span>as<span> </span>last<span> </span>into<span> </span>doc("file.xml")/root</span>
+</pre>The following is incorrect, because the then operand is an expression, whereas the else operand is a statement:<pre class="ace-static" ace-mode="xquery"><span class="keywordflow">if</span><span class="normal"><span> </span>(count(doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root</span><span class="comment">/*)<span> </span>&gt;<span> </span>2)</span>
+<span class="comment">then</span>
+<span class="comment"><span> </span><span> </span>delete<span> </span>node<span> </span>doc("file.xml")/root/*[1]</span>
+<span class="comment">else</span>
+<span class="comment"><span> </span><span> </span>insert<span> </span>node<span> </span>&lt;node/&gt;<span> </span>as<span> </span>last<span> </span>into<span> </span>doc("file.xml")/root;</span>
+</pre>If you really want the semi-colon to be bound to the entire conditional construct, you need parentheses:<pre class="ace-static" ace-mode="xquery"><span class="normal">(</span><span class="keywordflow">if</span><span class="normal"><span> </span>(count(doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root</span><span class="comment">/*)<span> </span>&gt;<span> </span>2)</span>
+<span class="comment">then</span>
+<span class="comment"><span> </span><span> </span>delete<span> </span>node<span> </span>doc("file.xml")/root/*[1]</span>
+<span class="comment">else</span>
+<span class="comment"><span> </span><span> </span>insert<span> </span>node<span> </span>&lt;node/&gt;<span> </span>as<span> </span>last<span> </span>into<span> </span>doc("file.xml")/root);</span>
+</pre>For FLWOR statements too, the semi-colon "sticks" to the return statement. If you want to accumulate the updates instead, i.e., bind the semi-colon to the entire FLWOR construct, you need parentheses:<pre class="ace-static" ace-mode="xquery"><span class="normal">(</span><span class="keywordflow">for</span><span class="normal"><span> </span>$x<span> </span>in<span> </span>1<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba">to</a><span> </span>5</span>
+<span class="normal"/><span class="keywordflow">return</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>insert<span> </span>node<span> </span>&lt;node&gt;{$x}&lt;/node&gt;<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0">as</a><span> </span>first<span> </span>into<span> </span>doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root);</span>
+</pre>Note however than the order of insertion is no longer guaranteed. Further explanations about expressions vs. statements are given further down on this page.</div>
+<div id="scripting_blocks" class="sect1"><h2>Block statements</h2>
+Like in C++, several statements can be concatenated and put inside a curly-braced block (just like expressions can be concatenated with commas and put inside parentheses!):<pre class="ace-static" ace-mode="xquery"><span class="normal">{</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">delete</span><span class="normal"><span> </span>node<span> </span>doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root/node;</span>
+<span class="normal"><span> </span><span> </span>insert<span> </span>node<span> </span>doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root/node<span> </span>into<span> </span>doc(</span><span class="stringliteral">"file2.xml"</span><span class="normal">)/root;</span>
+<span class="normal">}</span>
+</pre>Such blocks, which contain a series of statements, are themselves also statements and can be used wherever statements are allowed - for example in a conditional statement:<pre class="ace-static" ace-mode="xquery"><span class="keywordflow">if</span><span class="normal"><span> </span>(doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root</span><span class="comment">/*)</span>
+<span class="comment">then<span> </span>{</span>
+<span class="comment"><span> </span><span> </span>delete<span> </span>node<span> </span>doc("file.xml")/root/node;</span>
+<span class="comment"><span> </span><span> </span>insert<span> </span>node<span> </span>doc("file.xml")/root/node<span> </span>into<span> </span>doc("file2.xml")/root;</span>
+<span class="comment">}</span>
+<span class="comment">else</span>
+<span class="comment"><span> </span><span> </span>insert<span> </span>node<span> </span>doc("file.xml")/root/node<span> </span>into<span> </span>doc("file2.xml")/root;</span>
+</pre>Keep in mind that semi-colons and curly braces work just like in C++ when you are dealing with statements. Block statements can be empty:<pre class="ace-static" ace-mode="xquery"><span class="normal">{}</span>
+</pre>Conditional statements (and while statements, FLWOR statements, block statements ...) are themselves statements and can also be concatenated with other statements:<pre class="ace-static" ace-mode="xquery"><span class="normal">{</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">do</span><span class="normal">-some-initialization();</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">if</span><span class="normal"><span> </span>(doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root</span><span class="comment">/*)</span>
+<span class="comment"><span> </span><span> </span>then<span> </span>{</span>
+<span class="comment"><span> </span><span> </span><span> </span><span> </span>delete<span> </span>node<span> </span>doc("file.xml")/root/node;</span>
+<span class="comment"><span> </span><span> </span>}</span>
+<span class="comment"><span> </span><span> </span>else<span> </span>{}</span>
+<span class="comment"><span> </span><span> </span>insert<span> </span>node<span> </span>doc("file.xml")/root/node<span> </span>into<span> </span>doc("file2.xml")/root;</span>
+<span class="comment">}</span>
+</pre>Again, just like in C++, you get the idea.</div>
+<div id="scripting_variables" class="sect1"><h2>Variables</h2>
+Zorba Scripting allows you to declare and assign variables. An example is better than a thousand words, so here is a query which computes the first 100 integers in the Fibonacci sequence:<pre class="ace-static" ace-mode="xquery"><span class="normal">variable<span> </span>$a<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0">as</a><span> </span>xs:integer<span> </span>:=<span> </span>0;<span> </span>(:<span> </span></span><span class="keyword">this</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a><span> </span>a<span> </span>variable<span> </span>declaration<span> </span>statement<span> </span>:)</span>
+<span class="normal">variable<span> </span>$b<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0">as</a><span> </span>xs:integer<span> </span>:=<span> </span>1;<span> </span><span> </span></span>
+<span class="normal">variable<span> </span>$c<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0">as</a><span> </span>xs:integer<span> </span>:=<span> </span>$a<span> </span>+<span> </span>$b;</span>
+<span class="normal">variable<span> </span>$fibseq<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0">as</a><span> </span>xs:integer*<span> </span>:=<span> </span>($a,<span> </span>$b);</span>
+<span class="normal"/>
+<span class="normal"/><span class="keywordflow">while</span><span class="normal"><span> </span>($c<span> </span>&lt;<span> </span>100)<span> </span>{<span> </span></span>
+<span class="normal"><span> </span><span> </span>$fibseq<span> </span>:=<span> </span>($fibseq,<span> </span>$c);<span> </span>(:<span> </span></span><span class="keyword">this</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a><span> </span>a<span> </span>variable<span> </span>assignment<span> </span>statement<span> </span>:)</span>
+<span class="normal"><span> </span><span> </span>$a<span> </span>:=<span> </span>$b;</span>
+<span class="normal"><span> </span><span> </span>$b<span> </span>:=<span> </span>$c;</span>
+<span class="normal"><span> </span><span> </span>$c<span> </span>:=<span> </span>$a<span> </span>+<span> </span>$b;</span>
+<span class="normal">}</span>
+</pre>Note that a main program does not need to be a block or a single statement: it can consist of several statements.</div>
+<div id="scripting_combining" class="sect1"><h2>Combining expressions and statements</h2>
+<div id="scripting_differences" class="sect2"><h3>Differences between expressions and statements</h3>
+Put shortly, an expression returns a sequence of items (and possibly a pending update list). A statements does not return anything. It does something. Sometimes, doing something might require getting a result from an expression. Sometimes, computing a result requires doing something. Sometimes, one might even want to both do something and return a result. This part explains how to mix statements and expressions.</div>
+<div id="scripting_nested" class="sect2"><h3>Expressions nested in statements</h3>
+You already know that expressions can be put inside statements. We gave the example of a conditional expression inside a statement, using parentheses:<pre class="ace-static" ace-mode="xquery"><span class="normal">(</span><span class="keywordflow">if</span><span class="normal"><span> </span>(count(doc(</span><span class="stringliteral">"file.xml"</span><span class="normal">)/root</span><span class="comment">/*)<span> </span>&gt;<span> </span>2)</span>
+<span class="comment">then</span>
+<span class="comment"><span> </span><span> </span>delete<span> </span>node<span> </span>doc("file.xml")/root/*[1]</span>
+<span class="comment">else</span>
+<span class="comment"><span> </span><span> </span>insert<span> </span>node<span> </span>&lt;node/&gt;<span> </span>as<span> </span>last<span> </span>into<span> </span>doc("file.xml")/root);</span>
+</pre>Another example is the condition expression of a conditional statement, which is always an expression.</div>
+<div id="scripting_statements" class="sect2"><h3>Statements inside expressions: node constructors</h3>
+There is one most prominent location where statements can be very useful. If you remember PHP, it allows executing instructions, and declaratively outputing some HTML. With Zorba Scripting, statements can be used in element constructors, giving it some PHP taste. In the following example, the element constructor contains a series a statements followed by a single expression which constructs (and returns) the body of the page.<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;html<span> </span>xmlns=</span><span class="stringliteral">"http://www.w3.org/1999/xhtml"</span><span class="normal">&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;head&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>&lt;title&gt;Blog<span> </span>entry<span> </span>added&lt;/title&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;/head&gt;</span>
+<span class="normal"><span> </span><span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>variable<span> </span>$user<span> </span>:=<span> </span>replace($request/url,<span> </span></span><span class="stringliteral">"^http://.*/([^/]+)/add$"</span><span class="normal">,<span> </span></span><span class="stringliteral">"$1"</span><span class="normal">);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>variable<span> </span>$blog<span> </span>:=<span> </span>collection()/micro-blog[@user<span> </span>=<span> </span>$user];</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">if</span><span class="normal">($blog)<span> </span>then<span> </span>{}<span> </span></span><span class="keywordflow">else</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>exit<span> </span>returning<span> </span>local:error(</span><span class="stringliteral">"Unknown<span> </span>user"</span><span class="normal">);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>insert<span> </span>node</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>&lt;entry<span> </span>timestamp=</span><span class="stringliteral">"{<span> </span>current-dateTime()<span> </span>}"</span><span class="normal">&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>&lt;text&gt;{<span> </span>data($request/param[@name<span> </span>=<span> </span></span><span class="stringliteral">"text"</span><span class="normal">])<span> </span>}&lt;/text&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>&lt;/entry&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0">as</a><span> </span>last<span> </span>into<span> </span>$blog;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>&lt;body&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>&lt;h1&gt;Blog<span> </span>entry<span> </span>added<span> </span></span><span class="keywordflow">for</span><span class="normal"><span> </span>{<span> </span>$user<span> </span>}&lt;/h1&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>&lt;p&gt;{<span> </span>data($request/param[@name<span> </span>=<span> </span></span><span class="stringliteral">"text"</span><span class="normal">])<span> </span>}&lt;/p&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>&lt;/body&gt;</span>
+<span class="normal"><span> </span><span> </span>}</span>
+<span class="normal">&lt;/html&gt;</span>
+</pre>While it contains statements, the outer construct is still an expression (it returns a value: the HTML page), but it has side effects (updating the database...). Such an expression is called a sequential expression.In short, an expression is sequential if it contains statements that have side effects (updating some XML, assigning a variable in scope outside of the expression) or that affect the control flow (break, continue, exit returning) - or if it calls a sequential function.</div>
+<div id="scripting_do_do" class="sect2"><h3>Do-do-do-do-deliver</h3>
+This pattern of having, in a block, several statements followed by a single expression is the most general way of using statements together with expressions. The main program is built that way: it can be a single expression, it can be several statements followed by a single expression, or it can be just several statements (in which case it is as if the final expression were empty).A function body works exactly the same way. Note that if the body expression of a function is sequential, the function must be annotated as sequential.</div>
+<div id="scripting_pitfall" class="sect2"><h3>Pitfall: block statements, block expressions</h3>
+It is also possible to have several statements followed by an expression inside curly braces (with no node constructor). This is called a block expression.Distinguishing block statements and block expressions is done by looking whether it ends with a statement or an expression. As a rule of thumb, anything (valid) that ends neither with a semi-colon or a closing curly-brace is an expression. If there is no semi-colon or opening curly brace before the closing curly braces, it is also an expression. Which means you cannot concatenate something else after it!As a last piece of advice, if the parser complains while you are writing a scripting program, there can be two main kind of errors: either you are trying to mix expressions and statements suboperands, which is not allowed (for example in a conditional statement or expression - <b>remember that the semi-colon sticks to an operand, not to the entire control flow construct</b>). Or if you got this right, it might be that you are trying to concatenate something after an expression. In both cases, <b>it is very likely that you wrote a block expression where you meant to use a block statement</b> (see criterion above). In this case, you probably just forgot a semi-colon.XQuery is very powerful and expressive. As in C++, modularizing your programs in small functions will dramatically reduce development time while improving readability.</div>
+<div id="scripting_warnings" class="sect2"><h3>Scripting Warnings</h3>
+The compiler may report warnings to report scripting constructions which are not inherently erroneious but which are risky or suggest there may have been an error (also see <a href="/pages/3.0/zorba/errors_warnings">Errors and Warnings</a>).<div id="scripting_tutorial_1ZWST0004" class="sect3"><h4>ZWST0004</h4>
+This is a warning to draw attention to the fact that when FOR clauses or LET clauses that are nested inside FOR clauses have a sequential domain expression, then one can think of two different evaluation semantics of the corresponding FLWOR expression. Both semantics are correct, but they are not equivalent. Zorba adopts one of these semantics (see <a href="/scripting-spec" target="_blank">Scripting Specification</a>). The warning is there to alert users who write such FLWOR expressions that what they may have in mind as the way these FLWORs will be evaluated may not be the same as the way Zorba actually evaluates them.</div>
+</div>
+<div id="scripting_option" class="sect2"><h3>Disabling Scripting Support</h3>
+By default, Zorba comes with support for scripting. However, it might make sense to disable this feature. For example, if you want to make sure that a module does not need any scripting features because it would not be compatible with other XQuery processors.The following prolog option can be used to disable the scripting feature.<pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span>declare<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">op<span> </span>=<span> </span></span><span class="stringliteral">"http://zorba.io/options/features"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>declare<span> </span>option<span> </span>op:disable<span> </span></span><span class="stringliteral">"scripting"</span><span class="normal">;</span>
+</pre>Please find more details regarding options to enable or disable particular features in the documentation about <a href="/pages/3.0/zorba/options_and_annotations">Zorba Specific Options and Annotations</a>. </div>
+</div>
+    </div>
+</div>

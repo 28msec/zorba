@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="memory__leaks_8dox" kind="file">
+    <compoundname>memory_leaks.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>memory_leaks<sp/>Memory<sp/>Leaks</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">\section<sp/>memory_leaks_intro<sp/>Introduction</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"></highlight></codeline>
+<codeline lineno="5"><highlight class="comment">The<sp/>Zorba<sp/>Processor<sp/>manages<sp/>automatically<sp/>its<sp/>own<sp/>memory,<sp/>but<sp/>still,<sp/>there<sp/>are<sp/>cases<sp/>where<sp/>you<sp/>may<sp/>receive<sp/>the<sp/>following<sp/>message:</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"></highlight></codeline>
+<codeline lineno="7"><highlight class="comment">&lt;tt&gt;</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">Zorba<sp/>did<sp/>not<sp/>close<sp/>properly,<sp/>objects<sp/>may<sp/>still<sp/>in<sp/>memory<sp/>while<sp/>shutdown<sp/>the<sp/>store.<sp/></highlight></codeline>
+<codeline lineno="9"><highlight class="comment">[n]<sp/>referenced<sp/>URIs<sp/>remain<sp/>in<sp/>the<sp/>string<sp/>pool.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">For<sp/>help<sp/>avoiding<sp/>this<sp/>message<sp/>please<sp/>refer<sp/>to<sp/>http://www.zorba-xquery.com/html/documentation<sp/>in<sp/>section<sp/>General<sp/>Architecture<sp/>-&gt;<sp/>Memory<sp/>Leaks.</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">&lt;/tt&gt;</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">This<sp/>message<sp/>means<sp/>that<sp/>not<sp/>all<sp/>the<sp/>resources<sp/></highlight></codeline>
+<codeline lineno="14"><highlight class="comment">were<sp/>released<sp/>before<sp/>Zorba<sp/>and<sp/>its<sp/>store<sp/>were<sp/>shutdown.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment">While<sp/>this<sp/>might<sp/>be<sp/>a<sp/>bug/memory<sp/>leak<sp/>in<sp/>Zorba<sp/>itself,<sp/>it&apos;s<sp/>also<sp/>quite<sp/>likely<sp/>that<sp/>the<sp/>leak<sp/>is<sp/>in<sp/>the<sp/>application.</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">For<sp/>the<sp/>application,<sp/>the<sp/>rule<sp/>is<sp/>that<sp/>before<sp/>shutting<sp/>down<sp/>the<sp/>store<sp/></highlight></codeline>
+<codeline lineno="17"><highlight class="comment">all<sp/>resources<sp/>must<sp/>have<sp/>been<sp/>released.</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"></highlight></codeline>
+<codeline lineno="19"><highlight class="comment">So,<sp/>strictly<sp/>speaking,<sp/>your<sp/>program<sp/>is<sp/>leaking<sp/>resources.</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"></highlight></codeline>
+<codeline lineno="21"><highlight class="comment">This<sp/>problem<sp/>might<sp/>occur<sp/>even<sp/>though<sp/>the<sp/>application&apos;s<sp/>code<sp/>(C++<sp/>or<sp/>other<sp/>languages)<sp/>looks<sp/>good.<sp/>Here<sp/>is<sp/>an<sp/>example:</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"></highlight></codeline>
+<codeline lineno="23"><highlight class="comment">\section<sp/>memory_leaks_example_c<sp/>Example<sp/>in<sp/>C++</highlight></codeline>
+<codeline lineno="24"><highlight class="comment">In<sp/>the<sp/>following<sp/>example,<sp/>the<sp/>StaticContext<sp/>and<sp/>XQuery<sp/>objects<sp/>are<sp/>not<sp/>destroyed<sp/>before<sp/>Zorba<sp/>and<sp/>the<sp/>store<sp/>are<sp/>shutdown.</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"></highlight></codeline>
+<codeline lineno="26"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="27"><highlight class="comment">int<sp/>main(int<sp/>argc,<sp/>char*<sp/>argv[])</highlight></codeline>
+<codeline lineno="28"><highlight class="comment">{</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/>void*<sp/>lStore<sp/>=<sp/>zorba::StoreManager::getStore();</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/>Zorba*<sp/>lZorba<sp/>=<sp/>Zorba::getInstance(lStore);</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/></highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/>StaticContext_t<sp/>lContext<sp/>=<sp/>lZorba-&gt;createStaticContext();</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/>lContext-&gt;addNamespace(&quot;foo&quot;,<sp/>&quot;http://www.foo.com&quot;);</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/>XQuery_t<sp/>lQuery<sp/>=<sp/>lZorba-&gt;compileQuery(&quot;&lt;foo:e/&gt;&quot;,<sp/>lContext);</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/>lQuery-&gt;execute();</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/></highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/>lZorba-&gt;shutdown();</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/>zorba::StoreManager::shutdownStore(lStore);</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/>return<sp/>0;</highlight></codeline>
+<codeline lineno="40"><highlight class="comment">}</highlight></codeline>
+<codeline lineno="41"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"></highlight></codeline>
+<codeline lineno="43"><highlight class="comment">So,<sp/>for<sp/>this<sp/>scenario,<sp/>the<sp/>ideal<sp/>way<sp/>to<sp/>solve<sp/>the<sp/>problem<sp/>is<sp/>through<sp/>scopes,<sp/></highlight></codeline>
+<codeline lineno="44"><highlight class="comment">where<sp/>you<sp/>implement<sp/>certain<sp/>part<sp/>of<sp/>code<sp/>in<sp/>methods<sp/>and<sp/>release<sp/>them<sp/>when<sp/>the<sp/>objects<sp/>loose<sp/>their<sp/>reference.<sp/></highlight></codeline>
+<codeline lineno="45"><highlight class="comment">Alternatively,<sp/>you<sp/>can<sp/>explicitly<sp/>set<sp/>the<sp/>variable<sp/>to<sp/>null,<sp/>in<sp/>which<sp/>case<sp/>the<sp/>object<sp/>will<sp/>automatically<sp/>be<sp/>released.</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"></highlight></codeline>
+<codeline lineno="47"><highlight class="comment">Solution<sp/>example:</highlight></codeline>
+<codeline lineno="48"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="49"><highlight class="comment">int<sp/>main(int<sp/>argc,<sp/>char*<sp/>argv[])</highlight></codeline>
+<codeline lineno="50"><highlight class="comment">{</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/>void*<sp/>lStore<sp/>=<sp/>zorba::StoreManager::getStore();</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/>Zorba*<sp/>lZorba<sp/>=<sp/>Zorba::getInstance(lStore);</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/></highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/>{<sp/><sp/>//<sp/>Use<sp/>a<sp/>scope</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"></highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/>StaticContext_t<sp/>lContext<sp/>=<sp/>lZorba-&gt;createStaticContext();</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/>lContext-&gt;addNamespace(&quot;foo&quot;,<sp/>&quot;http://www.foo.com&quot;);</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/>XQuery_t<sp/>lQuery<sp/>=<sp/>lZorba-&gt;compileQuery(&quot;&lt;foo:e/&gt;&quot;,<sp/>lContext);</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/><sp/>lQuery-&gt;execute();</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/><sp/>lContext<sp/>=<sp/>NULL;<sp/><sp/>//<sp/>or<sp/>explicitely<sp/>set<sp/>free<sp/>the<sp/>resources</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/><sp/><sp/><sp/>lQuery<sp/>=<sp/>NULL;</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/>lZorba-&gt;shutdown();</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/>zorba::StoreManager::shutdownStore(lStore);</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/>return<sp/>0;</highlight></codeline>
+<codeline lineno="67"><highlight class="comment">}</highlight></codeline>
+<codeline lineno="68"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="69"><highlight class="comment"></highlight></codeline>
+<codeline lineno="70"><highlight class="comment"></highlight></codeline>
+<codeline lineno="71"><highlight class="comment">\section<sp/>memory_leaks_example_java<sp/>Example<sp/>in<sp/>Java</highlight></codeline>
+<codeline lineno="72"><highlight class="comment">This<sp/>particular<sp/>error<sp/>is<sp/>specially<sp/>notorious<sp/>when<sp/>a<sp/>memory<sp/>managed<sp/>language<sp/></highlight></codeline>
+<codeline lineno="73"><highlight class="comment">shows<sp/>the<sp/>error<sp/>because<sp/>you<sp/>expect<sp/>the<sp/>language<sp/>frees<sp/>all<sp/>memory,<sp/>here<sp/>is<sp/>an<sp/>example:</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"></highlight></codeline>
+<codeline lineno="75"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="76"><highlight class="comment">public<sp/>static<sp/>void<sp/>main<sp/>(<sp/>String<sp/>argv[]<sp/>)</highlight></codeline>
+<codeline lineno="77"><highlight class="comment">{</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/>InMemoryStore<sp/>store<sp/>=<sp/>InMemoryStore.getInstance();</highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/><sp/>Zorba<sp/>zorba<sp/>=<sp/>Zorba.getInstance<sp/>(<sp/>store<sp/>);</highlight></codeline>
+<codeline lineno="80"><highlight class="comment"></highlight></codeline>
+<codeline lineno="81"><highlight class="comment"><sp/><sp/>StaticContext<sp/>context<sp/>=<sp/>zorba.createStaticContext();</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/>context.addNamespace(&quot;foo&quot;,<sp/>&quot;http://www.foo.com&quot;);</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/>XQuery<sp/>query<sp/>=<sp/>zorba.compileQuery(&quot;&lt;foo:e/&gt;&quot;,<sp/>context);</highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/>String<sp/>result<sp/>=<sp/>query.execute();</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"><sp/><sp/></highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/>zorba.shutdown();</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/>InMemoryStore.shutdown<sp/>(<sp/>store<sp/>);</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/></highlight></codeline>
+<codeline lineno="89"><highlight class="comment">}<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="90"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="91"><highlight class="comment"></highlight></codeline>
+<codeline lineno="92"><highlight class="comment">In<sp/>this<sp/>example,<sp/>and<sp/>for<sp/>the<sp/>rest<sp/>of<sp/>the<sp/>languages<sp/>because<sp/>Zorba<sp/>is<sp/>created<sp/>in<sp/>C++,<sp/></highlight></codeline>
+<codeline lineno="93"><highlight class="comment">we<sp/>have<sp/>created<sp/>in<sp/>the<sp/>Zorba<sp/>API<sp/>the<sp/>method<sp/>\c<sp/>destroy()<sp/>\e<sp/>that<sp/>will<sp/>set<sp/>free<sp/>the<sp/>object</highlight></codeline>
+<codeline lineno="94"><highlight class="comment">that<sp/>could<sp/>be<sp/>pointing<sp/>to<sp/>any<sp/>resource<sp/>from<sp/>the<sp/>store,<sp/>this<sp/>method<sp/>is<sp/>in<sp/>every<sp/>object<sp/>that<sp/>need<sp/>to<sp/>be<sp/>released.</highlight></codeline>
+<codeline lineno="95"><highlight class="comment"></highlight></codeline>
+<codeline lineno="96"><highlight class="comment">*Java<sp/>Note:<sp/>Because<sp/>Java<sp/>is<sp/>a<sp/>garbage<sp/>collected<sp/>language<sp/>you<sp/>cannot<sp/>predict<sp/>when<sp/>(or<sp/>even<sp/>if)<sp/>an<sp/>object<sp/>will<sp/>be<sp/>destroyed.<sp/></highlight></codeline>
+<codeline lineno="97"><highlight class="comment">Hence<sp/>there<sp/>is<sp/>no<sp/>direct<sp/>equivalent<sp/>of<sp/>a<sp/>destructor.</highlight></codeline>
+<codeline lineno="98"><highlight class="comment">There<sp/>is<sp/>an<sp/>inherited<sp/>method<sp/>called<sp/>finalize,<sp/>but<sp/>this<sp/>is<sp/>called<sp/>entirely<sp/>at<sp/>the<sp/>discretion<sp/>of<sp/>the<sp/>garbage<sp/>collector.</highlight></codeline>
+<codeline lineno="99"><highlight class="comment">So,<sp/>destroy()<sp/>is<sp/>the<sp/>best<sp/>practice<sp/>for<sp/>any<sp/>language<sp/>including<sp/>Java.</highlight></codeline>
+<codeline lineno="100"><highlight class="comment"></highlight></codeline>
+<codeline lineno="101"><highlight class="comment">Solution<sp/>example:</highlight></codeline>
+<codeline lineno="102"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="103"><highlight class="comment">public<sp/>static<sp/>void<sp/>main<sp/>(<sp/>String<sp/>argv[]<sp/>)</highlight></codeline>
+<codeline lineno="104"><highlight class="comment">{</highlight></codeline>
+<codeline lineno="105"><highlight class="comment"><sp/><sp/>InMemoryStore<sp/>store<sp/>=<sp/>InMemoryStore.getInstance();</highlight></codeline>
+<codeline lineno="106"><highlight class="comment"><sp/><sp/>Zorba<sp/>zorba<sp/>=<sp/>Zorba.getInstance<sp/>(<sp/>store<sp/>);</highlight></codeline>
+<codeline lineno="107"><highlight class="comment"></highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/>StaticContext<sp/>context<sp/>=<sp/>zorba.createStaticContext();</highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/>context.addNamespace(&quot;foo&quot;,<sp/>&quot;http://www.foo.com&quot;);</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/><sp/>XQuery<sp/>query<sp/>=<sp/>zorba.compileQuery(&quot;&lt;foo:e/&gt;&quot;,<sp/>context);</highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/><sp/>String<sp/>result<sp/>=<sp/>query.execute();</highlight></codeline>
+<codeline lineno="112"><highlight class="comment"></highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/>query.destroy();<sp/><sp/><sp/>//<sp/>Release<sp/>memory<sp/>for<sp/>this<sp/>XQuery</highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/>context.destroy();<sp/>//<sp/>Release<sp/>memory<sp/>for<sp/>this<sp/>StaticContext</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"></highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/><sp/>zorba.shutdown();</highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/>InMemoryStore.shutdown<sp/>(<sp/>store<sp/>);</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/></highlight></codeline>
+<codeline lineno="119"><highlight class="comment">}</highlight></codeline>
+<codeline lineno="120"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="121"><highlight class="comment"></highlight></codeline>
+<codeline lineno="122"><highlight class="comment"></highlight></codeline>
+<codeline lineno="123"><highlight class="comment">\section<sp/>memory_leaks_example_xqj<sp/>Example<sp/>in<sp/>XQJ</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"></highlight></codeline>
+<codeline lineno="125"><highlight class="comment">The<sp/>XQJ<sp/>standard<sp/>provides<sp/>specific<sp/>\c<sp/>close()<sp/>\e<sp/>methods<sp/>for<sp/>this<sp/>specific<sp/>purpose:</highlight></codeline>
+<codeline lineno="126"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/>XQDataSource<sp/>xqdatasource<sp/>=<sp/>new<sp/>XQDataSource();</highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/>XQConnection<sp/>xqconnection<sp/>=<sp/>xqdatasource.getConnection();</highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/>XQStaticContext<sp/>staticContext<sp/>=<sp/>xqconnection.getStaticContext();</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/>staticContext.declareNamespace(&quot;foo&quot;,<sp/>&quot;http://www.foo.com&quot;);</highlight></codeline>
+<codeline lineno="131"><highlight class="comment"><sp/><sp/>xqconnection.setStaticContext(staticContext);</highlight></codeline>
+<codeline lineno="132"><highlight class="comment"><sp/><sp/>XQExpression<sp/>xqexpression<sp/>=<sp/>xqconnection.createExpression();</highlight></codeline>
+<codeline lineno="133"><highlight class="comment"><sp/><sp/>XQSequence<sp/>xqsequence<sp/>=<sp/>xqexpression.executeQuery(&quot;&lt;foo:e/&gt;&quot;);</highlight></codeline>
+<codeline lineno="134"><highlight class="comment"><sp/><sp/>//<sp/>code<sp/>to<sp/>show<sp/>the<sp/>output</highlight></codeline>
+<codeline lineno="135"><highlight class="comment"></highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/><sp/>xqconnection.close();<sp/><sp/>//<sp/>Closing<sp/>connection<sp/>frees<sp/>all<sp/>related<sp/>resources</highlight></codeline>
+<codeline lineno="137"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="138"><highlight class="comment"></highlight></codeline>
+<codeline lineno="139"><highlight class="comment"></highlight></codeline>
+<codeline lineno="140"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="141"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/memory_leaks.dox"/>
+  </compounddef>
+</doxygen>

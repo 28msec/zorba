@@ -1,0 +1,28 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Stemmer</h1><p class="include">
+            #include &lt;zorba/stemmer.h&gt;
+        </p>
+A Stemmer is used to obtain the "stem" (root) word of of some word.     
+For example the stem of "flavoring" is "flavor". A Stemmer is used by the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> Full Text feature.     <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Stemmer">Stemmer</a>, <a href="/pages/3.0/zorba/structzorba_1_1internal_1_1ztd_1_1destroy__delete">internal::ztd::destroy_delete</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Stemmer">Stemmer</a> &gt; &gt;</p></td><td><p class="signature"><a href="#a6f8ead76cb0ca8d0426ce268f411be4d">ptr</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#abdc37cad60e4286e13d71dd441645b55">destroy</a>() const =0</p><span class="signature-description">
+Destroys this Stemmer.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ad13ff3076a90064ae37f099985b64b61">properties</a>(Properties *result) const =0</p><span class="signature-description">
+Gets the <a href="/pages/3.0/zorba/structzorba_1_1Stemmer_1_1Properties">Properties</a> of this Stemmer.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ac3d58749ee275a80ab2b36ba8528e0f9">stem</a>(String const &amp;word, locale::iso639_1::type lang, String *result) const =0</p><span class="signature-description">
+Stems the given word.         </span></td></tr></table></div><div class="section"><h2>Protected Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a03fdf2c32637ad2855cc6c78fb0cecbd">~Stemmer</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a6f8ead76cb0ca8d0426ce268f411be4d" class="sect1"><div><h3>ptr</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Stemmer">Stemmer</a>, <a href="/pages/3.0/zorba/structzorba_1_1internal_1_1ztd_1_1destroy__delete">internal::ztd::destroy_delete</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Stemmer">Stemmer</a> &gt; &gt;<span> </span>ptr</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="abdc37cad60e4286e13d71dd441645b55" class="sect1"><div><h3>destroy</h3></div><div class="signature-box">void<span> </span>destroy() const =0</div><div><p class="signature-description">
+Destroys this Stemmer.         </p><p class="signature-description">
+This function is called by <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> when the Stemmer is no longer needed.If your <a href="/pages/3.0/zorba/classzorba_1_1StemmerProvider">StemmerProvider</a> dynamically allocates Stemmer objects, then the implementation can simply be (and usually is) <tt>delete this</tt>.If your <a href="/pages/3.0/zorba/classzorba_1_1StemmerProvider">StemmerProvider</a> returns a pointer to a static Stemmer object, then the implementation should do nothing.         </p></div></div><div id="ad13ff3076a90064ae37f099985b64b61" class="sect1"><div><h3>properties</h3></div><div class="signature-box">void<span> </span>properties(Properties *result) const =0</div><div><p class="signature-description">
+Gets the <a href="/pages/3.0/zorba/structzorba_1_1Stemmer_1_1Properties">Properties</a> of this Stemmer.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>result</td><td>
+The <a href="/pages/3.0/zorba/structzorba_1_1Stemmer_1_1Properties">Properties</a> to populate. </td></tr></table></div>
+        </p></div></div><div id="ac3d58749ee275a80ab2b36ba8528e0f9" class="sect1"><div><h3>stem</h3></div><div class="signature-box">void<span> </span>stem(String const &amp;word, locale::iso639_1::type lang, String *result) const =0</div><div><p class="signature-description">
+Stems the given word.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>word</td><td>
+The word to stem. </td></tr><tr><td>lang</td><td>
+The language of the word. </td></tr><tr><td>result</td><td>
+The stemmed word (or the original word if either it and its stem are the same word or the stemmer doesn't know how to stem it). </td></tr></table></div>
+        </p></div></div></div></div><div class="section"><h2>Protected Functions</h2><div class="detailed"><div id="a03fdf2c32637ad2855cc6c78fb0cecbd" class="sect1"><div><h3>~Stemmer</h3></div><div class="signature-box"><span> </span>~Stemmer()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

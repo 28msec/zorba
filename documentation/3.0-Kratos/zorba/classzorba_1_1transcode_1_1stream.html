@@ -1,0 +1,43 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::transcode::stream</h1><p class="include">
+            #include &lt;zorba/util/transcode_stream.h&gt;
+        </p>
+A transcode::stream is used to wrap a C++ standard I/O stream with a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> so that transcoding and the management of the streambuf happens automatically.     
+A transcode::stream is useful for streams created by you.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>StreamType</td><td>
+The I/O stream class type to wrap. It must be a concrete stream class. </td></tr></table></div>
+    <div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">streambuf</a></p></td><td><p class="signature"><a href="#a8954f37b27f8ca1aeebb0319add6eb6e">tbuf_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a67e11c1da9d75d0a24c88e1924b3f2c9">stream</a>(char const *charset)</p><span class="signature-description">
+Constructs a transcode::stream.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a57537b0e987409b9c917c5b046825a9f">stream</a>(char const *charset, StreamArgType stream_arg)</p><span class="signature-description">
+Constructs a stream.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a56c90aec7448aa7026816fb0f3eff856">stream</a>(char const *charset, StreamArgType stream_arg, std::ios_base::openmode mode)</p><span class="signature-description">
+Constructs a transcode::stream.         </span></td></tr></table></div><div class="section"><h2>Private Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a8bd2f85ec6769df5a11a8ce2259e5a07">init</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a8954f37b27f8ca1aeebb0319add6eb6e" class="sect1"><div><h3>tbuf_</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">streambuf</a><span> </span>tbuf_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a67e11c1da9d75d0a24c88e1924b3f2c9" class="sect1"><div><h3>stream</h3></div><div class="signature-box"><span> </span>stream(char const *charset)</div><div><p class="signature-description">
+Constructs a transcode::stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>charset</td><td>
+The name of the character encoding to convert from/to. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::invalid_argument</td><td>
+if <em>charset</em> is not supported. </td></tr></table></div>
+        </p></div></div><div id="a57537b0e987409b9c917c5b046825a9f" class="sect1"><div><h3>stream</h3></div><div class="signature-box"><span> </span>stream(char const *charset, StreamArgType stream_arg)</div><div><p class="signature-description">
+Constructs a stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>StreamArgType</td><td>
+The type of the first argument of <em>StreamType's</em> constructor. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>charset</td><td>
+The name of the character encoding to convert from/to. </td></tr><tr><td>stream_arg</td><td>
+The argument to pass as the first argument to <em>StreamType's</em> constructor. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::invalid_argument</td><td>
+if <em>charset</em> is not supported. </td></tr></table></div>
+        </p></div></div><div id="a56c90aec7448aa7026816fb0f3eff856" class="sect1"><div><h3>stream</h3></div><div class="signature-box"><span> </span>stream(char const *charset, StreamArgType stream_arg, std::ios_base::openmode mode)</div><div><p class="signature-description">
+Constructs a transcode::stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>StreamArgType</td><td>
+The type of the first argument of <em>StreamType's</em> constructor. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>charset</td><td>
+The name of the character encoding to convert from/to. </td></tr><tr><td>stream_arg</td><td>
+The argument to pass as the first argument to <em>StreamType's</em> constructor. </td></tr><tr><td>mode</td><td>
+The open-mode to pass to <em>StreamType's</em> constructor. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::invalid_argument</td><td>
+if <em>charset</em> is not supported. </td></tr></table></div>
+        </p></div></div></div></div><div class="section"><h2>Private Functions</h2><div class="detailed"><div id="a8bd2f85ec6769df5a11a8ce2259e5a07" class="sect1"><div><h3>init</h3></div><div class="signature-box">void<span> </span>init()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

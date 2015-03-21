@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Annotation" kind="class" prot="public">
+    <compoundname>zorba::Annotation</compoundname>
+    <basecompoundref refid="classzorba_1_1SmartObject" prot="public" virt="non-virtual">zorba::SmartObject</basecompoundref>
+    <includes refid="annotation_8h" local="no">zorba/annotation.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::addReference</definition>
+        <argsstring>() const </argsstring>
+        <name>addReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SmartObject::free</definition>
+        <argsstring>()</argsstring>
+        <name>free</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Annotation_1a8d5899c8d901ce8323574b6474ba326e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::Annotation::getLiteral</definition>
+        <argsstring>(unsigned int i) const =0</argsstring>
+        <name>getLiteral</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>Returns the requested literal. </para>        </briefdescription>
+        <detaileddescription>
+<para>E.g. for the annotation</para><para>annotation(Literal1, Literal2, ..., LiteralN)</para><para>the function will return the i-th literal. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/annotation.h" line="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Annotation_1a83a2094377637f62be59b6ebf5216d98" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned int</type>
+        <definition>virtual unsigned int zorba::Annotation::getLiteralsCount</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getLiteralsCount</name>
+        <briefdescription>
+<para>Returns the number of literals that are associated with the annotation, e.g. </para>        </briefdescription>
+        <detaileddescription>
+<para>for the annotation:</para><para>annotation(Literal1, Literal2, ..., LiteralN)</para><para>the function will return N. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/annotation.h" line="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Annotation_1a8ce3f82a6b0734f165d60c6be67fccb4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::Annotation::getQName</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getQName</name>
+        <briefdescription>
+<para>Returns the QName of the annotation. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/annotation.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>long zorba::SmartObject::getRefCount</definition>
+        <argsstring>() const </argsstring>
+        <name>getRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::removeReference</definition>
+        <argsstring>()</argsstring>
+        <name>removeReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Annotation_1a8b955b6a1c5d2f9712421179a3708457" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::Annotation::~Annotation</definition>
+        <argsstring>()</argsstring>
+        <name>~Annotation</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/annotation.h" line="30" bodyfile="/home/wcandillon/deadlinks/include/zorba/annotation.h" bodystart="30" bodyend="30"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" static="no" mutable="yes">
+        <type>unsigned int</type>
+        <definition>unsigned int zorba::SmartObject::theRefCount</definition>
+        <argsstring></argsstring>
+        <name>theRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="505">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="504">
+        <label>zorba::Annotation</label>
+        <link refid="classzorba_1_1Annotation"/>
+        <childnode refid="505" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="507">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="506">
+        <label>zorba::Annotation</label>
+        <link refid="classzorba_1_1Annotation"/>
+        <childnode refid="507" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/annotation.h" line="26" bodyfile="/home/wcandillon/deadlinks/include/zorba/annotation.h" bodystart="25" bodyend="58"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" virt="non-virtual"><scope>zorba::Annotation</scope><name>addReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" virt="virtual"><scope>zorba::Annotation</scope><name>free</name></member>
+      <member refid="classzorba_1_1Annotation_1a8d5899c8d901ce8323574b6474ba326e" prot="public" virt="pure-virtual"><scope>zorba::Annotation</scope><name>getLiteral</name></member>
+      <member refid="classzorba_1_1Annotation_1a83a2094377637f62be59b6ebf5216d98" prot="public" virt="pure-virtual"><scope>zorba::Annotation</scope><name>getLiteralsCount</name></member>
+      <member refid="classzorba_1_1Annotation_1a8ce3f82a6b0734f165d60c6be67fccb4" prot="public" virt="pure-virtual"><scope>zorba::Annotation</scope><name>getQName</name></member>
+      <member refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" virt="non-virtual"><scope>zorba::Annotation</scope><name>getRefCount</name></member>
+      <member refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" virt="non-virtual"><scope>zorba::Annotation</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" virt="non-virtual"><scope>zorba::Annotation</scope><name>removeReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" virt="non-virtual"><scope>zorba::Annotation</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" virt="non-virtual"><scope>zorba::Annotation</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" virt="non-virtual"><scope>zorba::Annotation</scope><name>theRefCount</name></member>
+      <member refid="classzorba_1_1Annotation_1a8b955b6a1c5d2f9712421179a3708457" prot="public" virt="virtual"><scope>zorba::Annotation</scope><name>~Annotation</name></member>
+      <member refid="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" virt="virtual"><scope>zorba::Annotation</scope><name>~SmartObject</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

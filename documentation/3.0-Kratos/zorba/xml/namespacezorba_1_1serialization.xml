@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1serialization" kind="namespace">
+    <compoundname>zorba::serialization</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1serialization_1a9fec1c09ccaafac6e86011328cb54ae6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::serialization::operator&amp;</definition>
+        <argsstring>(serialization::Archiver &amp;, const Diagnostic *&amp;)</argsstring>
+        <name>operator&amp;</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> *&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="27"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1serialization_1a9e911be98380f087822a32693df4463c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::serialization::operator&amp;</definition>
+        <argsstring>(Archiver &amp;, ZorbaException *&amp;)</argsstring>
+        <name>operator&amp;</name>
+        <param>
+          <type>Archiver &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> *&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="27"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1serialization_1af8ba0b6c7f93fe4ca3503a5fd61290f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::serialization::operator&amp;</definition>
+        <argsstring>(Archiver &amp;, XQueryStackTrace &amp;)</argsstring>
+        <name>operator&amp;</name>
+        <param>
+          <type>Archiver &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XQueryStackTrace" kindref="compound">XQueryStackTrace</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="31"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1serialization_1ae2d0a1eb3c1d2b3a86731205d2f51909" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::serialization::operator&amp;</definition>
+        <argsstring>(zorba::serialization::Archiver &amp;ar, zorba::Item &amp;obj)</argsstring>
+        <name>operator&amp;</name>
+        <param>
+          <type>zorba::serialization::Archiver &amp;</type>
+          <declname>ar</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">zorba::Item</ref> &amp;</type>
+          <declname>obj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="33"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1serialization_1a8a6f06f56f37b2df4ed022f86e4a12e6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename StringType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void zorba::serialization::operator&amp;</definition>
+        <argsstring>(serialization::Archiver &amp;, internal::VariableQName&lt; StringType &gt; &amp;)</argsstring>
+        <name>operator&amp;</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">internal::VariableQName</ref>&lt; StringType &gt; &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="35"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1serialization_1a41b035da4c1dcc4d85984c08c35697f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::serialization::operator&amp;</definition>
+        <argsstring>(serialization::Archiver &amp;, internal::diagnostic::location &amp;)</argsstring>
+        <name>operator&amp;</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location" kindref="compound">internal::diagnostic::location</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="39"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="25"/>
+  </compounddef>
+</doxygen>

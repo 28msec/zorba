@@ -1,0 +1,55 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://www.zorba-xquery.com/modules/languages/xslt</xqdoc:uri><xqdoc:name>xslt</xqdoc:name><xqdoc:comment><xqdoc:description> This module provides XSLT 1.0 transformation functionality.
+ <p>For details on XSLT see
+ <a href="http://www.w3.org/TR/xslt">XSLT 1.0 specification</a>.</p>
+ <p>This module implements the invoking of an XSLT transformation from XQuery
+ described in <a href="http://lists.w3.org/Archives/Member/w3c-xsl-wg/2008Apr/0052.html">
+    Michael Kay's proposal</a>.</p>
+ <p>Example:
+ <pre class="ace-static" ace-mode="xquery">import module namespace
+        xslt = "http://www.zorba-xquery.com/modules/languages/xslt";
+ let $source :=
+     &lt;catalog&gt;
+         &lt;cd&gt;
+           &lt;title&gt;Empire Burlesque&lt;/title&gt;
+           &lt;artist&gt;Bob Dylan&lt;/artist&gt;
+           &lt;country&gt;USA&lt;/country&gt;
+           &lt;company&gt;Columbia&lt;/company&gt;
+           &lt;price&gt;10.90&lt;/price&gt;
+           &lt;year&gt;1985&lt;/year&gt;
+         &lt;/cd&gt;
+         &lt;cd&gt;
+           &lt;title&gt;Hide your heart&lt;/title&gt;
+           &lt;artist&gt;Bonnie Tyler&lt;/artist&gt;
+           &lt;country&gt;UK&lt;/country&gt;
+           &lt;company&gt;CBS Records&lt;/company&gt;
+           &lt;price&gt;9.90&lt;/price&gt;
+           &lt;year&gt;1988&lt;/year&gt;
+         &lt;/cd&gt;
+     &lt;/catalog&gt;
+ let $stylesheet :=
+   &lt;xsl:stylesheet version="1.0"
+       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
+     &lt;xsl:template match="/"&gt;
+       &lt;html&gt;
+       &lt;body&gt;
+       &lt;h2&gt;Music Collection&amp;lt;/h2&gt;
+         &lt;table border="1"&gt;
+           &lt;tr bgcolor="lightblue"&gt;
+             &lt;th&gt;Title&amp;lt;/th&gt;
+             &lt;th&gt;Artist&amp;lt;/th&gt;
+           &lt;/tr&gt;
+           &lt;xsl:for-each select="catalog/cd"&gt;
+            &lt;tr&gt;
+              &lt;td&gt;&amp;lt;xsl:value-of select="title"/&gt;&lt;/td&gt;
+              &lt;td&gt;&amp;lt;xsl:value-of select="artist"/&gt;&lt;/td&gt;
+           &lt;/tr&gt;
+           &lt;/xsl:for-each&gt;
+         &lt;/table&gt;
+       &lt;/body&gt;
+       &lt;/html&gt;
+     &lt;/xsl:template&gt;
+   &lt;/xsl:stylesheet&gt;
+ return
+   xslt:transform( $source, $stylesheet)</pre></p>
+</xqdoc:description><xqdoc:author>Cezar Andrei</xqdoc:author><xqdoc:custom tag="library"><a href="http://xmlsoft.org/XSLT/">libxslt Library</a></xqdoc:custom><xqdoc:custom tag="project">Zorba/Programming Languages/XSLT</xqdoc:custom><xqdoc:custom tag="language">xquery</xqdoc:custom><xqdoc:custom tag="version">1.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/><xqdoc:namespace prefix="xslt" uri="http://www.zorba-xquery.com/modules/languages/xslt" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports/><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description><p>Invokes an XSLT transformation.</p>
+</xqdoc:description><xqdoc:param>$source the input document to the transformation</xqdoc:param><xqdoc:param>$stylesheet the XSLT stylesheet module</xqdoc:param><xqdoc:return>the result tree produced by the transformation</xqdoc:return><xqdoc:error>xslt:XSLT001 if $stylesheet is not a valid XSLT stylesheet</xqdoc:error><xqdoc:error>xslt:XSLT002 if result can not be imported</xqdoc:error><xqdoc:custom tag="example">test_xslt/Queries/languages/xslt/xslt1.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>xslt:transform</xqdoc:name><xqdoc:signature>declare function xslt:transform($source as node(), $stylesheet as node()) as node() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>source</xqdoc:name><xqdoc:type>node()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>stylesheet</xqdoc:name><xqdoc:type>node()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>node()</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

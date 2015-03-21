@@ -1,0 +1,42 @@
+<div class="doxygen">
+  <div><h1 class="title">Zorba Build Notes for Ubuntu/Debian Linux Users</h1>
+<div id="ubuntu_packages" class="sect1"><h2>Ubuntu Packages</h2>
+Most of the tools and libraries you might need to build Zorba are available in the standard Ubuntu/Debian repositories. Here we list the packages that you should install to meet the requirements specified at <a href="/pages/3.0/zorba/build_prerequisites">Prerequisites for Building Zorba</a>.<div id="ubuntu_tools" class="sect2"><h3>Tools</h3>
+To install the gcc compiler and CMake: <pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>build-essential<span> </span>cmake</span>
+</pre>To install Bazaar (for building the latest Zorba source, or for building non-core modules): <pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>bzr</span>
+</pre></div>
+<div id="ubuntu_libs" class="sect2"><h3>Core Zorba Library Dependencies</h3>
+Required libraries for core Zorba: <pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>libxml2-dev<span> </span>uuid-dev</span>
+</pre>Recommended libraries for core Zorba: <pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>libicu-dev<span> </span>libxerces-c-dev</span>
+</pre>Optional libraries for core Zorba: <pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>libxslt-dev<span> </span>libcurl4-openssl-dev<span> </span>libxerces-c-dev</span>
+</pre>SWIG and development requirements for Zorba language bindings: <pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>swig<span> </span>python-dev<span> </span>php5-dev<span> </span>ruby-dev<span> </span>openjdk-6-jdk<span> </span>libaccess-bridge-java-jni</span>
+</pre></div>
+<div id="ubuntu_noncore_libs" class="sect2"><h3>Non-Core Module Library Dependencies</h3>
+<div id="build_ubuntu_1ubuntu_html" class="sect3"><h4>HTML Module (data-converters package)</h4>
+<pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>libtidy-dev</span>
+</pre></div>
+<div id="build_ubuntu_1ubuntu_geos" class="sect3"><h4>Geo Module</h4>
+To install libgeos for the Geo Module, first ensure that the version available for your distribution is at least 3.2.2:<pre class="ace-static" ace-mode="xquery"><span class="normal">apt-cache<span> </span>show<span> </span>libgeos-dev<span> </span>|<span> </span>grep<span> </span>Version:</span>
+</pre>If it is lower than 3.2.2, then you may add our PPA to your list of repositories to get a later version:<pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>add-apt-repository<span> </span>ppa:juan457/zorba</span>
+<span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>update</span>
+</pre>In either case, install libgeos with: <pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>libgeos-dev</span>
+</pre></div>
+<div id="build_ubuntu_1ubuntu_imagemagick" class="sect3"><h4>ImageMagick (for image modules)</h4>
+<pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>imagemagick<span> </span>libmagick++-dev<span> </span>libmagickwand-dev</span>
+</pre></div>
+<div id="build_ubuntu_1ubuntu_cclient" class="sect3"><h4>Email Module</h4>
+We recommend using our PPA to install the C-Client module, as the Ubuntu packages are not built correctly at least on 64-bit platforms.<pre class="ace-static" ace-mode="xquery"><span class="normal">sudo<span> </span>add-apt-repository<span> </span>ppa:juan457/zorba</span>
+<span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>update</span>
+<span class="normal">sudo<span> </span>sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>libc-client2007e<span> </span>libc-client2007e-dev</span>
+</pre>Or, you may build it yourself from source, so long as you force the -fPIC option:<pre class="ace-static" ace-mode="xquery"><span class="normal">wget<span> </span>ftp:</span><span class="comment">//ftp.cac.washington.edu/imap/imap-2007e.tar.gz</span><span class="normal"/>
+<span class="normal">tar<span> </span>-xf<span> </span>imap-2007e.tar.gz</span>
+<span class="normal">sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>libpam-dev</span>
+<span class="normal">cd<span> </span>imap-2007e</span>
+<span class="normal">make<span> </span>lnp<span> </span>EXTRACFLAGS=</span><span class="stringliteral">"-I/usr/include/openssl<span> </span>-fPIC"</span>
+</pre>Note: In case of errors, delete all, untar and make again, don't trust make clean.If you do this, be sure to pass the path to the "<tt>c-client"</tt> subdirectory of your build to CMake when configuring Zorba, e.g.: <pre class="ace-static" ace-mode="xquery"><span class="normal">cmake<span> </span>-DCMAKE_PREFIX_PATH=</span><span class="stringliteral">"~/imap-2007e/c-client"</span><span class="normal"><span> </span>../</span>
+<span class="normal">make</span>
+</pre> </div>
+</div>
+</div>
+    </div>
+</div>

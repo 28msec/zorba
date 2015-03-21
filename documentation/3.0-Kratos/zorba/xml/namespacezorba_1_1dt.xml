@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1dt" kind="namespace">
+    <compoundname>zorba::dt</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacezorba_1_1dt_1acbcda1f4a4fa3eef1360278df6375908" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a40864017864903189f5960af52725cd5" kindref="member">ZorbaDateTimeErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaDateTimeErrorCode zorba::dt::INCOMPLETE_DATE_OR_TIME</definition>
+        <argsstring></argsstring>
+        <name>INCOMPLETE_DATE_OR_TIME</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="974"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1dt_1a08fac01b1c4dcd9379c7a3806f8cc387" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a40864017864903189f5960af52725cd5" kindref="member">ZorbaDateTimeErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaDateTimeErrorCode zorba::dt::INSUFFICIENT_BUFFER</definition>
+        <argsstring></argsstring>
+        <name>INSUFFICIENT_BUFFER</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="968"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1dt_1acdb9bc91aaeeba8247889d7f9933b6b5" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a40864017864903189f5960af52725cd5" kindref="member">ZorbaDateTimeErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaDateTimeErrorCode zorba::dt::INVALID_LOCALE</definition>
+        <argsstring></argsstring>
+        <name>INVALID_LOCALE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="976"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1dt_1a97bde9b6df5f7a15d20433f6f0caa401" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a40864017864903189f5960af52725cd5" kindref="member">ZorbaDateTimeErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaDateTimeErrorCode zorba::dt::INVALID_SPECIFICATION</definition>
+        <argsstring></argsstring>
+        <name>INVALID_SPECIFICATION</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="966"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1dt_1a3d2b4288f0713c4783a0aa1b5d7267a5" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a40864017864903189f5960af52725cd5" kindref="member">ZorbaDateTimeErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaDateTimeErrorCode zorba::dt::INVALID_VALUE</definition>
+        <argsstring></argsstring>
+        <name>INVALID_VALUE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="970"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1dt_1a10e7e484c9460fe8080d820302508991" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a40864017864903189f5960af52725cd5" kindref="member">ZorbaDateTimeErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaDateTimeErrorCode zorba::dt::LITERAL_MISMATCH</definition>
+        <argsstring></argsstring>
+        <name>LITERAL_MISMATCH</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="972"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1dt_1a5ee66a11d9f0a8f13cf97b4e8b9721ab" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a40864017864903189f5960af52725cd5" kindref="member">ZorbaDateTimeErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaDateTimeErrorCode zorba::dt::UNKNOWN_LOCALE</definition>
+        <argsstring></argsstring>
+        <name>UNKNOWN_LOCALE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="978"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1dt_1afbee483c797093c6b8e94791832df25c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a40864017864903189f5960af52725cd5" kindref="member">ZorbaDateTimeErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaDateTimeErrorCode zorba::dt::UNSUPPORTED_LOCALE</definition>
+        <argsstring></argsstring>
+        <name>UNSUPPORTED_LOCALE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="980"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="964"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,2137 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1StaticContext" kind="class" prot="public">
+    <compoundname>zorba::StaticContext</compoundname>
+    <basecompoundref refid="classzorba_1_1SmartObject" prot="public" virt="non-virtual">zorba::SmartObject</basecompoundref>
+    <includes refid="static__context_8h" local="no">zorba/static_context.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a4b4d4f1830ea043694652ac27aabbdde" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::addCollation</definition>
+        <argsstring>(const String &amp;aURI)=0</argsstring>
+        <name>addCollation</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Adds a collation URI. </para>        </briefdescription>
+        <detaileddescription>
+<para>The URI specifies the locale and collation strength of the collation that is added. A valid collation URI must begin with http://zorba.io/collations/. This prefix is followed by a collation strength (i.e. PRIMARY, SECONDARY, TERTIARY, QUATTERNARY, or IDENTICAL) followed by a &apos;/&apos;. After the strength a lower-case two- or three-letter ISO-639 language code must follow. The URI may end with an upper-case two-letter ISO-3166. For example, http://zorba.io/collations/PRIMARY/en/US specifies an english language with US begin the country..</para><para>Internally, ICU is used for comparing strings. For detailed description see <ulink url="http://www.icu-project.org/apiref/icu4c/classCollator.html">http://www.icu-project.org/apiref/icu4c/classCollator.html</ulink> and <ulink url="http://www.icu-project.org/apiref/icu4c/classLocale.html">http://www.icu-project.org/apiref/icu4c/classLocale.html</ulink></para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the URI of the collation. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the URI was not a valid collation URI). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="181"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1af3741bbf0d42733e4e0e4b23663a017b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::addNamespace</definition>
+        <argsstring>(const String &amp;aPrefix, const String &amp;aURI)=0</argsstring>
+        <name>addNamespace</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aPrefix</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Add a pair (prefix, URI) to the statically known namespaces that are available during query compilation. </para>        </briefdescription>
+        <detaileddescription>
+<para>See <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aPrefix</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the prefix <ref refid="classzorba_1_1String" kindref="compound">String</ref>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the URI <ref refid="classzorba_1_1String" kindref="compound">String</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the pair was added to the set of statically known namespaces, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occures. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::addReference</definition>
+        <argsstring>() const </argsstring>
+        <name>addReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a20933d3fd48877c532222e7c6c78e5af" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::clearBaseURI</definition>
+        <argsstring>()=0</argsstring>
+        <name>clearBaseURI</name>
+        <briefdescription>
+<para>Clears the base URI and sets it to undefined state. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="805"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a9e6439d1f96c813536b605a76aabd6e8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::containsFunction</definition>
+        <argsstring>(const String &amp;aFnNameUri, const String &amp;aFnNameLocal, int arity) const =0</argsstring>
+        <name>containsFunction</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aFnNameUri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aFnNameLocal</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>arity</declname>
+        </param>
+        <briefdescription>
+<para>Check if a function with the given name and arity are registered in the context. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="423"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ab1017187ea5784b8614785265c684a4e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref></type>
+        <definition>virtual StaticContext_t zorba::StaticContext::createChildContext</definition>
+        <argsstring>() const =0</argsstring>
+        <name>createChildContext</name>
+        <briefdescription>
+<para>Create a child static context, i.e. </para>        </briefdescription>
+        <detaileddescription>
+<para>a context with the same information, of the given static context.</para><para>A child static context carries the same context as it&apos;s parent but can override any information. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="84"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a5cb66ac2b7c17a76b59978fd50c238e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::declareOption</definition>
+        <argsstring>(const Item &amp;aQName, const String &amp;aOptionValue)=0</argsstring>
+        <name>declareOption</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aOptionValue</declname>
+        </param>
+        <briefdescription>
+<para>Declare an option (same as using declare option in <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref>) </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The QName of the option to declare. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aOptionValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The value of the option to declare. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="496"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a231cea43673b79c85d291659d5e6b56d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::disableFunction</definition>
+        <argsstring>(const Function_t &amp;aFunction)=0</argsstring>
+        <name>disableFunction</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1a14ebd231017771b2f2ab42b14eed3ff6" kindref="member">Function_t</ref> &amp;</type>
+          <declname>aFunction</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="429"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a29d5e00b2c9197f6ba9dfa5b1bb2a445" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::disableFunction</definition>
+        <argsstring>(const Item &amp;aQName, int arity)=0</argsstring>
+        <name>disableFunction</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>arity</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="432"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a0c8b5ca0a3afc1db97a73e5f5e14e412" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::StaticContext::fetch</definition>
+        <argsstring>(const String &amp;aURI) const =0</argsstring>
+        <name>fetch</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Fetches an resource refered to by the given URI. </para>        </briefdescription>
+        <detaileddescription>
+<para>Resolution is done using the URI mappers and resolvers registered in this static context. If no such mappers or resolvers have been registered, the built-in ones are used.</para><para>The default EntityKind for resources fetched by this function is &quot;SOME_CONTENT&quot;. The default encoding that is used to read the resource is &quot;UTF-8&quot;.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the resource to fetch</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the fetched resource </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="726"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a58a603f8fbe4fb2faf0eec927cec5e9b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::StaticContext::fetch</definition>
+        <argsstring>(const String &amp;aURI, const String &amp;aEntityKind) const =0</argsstring>
+        <name>fetch</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aEntityKind</declname>
+        </param>
+        <briefdescription>
+<para>Fetches an resource refered to by the given URI. </para>        </briefdescription>
+        <detaileddescription>
+<para>Resolution is done using the URI mappers and resolvers registered in this static context. If no such mappers or resolvers have been registered, the built-in ones are used.</para><para>The default encoding that is used to read the * resource is &quot;UTF-8&quot;.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the resource to fetch</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aEntityKind</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the kind of the entity to fetch (i.e. SOME_CONTENT, SCHEMA, MODULE, THESAURUS, or STOP_WORDS)</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the fetched resource </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="745"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1aeb66cd8d065e78e0a3370e86991b00ab" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::StaticContext::fetch</definition>
+        <argsstring>(const String &amp;aURI, const String &amp;aEntityKind, const String &amp;aEncoding) const =0</argsstring>
+        <name>fetch</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aEntityKind</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aEncoding</declname>
+        </param>
+        <briefdescription>
+<para>Fetches an resource refered to by the given URI. </para>        </briefdescription>
+        <detaileddescription>
+<para>Resolution is done using the URI mappers and resolvers registered in this static context. If no such mappers or resolvers have been registered, the built-in ones are used.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the resource to fetch </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aEncoding</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the encoding to use when reading the resource.</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aEntityKind</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the kind of the entity to fetch (i.e. SOME_CONTENT, SCHEMA, MODULE, THESAURUS, or STOP_WORDS)</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the fetched resource </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="765"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a3455240659d27b66a822997d9f88595c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::StaticContext::fetchBinary</definition>
+        <argsstring>(const String &amp;aURI) const =0</argsstring>
+        <name>fetchBinary</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Fetches an resource refered to by the given URI and returns it as a base64binary. </para>        </briefdescription>
+        <detaileddescription>
+<para>Resolution is done using the URI mappers and resolvers registered in this static context. If no such mappers or resolvers have been registered, the built-in ones are used.</para><para>The default EntityKind for resources fetched by this function is &quot;SOME_CONTENT&quot;.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the resource to fetch</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the fetched resource </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="782"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ae0ab4c2942b247ca8bafe4f2aa11eccc" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::StaticContext::fetchBinary</definition>
+        <argsstring>(const String &amp;aURI, const String &amp;aEntityKind) const =0</argsstring>
+        <name>fetchBinary</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aEntityKind</declname>
+        </param>
+        <briefdescription>
+<para>Fetches an resource refered to by the given URI and returns it as a base64binary. </para>        </briefdescription>
+        <detaileddescription>
+<para>Resolution is done using the URI mappers and resolvers registered in this static context. If no such mappers or resolvers have been registered, the built-in ones are used.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the resource to fetch</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aEntityKind</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the kind of the entity to fetch (i.e. SOME_CONTENT, SCHEMA, MODULE, THESAURUS, or STOP_WORDS)</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the fetched resource </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="799"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a6f7299958803223b9fa72ba15b554d38" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::findFunctions</definition>
+        <argsstring>(const Item &amp;aQName, std::vector&lt; Function_t &gt; &amp;aFunctions) const =0</argsstring>
+        <name>findFunctions</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; <ref refid="namespacezorba_1a14ebd231017771b2f2ab42b14eed3ff6" kindref="member">Function_t</ref> &gt; &amp;</type>
+          <declname>aFunctions</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="426"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SmartObject::free</definition>
+        <argsstring>()</argsstring>
+        <name>free</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a79f91f5d2dbf15416c74fd604162dd71" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1audit_1_1Event" kindref="compound">audit::Event</ref> *</type>
+        <definition>virtual audit::Event* zorba::StaticContext::getAuditEvent</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getAuditEvent</name>
+        <briefdescription>
+<para>gets the audit event that is populated during execution </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>the audit event </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="642"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a516e8c2b71404c02b598139563a3ffb5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::StaticContext::getBaseURI</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getBaseURI</name>
+        <briefdescription>
+<para>Get the base URI. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1String" kindref="compound">String</ref> the base URI. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="354"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a65530d1a5c36776427f9930f8e2a7fa2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1a6627dc4004037f565b99ccf00f4d63cb" kindref="member">boundary_space_mode_t</ref></type>
+        <definition>virtual boundary_space_mode_t zorba::StaticContext::getBoundarySpacePolicy</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getBoundarySpacePolicy</name>
+        <briefdescription>
+<para>Get the boundary space policy. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><simplesect kind="return"><para>boundary_space_mode_t the boundary space policy. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="317"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ad3310238f74b8bb3e50465d7400e23f8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>virtual SequenceType zorba::StaticContext::getCollectionType</definition>
+        <argsstring>(const String &amp;aCollectionUri) const =0</argsstring>
+        <name>getCollectionType</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aCollectionUri</declname>
+        </param>
+        <briefdescription>
+<para>Get the type of a statically known collection. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="418"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a07973d3d27b6837432d97504154b5b0b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1a4e1072d3044e494cb76e59289e30310f" kindref="member">construction_mode_t</ref></type>
+        <definition>virtual construction_mode_t zorba::StaticContext::getConstructionMode</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getConstructionMode</name>
+        <briefdescription>
+<para>Get the construction mode. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><simplesect kind="return"><para>construction_mode_t the construction mode. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="266"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a2eb5d019ead629930c795328814fc82f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>virtual SequenceType zorba::StaticContext::getContextItemStaticType</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getContextItemStaticType</name>
+        <briefdescription>
+<para>Fetch the type of the context item. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="465"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a12f292965b74c4e5b5a4a31a9ec9a044" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getCopyNamespacesMode</definition>
+        <argsstring>(preserve_mode_t &amp;aPreserve, inherit_mode_t &amp;aInherit) const =0</argsstring>
+        <name>getCopyNamespacesMode</name>
+        <param>
+          <type><ref refid="namespacezorba_1a4169935c02d1a13c22131558ef2f57cf" kindref="member">preserve_mode_t</ref> &amp;</type>
+          <declname>aPreserve</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1a6d664ab06d77c71376b72583d9c76e94" kindref="member">inherit_mode_t</ref> &amp;</type>
+          <declname>aInherit</declname>
+        </param>
+        <briefdescription>
+<para>Get the copy namespace mode. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><simplesect kind="return"><para>aPreserve the preserve mode. </para><simplesectsep/><para>aInherit the inherit mode. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="338"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a5b51d57cbbbd9e35391522dda3d4c361" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::StaticContext::getDefaultCollation</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getDefaultCollation</name>
+        <briefdescription>
+<para>Get the URI of the default collation. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1String" kindref="compound">String</ref> the URI of the default collation. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="198"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a870bd9441db8b1d5c193b2da42291106" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::StaticContext::getDefaultElementAndTypeNamespace</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getDefaultElementAndTypeNamespace</name>
+        <briefdescription>
+<para>Get the default element and type namespace URI. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1String" kindref="compound">String</ref> the URI for the default element and type namespace. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="139"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1af9cfeb9a053c665558363ddeff7eddce" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::StaticContext::getDefaultFunctionNamespace</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getDefaultFunctionNamespace</name>
+        <briefdescription>
+<para>Get the default function namespace. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1String" kindref="compound">String</ref> the URI of the default function namespace. <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> has been registered. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="159"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a31de25fa0120e32818d0a2453ba1238a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1a68a06499a5fa26a391e4ec8f8800f1eb" kindref="member">order_empty_mode_t</ref></type>
+        <definition>virtual order_empty_mode_t zorba::StaticContext::getDefaultOrderForEmptySequences</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getDefaultOrderForEmptySequences</name>
+        <briefdescription>
+<para>Get the default order for the empty sequence. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><simplesect kind="return"><para>order_empty_mode_t the ordering mode. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="300"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a217461296aa6d8089aa79ffb540a78b5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>virtual SequenceType zorba::StaticContext::getDocumentType</definition>
+        <argsstring>(const String &amp;aDocUri) const =0</argsstring>
+        <name>getDocumentType</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aDocUri</declname>
+        </param>
+        <briefdescription>
+<para>Get the type of a statically known document. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="408"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ad8f0bebcd1f133af2900bd49f46c6044" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getExternalVariables</definition>
+        <argsstring>(Iterator_t &amp;aVarsIter) const =0</argsstring>
+        <name>getExternalVariables</name>
+        <param>
+          <type><ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref> &amp;</type>
+          <declname>aVarsIter</declname>
+        </param>
+        <briefdescription>
+<para>Returns the QName of all external variables within the static context. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aVarsIter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>iterator to store the results. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="652"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a78ebca3ca5ffe80df544f9d2b74adad1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getFullLibPath</definition>
+        <argsstring>(std::vector&lt; String &gt; &amp;aLibPath) const =0</argsstring>
+        <name>getFullLibPath</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+          <declname>aLibPath</declname>
+        </param>
+        <briefdescription>
+<para>Return the URI lookup path (list of filesystem directories) for this static context and all its parents. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="709"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ab43a64d55ff5b43c7d12f498339bc7fd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getFullModulePaths</definition>
+        <argsstring>(std::vector&lt; String &gt; &amp;aFullModulePaths) const =0</argsstring>
+        <name>getFullModulePaths</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+          <declname>aFullModulePaths</declname>
+        </param>
+        <briefdescription>
+<para>Return the union of the URI and library lookup paths (lists of filesystem directories) for this static context and all its parents. </para>        </briefdescription>
+        <detaileddescription>
+<para><xrefsect id="deprecated_1_deprecated000004"><xreftitle>Deprecated</xreftitle><xrefdescription><para>Use <ref refid="classzorba_1_1StaticContext_1afaf5d3b327d13bb18f8aedc89d1b5e07" kindref="member">StaticContext::getFullURIPath()</ref> and <ref refid="classzorba_1_1StaticContext_1a78ebca3ca5ffe80df544f9d2b74adad1" kindref="member">StaticContext::getFullLibPath()</ref>. </para></xrefdescription></xrefsect></para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="529"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1afaf5d3b327d13bb18f8aedc89d1b5e07" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getFullURIPath</definition>
+        <argsstring>(std::vector&lt; String &gt; &amp;aURIPath) const =0</argsstring>
+        <name>getFullURIPath</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+          <declname>aURIPath</declname>
+        </param>
+        <briefdescription>
+<para>Return the URI lookup path (list of filesystem directories) for this static context and all its parents. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="680"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a645a651b272c60fbea5a7c671ad26f6c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getFunctionAnnotations</definition>
+        <argsstring>(const Item &amp;aQName, int arity, std::vector&lt; Annotation_t &gt; &amp;aAnnotations) const =0</argsstring>
+        <name>getFunctionAnnotations</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>arity</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; <ref refid="namespacezorba_1a2ec75c29e084faf0a908f2b5545b9ed2" kindref="member">Annotation_t</ref> &gt; &amp;</type>
+          <declname>aAnnotations</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="435"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ac0d94cd0e4fb3f821a4273ecd9273253" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getFunctions</definition>
+        <argsstring>(std::vector&lt; Function_t &gt; &amp;aFunctions) const =0</argsstring>
+        <name>getFunctions</name>
+        <param>
+          <type>std::vector&lt; <ref refid="namespacezorba_1a14ebd231017771b2f2ab42b14eed3ff6" kindref="member">Function_t</ref> &gt; &amp;</type>
+          <declname>aFunctions</declname>
+        </param>
+        <briefdescription>
+<para>Get all functions declared in the given static context. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>aFunctions all of the said functions </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="442"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1aa8ea6695243c7b21a047bfa15ca4f156" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getFunctions</definition>
+        <argsstring>(const String &amp;aFnNameUri, uint32_t arity, std::vector&lt; Function_t &gt; &amp;aFunctions) const =0</argsstring>
+        <name>getFunctions</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aFnNameUri</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>arity</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; <ref refid="namespacezorba_1a14ebd231017771b2f2ab42b14eed3ff6" kindref="member">Function_t</ref> &gt; &amp;</type>
+          <declname>aFunctions</declname>
+        </param>
+        <briefdescription>
+<para>Get all functions with a specified namespace and airty\ declared in the given static context. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aFnNameUri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace for the functions to return </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>arity</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the arity for the functions to return </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aFunctions</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>all of the said functions </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="455"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a2e183c7ed9ccba4af02b3eba0d6656ce" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1a93922af20969649ae76634c99192bfa8" kindref="member">jsoniq_version_t</ref></type>
+        <definition>virtual jsoniq_version_t zorba::StaticContext::getJSONiqVersion</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getJSONiqVersion</name>
+        <briefdescription>
+<para>Get the JSONiq processing mode. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>jsoniq_version_t the JSONiq version processing mode. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="232"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a2579984de44f62ef14c2734217ced7d7" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getLibPath</definition>
+        <argsstring>(std::vector&lt; String &gt; &amp;aLibPath) const =0</argsstring>
+        <name>getLibPath</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+          <declname>aLibPath</declname>
+        </param>
+        <briefdescription>
+<para>Return the URI lookup path (list of filesystem directories) for this static context. </para>        </briefdescription>
+        <detaileddescription>
+<para>Returns any values set by <ref refid="classzorba_1_1StaticContext_1ad2e685d4bd3f11841d4c105be75e7227" kindref="member">StaticContext::setLibPath()</ref> on this static context. To return the full library lookup path for this static context and all its parents (usually most useful), call <ref refid="classzorba_1_1StaticContext_1a78ebca3ca5ffe80df544f9d2b74adad1" kindref="member">StaticContext::getFullLibPath()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="702"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a0843da0799abf0fb7fc5f9aca262bf04" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getModulePaths</definition>
+        <argsstring>(std::vector&lt; String &gt; &amp;aModulePaths) const =0</argsstring>
+        <name>getModulePaths</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+          <declname>aModulePaths</declname>
+        </param>
+        <briefdescription>
+<para>Return the union of the URI and library lookup paths (lists of filesystem directories) for this static context. </para>        </briefdescription>
+        <detaileddescription>
+<para><xrefsect id="deprecated_1_deprecated000003"><xreftitle>Deprecated</xreftitle><xrefdescription><para>Use <ref refid="classzorba_1_1StaticContext_1a10211ceb037f51af1ce3eede06f80588" kindref="member">StaticContext::getURIPath()</ref> and <ref refid="classzorba_1_1StaticContext_1a2579984de44f62ef14c2734217ced7d7" kindref="member">StaticContext::getLibPath()</ref>. </para><para>Use <ref refid="classzorba_1_1StaticContext_1a10211ceb037f51af1ce3eede06f80588" kindref="member">StaticContext::getURIPath()</ref> and <ref refid="classzorba_1_1StaticContext_1a2579984de44f62ef14c2734217ced7d7" kindref="member">StaticContext::getLibPath()</ref>.</para></xrefdescription></xrefsect></para><para>Returns any values set by <ref refid="classzorba_1_1StaticContext_1ad2e685d4bd3f11841d4c105be75e7227" kindref="member">StaticContext::setLibPath()</ref> and/or <ref refid="classzorba_1_1StaticContext_1a67d4856cbb7eaa31f895a6cc873f32f0" kindref="member">StaticContext::setURIPath()</ref> on this static context. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="521"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a7f7c934ef18c6e8f5153f4c1315a72b5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getNamespaceBindings</definition>
+        <argsstring>(NsBindings &amp;aBindings) const =0</argsstring>
+        <name>getNamespaceBindings</name>
+        <param>
+          <type><ref refid="namespacezorba_1a88f32864e73bd2d882541275f8cf1cdc" kindref="member">NsBindings</ref> &amp;</type>
+          <declname>aBindings</declname>
+        </param>
+        <briefdescription>
+<para>Get the list of all namespace bindings (prefix, uri) declared in this and its parent static contexts. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aBindings</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the bindings are added to this list </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="120"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a79950cf93d1b12598ac9e4930611f5a4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::StaticContext::getNamespaceURIByPrefix</definition>
+        <argsstring>(const String &amp;aPrefix) const =0</argsstring>
+        <name>getNamespaceURIByPrefix</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aPrefix</declname>
+        </param>
+        <briefdescription>
+<para>Get the namespace URI for a given prefix. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aPrefix</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the prefix for which to retrieve the namespace URI. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1String" kindref="compound">String</ref> the URI for the given prefix or an empty <ref refid="classzorba_1_1String" kindref="compound">String</ref> if no URI could be found for the given prefix and an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> has been registered. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. no URI could be found for the given prefix).</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<xrefsect id="deprecated_1_deprecated000001"><xreftitle>Deprecated</xreftitle><xrefdescription><para>This function is deprecated. Use getNamespaceBindings instead. </para></xrefdescription></xrefsect></para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="111"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a292da5db681a9e716021d51ce017a455" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::getOption</definition>
+        <argsstring>(const Item &amp;aQName, String &amp;aOptionValue) const =0</argsstring>
+        <name>getOption</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aOptionValue</declname>
+        </param>
+        <briefdescription>
+<para>Get an option that was declared using the declare option syntax. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The QName of the option to get. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aOptionValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The value of the option if found. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the option was found, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="488"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a12d02375c1ba4cb119b8488df1db519b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1acf239253638cf017b2a8e29f47be25d3" kindref="member">ordering_mode_t</ref></type>
+        <definition>virtual ordering_mode_t zorba::StaticContext::getOrderingMode</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getOrderingMode</name>
+        <briefdescription>
+<para>Get the ordering mode. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><simplesect kind="return"><para>ordering_mode_t the ordering mode. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="283"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>long zorba::SmartObject::getRefCount</definition>
+        <argsstring>() const </argsstring>
+        <name>getRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a8b2bf4fa99156aeffb11c838273eb0ab" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4ca" kindref="member">validation_mode_t</ref></type>
+        <definition>virtual validation_mode_t zorba::StaticContext::getRevalidationMode</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getRevalidationMode</name>
+        <briefdescription>
+<para>Get the revalidation mode. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>the revalidation mode. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="361"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a7c71590f7a2c7d4cf5c4b2667439ca88" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1StaticCollectionManager" kindref="compound">StaticCollectionManager</ref> *</type>
+        <definition>virtual StaticCollectionManager* zorba::StaticContext::getStaticCollectionManager</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getStaticCollectionManager</name>
+        <briefdescription>
+<para>Returns a <ref refid="classzorba_1_1CollectionManager" kindref="compound">CollectionManager</ref> responsible for all collections which are statically declared in this static context. </para>        </briefdescription>
+        <detaileddescription>
+<para>The collection manager provides a set of functions for managing collections and their contents.</para><para><simplesect kind="return"><para>The collection manager responsible for managing collections of this context. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="626"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a10211ceb037f51af1ce3eede06f80588" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::getURIPath</definition>
+        <argsstring>(std::vector&lt; String &gt; &amp;aURIPath) const =0</argsstring>
+        <name>getURIPath</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+          <declname>aURIPath</declname>
+        </param>
+        <briefdescription>
+<para>Return the URI lookup path (list of filesystem directories) for this static context. </para>        </briefdescription>
+        <detaileddescription>
+<para>Returns any values set by <ref refid="classzorba_1_1StaticContext_1a67d4856cbb7eaa31f895a6cc873f32f0" kindref="member">StaticContext::setURIPath()</ref> on this static context. To return the full URI lookup path for this static context and all its parents (usually most useful), call <ref refid="classzorba_1_1StaticContext_1afaf5d3b327d13bb18f8aedc89d1b5e07" kindref="member">StaticContext::getFullURIPath()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="673"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a212cce4f097acd76e99aae79b9de57a3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1a869910a131d93b8a3333d35bba8cb4c5" kindref="member">xpath1_0compatib_mode_t</ref></type>
+        <definition>virtual xpath1_0compatib_mode_t zorba::StaticContext::getXPath1_0CompatibMode</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getXPath1_0CompatibMode</name>
+        <briefdescription>
+<para>Get the XPath 1.0 compatibility mode. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><simplesect kind="return"><para>xpath1_0compatib_mode_t the XPath 1.0 compatibility mode. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="249"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a80b6f9b890677f8d782b06d6a5b8dc85" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1a0b004b7103901f1b44b5b2ebc3035abd" kindref="member">xquery_version_t</ref></type>
+        <definition>virtual xquery_version_t zorba::StaticContext::getXQueryVersion</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getXQueryVersion</name>
+        <briefdescription>
+<para>Get the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> processing mode (version 1.0 or 3.0). </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>xquery_version_t the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> version processing mode. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="224"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a9318900413f58df66f0df6d0f39a62ad" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref></type>
+        <definition>virtual ItemSequence_t zorba::StaticContext::invoke</definition>
+        <argsstring>(const Item &amp;aQName, const std::vector&lt; ItemSequence_t &gt; &amp;aArgs) const =0</argsstring>
+        <name>invoke</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref> &gt; &amp;</type>
+          <declname>aArgs</declname>
+        </param>
+        <briefdescription>
+<para>Invokes the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> function with the given name and the given parameters. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that the function to be invoked needs to be declared in this static context. In order to declare a function in the static context, the loadProlog method of this class can be used.</para><para>Also note that if the function to be invoked is an updating function, its resulting pending update list is implicitly applied by this function.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the function to be invoked </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aArgs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a vector of ItemSequences. One entry in the vector corresponds to one argument that is passed to the function.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The result of the function that is invoked. If the function to be invoked is an updating function, the resulting item sequence is empty. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="613"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1afaabca3730a9e02248ff334a1846556d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::loadProlog</definition>
+        <argsstring>(const String &amp;, const Zorba_CompilerHints_t &amp;hints)=0</argsstring>
+        <name>loadProlog</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1afb707279f21bf8e9df26d5ec459b8ede" kindref="member">Zorba_CompilerHints_t</ref> &amp;</type>
+          <declname>hints</declname>
+        </param>
+        <briefdescription>
+<para>Loads the declarations and definitions of a given <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> prolog into this static context. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function compiles the prolog passed as first parameter and loads all declarations and definitions into this static context.</para><para>The static context extended by this prolog can then be used for creating a compiling a new query.</para><para>A StaticException is raised if the prolog could not be compiled or if the prolog does not contain valid declarations (e.g. duplicate declarations). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="75"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ace7da5644cac141c113cb51dbd4d63dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::registerModule</definition>
+        <argsstring>(ExternalModule *aModule)=0</argsstring>
+        <name>registerModule</name>
+        <param>
+          <type><ref refid="classzorba_1_1ExternalModule" kindref="compound">ExternalModule</ref> *</type>
+          <declname>aModule</declname>
+        </param>
+        <briefdescription>
+<para>Register a module providing access to external functions. </para>        </briefdescription>
+        <detaileddescription>
+<para>Register a module that provides access to external functions. The caller keeps the ownership of the Module and the StatelessExternalFunction objects passed to this function.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aModule</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the module object </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the module has been set, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="380"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a60ddf7be80dd1b9cae661dfd53ae348a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::registerURIMapper</definition>
+        <argsstring>(URIMapper *aMapper)=0</argsstring>
+        <name>registerURIMapper</name>
+        <param>
+          <type><ref refid="classzorba_1_1URIMapper" kindref="compound">URIMapper</ref> *</type>
+          <declname>aMapper</declname>
+        </param>
+        <briefdescription>
+<para>Register a URI Mapper which will transform a given URI into several alternate potential URIs. </para>        </briefdescription>
+        <detaileddescription>
+<para>QQQ doc </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="389"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a1ef8265e73d1326180c9c793565ddc1e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::registerURLResolver</definition>
+        <argsstring>(URLResolver *aResolver)=0</argsstring>
+        <name>registerURLResolver</name>
+        <param>
+          <type><ref refid="classzorba_1_1URLResolver" kindref="compound">URLResolver</ref> *</type>
+          <declname>aResolver</declname>
+        </param>
+        <briefdescription>
+<para>Register a URL Resolver which will transform a given URL into a <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>QQQ doc </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="398"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::removeReference</definition>
+        <argsstring>()</argsstring>
+        <name>removeReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a8bdc5217113d0f871168d08913da1fb5" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::resetTraceStream</definition>
+        <argsstring>()=0</argsstring>
+        <name>resetTraceStream</name>
+        <briefdescription>
+<para>Resets the output stream that is used by the fn:trace function to std::cerr. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="479"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a8d6c775566cad3c06836b202f7aa679a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::StaticContext::resolve</definition>
+        <argsstring>(const String &amp;aRelativeUri) const =0</argsstring>
+        <name>resolve</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aRelativeUri</declname>
+        </param>
+        <briefdescription>
+<para>Resolves the given URI against the value of the base-uri property from the static context. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aRelativeUri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The relative URI to be resolved. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="537"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ad7bf70709b2b5511e62ae092de37acf5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::StaticContext::resolve</definition>
+        <argsstring>(const String &amp;aRelativeUri, const String &amp;aBaseUri) const =0</argsstring>
+        <name>resolve</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aRelativeUri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aBaseUri</declname>
+        </param>
+        <briefdescription>
+<para>Resolves the given relative URI against the absolute base URI. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aRelativeUri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The relative URI to be resolved. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aBaseUri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The absolute URI against which the resolving is performed. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="545"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a8cff1c0ce75a82008841fc751ecbbc3a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::setAuditEvent</definition>
+        <argsstring>(audit::Event *anEvent)=0</argsstring>
+        <name>setAuditEvent</name>
+        <param>
+          <type><ref refid="classzorba_1_1audit_1_1Event" kindref="compound">audit::Event</ref> *</type>
+          <declname>anEvent</declname>
+        </param>
+        <briefdescription>
+<para>sets the audit event that will be populated during execution </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>anEvent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the audit event </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="634"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1afe039b4f8a5dd26f47dcc2e9fd1be70c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setBaseURI</definition>
+        <argsstring>(const String &amp;aBaseURI)=0</argsstring>
+        <name>setBaseURI</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aBaseURI</declname>
+        </param>
+        <briefdescription>
+<para>Set the base URI. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aBaseURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the base URI as <ref refid="classzorba_1_1String" kindref="compound">String</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the base URI has been set, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="347"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a2f41036bdce0ed19969d663ba0c5f517" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setBoundarySpacePolicy</definition>
+        <argsstring>(boundary_space_mode_t aMode)=0</argsstring>
+        <name>setBoundarySpacePolicy</name>
+        <param>
+          <type><ref refid="namespacezorba_1a6627dc4004037f565b99ccf00f4d63cb" kindref="member">boundary_space_mode_t</ref></type>
+          <declname>aMode</declname>
+        </param>
+        <briefdescription>
+<para>Set the boundary space policy. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the boundary space policy. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the mode was set, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="309"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a4f8f3fc68dbdd723f9bc99f91dce3113" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::setCollectionType</definition>
+        <argsstring>(const String &amp;aCollectionUri, const SequenceType &amp;type)=0</argsstring>
+        <name>setCollectionType</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aCollectionUri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref> &amp;</type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Set the type of a statically known collection. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="413"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a783f8fdcd9b857d759c8c2c395505517" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setConstructionMode</definition>
+        <argsstring>(construction_mode_t aMode)=0</argsstring>
+        <name>setConstructionMode</name>
+        <param>
+          <type><ref refid="namespacezorba_1a4e1072d3044e494cb76e59289e30310f" kindref="member">construction_mode_t</ref></type>
+          <declname>aMode</declname>
+        </param>
+        <briefdescription>
+<para>Set the construction mode. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the construction mode. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the mode was set, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="258"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a724c07aca98ff8de76600d1a9f0e3342" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::setContextItemStaticType</definition>
+        <argsstring>(const SequenceType &amp;type)=0</argsstring>
+        <name>setContextItemStaticType</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref> &amp;</type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Set the type of the context item. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="460"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ac943825b5d4d488a17c888733d0a4b0b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setCopyNamespacesMode</definition>
+        <argsstring>(preserve_mode_t aPreserve, inherit_mode_t aInherit)=0</argsstring>
+        <name>setCopyNamespacesMode</name>
+        <param>
+          <type><ref refid="namespacezorba_1a4169935c02d1a13c22131558ef2f57cf" kindref="member">preserve_mode_t</ref></type>
+          <declname>aPreserve</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1a6d664ab06d77c71376b72583d9c76e94" kindref="member">inherit_mode_t</ref></type>
+          <declname>aInherit</declname>
+        </param>
+        <briefdescription>
+<para>Set the copy namespace mode. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aPreserve</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the preserve mode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aInherit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the inherit mode. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the mode was set, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="328"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1abd6b0c0f38b9e3384110e4f4059940b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::setDefaultCollation</definition>
+        <argsstring>(const String &amp;aURI)=0</argsstring>
+        <name>setDefaultCollation</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Set the URI of the default collation. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>URI of the default collation. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g., the URI does not identify a collation among the statically known collations. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="191"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a193a3ecd7cec1611b32e435c92a5608c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setDefaultElementAndTypeNamespace</definition>
+        <argsstring>(const String &amp;aURI)=0</argsstring>
+        <name>setDefaultElementAndTypeNamespace</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Set the default element and type namespace (see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>) </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>of the default element and type namespace URI. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the default element and type namespace URI has been set, false otherwise if an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> has been registered. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="131"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ab559104a9fce5f09c7f0344f8656a985" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setDefaultFunctionNamespace</definition>
+        <argsstring>(const String &amp;aURI)=0</argsstring>
+        <name>setDefaultFunctionNamespace</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Set the default functionnamespace (see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>) </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>of the default function namespace. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the default function namespace URI has been set, false otherwise if an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> has been registered. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="150"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1aadb719d53a28b081553c02678bf2b510" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setDefaultFunctionNamespaces</definition>
+        <argsstring>(const std::vector&lt; String &gt; &amp;aURIs)=0</argsstring>
+        <name>setDefaultFunctionNamespaces</name>
+        <param>
+          <type>const std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+          <declname>aURIs</declname>
+        </param>
+        <briefdescription>
+<para>Sets a list of default function namespaces that will be used in order during the lookup of functions. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURIs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the list of default function namespaces. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the said namespaces have been set, false otherwise if an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> has been registered. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="816"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ad8d84423d0e952af08d9970546b6126f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setDefaultOrderForEmptySequences</definition>
+        <argsstring>(order_empty_mode_t aMode)=0</argsstring>
+        <name>setDefaultOrderForEmptySequences</name>
+        <param>
+          <type><ref refid="namespacezorba_1a68a06499a5fa26a391e4ec8f8800f1eb" kindref="member">order_empty_mode_t</ref></type>
+          <declname>aMode</declname>
+        </param>
+        <briefdescription>
+<para>Set the default order for the empty sequence. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the default order for the empty sequence. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the mode was set, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="292"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ab305204479ff9ee31876efebb26a294f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::setDocumentType</definition>
+        <argsstring>(const String &amp;aDocUri, const SequenceType &amp;type)=0</argsstring>
+        <name>setDocumentType</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aDocUri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref> &amp;</type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Set the type of a statically known document. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="403"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a33e611ae000ff00e9dfa46a62f3ef397" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setJSONiqVersion</definition>
+        <argsstring>(jsoniq_version_t aMode)=0</argsstring>
+        <name>setJSONiqVersion</name>
+        <param>
+          <type><ref refid="namespacezorba_1a93922af20969649ae76634c99192bfa8" kindref="member">jsoniq_version_t</ref></type>
+          <declname>aMode</declname>
+        </param>
+        <briefdescription>
+<para>Set the JSONiq processing mode. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the JSONiq version </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the version was set, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="216"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ad2e685d4bd3f11841d4c105be75e7227" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::setLibPath</definition>
+        <argsstring>(const std::vector&lt; String &gt; &amp;aLibPath)=0</argsstring>
+        <name>setLibPath</name>
+        <param>
+          <type>const std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+          <declname>aLibPath</declname>
+        </param>
+        <briefdescription>
+<para>Set the library lookup path (list of filesystem directories) for this static context. </para>        </briefdescription>
+        <detaileddescription>
+<para>Queries which import modules that have external function implementations will look for the implementation of those functions (shared libraries) in these directories. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="691"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ae3ed41589012358118015573ef80be5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::setModulePaths</definition>
+        <argsstring>(const std::vector&lt; String &gt; &amp;aModulePaths)=0</argsstring>
+        <name>setModulePaths</name>
+        <param>
+          <type>const std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+          <declname>aModulePaths</declname>
+        </param>
+        <briefdescription>
+<para>Set the URI and library lookup paths (lists of filesystem directories) for this static context. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that calling this method will override any values previously passed to <ref refid="classzorba_1_1StaticContext_1a67d4856cbb7eaa31f895a6cc873f32f0" kindref="member">StaticContext::setURIPath()</ref> and <ref refid="classzorba_1_1StaticContext_1ad2e685d4bd3f11841d4c105be75e7227" kindref="member">StaticContext::setLibPath()</ref>. <xrefsect id="deprecated_1_deprecated000002"><xreftitle>Deprecated</xreftitle><xrefdescription><para>Use <ref refid="classzorba_1_1StaticContext_1a67d4856cbb7eaa31f895a6cc873f32f0" kindref="member">StaticContext::setURIPath()</ref> and <ref refid="classzorba_1_1StaticContext_1ad2e685d4bd3f11841d4c105be75e7227" kindref="member">StaticContext::setLibPath()</ref>.</para></xrefdescription></xrefsect></para><para>Convenience method which adds the listed directories to both the URI path and Library path for this static context. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="509"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1afb500540da3b69991abb39164d903680" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setOrderingMode</definition>
+        <argsstring>(ordering_mode_t aMode)=0</argsstring>
+        <name>setOrderingMode</name>
+        <param>
+          <type><ref refid="namespacezorba_1acf239253638cf017b2a8e29f47be25d3" kindref="member">ordering_mode_t</ref></type>
+          <declname>aMode</declname>
+        </param>
+        <briefdescription>
+<para>Set the ordering mode. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the ordering mode. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the mode was set, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="275"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1aafcdec2c05b50699fd2350848a674318" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::setRevalidationMode</definition>
+        <argsstring>(validation_mode_t aMode)=0</argsstring>
+        <name>setRevalidationMode</name>
+        <param>
+          <type><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4ca" kindref="member">validation_mode_t</ref></type>
+          <declname>aMode</declname>
+        </param>
+        <briefdescription>
+<para>Set the revalidation mode. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the revalidation mode. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="368"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a4f50a179794a2be756f7efdb9638cc8e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::setTraceStream</definition>
+        <argsstring>(std::ostream &amp;)=0</argsstring>
+        <name>setTraceStream</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <briefdescription>
+<para>Set the output stream that is used by the fn:trace function. </para>        </briefdescription>
+        <detaileddescription>
+<para>Sets the output stream that is used by the fn:trace function to the given output stream. The default stream is std::cerr. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="474"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a67d4856cbb7eaa31f895a6cc873f32f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::StaticContext::setURIPath</definition>
+        <argsstring>(const std::vector&lt; String &gt; &amp;aURIPath)=0</argsstring>
+        <name>setURIPath</name>
+        <param>
+          <type>const std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+          <declname>aURIPath</declname>
+        </param>
+        <briefdescription>
+<para>Set the URI lookup path (list of filesystem directories) for this static context. </para>        </briefdescription>
+        <detaileddescription>
+<para>Queries which resolve URIs (for instance, importing modules or schemas) will look in these directories. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="662"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a4c15daa86433cc0a21c57659ae17dc8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setXPath1_0CompatibMode</definition>
+        <argsstring>(xpath1_0compatib_mode_t aMode)=0</argsstring>
+        <name>setXPath1_0CompatibMode</name>
+        <param>
+          <type><ref refid="namespacezorba_1a869910a131d93b8a3333d35bba8cb4c5" kindref="member">xpath1_0compatib_mode_t</ref></type>
+          <declname>aMode</declname>
+        </param>
+        <briefdescription>
+<para>Set the XPath 1.0 compatibility mode. </para>        </briefdescription>
+        <detaileddescription>
+<para>(see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>)</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the XPath 1.0 compatibility mode. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the mode was set, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="241"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a831aeee7a6a9cf950144555bc7313ce1" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::setXQueryVersion</definition>
+        <argsstring>(xquery_version_t aMode)=0</argsstring>
+        <name>setXQueryVersion</name>
+        <param>
+          <type><ref refid="namespacezorba_1a0b004b7103901f1b44b5b2ebc3035abd" kindref="member">xquery_version_t</ref></type>
+          <declname>aMode</declname>
+        </param>
+        <briefdescription>
+<para>Set the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> processing mode (version 1.0 or 3.0). </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> version. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the version was set, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="207"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a61936611b1f8111a176798dd07f4d19b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::validate</definition>
+        <argsstring>(const Item &amp;rootElement, Item &amp;validatedResult, validation_mode_t validationMode=validate_strict) const =0</argsstring>
+        <name>validate</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>rootElement</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>validatedResult</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4ca" kindref="member">validation_mode_t</ref></type>
+          <declname>validationMode</declname>
+          <defval><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4caa4d338fc1285b3821c050247b5e84b2fe" kindref="member">validate_strict</ref></defval>
+        </param>
+        <briefdescription>
+<para>Validates this <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note: works only on document and element nodes, otherwise returns false.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>rootElement</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the root of the tree beeing validated </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>validatedResult</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the result of the validation </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>validationMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Validation mode: default value is validate_strict </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if validation is correct, false if validation is disabled, throws errors if validation fails </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if any validation error occured </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="560"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1aa9a7f7454b9a4ec37cf9fc5ac01c19c7" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::validate</definition>
+        <argsstring>(const Item &amp;rootElement, Item &amp;validatedResult, const String &amp;targetNamespace, validation_mode_t validationMode=validate_strict) const =0</argsstring>
+        <name>validate</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>rootElement</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>validatedResult</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>targetNamespace</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4ca" kindref="member">validation_mode_t</ref></type>
+          <declname>validationMode</declname>
+          <defval><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4caa4d338fc1285b3821c050247b5e84b2fe" kindref="member">validate_strict</ref></defval>
+        </param>
+        <briefdescription>
+<para>Validates this <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> while loading the schema for targetNamespace Note: works only on document or element nodes, otherwise returns false. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>rootElement</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the root of the tree beeing validated </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>validatedResult</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the result of the validation </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>targetNamespace</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the expected namespace of root of the tree beeing validated ??? </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>validationMode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Validation mode: default value is validate_strict </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if validation is correct, false if validation is disabled, throws errors if validation fails </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if any validation error occured </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="577"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1a9d0c4bae057d3db940007c8df7c5e758" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StaticContext::validateSimpleContent</definition>
+        <argsstring>(const String &amp;stringValue, const Item &amp;typeQName, std::vector&lt; Item &gt; &amp;resultList) const =0</argsstring>
+        <name>validateSimpleContent</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>stringValue</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>typeQName</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &gt; &amp;</type>
+          <declname>resultList</declname>
+        </param>
+        <briefdescription>
+<para>Validates stringValue as XML simple content, i.e. </para>        </briefdescription>
+        <detaileddescription>
+<para>the text value of attributes or text only element content.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stringValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the value to be validated </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>typeQName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>resultList</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the result of the validation, a vector of atomic Items </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if validation is correct, false if validation is disabled, throws errors if validation fails </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if any validation error occured </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="592"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StaticContext_1ac1ab635da9e4f744a7ea6179568610c5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::StaticContext::~StaticContext</definition>
+        <argsstring>()</argsstring>
+        <name>~StaticContext</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="60" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context.h" bodystart="60" bodyend="60"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" static="no" mutable="yes">
+        <type>unsigned int</type>
+        <definition>unsigned int zorba::SmartObject::theRefCount</definition>
+        <argsstring></argsstring>
+        <name>theRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Instances of the class <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> contain the information that is available at the time the query is compiled and run. </para>    </briefdescription>
+    <detaileddescription>
+<para>This class contains the information that is defined in the XQuery specification (see <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>).</para><para>A <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> can be created by calling <ref refid="classzorba_1_1Zorba_1a9c2f950f6c68a948683ae15d587d756c" kindref="member">Zorba::createStaticContext</ref> and then be passed to the <ref refid="classzorba_1_1Zorba_1a76a2f22394bd4b83d8d1e7f0c3c5e78b" kindref="member">Zorba::compileQuery</ref> or <ref refid="classzorba_1_1XQuery_1a8408503a6cc5e253b14167e2bb92d1b3" kindref="member">XQuery::compile</ref> functions. If no static context has been passed to any of these functions, a default static context is used. It can be accessed by calling <ref refid="classzorba_1_1XQuery_1a7614f07940007398562e4e014f35e931" kindref="member">XQuery::getStaticContext</ref> on a compiled <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object.</para><para>Note: This class is reference counted. When writing multi-threaded clients, it is the responibility of the client code to synchronize assignments to the <ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> holding this object. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="850">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="849">
+        <label>zorba::StaticContext</label>
+        <link refid="classzorba_1_1StaticContext"/>
+        <childnode refid="850" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="852">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="851">
+        <label>zorba::StaticContext</label>
+        <link refid="classzorba_1_1StaticContext"/>
+        <childnode refid="852" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/static_context.h" line="56" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context.h" bodystart="55" bodyend="817"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1StaticContext_1a4b4d4f1830ea043694652ac27aabbdde" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>addCollation</name></member>
+      <member refid="classzorba_1_1StaticContext_1af3741bbf0d42733e4e0e4b23663a017b" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>addNamespace</name></member>
+      <member refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" virt="non-virtual"><scope>zorba::StaticContext</scope><name>addReference</name></member>
+      <member refid="classzorba_1_1StaticContext_1a20933d3fd48877c532222e7c6c78e5af" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>clearBaseURI</name></member>
+      <member refid="classzorba_1_1StaticContext_1a9e6439d1f96c813536b605a76aabd6e8" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>containsFunction</name></member>
+      <member refid="classzorba_1_1StaticContext_1ab1017187ea5784b8614785265c684a4e" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>createChildContext</name></member>
+      <member refid="classzorba_1_1StaticContext_1a5cb66ac2b7c17a76b59978fd50c238e5" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>declareOption</name></member>
+      <member refid="classzorba_1_1StaticContext_1a231cea43673b79c85d291659d5e6b56d" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>disableFunction</name></member>
+      <member refid="classzorba_1_1StaticContext_1a29d5e00b2c9197f6ba9dfa5b1bb2a445" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>disableFunction</name></member>
+      <member refid="classzorba_1_1StaticContext_1a0c8b5ca0a3afc1db97a73e5f5e14e412" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>fetch</name></member>
+      <member refid="classzorba_1_1StaticContext_1a58a603f8fbe4fb2faf0eec927cec5e9b" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>fetch</name></member>
+      <member refid="classzorba_1_1StaticContext_1aeb66cd8d065e78e0a3370e86991b00ab" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>fetch</name></member>
+      <member refid="classzorba_1_1StaticContext_1a3455240659d27b66a822997d9f88595c" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>fetchBinary</name></member>
+      <member refid="classzorba_1_1StaticContext_1ae0ab4c2942b247ca8bafe4f2aa11eccc" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>fetchBinary</name></member>
+      <member refid="classzorba_1_1StaticContext_1a6f7299958803223b9fa72ba15b554d38" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>findFunctions</name></member>
+      <member refid="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" virt="virtual"><scope>zorba::StaticContext</scope><name>free</name></member>
+      <member refid="classzorba_1_1StaticContext_1a79f91f5d2dbf15416c74fd604162dd71" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getAuditEvent</name></member>
+      <member refid="classzorba_1_1StaticContext_1a516e8c2b71404c02b598139563a3ffb5" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getBaseURI</name></member>
+      <member refid="classzorba_1_1StaticContext_1a65530d1a5c36776427f9930f8e2a7fa2" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getBoundarySpacePolicy</name></member>
+      <member refid="classzorba_1_1StaticContext_1ad3310238f74b8bb3e50465d7400e23f8" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getCollectionType</name></member>
+      <member refid="classzorba_1_1StaticContext_1a07973d3d27b6837432d97504154b5b0b" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getConstructionMode</name></member>
+      <member refid="classzorba_1_1StaticContext_1a2eb5d019ead629930c795328814fc82f" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getContextItemStaticType</name></member>
+      <member refid="classzorba_1_1StaticContext_1a12f292965b74c4e5b5a4a31a9ec9a044" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getCopyNamespacesMode</name></member>
+      <member refid="classzorba_1_1StaticContext_1a5b51d57cbbbd9e35391522dda3d4c361" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getDefaultCollation</name></member>
+      <member refid="classzorba_1_1StaticContext_1a870bd9441db8b1d5c193b2da42291106" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getDefaultElementAndTypeNamespace</name></member>
+      <member refid="classzorba_1_1StaticContext_1af9cfeb9a053c665558363ddeff7eddce" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getDefaultFunctionNamespace</name></member>
+      <member refid="classzorba_1_1StaticContext_1a31de25fa0120e32818d0a2453ba1238a" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getDefaultOrderForEmptySequences</name></member>
+      <member refid="classzorba_1_1StaticContext_1a217461296aa6d8089aa79ffb540a78b5" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getDocumentType</name></member>
+      <member refid="classzorba_1_1StaticContext_1ad8f0bebcd1f133af2900bd49f46c6044" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getExternalVariables</name></member>
+      <member refid="classzorba_1_1StaticContext_1a78ebca3ca5ffe80df544f9d2b74adad1" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getFullLibPath</name></member>
+      <member refid="classzorba_1_1StaticContext_1ab43a64d55ff5b43c7d12f498339bc7fd" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getFullModulePaths</name></member>
+      <member refid="classzorba_1_1StaticContext_1afaf5d3b327d13bb18f8aedc89d1b5e07" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getFullURIPath</name></member>
+      <member refid="classzorba_1_1StaticContext_1a645a651b272c60fbea5a7c671ad26f6c" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getFunctionAnnotations</name></member>
+      <member refid="classzorba_1_1StaticContext_1ac0d94cd0e4fb3f821a4273ecd9273253" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getFunctions</name></member>
+      <member refid="classzorba_1_1StaticContext_1aa8ea6695243c7b21a047bfa15ca4f156" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getFunctions</name></member>
+      <member refid="classzorba_1_1StaticContext_1a2e183c7ed9ccba4af02b3eba0d6656ce" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getJSONiqVersion</name></member>
+      <member refid="classzorba_1_1StaticContext_1a2579984de44f62ef14c2734217ced7d7" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getLibPath</name></member>
+      <member refid="classzorba_1_1StaticContext_1a0843da0799abf0fb7fc5f9aca262bf04" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getModulePaths</name></member>
+      <member refid="classzorba_1_1StaticContext_1a7f7c934ef18c6e8f5153f4c1315a72b5" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getNamespaceBindings</name></member>
+      <member refid="classzorba_1_1StaticContext_1a79950cf93d1b12598ac9e4930611f5a4" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getNamespaceURIByPrefix</name></member>
+      <member refid="classzorba_1_1StaticContext_1a292da5db681a9e716021d51ce017a455" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getOption</name></member>
+      <member refid="classzorba_1_1StaticContext_1a12d02375c1ba4cb119b8488df1db519b" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getOrderingMode</name></member>
+      <member refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" virt="non-virtual"><scope>zorba::StaticContext</scope><name>getRefCount</name></member>
+      <member refid="classzorba_1_1StaticContext_1a8b2bf4fa99156aeffb11c838273eb0ab" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getRevalidationMode</name></member>
+      <member refid="classzorba_1_1StaticContext_1a7c71590f7a2c7d4cf5c4b2667439ca88" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getStaticCollectionManager</name></member>
+      <member refid="classzorba_1_1StaticContext_1a10211ceb037f51af1ce3eede06f80588" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getURIPath</name></member>
+      <member refid="classzorba_1_1StaticContext_1a212cce4f097acd76e99aae79b9de57a3" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getXPath1_0CompatibMode</name></member>
+      <member refid="classzorba_1_1StaticContext_1a80b6f9b890677f8d782b06d6a5b8dc85" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>getXQueryVersion</name></member>
+      <member refid="classzorba_1_1StaticContext_1a9318900413f58df66f0df6d0f39a62ad" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>invoke</name></member>
+      <member refid="classzorba_1_1StaticContext_1afaabca3730a9e02248ff334a1846556d" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>loadProlog</name></member>
+      <member refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" virt="non-virtual"><scope>zorba::StaticContext</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1StaticContext_1ace7da5644cac141c113cb51dbd4d63dd" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>registerModule</name></member>
+      <member refid="classzorba_1_1StaticContext_1a60ddf7be80dd1b9cae661dfd53ae348a" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>registerURIMapper</name></member>
+      <member refid="classzorba_1_1StaticContext_1a1ef8265e73d1326180c9c793565ddc1e" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>registerURLResolver</name></member>
+      <member refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" virt="non-virtual"><scope>zorba::StaticContext</scope><name>removeReference</name></member>
+      <member refid="classzorba_1_1StaticContext_1a8bdc5217113d0f871168d08913da1fb5" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>resetTraceStream</name></member>
+      <member refid="classzorba_1_1StaticContext_1a8d6c775566cad3c06836b202f7aa679a" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>resolve</name></member>
+      <member refid="classzorba_1_1StaticContext_1ad7bf70709b2b5511e62ae092de37acf5" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>resolve</name></member>
+      <member refid="classzorba_1_1StaticContext_1a8cff1c0ce75a82008841fc751ecbbc3a" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setAuditEvent</name></member>
+      <member refid="classzorba_1_1StaticContext_1afe039b4f8a5dd26f47dcc2e9fd1be70c" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setBaseURI</name></member>
+      <member refid="classzorba_1_1StaticContext_1a2f41036bdce0ed19969d663ba0c5f517" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setBoundarySpacePolicy</name></member>
+      <member refid="classzorba_1_1StaticContext_1a4f8f3fc68dbdd723f9bc99f91dce3113" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setCollectionType</name></member>
+      <member refid="classzorba_1_1StaticContext_1a783f8fdcd9b857d759c8c2c395505517" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setConstructionMode</name></member>
+      <member refid="classzorba_1_1StaticContext_1a724c07aca98ff8de76600d1a9f0e3342" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setContextItemStaticType</name></member>
+      <member refid="classzorba_1_1StaticContext_1ac943825b5d4d488a17c888733d0a4b0b" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setCopyNamespacesMode</name></member>
+      <member refid="classzorba_1_1StaticContext_1abd6b0c0f38b9e3384110e4f4059940b5" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setDefaultCollation</name></member>
+      <member refid="classzorba_1_1StaticContext_1a193a3ecd7cec1611b32e435c92a5608c" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setDefaultElementAndTypeNamespace</name></member>
+      <member refid="classzorba_1_1StaticContext_1ab559104a9fce5f09c7f0344f8656a985" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setDefaultFunctionNamespace</name></member>
+      <member refid="classzorba_1_1StaticContext_1aadb719d53a28b081553c02678bf2b510" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setDefaultFunctionNamespaces</name></member>
+      <member refid="classzorba_1_1StaticContext_1ad8d84423d0e952af08d9970546b6126f" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setDefaultOrderForEmptySequences</name></member>
+      <member refid="classzorba_1_1StaticContext_1ab305204479ff9ee31876efebb26a294f" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setDocumentType</name></member>
+      <member refid="classzorba_1_1StaticContext_1a33e611ae000ff00e9dfa46a62f3ef397" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setJSONiqVersion</name></member>
+      <member refid="classzorba_1_1StaticContext_1ad2e685d4bd3f11841d4c105be75e7227" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setLibPath</name></member>
+      <member refid="classzorba_1_1StaticContext_1ae3ed41589012358118015573ef80be5a" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setModulePaths</name></member>
+      <member refid="classzorba_1_1StaticContext_1afb500540da3b69991abb39164d903680" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setOrderingMode</name></member>
+      <member refid="classzorba_1_1StaticContext_1aafcdec2c05b50699fd2350848a674318" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setRevalidationMode</name></member>
+      <member refid="classzorba_1_1StaticContext_1a4f50a179794a2be756f7efdb9638cc8e" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setTraceStream</name></member>
+      <member refid="classzorba_1_1StaticContext_1a67d4856cbb7eaa31f895a6cc873f32f0" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setURIPath</name></member>
+      <member refid="classzorba_1_1StaticContext_1a4c15daa86433cc0a21c57659ae17dc8c" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setXPath1_0CompatibMode</name></member>
+      <member refid="classzorba_1_1StaticContext_1a831aeee7a6a9cf950144555bc7313ce1" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>setXQueryVersion</name></member>
+      <member refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" virt="non-virtual"><scope>zorba::StaticContext</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" virt="non-virtual"><scope>zorba::StaticContext</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" virt="non-virtual"><scope>zorba::StaticContext</scope><name>theRefCount</name></member>
+      <member refid="classzorba_1_1StaticContext_1a61936611b1f8111a176798dd07f4d19b" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>validate</name></member>
+      <member refid="classzorba_1_1StaticContext_1aa9a7f7454b9a4ec37cf9fc5ac01c19c7" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>validate</name></member>
+      <member refid="classzorba_1_1StaticContext_1a9d0c4bae057d3db940007c8df7c5e758" prot="public" virt="pure-virtual"><scope>zorba::StaticContext</scope><name>validateSimpleContent</name></member>
+      <member refid="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" virt="virtual"><scope>zorba::StaticContext</scope><name>~SmartObject</name></member>
+      <member refid="classzorba_1_1StaticContext_1ac1ab635da9e4f744a7ea6179568610c5" prot="public" virt="virtual"><scope>zorba::StaticContext</scope><name>~StaticContext</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

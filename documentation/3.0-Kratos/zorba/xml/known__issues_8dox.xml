@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="known__issues_8dox" kind="file">
+    <compoundname>known_issues.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>known_issues<sp/>Known<sp/>Issues</highlight></codeline>
+<codeline lineno="2"><highlight class="comment">This<sp/>is<sp/>a<sp/>list<sp/>of<sp/>issues<sp/>that<sp/>we<sp/>are<sp/>aware<sp/>of<sp/>but<sp/>are<sp/>not<sp/>imlemeneted<sp/>or<sp/>fixed:</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"></highlight></codeline>
+<codeline lineno="4"><highlight class="comment">Zorba<sp/>Version<sp/>2.0</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"></highlight></codeline>
+<codeline lineno="6"><highlight class="comment">*<sp/>Floating-point<sp/>precision<sp/>problems.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/><sp/>For<sp/>details,<sp/>see<sp/>the<sp/>following<sp/>bugs:</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/><sp/>-<sp/>2204089<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-2204089&gt;</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/><sp/>-<sp/>2205034<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-2205034&gt;</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/><sp/>-<sp/>2210851<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-2210851&gt;</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"></highlight></codeline>
+<codeline lineno="12"><highlight class="comment">*<sp/>When<sp/>using<sp/>the<sp/>(now<sp/>default)<sp/>xs:integer<sp/>representation<sp/>of<sp/>a<sp/>C++<sp/>&quot;long<sp/>long&quot;,</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/><sp/>the<sp/>largest<sp/>xs:unsignedLong<sp/>values<sp/>are<sp/>not<sp/>handled<sp/>correctly.</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/><sp/>For<sp/>details,<sp/>see<sp/>the<sp/>following<sp/>bug:</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/>-<sp/>3323548<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-3323548&gt;</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"></highlight></codeline>
+<codeline lineno="17"><highlight class="comment">*<sp/>Zorba<sp/>uses<sp/>ICU<sp/>for<sp/>regular<sp/>expressions<sp/>that<sp/>does<sp/>not<sp/>support<sp/>range</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"><sp/><sp/>subtraction.<sp/><sp/>For<sp/>details,<sp/>see<sp/>the<sp/>following<sp/>bug:</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/><sp/>-<sp/>3150856<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-3150856&gt;</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"></highlight></codeline>
+<codeline lineno="21"><highlight class="comment">*<sp/>If<sp/>you<sp/>link<sp/>against<sp/>ICU<sp/>&lt;=<sp/>3.8.1,<sp/>you<sp/>can<sp/>get<sp/>wrong<sp/>results<sp/>when<sp/>using<sp/>\code<sp/>\s<sp/>\endcode<sp/>to</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/><sp/>match<sp/>a<sp/>white<sp/>space<sp/>character.<sp/>For<sp/>details,<sp/>see<sp/>following<sp/>bug:</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/><sp/>-<sp/>3155900<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-3155900&gt;</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"></highlight></codeline>
+<codeline lineno="25"><highlight class="comment">*<sp/>A<sp/>known<sp/>bug<sp/>in<sp/>Xerces<sp/>&lt;<sp/>3.0,<sp/>when<sp/>an<sp/>.xsd<sp/>contains<sp/>an<sp/>any<sp/>wildcard<sp/>with</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/><sp/>namespace<sp/>\code<sp/>#others<sp/>\endcode<sp/>and<sp/>the<sp/>instance<sp/>contains<sp/>an<sp/>element<sp/>without<sp/>a<sp/>namespace,</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/><sp/>there<sp/>should<sp/>still<sp/>be<sp/>an<sp/>error.<sp/><sp/>See<sp/>&quot;Definitive<sp/>XMLSchema&quot;<sp/>by<sp/>Priscilla</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/><sp/>Wamsley,<sp/>p.<sp/>279.<sp/>This<sp/>was<sp/>fixed<sp/>in<sp/>Xerses<sp/>&gt;<sp/>3.0.</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/>For<sp/>details,<sp/>see<sp/>following<sp/>bug:</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/>-<sp/>3137594<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-3137594&gt;</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"></highlight></codeline>
+<codeline lineno="32"><highlight class="comment">*<sp/>XQuery<sp/>Full-Text<sp/>is<sp/>mostly,<sp/>but<sp/>not<sp/>completely,<sp/>implemented.</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/>For<sp/>details,<sp/>see<sp/>following<sp/>bugs:</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/>-<sp/>3172383<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-3172383&gt;</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/>-<sp/>3187470<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-3187470&gt;</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/>-<sp/>3187462<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-3187462&gt;</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"></highlight></codeline>
+<codeline lineno="38"><highlight class="comment">*<sp/>The<sp/>serializer<sp/>currently<sp/>doesn&apos;t<sp/>implement<sp/>character<sp/>maps<sp/>as<sp/>specified</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/>(http://www.w3.org/TR/xslt-xquery-serialization/#character-maps)</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"></highlight></codeline>
+<codeline lineno="41"><highlight class="comment">*<sp/>In<sp/>the<sp/>2.0<sp/>release,<sp/>setting<sp/>the<sp/>CMake<sp/>variables<sp/>ZORBA_NO_ICU<sp/>to</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/>ON<sp/>is<sp/>not<sp/>supported.</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"></highlight></codeline>
+<codeline lineno="44"><highlight class="comment">*<sp/>The<sp/>PHP<sp/>language<sp/>binding<sp/>is<sp/>not<sp/>supported<sp/>on<sp/>Mac<sp/>OS<sp/>X.<sp/>For<sp/>details,</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/>see<sp/>the<sp/>following<sp/>bug:</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/>-<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-3371525&gt;</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"></highlight></codeline>
+<codeline lineno="48"><highlight class="comment">*<sp/>Generating<sp/>the<sp/>XQDoc<sp/>documentation<sp/>on<sp/>Windows<sp/>using<sp/>nmake<sp/>is<sp/>broken,</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/>see<sp/>the<sp/>following<sp/>bug:</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/><sp/>-<sp/>&lt;https://bugs.launchpad.net/zorba/+bug/sf-3393173&gt;</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"></highlight></codeline>
+<codeline lineno="52"><highlight class="comment">*<sp/>The<sp/>Scripting<sp/>Extension&apos;s<sp/>features<sp/>break<sp/>and<sp/>continue<sp/>are<sp/>not</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/>implemented<sp/>if<sp/>used<sp/>within<sp/>a<sp/>FLWOR<sp/>Statement.</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"></highlight></codeline>
+<codeline lineno="55"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/build/doc/zorba/known_issues.dox"/>
+  </compounddef>
+</doxygen>

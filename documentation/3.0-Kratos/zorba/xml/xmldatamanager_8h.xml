@@ -1,0 +1,328 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="xmldatamanager_8h" kind="file">
+    <compoundname>xmldatamanager.h</compoundname>
+    <includes local="no">istream</includes>
+    <includes local="no">zorba/config.h</includes>
+    <includes refid="api__shared__types_8h" local="no">zorba/api_shared_types.h</includes>
+    <includes refid="static__context__consts_8h" local="no">zorba/static_context_consts.h</includes>
+    <includedby refid="dynamic__context_8h" local="no">dynamic_context.h</includedby>
+    <includedby refid="zorba_8h" local="no">zorba.h</includedby>
+    <incdepgraph>
+      <node id="2486">
+        <label>zorba/util/smart_ptr.h</label>
+        <link refid="smart__ptr_8h"/>
+        <childnode refid="2484" relation="include">
+        </childnode>
+      </node>
+      <node id="2482">
+        <label>xmldatamanager.h</label>
+        <link refid="xmldatamanager.h"/>
+        <childnode refid="2483" relation="include">
+        </childnode>
+        <childnode refid="2484" relation="include">
+        </childnode>
+        <childnode refid="2485" relation="include">
+        </childnode>
+        <childnode refid="2487" relation="include">
+        </childnode>
+      </node>
+      <node id="2484">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="2487">
+        <label>zorba/static_context_consts.h</label>
+        <link refid="static__context__consts_8h"/>
+      </node>
+      <node id="2485">
+        <label>zorba/api_shared_types.h</label>
+        <link refid="api__shared__types_8h"/>
+        <childnode refid="2484" relation="include">
+        </childnode>
+        <childnode refid="2486" relation="include">
+        </childnode>
+      </node>
+      <node id="2483">
+        <label>istream</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2488">
+        <label>xmldatamanager.h</label>
+        <link refid="xmldatamanager.h"/>
+        <childnode refid="2489" relation="include">
+        </childnode>
+        <childnode refid="2490" relation="include">
+        </childnode>
+      </node>
+      <node id="2490">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="2491" relation="include">
+        </childnode>
+      </node>
+      <node id="2489">
+        <label>dynamic_context.h</label>
+        <link refid="dynamic__context_8h"/>
+        <childnode refid="2490" relation="include">
+        </childnode>
+      </node>
+      <node id="2491">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="2490" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1XmlDataManager_1_1ParseOptions" prot="public">zorba::XmlDataManager::ParseOptions</innerclass>
+    <innerclass refid="classzorba_1_1XmlDataManager" prot="public">zorba::XmlDataManager</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_XMLDATAMANAGER_API_H</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_XMLDATAMANAGER_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;istream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="api__shared__types_8h" kindref="compound">zorba/api_shared_types.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="static__context__consts_8h" kindref="compound">zorba/static_context_consts.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="26"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/>*<sp/>\brief<sp/>Using<sp/>the<sp/>XmlDataManager<sp/>one<sp/>can<sp/>manage<sp/>documents<sp/>and<sp/>collections.</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/>*<sp/>An<sp/>instance<sp/>of<sp/>XmlDataManager<sp/>can<sp/>be<sp/>obtained<sp/>via<sp/>the<sp/>Zorba::getXmlDataManager()</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/>*<sp/>method.<sp/>The<sp/>instance<sp/>must<sp/>be<sp/>destroyed<sp/>before<sp/>Zorba::shutdown()<sp/>is<sp/>called.</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="classzorba_1_1XmlDataManager" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1XmlDataManager" kindref="compound" tooltip="Using the XmlDataManager one can manage documents and collections.">XmlDataManager</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref></highlight></codeline>
+<codeline lineno="33"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>The<sp/>ParseOptions<sp/>class<sp/>stores<sp/>various<sp/>properties<sp/>that<sp/>affect</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>how<sp/>a<sp/>document<sp/>is<sp/>parsed.<sp/>An<sp/>instance<sp/>of<sp/>this<sp/>class<sp/>is<sp/>passed</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>as<sp/>input<sp/>to<sp/>the<sp/>parseXML<sp/>function.</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40" refid="classzorba_1_1XmlDataManager_1_1ParseOptions" refkind="compound"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1XmlDataManager_1_1ParseOptions" kindref="compound" tooltip="The ParseOptions class stores various properties that affect how a document is parsed.">ParseOptions</ref></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theDtdValidation;</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theExternalEntityProcessing;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="47" refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1aba66302b85a29c91e79771ce62092ce0" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XmlDataManager_1_1ParseOptions" kindref="compound" tooltip="The ParseOptions class stores various properties that affect how a document is parsed.">ParseOptions</ref>()</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>theDtdValidation(false),</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>theExternalEntityProcessing(false)</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54" refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a5e414ff8a57e36b79b53d58931081a01" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a5e414ff8a57e36b79b53d58931081a01" kindref="member">~ParseOptions</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Set<sp/>the<sp/>property<sp/>enableDtd,<sp/>which<sp/>specifies<sp/>whether<sp/>the</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>document<sp/>should<sp/>be<sp/>validated<sp/>against<sp/>its<sp/>associated<sp/>DTD<sp/>(if</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>any).</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61" refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a67070663f86891561f82bd530e20487b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setDtdValidation(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>aEnable)</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>theDtdValidation<sp/>=<sp/>aEnable;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Returns<sp/>true<sp/>if<sp/>dtd<sp/>validation<sp/>is<sp/>enabled,<sp/>false<sp/>otherwise.</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69" refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a2f037d29d5896bd4b27153cdf6bb23e1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>isDtdValidationEnabled()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="70"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>theDtdValidation;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Set<sp/>the<sp/>property<sp/>to<sp/>enable<sp/>or<sp/>disable<sp/>processing<sp/>of<sp/>XML<sp/>external<sp/>entities.<sp/></highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>If<sp/>the<sp/>option<sp/>is<sp/>enabled,<sp/>the<sp/>input<sp/>must<sp/>conform<sp/>to<sp/>the<sp/>syntax</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>_extParsedEnt_<sp/>(production<sp/>[78]<sp/>in<sp/>XML<sp/>1.0);<sp/>and<sp/>since<sp/>there<sp/>is<sp/>no<sp/>DTD,</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>the<sp/>content<sp/>must<sp/>include<sp/>no<sp/>entity<sp/>references.<sp/>The<sp/>result<sp/>of<sp/>the</highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>function<sp/>call<sp/>is<sp/>a<sp/>sequence<sp/>of<sp/>nodes.</highlight></codeline>
+<codeline lineno="80"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="81" refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a0e5663d89760e5ca44f6740ff21713b2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setExternalEntityProcessing(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>aEnable)</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>theExternalEntityProcessing<sp/>=<sp/>aEnable;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Returns<sp/>true<sp/>if<sp/>external<sp/>entity<sp/>processig<sp/>is<sp/>enabled,</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>false<sp/>otherwise.</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90" refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1ac1bb15171690244a9e36cb4590b8ada3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>isExternalEntityProcessingEnabled()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="91"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>theExternalEntityProcessing;</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="97"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Returns<sp/>a<sp/>DocumentManager<sp/>responsible<sp/>for<sp/>managing<sp/>XML<sp/>documents</highlight></codeline>
+<codeline lineno="98"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1DocumentManager" kindref="compound" tooltip="An instance of DocumentManager provides methods for adding, removing, or accessing XML documents in t...">DocumentManager</ref>*</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/>getDocumentManager()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="102"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="103"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Returns<sp/>a<sp/>CollectionManager<sp/>responsible<sp/>for<sp/>all<sp/>collections.</highlight></codeline>
+<codeline lineno="104"><highlight class="comment"><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="105"><highlight class="comment"><sp/><sp/><sp/>*<sp/>The<sp/>collection<sp/>manager<sp/>provides<sp/>a<sp/>set<sp/>of<sp/>functions<sp/>for<sp/>managing</highlight></codeline>
+<codeline lineno="106"><highlight class="comment"><sp/><sp/><sp/>*<sp/>collections<sp/>identified<sp/>by<sp/>a<sp/>QName<sp/>and<sp/>their<sp/>contents.</highlight></codeline>
+<codeline lineno="107"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Please<sp/>note<sp/>that<sp/>the<sp/>resulting<sp/>manager<sp/>is<sp/>only<sp/>responsible<sp/>for</highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/><sp/>*<sp/>dynamic<sp/>collections<sp/>identified<sp/>by<sp/>a<sp/>QName,<sp/>i.e.<sp/>those<sp/>that<sp/>are</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/><sp/><sp/>*<sp/>not<sp/>declared<sp/>in<sp/>the<sp/>prolog<sp/>of<sp/>a<sp/>module<sp/>or<sp/>identified<sp/>by<sp/>a<sp/>URI.</highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="112"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>The<sp/>collection<sp/>manager<sp/>responsible<sp/>for<sp/>managing<sp/>collections.</highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1CollectionManager" kindref="compound" tooltip="This class defines a set of functions for managing persistent collections.">CollectionManager</ref>*</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/>getCollectionManager()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Returns<sp/>a<sp/>CollectionManager<sp/>responsible<sp/>for<sp/>collections</highlight></codeline>
+<codeline lineno="119"><highlight class="comment"><sp/><sp/><sp/>*<sp/>identified<sp/>by<sp/>a<sp/>URI.</highlight></codeline>
+<codeline lineno="120"><highlight class="comment"><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/>*<sp/>The<sp/>collection<sp/>manager<sp/>provides<sp/>a<sp/>set<sp/>of<sp/>functions<sp/>for<sp/>managing</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/>*<sp/>collections<sp/>identified<sp/>by<sp/>a<sp/>URI<sp/>and<sp/>their<sp/>contents.</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Please<sp/>note<sp/>that<sp/>the<sp/>resulting<sp/>manager<sp/>is<sp/>only<sp/>responsible<sp/>for</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/><sp/>*<sp/>dynamic<sp/>collections<sp/>identified<sp/>by<sp/>a<sp/>URI,<sp/>i.e.<sp/>those<sp/>that<sp/>are</highlight></codeline>
+<codeline lineno="126"><highlight class="comment"><sp/><sp/><sp/>*<sp/>not<sp/>declared<sp/>in<sp/>the<sp/>prolog<sp/>of<sp/>a<sp/>module<sp/>or<sp/>identified<sp/>by<sp/>a<sp/>QName.</highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>The<sp/>collection<sp/>manager<sp/>responsible<sp/>for<sp/>managing<sp/>collections.</highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1CollectionManager" kindref="compound" tooltip="This class defines a set of functions for managing persistent collections.">CollectionManager</ref>*</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/>getW3CCollectionManager()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="133"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="134"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Parse<sp/>an<sp/>XML<sp/>document<sp/>and<sp/>return<sp/>an<sp/>Item.</highlight></codeline>
+<codeline lineno="135"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/>parseXML(std::istream&amp;<sp/>aStream)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="139"><highlight class="comment"><sp/><sp/>/**<sp/>\brief<sp/>Parse<sp/>an<sp/>XML<sp/>document<sp/>and<sp/>return<sp/>an<sp/>Item.</highlight></codeline>
+<codeline lineno="140"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="141"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>aStream<sp/>the<sp/>input<sp/>stream<sp/>whose<sp/>content<sp/>should<sp/>be<sp/>parsed</highlight></codeline>
+<codeline lineno="142"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>aBaseURI<sp/>the<sp/>base<sp/>URI<sp/>which<sp/>will<sp/>be<sp/>used<sp/>as<sp/>the<sp/>base<sp/>URI</highlight></codeline>
+<codeline lineno="143"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>of<sp/>the<sp/>document.<sp/>This<sp/>serves<sp/>both<sp/>as<sp/>the<sp/>base<sp/>URI</highlight></codeline>
+<codeline lineno="144"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>used<sp/>by<sp/>the<sp/>XML<sp/>parser<sp/>to<sp/>resolve<sp/>relative<sp/>entity</highlight></codeline>
+<codeline lineno="145"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>references<sp/>within<sp/>the<sp/>document,<sp/>and<sp/>as<sp/>the<sp/>base<sp/>URI</highlight></codeline>
+<codeline lineno="146"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>of<sp/>the<sp/>document<sp/>node<sp/>that<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="147"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/>parseXML(std::istream&amp;<sp/>aStream,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>aBaseURI)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="151"><highlight class="comment"><sp/><sp/>/**<sp/>\brief<sp/>Parse<sp/>an<sp/>XML<sp/>document<sp/>and<sp/>return<sp/>a<sp/>sequence<sp/>of<sp/>nodes.</highlight></codeline>
+<codeline lineno="152"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="153"><highlight class="comment"><sp/><sp/><sp/>*<sp/>This<sp/>function<sp/>parses<sp/>the<sp/>given<sp/>input<sp/>stream<sp/>and<sp/>returns<sp/>the<sp/>result</highlight></codeline>
+<codeline lineno="154"><highlight class="comment"><sp/><sp/><sp/>*<sp/>as<sp/>a<sp/>sequence<sp/>of<sp/>nodes.<sp/>If<sp/>external<sp/>entity<sp/>processing<sp/>is<sp/>disabled</highlight></codeline>
+<codeline lineno="155"><highlight class="comment"><sp/><sp/><sp/>*<sp/>the<sp/>result<sp/>will<sp/>be<sp/>a<sp/>singleton<sp/>sequence<sp/>consisting<sp/>of<sp/>one<sp/>document</highlight></codeline>
+<codeline lineno="156"><highlight class="comment"><sp/><sp/><sp/>*<sp/>node.<sp/>Otherwise,<sp/>the<sp/>result<sp/>is<sp/>the<sp/>sequence<sp/>of<sp/>the<sp/>external<sp/>entity</highlight></codeline>
+<codeline lineno="157"><highlight class="comment"><sp/><sp/><sp/>*<sp/>nodes.</highlight></codeline>
+<codeline lineno="158"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="159"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>aStream<sp/>the<sp/>input<sp/>stream<sp/>whose<sp/>content<sp/>should<sp/>be<sp/>parsed</highlight></codeline>
+<codeline lineno="160"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>aOptions<sp/>@see<sp/>ParseOptions</highlight></codeline>
+<codeline lineno="161"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@see<sp/>ParseOptions</highlight></codeline>
+<codeline lineno="162"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">ItemSequence_t</ref></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/>parseXML(std::istream&amp;<sp/>aStream,<sp/>ParseOptions&amp;<sp/>aOptions)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="166"><highlight class="comment"><sp/><sp/>/**<sp/>\brief<sp/>Parse<sp/>an<sp/>XML<sp/>document<sp/>and<sp/>return<sp/>a<sp/>sequence<sp/>of<sp/>nodes.</highlight></codeline>
+<codeline lineno="167"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="168"><highlight class="comment"><sp/><sp/><sp/>*<sp/>This<sp/>function<sp/>parses<sp/>the<sp/>given<sp/>input<sp/>stream<sp/>and<sp/>returns<sp/>the<sp/>result</highlight></codeline>
+<codeline lineno="169"><highlight class="comment"><sp/><sp/><sp/>*<sp/>as<sp/>a<sp/>sequence<sp/>of<sp/>nodes.<sp/>If<sp/>external<sp/>entity<sp/>processing<sp/>is<sp/>disabled</highlight></codeline>
+<codeline lineno="170"><highlight class="comment"><sp/><sp/><sp/>*<sp/>the<sp/>result<sp/>will<sp/>be<sp/>a<sp/>singleton<sp/>sequence<sp/>consisting<sp/>of<sp/>one<sp/>document</highlight></codeline>
+<codeline lineno="171"><highlight class="comment"><sp/><sp/><sp/>*<sp/>node.<sp/>Otherwise,<sp/>the<sp/>result<sp/>is<sp/>the<sp/>sequence<sp/>of<sp/>the<sp/>external<sp/>entity</highlight></codeline>
+<codeline lineno="172"><highlight class="comment"><sp/><sp/><sp/>*<sp/>nodes.</highlight></codeline>
+<codeline lineno="173"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="174"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>aStream<sp/>the<sp/>input<sp/>stream<sp/>whose<sp/>content<sp/>should<sp/>be<sp/>parsed</highlight></codeline>
+<codeline lineno="175"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>aBaseURI<sp/>the<sp/>base<sp/>URI<sp/>which<sp/>will<sp/>be<sp/>used<sp/>as<sp/>the<sp/>base<sp/>URI</highlight></codeline>
+<codeline lineno="176"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>of<sp/>the<sp/>document.<sp/>This<sp/>serves<sp/>both<sp/>as<sp/>the<sp/>base<sp/>URI</highlight></codeline>
+<codeline lineno="177"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>used<sp/>by<sp/>the<sp/>XML<sp/>parser<sp/>to<sp/>resolve<sp/>relative<sp/>entity</highlight></codeline>
+<codeline lineno="178"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>references<sp/>within<sp/>the<sp/>document,<sp/>and<sp/>as<sp/>the<sp/>base<sp/>URI</highlight></codeline>
+<codeline lineno="179"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>of<sp/>the<sp/>document<sp/>node<sp/>that<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="180"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>aOptions<sp/>@see<sp/>ParseOptions</highlight></codeline>
+<codeline lineno="181"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@see<sp/>ParseOptions</highlight></codeline>
+<codeline lineno="182"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">ItemSequence_t</ref></highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/>parseXML(</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>std::istream&amp;<sp/>aStream,</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>aBaseURI,</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>ParseOptions&amp;<sp/>aOptions)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="189"><highlight class="comment"><sp/><sp/>/**<sp/>\brief<sp/>Register<sp/>a<sp/>DiagnosticHandler<sp/>to<sp/>which<sp/>errors<sp/>occuring<sp/>during<sp/>the</highlight></codeline>
+<codeline lineno="190"><highlight class="comment"><sp/><sp/><sp/>*<sp/>management<sp/>of<sp/>documents<sp/>and<sp/>collections<sp/>are<sp/>reported.</highlight></codeline>
+<codeline lineno="191"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="192"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>no<sp/>DiagnosticHandler<sp/>has<sp/>been<sp/>set<sp/>using<sp/>this<sp/>function<sp/>then</highlight></codeline>
+<codeline lineno="193"><highlight class="comment"><sp/><sp/><sp/>*<sp/>subclasses<sp/>of<sp/>the<sp/>ZorbaException<sp/>class<sp/>are<sp/>thrown<sp/>to<sp/>report</highlight></codeline>
+<codeline lineno="194"><highlight class="comment"><sp/><sp/><sp/>*<sp/>errors.</highlight></codeline>
+<codeline lineno="195"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="196"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/>@param<sp/>aDiagnosticHandler<sp/>DiagnosticHandler<sp/>to<sp/>which<sp/>errors</highlight></codeline>
+<codeline lineno="197"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>are<sp/>reported.<sp/>The<sp/>caller<sp/>retains<sp/>ownership<sp/>over<sp/>the</highlight></codeline>
+<codeline lineno="198"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DiagnosticHandler<sp/>passed<sp/>as<sp/>parameter.</highlight></codeline>
+<codeline lineno="199"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/>registerDiagnosticHandler(<ref refid="classzorba_1_1DiagnosticHandler" kindref="compound" tooltip="When registered with an XQuery object, a DiagnosticHandler handles all exceptions and warnings that o...">DiagnosticHandler</ref>*<sp/>aDiagnosticHandler)<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"></highlight></codeline>
+<codeline lineno="203"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_NO_FULL_TEXT</highlight></codeline>
+<codeline lineno="204"><highlight class="preprocessor"></highlight><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="205"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Registers<sp/>a<sp/>StemmerProvider<sp/>to<sp/>use<sp/>for<sp/>stemming<sp/>of<sp/>text<sp/>content<sp/>in<sp/>order</highlight></codeline>
+<codeline lineno="206"><highlight class="comment"><sp/><sp/><sp/>*<sp/>to<sp/>perform<sp/>queries<sp/>involving<sp/>full-text.</highlight></codeline>
+<codeline lineno="207"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="208"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>no<sp/>StemmerProvider<sp/>has<sp/>been<sp/>set<sp/>using<sp/>this<sp/>function,<sp/>then<sp/>the<sp/>default</highlight></codeline>
+<codeline lineno="209"><highlight class="comment"><sp/><sp/><sp/>*<sp/>StemmerProvider<sp/>will<sp/>be<sp/>used.</highlight></codeline>
+<codeline lineno="210"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="211"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>provider<sp/>If<sp/>not<sp/>NULL,<sp/>sets<sp/>the<sp/>StemmerProvider<sp/>to<sp/>use;<sp/>if<sp/>NULL,</highlight></codeline>
+<codeline lineno="212"><highlight class="comment"><sp/><sp/><sp/>*<sp/>removes<sp/>any<sp/>previously<sp/>registered<sp/>StemmerProvider.</highlight></codeline>
+<codeline lineno="213"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/>registerStemmerProvider(<ref refid="classzorba_1_1StemmerProvider" kindref="compound" tooltip="A StemmerProvider, given a language, provides a Stemmer for it.">StemmerProvider</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*provider)<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="217"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="218"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Registers<sp/>a<sp/>TokenizerProvider<sp/>to<sp/>use<sp/>for<sp/>toknenization<sp/>of<sp/>text<sp/>content</highlight></codeline>
+<codeline lineno="219"><highlight class="comment"><sp/><sp/><sp/>*<sp/>in<sp/>order<sp/>to<sp/>perform<sp/>queries<sp/>involving<sp/>full-text.</highlight></codeline>
+<codeline lineno="220"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="221"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>no<sp/>TokenizerProvider<sp/>has<sp/>been<sp/>set<sp/>using<sp/>this<sp/>function,<sp/>then<sp/>the</highlight></codeline>
+<codeline lineno="222"><highlight class="comment"><sp/><sp/><sp/>*<sp/>default<sp/>TokenizerProvider<sp/>will<sp/>be<sp/>used.</highlight></codeline>
+<codeline lineno="223"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="224"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>provider<sp/>If<sp/>not<sp/>NULL,<sp/>sets<sp/>the<sp/>TokenizerProvider<sp/>to<sp/>use;<sp/>if<sp/>NULL,</highlight></codeline>
+<codeline lineno="225"><highlight class="comment"><sp/><sp/><sp/>*<sp/>removes<sp/>any<sp/>previously<sp/>registered<sp/>TokenizerProvider.</highlight></codeline>
+<codeline lineno="226"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="227"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal"><sp/><sp/>registerTokenizerProvider(<ref refid="classzorba_1_1TokenizerProvider" kindref="compound" tooltip="A TokenizerProvider provides a Tokenizer for a given language.">TokenizerProvider</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*provider)<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_NO_FULL_TEXT<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="232"><highlight class="comment"><sp/><sp/>/**<sp/>\brief<sp/>Destructor</highlight></codeline>
+<codeline lineno="233"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="234" refid="classzorba_1_1XmlDataManager_1a1051426450fd145310c616fd663eef57" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1XmlDataManager_1a1051426450fd145310c616fd663eef57" kindref="member" tooltip="Destructor.">~XmlDataManager</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="236"><highlight class="normal">};<sp/></highlight><highlight class="comment">/*<sp/>class<sp/>XmlDataManager<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="237"><highlight class="normal"></highlight></codeline>
+<codeline lineno="238"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="239"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_XMLDATAMANAGER_API_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="240"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h"/>
+  </compounddef>
+</doxygen>

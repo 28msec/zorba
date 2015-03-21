@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1audit_1_1PropertyGroup" kind="class" prot="public">
+    <compoundname>zorba::audit::PropertyGroup</compoundname>
+    <includes refid="audit_8h" local="no">zorba/audit.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1audit_1_1PropertyGroup_1af334c4e322a292cf55b4ee8b9950c2c4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const char *</type>
+        <definition>virtual const char* zorba::audit::PropertyGroup::getSegment</definition>
+        <argsstring>(size_t) const =0</argsstring>
+        <name>getSegment</name>
+        <param>
+          <type>size_t</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1PropertyGroup_1aaea61287c272cff78c71c54283d8c0ce" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>size_t</type>
+        <definition>virtual size_t zorba::audit::PropertyGroup::pathLength</definition>
+        <argsstring>() const =0</argsstring>
+        <name>pathLength</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="36"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>an identifier for a set of pieces of information that can be audited together. </para>    </briefdescription>
+    <detaileddescription>
+<para>It is assumed that all instances of <ref refid="classzorba_1_1audit_1_1PropertyGroup" kindref="compound">PropertyGroup</ref> are created statically and that they exist while a process exists. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="34" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit.h" bodystart="34" bodyend="38"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1audit_1_1PropertyGroup_1af334c4e322a292cf55b4ee8b9950c2c4" prot="public" virt="pure-virtual"><scope>zorba::audit::PropertyGroup</scope><name>getSegment</name></member>
+      <member refid="classzorba_1_1audit_1_1PropertyGroup_1aaea61287c272cff78c71c54283d8c0ce" prot="public" virt="pure-virtual"><scope>zorba::audit::PropertyGroup</scope><name>pathLength</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

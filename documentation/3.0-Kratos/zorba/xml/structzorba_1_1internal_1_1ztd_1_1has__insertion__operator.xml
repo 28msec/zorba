@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator" kind="struct" prot="public">
+    <compoundname>zorba::internal::ztd::has_insertion_operator</compoundname>
+    <basecompoundref refid="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator" prot="public" virt="non-virtual">zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator&lt; T &gt;</basecompoundref>
+    <includes refid="ztd_8h" local="no">zorba/internal/ztd.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator_1a043cfc829783a905f8bb848fc021e5c3" prot="public" static="yes" mutable="no">
+        <type>bool const</type>
+        <definition>bool const zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator&lt; T &gt;::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> sizeof( defined( s &lt;&lt; t ) ) == sizeof( yes )</initializer>
+        <briefdescription>
+<para>This is <computeroutput>true</computeroutput> only when the type <computeroutput>T</computeroutput> has a global <computeroutput><ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af6f8268706824cf6c6ae5326cc90e283" kindref="member">operator&lt;&lt;()</ref></computeroutput> declared for it. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="143" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="651">
+        <label>zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator&lt; T &gt;</label>
+        <link refid="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator"/>
+      </node>
+      <node id="650">
+        <label>zorba::internal::ztd::has_insertion_operator&lt; T &gt;</label>
+        <link refid="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator"/>
+        <childnode refid="651" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="653">
+        <label>zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator&lt; T &gt;</label>
+        <link refid="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator"/>
+      </node>
+      <node id="652">
+        <label>zorba::internal::ztd::has_insertion_operator&lt; T &gt;</label>
+        <link refid="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator"/>
+        <childnode refid="653" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="166" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="164" bodyend="167"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator_1a043cfc829783a905f8bb848fc021e5c3" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::has_insertion_operator</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

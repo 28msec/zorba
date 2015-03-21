@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="overview_8dox" kind="file">
+    <compoundname>overview.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>overview<sp/>Overview</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">The<sp/>World<sp/>Wide<sp/>Web<sp/>Consortium<sp/>(W3C)</highlight></codeline>
+<codeline lineno="4"><highlight class="comment">standardizes<sp/>a<sp/>set<sp/>of<sp/>XML<sp/>processing<sp/>languages,</highlight></codeline>
+<codeline lineno="5"><highlight class="comment">each<sp/>with<sp/>various<sp/>variants<sp/>or<sp/>versions.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">For<sp/>example:</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"></highlight></codeline>
+<codeline lineno="8"><highlight class="comment">&lt;ul&gt;</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath/&quot;&gt;XPath&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery-30/&quot;&gt;XQuery&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xqueryx/&quot;&gt;XQueryX&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xslt&quot;&gt;XSLT&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xproc/&quot;&gt;XProc&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery-update-10&quot;&gt;XQuery<sp/>Update&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-full-text-10&quot;&gt;XQuery<sp/>Full<sp/>Text&lt;/a&gt;<sp/>etc.&lt;/li&gt;</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">&lt;/ul&gt;</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"></highlight></codeline>
+<codeline lineno="18"><highlight class="comment">XQuery<sp/>is<sp/>the<sp/>primary<sp/>target<sp/>language<sp/>for<sp/>Zorba,</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">but<sp/>most<sp/>other<sp/>processing<sp/>languages<sp/>above<sp/>are<sp/>also<sp/>supported.<sp/></highlight></codeline>
+<codeline lineno="20"><highlight class="comment"></highlight></codeline>
+<codeline lineno="21"><highlight class="comment">Below<sp/>is<sp/>a<sp/>brief<sp/>overview<sp/>of<sp/>the<sp/>languages</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">(or<sp/>language<sp/>variants)</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">that<sp/>are<sp/>supported<sp/>by<sp/>Zorba:</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"></highlight></codeline>
+<codeline lineno="25"><highlight class="comment">&lt;ul&gt;</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery/&quot;&gt;XQuery<sp/>version<sp/>1.0&lt;/a&gt;<sp/>and<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery-30/&quot;&gt;XQuery<sp/>version<sp/>3.0&lt;/a&gt;<sp/>are<sp/>both<sp/>supported<sp/>(note:<sp/>&lt;strong&gt;there<sp/>is<sp/>no<sp/>W3C<sp/>XQuery<sp/>2.0<sp/>version!&lt;/strong&gt;).<sp/>The<sp/>default<sp/>version<sp/>is<sp/>XQuery<sp/>3.0.<sp/>It<sp/>can<sp/>be<sp/>changed<sp/>to<sp/>XQuery<sp/>1.0<sp/>by<sp/>putting<sp/>the<sp/>following<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery-30/#id-version-declaration&quot;&gt;version<sp/>declaration&lt;/a&gt;<sp/>in<sp/>the<sp/>prolog<sp/>of<sp/>a<sp/>main<sp/>or<sp/>library<sp/>module:</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/><sp/><sp/><sp/>xquery<sp/>version<sp/>&quot;1.0&quot;;</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"></highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/>Please<sp/>note<sp/>that<sp/>XQuery<sp/>1.1<sp/>has<sp/>been<sp/>renamed<sp/>to<sp/>XQuery<sp/>3.0.</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/>XQuery<sp/>1.1<sp/>does<sp/>not<sp/>exist.</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/>&lt;/li&gt;</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"></highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/>&lt;li&gt;There<sp/>are<sp/>several<sp/>XQuery<sp/>features<sp/>that<sp/>can<sp/>be<sp/>enabled<sp/>or<sp/>disabled:</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;ul&gt;</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;/pages/latest/zorba/scripting_tutorial&quot;&gt;Zorba&apos;s<sp/>XQuery<sp/>Scripting<sp/>Extension&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>&lt;li&gt;\ref<sp/>xqddf<sp/>&quot;Zorba&apos;s<sp/>XQuery<sp/>Data<sp/>Definition<sp/>Facility&quot;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-functions-30/#func-trace&quot;&gt;fn:trace&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery-30/#id-dynamic-function-invocation&quot;&gt;Higher-order<sp/>functions&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-datamodel/#construction&quot;&gt;DTD<sp/>validation<sp/>while<sp/>parsing&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;/ul&gt;</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"></highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/><sp/><sp/><sp/>To<sp/>read<sp/>about<sp/>how<sp/>each<sp/>of<sp/>the<sp/>features<sp/>can<sp/>be<sp/>enabled<sp/>or<sp/>disabled,<sp/>please<sp/>refer<sp/>to<sp/>\ref<sp/>options_and_annotations.</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/>&lt;/li&gt;</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"></highlight></codeline>
+<codeline lineno="47"><highlight class="comment"></highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery-30/#id-validate&quot;&gt;XML<sp/>Schema<sp/>validation&lt;/a&gt;<sp/>is<sp/>supported<sp/>by<sp/>default<sp/>via<sp/>the<sp/>&lt;a<sp/>href=&quot;http://xerces.apache.org/&quot;&gt;Xerces&lt;/a&gt;<sp/>library.</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/>In<sp/>case<sp/>users<sp/>do<sp/>not<sp/>want<sp/>XML<sp/>Schema<sp/>validation,</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/><sp/>this<sp/>feature<sp/>can<sp/>be<sp/>disabled<sp/>when<sp/>Zorba<sp/>is<sp/>compiled.</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/>Specifically,</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/>the<sp/>CMake<sp/>variable<sp/>\c<sp/>ZORBA_NO_XMLSCHEMA<sp/>must<sp/>be<sp/>set<sp/>to<sp/>&quot;ON&quot;.</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/>For<sp/>example:</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"></highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/>cmake<sp/>-D<sp/>ZORBA_NO_XMLSCHEMA=ON<sp/>&lt;path_to_zorba_source&gt;</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"></highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/>&lt;/li&gt;</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"></highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-full-text-10/&quot;&gt;XQuery<sp/>Full<sp/>Text<sp/>Extension&lt;/a&gt;<sp/>is<sp/>supported<sp/>by<sp/>default.</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/><sp/>Please<sp/>see<sp/>\ref<sp/>ft_intro<sp/>for<sp/>more<sp/>details.&lt;/li&gt;</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/><sp/>The<sp/>Full<sp/>Text<sp/>Extension<sp/>increases<sp/>memory<sp/>usage<sp/>during<sp/>runtime.</highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/>If<sp/>you<sp/>want<sp/>to<sp/>disable<sp/>this<sp/>feature,<sp/>you<sp/>can<sp/>compile<sp/>Zorba<sp/>without<sp/>Full<sp/>Text<sp/>support</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/>by<sp/>setting<sp/>the<sp/>CMake<sp/>variable<sp/>\c<sp/>ZORBA_NO_FULL_TEXT<sp/>to<sp/>&quot;ON&quot;.</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/>For<sp/>example:</highlight></codeline>
+<codeline lineno="67"><highlight class="comment"></highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="69"><highlight class="comment"><sp/><sp/>cmake<sp/>-D<sp/>ZORBA_NO_FULL_TEXT=ON<sp/>&lt;path_to_zorba_source&gt;</highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"></highlight></codeline>
+<codeline lineno="72"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-30/&quot;&gt;XPath&lt;/a&gt;</highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/><sp/>is<sp/>a<sp/>sublanguage<sp/>of<sp/>XQuery,</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/>hence<sp/>it<sp/>is<sp/>automatically<sp/>supported.</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/>Note<sp/>that<sp/>in<sp/>Zorba,</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/>the<sp/>XPath<sp/>compatibility<sp/>mode<sp/>is<sp/>always<sp/>false<sp/>(&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery/#static_context&quot;&gt;http://www.w3.org/TR/xquery/#static_context&lt;/a&gt;).&lt;/li&gt;</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"></highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xqueryx/&quot;&gt;XQueryX&lt;/a&gt;<sp/>is<sp/>not<sp/>supported<sp/>by<sp/>default<sp/>for<sp/>all<sp/>the<sp/>variants<sp/>of<sp/>XQuery<sp/>(1.0,<sp/>3.0,<sp/>Update,<sp/>Full<sp/>Text).</highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/><sp/>In<sp/>case<sp/>XQueryX<sp/>is<sp/>needed,</highlight></codeline>
+<codeline lineno="80"><highlight class="comment"><sp/><sp/>it<sp/>can<sp/>be<sp/>enabled<sp/>when<sp/>Zorba<sp/>is<sp/>compiled<sp/>by<sp/>setting<sp/>the<sp/>CMake<sp/>variable<sp/>\c<sp/>ZORBA_XQUERYX<sp/>to<sp/>&quot;ON&quot;.</highlight></codeline>
+<codeline lineno="81"><highlight class="comment"></highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/>cmake<sp/>-D<sp/>ZORBA_XQUERYX=ON<sp/>&lt;path_to_zorba_source&gt;</highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"></highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/>&lt;/li&gt;</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"></highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xslt&quot;&gt;XSLT<sp/>1.0&lt;/a&gt;<sp/>is<sp/>supported<sp/>via<sp/>the<sp/>external<sp/>library<sp/>&lt;a<sp/>href=&quot;http://xmlsoft.org/XSLT/&quot;&gt;LibXSLT&lt;/a&gt;.</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/>For<sp/>more<sp/>information,</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"><sp/><sp/>please<sp/>check<sp/>the<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/languages/xslt&quot;&gt;XSLT<sp/>module&lt;/a&gt;.</highlight></codeline>
+<codeline lineno="91"><highlight class="comment"><sp/><sp/>Zorba<sp/>has<sp/>no<sp/>support<sp/>yet<sp/>for<sp/>the<sp/>upcoming<sp/>standard<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/XML/Group/qtspecs/specifications/xslt-30/html/&quot;&gt;XSLT<sp/>3.0&lt;/a&gt;.</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/><sp/>Please<sp/>let<sp/>us<sp/>know<sp/>if<sp/>this<sp/>is<sp/>a<sp/>language<sp/>that<sp/>Zorba<sp/>should<sp/>support.&lt;/li&gt;</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"></highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;http://www.w3.org/TR/xslt-xquery-serialization/&quot;&gt;XML<sp/>Serialization&lt;/a&gt;<sp/>is<sp/>supported<sp/>by<sp/>default.&lt;/li&gt;</highlight></codeline>
+<codeline lineno="95"><highlight class="comment"></highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/><sp/>&lt;li&gt;Note<sp/>that<sp/>XQuery<sp/>version<sp/>3.0<sp/>is<sp/>not<sp/>a<sp/>W3C<sp/>Recommendation,<sp/>yet.<sp/>Zorba<sp/>supports<sp/>the<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery-30/&quot;&gt;June<sp/>2011<sp/>Working<sp/>Draft&lt;/a&gt;.<sp/>However,<sp/>not<sp/>all<sp/>the<sp/>features</highlight></codeline>
+<codeline lineno="97"><highlight class="comment">are<sp/>implemented.<sp/>Please<sp/>see<sp/>\ref<sp/>partial_support<sp/>for<sp/>the<sp/>implemented<sp/>XQuery<sp/>3.0<sp/>features.&lt;/li&gt;</highlight></codeline>
+<codeline lineno="98"><highlight class="comment"></highlight></codeline>
+<codeline lineno="99"><highlight class="comment"><sp/><sp/>&lt;li&gt;Zorba<sp/>has<sp/>no<sp/>support<sp/>yet<sp/>for<sp/>the<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xproc/&quot;&gt;XML<sp/>Pipeline<sp/>Language<sp/>XProc&lt;/a&gt;.</highlight></codeline>
+<codeline lineno="100"><highlight class="comment"><sp/><sp/>Please<sp/>let<sp/>us<sp/>know<sp/>if<sp/>this<sp/>is<sp/>a<sp/>language<sp/>that<sp/>Zorba<sp/>should<sp/>support.&lt;/li&gt;</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"></highlight></codeline>
+<codeline lineno="102"><highlight class="comment">&lt;/ul&gt;</highlight></codeline>
+<codeline lineno="103"><highlight class="comment"></highlight></codeline>
+<codeline lineno="104"><highlight class="comment">Zorba<sp/>implements<sp/>several<sp/>extensions<sp/>to<sp/>XQuery</highlight></codeline>
+<codeline lineno="105"><highlight class="comment">that<sp/>are<sp/>missing<sp/>from<sp/>the<sp/>W3C<sp/>set<sp/>of<sp/>specifications,</highlight></codeline>
+<codeline lineno="106"><highlight class="comment">yet<sp/>are<sp/>absolutely<sp/>necessary<sp/>for<sp/>complex<sp/>data<sp/>processing<sp/>applications.</highlight></codeline>
+<codeline lineno="107"><highlight class="comment">The<sp/>first<sp/>one<sp/>is<sp/>the<sp/>\ref<sp/>xqddf,</highlight></codeline>
+<codeline lineno="108"><highlight class="comment">that<sp/>allows<sp/>the<sp/>declaration<sp/>of<sp/>collections,</highlight></codeline>
+<codeline lineno="109"><highlight class="comment">indexes,</highlight></codeline>
+<codeline lineno="110"><highlight class="comment">and<sp/>integrity<sp/>constraints.</highlight></codeline>
+<codeline lineno="111"><highlight class="comment">The<sp/>other<sp/>one<sp/>is<sp/>a</highlight></codeline>
+<codeline lineno="112"><highlight class="comment">&lt;a<sp/>href=&quot;/pages/latest/zorba/scripting_spec&quot;&gt;XQuery<sp/>Scripting<sp/>Extension&lt;/a&gt;</highlight></codeline>
+<codeline lineno="113"><highlight class="comment">that<sp/>allows<sp/>side-effecting<sp/>operations,</highlight></codeline>
+<codeline lineno="114"><highlight class="comment">assignable<sp/>variables,</highlight></codeline>
+<codeline lineno="115"><highlight class="comment">and<sp/>other<sp/>similar<sp/>procedural<sp/>extensions<sp/>to<sp/>XQuery.</highlight></codeline>
+<codeline lineno="116"><highlight class="comment"></highlight></codeline>
+<codeline lineno="117"><highlight class="comment">\section<sp/>overview_conformance<sp/>Conformance</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"></highlight></codeline>
+<codeline lineno="119"><highlight class="comment">Please<sp/>check<sp/>the<sp/>summary<sp/>and<sp/>the<sp/>detailed<sp/>XQuery<sp/>W3C<sp/>Test<sp/>Suite<sp/>results<sp/>below:</highlight></codeline>
+<codeline lineno="120"><highlight class="comment">&lt;ul&gt;</highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/>&lt;li&gt;<sp/>\ref<sp/>conformance</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/>&lt;li&gt;<sp/>\ref<sp/>conformance_XQ10</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/>&lt;li&gt;<sp/>\ref<sp/>conformance_XQ30</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/>&lt;li&gt;<sp/>\ref<sp/>conformanceXQUTS</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/>&lt;li&gt;<sp/>\ref<sp/>conformanceXQFTTS</highlight></codeline>
+<codeline lineno="126"><highlight class="comment">&lt;/ul&gt;</highlight></codeline>
+<codeline lineno="127"><highlight class="comment"></highlight></codeline>
+<codeline lineno="128"><highlight class="comment">Please<sp/>also<sp/>see<sp/>our<sp/>page<sp/>about<sp/>\ref<sp/>known_issues.</highlight></codeline>
+<codeline lineno="129"><highlight class="comment"></highlight></codeline>
+<codeline lineno="130"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/overview.dox"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="external__function__parameter_8h" kind="file">
+    <compoundname>external_function_parameter.h</compoundname>
+    <includedby refid="dynamic__context_8h" local="no">dynamic_context.h</includedby>
+    <invincdepgraph>
+      <node id="1768">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="1769" relation="include">
+        </childnode>
+      </node>
+      <node id="1766">
+        <label>external_function_parameter.h</label>
+        <link refid="external_function_parameter.h"/>
+        <childnode refid="1767" relation="include">
+        </childnode>
+      </node>
+      <node id="1767">
+        <label>dynamic_context.h</label>
+        <link refid="dynamic__context_8h"/>
+        <childnode refid="1768" relation="include">
+        </childnode>
+      </node>
+      <node id="1769">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="1768" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1ExternalFunctionParameter" prot="public">zorba::ExternalFunctionParameter</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_EXTERNAL_FUNCTION_PARAM_API_H</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_EXTERNAL_FUNCTION_PARAM_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="21"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/>*<sp/>Instances<sp/>of<sp/>subclasses<sp/>of<sp/>this<sp/>abstract<sp/>class<sp/>may</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/>*<sp/>be<sp/>used<sp/>as<sp/>parameters<sp/>to<sp/>the<sp/>DynamicContext::addExternalFunctionParameter</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/>*<sp/>function.<sp/>This<sp/>is<sp/>useful<sp/>in<sp/>the<sp/>implementation<sp/>of</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/>*<sp/>external<sp/>modules/functions<sp/>in<sp/>order<sp/>to<sp/>store<sp/>information</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/>*<sp/>between<sp/>several<sp/>invocations<sp/>of<sp/>the<sp/>same<sp/>function.</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/>*<sp/>The<sp/>destroy<sp/>method<sp/>is<sp/>called<sp/>by<sp/>Zorba<sp/>at<sp/>the<sp/>end</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/>*<sp/>of<sp/>the<sp/>execution<sp/>of<sp/>an<sp/>XQuery<sp/>program,<sp/>when<sp/>the<sp/>corresponding</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/>*<sp/>DynamicContext<sp/>is<sp/>destroyed.</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33" refid="classzorba_1_1ExternalFunctionParameter" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1ExternalFunctionParameter" kindref="compound" tooltip="Instances of subclasses of this abstract class may be used as parameters to the DynamicContext::addEx...">ExternalFunctionParameter</ref></highlight></codeline>
+<codeline lineno="34"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/>*<sp/>This<sp/>function<sp/>is<sp/>invoked<sp/>by<sp/>Zorba<sp/>when<sp/>the<sp/>DynamicContext</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/>*<sp/>that<sp/>contains<sp/>the<sp/>instance<sp/>is<sp/>destroyed.<sp/>This<sp/>allows</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/><sp/>*<sp/>the<sp/>user<sp/>to<sp/>release<sp/>resources.<sp/>In<sp/>the<sp/>simplest<sp/>case,</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/>*<sp/>an<sp/>implementation<sp/>might<sp/>simply<sp/>call<sp/>&quot;delete<sp/>this&quot;<sp/>to</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/><sp/>*<sp/>destroy<sp/>the<sp/>object.</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1ExternalFunctionParameter_1abe1f3c2fb52aaa64617b33efb1ad03dd" kindref="member" tooltip="This function is invoked by Zorba when the DynamicContext that contains the instance is destroyed...">destroy</ref>()<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal">()<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Virtual<sp/>destructor<sp/>with<sp/>an<sp/>empty<sp/>implementation</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="classzorba_1_1ExternalFunctionParameter_1a0263f3adfe5ba459a1e7cc53af1b7611" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1ExternalFunctionParameter_1a0263f3adfe5ba459a1e7cc53af1b7611" kindref="member" tooltip="Virtual destructor with an empty implementation.">~ExternalFunctionParameter</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="49"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/external_function_parameter.h"/>
+  </compounddef>
+</doxygen>

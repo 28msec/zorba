@@ -1,0 +1,234 @@
+<div class="doxygen">
+  <div><h1 class="title">Command Line Utility</h1>
+<div id="commandLineUsage" class="sect1"><h2>Usage</h2>
+zorba [options] [-q Inline_Query ...] or <br/>
+ zorba [options] -f [-q Query_File ...]</div>
+<div id="commandLineHelp" class="sect1"><h2>Help</h2>
+<pre>
+Available options:
+
+--timing, -t
+Print timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.
+
+--output-file, -o
+Write the result to the given file.
+
+--serialization-parameter, -z
+Set serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).
+
+--serialize-html
+Serialize the result as HTML.
+
+--serialize-text
+Serialize the result as Text.
+
+--indent, -i
+Indent output.
+
+--print-query
+Print the queries.
+
+--print-errors-as-xml, -x
+Print the errors as XML.
+
+--byte-order-mark
+Set the byte-order-mark for the serializer.
+
+--omit-xml-declaration, -r
+Omit the XML declaration from the result.
+
+--base-uri
+Set the base URI property of the static context.
+
+--boundary-space
+Set the boundary-space policy ('strip' or 'preserve') in the static context.
+
+--default-collation
+Add the given collation and set the value of the default collation in the static context to the given collation.
+
+--construction-mode
+Set the construction mode ('strip' or 'preserve') in the static context.
+
+--ordering-mode
+Set the ordering mode ('ordered' or 'unordered') in the static context.
+
+--multiple, -m
+Execute the given queries multiple times.
+
+--query, -q
+Query test or file URI (file://...)
+
+--as-files, -f
+Treat all -q arguments as file paths instead of URIs or inline queries. This option is deprecated and will be defaulted to true in the future, so any entry in the command line is going to be treated as files.
+
+--external-variable, -e
+Provide the value for a variable given a file (name=file) or a value (name:=value)
+
+--context-item
+Set the context item to the XML document in a given file.
+
+--optimization-level
+Optimization level for the query compiler (O0, O1 or O2 - default: O1)
+
+--lib-module, -l
+Query compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.
+
+--parse-only
+Stop after parsing the query.
+
+--compile-only
+Only compile (don't execute)
+
+--no-serializer
+Do not serialize (discard) result.
+
+--debug, -d
+Launch the Zorba debugger server and connect to a DBGP-enabled debugger client.
+
+--debug-host, -h
+The host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1
+
+--debug-port, -p
+The port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028
+
+--no-logo
+Print no logo when starting.
+
+--timeout
+Specify a timeout in seconds. After the specified time, the execution of the query will be aborted.
+
+--uri-path
+URI path (list of directories) added to the built-in URI resolver, i.e. where to find modules/schemas to import.
+
+--lib-path
+Library path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.
+
+--module-path
+Path (list of directories) to add to both the URI and Library paths.
+
+--classpath
+JVM classpath to be used by modules using Java implementations
+
+--option
+Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://zorba.io/}option=value
+
+--trailing-nl
+Output a trailing newline after the result of the query.
+
+--stop-words
+Mapping specifying a stop-words URI to another.
+
+--thesaurus
+Mapping specifying a thesaurus URI to another.
+
+--serialize-plan, -s
+Serialize and then load the query execution plan.
+
+--compile-plan,
+Do not execute the query; just compile it and save the execution plan in the file specified with the -o option.
+
+--execute-plan
+Do not compile the query; instead load the execution plan from the file specified by the -f -q options (or by any file specified without any other argument), and execute the loaded plan.
+
+--disable-http-resolution
+Do not use HTTP to resolve URIs
+</pre></div>
+<div id="commandlineexamples" class="sect1"><h2>Examples</h2>
+<div id="cmdlineExample1" class="sect2"><h3>Execute inline queries</h3>
+This example shows the use of <tt>-t</tt>, <tt>--print-query</tt> output options and <tt>-i</tt> execute option.Zorba command: <pre>
+zorba -t --print-query -q "1+1" -q "fn:concat('un', 'grateful')" -q "fn:matches('abracadabra', '^a.*a$')"
+</pre>Output: <pre>
+Query number 1 :
+1+1
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+2
+Number of executions = 1
+Engine Startup Time     : 36.205 (user: 35.949) milliseconds
+Average Compilation Time: 3.035 (user: 3.011) milliseconds
+Average Execution Time  : 0.154 (user: 0.148) milliseconds
+Average Loading Time    : 0.000 (user: 0.000) milliseconds
+Average Unloading Time  : 23.080 (user: 9.798) milliseconds
+Average Total Time      : 31.791 (user: 18.433) milliseconds
+
+Query number 2 :
+fn:concat('un', 'grateful')
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+ungrateful
+Number of executions = 1
+Engine Startup Time     : 36.205 (user: 35.949) milliseconds
+Average Compilation Time: 3.971 (user: 3.932) milliseconds
+Average Execution Time  : 0.217 (user: 0.212) milliseconds
+Average Loading Time    : 0.000 (user: 0.000) milliseconds
+Average Unloading Time  : 27.641 (user: 14.319) milliseconds
+Average Total Time      : 37.364 (user: 23.946) milliseconds
+
+Query number 3 :
+fn:matches('abracadabra', '^a.*a$')
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+true
+Number of executions = 1
+Engine Startup Time     : 36.205 (user: 35.949) milliseconds
+Average Compilation Time: 93.269 (user: 11.609) milliseconds
+Average Execution Time  : 0.396 (user: 0.375) milliseconds
+Average Loading Time    : 0.000 (user: 0.000) milliseconds
+Average Unloading Time  : 32.478 (user: 19.128) milliseconds
+Average Total Time      : 131.699 (user: 36.610) milliseconds
+
+Engine Shutdown Time     : 0.007 (user: 0.007) milliseconds
+</pre></div>
+<div id="cmdlineExample2" class="sect2"><h3>Execute update queries</h3>
+The purpose of this example is to demonstrate the use of <tt>-f</tt> and <tt>-e</tt> execute options.These are the files used in this example and their meaning: <table class="table table-bordered"><tr>
+<td><tt>works-mod.xml</tt> </td><td>File that will be used as external variable.  </td></tr>
+<tr>
+<td><tt>comandline_doc_example_2.xq</tt> </td><td>This is an update query. For details please see below.  </td></tr>
+<tr>
+<td><tt>comandline_doc_example_2-test.xq</tt> </td><td>Query used to see the results of the update query. For details please see below.  </td></tr>
+</table>
+works-mod.xml : <pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;?xml<span> </span>version=</span><span class="stringliteral">"1.0"</span><span class="normal">?&gt;</span>
+<span class="normal"><span> </span>&lt;works&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;employee<span> </span>name=</span><span class="stringliteral">"Jane<span> </span>Doe<span> </span>1"</span><span class="normal"><span> </span>gender=</span><span class="stringliteral">"female"</span><span class="normal">&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span>&lt;empnum&gt;E1&lt;/empnum&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span>&lt;pnum&gt;P1&lt;/pnum&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span>&lt;hours&gt;40&lt;/hours&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;/employee&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;employee<span> </span>name<span> </span>=<span> </span></span><span class="stringliteral">"John<span> </span>Doe<span> </span>2"</span><span class="normal"><span> </span>gender=</span><span class="stringliteral">"male"</span><span class="normal">&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span>&lt;empnum&gt;E1&lt;/empnum&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span>&lt;pnum&gt;P2&lt;/pnum&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span>&lt;hours&gt;70&lt;/hours&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span>&lt;hours&gt;20&lt;/hours&gt;Text<span> </span>data<span> </span>from<span> </span>Employee[2]</span>
+<span class="normal"><span> </span><span> </span>&lt;/employee&gt;</span>
+<span class="normal"><span> </span>&lt;/works&gt;</span>
+</pre>comandline_doc_example_2.xq : <pre class="ace-static" ace-mode="xquery"><span class="normal">(:<span> </span>Name:<span> </span>comandline_doc_example_2<span> </span>:)</span>
+<span class="normal">(:<span> </span>Description:<span> </span>Evaluation<span> </span>of<span> </span>insert<span> </span>expression<span> </span>used<span> </span>with<span> </span>typeswitch<span> </span>expression<span> </span>where<span> </span>branch<span> </span>(a<span> </span></span><span class="stringliteral">"case"</span><span class="normal">)<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781abdd3c2de1222fd3167e2675969aa694c">an</a><span> </span>updating<span> </span>expression.<span> </span>:)</span>
+<span class="normal">(:<span> </span>All<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22a695149cd22831c06e408b1101e4075f1">other</a><span> </span>branches<span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span></span><span class="stringliteral">"fn:error()"</span><span class="normal">.<span> </span>:)</span>
+<span class="normal"/>
+<span class="normal">(:<span> </span>insert-start<span> </span>:)</span>
+<span class="normal">declare<span> </span>variable<span> </span>$input-context<span> </span>external;</span>
+<span class="normal">(:<span> </span>insert-end<span> </span>:)</span>
+<span class="normal"/>
+<span class="normal">typeswitch(xs:</span><span class="keywordtype">int</span><span class="normal">(1))</span>
+<span class="normal"><span> </span></span><span class="keywordflow">case</span><span class="normal"><span> </span>$i<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0">as</a><span> </span>xs:</span><span class="keywordtype">int</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span>(insert<span> </span>node<span> </span>&lt;hours&gt;30&lt;/hours&gt;<span> </span>into<span> </span>$input-context/works[1]/employee[1])</span>
+<span class="normal"><span> </span></span><span class="keywordflow">case</span><span class="normal"><span> </span>$i<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0">as</a><span> </span>xs:</span><span class="keywordtype">double</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span>fn:error(fn:QName(</span><span class="stringliteral">'http://www.w3.org/2005/xqt-errors'</span><span class="normal">,<span> </span></span><span class="stringliteral">'err:FOER0000'</span><span class="normal">))</span>
+<span class="normal"><span> </span>default</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>return<span> </span>fn:error(fn:QName('http:</span><span class="comment">//www.w3.org/2005/xqt-errors',<span> </span>'err:FOER0000'))</span><span class="normal"/>
+</pre>comandline_doc_example_2-test.xq : <pre class="ace-static" ace-mode="xquery"><span class="normal">(:<span> </span>Name:<span> </span>comandline_doc_example_2-test<span> </span>:)</span>
+<span class="normal">(:<span> </span>Description:<span> </span>Query<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba">to</a><span> </span>verify<span> </span>comandline_doc_example_2<span> </span>:)</span>
+<span class="normal"/>
+<span class="normal">(:<span> </span>insert-start<span> </span>:)</span>
+<span class="normal">declare<span> </span>variable<span> </span>$input-context<span> </span>external;</span>
+<span class="normal">(:<span> </span>insert-end<span> </span>:)</span>
+<span class="normal"/>
+<span class="normal">$input-context/works[1]/employee[1]</span>
+</pre>Zorba command: <pre>
+zorba -e input-context=works-mod.xml -f -q comandline_doc_example_2.xq -q comandline_doc_example_2-test.xq
+</pre>Note: Make sure you give the correct path to the works-mod.xml, comandline_doc_example_2.xq and comandline_doc_example_2-test.xq files.Expected result: <pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;employee<span> </span>name=</span><span class="stringliteral">"Jane<span> </span>Doe<span> </span>1"</span><span class="normal"><span> </span>gender=</span><span class="stringliteral">"female"</span><span class="normal">&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span>&lt;empnum&gt;E1&lt;/empnum&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span>&lt;pnum&gt;P1&lt;/pnum&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span>&lt;hours&gt;40&lt;/hours&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;hours&gt;30&lt;/hours&gt;&lt;/employee&gt;</span>
+</pre> </div>
+</div>
+    </div>
+</div>

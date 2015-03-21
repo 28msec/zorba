@@ -1,0 +1,25 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Tokenizer::Properties</h1><p class="include">
+            #include &lt;zorba/tokenizer.h&gt;
+        </p>
+Various properties of this Tokenizer.     
+    <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">std::vector&lt; <a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781">locale::iso639_1::type</a> &gt;</p></td><td><p class="signature"><a href="#a0ac548e60e52893d02781884e58ea79f">languages_type</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a620e79be436f548d3fd7469be4459a51">comments_separate_tokens</a></p><span class="signature-description">
+If <tt>true</tt>, XML comments separate tokens.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#afa6f171307c94afbb4e75e490d327358">elements_separate_tokens</a></p><span class="signature-description">
+If <tt>true</tt>, XML elements separate tokens.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1Properties?anchor=a0ac548e60e52893d02781884e58ea79f">languages_type</a></p></td><td><p class="signature"><a href="#a7aa68e42f6c9c830b3e686d84dab542b">languages</a></p><span class="signature-description">
+The set of languages supported.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a8605c5db1eea69c4000cd00d58f9ea4f">processing_instructions_separate_tokens</a></p><span class="signature-description">
+If <tt>true</tt>, XML processing instructions separate tokens.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#ae93b36226ae697fe1c6369c6361b4116">uri</a></p><span class="signature-description">
+The URI that uniquely identifies this Tokenizer.         </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a0ac548e60e52893d02781884e58ea79f" class="sect1"><div><h3>languages_type</h3></div><div class="signature-box">std::vector&lt; <a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781">locale::iso639_1::type</a> &gt;<span> </span>languages_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Attributes</h2><div class="detailed"><div id="a620e79be436f548d3fd7469be4459a51" class="sect1"><div><h3>comments_separate_tokens</h3></div><div class="signature-box">bool<span> </span>comments_separate_tokens</div><div><p class="signature-description">
+If <tt>true</tt>, XML comments separate tokens.         </p><p class="signature-description">
+For example, <tt>net&lt;!----&gt;work</tt> would be 2 tokens instead of 1.         </p></div></div><div id="afa6f171307c94afbb4e75e490d327358" class="sect1"><div><h3>elements_separate_tokens</h3></div><div class="signature-box">bool<span> </span>elements_separate_tokens</div><div><p class="signature-description">
+If <tt>true</tt>, XML elements separate tokens.         </p><p class="signature-description">
+For example, <tt>&lt;b&gt;B&lt;/b&gt;old</tt> would be 2 tokens instead of 1.         </p></div></div><div id="a7aa68e42f6c9c830b3e686d84dab542b" class="sect1"><div><h3>languages</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structzorba_1_1Tokenizer_1_1Properties?anchor=a0ac548e60e52893d02781884e58ea79f">languages_type</a><span> </span>languages</div><div><p class="signature-description">
+The set of languages supported.         </p><p class="signature-description">
+        </p></div></div><div id="a8605c5db1eea69c4000cd00d58f9ea4f" class="sect1"><div><h3>processing_instructions_separate_tokens</h3></div><div class="signature-box">bool<span> </span>processing_instructions_separate_tokens</div><div><p class="signature-description">
+If <tt>true</tt>, XML processing instructions separate tokens.         </p><p class="signature-description">
+For example, <tt>net&lt;?PI pi?&gt;work</tt> would be 2 tokens instead of 1.         </p></div></div><div id="ae93b36226ae697fe1c6369c6361b4116" class="sect1"><div><h3>uri</h3></div><div class="signature-box">char const *<span> </span>uri</div><div><p class="signature-description">
+The URI that uniquely identifies this Tokenizer.         </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

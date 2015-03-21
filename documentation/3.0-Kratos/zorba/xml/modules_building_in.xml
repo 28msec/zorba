@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="modules_building_in" kind="page">
+    <compoundname>modules_building_in</compoundname>
+    <title>Building Modules Into Zorba</title>
+    <detaileddescription>
+<para>Once you have created a module project (see <ref refid="modules_authoring" kindref="compound">Writing Your Own Modules</ref>) containing modules and schemas, there are two different ways that you can build those modules directly into Zorba, such that they are on Zorba&apos;s default URI and Library paths and will be found automatically.</para><para>These same techniques can be used with non-core modules developed by the Zorba team.</para><sect1 id="modules_building_in_1mod_installing_in">
+<title>Installing Modules Into Zorba</title>
+<para>If you are building your module by itself against a Zorba installation, <computeroutput>DECLARE_ZORBA_MODULE()</computeroutput> will automatically create an <computeroutput>INSTALL()</computeroutput> rule for your module that will install the module (including its external function shared library, if any) directly into the Zorba installation. Simply invoking the &quot;install&quot; target of the project will do this. Note that on many systems, if Zorba is installed into a system-wide location, you may require root or administrator privileges to install your module in this location.</para></sect1>
+<sect1 id="modules_building_in_1mod_baking_in">
+<title>Building Zorba With Additional Modules</title>
+<para>If you are building Zorba yourself, you may have it automatically build any number of module projects along with itself. In that case, when you install Zorba, all modules from all module projects will be included in the install image, ready for immediate use.</para><para>To do so, all you need to do is locate all your module projects in subdirectories of a single directory. That is, given a directory named, for instnace, <computeroutput>zorba_modules</computeroutput>, every subdirectory of that directory should contain a top-level <computeroutput>CMakeLists.txt</computeroutput> file defining a module project.</para><para>Then, when configuring Zorba, simply define the variable <computeroutput>ZORBA_MODULES_DIR</computeroutput> to be the full path to this single directory:</para><para><programlisting><codeline><highlight class="normal">cmake<sp/>-DZORBA_MODULES_DIR=/path/<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref>/zorba_modules<sp/>....</highlight></codeline>
+</programlisting> </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

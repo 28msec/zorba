@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="data__converters_8dox" kind="file">
+    <compoundname>data_converters.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>data_converters<sp/>Data<sp/>Converters</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">Data<sp/>on<sp/>the<sp/>Web<sp/>comes<sp/>in<sp/>various<sp/>different<sp/>formats,<sp/>XML,<sp/>JSON,<sp/>CSV,<sp/>HTML,<sp/>and<sp/>others.</highlight></codeline>
+<codeline lineno="4"><highlight class="comment">XQuery<sp/>and<sp/>JSONiq<sp/>are<sp/>great<sp/>to<sp/>process<sp/>all<sp/>such<sp/>formats<sp/>and<sp/>convert<sp/>between<sp/>them.</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"></highlight></codeline>
+<codeline lineno="6"><highlight class="comment">This<sp/>is<sp/>easily<sp/>done<sp/>by<sp/>first<sp/>converting<sp/>the<sp/>other<sp/>data<sp/>formats<sp/>into<sp/>an<sp/>XDM<sp/>or<sp/>JDM<sp/>instance<sp/>(via<sp/>parse()<sp/>functions).</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">At<sp/>the<sp/>end<sp/>of<sp/>the<sp/>processing,<sp/>the<sp/>resulting<sp/>instance<sp/>can<sp/>be<sp/>converted<sp/>back<sp/>into<sp/>the<sp/>desired<sp/>data<sp/>format<sp/>(via<sp/>serialize()<sp/>functions).<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"></highlight></codeline>
+<codeline lineno="9"><highlight class="comment">\image<sp/>html<sp/>data-in-out.png</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"></highlight></codeline>
+<codeline lineno="11"><highlight class="comment">Please<sp/>take<sp/>a<sp/>look<sp/>at<sp/>the<sp/>various<sp/>data<sp/>converter<sp/>modules<sp/>for<sp/>more<sp/>information.</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">&lt;ul&gt;</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules/csv&quot;&gt;CSV&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/converters/html&quot;&gt;HTML&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules/json-xml&quot;&gt;JSON-XML&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;/modules/latest/jsoniq.org/function-library&quot;&gt;JSON&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules_xml&quot;&gt;XML&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/><sp/>&lt;li&gt;&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules_base64&quot;&gt;Base<sp/>64&lt;/a&gt;&lt;/li&gt;</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">&lt;/ul&gt;</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"></highlight></codeline>
+<codeline lineno="22"><highlight class="comment">Also,<sp/>please<sp/>&lt;a<sp/>href=&quot;mailto:zorba-users@zorba-xquery.com&quot;&gt;send<sp/>us&lt;/a&gt;<sp/>a<sp/>message<sp/>if<sp/>there<sp/>is<sp/>a<sp/>particular<sp/>data<sp/>format<sp/>that<sp/>you<sp/>would<sp/>like<sp/>to<sp/>see<sp/>supported<sp/>by<sp/>Zorba,<sp/>and<sp/>we<sp/>will<sp/>try<sp/>to<sp/>help.</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"></highlight></codeline>
+<codeline lineno="24"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/data_converters.dox"/>
+  </compounddef>
+</doxygen>

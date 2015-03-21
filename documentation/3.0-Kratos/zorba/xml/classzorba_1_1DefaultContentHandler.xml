@@ -1,0 +1,696 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1DefaultContentHandler" kind="class" prot="public">
+    <compoundname>zorba::DefaultContentHandler</compoundname>
+    <basecompoundref refid="classzorba_1_1SAX2__ContentHandler" prot="public" virt="non-virtual">zorba::SAX2_ContentHandler</basecompoundref>
+    <basecompoundref refid="classzorba_1_1SAX2__LexicalHandler" prot="public" virt="non-virtual">zorba::SAX2_LexicalHandler</basecompoundref>
+    <includes refid="default__content__handler_8h" local="no">zorba/default_content_handler.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a3dfb9b29f0a88c49c812d55190109d6f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::attributeDecl</definition>
+        <argsstring>(const String &amp;eName, const String &amp;aName, const String &amp;type, const String &amp;mode, const String &amp;value)</argsstring>
+        <name>attributeDecl</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>eName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>mode</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="73" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="71" bodyend="73"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a0d80ee86017c6e547d30417d3ae7effb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::characters</definition>
+        <argsstring>(const String &amp;text)</argsstring>
+        <name>characters</name>
+        <reimplements refid="classzorba_1_1SAX2__ContentHandler_1aee570b507a69a97fb6c31c2c5dfbdf42">characters</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aText</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of character data. </para>        </briefdescription>
+        <detaileddescription>
+<para>The serializer will call this method to report each chunk of character data.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aText</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the characters from the serialized result. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="52" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="52" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a1bb00387351b3a60bef9e1eb27ce5c7a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::comment</definition>
+        <argsstring>(const String &amp;chars)</argsstring>
+        <name>comment</name>
+        <reimplements refid="classzorba_1_1SAX2__LexicalHandler_1a9a22cdf29d60a529e02c317462cb313c">comment</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>chars</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="87" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="87" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a9e402f031e907be9d4316fc6d8c41ce2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::elementDecl</definition>
+        <argsstring>(const String &amp;name, const String &amp;model)</argsstring>
+        <name>elementDecl</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>model</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="69" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="69" bodyend="69"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a234b83a8f8fa6e1457770a87494528dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::endCDATA</definition>
+        <argsstring>()</argsstring>
+        <name>endCDATA</name>
+        <reimplements refid="classzorba_1_1SAX2__LexicalHandler_1a0658c27be4711635407739481cede126">endCDATA</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="89" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="89" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1aad417871c959e4a46d0589cc298b3b90" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::endDocument</definition>
+        <argsstring>()</argsstring>
+        <name>endDocument</name>
+        <reimplements refid="classzorba_1_1SAX2__ContentHandler_1a22d035258014df398aea81e66afb9672">endDocument</reimplements>
+        <briefdescription>
+<para>Receive notification of the end of a document. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="42" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a3957643108e6de969f1004357f2f264c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::endDTD</definition>
+        <argsstring>()</argsstring>
+        <name>endDTD</name>
+        <reimplements refid="classzorba_1_1SAX2__LexicalHandler_1afbb41326036c805763cb8fda9b33dddf">endDTD</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="91" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="91" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1aa19d8d9cdb8e41fbbe38159cc4aa06a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::endElement</definition>
+        <argsstring>(const String &amp;uri, const String &amp;localname, const String &amp;qname)</argsstring>
+        <name>endElement</name>
+        <reimplements refid="classzorba_1_1SAX2__ContentHandler_1a4a9031fc2824a299b95b89a54c3da5ef">endElement</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aLocalname</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of the end of an element. </para>        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>&apos;s serializerwill invoke this method at the end of every element in the serialized query result document; there will be a corresponding <ref refid="classzorba_1_1DefaultContentHandler_1a7fe7a5072045027193f69a55f570b776" kindref="member">startElement()</ref> event for every <ref refid="classzorba_1_1DefaultContentHandler_1aa19d8d9cdb8e41fbbe38159cc4aa06a9" kindref="member">endElement()</ref> event (even when the element is empty).</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the URI of the asscioated namespace for this element </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLocalname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the local part of the element name </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aQName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the QName of this element </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="49" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="49" bodyend="49"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a7b729eb742bbb516cdaaf3294f949873" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::endEntity</definition>
+        <argsstring>(const String &amp;name)</argsstring>
+        <name>endEntity</name>
+        <reimplements refid="classzorba_1_1SAX2__LexicalHandler_1aa169ebca3483426571dd54bd41be3e92">endEntity</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="93" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="93" bodyend="93"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1afbd5dbbfe0409b00f2f45d2825f31971" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::endPrefixMapping</definition>
+        <argsstring>(const String &amp;prefix)</argsstring>
+        <name>endPrefixMapping</name>
+        <reimplements refid="classzorba_1_1SAX2__ContentHandler_1a2049f346b4590dbb2e6ce16eb73479cb">endPrefixMapping</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aPrefix</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of the end of an namespace prefix mapping. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aPrefix</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace prefix used. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="64" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="64" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a24815a2d041faa88ae08c8602440e10c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::externalEntityDecl</definition>
+        <argsstring>(const String &amp;name, const String &amp;publicId, const String &amp;systemId)</argsstring>
+        <name>externalEntityDecl</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>publicId</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>systemId</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="78" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="77" bodyend="78"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a32bddda4463615eff23349921067ade8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::ignorableWhitespace</definition>
+        <argsstring>(const String &amp;whitespace)</argsstring>
+        <name>ignorableWhitespace</name>
+        <reimplements refid="classzorba_1_1SAX2__ContentHandler_1a3a9d01ebca8d1215c0a53df1fab372ac">ignorableWhitespace</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aText</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of ignorable whitespace in element content. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aText</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the characters from the serialized query result. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="58" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="58" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a25b70a70840adc204ddcba5838dad437" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::internalEntityDecl</definition>
+        <argsstring>(const String &amp;name, const String &amp;value)</argsstring>
+        <name>internalEntityDecl</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="75" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="75" bodyend="75"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a9789b8d42180ff3948fab6cb53136ab8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::notationDecl</definition>
+        <argsstring>(const String &amp;name, const String &amp;publicId, const String &amp;systemId)</argsstring>
+        <name>notationDecl</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>publicId</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>systemId</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="80" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="80" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1afd0fba3f6329509e502acd577a54e284" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::processingInstruction</definition>
+        <argsstring>(const String &amp;target, const String &amp;data)</argsstring>
+        <name>processingInstruction</name>
+        <reimplements refid="classzorba_1_1SAX2__ContentHandler_1addfa3848d6e7ff30f920409fdd442b09">processingInstruction</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aTarget</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aData</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of a processing instruction. </para>        </briefdescription>
+        <detaileddescription>
+<para>The serializer will invoke this method once for each processing instruction found.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aTarget</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the processing instruction target. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the processing instruction data, or null if none was supplied. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="55" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="55" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1acfd3bd81d97377da035e2899e78a5927" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::resetDocType</definition>
+        <argsstring>()</argsstring>
+        <name>resetDocType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="85" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="85" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a9039f1348e98af2f5dda5e2621dd7ec9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::skippedEntity</definition>
+        <argsstring>(const String &amp;name)</argsstring>
+        <name>skippedEntity</name>
+        <reimplements refid="classzorba_1_1SAX2__ContentHandler_1ac6fceeb90cd3f47e91eaa122e7e2d8b6">skippedEntity</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of a skipped entity. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the skipped entity. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="67" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="67" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1ab60b7aa77a0993712c289ecd8c303cd8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::startCDATA</definition>
+        <argsstring>()</argsstring>
+        <name>startCDATA</name>
+        <reimplements refid="classzorba_1_1SAX2__LexicalHandler_1a3a3ba58ad4b75064255b4e0b62a04bd1">startCDATA</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="95" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="95" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a8bf89a21d318fc00b9fd191c79f53c76" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::startDocument</definition>
+        <argsstring>()</argsstring>
+        <name>startDocument</name>
+        <reimplements refid="classzorba_1_1SAX2__ContentHandler_1ac5ca0ab724ad6cbb06483167cf8414e1">startDocument</reimplements>
+        <briefdescription>
+<para>Receive notification of the beginning of a document. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="39" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a7ab9fd8a7ab29cba170f280d35e0478c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::startDTD</definition>
+        <argsstring>(const String &amp;name, const String &amp;publicId, const String &amp;systemId)</argsstring>
+        <name>startDTD</name>
+        <reimplements refid="classzorba_1_1SAX2__LexicalHandler_1ab1942a0bf231ad43535132573739f31c">startDTD</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>publicId</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>systemId</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="98" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="97" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a7fe7a5072045027193f69a55f570b776" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::startElement</definition>
+        <argsstring>(const String &amp;uri, const String &amp;localname, const String &amp;qname, const SAX2_Attributes &amp;aAttrs)</argsstring>
+        <name>startElement</name>
+        <reimplements refid="classzorba_1_1SAX2__ContentHandler_1a108e19a1effc45fa04ca56cd8b88b845">startElement</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aLocalname</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1SAX2__Attributes" kindref="compound">SAX2_Attributes</ref> &amp;</type>
+          <declname>aAttrs</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of the beginning of an element. </para>        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>&apos;s serializer will invoke this method at the beginning of every element of the serialized query result; there will be a corresponding <ref refid="classzorba_1_1DefaultContentHandler_1aa19d8d9cdb8e41fbbe38159cc4aa06a9" kindref="member">endElement()</ref> event for every <ref refid="classzorba_1_1DefaultContentHandler_1a7fe7a5072045027193f69a55f570b776" kindref="member">startElement()</ref> event (even when the element is empty). All of the element&apos;s content will be reported, in order, before the corresponding <ref refid="classzorba_1_1DefaultContentHandler_1aa19d8d9cdb8e41fbbe38159cc4aa06a9" kindref="member">endElement()</ref> event.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the URI of the associated namespace for this element. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLocalname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>thee local part of the element name. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aQName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the QName of this element. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aAttrs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the attributes attached to the element, if any. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="46" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="45" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1af093434522c72dbd22ef88ec0c246db5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::startEntity</definition>
+        <argsstring>(const String &amp;name)</argsstring>
+        <name>startEntity</name>
+        <reimplements refid="classzorba_1_1SAX2__LexicalHandler_1ae870cd92e947c61066103c23f30b5f59">startEntity</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="100" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="100" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1aebe4771622ed72548e7210bff16aa94e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::startPrefixMapping</definition>
+        <argsstring>(const String &amp;prefix, const String &amp;uri)</argsstring>
+        <name>startPrefixMapping</name>
+        <reimplements refid="classzorba_1_1SAX2__ContentHandler_1adfcd522ba71d88771898ef3510f8863c">startPrefixMapping</reimplements>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aPrefix</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of the start of an namespace prefix mapping. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aPrefix</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace prefix used </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace URI used. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="61" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="61" bodyend="61"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1a13cc8ca7825c284fb728d68f07ad4a65" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultContentHandler::unparsedEntityDecl</definition>
+        <argsstring>(const String &amp;name, const String &amp;publicId, const String &amp;systemId, const String &amp;notationName)</argsstring>
+        <name>unparsedEntityDecl</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>publicId</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>systemId</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>notationName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="83" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="82" bodyend="83"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultContentHandler_1aa8b9d065e91cf9db357903ec755d4ac9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::DefaultContentHandler::~DefaultContentHandler</definition>
+        <argsstring>()</argsstring>
+        <name>~DefaultContentHandler</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="36" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="36" bodyend="36"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A default content handler class implementing the <ref refid="classzorba_1_1SAX2__ContentHandler" kindref="compound">SAX2_ContentHandler</ref> and <ref refid="classzorba_1_1SAX2__LexicalHandler" kindref="compound">SAX2_LexicalHandler</ref> interfaces with all functions being implemented and doing nothing. </para>    </briefdescription>
+    <detaileddescription>
+<para>See <ref refid="classzorba_1_1SAX2__ContentHandler" kindref="compound">SAX2_ContentHandler</ref> for a documentation. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="570">
+        <label>zorba::DefaultContentHandler</label>
+        <link refid="classzorba_1_1DefaultContentHandler"/>
+        <childnode refid="571" relation="public-inheritance">
+        </childnode>
+        <childnode refid="572" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="572">
+        <label>zorba::SAX2_LexicalHandler</label>
+        <link refid="classzorba_1_1SAX2__LexicalHandler"/>
+      </node>
+      <node id="571">
+        <label>zorba::SAX2_ContentHandler</label>
+        <link refid="classzorba_1_1SAX2__ContentHandler"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="573">
+        <label>zorba::DefaultContentHandler</label>
+        <link refid="classzorba_1_1DefaultContentHandler"/>
+        <childnode refid="574" relation="public-inheritance">
+        </childnode>
+        <childnode refid="575" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="575">
+        <label>zorba::SAX2_LexicalHandler</label>
+        <link refid="classzorba_1_1SAX2__LexicalHandler"/>
+      </node>
+      <node id="574">
+        <label>zorba::SAX2_ContentHandler</label>
+        <link refid="classzorba_1_1SAX2__ContentHandler"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" line="33" bodyfile="/home/wcandillon/deadlinks/include/zorba/default_content_handler.h" bodystart="31" bodyend="101"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1DefaultContentHandler_1a3dfb9b29f0a88c49c812d55190109d6f" prot="public" virt="non-virtual"><scope>zorba::DefaultContentHandler</scope><name>attributeDecl</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a0d80ee86017c6e547d30417d3ae7effb" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>characters</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a1bb00387351b3a60bef9e1eb27ce5c7a" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>comment</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a9e402f031e907be9d4316fc6d8c41ce2" prot="public" virt="non-virtual"><scope>zorba::DefaultContentHandler</scope><name>elementDecl</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a234b83a8f8fa6e1457770a87494528dc" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>endCDATA</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1aad417871c959e4a46d0589cc298b3b90" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>endDocument</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a3957643108e6de969f1004357f2f264c" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>endDTD</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1aa19d8d9cdb8e41fbbe38159cc4aa06a9" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>endElement</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a7b729eb742bbb516cdaaf3294f949873" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>endEntity</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1afbd5dbbfe0409b00f2f45d2825f31971" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>endPrefixMapping</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a24815a2d041faa88ae08c8602440e10c" prot="public" virt="non-virtual"><scope>zorba::DefaultContentHandler</scope><name>externalEntityDecl</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a32bddda4463615eff23349921067ade8" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>ignorableWhitespace</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a25b70a70840adc204ddcba5838dad437" prot="public" virt="non-virtual"><scope>zorba::DefaultContentHandler</scope><name>internalEntityDecl</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a9789b8d42180ff3948fab6cb53136ab8" prot="public" virt="non-virtual"><scope>zorba::DefaultContentHandler</scope><name>notationDecl</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1afd0fba3f6329509e502acd577a54e284" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>processingInstruction</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1acfd3bd81d97377da035e2899e78a5927" prot="public" virt="non-virtual"><scope>zorba::DefaultContentHandler</scope><name>resetDocType</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a9039f1348e98af2f5dda5e2621dd7ec9" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>skippedEntity</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1ab60b7aa77a0993712c289ecd8c303cd8" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>startCDATA</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a8bf89a21d318fc00b9fd191c79f53c76" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>startDocument</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a7ab9fd8a7ab29cba170f280d35e0478c" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>startDTD</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a7fe7a5072045027193f69a55f570b776" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>startElement</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1af093434522c72dbd22ef88ec0c246db5" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>startEntity</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1aebe4771622ed72548e7210bff16aa94e" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>startPrefixMapping</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1a13cc8ca7825c284fb728d68f07ad4a65" prot="public" virt="non-virtual"><scope>zorba::DefaultContentHandler</scope><name>unparsedEntityDecl</name></member>
+      <member refid="classzorba_1_1DefaultContentHandler_1aa8b9d065e91cf9db357903ec755d4ac9" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>~DefaultContentHandler</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1a2dee88a46947ccba8ad8329ed66ccec7" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>~SAX2_ContentHandler</name></member>
+      <member refid="classzorba_1_1SAX2__LexicalHandler_1aa9cefbab72588e9b89e40edb9b64bb72" prot="public" virt="virtual"><scope>zorba::DefaultContentHandler</scope><name>~SAX2_LexicalHandler</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

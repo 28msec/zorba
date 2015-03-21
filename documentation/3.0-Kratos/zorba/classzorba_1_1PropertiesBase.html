@@ -1,0 +1,49 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::PropertiesBase</h1><p class="include">
+            #include &lt;zorba/properties_base.h&gt;
+        </p>
+    
+    <div class="section"><h2>Protected Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">std::vector&lt; std::string &gt;</p></td><td><p class="signature"><a href="#a6cb66e65447301c623f9c83bf0566856">thePositionalArgs</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a6bf8e8956a475f3aa84fd4808a741652">check_args</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ab0aaa229e8c48c75d8781e8aa470e530">copy_args</a>(const char **argv)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">const char **</p></td><td><p class="signature"><a href="#a8b1a5531d8a5bf517ae339c542b429e6">get_all_options</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">const std::vector&lt; std::string &gt; &amp;</p></td><td><p class="signature"><a href="#a5bd99b3a70afc9387ab8d0565b219d9c">getPositionalArgs</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ad0653a0833e53050e6cda4cf7fa2cf2f">init_val</a>(const char *str, T &amp;val, unsigned delta=0)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC void</p></td><td><p class="signature"><a href="#a68de2a8036862d199e2cd54b8cb1c9a6">init_val</a>(const char *str, std::string &amp;val, unsigned delta)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC void</p></td><td><p class="signature"><a href="#a82a3e746683b8cb2f12750a039a6a951">init_val</a>(const char *str, std::vector&lt; std::string &gt; &amp;val, unsigned delta)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a3f6067c8d2f70b43f3bcb8348cd433dd">load_all</a>(const char *cfgFilename, const std::string &amp;env_pfx, int argc, const char **argv)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a18914d01209e07febc2073447271749c">load_argv</a>(int argc, const char **argv)=0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a047c7b6368948c308a2e1576961874cd">load_env</a>(const std::string &amp;env_pfx)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#ade47d2c9b872e2371c57d4ea2ec83836">load_env</a>(const std::string &amp;env_pfx, const char **options)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#ab4046a503ea2c13816cbc3b6792b4c93">load_file</a>(const char *fname)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a0ecfa1abc417c3c3d0b71283b650a7c4">~PropertiesBase</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Protected Attributes</h2><div class="detailed"><div id="a6cb66e65447301c623f9c83bf0566856" class="sect1"><div><h3>thePositionalArgs</h3></div><div class="signature-box">std::vector&lt; std::string &gt;<span> </span>thePositionalArgs</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a6bf8e8956a475f3aa84fd4808a741652" class="sect1"><div><h3>check_args</h3></div><div class="signature-box">std::string<span> </span>check_args()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab0aaa229e8c48c75d8781e8aa470e530" class="sect1"><div><h3>copy_args</h3></div><div class="signature-box">void<span> </span>copy_args(const char **argv)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a8b1a5531d8a5bf517ae339c542b429e6" class="sect1"><div><h3>get_all_options</h3></div><div class="signature-box">const char **<span> </span>get_all_options() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a5bd99b3a70afc9387ab8d0565b219d9c" class="sect1"><div><h3>getPositionalArgs</h3></div><div class="signature-box">const std::vector&lt; std::string &gt; &amp;<span> </span>getPositionalArgs() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ad0653a0833e53050e6cda4cf7fa2cf2f" class="sect1"><div><h3>init_val</h3></div><div class="signature-box">void<span> </span>init_val(const char *str, T &amp;val, unsigned delta=0)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a68de2a8036862d199e2cd54b8cb1c9a6" class="sect1"><div><h3>init_val</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC void<span> </span>init_val(const char *str, std::string &amp;val, unsigned delta)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a82a3e746683b8cb2f12750a039a6a951" class="sect1"><div><h3>init_val</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC void<span> </span>init_val(const char *str, std::vector&lt; std::string &gt; &amp;val, unsigned delta)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a3f6067c8d2f70b43f3bcb8348cd433dd" class="sect1"><div><h3>load_all</h3></div><div class="signature-box">std::string<span> </span>load_all(const char *cfgFilename, const std::string &amp;env_pfx, int argc, const char **argv)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a18914d01209e07febc2073447271749c" class="sect1"><div><h3>load_argv</h3></div><div class="signature-box">std::string<span> </span>load_argv(int argc, const char **argv)=0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a047c7b6368948c308a2e1576961874cd" class="sect1"><div><h3>load_env</h3></div><div class="signature-box">std::string<span> </span>load_env(const std::string &amp;env_pfx)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ade47d2c9b872e2371c57d4ea2ec83836" class="sect1"><div><h3>load_env</h3></div><div class="signature-box">std::string<span> </span>load_env(const std::string &amp;env_pfx, const char **options)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab4046a503ea2c13816cbc3b6792b4c93" class="sect1"><div><h3>load_file</h3></div><div class="signature-box">std::string<span> </span>load_file(const char *fname)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a0ecfa1abc417c3c3d0b71283b650a7c4" class="sect1"><div><h3>~PropertiesBase</h3></div><div class="signature-box"><span> </span>~PropertiesBase()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

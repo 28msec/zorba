@@ -1,0 +1,169 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://zorba.io/modules/xml</xqdoc:uri><xqdoc:name>xml</xqdoc:name><xqdoc:comment><xqdoc:description> <p>
+ This module provides functions for reading XML files from string inputs.
+ It allows reading of well-formed XML documents as well as well-formed
+ external parsed entities, described by
+ <a href="http://www.w3.org/TR/xml/#wf-entities">XML 1.0 Well-Formed
+ Parsed Entities</a>. The functions can also perform Schema and DTD
+ validation of the input documents.
+ </p>
+ <p>The following example parses a sequence of XML elements and returns
+ them in a streaming fashion - each at a time:</p>
+ <pre class="ace-static" ace-mode="xquery">
+ import module namespace x = "http://zorba.io/modules/xml";
+ import schema namespace opt = "http://zorba.io/modules/xml-options";
+ x:parse(
+   "&lt;from1&gt;Jani&lt;/from1&gt;&lt;from2&gt;Jani&lt;/from2&gt;&lt;from3&gt;Jani&lt;/from3&gt;",
+   &lt;opt:options&gt;
+     &lt;opt:parse-external-parsed-entity/&gt;
+   &lt;/opt:options&gt;
+ )
+ </pre>
+ <p>Another useful option allows to skip an arbitrary number of levels
+ before returning a sequence of nodes as shown in the following example:</p>
+ <pre class="ace-static" ace-mode="xquery">
+ import module namespace x = "http://zorba.io/modules/xml";
+ import schema namespace opt = "http://zorba.io/modules/xml-options";
+ x:parse(
+   "&lt;root&gt;
+     &lt;from1&gt;Jani1&lt;/from1&gt;
+     &lt;from2&gt;Jani2&lt;/from2&gt;
+     &lt;from3&gt;Jani3&lt;/from3&gt;
+   &lt;/root&gt;",
+   &lt;opt:options&gt;
+     &lt;opt:parse-external-parsed-entity opt:skip-root-nodes="1"/&gt;
+   &lt;/opt:options&gt;
+ )
+ </pre>
+</xqdoc:description><xqdoc:author>Nicolae Brinza, Juan Zacarias</xqdoc:author><xqdoc:see><a href="http://www.w3.org/TR/xml/#wf-entities">XML 1.0 Well-Formed Parsed Entities</a></xqdoc:see><xqdoc:see><a href="http://www.w3.org/TR/xpath-functions-30/#func-parse-xml"> fn:parse-xml() function in XPath and XQuery Functions and Operators 3.0</a></xqdoc:see><xqdoc:see><a href="http://xmlsoft.org/html/libxml-parser.html">LibXml2 parser</a></xqdoc:see><xqdoc:custom tag="project">Zorba/Data Converters/XML</xqdoc:custom><xqdoc:custom tag="language">xquery</xqdoc:custom><xqdoc:custom tag="version">3.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="err" uri="http://www.w3.org/xqt-errors" isSchema="false"/><xqdoc:namespace prefix="opt" uri="http://zorba.io/modules/xml-options" isSchema="true"/><xqdoc:namespace prefix="schema" uri="http://zorba.io/modules/schema" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/><xqdoc:namespace prefix="x" uri="http://zorba.io/modules/xml" isSchema="false"/><xqdoc:namespace prefix="zerr" uri="http://zorba.io/errors" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports><xqdoc:import type="schema"><xqdoc:uri>http://zorba.io/modules/xml-options</xqdoc:uri></xqdoc:import><xqdoc:import type="library"><xqdoc:uri>http://zorba.io/modules/schema</xqdoc:uri></xqdoc:import></xqdoc:imports><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> <p>A function to parse XML files and fragments (i.e.
+ <a href="http://www.w3.org/TR/xml/#wf-entities">external general parsed
+ entities</a>).</p>
+ <p>The functions takes two arguments: the first one is the
+ string to be parsed and the second argument is an &lt;options/&gt; element that
+ passes a list of options to the parsing function. They are described below.
+ The options element must conform to the xml-options:options element type
+ from the xml-options.xsd schema. Some of these
+ will be passed to the underlying library (LibXml2) and further documentation
+ for them can be found at <a href="http://xmlsoft.org/html/libxml-parser.html">
+ LibXml2 parser</a>.</p>
+ The list of available options:
+ <ul>
+ <li>
+ &lt;base-uri/&gt; - the element must have a "value" attribute, which will provide
+ the baseURI that will be used as the baseURI for every node returned by this
+ function.
+ </li>
+ <li>
+ &lt;no-error/&gt; - if present, the option will disable fatal error processing. Any
+ failure to parse or validate the input in the requested manner will result
+ in the function returning an empty sequence and no error will raised.
+ </li>
+ <li>
+ &lt;schema-validate/&gt; - if present, it will request that the input string be Schema
+ validated. The element accepts an attribute named "mode" which can have two
+ values: "strict and "lax". Enabling the option will produce a result that is
+ equivalent to processing the input with the option disabled, and then copying
+ the result using the XQuery "validate strict|lax" expression. This option can not
+ be used together with either the &lt;DTD-validate/&gt; or the &lt;parse-external-parsed-entity/&gt;
+ option. Doing so will raise a zerr:ZXQD0003 error.
+ </li>
+ <li>
+ &lt;DTD-validate/&gt; - the option will enable the DTD-based validation. If this
+ option is enabled and the input references a DTD, then the input must be a
+ well-formed and DTD-valid XML document. The &lt;DTD-load/&gt; option must be used for
+ external DTD files to be loaded. If the option is enabled and the input does
+ not reference a DTD then the option is ignored. If the option is disabled, the
+ input is not required to reference a DTD and if it does reference a DTD then
+ the DTD is ignored for validation purposes. This option can not
+ be used together with either the &lt;schema-validate/&gt; or the &lt;parse-external-parsed-entity&gt;
+ option. Doing so will raise a zerr:ZXQD0003 error.
+ </li>
+ <li>
+ &lt;DTD-load/&gt; - if present, it will enable loading of external DTD files.
+ </li>
+ <li>
+ &lt;default-DTD-attributes/&gt; - if present, it will enable the default DTD attributes.
+ </li>
+ <li>
+ &lt;parse-external-parsed-entity/&gt; - if present, it will enable the processing of XML
+ external entities. If the option
+ is enabled, the input must conform to the syntax extParsedEnt (production
+ [78] in XML 1.0, see <a href="http://www.w3.org/TR/xml/#wf-entities">
+ Well-Formed Parsed Entities</a>). In addition, by default a DOCTYPE declaration is allowed,
+ as described by the [28] doctypedecl production, see <a href="http://www.w3.org/TR/xml/#NT-doctypedecl">
+ Document Type Definition</a>. A parameter is available to forbid the appearance of the DOCTYPE.
+ The result of the function call is a list
+ of nodes corresponding to the top-level components of the content of the
+ external entity: that is, elements, processing instructions, comments, and
+ text nodes. CDATA sections and character references are expanded, and
+ adjacent characters are merged so the result contains no adjacent text
+ nodes. If the option is disabled, the input must be a well-formed XML
+ document conforming to the Document production
+ (<a href="http://www.w3.org/TR/xml/#sec-well-formed">production [1] in XML 1.0</a>).
+ This option can not be used together with either the &lt;schema-validate/&gt; or the &lt;DTD-validate/&gt;
+ option. Doing so will raise a zerr:ZXQD0003 error.
+ The &lt;parse-external-parsed-entity/&gt; option has three parameters, given by attributes. The first
+ attribute is "skip-root-nodes" and it can have a non-negative value. Specifying the paramter
+ tells the parser to skip the given number of root nodes and return only their children. E.g.
+ skip-root-nodes="1" is equivalent to parse-xml($xml-string)/node()/node() . skip-root-nodes="2" is equivalent
+ to parse-xml($xml-string)/node()/node()/node() , etc. The second attribute is "skip-top-level-text-nodes" with a
+ boolean value. Specifying "true" will tell the parser to skip top level text nodes, returning
+ only the top level elements, comments, PIs, etc. This parameter works in combination with
+ the "skip-root-nodes" paramter, thus top level text nodes are skipped after "skip-root-nodes" has
+ been applied. The third paramter is "error-on-doctype" and will generate an error if a DOCTYPE
+ declaration appears in the input, which by default is allowed.
+ </li>
+ <li>
+ &lt;substitute-entities/&gt; - if present, it will enable the XML entities substitutions.
+ </li>
+ <li>
+ &lt;remove-redundant-ns/&gt; - if present, the parser will remove redundant namespaces declarations.
+ </li>
+ <li>
+ &lt;no-CDATA/&gt; - if present, the parser will merge CDATA nodes as text nodes.
+ </li>
+ <li>
+ &lt;xinclude-substitutions/&gt; - if present, it will enable the XInclude substitutions.
+ </li>
+ <li>
+ &lt;no-xinclude-nodes/&gt; - if present, the parser will not generate XInclude START/END nodes.
+ </li>
+ </ul>
+ <p>
+ An example that sets the base-uri of the parsed external entities:
+ </p>
+ <pre class="ace-static" ace-mode="xquery">
+   import module namespace x = "http://zorba.io/modules/xml";
+   import schema namespace opt = "http://zorba.io/modules/xml-options";
+   x:parse("&lt;from1&gt;Jani&lt;/from1&gt;&lt;from2&gt;Jani&lt;/from2&gt;&lt;from3&gt;Jani&lt;/from3&gt;",
+     &lt;opt:options&gt;
+       &lt;opt:base-uri opt:value="urn:test"/&gt;
+       &lt;opt:parse-external-parsed-entity/&gt;
+     &lt;/opt:options&gt;
+   )
+ </pre>
+</xqdoc:description><xqdoc:param>$xml-string The string that holds the XML to be parsed. If empty, the function will return an empty sequence</xqdoc:param><xqdoc:param>$options The options for the parsing</xqdoc:param><xqdoc:return>The parsed XML as a document node or a list of nodes, or an empty sequence.</xqdoc:return><xqdoc:error>zerr:ZXQD0003 The error will be raised if the options to the function are inconsistent.</xqdoc:error><xqdoc:error>err:FODC0006 The error will be raised if the input string is not a valid XML document or fragment (external general parsed entity) or if DTD validation was enabled and the document has not passed it.</xqdoc:error><xqdoc:error>err:XQDY0027 The error will be raised if schema validation was enabled and the input document has not passed it or if the parsing options are not conformant to the xml-options.xsd schema.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-03.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-01.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-07.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>x:parse</xqdoc:name><xqdoc:signature>declare function x:parse($xml-string as xs:string?, $options as element(opt:options)?) as node()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>xml-string</xqdoc:name><xqdoc:type occurrence="?">xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>options</xqdoc:name><xqdoc:type occurrence="?">element(opt:options)</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">node()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>A function to canonicalize the given XML string, that is, transform
+ it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.</p>
+ <p>Note: This function is not streamable. If a streamable string is used
+ as input for the function it will be materialized.</p>
+ <p>Note: This function sets the
+ <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">XML_PARSE_NOERROR</a>
+ option when parsing the XML input.</p>
+</xqdoc:description><xqdoc:param>$xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.</xqdoc:param><xqdoc:return>the canonicalized XML string.</xqdoc:return><xqdoc:error>err:CANO0001 invalid input.</xqdoc:error></xqdoc:comment><xqdoc:name>x:canonicalize</xqdoc:name><xqdoc:signature>declare function x:canonicalize($xml-string as xs:string) as xs:string</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>xml-string</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:string</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://zorba.io/modules/xml</xqdoc:uri><xqdoc:name>canonicalize-impl</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> <p>A function to canonicalize the given XML string, that is, transform
+ it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.</p>
+ <p>This version of the function allows specifying certain options to be
+ used when initially parsing the XML string. These are of the same form
+ as the options to x:parse#2(), although the following options are
+ currently ignored for this function:
+ <ul>
+ <li>&lt;opt:no-error/&gt;</li>
+ <li>&lt;opt:base-uri/&gt;</li>
+ <li>&lt;opt:schema-validate/&gt;</li>
+ <li>&lt;opt:parse-external-parsed-entity/&gt;</li>
+ </ul>
+ </p>
+ <p>Note: This function is not streamable, if a streamable string is used
+ as input for the function it will be materialized.</p>
+ <p>Note: This function sets the
+ <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">XML_PARSE_NOERROR</a>
+ option when parsing the XML input.</p>
+</xqdoc:description><xqdoc:param>$xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.</xqdoc:param><xqdoc:param>$options an XML containg options for the canonicalize function.</xqdoc:param><xqdoc:return>the canonicalized XML string.</xqdoc:return><xqdoc:error>err:CANO0001 invalid input.</xqdoc:error></xqdoc:comment><xqdoc:name>x:canonicalize</xqdoc:name><xqdoc:signature>declare function x:canonicalize($xml-string as xs:string, $options as element(opt:options)) as xs:string</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>xml-string</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>options</xqdoc:name><xqdoc:type>element(opt:options)</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:string</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/schema</xqdoc:uri><xqdoc:name>is-validated</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://zorba.io/modules/xml</xqdoc:uri><xqdoc:name>canonicalize-impl</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:name>x:canonicalize-impl</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/></xqdoc:annotations><xqdoc:signature>declare %private function x:canonicalize-impl($xml-string as xs:string, $options as element(*)) as xs:string external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>xml-string</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>options</xqdoc:name><xqdoc:type>element(*)</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:string</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

@@ -1,0 +1,214 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="ft__stemmer_8dox" kind="file">
+    <compoundname>ft_stemmer.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>ft_stemmer<sp/>Full<sp/>Text<sp/>Stemming</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">\section<sp/>ft_stemmer_intro<sp/>Introduction</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"></highlight></codeline>
+<codeline lineno="5"><highlight class="comment">The<sp/>Zorba<sp/>XQuery<sp/>engine<sp/>implements<sp/>the</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-full-text-10/&quot;&gt;XQuery<sp/>and<sp/>XPath<sp/>Full<sp/>Text<sp/>1.0&lt;/a&gt;</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">specification<sp/>that,<sp/>among<sp/>other<sp/>things,</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">adds<sp/>the<sp/>ability<sp/>to<sp/>use<sp/>stemming<sp/>for<sp/>text-matching</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">via<sp/>the<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-full-text-10/#ftstemoption&quot;&gt;stemming<sp/>option&lt;/a&gt;.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">For<sp/>example,<sp/>the<sp/>query:</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"></highlight></codeline>
+<codeline lineno="12"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="13"><highlight class="comment">let<sp/>$x<sp/>:=<sp/>&lt;msg&gt;Self<sp/>Improvement&lt;/msg&gt;</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">return<sp/>$x<sp/>contains<sp/>text<sp/>&quot;improve&quot;</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/>using<sp/>stemming</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"></highlight></codeline>
+<codeline lineno="18"><highlight class="comment">returns<sp/>\c<sp/>true<sp/>because<sp/>\c<sp/>$x<sp/>contains<sp/>&quot;Improvment&quot;</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">that<sp/>has<sp/>the<sp/>same<sp/>stem<sp/>as<sp/>&quot;improve&quot;.</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"></highlight></codeline>
+<codeline lineno="21"><highlight class="comment">The<sp/>initial<sp/>implementation<sp/>of<sp/>the<sp/>stemming<sp/>option<sp/>uses<sp/>the</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">&lt;a<sp/>href=&quot;http://snowball.tartarus.org/texts/stemmersoverview.html&quot;&gt;Snowball<sp/>stemmers&lt;/a&gt;</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">and<sp/>therefore<sp/>can<sp/>stem<sp/>words<sp/>in<sp/>the<sp/>following<sp/>languages:</highlight></codeline>
+<codeline lineno="24"><highlight class="comment">Danish,</highlight></codeline>
+<codeline lineno="25"><highlight class="comment">Dutch,</highlight></codeline>
+<codeline lineno="26"><highlight class="comment">English,</highlight></codeline>
+<codeline lineno="27"><highlight class="comment">Finnish,</highlight></codeline>
+<codeline lineno="28"><highlight class="comment">French,</highlight></codeline>
+<codeline lineno="29"><highlight class="comment">German,</highlight></codeline>
+<codeline lineno="30"><highlight class="comment">Hungarian,</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">Italian,</highlight></codeline>
+<codeline lineno="32"><highlight class="comment">Norwegian,</highlight></codeline>
+<codeline lineno="33"><highlight class="comment">Portuguese,</highlight></codeline>
+<codeline lineno="34"><highlight class="comment">Romanian,</highlight></codeline>
+<codeline lineno="35"><highlight class="comment">Russian,</highlight></codeline>
+<codeline lineno="36"><highlight class="comment">Spanish,</highlight></codeline>
+<codeline lineno="37"><highlight class="comment">Swedish,</highlight></codeline>
+<codeline lineno="38"><highlight class="comment">and</highlight></codeline>
+<codeline lineno="39"><highlight class="comment">Turkish.</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"></highlight></codeline>
+<codeline lineno="41"><highlight class="comment">\section<sp/>ft_stemmer_providing<sp/>Providing<sp/>Your<sp/>Own<sp/>Stemmer</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"></highlight></codeline>
+<codeline lineno="43"><highlight class="comment">Using<sp/>the<sp/>Zorba<sp/>C++<sp/>API,</highlight></codeline>
+<codeline lineno="44"><highlight class="comment">you<sp/>can<sp/>provide<sp/>your<sp/>own<sp/>stemmer</highlight></codeline>
+<codeline lineno="45"><highlight class="comment">by<sp/>deriving<sp/>from<sp/>two<sp/>classes:</highlight></codeline>
+<codeline lineno="46"><highlight class="comment">\c<sp/>Stemmer</highlight></codeline>
+<codeline lineno="47"><highlight class="comment">and</highlight></codeline>
+<codeline lineno="48"><highlight class="comment">\c<sp/>StemmerProvider.</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"></highlight></codeline>
+<codeline lineno="50"><highlight class="comment">\subsection<sp/>ft_class_stemmer<sp/>The<sp/>Stemmer<sp/>Class</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"></highlight></codeline>
+<codeline lineno="52"><highlight class="comment">The<sp/>\c<sp/>Stemmer<sp/>class<sp/>is:</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"></highlight></codeline>
+<codeline lineno="54"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="55"><highlight class="comment">class<sp/>Stemmer<sp/>{</highlight></codeline>
+<codeline lineno="56"><highlight class="comment">public:</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/>typedef<sp/>/*<sp/>implementation-defined<sp/>*/</highlight><highlight class="normal"><sp/>ptr;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Properties<sp/>{</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*uri;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>properties(<sp/>Properties<sp/>*result<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>stem(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;word,<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang,<sp/>String<sp/>*result<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>~Stemmer();</highlight></codeline>
+<codeline lineno="68"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="69"><highlight class="normal">\endcode</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal">For<sp/>details<sp/>about<sp/>the<sp/>\c<sp/>ptr<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref>,</highlight></codeline>
+<codeline lineno="72"><highlight class="normal">the<sp/>\c<sp/>destroy()<sp/>function,</highlight></codeline>
+<codeline lineno="73"><highlight class="normal">and<sp/>why<sp/>the<sp/>destructor<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref><sp/>\c<sp/>protected,</highlight></codeline>
+<codeline lineno="74"><highlight class="normal">see<sp/>the<sp/>\ref<sp/>memory_management<sp/>document.</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal">To<sp/>implement<sp/>the<sp/>\c<sp/>Stemmer,</highlight></codeline>
+<codeline lineno="77"><highlight class="normal">you<sp/>need<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>implement<sp/>the<sp/>\c<sp/>stem()<sp/>function<sp/>where:</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal">&lt;table&gt;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/>&lt;<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a3acbcdcccc931818fa0ec6aac2698242" kindref="member" tooltip="Turkish.">tr</ref>&gt;</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;td&gt;\c<sp/>word&lt;/td&gt;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;td&gt;The<sp/>word<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af560bc79bfed1a18fa5f40193d92ee8d" kindref="member" tooltip="Byelorussian.">be</ref><sp/>stemmed.&lt;/td&gt;</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/>&lt;/<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a3acbcdcccc931818fa0ec6aac2698242" kindref="member" tooltip="Turkish.">tr</ref>&gt;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/>&lt;<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a3acbcdcccc931818fa0ec6aac2698242" kindref="member" tooltip="Turkish.">tr</ref>&gt;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;td&gt;\c<sp/>lang&lt;/td&gt;</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;td&gt;The<sp/>language<sp/>of<sp/>the<sp/>word.&lt;/td&gt;</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/>&lt;/<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a3acbcdcccc931818fa0ec6aac2698242" kindref="member" tooltip="Turkish.">tr</ref>&gt;</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/>&lt;<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a3acbcdcccc931818fa0ec6aac2698242" kindref="member" tooltip="Turkish.">tr</ref>&gt;</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;td&gt;\c<sp/>result&lt;/td&gt;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;td&gt;The<sp/>stemmed<sp/>word<sp/>goes<sp/>here.&lt;/td&gt;</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/>&lt;/<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a3acbcdcccc931818fa0ec6aac2698242" kindref="member" tooltip="Turkish.">tr</ref>&gt;</highlight></codeline>
+<codeline lineno="92"><highlight class="normal">&lt;/table&gt;</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal">Note<sp/>that<sp/>\c<sp/>result<sp/>should<sp/>always<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af560bc79bfed1a18fa5f40193d92ee8d" kindref="member" tooltip="Byelorussian.">be</ref><sp/>set<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>something.</highlight></codeline>
+<codeline lineno="95"><highlight class="normal">If<sp/>your<sp/>stemmer<sp/>doesn&apos;t<sp/>know<sp/>how<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>stem<sp/>the<sp/>given<sp/>word,</highlight></codeline>
+<codeline lineno="96"><highlight class="normal">you<sp/>should<sp/>set<sp/>\c<sp/>result<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>\c<sp/>word.</highlight></codeline>
+<codeline lineno="97"><highlight class="normal">You<sp/>also<sp/>need<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>implement<sp/>the<sp/>\c<sp/>properties()<sp/>function</highlight></codeline>
+<codeline lineno="98"><highlight class="normal">and<sp/>set<sp/>the<sp/>identifying<sp/>URI<sp/>of<sp/>your<sp/>stemmer.</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal">A<sp/>very<sp/>simple<sp/>stemmer</highlight></codeline>
+<codeline lineno="101"><highlight class="normal">that<sp/>stems<sp/>the<sp/>word<sp/>&quot;foobar&quot;<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>&quot;foo&quot;</highlight></codeline>
+<codeline lineno="102"><highlight class="normal">can<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af560bc79bfed1a18fa5f40193d92ee8d" kindref="member" tooltip="Byelorussian.">be</ref><sp/>implemented<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref>:</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight></codeline>
+<codeline lineno="104"><highlight class="normal">\code</highlight></codeline>
+<codeline lineno="105"><highlight class="normal">class<sp/>MyStemmer<sp/>:<sp/>public<sp/>Stemmer<sp/>{</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>properties(<sp/>Properties<sp/>*result<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>stem(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;word,<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang,<sp/>String<sp/>*result<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/>MyStemmer();</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MyStemmerProvider;<sp/></highlight><highlight class="comment">//<sp/>only<sp/>it<sp/>can<sp/>create<sp/>instances</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyStemmer::destroy()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Do<sp/>nothing<sp/>since<sp/>we<sp/>statically<sp/>allocate<sp/>a<sp/>singleton<sp/>instance<sp/>of<sp/>our<sp/>stemmer.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyStemmer::properties(<sp/>Properties<sp/>*props<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/>props-&gt;uri<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://my.example.com/zorba/full-text/stemmer&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="121"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"></highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyStemmer::stem(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;word,<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang,<sp/>String<sp/>*result<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<sp/>word<sp/>==<sp/></highlight><highlight class="stringliteral">&quot;foobar&quot;</highlight><highlight class="normal"><sp/>)</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/>*result<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/>*result<sp/>=<sp/>word;<sp/></highlight><highlight class="comment">//<sp/>Don&apos;t<sp/>know<sp/>how<sp/>to<sp/>stem<sp/>word:<sp/>set<sp/>result<sp/>to<sp/>word<sp/>as-is.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="129"><highlight class="normal">\endcode</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight></codeline>
+<codeline lineno="131"><highlight class="normal">A<sp/>real<sp/>stemmer<sp/>would<sp/>either<sp/>use<sp/>a<sp/>stemming<sp/>algorithm</highlight></codeline>
+<codeline lineno="132"><highlight class="normal">or<sp/>a<sp/>dictionary<sp/>look-up</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>stem<sp/>many<sp/>words,</highlight></codeline>
+<codeline lineno="134"><highlight class="normal">of<sp/>course.</highlight></codeline>
+<codeline lineno="135"><highlight class="normal">Although<sp/>not<sp/>used<sp/>in<sp/></highlight><highlight class="keyword">this</highlight><highlight class="normal"><sp/>simple<sp/>example,</highlight></codeline>
+<codeline lineno="136"><highlight class="normal">\c<sp/>lang<sp/>can<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af560bc79bfed1a18fa5f40193d92ee8d" kindref="member" tooltip="Byelorussian.">be</ref><sp/>used<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>allow<sp/>a<sp/>single<sp/>stemmer<sp/>instance</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>stem<sp/>words<sp/>in<sp/>more<sp/>than<sp/>one<sp/>language.</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal">\subsection<sp/>ft_class_stemmer_provider<sp/>The<sp/>StemmerProvider<sp/>Class</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"></highlight></codeline>
+<codeline lineno="141"><highlight class="normal">In<sp/>addition<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>a<sp/>\c<sp/>Stemmer,</highlight></codeline>
+<codeline lineno="142"><highlight class="normal">you<sp/>must<sp/>also<sp/>implement<sp/>a<sp/>\c<sp/>StemmerProvider</highlight></codeline>
+<codeline lineno="143"><highlight class="normal">that,<sp/>given<sp/>a<sp/>language,<sp/>provides<sp/>a<sp/>\c<sp/>Stemmer<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>that<sp/>language:</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal">\code</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StemmerProvider<sp/>{</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>~StemmerProvider();</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>getStemmer(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang,<sp/>Stemmer::ptr<sp/>*s<sp/>=<sp/>0<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="150"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="151"><highlight class="normal">\endcode</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal">The<sp/>\c<sp/>getStemmer()<sp/>function<sp/>should<sp/>return<sp/>\c<sp/>true</highlight></codeline>
+<codeline lineno="154"><highlight class="normal">only<sp/>if<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a5bcb20f9f7d5ec85c6415fee76c6ef5f" kindref="member" tooltip="Italian.">it</ref><sp/>can<sp/>provide<sp/>a<sp/>\c<sp/>Stemmer</highlight></codeline>
+<codeline lineno="155"><highlight class="normal">for<sp/>the<sp/>given<sp/>language;<sp/>\c<sp/>false<sp/>otherwise.</highlight></codeline>
+<codeline lineno="156"><highlight class="normal">If<sp/>the<sp/>\c<sp/>Stemmer::ptr<sp/>argument<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref><sp/>\c<sp/>null,</highlight></codeline>
+<codeline lineno="157"><highlight class="normal">the<sp/>caller<sp/>wants<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>check<sp/>only<sp/>whether<sp/>the<sp/>provider</highlight></codeline>
+<codeline lineno="158"><highlight class="normal">can<sp/>provide<sp/>a<sp/>stemmer<sp/>for<sp/>the<sp/>given<sp/>language</highlight></codeline>
+<codeline lineno="159"><highlight class="normal">and<sp/>doesn&apos;t<sp/>want<sp/>a<sp/>\c<sp/>Stemmer<sp/>instance<sp/>created<sp/>or<sp/>returned.</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"><highlight class="normal">A<sp/>simple<sp/>\c<sp/>StemmerProvider<sp/>for<sp/>our<sp/>simple<sp/>stemmer<sp/>can<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af560bc79bfed1a18fa5f40193d92ee8d" kindref="member" tooltip="Byelorussian.">be</ref><sp/>implemented<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref>:</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal">\code</highlight></codeline>
+<codeline lineno="164"><highlight class="normal">class<sp/>MyStemmerProvider<sp/>:<sp/>public<sp/>StemmerProvider<sp/>{</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>getStemmer(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang<sp/>Stemmer::ptr<sp/>*s<sp/>=<sp/>0<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="167"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"><highlight class="normal">Stemmer::ptr<sp/>MyStemmerProvider::getStemmer(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>MyStemmer<sp/>stemmer;</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/>Stemmer::ptr<sp/>result;</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal"><sp/>(<sp/>lang<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11f5307e1dac2a5918c6cdf5097e6961" kindref="member" tooltip="English.">iso639_1::en</ref>:</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87aee031990e1e595beab62fb5aee7b23d8" kindref="member">iso639_1::unknown</ref>:<sp/></highlight><highlight class="comment">//<sp/>Handle<sp/>&quot;unknown&quot;<sp/>language<sp/>since,<sp/>in<sp/>many<sp/>cases,<sp/>the<sp/>language<sp/>is<sp/>not<sp/>known.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>result.reset(<sp/>&amp;stemmer<sp/>);</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">:<sp/></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>We<sp/>have<sp/>no<sp/>stemmer<sp/>for<sp/>the<sp/>given<sp/>language:<sp/>return<sp/>false.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Zorba<sp/>will<sp/>then<sp/>use<sp/>the<sp/>built-in<sp/>stemmer<sp/>for<sp/>the<sp/>given<sp/>language.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="184"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="185"><highlight class="normal">\endcode</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"></highlight></codeline>
+<codeline lineno="187"><highlight class="normal">\subsection<sp/>ft_stemmer_enable<sp/>Using<sp/>Your<sp/>Stemmer</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"></highlight></codeline>
+<codeline lineno="189"><highlight class="normal">To<sp/>enable<sp/>your<sp/>stemmer<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af560bc79bfed1a18fa5f40193d92ee8d" kindref="member" tooltip="Byelorussian.">be</ref><sp/>used,</highlight></codeline>
+<codeline lineno="190"><highlight class="normal">you<sp/>need<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/></highlight><highlight class="keyword">register</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a5bcb20f9f7d5ec85c6415fee76c6ef5f" kindref="member" tooltip="Italian.">it</ref><sp/>with<sp/>the<sp/>\c<sp/>XmlDataManager:</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"></highlight></codeline>
+<codeline lineno="192"><highlight class="normal">\code</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>store<sp/>=<sp/>StoreManager::getStore();</highlight></codeline>
+<codeline lineno="194"><highlight class="normal">Zorba<sp/>*</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>zorba<sp/>=<sp/>Zorba::getInstance(<sp/>store<sp/>);</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"></highlight></codeline>
+<codeline lineno="196"><highlight class="normal">MyStemmerProvider<sp/>provider;</highlight></codeline>
+<codeline lineno="197"><highlight class="normal">zorba-&gt;getXmlDataManager()-&gt;registerStemmerProvider(<sp/>&amp;provider<sp/>);</highlight></codeline>
+<codeline lineno="198"><highlight class="normal">\endcode</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"></highlight></codeline>
+<codeline lineno="200"><highlight class="normal">*/</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/ft_stemmer.dox"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Stemmer" kind="class" prot="public">
+    <compoundname>zorba::Stemmer</compoundname>
+    <includes refid="stemmer_8h" local="no">zorba/stemmer.h</includes>
+    <innerclass refid="structzorba_1_1Stemmer_1_1Properties" prot="public">zorba::Stemmer::Properties</innerclass>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1Stemmer_1a6f8ead76cb0ca8d0426ce268f411be4d" prot="public" static="no">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref>&lt; <ref refid="classzorba_1_1Stemmer" kindref="compound">Stemmer</ref>, <ref refid="structzorba_1_1internal_1_1ztd_1_1destroy__delete" kindref="compound">internal::ztd::destroy_delete</ref>&lt; <ref refid="classzorba_1_1Stemmer" kindref="compound">Stemmer</ref> &gt; &gt;</type>
+        <definition>typedef std::unique_ptr&lt;Stemmer,internal::ztd::destroy_delete&lt;Stemmer&gt; &gt; zorba::Stemmer::ptr</definition>
+        <argsstring></argsstring>
+        <name>ptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="41" bodyfile="/home/wcandillon/deadlinks/include/zorba/stemmer.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Stemmer_1abdc37cad60e4286e13d71dd441645b55" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Stemmer::destroy</definition>
+        <argsstring>() const =0</argsstring>
+        <name>destroy</name>
+        <briefdescription>
+<para>Destroys this Stemmer. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is called by <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> when the Stemmer is no longer needed.</para><para>If your <ref refid="classzorba_1_1StemmerProvider" kindref="compound">StemmerProvider</ref> dynamically allocates Stemmer objects, then the implementation can simply be (and usually is) <computeroutput>delete this</computeroutput>.</para><para>If your <ref refid="classzorba_1_1StemmerProvider" kindref="compound">StemmerProvider</ref> returns a pointer to a static Stemmer object, then the implementation should do nothing. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="53"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Stemmer_1ad13ff3076a90064ae37f099985b64b61" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Stemmer::properties</definition>
+        <argsstring>(Properties *result) const =0</argsstring>
+        <name>properties</name>
+        <param>
+          <type><ref refid="structzorba_1_1Stemmer_1_1Properties" kindref="compound">Properties</ref> *</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>Gets the <ref refid="structzorba_1_1Stemmer_1_1Properties" kindref="compound">Properties</ref> of this Stemmer. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="structzorba_1_1Stemmer_1_1Properties" kindref="compound">Properties</ref> to populate. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="70"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Stemmer_1ac3d58749ee275a80ab2b36ba8528e0f9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Stemmer::stem</definition>
+        <argsstring>(String const &amp;word, locale::iso639_1::type lang, String *result) const =0</argsstring>
+        <name>stem</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>word</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref></type>
+          <declname>lang</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> *</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>Stems the given word. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>word</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The word to stem. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The language of the word. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stemmed word (or the original word if either it and its stem are the same word or the stemmer doesn&apos;t know how to stem it). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="81"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1Stemmer_1a03fdf2c32637ad2855cc6c78fb0cecbd" prot="protected" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::Stemmer::~Stemmer</definition>
+        <argsstring>()</argsstring>
+        <name>~Stemmer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="83"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A Stemmer is used to obtain the &quot;stem&quot; (root) word of of some word. </para>    </briefdescription>
+    <detaileddescription>
+<para>For example the stem of &quot;flavoring&quot; is &quot;flavor&quot;. A Stemmer is used by the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> Full Text feature. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/stemmer.h" bodystart="39" bodyend="84"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1Stemmer_1abdc37cad60e4286e13d71dd441645b55" prot="public" virt="pure-virtual"><scope>zorba::Stemmer</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1Stemmer_1ad13ff3076a90064ae37f099985b64b61" prot="public" virt="pure-virtual"><scope>zorba::Stemmer</scope><name>properties</name></member>
+      <member refid="classzorba_1_1Stemmer_1a6f8ead76cb0ca8d0426ce268f411be4d" prot="public" virt="non-virtual"><scope>zorba::Stemmer</scope><name>ptr</name></member>
+      <member refid="classzorba_1_1Stemmer_1ac3d58749ee275a80ab2b36ba8528e0f9" prot="public" virt="pure-virtual"><scope>zorba::Stemmer</scope><name>stem</name></member>
+      <member refid="classzorba_1_1Stemmer_1a03fdf2c32637ad2855cc6c78fb0cecbd" prot="protected" virt="virtual"><scope>zorba::Stemmer</scope><name>~Stemmer</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="image_processing_tutorial" kind="page">
+    <compoundname>image_processing_tutorial</compoundname>
+    <title>Image Processing with Zorba</title>
+    <detaileddescription>
+<sect1 id="image_processing_tutorial_1image_proc">
+<title>Image Representation And Formats</title>
+<sect2 id="image_processing_tutorial_1images">
+<title>Images</title>
+<para>Images are passed to the functions of the imaging library as xs:base64Binary types and any function returning an image will return it as xs:base64Binary type. For example, images read by the Zorba file module are already returned as xs:base64Binary and are ready to be used. Also, images written to disk using the file module will be ordinary binary data if one passes <computeroutput>binary</computeroutput> as serialization option.</para></sect2>
+<sect2 id="image_processing_tutorial_1image_formats">
+<title>Image Formats</title>
+<para>Currently, the imaging library supports the following popular image formats: GIF, JPEG, TIFF, PNG and SVG. If any other format is needed, please contact us and we will see if it is possible to support the format.</para></sect2>
+<sect2 id="image_processing_tutorial_1functions">
+<title>Functions</title>
+<para>All functions provided by the image library are functional and will either return the right value or raise an error. The library additionally offers interfaces with schema types in the function signatures (<computeroutput>basicschema.xq</computeroutput>, <computeroutput>manipulationschema.xq</computeroutput>, <computeroutput>paintschema.xq</computeroutput>, <computeroutput>animationschema.xq</computeroutput>) which can be used to directly validate certain types (e.g. color strings).</para></sect2>
+<sect2 id="image_processing_tutorial_1colors">
+<title>Colors</title>
+<para>Colors are represented as strings in the same way they are used in html. A leading &apos;#&apos; character with 6 hexadecimal numbers following for red, green and blue values.</para><para>Examples are:<itemizedlist>
+<listitem><para>Black: #000000</para></listitem><listitem><para>Red: #FF00000</para></listitem><listitem><para>Green: #00FF00</para></listitem><listitem><para>Blue: #0000FF</para></listitem></itemizedlist>
+</para></sect2>
+<sect2 id="image_processing_tutorial_1modules">
+<title>Modules</title>
+<para>Zorba provides the following four modules for image processing:</para><para><itemizedlist>
+<listitem><para><ulink url="/modules/latest/www.zorba-xquery.com/modules/image/basic">http://www.zorba-xquery.com/modules/image/basic</ulink> which is concerned with accessing basic image attributes, creating new images and converting their format.</para></listitem><listitem><para><ulink url="/modules/latest/www.zorba-xquery.com/modules/image/manipulation">http://www.zorba-xquery.com/modules/image/manipulation</ulink> which is concerned with image manipulations like zooming, special effects etc.</para></listitem><listitem><para><ulink url="/modules/latest/www.zorba-xquery.com/modules/image/paint">http://www.zorba-xquery.com/modules/image/paint</ulink> which is concerned with drawing different geometrical shapes and text to images.</para></listitem><listitem><para><ulink url="/modules/latest/www.zorba-xquery.com/modules/image/animation">http://www.zorba-xquery.com/modules/image/animation</ulink> which is concerned with creating animated GIF images.</para></listitem></itemizedlist>
+</para><para>This tutorial contains a small example for each of the modules.</para></sect2>
+</sect1>
+<sect1 id="image_processing_tutorial_1basic_imaging_functions">
+<title>Basic Imaging Functions</title>
+<sect2 id="image_processing_tutorial_1creating_an_image">
+<title>Creating An Image</title>
+<para>In this example, we create a new image and return the width and type (image format) of the newly created image.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">basic<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/basic&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$new-image<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>xs:base64Binary<sp/>:=<sp/>basic:create(xs:unsignedInt(100),<sp/>xs:unsignedInt(100),<sp/></highlight><highlight class="stringliteral">&quot;GIF&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$width<sp/>:=<sp/>basic:width($new-image)</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$format<sp/>:=<sp/>basic:<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref>($new-image)</highlight></codeline>
+<codeline><highlight class="normal">return<sp/>($width,<sp/>$format)</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="image_processing_tutorial_1explanation">
+<title>Explanation</title>
+<para>In line 3 <bold>$new-image</bold> is assigned the result of the basic:create command, so <bold>$new-image</bold> contains the xs:base64Binary representation of a plain white GIF image.</para><para>In line 4 we use the basic:width command with new-image as argument to get the width of the image and in line 5 the basic:type function to get the format which are both passed back in line 6.</para></sect2>
+<sect2 id="image_processing_tutorial_1expected_output">
+<title>Expected Output</title>
+<para><programlisting><codeline><highlight class="normal">&lt;?xml<sp/>version=</highlight><highlight class="stringliteral">&quot;1.0&quot;</highlight><highlight class="normal"><sp/>encoding=</highlight><highlight class="stringliteral">&quot;UTF-8&quot;</highlight><highlight class="normal">?&gt;</highlight></codeline>
+<codeline><highlight class="normal">100<sp/>GIF</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="image_processing_tutorial_1accessing_efix_information">
+<title>Accessing Exif Information</title>
+<para>This example shows how to access the Exif information in JPEG images (also possible with TIFF images).</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">http<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://expath.org/ns/http-client&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">basic<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/basic&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">declare<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">h<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://expath.org/ns/http-client&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>Get<sp/>image<sp/>from<sp/>web<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$req<sp/>:=<sp/>&lt;h:request<sp/>method=</highlight><highlight class="stringliteral">&quot;GET&quot;</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>href=</highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/tutorials/tutorialimages/exif.jpg&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>auth-method=</highlight><highlight class="stringliteral">&quot;Basic&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>send-authorization=</highlight><highlight class="stringliteral">&quot;true&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>username=</highlight><highlight class="stringliteral">&quot;zorba&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>password=</highlight><highlight class="stringliteral">&quot;blub&quot;</highlight><highlight class="normal">&gt;&lt;/h:request&gt;</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$res<sp/>:=<sp/>http:read($req,<sp/>())[2]</highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>Using<sp/>Image<sp/>Library<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>extract<sp/>exif<sp/>tag<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>basic:exif($res,<sp/></highlight><highlight class="stringliteral">&quot;DateTimeOriginal&quot;</highlight><highlight class="normal">)</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="image_processing_tutorial_1explanation2">
+<title>Explanation</title>
+<para>Lines 6 and 7 use the Zorba http library to get an image from the web. Then, in line 9 we pass the image to the <bold>basic:exif</bold> function requesting the value of the <bold>DateTimeOriginal</bold> tag, which we return.</para></sect2>
+<sect2 id="image_processing_tutorial_1expected_output2">
+<title>Expected Output</title>
+<para><programlisting><codeline><highlight class="normal">&lt;?xml<sp/>version=</highlight><highlight class="stringliteral">&quot;1.0&quot;</highlight><highlight class="normal"><sp/>encoding=</highlight><highlight class="stringliteral">&quot;UTF-8&quot;</highlight><highlight class="normal">?&gt;</highlight></codeline>
+<codeline><highlight class="normal">2007-03-15T20:12:46+02:00</highlight></codeline>
+</programlisting></para></sect2>
+</sect1>
+<sect1 id="image_processing_tutorial_1manipulatin_images">
+<title>Manipulating Images</title>
+<para>In this example, we first download an image from the web using Zorba&apos;s http client and then apply a charcoal effect to that image returning the charcoaled image.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">http<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://expath.org/ns/http-client&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">manipulation<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/manipulation&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">declare<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">h<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://expath.org/ns/http-client&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>Get<sp/>image<sp/>from<sp/>web<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$req<sp/>:=<sp/>&lt;h:request<sp/>method=</highlight><highlight class="stringliteral">&quot;GET&quot;</highlight><highlight class="normal"><sp/>href=</highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/http-client/download.png&quot;</highlight><highlight class="normal"><sp/>auth-method=</highlight><highlight class="stringliteral">&quot;Basic&quot;</highlight><highlight class="normal"><sp/>send-authorization=</highlight><highlight class="stringliteral">&quot;true&quot;</highlight><highlight class="normal"><sp/>username=</highlight><highlight class="stringliteral">&quot;zorba&quot;</highlight><highlight class="normal"><sp/>password=</highlight><highlight class="stringliteral">&quot;blub&quot;</highlight><highlight class="normal"><sp/>&gt;&lt;/h:request&gt;</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$res<sp/>:=<sp/>http:read($req,<sp/>())[2]</highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>Using<sp/>Image<sp/>Library<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>manipulate<sp/>image<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$manipulated-image<sp/>:=<sp/>manipulation:charcoal($res,<sp/>2.0,<sp/>3.0)</highlight></codeline>
+<codeline><highlight class="normal">return<sp/>$manipulated-image</highlight></codeline>
+</programlisting></para><sect2 id="image_processing_tutorial_1explanation3">
+<title>Explanation</title>
+<para>Lines 6 and 7 use the Zorba http client to retrieve an image from the web. Then, in line 9, we assign <bold>$manipulated-image</bold> a manipulated version of the image by passing the fetched image to the <bold>manipulation:charcoal</bold> function that takes the image, performs the charcoal effect on it returns a charcoaled version of the image.</para></sect2>
+<sect2 id="image_processing_tutorial_1expected_output3">
+<title>Expected Output</title>
+<para><image type="html" name="charcoaled.gif"></image>
+</para></sect2>
+</sect1>
+<sect1 id="image_processing_tutorial_1painting_images">
+<title>Painting Images</title>
+<para>In this example, we create a new blank image and then paint a circle and a rectangle on it before returning it.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">basic<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/basic&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">paint<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/paint&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$blank-image<sp/>:=<sp/>basic:create(xs:unsignedInt(150),<sp/>xs:unsignedInt(150),<sp/></highlight><highlight class="stringliteral">&quot;PNG&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$image-circle<sp/>:=<sp/>paint:draw-circle($blank-image,<sp/>75,<sp/>75,<sp/>50,<sp/>&quot;</highlight><highlight class="preprocessor">#00FF00&quot;,<sp/>&quot;#0000FF&quot;,<sp/>2,<sp/>true())</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="normal">let<sp/>$image-circle-and-rectangle<sp/>:=<sp/>paint:draw-rectangle($image-circle,<sp/>25,<sp/>25,<sp/>75,<sp/>75,<sp/></highlight><highlight class="stringliteral">&quot;#FF00FF&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;#5F08AA&quot;</highlight><highlight class="normal">,<sp/>1,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">())</highlight></codeline>
+<codeline><highlight class="normal">return<sp/>$image-circle-and-rectangle</highlight></codeline>
+</programlisting></para><sect2 id="image_processing_tutorial_1explanation4">
+<title>Explanation</title>
+<para>In line 4 a blank image with PNG format is created (like in the first example of this tutorial). Then in line 5 we pass the blank image to the <bold>paint:draw-circle</bold> method which returns a version of the blank image with a circle on it. In line 6 we pass the image which already has a circle on it to the <bold>paint:draw-rectangle</bold> function which returns an additional rectangle painted on it.</para></sect2>
+<sect2 id="image_processing_tutorial_1expected_output4">
+<title>Expected Output</title>
+<para><image type="html" name="painted.png"></image>
+</para></sect2>
+</sect1>
+<sect1 id="image_processing_tutorial_1creating_animated_gifs">
+<title>Creating Animated GIFS</title>
+<para>In this example, we create two blank images, paint a line on each, and use them to create an animated gif.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">basic<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/basic&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">paint<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/paint&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">anim<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/animation&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$blank-image<sp/>:=<sp/>basic:create(xs:unsignedInt(100),<sp/>xs:unsignedInt(100),<sp/></highlight><highlight class="stringliteral">&quot;GIF&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$first-image<sp/>:=<sp/>paint:draw-line($blank-image,<sp/>50,<sp/>25,<sp/>50,<sp/>75,<sp/>(),<sp/>(),<sp/>true())</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$second-image<sp/>:=<sp/>paint:draw-line($blank-image,<sp/>25,<sp/>50,<sp/>75,<sp/>50,<sp/>(),<sp/>(),<sp/>true())</highlight></codeline>
+<codeline><highlight class="normal">return<sp/>anim:create-animated-gif(($first-image,<sp/>$second-image),<sp/>xs:unsignedInt(15),<sp/>xs:unsignedInt(0))</highlight></codeline>
+</programlisting></para><sect2 id="image_processing_tutorial_1explanation5">
+<title>Explanation</title>
+<para>In lines 6 and 7, we create 2 images each containing a line painted on them. Then, in line 8, we return the output of anim:create-animated-gif (which is a GIF image) for which we pass the images from lines 6 and seven as arguments. The function composes them to an animated GIF image.</para></sect2>
+<sect2 id="image_processing_tutorial_1expected_output5">
+<title>Expected Output</title>
+<para><image type="html" name="animated.gif"></image>
+</para></sect2>
+</sect1>
+<sect1 id="image_processing_tutorial_1putting_it_all_thogether">
+<title>Putting it all together: A More Extensive Example</title>
+<para>In this example, we will create an image displaying a scrolling text using different techniques from the examples above.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">basic<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/basic&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">paint<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/paint&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">anim<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/image/animation&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$blank-image<sp/>:=<sp/>basic:create(xs:unsignedInt(100),<sp/>xs:unsignedInt(100),<sp/></highlight><highlight class="stringliteral">&quot;GIF&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$i1<sp/>:=<sp/>paint:draw-text($blank-image,<sp/>&quot;Zorba<sp/>Rocks&quot;,<sp/>-10,<sp/>40,<sp/>&quot;Arial&quot;,<sp/>(),<sp/>&quot;</highlight><highlight class="preprocessor">#FF0000&quot;)</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="normal">let<sp/>$i2<sp/>:=<sp/>paint:draw-text($blank-image,<sp/></highlight><highlight class="stringliteral">&quot;Zorba<sp/>Rocks&quot;</highlight><highlight class="normal">,<sp/>20,<sp/>40,<sp/></highlight><highlight class="stringliteral">&quot;Arial&quot;</highlight><highlight class="normal">,<sp/>(),<sp/></highlight><highlight class="stringliteral">&quot;#FF0000&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$i3<sp/>:=<sp/>paint:draw-text($blank-image,<sp/>&quot;Zorba<sp/>Rocks&quot;,<sp/>40,<sp/>40,<sp/>&quot;Arial&quot;,<sp/>(),<sp/>&quot;</highlight><highlight class="preprocessor">#FF0000&quot;)</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="normal">let<sp/>$i4<sp/>:=<sp/>paint:draw-text($blank-image,<sp/></highlight><highlight class="stringliteral">&quot;Zorba<sp/>Rocks&quot;</highlight><highlight class="normal">,<sp/>60,<sp/>40,<sp/></highlight><highlight class="stringliteral">&quot;Arial&quot;</highlight><highlight class="normal">,<sp/>(),<sp/></highlight><highlight class="stringliteral">&quot;#FF0000&quot;</highlight><highlight class="normal">)<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$i5<sp/>:=<sp/>paint:draw-text($blank-image,<sp/>&quot;Zorba<sp/>Rocks&quot;,<sp/>80,<sp/>40,<sp/>&quot;Arial&quot;,<sp/>(),<sp/>&quot;</highlight><highlight class="preprocessor">#FF0000&quot;)<sp/><sp/></highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="normal">let<sp/>$i6<sp/>:=<sp/>paint:draw-text($blank-image,<sp/></highlight><highlight class="stringliteral">&quot;Zorba<sp/>Rocks&quot;</highlight><highlight class="normal">,<sp/>100,<sp/>40,<sp/></highlight><highlight class="stringliteral">&quot;Arial&quot;</highlight><highlight class="normal">,<sp/>(),<sp/></highlight><highlight class="stringliteral">&quot;#FF0000&quot;</highlight><highlight class="normal">)<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$i7<sp/>:=<sp/>paint:draw-text($blank-image,<sp/>&quot;Zorba<sp/>Rocks&quot;,<sp/>20,<sp/>40,<sp/>&quot;Arial&quot;,<sp/>(),<sp/>&quot;</highlight><highlight class="preprocessor">#FF0000&quot;)<sp/><sp/></highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="normal">let<sp/>$i8<sp/>:=<sp/>paint:draw-text($blank-image,<sp/></highlight><highlight class="stringliteral">&quot;Zorba<sp/>Rocks&quot;</highlight><highlight class="normal">,<sp/>120,<sp/>40,<sp/></highlight><highlight class="stringliteral">&quot;Arial&quot;</highlight><highlight class="normal">,<sp/>(),<sp/></highlight><highlight class="stringliteral">&quot;#FF0000&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal">return<sp/>anim:create-morphed-gif(($i1,<sp/>$i2,<sp/>$i3,<sp/>$i4,<sp/>$i5,<sp/>$i6,<sp/>$i7,<sp/>$i8),<sp/>xs:unsignedInt(2),<sp/>xs:unsignedInt(0),<sp/>xs:unsignedInt(4))</highlight></codeline>
+</programlisting></para><sect2 id="image_processing_tutorial_1expected_output6">
+<title>Expected Output</title>
+<para><image type="html" name="extended.gif"></image>
+ </para></sect2>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

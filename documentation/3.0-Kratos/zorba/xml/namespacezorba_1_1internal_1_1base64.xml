@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1internal_1_1base64" kind="namespace">
+    <compoundname>zorba::internal::base64</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1base64_1a4b337606b06bf9c76d59ec5c064130c6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::streambuf *</type>
+        <definition>ZORBA_DLL_PUBLIC std::streambuf* zorba::internal::base64::alloc_streambuf</definition>
+        <argsstring>(std::streambuf *orig)</argsstring>
+        <name>alloc_streambuf</name>
+        <param>
+          <type>std::streambuf *</type>
+          <declname>orig</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="131"/>
+        <referencedby refid="namespacezorba_1_1hexbinary_1a313b9172bcd9513faa146f4940070907" compoundref="hexbinary__stream_8h" startline="139" endline="151">zorba::hexbinary::attach</referencedby>
+        <referencedby refid="namespacezorba_1_1transcode_1a44eff53620b083f7384c20eea64a534b" compoundref="transcode__stream_8h" startline="145" endline="157">zorba::transcode::attach</referencedby>
+        <referencedby refid="namespacezorba_1_1base64_1acc02be7e81c24ef6fdffb8f0f16c189d" compoundref="base64__stream_8h" startline="155" endline="167">zorba::base64::attach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1base64_1a295f0351244ea88a57700f176df82d0c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC int</type>
+        <definition>ZORBA_DLL_PUBLIC int zorba::internal::base64::get_streambuf_index</definition>
+        <argsstring>()</argsstring>
+        <name>get_streambuf_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="134"/>
+        <referencedby refid="namespacezorba_1_1hexbinary_1a313b9172bcd9513faa146f4940070907" compoundref="hexbinary__stream_8h" startline="139" endline="151">zorba::hexbinary::attach</referencedby>
+        <referencedby refid="namespacezorba_1_1transcode_1a44eff53620b083f7384c20eea64a534b" compoundref="transcode__stream_8h" startline="145" endline="157">zorba::transcode::attach</referencedby>
+        <referencedby refid="namespacezorba_1_1base64_1acc02be7e81c24ef6fdffb8f0f16c189d" compoundref="base64__stream_8h" startline="155" endline="167">zorba::base64::attach</referencedby>
+        <referencedby refid="namespacezorba_1_1hexbinary_1a533baa97c59c0f231e7821db9f6fb40f" compoundref="hexbinary__stream_8h" startline="163" endline="172">zorba::hexbinary::detach</referencedby>
+        <referencedby refid="namespacezorba_1_1transcode_1ac1a9e5e77b37b933a78581467f24ee1d" compoundref="transcode__stream_8h" startline="169" endline="178">zorba::transcode::detach</referencedby>
+        <referencedby refid="namespacezorba_1_1base64_1a31c5d6cf41a6ad8c82178853e7c0bcfc" compoundref="base64__stream_8h" startline="179" endline="188">zorba::base64::detach</referencedby>
+        <referencedby refid="namespacezorba_1_1base64_1a29f4772679d15d39ab8aec795a0c17f5" compoundref="base64__stream_8h" startline="197" endline="199">zorba::base64::is_attached</referencedby>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="128"/>
+  </compounddef>
+</doxygen>

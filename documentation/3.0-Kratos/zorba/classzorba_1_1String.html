@@ -1,0 +1,940 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::String</h1><p class="include">
+            #include &lt;zorba/zorba_string.h&gt;
+        </p>
+The <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> string class.     
+Its API is mostly compatible with that of std::string.     <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">std::allocator&lt; <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> &gt;</p></td><td><p class="signature"><a href="#a30d5a0335733048de4d3fb5da65ff78c">allocator_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=aa8ee14c8eaa862982a480a9aeef07af6">const_pointer</a></p></td><td><p class="signature"><a href="#a943400c3ba7bf02f26dbc3c85ee5b26c">const_iterator</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> const *</p></td><td><p class="signature"><a href="#aa8ee14c8eaa862982a480a9aeef07af6">const_pointer</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> const &amp;</p></td><td><p class="signature"><a href="#ad259ae9c5c0fee907ad864884f34d1d1">const_reference</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::reverse_iterator&lt; <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a943400c3ba7bf02f26dbc3c85ee5b26c">const_iterator</a> &gt;</p></td><td><p class="signature"><a href="#a6f5fd0179bbb3da6b97413f2c905cdf3">const_reverse_iterator</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">allocator_type::difference_type</p></td><td><p class="signature"><a href="#ace69b057c9c7756beb20f2148f663751">difference_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=ac76228f11d11da225399d83c5dd7b3f4">pointer</a></p></td><td><p class="signature"><a href="#a25459a4094aeaec55be0e8e33776386d">iterator</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> *</p></td><td><p class="signature"><a href="#ac76228f11d11da225399d83c5dd7b3f4">pointer</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> &amp;</p></td><td><p class="signature"><a href="#abda1af11f0798c70f7448c0ac02001e1">reference</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::reverse_iterator&lt; <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a> &gt;</p></td><td><p class="signature"><a href="#adcb2f121b303280b4bd8c55bc800e8f7">reverse_iterator</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">allocator_type::size_type</p></td><td><p class="signature"><a href="#a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::char_traits&lt; <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> &gt;</p></td><td><p class="signature"><a href="#accf63404b1b45360fd5ef0d44c77fdee">traits_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">char</p></td><td><p class="signature"><a href="#a55c89432f1ba141cf1241768b013a0ff">value_type</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Static Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a> const</p></td><td><p class="signature"><a href="#abded9f355b840d9bf33e06491cfc755b">npos</a></p><span class="signature-description">
+The special value used to denote either (a) the maximum possible number as input or (b) "not found" as a result.         </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">string_storage_type</p></td><td><p class="signature"><a href="#a48bfc9a04c38c2dc86608ea63cd0c158">string_storage_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Friend Classes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/classzorba_1_1String">String</a></p></td><td><p class="signature"><a href="#a15480fef7755ac84b34897c71df0e82a">operator+</a>(String const &amp;, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/classzorba_1_1String">String</a></p></td><td><p class="signature"><a href="#ab2931bd571fc2b461c3ae7e81f774ae9">operator+</a>(String const &amp;, std::string const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/classzorba_1_1String">String</a></p></td><td><p class="signature"><a href="#a4b9ff7560be2c1e4489914f7ba2bbf62">operator+</a>(String const &amp;, const_pointer)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/classzorba_1_1String">String</a></p></td><td><p class="signature"><a href="#a0758629d6c3e1bfdc964913d4567bded">operator+</a>(std::string const &amp;, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/classzorba_1_1String">String</a></p></td><td><p class="signature"><a href="#a46237fa44bcecede37c62f98a5a16528">operator+</a>(const_pointer, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#a56ec36d0b3b24ed888c4e9b030d7fe55">operator&lt;</a>(String const &amp;, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#ae3bddaa48ce3ac08f8213e632a72c451">operator&lt;</a>(String const &amp;, std::string const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#a8d6b30fa8e000617cfec36eca7e8adfe">operator&lt;</a>(String const &amp;, const_pointer)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#a0f46cd8f02425f93fa60651281515f31">operator&lt;</a>(std::string const &amp;, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#a753e8869e3addb8017be475a5ef10fd3">operator&lt;</a>(const_pointer, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC std::ostream &amp;</p></td><td><p class="signature"><a href="#a343191e7da6e1829349b8bb1bc37d096">operator&lt;&lt;</a>(std::ostream &amp;, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#a23c8492cd83fb82e33224f21fd4fc821">operator&lt;=</a>(String const &amp;, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#ad39dbd50df05358bae787292e0b2b9ab">operator&lt;=</a>(String const &amp;, std::string const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#abda427eecdd8eebe42e9348186f305e4">operator&lt;=</a>(String const &amp;, const_pointer)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#ab46c2ccd519b1dd03f97bba30db150d4">operator&lt;=</a>(std::string const &amp;, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#a120d60450650e775eb815cdd1977a7c9">operator&lt;=</a>(const_pointer, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#a687ecaa8514006137b96abd43955763f">operator==</a>(String const &amp;, String const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#afe6c05bc9a077fe63923c6b3fe3da861">operator==</a>(String const &amp;, std::string const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#a353c5b09b55a2c30f21973acc309994d">operator==</a>(String const &amp;, const_pointer)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend class</p></td><td><p class="signature"><a href="#a3e0633ac5ec941d1abf1a7b5b6ffce25">Unmarshaller</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#aa6206b0a46293ef028deab1278fcdf15">append</a>(String const &amp;s)</p><span class="signature-description">
+Appends the given string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a8ad16d6f1fed054e2472bf58ea35c074">append</a>(String const &amp;s, size_type s_pos, size_type s_n)</p><span class="signature-description">
+Appends a substring of the given string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a46bce915b9fd5de5e50c14fe395f5f42">append</a>(std::string const &amp;s)</p><span class="signature-description">
+Appends the given string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#abd8af3a13f0dc94ec8803a53adee3072">append</a>(std::string const &amp;s, size_type s_pos, size_type s_n)</p><span class="signature-description">
+Appends a substring of the given string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#acf7334fdec4e87a273196a8281dfe074">append</a>(const_pointer s)</p><span class="signature-description">
+Appends the given C string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a92e403160059a9516d260239517f286f">append</a>(const_pointer s, size_type s_n)</p><span class="signature-description">
+Appends the given C string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a4c6056a27820ff19bc63cdd654e3805b">append</a>(size_type n, value_type c)</p><span class="signature-description">
+Appends <em>n</em> copies of <em>c</em> to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a04a32eae572ee3e8d14d5875fdd97929">assign</a>(String const &amp;s)</p><span class="signature-description">
+Assigns another string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ae45489ea6643c954ae9eb550776e6cd9">assign</a>(std::string const &amp;s)</p><span class="signature-description">
+Assigns a std::string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ad7a77eda0b780756b8badf4c66d59ff1">assign</a>(String const &amp;s, size_type pos, size_type n)</p><span class="signature-description">
+Assigns a substring of a string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a89a2d417f8f0916bf8766abddcb56665">assign</a>(std::string const &amp;s, size_type pos, size_type n)</p><span class="signature-description">
+Assigns a substring of a std::string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ae884df0a04e819097948f7b0f63567e8">assign</a>(const_pointer s)</p><span class="signature-description">
+Assigns a C to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ab081ff5251e91ae284e76167b1c85998">assign</a>(const_pointer s, size_type n)</p><span class="signature-description">
+Assigns a substring of a C to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a491a5664aadba75a7b8bb2da75cfd65f">assign</a>(size_type n, value_type c)</p><span class="signature-description">
+Assigned <em>n</em> copies of a character to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a25d52ff4cc91d3e87e95c447f8f755f7">assign</a>(const_iterator i, const_iterator j)</p><span class="signature-description">
+Assigns characters from a range of characters [i,j).         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=abda1af11f0798c70f7448c0ac02001e1">reference</a></p></td><td><p class="signature"><a href="#a0b80876b565ccf0714f3f96832740911">at</a>(size_type pos)</p><span class="signature-description">
+References a particular character within the string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a></p></td><td><p class="signature"><a href="#aa1079df559aac2b65486b024dba7cda3">at</a>(size_type pos) const </p><span class="signature-description">
+References a particular character within the string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a></p></td><td><p class="signature"><a href="#a9f544233012b9a44046765ab799c081f">begin</a>()</p><span class="signature-description">
+Returns a read/write iterator positioned at the first character of the string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a943400c3ba7bf02f26dbc3c85ee5b26c">const_iterator</a></p></td><td><p class="signature"><a href="#aeb467031ccff08e09f6e5346aa7e5049">begin</a>() const </p><span class="signature-description">
+Returns a read-only iterator positioned at the first character of the string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=aa8ee14c8eaa862982a480a9aeef07af6">const_pointer</a></p></td><td><p class="signature"><a href="#a96b65111db89355b959066ccab039698">c_str</a>() const </p><span class="signature-description">
+Gets a pointer to a null-terminated array of characters representing the string's contents.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#af5210a3d2702db74e4d02c67e614c41b">capacity</a>() const </p><span class="signature-description">
+Gets the capacity of this string.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a805625d6456064bdda062d2dfe1dc68d">clear</a>()</p><span class="signature-description">
+Erases the string making it empty.         </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#ac3c082a19d662ca7fcc4a91d3d397ec8">compare</a>(String const &amp;s) const </p><span class="signature-description">
+Compares this string against another.         </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#a66422212aa337820054a6968f90844d8">compare</a>(std::string const &amp;s) const </p><span class="signature-description">
+Compares this string against another.         </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#ab5a4f1088626dfdeea543ca7ff33acba">compare</a>(const_pointer s) const </p><span class="signature-description">
+Compares this string against a C string.         </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#a7655550f45a72ad0ffa8006a9e57ce0f">compare</a>(size_type pos, size_type n, String const &amp;s) const </p><span class="signature-description">
+Compares a substring of this string against another.         </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#ac6aab7c5ab943897021c9b84c205ba84">compare</a>(size_type pos, size_type n, std::string const &amp;s) const </p><span class="signature-description">
+Compares a substring of this string against another.         </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#a2e25e74a565411c395a8433f975872d6">compare</a>(size_type pos, size_type n, const_pointer s) const </p><span class="signature-description">
+Compares a substring of this string against a C string.         </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#a0f4c837a4b20eb11ca5c52feab65f5b6">compare</a>(size_type pos, size_type n, String const &amp;s, size_type s_pos, size_type s_n) const </p><span class="signature-description">
+Compares a substring of this string against a substring of another.         </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#a1e098b7fb53bea8110996f36a74060db">compare</a>(size_type pos, size_type n, std::string const &amp;s, size_type s_pos, size_type s_n) const </p><span class="signature-description">
+Compares a substring of this string against a substring of another.         </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#afde51ce78b3ca75e2040a78d4e0d925d">compare</a>(size_type pos, size_type n, const_pointer s, size_type s_n) const </p><span class="signature-description">
+Compares a substring of this string against a C string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#aa2d139414d2d4a8d5c9120d97ae1f596">copy</a>(pointer buf, size_type n, size_type pos=0) const </p><span class="signature-description">
+Copies a substring to a C string buffer.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=aa8ee14c8eaa862982a480a9aeef07af6">const_pointer</a></p></td><td><p class="signature"><a href="#a803668c0585d7f2e6e99c1c1d349038b">data</a>() const </p><span class="signature-description">
+Gets a pointer to the raw character data comprising the string, not necessarily null-terminated.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#ab32c3673a0235d0c843a965e0ee038e7">empty</a>() const </p><span class="signature-description">
+Checks whether the string is empty.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a></p></td><td><p class="signature"><a href="#aa24a117dc3e0c95446b7d6d53d72d919">end</a>()</p><span class="signature-description">
+Returns a read/write iterator positioned at one past the last character of the string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a943400c3ba7bf02f26dbc3c85ee5b26c">const_iterator</a></p></td><td><p class="signature"><a href="#a6ab16ffe8877997784cb2e720fa21162">end</a>() const </p><span class="signature-description">
+Returns a read-only iterator positioned at one past the last character of the string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a1866ab9e9d181a682d68e185a38473ca">erase</a>(size_type pos=0, size_type n=npos)</p><span class="signature-description">
+Erases the given number of characters starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a></p></td><td><p class="signature"><a href="#aa5744d86029c7a7591aa99862c362e87">erase</a>(iterator i)</p><span class="signature-description">
+Erases the character at the given iterator's position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a></p></td><td><p class="signature"><a href="#a57556d42571556c990f0d84da780ebaa">erase</a>(iterator i, iterator j)</p><span class="signature-description">
+Erases a range of characters [i,j).         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a29c02ca220d6417b27fddadea99572b3">find</a>(String const &amp;s, size_type pos=0) const </p><span class="signature-description">
+Searches this string for the given string starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a5370ff82c0bff74dcabc4309f3d96a02">find</a>(std::string const &amp;s, size_type pos=0) const </p><span class="signature-description">
+Searches this string for the given string starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#ad078e0728f7dc1bc19d16942c781fe10">find</a>(const_pointer s, size_type pos=0) const </p><span class="signature-description">
+Searches this string for the given string starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#afdd5f1995c0ab79927d3427b2024c172">find</a>(const_pointer s, size_type pos, size_type s_n) const </p><span class="signature-description">
+Searches this string for the given string starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a115dda64770fbbafbc3a36fbbbd82068">find</a>(value_type c, size_type pos=0) const </p><span class="signature-description">
+Searches this string for the given character staring at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a1f1ad0baded674017b2ad15110f65a98">find_first_not_of</a>(String const &amp;s, size_type pos=0) const </p><span class="signature-description">
+Searches this string for any one of the characters not in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a7ef84aa7b9de247b4184390bf15eb4f7">find_first_not_of</a>(std::string const &amp;s, size_type pos=0) const </p><span class="signature-description">
+Searches this string for any one of the characters not in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a52bb4812c283c9f9bbff11e52b8ee746">find_first_not_of</a>(const_pointer s, size_type pos=0) const </p><span class="signature-description">
+Searches this string for any one of the characters not in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#abfee6e9a2420ae410667ee07e3216f6a">find_first_not_of</a>(const_pointer s, size_type pos, size_type s_n) const </p><span class="signature-description">
+Searches this string for any one of the first <em>s_n</em> characters not in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#aba295b0f49b71d329e7b422f97484c21">find_first_not_of</a>(value_type c, size_type pos=0) const </p><span class="signature-description">
+Searches this string for any character except the given character starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a267e7e29dd2cc0a05c967c64ceb5261f">find_first_of</a>(String const &amp;s, size_type pos=0) const </p><span class="signature-description">
+Searches this string for any one of the characters in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a83ecd766f1ea4796c9618a9dbd88fceb">find_first_of</a>(std::string const &amp;s, size_type pos=0) const </p><span class="signature-description">
+Searches this string for any one of the characters in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a995ce00e8b8248ac50249abe4017717b">find_first_of</a>(const_pointer s, size_type pos=0) const </p><span class="signature-description">
+Searches this string for any one of the characters in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#ac3ef4d090be333ed3d42e6026de96c80">find_first_of</a>(const_pointer s, size_type pos, size_type s_n) const </p><span class="signature-description">
+Searches this string for any one of the first <em>s_n</em> characters in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a4bdc79af2461533a65baabedaaee09f5">find_first_of</a>(value_type c, size_type pos=0) const </p><span class="signature-description">
+Searches this string for the given character starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#aad4510ba639b433cf49079e719f3eb1a">find_last_not_of</a>(String const &amp;s, size_type pos=npos) const </p><span class="signature-description">
+Searches this string backwards for any one of the characters not in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a0541de415db05390ac33802d23aceea9">find_last_not_of</a>(std::string const &amp;s, size_type pos=npos) const </p><span class="signature-description">
+Searches this string backwards for any one of the characters not in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#ab61a0e1514f7a5ad2de911b622c2277a">find_last_not_of</a>(const_pointer s, size_type pos=npos) const </p><span class="signature-description">
+Searches this string backwards for any one of the characters not in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a6d24d8d02414595906fc8ce8bcbcb035">find_last_not_of</a>(const_pointer s, size_type pos, size_type s_n) const </p><span class="signature-description">
+Searches this string backwards for any one of the first <em>s_n</em> characters not in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a1c0f1a4d50e94215b0577dfd3150f8ad">find_last_not_of</a>(value_type c, size_type pos=npos) const </p><span class="signature-description">
+Searches this string backwards for any character except the given character starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a9fb90a6b57cba391cdda415234104121">find_last_of</a>(String const &amp;s, size_type pos=npos) const </p><span class="signature-description">
+Searches this string backwards for any one of the characters in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a2ec9f8c0ab74f7f761101ce544223f04">find_last_of</a>(std::string const &amp;s, size_type pos=npos) const </p><span class="signature-description">
+Searches this string backwards for any one of the characters in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a7f65123b44e1ed545c3737e0f02e5f92">find_last_of</a>(const_pointer s, size_type pos=npos) const </p><span class="signature-description">
+Searches this string backwards for any one of the characters in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#ab1ef2178c2595d07f9aec54249fa9c50">find_last_of</a>(const_pointer s, size_type pos, size_type s_n) const </p><span class="signature-description">
+Searches this string backwards for any one of the first <em>s_n</em> characters in <em>s</em> starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#addf908cd5ed027b28017094397b5a086">find_last_of</a>(value_type c, size_type pos=npos) const </p><span class="signature-description">
+Searches this string backwards for the given character starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a48fb92578153393c24eddab4b9e81e2e">insert</a>(size_type pos, String const &amp;s)</p><span class="signature-description">
+Inserts the given string into this string at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a228b4f0296bcd35d34b28e6fd80c0fa1">insert</a>(size_type pos, std::string const &amp;s)</p><span class="signature-description">
+Inserts the given string into this string at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ab15e1a14dba99236c50b535ae54c429f">insert</a>(size_type pos, const_pointer s)</p><span class="signature-description">
+Inserts the given string into this string at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#acd9ae67ebb7cce8117871ad291d74968">insert</a>(size_type pos, String const &amp;s, size_type s_pos, size_type s_n)</p><span class="signature-description">
+Inserts a substring of the given string into this string at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#abaa0ad6fdf665f28677f9e7e4d32717b">insert</a>(size_type pos, std::string const &amp;s, size_type s_pos, size_type s_n)</p><span class="signature-description">
+Inserts a substring of the given string into this string at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ae85daffed6282e5a8eb40873ef76af5e">insert</a>(size_type pos, const_pointer s, size_type s_n)</p><span class="signature-description">
+Inserts a substring of the given string into this string at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#aa283bc56b273a69a44383b868eaf1cca">insert</a>(size_type pos, size_type n, value_type c)</p><span class="signature-description">
+Inserts <em>n</em> copies of <em>c</em> into this string at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a></p></td><td><p class="signature"><a href="#aa676193cd2c270fea5ad2c128ed5c06f">insert</a>(iterator pos, value_type c)</p><span class="signature-description">
+Inserts the given character into this string at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a223988a7e6892093db561e3aa3bbe4c4">insert</a>(iterator pos, size_type n, value_type c)</p><span class="signature-description">
+Inserts <em>n</em> copies of <em>c</em> into this string at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a4c0b250d93a1f7b29526cac5840d313f">length</a>() const </p><span class="signature-description">
+Gets the number of characters in this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a6da78e8d706c543b980e853a7fee351f">operator+=</a>(String const &amp;s)</p><span class="signature-description">
+Appends the given string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ad64dbacb91864d1199a0dba1b46250d5">operator+=</a>(std::string const &amp;s)</p><span class="signature-description">
+Appends the given std::string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a95ebba50443b7acdc635611d048513ce">operator+=</a>(const_pointer s)</p><span class="signature-description">
+Appends the given C string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ad4ebfbcab54b6f7426aa13cdf195f23f">operator+=</a>(value_type c)</p><span class="signature-description">
+Appends the given character to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#abceaf5b90384eac42f9096228b101a1f">operator=</a>(String const &amp;s)</p><span class="signature-description">
+Assigns another string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a9d85e6c65b73ff2971249672ef103137">operator=</a>(std::string const &amp;s)</p><span class="signature-description">
+Assigns a std::string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#aefd742f94c258ab5f9850d10c5a6d3cd">operator=</a>(const_pointer s)</p><span class="signature-description">
+Assigns a C string to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a4ce1086dca6262349fdd7a325b9ac321">operator=</a>(value_type c)</p><span class="signature-description">
+Assigns a character to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=ad259ae9c5c0fee907ad864884f34d1d1">const_reference</a></p></td><td><p class="signature"><a href="#acc2f650cb355de3ae55d444c34aea725">operator[]</a>(size_type pos) const </p><span class="signature-description">
+References a particular character within the string.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ad210fcf8fbd8837f0b38632168680ed3">push_back</a>(value_type c)</p><span class="signature-description">
+Appends the given character to this string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=adcb2f121b303280b4bd8c55bc800e8f7">reverse_iterator</a></p></td><td><p class="signature"><a href="#a51ea92cd4531616644187ab6407a543a">rbegin</a>()</p><span class="signature-description">
+Returns a read/write reverse iterator positioned at the first character of the reversed string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a6f5fd0179bbb3da6b97413f2c905cdf3">const_reverse_iterator</a></p></td><td><p class="signature"><a href="#a9e79c70591887447ce7de62269c482fb">rbegin</a>() const </p><span class="signature-description">
+Returns a read-only reverse iterator positioned at the first character of the reversed string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=adcb2f121b303280b4bd8c55bc800e8f7">reverse_iterator</a></p></td><td><p class="signature"><a href="#a1ea3723719c921f12aa802e5538a0c6a">rend</a>()</p><span class="signature-description">
+Returns a read/write reverse iterator positioned at one past the last character of the reversed string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a6f5fd0179bbb3da6b97413f2c905cdf3">const_reverse_iterator</a></p></td><td><p class="signature"><a href="#a4f6a534822c74163fd410c6b7891cd8e">rend</a>() const </p><span class="signature-description">
+Returns a read-only reverse iterator positioned at one past the last character of the reversed string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a06ce1eb8f55d6270087c4a32cc9315cc">replace</a>(size_type pos, size_type n, String const &amp;s)</p><span class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with the given string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a8c8322e147abe48a6d3edb408e98e05c">replace</a>(size_type pos, size_type n, std::string const &amp;s)</p><span class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with the given string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a25faa20749834da38bbc950e5b0dd743">replace</a>(size_type pos, size_type n, const_pointer s)</p><span class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with the given string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a9fc8ac3462921755b45d068c26cd488c">replace</a>(size_type pos, size_type n, String const &amp;s, size_type s_pos, size_type s_n)</p><span class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with a substring of the given string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a78bb24dec9b729ad39e99f27b97defdc">replace</a>(size_type pos, size_type n, std::string const &amp;s, size_type s_pos, size_type s_n)</p><span class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with a substring of the given string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a31258c7ed1d56eb86e5cef6eead313f9">replace</a>(size_type pos, size_type n, const_pointer s, size_type s_n)</p><span class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with a substring of the given string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ad8b3c259c5e71baa3e9e2bf88346bd9c">replace</a>(size_type pos, size_type n, size_type c_n, value_type c)</p><span class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with <em>c_n</em> copies of <em>c</em>.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a31f451a03dc8153ee94816abc5a487cc">replace</a>(iterator i, iterator j, String const &amp;s)</p><span class="signature-description">
+Replaces the range of characters [i,j) of this string with the given string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ae5336b4266dfca42cf7976434f36a8b6">replace</a>(iterator i, iterator j, std::string const &amp;s)</p><span class="signature-description">
+Replaces the range of characters [i,j) of this string with the given string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a7fe0358a326f2fc8f96fda5cb62b842e">replace</a>(iterator i, iterator j, const_pointer s)</p><span class="signature-description">
+Replaces the range of characters [i,j) of this string with the given string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#ab687599a0e1cf139ba45c9f76e11ab1d">replace</a>(iterator i, iterator j, const_pointer s, size_type s_n)</p><span class="signature-description">
+Replaces the range of characters [i,j) of this string with a substring of the given string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#a0e15502af6ebda785721b295f94d2491">replace</a>(iterator i, iterator j, size_type n, value_type c)</p><span class="signature-description">
+Replaces the range of characters [i,j) of this string with <em>c_n</em> copies of <em>c</em>.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#aa71e31ed2f802e679be1c53a4287eb3f">replace</a>(iterator i, iterator j, iterator si, iterator sj)</p><span class="signature-description">
+Replaces the range of characters [i,j) of this string with the range of characters [si,sj).         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ac257b096e2b08daf4d16c430e153378a">reserve</a>(size_type n)</p><span class="signature-description">
+Attemts to pre-allocated enough memory to contain the given number of bytes.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a5ae5be7c1ef83cc005703323db307ba6">resize</a>(size_type n, value_type c=value_type())</p><span class="signature-description">
+Resizes the string to the given number of characters.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a93e53893af8e5c4dadb66e01f49af139">rfind</a>(String const &amp;s, size_type pos=npos) const </p><span class="signature-description">
+Searches this backwards string for the given string starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a3722dad02236e91e58a341da480f73d3">rfind</a>(std::string const &amp;s, size_type pos=npos) const </p><span class="signature-description">
+Searches this backwards string for the given string starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#ac706cb912dabd92063da941fe4255f86">rfind</a>(const_pointer s, size_type pos=npos) const </p><span class="signature-description">
+Searches this backwards string for the given string starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a08e274e09394184e457fba0bf2fd9be1">rfind</a>(const_pointer s, size_type pos, size_type s_n) const </p><span class="signature-description">
+Searches this string backwards for the given string starting at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a09858a4b96ee03347c2d9f00a49a4e76">rfind</a>(value_type c, size_type pos=npos) const </p><span class="signature-description">
+Searches this string backwards for the given character staring at the given position.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a></p></td><td><p class="signature"><a href="#a1be3687524c6b2a97418f1079daadfd1">size</a>() const </p><span class="signature-description">
+Gets the number of characters in this string.         </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a562c464bbe75f0ed908c99651a104419">str</a>() const </p><span class="signature-description">
+Gets a <tt>std::string</tt> equivalent of this string.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#afbe6334ab580d107be7e3fdc999e8f3b">String</a>()</p><span class="signature-description">
+Constructs an empty string.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#abf9f99cd3bca04c197c0b420e2b691bd">String</a>(String const &amp;s)</p><span class="signature-description">
+Copy constructs a new string from an existing string.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a2a1d4c179b2ad62b626b0fd738872b47">String</a>(std::string const &amp;s)</p><span class="signature-description">
+Constructs a new string from an existing std::string.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aacffcd33a8f44cdeb37357bec4b6bbb1">String</a>(const_pointer s)</p><span class="signature-description">
+Constructs a string from the given C string.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a7d1a8ae5b57ad617eb3e2e03ce8e6f77">String</a>(String const &amp;s, size_type pos, size_type n=npos)</p><span class="signature-description">
+Copy constructs a new string from a substring of an existing string.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a23ac28599f27fb664e341064eb2aa6e3">String</a>(std::string const &amp;s, size_type pos, size_type n=npos)</p><span class="signature-description">
+Constructs a new string from a substring of an existing std::string.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a3d4087349f856e982295826a5e87d029">String</a>(const_pointer s, size_type n)</p><span class="signature-description">
+Constructs a string from the given C string.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#abc5648a13f4d6b8ad1f13f5080646201">String</a>(size_type n, value_type c)</p><span class="signature-description">
+Constructs a new string as <em>n</em> copies of <em>c</em>.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a5bffa4536bc562eb848fd2e8dde89861">String</a>(const_iterator i, const_iterator j)</p><span class="signature-description">
+Constructs a string from a range of characters [i,j).         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a></p></td><td><p class="signature"><a href="#ac0fcd86560d50a5418fb05de10063e97">substr</a>(size_type pos=0, size_type n=npos) const </p><span class="signature-description">
+Creates a new string that is a substring of this string.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a76f1304a5bf5236234f8fe1fbae8e0d2">swap</a>(String &amp;s)</p><span class="signature-description">
+Swaps the contents of this string with another.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a4af70cd8f3540143d6541fb8b42fc073">~String</a>()</p><span class="signature-description">
+Destructs this string.         </span></td></tr></table></div><div class="section"><h2>Private Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;</p></td><td><p class="signature"><a href="#aebca126eece10d7da4e156429eebd722">operator=</a>(zstring_ptr)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aab3d2fbb2c2af0a02cc9cae4c3137510">String</a>(zstring_ptr)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Static Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a542817545535ea3398ab7b6c5a462b1e">size_check</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a30d5a0335733048de4d3fb5da65ff78c" class="sect1"><div><h3>allocator_type</h3></div><div class="signature-box">std::allocator&lt; <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> &gt;<span> </span>allocator_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a943400c3ba7bf02f26dbc3c85ee5b26c" class="sect1"><div><h3>const_iterator</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=aa8ee14c8eaa862982a480a9aeef07af6">const_pointer</a><span> </span>const_iterator</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa8ee14c8eaa862982a480a9aeef07af6" class="sect1"><div><h3>const_pointer</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> const *<span> </span>const_pointer</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ad259ae9c5c0fee907ad864884f34d1d1" class="sect1"><div><h3>const_reference</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> const &amp;<span> </span>const_reference</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a6f5fd0179bbb3da6b97413f2c905cdf3" class="sect1"><div><h3>const_reverse_iterator</h3></div><div class="signature-box">std::reverse_iterator&lt; <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a943400c3ba7bf02f26dbc3c85ee5b26c">const_iterator</a> &gt;<span> </span>const_reverse_iterator</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ace69b057c9c7756beb20f2148f663751" class="sect1"><div><h3>difference_type</h3></div><div class="signature-box">allocator_type::difference_type<span> </span>difference_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a25459a4094aeaec55be0e8e33776386d" class="sect1"><div><h3>iterator</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=ac76228f11d11da225399d83c5dd7b3f4">pointer</a><span> </span>iterator</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ac76228f11d11da225399d83c5dd7b3f4" class="sect1"><div><h3>pointer</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> *<span> </span>pointer</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="abda1af11f0798c70f7448c0ac02001e1" class="sect1"><div><h3>reference</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> &amp;<span> </span>reference</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="adcb2f121b303280b4bd8c55bc800e8f7" class="sect1"><div><h3>reverse_iterator</h3></div><div class="signature-box">std::reverse_iterator&lt; <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a> &gt;<span> </span>reverse_iterator</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a8a65cc2ad4058f7bbcf2719c93d8c763" class="sect1"><div><h3>size_type</h3></div><div class="signature-box">allocator_type::size_type<span> </span>size_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="accf63404b1b45360fd5ef0d44c77fdee" class="sect1"><div><h3>traits_type</h3></div><div class="signature-box">std::char_traits&lt; <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a> &gt;<span> </span>traits_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a55c89432f1ba141cf1241768b013a0ff" class="sect1"><div><h3>value_type</h3></div><div class="signature-box">char<span> </span>value_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Static Attributes</h2><div class="detailed"><div id="abded9f355b840d9bf33e06491cfc755b" class="sect1"><div><h3>npos</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a> const<span> </span>npos</div><div><p class="signature-description">
+The special value used to denote either (a) the maximum possible number as input or (b) "not found" as a result.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a48bfc9a04c38c2dc86608ea63cd0c158" class="sect1"><div><h3>string_storage_</h3></div><div class="signature-box">string_storage_type<span> </span>string_storage_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Friend Classes</h2><div class="detailed"><div id="a15480fef7755ac84b34897c71df0e82a" class="sect1"><div><h3>operator+</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>operator+(String const &amp;, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab2931bd571fc2b461c3ae7e81f774ae9" class="sect1"><div><h3>operator+</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>operator+(String const &amp;, std::string const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4b9ff7560be2c1e4489914f7ba2bbf62" class="sect1"><div><h3>operator+</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>operator+(String const &amp;, const_pointer)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a0758629d6c3e1bfdc964913d4567bded" class="sect1"><div><h3>operator+</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>operator+(std::string const &amp;, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a46237fa44bcecede37c62f98a5a16528" class="sect1"><div><h3>operator+</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>operator+(const_pointer, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a56ec36d0b3b24ed888c4e9b030d7fe55" class="sect1"><div><h3>operator&lt;</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator&lt;(String const &amp;, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ae3bddaa48ce3ac08f8213e632a72c451" class="sect1"><div><h3>operator&lt;</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator&lt;(String const &amp;, std::string const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a8d6b30fa8e000617cfec36eca7e8adfe" class="sect1"><div><h3>operator&lt;</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator&lt;(String const &amp;, const_pointer)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a0f46cd8f02425f93fa60651281515f31" class="sect1"><div><h3>operator&lt;</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator&lt;(std::string const &amp;, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a753e8869e3addb8017be475a5ef10fd3" class="sect1"><div><h3>operator&lt;</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator&lt;(const_pointer, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a343191e7da6e1829349b8bb1bc37d096" class="sect1"><div><h3>operator&lt;&lt;</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC std::ostream &amp;<span> </span>operator&lt;&lt;(std::ostream &amp;, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a23c8492cd83fb82e33224f21fd4fc821" class="sect1"><div><h3>operator&lt;=</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator&lt;=(String const &amp;, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ad39dbd50df05358bae787292e0b2b9ab" class="sect1"><div><h3>operator&lt;=</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator&lt;=(String const &amp;, std::string const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="abda427eecdd8eebe42e9348186f305e4" class="sect1"><div><h3>operator&lt;=</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator&lt;=(String const &amp;, const_pointer)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab46c2ccd519b1dd03f97bba30db150d4" class="sect1"><div><h3>operator&lt;=</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator&lt;=(std::string const &amp;, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a120d60450650e775eb815cdd1977a7c9" class="sect1"><div><h3>operator&lt;=</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator&lt;=(const_pointer, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a687ecaa8514006137b96abd43955763f" class="sect1"><div><h3>operator==</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator==(String const &amp;, String const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="afe6c05bc9a077fe63923c6b3fe3da861" class="sect1"><div><h3>operator==</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator==(String const &amp;, std::string const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a353c5b09b55a2c30f21973acc309994d" class="sect1"><div><h3>operator==</h3></div><div class="signature-box">friend ZORBA_DLL_PUBLIC bool<span> </span>operator==(String const &amp;, const_pointer)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a3e0633ac5ec941d1abf1a7b5b6ffce25" class="sect1"><div><h3>Unmarshaller</h3></div><div class="signature-box">friend class<span> </span>Unmarshaller</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="aa6206b0a46293ef028deab1278fcdf15" class="sect1"><div><h3>append</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>append(String const &amp;s)</div><div><p class="signature-description">
+Appends the given string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a8ad16d6f1fed054e2472bf58ea35c074" class="sect1"><div><h3>append</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>append(String const &amp;s, size_type s_pos, size_type s_n)</div><div><p class="signature-description">
+Appends a substring of the given string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to append. </td></tr><tr><td>s_pos</td><td>
+The starting position in <em>s</em>. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a46bce915b9fd5de5e50c14fe395f5f42" class="sect1"><div><h3>append</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>append(std::string const &amp;s)</div><div><p class="signature-description">
+Appends the given string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="abd8af3a13f0dc94ec8803a53adee3072" class="sect1"><div><h3>append</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>append(std::string const &amp;s, size_type s_pos, size_type s_n)</div><div><p class="signature-description">
+Appends a substring of the given string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to append. </td></tr><tr><td>s_pos</td><td>
+The starting position in <em>s</em>. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="acf7334fdec4e87a273196a8281dfe074" class="sect1"><div><h3>append</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>append(const_pointer s)</div><div><p class="signature-description">
+Appends the given C string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The null-terminated C string to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a92e403160059a9516d260239517f286f" class="sect1"><div><h3>append</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>append(const_pointer s, size_type s_n)</div><div><p class="signature-description">
+Appends the given C string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The C string to append. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a4c6056a27820ff19bc63cdd654e3805b" class="sect1"><div><h3>append</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>append(size_type n, value_type c)</div><div><p class="signature-description">
+Appends <em>n</em> copies of <em>c</em> to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>n</td><td>
+The numer of copies of <em>c</em> to append. </td></tr><tr><td>c</td><td>
+The character to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a04a32eae572ee3e8d14d5875fdd97929" class="sect1"><div><h3>assign</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>assign(String const &amp;s)</div><div><p class="signature-description">
+Assigns another string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to assign from. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ae45489ea6643c954ae9eb550776e6cd9" class="sect1"><div><h3>assign</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>assign(std::string const &amp;s)</div><div><p class="signature-description">
+Assigns a std::string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to assign from. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ad7a77eda0b780756b8badf4c66d59ff1" class="sect1"><div><h3>assign</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>assign(String const &amp;s, size_type pos, size_type n)</div><div><p class="signature-description">
+Assigns a substring of a string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to assign from. </td></tr><tr><td>pos</td><td>
+The starting position withing <em>s</em>. </td></tr><tr><td>n</td><td>
+The number of characters to assign. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a89a2d417f8f0916bf8766abddcb56665" class="sect1"><div><h3>assign</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>assign(std::string const &amp;s, size_type pos, size_type n)</div><div><p class="signature-description">
+Assigns a substring of a std::string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to assign from. </td></tr><tr><td>pos</td><td>
+The starting position withing <em>s</em>. </td></tr><tr><td>n</td><td>
+The number of characters to assign. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ae884df0a04e819097948f7b0f63567e8" class="sect1"><div><h3>assign</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>assign(const_pointer s)</div><div><p class="signature-description">
+Assigns a C to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The null-terminated C string to assign from. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ab081ff5251e91ae284e76167b1c85998" class="sect1"><div><h3>assign</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>assign(const_pointer s, size_type n)</div><div><p class="signature-description">
+Assigns a substring of a C to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The C string to assign from. </td></tr><tr><td>n</td><td>
+The number of characters to assign. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a491a5664aadba75a7b8bb2da75cfd65f" class="sect1"><div><h3>assign</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>assign(size_type n, value_type c)</div><div><p class="signature-description">
+Assigned <em>n</em> copies of a character to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>n</td><td>
+The number of copies of the character. </td></tr><tr><td>c</td><td>
+The character. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a25d52ff4cc91d3e87e95c447f8f755f7" class="sect1"><div><h3>assign</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>assign(const_iterator i, const_iterator j)</div><div><p class="signature-description">
+Assigns characters from a range of characters [i,j).         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>i</td><td>
+The iterator marking the first character of the range. </td></tr><tr><td>j</td><td>
+The iterator marking one past the last character of the range. </td></tr></table></div>
+        </p></div></div><div id="a0b80876b565ccf0714f3f96832740911" class="sect1"><div><h3>at</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=abda1af11f0798c70f7448c0ac02001e1">reference</a><span> </span>at(size_type pos)</div><div><p class="signature-description">
+References a particular character within the string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The index of the character. The index is bounds-checked. </td></tr></table></div>
+<div><h4>Returns</h4>said character as an l-value. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::out_of_range</td><td>
+if <em>pos</em> &gt;= . </td></tr></table></div>
+        </p></div></div><div id="aa1079df559aac2b65486b024dba7cda3" class="sect1"><div><h3>at</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a55c89432f1ba141cf1241768b013a0ff">value_type</a><span> </span>at(size_type pos) const </div><div><p class="signature-description">
+References a particular character within the string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The index of the character. The index is bounds-checked. </td></tr></table></div>
+<div><h4>Returns</h4>said character as an r-value. </div>
+        </p></div></div><div id="a9f544233012b9a44046765ab799c081f" class="sect1"><div><h3>begin</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a><span> </span>begin()</div><div><p class="signature-description">
+Returns a read/write iterator positioned at the first character of the string.         </p><p class="signature-description">
+<div><h4>Returns</h4>said iterator. </div>
+        </p></div></div><div id="aeb467031ccff08e09f6e5346aa7e5049" class="sect1"><div><h3>begin</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a943400c3ba7bf02f26dbc3c85ee5b26c">const_iterator</a><span> </span>begin() const </div><div><p class="signature-description">
+Returns a read-only iterator positioned at the first character of the string.         </p><p class="signature-description">
+<div><h4>Returns</h4>said iterator. </div>
+        </p></div></div><div id="a96b65111db89355b959066ccab039698" class="sect1"><div><h3>c_str</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=aa8ee14c8eaa862982a480a9aeef07af6">const_pointer</a><span> </span>c_str() const </div><div><p class="signature-description">
+Gets a pointer to a null-terminated array of characters representing the string's contents.         </p><p class="signature-description">
+<div><h4>Returns</h4>said pointer. </div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a803668c0585d7f2e6e99c1c1d349038b">data()</a> </div>
+        </p></div></div><div id="af5210a3d2702db74e4d02c67e614c41b" class="sect1"><div><h3>capacity</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>capacity() const </div><div><p class="signature-description">
+Gets the capacity of this string.         </p><p class="signature-description">
+<div><h4>Returns</h4>said capacity. </div>
+        </p></div></div><div id="a805625d6456064bdda062d2dfe1dc68d" class="sect1"><div><h3>clear</h3></div><div class="signature-box">void<span> </span>clear()</div><div><p class="signature-description">
+Erases the string making it empty.         </p><p class="signature-description">
+        </p></div></div><div id="ac3c082a19d662ca7fcc4a91d3d397ec8" class="sect1"><div><h3>compare</h3></div><div class="signature-box">int<span> </span>compare(String const &amp;s) const </div><div><p class="signature-description">
+Compares this string against another.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to compare to. </td></tr></table></div>
+<div><h4>Returns</h4>-1 only if this string &lt; <em>s</em>, 0 only if this string == <em>s</em>, or +1 only if this string &gt; <em>s</em>. </div>
+        </p></div></div><div id="a66422212aa337820054a6968f90844d8" class="sect1"><div><h3>compare</h3></div><div class="signature-box">int<span> </span>compare(std::string const &amp;s) const </div><div><p class="signature-description">
+Compares this string against another.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to compare to. </td></tr></table></div>
+<div><h4>Returns</h4>-1 only if this string &lt; <em>s</em>, 0 only if this string == <em>s</em>, or +1 only if this string &gt; <em>s</em>. </div>
+        </p></div></div><div id="ab5a4f1088626dfdeea543ca7ff33acba" class="sect1"><div><h3>compare</h3></div><div class="signature-box">int<span> </span>compare(const_pointer s) const </div><div><p class="signature-description">
+Compares this string against a C string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The null-terminated C string to compare to. </td></tr></table></div>
+<div><h4>Returns</h4>-1 only if this string &lt; <em>s</em>, 0 only if this string == <em>s</em>, or +1 only if this string &gt; <em>s</em>. </div>
+        </p></div></div><div id="a7655550f45a72ad0ffa8006a9e57ce0f" class="sect1"><div><h3>compare</h3></div><div class="signature-box">int<span> </span>compare(size_type pos, size_type n, String const &amp;s) const </div><div><p class="signature-description">
+Compares a substring of this string against another.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>n</td><td>
+The number of characters to compare. </td></tr><tr><td>s</td><td>
+The string to compare to. </td></tr></table></div>
+<div><h4>Returns</h4>-1 only if this string &lt; <em>s</em>, 0 only if this string == <em>s</em>, or +1 only if this string &gt; <em>s</em>. </div>
+        </p></div></div><div id="ac6aab7c5ab943897021c9b84c205ba84" class="sect1"><div><h3>compare</h3></div><div class="signature-box">int<span> </span>compare(size_type pos, size_type n, std::string const &amp;s) const </div><div><p class="signature-description">
+Compares a substring of this string against another.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>n</td><td>
+The number of characters to compare. </td></tr><tr><td>s</td><td>
+The string to compare to. </td></tr></table></div>
+<div><h4>Returns</h4>-1 only if this string &lt; <em>s</em>, 0 only if this string == <em>s</em>, or +1 only if this string &gt; <em>s</em>. </div>
+        </p></div></div><div id="a2e25e74a565411c395a8433f975872d6" class="sect1"><div><h3>compare</h3></div><div class="signature-box">int<span> </span>compare(size_type pos, size_type n, const_pointer s) const </div><div><p class="signature-description">
+Compares a substring of this string against a C string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>n</td><td>
+The number of characters to compare. </td></tr><tr><td>s</td><td>
+The null-terminated C string to compare to. </td></tr></table></div>
+<div><h4>Returns</h4>-1 only if this string &lt; <em>s</em>, 0 only if this string == <em>s</em>, or +1 only if this string &gt; <em>s</em>. </div>
+        </p></div></div><div id="a0f4c837a4b20eb11ca5c52feab65f5b6" class="sect1"><div><h3>compare</h3></div><div class="signature-box">int<span> </span>compare(size_type pos, size_type n, String const &amp;s, size_type s_pos, size_type s_n) const </div><div><p class="signature-description">
+Compares a substring of this string against a substring of another.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>n</td><td>
+The number of characters to compare. </td></tr><tr><td>s</td><td>
+The string to compare to. </td></tr><tr><td>s_pos</td><td>
+The starting position within <em>s</em>. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to compare. </td></tr></table></div>
+<div><h4>Returns</h4>-1 only if this string &lt; <em>s</em>, 0 only if this string == <em>s</em>, or +1 only if this string &gt; <em>s</em>. </div>
+        </p></div></div><div id="a1e098b7fb53bea8110996f36a74060db" class="sect1"><div><h3>compare</h3></div><div class="signature-box">int<span> </span>compare(size_type pos, size_type n, std::string const &amp;s, size_type s_pos, size_type s_n) const </div><div><p class="signature-description">
+Compares a substring of this string against a substring of another.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>n</td><td>
+The number of characters to compare. </td></tr><tr><td>s</td><td>
+The string to compare to. </td></tr><tr><td>s_pos</td><td>
+The starting position within <em>s</em>. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to compare. </td></tr></table></div>
+<div><h4>Returns</h4>-1 only if this string &lt; <em>s</em>, 0 only if this string == <em>s</em>, or +1 only if this string &gt; <em>s</em>. </div>
+        </p></div></div><div id="afde51ce78b3ca75e2040a78d4e0d925d" class="sect1"><div><h3>compare</h3></div><div class="signature-box">int<span> </span>compare(size_type pos, size_type n, const_pointer s, size_type s_n) const </div><div><p class="signature-description">
+Compares a substring of this string against a C string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>n</td><td>
+The number of characters to compare. </td></tr><tr><td>s</td><td>
+The C string to compare to. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to compare. </td></tr></table></div>
+<div><h4>Returns</h4>-1 only if this string &lt; <em>s</em>, 0 only if this string == <em>s</em>, or +1 only if this string &gt; <em>s</em>. </div>
+        </p></div></div><div id="aa2d139414d2d4a8d5c9120d97ae1f596" class="sect1"><div><h3>copy</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>copy(pointer buf, size_type n, size_type pos=0) const </div><div><p class="signature-description">
+Copies a substring to a C string buffer.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>buf</td><td>
+The buffer to copy into. </td></tr><tr><td>n</td><td>
+The number of characters to copy. It's the caller's responsibility to ensure that the size of <em>buf</em> &lt;= <em>n</em>. </td></tr><tr><td>pos</td><td>
+The position of the first character to copy. </td></tr></table></div>
+<div><h4>Returns</h4>the number of characters actually copied. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::out_of_range</td><td>
+if <em>pos</em> &gt;= <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a1be3687524c6b2a97418f1079daadfd1">size()</a>. </td></tr></table></div>
+        </p></div></div><div id="a803668c0585d7f2e6e99c1c1d349038b" class="sect1"><div><h3>data</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=aa8ee14c8eaa862982a480a9aeef07af6">const_pointer</a><span> </span>data() const </div><div><p class="signature-description">
+Gets a pointer to the raw character data comprising the string, not necessarily null-terminated.         </p><p class="signature-description">
+<div><h4>Returns</h4>said pointer. </div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a96b65111db89355b959066ccab039698">c_str()</a> </div>
+        </p></div></div><div id="ab32c3673a0235d0c843a965e0ee038e7" class="sect1"><div><h3>empty</h3></div><div class="signature-box">bool<span> </span>empty() const </div><div><p class="signature-description">
+Checks whether the string is empty.         </p><p class="signature-description">
+<div><h4>Returns</h4>True only if it is. </div>
+        </p></div></div><div id="aa24a117dc3e0c95446b7d6d53d72d919" class="sect1"><div><h3>end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a><span> </span>end()</div><div><p class="signature-description">
+Returns a read/write iterator positioned at one past the last character of the string.         </p><p class="signature-description">
+<div><h4>Returns</h4>said iterator. </div>
+        </p></div></div><div id="a6ab16ffe8877997784cb2e720fa21162" class="sect1"><div><h3>end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a943400c3ba7bf02f26dbc3c85ee5b26c">const_iterator</a><span> </span>end() const </div><div><p class="signature-description">
+Returns a read-only iterator positioned at one past the last character of the string.         </p><p class="signature-description">
+<div><h4>Returns</h4>said iterator. </div>
+        </p></div></div><div id="a1866ab9e9d181a682d68e185a38473ca" class="sect1"><div><h3>erase</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>erase(size_type pos=0, size_type n=npos)</div><div><p class="signature-description">
+Erases the given number of characters starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position of the first character to erase. </td></tr><tr><td>n</td><td>
+The number of characters to erase. </td></tr></table></div>
+<div><h4>Returns</h4>a reference to this string. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::out_of_range</td><td>
+if <em>pos</em> is beyond the end of the string. </td></tr></table></div>
+        </p></div></div><div id="aa5744d86029c7a7591aa99862c362e87" class="sect1"><div><h3>erase</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a><span> </span>erase(iterator i)</div><div><p class="signature-description">
+Erases the character at the given iterator's position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>i</td><td>
+The iterator marking the position of the character to erase. </td></tr></table></div>
+<div><h4>Returns</h4>a new iterator marking the same position (i.e., what becomes the next character). </div>
+        </p></div></div><div id="a57556d42571556c990f0d84da780ebaa" class="sect1"><div><h3>erase</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a><span> </span>erase(iterator i, iterator j)</div><div><p class="signature-description">
+Erases a range of characters [i,j).         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>i</td><td>
+The iterator marking the first character of the range. </td></tr><tr><td>j</td><td>
+The iterator marking one past the last character of the range. </td></tr></table></div>
+<div><h4>Returns</h4>a new iterator marking the same position as <em>i</em>. </div>
+        </p></div></div><div id="a29c02ca220d6417b27fddadea99572b3" class="sect1"><div><h3>find</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find(String const &amp;s, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for the given string starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>s</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a5370ff82c0bff74dcabc4309f3d96a02" class="sect1"><div><h3>find</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find(std::string const &amp;s, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for the given string starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>s</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="ad078e0728f7dc1bc19d16942c781fe10" class="sect1"><div><h3>find</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find(const_pointer s, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for the given string starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The null-terminated C string to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>s</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="afdd5f1995c0ab79927d3427b2024c172" class="sect1"><div><h3>find</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find(const_pointer s, size_type pos, size_type s_n) const </div><div><p class="signature-description">
+Searches this string for the given string starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The C string to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>s_n</td><td>
+The number of characters to compare. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>s</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a115dda64770fbbafbc3a36fbbbd82068" class="sect1"><div><h3>find</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find(value_type c, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for the given character staring at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>c</td><td>
+The character to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>c</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a1f1ad0baded674017b2ad15110f65a98" class="sect1"><div><h3>find_first_not_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_first_not_of(String const &amp;s, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for any one of the characters not in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters not to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a non-matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a7ef84aa7b9de247b4184390bf15eb4f7" class="sect1"><div><h3>find_first_not_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_first_not_of(std::string const &amp;s, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for any one of the characters not in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters not to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a non-matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a52bb4812c283c9f9bbff11e52b8ee746" class="sect1"><div><h3>find_first_not_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_first_not_of(const_pointer s, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for any one of the characters not in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters not to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a non-matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="abfee6e9a2420ae410667ee07e3216f6a" class="sect1"><div><h3>find_first_not_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_first_not_of(const_pointer s, size_type pos, size_type s_n) const </div><div><p class="signature-description">
+Searches this string for any one of the first <em>s_n</em> characters not in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters not to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to consider. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a non-matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="aba295b0f49b71d329e7b422f97484c21" class="sect1"><div><h3>find_first_not_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_first_not_of(value_type c, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for any character except the given character starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>c</td><td>
+The character not to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of any character except <em>c</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a267e7e29dd2cc0a05c967c64ceb5261f" class="sect1"><div><h3>find_first_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_first_of(String const &amp;s, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for any one of the characters in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a83ecd766f1ea4796c9618a9dbd88fceb" class="sect1"><div><h3>find_first_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_first_of(std::string const &amp;s, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for any one of the characters in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a995ce00e8b8248ac50249abe4017717b" class="sect1"><div><h3>find_first_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_first_of(const_pointer s, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for any one of the characters in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="ac3ef4d090be333ed3d42e6026de96c80" class="sect1"><div><h3>find_first_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_first_of(const_pointer s, size_type pos, size_type s_n) const </div><div><p class="signature-description">
+Searches this string for any one of the first <em>s_n</em> characters in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to consider. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a4bdc79af2461533a65baabedaaee09f5" class="sect1"><div><h3>find_first_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_first_of(value_type c, size_type pos=0) const </div><div><p class="signature-description">
+Searches this string for the given character starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>c</td><td>
+The character to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>c</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="aad4510ba639b433cf49079e719f3eb1a" class="sect1"><div><h3>find_last_not_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_last_not_of(String const &amp;s, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this string backwards for any one of the characters not in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to not search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a0541de415db05390ac33802d23aceea9" class="sect1"><div><h3>find_last_not_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_last_not_of(std::string const &amp;s, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this string backwards for any one of the characters not in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to not search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="ab61a0e1514f7a5ad2de911b622c2277a" class="sect1"><div><h3>find_last_not_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_last_not_of(const_pointer s, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this string backwards for any one of the characters not in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to not search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a6d24d8d02414595906fc8ce8bcbcb035" class="sect1"><div><h3>find_last_not_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_last_not_of(const_pointer s, size_type pos, size_type s_n) const </div><div><p class="signature-description">
+Searches this string backwards for any one of the first <em>s_n</em> characters not in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to not search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to consider. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a1c0f1a4d50e94215b0577dfd3150f8ad" class="sect1"><div><h3>find_last_not_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_last_not_of(value_type c, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this string backwards for any character except the given character starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>c</td><td>
+The character to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of any character except <em>c</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a9fb90a6b57cba391cdda415234104121" class="sect1"><div><h3>find_last_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_last_of(String const &amp;s, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this string backwards for any one of the characters in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a2ec9f8c0ab74f7f761101ce544223f04" class="sect1"><div><h3>find_last_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_last_of(std::string const &amp;s, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this string backwards for any one of the characters in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a7f65123b44e1ed545c3737e0f02e5f92" class="sect1"><div><h3>find_last_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_last_of(const_pointer s, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this string backwards for any one of the characters in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="ab1ef2178c2595d07f9aec54249fa9c50" class="sect1"><div><h3>find_last_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_last_of(const_pointer s, size_type pos, size_type s_n) const </div><div><p class="signature-description">
+Searches this string backwards for any one of the first <em>s_n</em> characters in <em>s</em> starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The set of characters to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to consider. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of a matching character or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="addf908cd5ed027b28017094397b5a086" class="sect1"><div><h3>find_last_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>find_last_of(value_type c, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this string backwards for the given character starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>c</td><td>
+The character to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>c</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a48fb92578153393c24eddab4b9e81e2e" class="sect1"><div><h3>insert</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>insert(size_type pos, String const &amp;s)</div><div><p class="signature-description">
+Inserts the given string into this string at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to insert at. </td></tr><tr><td>s</td><td>
+The string to insert. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a228b4f0296bcd35d34b28e6fd80c0fa1" class="sect1"><div><h3>insert</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>insert(size_type pos, std::string const &amp;s)</div><div><p class="signature-description">
+Inserts the given string into this string at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to insert at. </td></tr><tr><td>s</td><td>
+The string to insert. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ab15e1a14dba99236c50b535ae54c429f" class="sect1"><div><h3>insert</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>insert(size_type pos, const_pointer s)</div><div><p class="signature-description">
+Inserts the given string into this string at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to insert at. </td></tr><tr><td>s</td><td>
+The null-terminated string to insert. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="acd9ae67ebb7cce8117871ad291d74968" class="sect1"><div><h3>insert</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>insert(size_type pos, String const &amp;s, size_type s_pos, size_type s_n)</div><div><p class="signature-description">
+Inserts a substring of the given string into this string at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to insert at. </td></tr><tr><td>s</td><td>
+The null-terminated C string to insert. </td></tr><tr><td>s_pos</td><td>
+The starting position within <em>s</em>. </td></tr><tr><td>s_n</td><td>
+The numer of characters of <em>s</em> to insert. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="abaa0ad6fdf665f28677f9e7e4d32717b" class="sect1"><div><h3>insert</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>insert(size_type pos, std::string const &amp;s, size_type s_pos, size_type s_n)</div><div><p class="signature-description">
+Inserts a substring of the given string into this string at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to insert at. </td></tr><tr><td>s</td><td>
+The null-terminated C string to insert. </td></tr><tr><td>s_pos</td><td>
+The starting position within <em>s</em>. </td></tr><tr><td>s_n</td><td>
+The numer of characters of <em>s</em> to insert. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ae85daffed6282e5a8eb40873ef76af5e" class="sect1"><div><h3>insert</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>insert(size_type pos, const_pointer s, size_type s_n)</div><div><p class="signature-description">
+Inserts a substring of the given string into this string at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to insert at. </td></tr><tr><td>s</td><td>
+The C string to insert. </td></tr><tr><td>s_n</td><td>
+The numer of characters of <em>s</em> to insert. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="aa283bc56b273a69a44383b868eaf1cca" class="sect1"><div><h3>insert</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>insert(size_type pos, size_type n, value_type c)</div><div><p class="signature-description">
+Inserts <em>n</em> copies of <em>c</em> into this string at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to insert at. </td></tr><tr><td>n</td><td>
+The number of copies of <em>c</em> to insert. </td></tr><tr><td>c</td><td>
+The character to insert. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="aa676193cd2c270fea5ad2c128ed5c06f" class="sect1"><div><h3>insert</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a25459a4094aeaec55be0e8e33776386d">iterator</a><span> </span>insert(iterator pos, value_type c)</div><div><p class="signature-description">
+Inserts the given character into this string at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The iterator marking the position within this string to insert at. </td></tr><tr><td>c</td><td>
+The character to insert. </td></tr></table></div>
+<div><h4>Returns</h4>Returns an iterator positioned at the newly inserted character. </div>
+        </p></div></div><div id="a223988a7e6892093db561e3aa3bbe4c4" class="sect1"><div><h3>insert</h3></div><div class="signature-box">void<span> </span>insert(iterator pos, size_type n, value_type c)</div><div><p class="signature-description">
+Inserts <em>n</em> copies of <em>c</em> into this string at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The iterator marking the position within this string to insert at. </td></tr><tr><td>n</td><td>
+The number of copies of <em>c</em> to insert. </td></tr><tr><td>c</td><td>
+The character to insert. </td></tr></table></div>
+        </p></div></div><div id="a4c0b250d93a1f7b29526cac5840d313f" class="sect1"><div><h3>length</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>length() const </div><div><p class="signature-description">
+Gets the number of characters in this string.         </p><p class="signature-description">
+<div><h4>Returns</h4>The number of UTF-8 characters. </div>
+        </p></div></div><div id="a6da78e8d706c543b980e853a7fee351f" class="sect1"><div><h3>operator+=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>operator+=(String const &amp;s)</div><div><p class="signature-description">
+Appends the given string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ad64dbacb91864d1199a0dba1b46250d5" class="sect1"><div><h3>operator+=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>operator+=(std::string const &amp;s)</div><div><p class="signature-description">
+Appends the given std::string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a95ebba50443b7acdc635611d048513ce" class="sect1"><div><h3>operator+=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>operator+=(const_pointer s)</div><div><p class="signature-description">
+Appends the given C string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The null-terminated C string to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ad4ebfbcab54b6f7426aa13cdf195f23f" class="sect1"><div><h3>operator+=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>operator+=(value_type c)</div><div><p class="signature-description">
+Appends the given character to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>c</td><td>
+The character to append. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="abceaf5b90384eac42f9096228b101a1f" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>operator=(String const &amp;s)</div><div><p class="signature-description">
+Assigns another string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to assign from. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a9d85e6c65b73ff2971249672ef103137" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>operator=(std::string const &amp;s)</div><div><p class="signature-description">
+Assigns a std::string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to assign from. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="aefd742f94c258ab5f9850d10c5a6d3cd" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>operator=(const_pointer s)</div><div><p class="signature-description">
+Assigns a C string to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The null-terminated C string to assign from. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a4ce1086dca6262349fdd7a325b9ac321" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>operator=(value_type c)</div><div><p class="signature-description">
+Assigns a character to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>c</td><td>
+The character to assign. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="acc2f650cb355de3ae55d444c34aea725" class="sect1"><div><h3>operator[]</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=ad259ae9c5c0fee907ad864884f34d1d1">const_reference</a><span> </span>operator[](size_type pos) const </div><div><p class="signature-description">
+References a particular character within the string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The index of the character. The index is not bounds-checked. </td></tr></table></div>
+<div><h4>Returns</h4>said character as an r-value. </div>
+        </p></div></div><div id="ad210fcf8fbd8837f0b38632168680ed3" class="sect1"><div><h3>push_back</h3></div><div class="signature-box">void<span> </span>push_back(value_type c)</div><div><p class="signature-description">
+Appends the given character to this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>c</td><td>
+The character to append. </td></tr></table></div>
+        </p></div></div><div id="a51ea92cd4531616644187ab6407a543a" class="sect1"><div><h3>rbegin</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=adcb2f121b303280b4bd8c55bc800e8f7">reverse_iterator</a><span> </span>rbegin()</div><div><p class="signature-description">
+Returns a read/write reverse iterator positioned at the first character of the reversed string.         </p><p class="signature-description">
+<div><h4>Returns</h4>said iterator. </div>
+        </p></div></div><div id="a9e79c70591887447ce7de62269c482fb" class="sect1"><div><h3>rbegin</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a6f5fd0179bbb3da6b97413f2c905cdf3">const_reverse_iterator</a><span> </span>rbegin() const </div><div><p class="signature-description">
+Returns a read-only reverse iterator positioned at the first character of the reversed string.         </p><p class="signature-description">
+<div><h4>Returns</h4>said iterator. </div>
+        </p></div></div><div id="a1ea3723719c921f12aa802e5538a0c6a" class="sect1"><div><h3>rend</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=adcb2f121b303280b4bd8c55bc800e8f7">reverse_iterator</a><span> </span>rend()</div><div><p class="signature-description">
+Returns a read/write reverse iterator positioned at one past the last character of the reversed string.         </p><p class="signature-description">
+<div><h4>Returns</h4>said iterator. </div>
+        </p></div></div><div id="a4f6a534822c74163fd410c6b7891cd8e" class="sect1"><div><h3>rend</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a6f5fd0179bbb3da6b97413f2c905cdf3">const_reverse_iterator</a><span> </span>rend() const </div><div><p class="signature-description">
+Returns a read-only reverse iterator positioned at one past the last character of the reversed string.         </p><p class="signature-description">
+<div><h4>Returns</h4>said iterator. </div>
+        </p></div></div><div id="a06ce1eb8f55d6270087c4a32cc9315cc" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(size_type pos, size_type n, String const &amp;s)</div><div><p class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to replace at. </td></tr><tr><td>n</td><td>
+The number of characters to replace. </td></tr><tr><td>s</td><td>
+The replacement string. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a8c8322e147abe48a6d3edb408e98e05c" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(size_type pos, size_type n, std::string const &amp;s)</div><div><p class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to replace at. </td></tr><tr><td>n</td><td>
+The number of characters to replace. </td></tr><tr><td>s</td><td>
+The replacement string. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a25faa20749834da38bbc950e5b0dd743" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(size_type pos, size_type n, const_pointer s)</div><div><p class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to replace at. </td></tr><tr><td>n</td><td>
+The number of characters to replace. </td></tr><tr><td>s</td><td>
+The null-terminated replacement C string. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a9fc8ac3462921755b45d068c26cd488c" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(size_type pos, size_type n, String const &amp;s, size_type s_pos, size_type s_n)</div><div><p class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with a substring of the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to replace at. </td></tr><tr><td>n</td><td>
+The number of characters to replace. </td></tr><tr><td>s</td><td>
+The replacement string. </td></tr><tr><td>s_pos</td><td>
+The starting position in <em>s</em>. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to use. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a78bb24dec9b729ad39e99f27b97defdc" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(size_type pos, size_type n, std::string const &amp;s, size_type s_pos, size_type s_n)</div><div><p class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with a substring of the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to replace at. </td></tr><tr><td>n</td><td>
+The number of characters to replace. </td></tr><tr><td>s</td><td>
+The replacement string. </td></tr><tr><td>s_pos</td><td>
+The starting position in <em>s</em>. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to use. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a31258c7ed1d56eb86e5cef6eead313f9" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(size_type pos, size_type n, const_pointer s, size_type s_n)</div><div><p class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with a substring of the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to replace at. </td></tr><tr><td>n</td><td>
+The number of characters to replace. </td></tr><tr><td>s</td><td>
+The replacement C string. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to use. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ad8b3c259c5e71baa3e9e2bf88346bd9c" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(size_type pos, size_type n, size_type c_n, value_type c)</div><div><p class="signature-description">
+Replaces <em>n</em> characters of this string starting at the given position with <em>c_n</em> copies of <em>c</em>.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position within this string to replace at. </td></tr><tr><td>n</td><td>
+The number of characters to replace. </td></tr><tr><td>c_n</td><td>
+The number of copies of <tt>to</tt> replace with. </td></tr><tr><td>c</td><td>
+The character to replace with. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a31f451a03dc8153ee94816abc5a487cc" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(iterator i, iterator j, String const &amp;s)</div><div><p class="signature-description">
+Replaces the range of characters [i,j) of this string with the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>i</td><td>
+The iterator marking the first character of the range. </td></tr><tr><td>j</td><td>
+The iterator marking one past the last character of the range. </td></tr><tr><td>s</td><td>
+The replacement string. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ae5336b4266dfca42cf7976434f36a8b6" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(iterator i, iterator j, std::string const &amp;s)</div><div><p class="signature-description">
+Replaces the range of characters [i,j) of this string with the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>i</td><td>
+The iterator marking the first character of the range. </td></tr><tr><td>j</td><td>
+The iterator marking one past the last character of the range. </td></tr><tr><td>s</td><td>
+The replacement string. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a7fe0358a326f2fc8f96fda5cb62b842e" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(iterator i, iterator j, const_pointer s)</div><div><p class="signature-description">
+Replaces the range of characters [i,j) of this string with the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>i</td><td>
+The iterator marking the first character of the range. </td></tr><tr><td>j</td><td>
+The iterator marking one past the last character of the range. </td></tr><tr><td>s</td><td>
+The null-terminated replacement C string. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ab687599a0e1cf139ba45c9f76e11ab1d" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(iterator i, iterator j, const_pointer s, size_type s_n)</div><div><p class="signature-description">
+Replaces the range of characters [i,j) of this string with a substring of the given string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>i</td><td>
+The iterator marking the first character of the range. </td></tr><tr><td>j</td><td>
+The iterator marking one past the last character of the range. </td></tr><tr><td>s</td><td>
+The replacement C string. </td></tr><tr><td>s_n</td><td>
+The number of characters of <em>s</em> to use. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="a0e15502af6ebda785721b295f94d2491" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(iterator i, iterator j, size_type n, value_type c)</div><div><p class="signature-description">
+Replaces the range of characters [i,j) of this string with <em>c_n</em> copies of <em>c</em>.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>i</td><td>
+The iterator marking the first character of the range. </td></tr><tr><td>j</td><td>
+The iterator marking one past the last character of the range. </td></tr><tr><td>n</td><td>
+The number of copies of <tt>to</tt> replace with. </td></tr><tr><td>c</td><td>
+The character to replace with. </td></tr></table></div>
+<div><h4>Returns</h4>Returns this string. </div>
+        </p></div></div><div id="aa71e31ed2f802e679be1c53a4287eb3f" class="sect1"><div><h3>replace</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>replace(iterator i, iterator j, iterator si, iterator sj)</div><div><p class="signature-description">
+Replaces the range of characters [i,j) of this string with the range of characters [si,sj).         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>i</td><td>
+The iterator marking the first character of the range. </td></tr><tr><td>j</td><td>
+The iterator marking one past the last character of the range. </td></tr><tr><td>si</td><td>
+The iterator marking the first character of the range. </td></tr><tr><td>sj</td><td>
+The iterator marking one past the last character of the range. </td></tr></table></div>
+<div><h4>Returns</h4>this string. </div>
+        </p></div></div><div id="ac257b096e2b08daf4d16c430e153378a" class="sect1"><div><h3>reserve</h3></div><div class="signature-box">void<span> </span>reserve(size_type n)</div><div><p class="signature-description">
+Attemts to pre-allocated enough memory to contain the given number of bytes.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>n</td><td>
+The number of bytes. </td></tr></table></div>
+        </p></div></div><div id="a5ae5be7c1ef83cc005703323db307ba6" class="sect1"><div><h3>resize</h3></div><div class="signature-box">void<span> </span>resize(size_type n, value_type c=value_type())</div><div><p class="signature-description">
+Resizes the string to the given number of characters.         </p><p class="signature-description">
+If the number &lt; <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a1be3687524c6b2a97418f1079daadfd1">size()</a>, the string will be truncated; if the number &gt; <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a1be3687524c6b2a97418f1079daadfd1">size()</a>, the string will be extended and the new elements will be set to <em>c</em>.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>n</td><td>
+The number of characters. </td></tr><tr><td>c</td><td>
+Characters to fill any new positions. </td></tr></table></div>
+        </p></div></div><div id="a93e53893af8e5c4dadb66e01f49af139" class="sect1"><div><h3>rfind</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>rfind(String const &amp;s, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this backwards string for the given string starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>s</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a3722dad02236e91e58a341da480f73d3" class="sect1"><div><h3>rfind</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>rfind(std::string const &amp;s, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this backwards string for the given string starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>s</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="ac706cb912dabd92063da941fe4255f86" class="sect1"><div><h3>rfind</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>rfind(const_pointer s, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this backwards string for the given string starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>s</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a08e274e09394184e457fba0bf2fd9be1" class="sect1"><div><h3>rfind</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>rfind(const_pointer s, size_type pos, size_type s_n) const </div><div><p class="signature-description">
+Searches this string backwards for the given string starting at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The C string to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr><tr><td>s_n</td><td>
+The number of characters to compare. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>s</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a09858a4b96ee03347c2d9f00a49a4e76" class="sect1"><div><h3>rfind</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>rfind(value_type c, size_type pos=npos) const </div><div><p class="signature-description">
+Searches this string backwards for the given character staring at the given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>c</td><td>
+The character to search for. </td></tr><tr><td>pos</td><td>
+The starting position within this string. </td></tr></table></div>
+<div><h4>Returns</h4>the offset of <em>c</em> or <tt>npos</tt> if not found. </div>
+        </p></div></div><div id="a1be3687524c6b2a97418f1079daadfd1" class="sect1"><div><h3>size</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a8a65cc2ad4058f7bbcf2719c93d8c763">size_type</a><span> </span>size() const </div><div><p class="signature-description">
+Gets the number of characters in this string.         </p><p class="signature-description">
+(This is a synonym for <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a4c0b250d93a1f7b29526cac5840d313f">length()</a>.)<div><h4>Returns</h4>The number of UTF-8 characters. </div>
+        </p></div></div><div id="a562c464bbe75f0ed908c99651a104419" class="sect1"><div><h3>str</h3></div><div class="signature-box">std::string<span> </span>str() const </div><div><p class="signature-description">
+Gets a <tt>std::string</tt> equivalent of this string.         </p><p class="signature-description">
+(There intentionally is no <tt>operator std::string() const</tt> since its convenient use would mask the expense of creating a new <tt>std::string</tt>.) This function is an extension to the std::string API.<div><h4>Returns</h4>said <tt>std::string</tt>. </div>
+        </p></div></div><div id="afbe6334ab580d107be7e3fdc999e8f3b" class="sect1"><div><h3>String</h3></div><div class="signature-box"><span> </span>String()</div><div><p class="signature-description">
+Constructs an empty string.         </p><p class="signature-description">
+        </p></div></div><div id="abf9f99cd3bca04c197c0b420e2b691bd" class="sect1"><div><h3>String</h3></div><div class="signature-box"><span> </span>String(String const &amp;s)</div><div><p class="signature-description">
+Copy constructs a new string from an existing string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to copy from. </td></tr></table></div>
+        </p></div></div><div id="a2a1d4c179b2ad62b626b0fd738872b47" class="sect1"><div><h3>String</h3></div><div class="signature-box"><span> </span>String(std::string const &amp;s)</div><div><p class="signature-description">
+Constructs a new string from an existing std::string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to copy from. </td></tr></table></div>
+        </p></div></div><div id="aacffcd33a8f44cdeb37357bec4b6bbb1" class="sect1"><div><h3>String</h3></div><div class="signature-box"><span> </span>String(const_pointer s)</div><div><p class="signature-description">
+Constructs a string from the given C string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The null-terminated C string. </td></tr></table></div>
+        </p></div></div><div id="a7d1a8ae5b57ad617eb3e2e03ce8e6f77" class="sect1"><div><h3>String</h3></div><div class="signature-box"><span> </span>String(String const &amp;s, size_type pos, size_type n=npos)</div><div><p class="signature-description">
+Copy constructs a new string from a substring of an existing string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to copy from. </td></tr><tr><td>pos</td><td>
+The position of the first character to copy. </td></tr><tr><td>n</td><td>
+The number of characters to copy. </td></tr></table></div>
+        </p></div></div><div id="a23ac28599f27fb664e341064eb2aa6e3" class="sect1"><div><h3>String</h3></div><div class="signature-box"><span> </span>String(std::string const &amp;s, size_type pos, size_type n=npos)</div><div><p class="signature-description">
+Constructs a new string from a substring of an existing std::string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to copy from. </td></tr><tr><td>pos</td><td>
+The starting position of the substring. </td></tr><tr><td>n</td><td>
+The number of characters of the substring. </td></tr></table></div>
+        </p></div></div><div id="a3d4087349f856e982295826a5e87d029" class="sect1"><div><h3>String</h3></div><div class="signature-box"><span> </span>String(const_pointer s, size_type n)</div><div><p class="signature-description">
+Constructs a string from the given C string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The C string. </td></tr><tr><td>n</td><td>
+The number of characters to copy. </td></tr></table></div>
+        </p></div></div><div id="abc5648a13f4d6b8ad1f13f5080646201" class="sect1"><div><h3>String</h3></div><div class="signature-box"><span> </span>String(size_type n, value_type c)</div><div><p class="signature-description">
+Constructs a new string as <em>n</em> copies of <em>c</em>.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>n</td><td>
+The number of times to repeat the character. </td></tr><tr><td>c</td><td>
+The character to repeat. </td></tr></table></div>
+        </p></div></div><div id="a5bffa4536bc562eb848fd2e8dde89861" class="sect1"><div><h3>String</h3></div><div class="signature-box"><span> </span>String(const_iterator i, const_iterator j)</div><div><p class="signature-description">
+Constructs a string from a range of characters [i,j).         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>i</td><td>
+The iterator marking the first character of the range. </td></tr><tr><td>j</td><td>
+The iterator marking one past the last character of the range. </td></tr></table></div>
+        </p></div></div><div id="ac0fcd86560d50a5418fb05de10063e97" class="sect1"><div><h3>substr</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>substr(size_type pos=0, size_type n=npos) const </div><div><p class="signature-description">
+Creates a new string that is a substring of this string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>pos</td><td>
+The position in this string for first character of the new string. </td></tr><tr><td>n</td><td>
+The number of characters to extract. </td></tr></table></div>
+<div><h4>Returns</h4>the new string. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::out_of_range</td><td>
+if <em>pos</em> &gt;= <a href="/pages/3.0/zorba/classzorba_1_1String?anchor=a1be3687524c6b2a97418f1079daadfd1">size()</a>. </td></tr></table></div>
+        </p></div></div><div id="a76f1304a5bf5236234f8fe1fbae8e0d2" class="sect1"><div><h3>swap</h3></div><div class="signature-box">void<span> </span>swap(String &amp;s)</div><div><p class="signature-description">
+Swaps the contents of this string with another.         </p><p class="signature-description">
+This is an O(1) operation.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>s</td><td>
+The string to swap with. </td></tr></table></div>
+        </p></div></div><div id="a4af70cd8f3540143d6541fb8b42fc073" class="sect1"><div><h3>~String</h3></div><div class="signature-box"><span> </span>~String()</div><div><p class="signature-description">
+Destructs this string.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Functions</h2><div class="detailed"><div id="aebca126eece10d7da4e156429eebd722" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a> &amp;<span> </span>operator=(zstring_ptr)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aab3d2fbb2c2af0a02cc9cae4c3137510" class="sect1"><div><h3>String</h3></div><div class="signature-box"><span> </span>String(zstring_ptr)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Static Functions</h2><div class="detailed"><div id="a542817545535ea3398ab7b6c5a462b1e" class="sect1"><div><h3>size_check</h3></div><div class="signature-box">void<span> </span>size_check()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

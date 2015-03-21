@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1NonContextualExternalFunction" kind="class" prot="public">
+    <compoundname>zorba::NonContextualExternalFunction</compoundname>
+    <basecompoundref refid="classzorba_1_1ExternalFunction" prot="public" virt="non-virtual">zorba::ExternalFunction</basecompoundref>
+    <includes refid="function_8h" local="no">zorba/function.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1NonContextualExternalFunction_1acd9141d3667d25d493d5b022447a5271" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref></type>
+        <definition>virtual ItemSequence_t zorba::NonContextualExternalFunction::evaluate</definition>
+        <argsstring>(const Arguments_t &amp;) const =0</argsstring>
+        <name>evaluate</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1ExternalFunction_1a6a5ca34441eda62bafea62a67a4b1ee5" kindref="member">Arguments_t</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="195"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ExternalFunction_1a9d36a7d1a9f453478b46ae8a1c73cb1d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::ExternalFunction::getLocalName</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getLocalName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The local name of the function QName </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="166"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ExternalFunction_1a29a6d6f9a2768904ff6b898b9094a8b9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::ExternalFunction::getURI</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getURI</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The namespace URI of the function QName </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="160"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1NonContextualExternalFunction_1a690f9d11450d43891fdfe92bb4554cff" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool zorba::NonContextualExternalFunction::isContextual</definition>
+        <argsstring>() const </argsstring>
+        <name>isContextual</name>
+        <reimplements refid="classzorba_1_1ExternalFunction_1a4ba76944e30cb998dcf3662eab3d384f">isContextual</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True if the external function is contextual; false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="198" bodyfile="/home/wcandillon/deadlinks/include/zorba/function.h" bodystart="198" bodyend="198"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1NonContextualExternalFunction_1a6858f93ab609f1bc4d123e30378c3298" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::NonContextualExternalFunction::~NonContextualExternalFunction</definition>
+        <argsstring>()</argsstring>
+        <name>~NonContextualExternalFunction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="192" bodyfile="/home/wcandillon/deadlinks/include/zorba/function.h" bodystart="192" bodyend="192"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1ExternalFunction_1a6a5ca34441eda62bafea62a67a4b1ee5" prot="public" static="no">
+        <type>std::vector&lt; <ref refid="classzorba_1_1ItemSequence" kindref="compound">ItemSequence</ref> * &gt;</type>
+        <definition>typedef std::vector&lt;ItemSequence*&gt; zorba::ExternalFunction::Arguments_t</definition>
+        <argsstring></argsstring>
+        <name>Arguments_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="151" bodyfile="/home/wcandillon/deadlinks/include/zorba/function.h" bodystart="151" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1ExternalFunction_1a69da0bb4c7b3ef96bcd468f95b505ea9" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>Item zorba::ExternalFunction::getItem</definition>
+        <argsstring>(Arguments_t const &amp;args, unsigned pos) const </argsstring>
+        <name>getItem</name>
+        <param>
+          <type><ref refid="classzorba_1_1ExternalFunction_1a6a5ca34441eda62bafea62a67a4b1ee5" kindref="member">Arguments_t</ref> const &amp;</type>
+          <declname>args</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="176"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The <ref refid="classzorba_1_1NonContextualExternalFunction" kindref="compound">NonContextualExternalFunction</ref> class serves as the base of subclasses that represent the implementation of non contextual external functions. </para>    </briefdescription>
+    <detaileddescription>
+<para>For each external function, an application must provide a concrete subclass of this class and &quot;store&quot; an instance of the subclass inside an <ref refid="classzorba_1_1ExternalModule" kindref="compound">ExternalModule</ref> object, as described <ulink url="../zorba/external_functions.html">here</ulink>. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="724">
+        <label>zorba::ExternalFunction</label>
+        <link refid="classzorba_1_1ExternalFunction"/>
+      </node>
+      <node id="723">
+        <label>zorba::NonContextualExternalFunction</label>
+        <link refid="classzorba_1_1NonContextualExternalFunction"/>
+        <childnode refid="724" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="726">
+        <label>zorba::ExternalFunction</label>
+        <link refid="classzorba_1_1ExternalFunction"/>
+      </node>
+      <node id="725">
+        <label>zorba::NonContextualExternalFunction</label>
+        <link refid="classzorba_1_1NonContextualExternalFunction"/>
+        <childnode refid="726" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="190" bodyfile="/home/wcandillon/deadlinks/include/zorba/function.h" bodystart="189" bodyend="199"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1ExternalFunction_1a6a5ca34441eda62bafea62a67a4b1ee5" prot="public" virt="non-virtual"><scope>zorba::NonContextualExternalFunction</scope><name>Arguments_t</name></member>
+      <member refid="classzorba_1_1NonContextualExternalFunction_1acd9141d3667d25d493d5b022447a5271" prot="public" virt="pure-virtual"><scope>zorba::NonContextualExternalFunction</scope><name>evaluate</name></member>
+      <member refid="classzorba_1_1ExternalFunction_1a69da0bb4c7b3ef96bcd468f95b505ea9" prot="protected" virt="non-virtual"><scope>zorba::NonContextualExternalFunction</scope><name>getItem</name></member>
+      <member refid="classzorba_1_1ExternalFunction_1a9d36a7d1a9f453478b46ae8a1c73cb1d" prot="public" virt="pure-virtual"><scope>zorba::NonContextualExternalFunction</scope><name>getLocalName</name></member>
+      <member refid="classzorba_1_1ExternalFunction_1a29a6d6f9a2768904ff6b898b9094a8b9" prot="public" virt="pure-virtual"><scope>zorba::NonContextualExternalFunction</scope><name>getURI</name></member>
+      <member refid="classzorba_1_1NonContextualExternalFunction_1a690f9d11450d43891fdfe92bb4554cff" prot="public" virt="virtual"><scope>zorba::NonContextualExternalFunction</scope><name>isContextual</name></member>
+      <member refid="classzorba_1_1ExternalFunction_1af8e482c6b0e79609c8a52301e1f45da0" prot="public" virt="virtual"><scope>zorba::NonContextualExternalFunction</scope><name>~ExternalFunction</name></member>
+      <member refid="classzorba_1_1NonContextualExternalFunction_1a6858f93ab609f1bc4d123e30378c3298" prot="public" virt="virtual"><scope>zorba::NonContextualExternalFunction</scope><name>~NonContextualExternalFunction</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

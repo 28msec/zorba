@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl" kind="namespace">
+    <compoundname>zorba::internal::ztd::has_insertion_operator_impl</compoundname>
+    <innerclass refid="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1any__t" prot="public">zorba::internal::ztd::has_insertion_operator_impl::any_t</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator" prot="public">zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1a02a523cf236289acec6640afe9070191" prot="public" static="no">
+        <type>char</type>
+        <definition>typedef char zorba::internal::ztd::has_insertion_operator_impl::no</definition>
+        <argsstring></argsstring>
+        <name>no</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="91" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1a71a7c7338cfff03861b084e62c3308b1" prot="public" static="no">
+        <type>char</type>
+        <definition>typedef char zorba::internal::ztd::has_insertion_operator_impl::yes[2]</definition>
+        <argsstring>[2]</argsstring>
+        <name>yes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="92" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1a449972bfdc223eb1c1b73ca85fbbf0d2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1a71a7c7338cfff03861b084e62c3308b1" kindref="member">yes</ref> &amp;</type>
+        <definition>yes&amp; zorba::internal::ztd::has_insertion_operator_impl::defined</definition>
+        <argsstring>(std::ostream &amp;)</argsstring>
+        <name>defined</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <briefdescription>
+<para>This function is matched only when there <emphasis>is</emphasis> a global <computeroutput><ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af6f8268706824cf6c6ae5326cc90e283" kindref="member">operator&lt;&lt;()</ref></computeroutput> declared for type <computeroutput>T</computeroutput> because <computeroutput><ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af6f8268706824cf6c6ae5326cc90e283" kindref="member">operator&lt;&lt;()</ref>&apos;s</computeroutput> return type is <computeroutput>std::ostream&amp;</computeroutput>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns a yes&amp; whose <computeroutput>sizeof()</computeroutput> equals <computeroutput>sizeof(yes)</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="117"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af63d8573a3cfd51aa2c8b507f1077f30" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1a02a523cf236289acec6640afe9070191" kindref="member">no</ref></type>
+        <definition>no zorba::internal::ztd::has_insertion_operator_impl::defined</definition>
+        <argsstring>(no)</argsstring>
+        <name>defined</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1a02a523cf236289acec6640afe9070191" kindref="member">no</ref></type>
+        </param>
+        <briefdescription>
+<para>This function is matched only when the dummy <computeroutput><ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af6f8268706824cf6c6ae5326cc90e283" kindref="member">operator&lt;&lt;()</ref></computeroutput> is matched. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns a no whose <computeroutput>sizeof()</computeroutput> equals <computeroutput>sizeof(no)</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="124"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af6f8268706824cf6c6ae5326cc90e283" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1a02a523cf236289acec6640afe9070191" kindref="member">no</ref></type>
+        <definition>no zorba::internal::ztd::has_insertion_operator_impl::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream const &amp;, any_t const &amp;)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream const &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1any__t" kindref="compound">any_t</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+<para>This dummy operator is matched only when there is <emphasis>no</emphasis> global <ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af6f8268706824cf6c6ae5326cc90e283" kindref="member">operator&lt;&lt;()</ref> otherwise declared for type <computeroutput>T</computeroutput>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns a <computeroutput>no</computeroutput> that selects <ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af63d8573a3cfd51aa2c8b507f1077f30" kindref="member">defined(no)</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="108"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="90"/>
+  </compounddef>
+</doxygen>

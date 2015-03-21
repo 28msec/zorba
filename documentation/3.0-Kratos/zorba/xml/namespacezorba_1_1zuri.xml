@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1zuri" kind="namespace">
+    <compoundname>zorba::zuri</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacezorba_1_1zuri_1aee7e250b058a41698bc2cac86a3e029a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a887f81405addcb31dd11322020506603" kindref="member">ZorbaURIErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaURIErrorCode zorba::zuri::CHARSET_UNKNOWN</definition>
+        <argsstring></argsstring>
+        <name>CHARSET_UNKNOWN</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="986"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zuri_1a2fca041a057e705c1f1d6b91af583f90" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a887f81405addcb31dd11322020506603" kindref="member">ZorbaURIErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaURIErrorCode zorba::zuri::INVALID_ABSOLUTE_PATH</definition>
+        <argsstring></argsstring>
+        <name>INVALID_ABSOLUTE_PATH</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="992"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zuri_1a7e31151d551e984140043639a5a1e48d" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a887f81405addcb31dd11322020506603" kindref="member">ZorbaURIErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaURIErrorCode zorba::zuri::OPAQUE_COMB_NOT_VALID</definition>
+        <argsstring></argsstring>
+        <name>OPAQUE_COMB_NOT_VALID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="988"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zuri_1adfbaf12e400c7322395f81301c7fb814" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a887f81405addcb31dd11322020506603" kindref="member">ZorbaURIErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaURIErrorCode zorba::zuri::OPAQUE_WITHOUT_SCHEME</definition>
+        <argsstring></argsstring>
+        <name>OPAQUE_WITHOUT_SCHEME</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="990"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1zuri_1a657ef698f57cf1e56b7b787439322f13" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a887f81405addcb31dd11322020506603" kindref="member">ZorbaURIErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaURIErrorCode zorba::zuri::URI_UNRESOLVED_OR_NOSTREAM</definition>
+        <argsstring></argsstring>
+        <name>URI_UNRESOLVED_OR_NOSTREAM</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="994"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="984"/>
+  </compounddef>
+</doxygen>

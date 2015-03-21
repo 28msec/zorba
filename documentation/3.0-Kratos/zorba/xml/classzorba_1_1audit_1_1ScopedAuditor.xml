@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1audit_1_1ScopedAuditor" kind="class" prot="public">
+    <compoundname>zorba::audit::ScopedAuditor</compoundname>
+    <includes refid="audit__scoped_8h" local="no">zorba/audit_scoped.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>unsigned char</type>
+        <declname>flags</declname>
+        <defname>flags</defname>
+        <defval>0</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1audit_1_1ScopedAuditor_1ac7c0c86e9affadf4a9c99dd8ebe7e174" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool zorba::audit::ScopedAuditor&lt; T, flags &gt;::theNeedToAuditFlag</definition>
+        <argsstring></argsstring>
+        <name>theNeedToAuditFlag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="101" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1audit_1_1ScopedAuditor_1ae73d9a59d83893b2a394860a7b778996" prot="private" static="no" mutable="no">
+        <type>const <ref refid="classzorba_1_1audit_1_1Property" kindref="compound">Property</ref> &amp;</type>
+        <definition>const Property&amp; zorba::audit::ScopedAuditor&lt; T, flags &gt;::theProperty</definition>
+        <argsstring></argsstring>
+        <name>theProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="100" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1audit_1_1ScopedAuditor_1a6d8c1764d43a625725c601b7696911ef" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1audit_1_1ScopedRecord" kindref="compound">ScopedRecord</ref> &amp;</type>
+        <definition>ScopedRecord&amp; zorba::audit::ScopedAuditor&lt; T, flags &gt;::theRecord</definition>
+        <argsstring></argsstring>
+        <name>theRecord</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="99" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1audit_1_1ScopedAuditor_1a447eb8e448b087b4e32f277aad53ec9b" prot="private" static="no" mutable="no">
+        <type>T &amp;</type>
+        <definition>T&amp; zorba::audit::ScopedAuditor&lt; T, flags &gt;::theValue</definition>
+        <argsstring></argsstring>
+        <name>theValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="102" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1audit_1_1ScopedAuditor_1a92b0cec322aedf6e993ddf74b3153803" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::audit::ScopedAuditor&lt; T, flags &gt;::now</definition>
+        <argsstring>()</argsstring>
+        <name>now</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="87" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="87" bodyend="93"/>
+        <references refid="classzorba_1_1audit_1_1Record_1a5b805edeb8eb5f107f953d27f56b290d">zorba::audit::Record::add</references>
+        <references refid="classzorba_1_1audit_1_1ScopedRecord_1a4b446d4ac3b2e28d5600e585fccb44b6" compoundref="audit__scoped_8h" startline="48" endline="53">zorba::audit::ScopedRecord::getRecord</references>
+        <referencedby refid="classzorba_1_1audit_1_1ScopedAuditor_1af7e162164a4f86aec5869b9ab113982c" compoundref="audit__scoped_8h" startline="83" endline="85">zorba::audit::ScopedAuditor&lt; T, flags &gt;::~ScopedAuditor</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1ScopedAuditor_1a34c403cf4c8055d4d053ea9f591d12b9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::audit::ScopedAuditor&lt; T, flags &gt;::ScopedAuditor</definition>
+        <argsstring>(ScopedRecord &amp;record, const Property &amp;prop, T &amp;value)</argsstring>
+        <name>ScopedAuditor</name>
+        <param>
+          <type><ref refid="classzorba_1_1audit_1_1ScopedRecord" kindref="compound">ScopedRecord</ref> &amp;</type>
+          <declname>record</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1audit_1_1Property" kindref="compound">Property</ref> &amp;</type>
+          <declname>prop</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="66" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="65" bodyend="71"/>
+        <references refid="classzorba_1_1audit_1_1Event_1abfdb3126ab5b0b2f265bfaa415f42528">zorba::audit::Event::audit</references>
+        <references refid="classzorba_1_1audit_1_1ScopedRecord_1abaa5cb0211f801c41b383ab921cc8e5a" compoundref="audit__scoped_8h" startline="44" endline="46">zorba::audit::ScopedRecord::getEvent</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1ScopedAuditor_1a0f2976ad9046e7847bc05741cb35c0d6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::audit::ScopedAuditor&lt; T, flags &gt;::ScopedAuditor</definition>
+        <argsstring>(ScopedRecord &amp;record, const String &amp;prop_name, T &amp;value)</argsstring>
+        <name>ScopedAuditor</name>
+        <param>
+          <type><ref refid="classzorba_1_1audit_1_1ScopedRecord" kindref="compound">ScopedRecord</ref> &amp;</type>
+          <declname>record</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>prop_name</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="76" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="73" bodyend="81"/>
+        <references refid="classzorba_1_1audit_1_1Event_1abfdb3126ab5b0b2f265bfaa415f42528">zorba::audit::Event::audit</references>
+        <references refid="classzorba_1_1audit_1_1ScopedRecord_1abaa5cb0211f801c41b383ab921cc8e5a" compoundref="audit__scoped_8h" startline="44" endline="46">zorba::audit::ScopedRecord::getEvent</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1ScopedAuditor_1af7e162164a4f86aec5869b9ab113982c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::audit::ScopedAuditor&lt; T, flags &gt;::~ScopedAuditor</definition>
+        <argsstring>()</argsstring>
+        <name>~ScopedAuditor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="83" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="83" bodyend="85"/>
+        <references refid="classzorba_1_1audit_1_1ScopedAuditor_1a92b0cec322aedf6e993ddf74b3153803" compoundref="audit__scoped_8h" startline="87" endline="93">zorba::audit::ScopedAuditor&lt; T, flags &gt;::now</references>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1audit_1_1ScopedAuditor_1aab8cbfa9d0fa2faca0db296373cd1f66" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::audit::ScopedAuditor&lt; T, flags &gt;::ScopedAuditor</definition>
+        <argsstring>()</argsstring>
+        <name>ScopedAuditor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="96" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="96" bodyend="96"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1ScopedAuditor_1a337e3f90fda7eb4e39b1d124d5b41147" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::audit::ScopedAuditor&lt; T, flags &gt;::ScopedAuditor</definition>
+        <argsstring>(const ScopedAuditor &amp;)</argsstring>
+        <name>ScopedAuditor</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1audit_1_1ScopedAuditor" kindref="compound">ScopedAuditor</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="97" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="97" bodyend="97"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="63" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="63" bodyend="103"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1audit_1_1ScopedAuditor_1a92b0cec322aedf6e993ddf74b3153803" prot="public" virt="non-virtual"><scope>zorba::audit::ScopedAuditor</scope><name>now</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedAuditor_1a34c403cf4c8055d4d053ea9f591d12b9" prot="public" virt="non-virtual"><scope>zorba::audit::ScopedAuditor</scope><name>ScopedAuditor</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedAuditor_1a0f2976ad9046e7847bc05741cb35c0d6" prot="public" virt="non-virtual"><scope>zorba::audit::ScopedAuditor</scope><name>ScopedAuditor</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedAuditor_1aab8cbfa9d0fa2faca0db296373cd1f66" prot="private" virt="non-virtual"><scope>zorba::audit::ScopedAuditor</scope><name>ScopedAuditor</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedAuditor_1a337e3f90fda7eb4e39b1d124d5b41147" prot="private" virt="non-virtual"><scope>zorba::audit::ScopedAuditor</scope><name>ScopedAuditor</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedAuditor_1ac7c0c86e9affadf4a9c99dd8ebe7e174" prot="private" virt="non-virtual"><scope>zorba::audit::ScopedAuditor</scope><name>theNeedToAuditFlag</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedAuditor_1ae73d9a59d83893b2a394860a7b778996" prot="private" virt="non-virtual"><scope>zorba::audit::ScopedAuditor</scope><name>theProperty</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedAuditor_1a6d8c1764d43a625725c601b7696911ef" prot="private" virt="non-virtual"><scope>zorba::audit::ScopedAuditor</scope><name>theRecord</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedAuditor_1a447eb8e448b087b4e32f277aad53ec9b" prot="private" virt="non-virtual"><scope>zorba::audit::ScopedAuditor</scope><name>theValue</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedAuditor_1af7e162164a4f86aec5869b9ab113982c" prot="public" virt="non-virtual"><scope>zorba::audit::ScopedAuditor</scope><name>~ScopedAuditor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

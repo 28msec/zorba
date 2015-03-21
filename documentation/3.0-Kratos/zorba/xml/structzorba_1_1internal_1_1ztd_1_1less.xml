@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1internal_1_1ztd_1_1less" kind="struct" prot="public">
+    <compoundname>zorba::internal::ztd::less</compoundname>
+    <includes refid="ztd_8h" local="no">zorba/internal/ztd.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="233" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="233" bodyend="234"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

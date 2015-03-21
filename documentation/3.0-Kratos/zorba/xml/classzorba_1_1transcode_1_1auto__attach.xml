@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1transcode_1_1auto__attach" kind="class" prot="public">
+    <compoundname>zorba::transcode::auto_attach</compoundname>
+    <includes refid="transcode__stream_8h" local="no">zorba/util/transcode_stream.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class StreamType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1transcode_1_1auto__attach_1a272bef9bbebc667a67963c598c62f026" prot="private" static="no" mutable="no">
+        <type>StreamType *</type>
+        <definition>StreamType* zorba::transcode::auto_attach&lt; StreamType &gt;::stream_</definition>
+        <argsstring></argsstring>
+        <name>stream_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="299" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="299" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1auto__attach_1aa3965d631f5331cfc0d71c969615cb56" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::transcode::auto_attach&lt; StreamType &gt;::attach</definition>
+        <argsstring>(StreamType &amp;stream, char const *charset)</argsstring>
+        <name>attach</name>
+        <param>
+          <type>StreamType &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>charset</declname>
+        </param>
+        <briefdescription>
+<para>Calls <ref refid="namespacezorba_1_1transcode_1a44eff53620b083f7384c20eea64a534b" kindref="member">transcode::attach()</ref> on the given stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to attach the <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> to. If the stream already has a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> attached to it, this contructor does nothing. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>charset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the character encoding to convert from/to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> was attached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="280" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="280" bodyend="286"/>
+        <references refid="namespacezorba_1_1transcode_1a44eff53620b083f7384c20eea64a534b" compoundref="transcode__stream_8h" startline="145" endline="157">zorba::transcode::attach</references>
+        <referencedby refid="classzorba_1_1transcode_1_1auto__attach_1ae62db14aa0cddc2c707b65fed7634253" compoundref="transcode__stream_8h" startline="236" endline="238">zorba::transcode::auto_attach&lt; StreamType &gt;::auto_attach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1auto__attach_1a03330aca248ff4936b5c25a69b5361e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::transcode::auto_attach&lt; StreamType &gt;::auto_attach</definition>
+        <argsstring>()</argsstring>
+        <name>auto_attach</name>
+        <briefdescription>
+<para>Default constructor; does nothing. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="225" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="225" bodyend="226"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1auto__attach_1ae62db14aa0cddc2c707b65fed7634253" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::transcode::auto_attach&lt; StreamType &gt;::auto_attach</definition>
+        <argsstring>(StreamType &amp;stream, char const *charset)</argsstring>
+        <name>auto_attach</name>
+        <param>
+          <type>StreamType &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>charset</declname>
+        </param>
+        <briefdescription>
+<para>Constructs an auto_attach object calling <ref refid="classzorba_1_1transcode_1_1auto__attach_1aa3965d631f5331cfc0d71c969615cb56" kindref="member">attach()</ref> on the given stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to attach the <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> to. If the stream already has a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> attached to it, this contructor does nothing. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>charset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the character encoding to convert from/to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="236" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="236" bodyend="238"/>
+        <references refid="classzorba_1_1transcode_1_1auto__attach_1aa3965d631f5331cfc0d71c969615cb56" compoundref="transcode__stream_8h" startline="280" endline="286">zorba::transcode::auto_attach&lt; StreamType &gt;::attach</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1auto__attach_1a8280cc474b828ec97f5870ccbdf655e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::transcode::auto_attach&lt; StreamType &gt;::auto_attach</definition>
+        <argsstring>(auto_attach &amp;from)</argsstring>
+        <name>auto_attach</name>
+        <param>
+          <type><ref refid="classzorba_1_1transcode_1_1auto__attach" kindref="compound">auto_attach</ref> &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Copy constructor that takes ownership of the stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The auto_attach to take ownership from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="245" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="245" bodyend="247"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1auto__attach_1a6859243e6b019f44fbbbbb29c3e04e74" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::transcode::auto_attach&lt; StreamType &gt;::detach</definition>
+        <argsstring>()</argsstring>
+        <name>detach</name>
+        <briefdescription>
+<para>Calls <ref refid="namespacezorba_1_1transcode_1ac1a9e5e77b37b933a78581467f24ee1d" kindref="member">transcode::detach()</ref>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="291" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="291" bodyend="296"/>
+        <referencedby refid="classzorba_1_1transcode_1_1auto__attach_1accbfbc96eb1e2940225879dc1974f1b2" compoundref="transcode__stream_8h" startline="253" endline="255">zorba::transcode::auto_attach&lt; StreamType &gt;::~auto_attach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1auto__attach_1a98afbb042f37d36124a6b513a74bbcb9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1transcode_1_1auto__attach" kindref="compound">auto_attach</ref> &amp;</type>
+        <definition>auto_attach&amp; zorba::transcode::auto_attach&lt; StreamType &gt;::operator=</definition>
+        <argsstring>(auto_attach &amp;from)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1transcode_1_1auto__attach" kindref="compound">auto_attach</ref> &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Assignment operator that takes ownership of the stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The auto_attach to take ownership from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>*this</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="263" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="263" bodyend="269"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1auto__attach_1accbfbc96eb1e2940225879dc1974f1b2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::transcode::auto_attach&lt; StreamType &gt;::~auto_attach</definition>
+        <argsstring>()</argsstring>
+        <name>~auto_attach</name>
+        <briefdescription>
+<para>Destroys this auto_attach object calling <ref refid="classzorba_1_1transcode_1_1auto__attach_1a6859243e6b019f44fbbbbb29c3e04e74" kindref="member">detach()</ref> on the previously attached stream, if any. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="253" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="253" bodyend="255"/>
+        <references refid="classzorba_1_1transcode_1_1auto__attach_1a6859243e6b019f44fbbbbb29c3e04e74" compoundref="transcode__stream_8h" startline="291" endline="296">zorba::transcode::auto_attach&lt; StreamType &gt;::detach</references>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A transcode::auto_attach is a class that attaches a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> to a stream and automatically detaches it when the auto_attach object is destroyed. </para>    </briefdescription>
+    <detaileddescription>
+<para><programlisting><codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f(<sp/>ostream<sp/>&amp;<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abd9d340f17925d6dcfdf23e0ff40ddf1" kindref="member" tooltip="Ossetian; Ossetic.">os</ref><sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>transcode::auto_attach&lt;ostream&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>raii(<sp/>os,<sp/></highlight><highlight class="stringliteral">&quot;ISO-8859-1&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+</programlisting> A transcode::auto_attach is useful for streams not created by you.</para><para><simplesect kind="see"><para><ulink url="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization">http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization</ulink> </para></simplesect>
+</para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="220" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="220" bodyend="300"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1transcode_1_1auto__attach_1aa3965d631f5331cfc0d71c969615cb56" prot="public" virt="non-virtual"><scope>zorba::transcode::auto_attach</scope><name>attach</name></member>
+      <member refid="classzorba_1_1transcode_1_1auto__attach_1a03330aca248ff4936b5c25a69b5361e7" prot="public" virt="non-virtual"><scope>zorba::transcode::auto_attach</scope><name>auto_attach</name></member>
+      <member refid="classzorba_1_1transcode_1_1auto__attach_1ae62db14aa0cddc2c707b65fed7634253" prot="public" virt="non-virtual"><scope>zorba::transcode::auto_attach</scope><name>auto_attach</name></member>
+      <member refid="classzorba_1_1transcode_1_1auto__attach_1a8280cc474b828ec97f5870ccbdf655e7" prot="public" virt="non-virtual"><scope>zorba::transcode::auto_attach</scope><name>auto_attach</name></member>
+      <member refid="classzorba_1_1transcode_1_1auto__attach_1a6859243e6b019f44fbbbbb29c3e04e74" prot="public" virt="non-virtual"><scope>zorba::transcode::auto_attach</scope><name>detach</name></member>
+      <member refid="classzorba_1_1transcode_1_1auto__attach_1a98afbb042f37d36124a6b513a74bbcb9" prot="public" virt="non-virtual"><scope>zorba::transcode::auto_attach</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1transcode_1_1auto__attach_1a272bef9bbebc667a67963c598c62f026" prot="private" virt="non-virtual"><scope>zorba::transcode::auto_attach</scope><name>stream_</name></member>
+      <member refid="classzorba_1_1transcode_1_1auto__attach_1accbfbc96eb1e2940225879dc1974f1b2" prot="public" virt="non-virtual"><scope>zorba::transcode::auto_attach</scope><name>~auto_attach</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

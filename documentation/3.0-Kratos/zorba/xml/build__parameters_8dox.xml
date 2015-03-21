@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build__parameters_8dox" kind="file">
+    <compoundname>build_parameters.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>configuration_parameters<sp/>Zorba<sp/>Configuration<sp/>Parameters</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">This<sp/>is<sp/>a<sp/>list<sp/>of<sp/>all<sp/>published<sp/>Zorba<sp/>configuration<sp/>parameters.<sp/><sp/>You</highlight></codeline>
+<codeline lineno="4"><highlight class="comment">specify<sp/>these<sp/>parameters<sp/>at<sp/>CMake<sp/>configuration<sp/>time<sp/>with<sp/>the<sp/>\c<sp/>-D</highlight></codeline>
+<codeline lineno="5"><highlight class="comment">argument.<sp/>See<sp/>\ref<sp/>configure_parameters<sp/>for<sp/>more<sp/>information.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"></highlight></codeline>
+<codeline lineno="7"><highlight class="comment">\section<sp/>configure_enable<sp/>Enabling/Disabling<sp/>Zorba<sp/>Features</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"></highlight></codeline>
+<codeline lineno="9"><highlight class="comment">\subsection<sp/>ZORBA_WITH_BIG_INTEGER<sp/>Big<sp/>Integer<sp/>Support</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"></highlight></codeline>
+<codeline lineno="11"><highlight class="comment">The<sp/>Zorba<sp/>XQuery<sp/>processor<sp/>by<sp/>default<sp/>has<sp/>arbitrary<sp/>precision<sp/>for<sp/>the</highlight></codeline>
+<codeline lineno="12"><highlight class="comment">\c<sp/>xs:integer<sp/>type.<sp/><sp/>Compared<sp/>to<sp/>a<sp/>C++<sp/>\c<sp/>int,<sp/>however,<sp/>arbitrary</highlight></codeline>
+<codeline lineno="13"><highlight class="comment">precision<sp/>integers<sp/>are<sp/>orders<sp/>of<sp/>magnitude<sp/>slower.<sp/><sp/>If<sp/>arbitrary</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">precision<sp/>integers<sp/>are<sp/>not<sp/>needed,<sp/>they<sp/>can<sp/>be<sp/>disabled<sp/>by<sp/>configuring</highlight></codeline>
+<codeline lineno="15"><highlight class="comment">Zorba<sp/>with<sp/>the<sp/>\c<sp/>ZORBA_WITH_BIG_INTEGER<sp/>option<sp/>set<sp/>to<sp/>\c<sp/>OFF,</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">i.e.<sp/>&lt;tt&gt;-D<sp/>ZORBA_WITH_BIG_INTEGER=OFF&lt;/tt&gt;</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"></highlight></codeline>
+<codeline lineno="18"><highlight class="comment">When<sp/>arbitrary<sp/>precision<sp/>integers<sp/>are<sp/>disabled,<sp/>Zorba<sp/>uses<sp/>a<sp/>C++</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">&lt;code&gt;long<sp/>long&lt;/code&gt;<sp/>for<sp/>\c<sp/>xs:integer,<sp/>the<sp/>precision<sp/>for<sp/>which<sp/>is</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">dependent<sp/>on<sp/>your<sp/>C++<sp/>implementation.<sp/><sp/>Typically,<sp/>however,<sp/>the</highlight></codeline>
+<codeline lineno="21"><highlight class="comment">precision<sp/>is<sp/>at<sp/>least<sp/>64<sp/>bits.<sp/><sp/>However,<sp/>in<sp/>order<sp/>to<sp/>maintain<sp/>the</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">condition<sp/>that<sp/>the<sp/>value<sp/>space<sp/>for<sp/>\c<sp/>xs:nonNegativeInteger<sp/>is<sp/>a</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">subset<sp/>of<sp/>that<sp/>of<sp/>\c<sp/>xs:integer,<sp/>one<sp/>less<sp/>bit<sp/>is<sp/>allowed<sp/>for<sp/>\c</highlight></codeline>
+<codeline lineno="24"><highlight class="comment">xs:nonNegativeInteger.</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"></highlight></codeline>
+<codeline lineno="26"><highlight class="comment">\subsection<sp/>ZORBA_NO_FULL_TEXT<sp/>XQuery<sp/>Full-Text<sp/>Support</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"></highlight></codeline>
+<codeline lineno="28"><highlight class="comment">Zorba<sp/>by<sp/>default<sp/>supports<sp/>the<sp/>XQuery<sp/>Full-Text<sp/>specification</highlight></codeline>
+<codeline lineno="29"><highlight class="comment">(http://www.w3.org/TR/xpath-full-text-10/<sp/>).<sp/>If<sp/>you<sp/>wish<sp/>to<sp/>disable</highlight></codeline>
+<codeline lineno="30"><highlight class="comment">this<sp/>support,<sp/>configure<sp/>with<sp/>&lt;tt&gt;-D<sp/>ZORBA_NO_FULL_TEXT=ON&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"></highlight></codeline>
+<codeline lineno="32"><highlight class="comment">\subsection<sp/>ZORBA_XQUERX<sp/>XQueryX<sp/>Support</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"></highlight></codeline>
+<codeline lineno="34"><highlight class="comment">Zorba<sp/>by<sp/>default<sp/>does<sp/>not<sp/>build<sp/>with<sp/>support<sp/>for<sp/>XQueryX<sp/>(which<sp/>is<sp/>an</highlight></codeline>
+<codeline lineno="35"><highlight class="comment">alternate<sp/>representation<sp/>of<sp/>XQuery<sp/>using<sp/>pure<sp/>XML).<sp/>To<sp/>enable<sp/>this</highlight></codeline>
+<codeline lineno="36"><highlight class="comment">support,<sp/>configure<sp/>with<sp/>&lt;tt&gt;-DZORBA_XQUERYX=ON&lt;/tt&gt;.<sp/>Note<sp/>that</highlight></codeline>
+<codeline lineno="37"><highlight class="comment">building<sp/>with<sp/>XQueryX<sp/>support<sp/>requires<sp/>LibXslt<sp/>to<sp/>be<sp/>available.</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"></highlight></codeline>
+<codeline lineno="39"><highlight class="comment">\subsection<sp/>ZORBA_VERIFY_PEER_SSL_CERTIFICATE<sp/>Enabling<sp/>SSL<sp/>Peer<sp/>Verification</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"></highlight></codeline>
+<codeline lineno="41"><highlight class="comment">By<sp/>default,<sp/>Zorba&apos;s<sp/>HTTP<sp/>module<sp/>does<sp/>not<sp/>validate<sp/>the<sp/>SSL<sp/>certificate</highlight></codeline>
+<codeline lineno="42"><highlight class="comment">sent<sp/>to<sp/>it<sp/>by<sp/>HTTPS<sp/>servers.<sp/>This<sp/>is<sp/>because<sp/>not<sp/>all<sp/>systems<sp/>have<sp/>a</highlight></codeline>
+<codeline lineno="43"><highlight class="comment">complete<sp/>or<sp/>valid<sp/>set<sp/>of<sp/>root<sp/>certificates<sp/>against<sp/>which<sp/>to<sp/>validate</highlight></codeline>
+<codeline lineno="44"><highlight class="comment">said<sp/>server<sp/>certificates.<sp/>If<sp/>you<sp/>wish<sp/>to<sp/>enable<sp/>SSL<sp/>peer<sp/>validation,</highlight></codeline>
+<codeline lineno="45"><highlight class="comment">configure<sp/>with<sp/>&lt;tt&gt;-D<sp/>ZORBA_VERIFY_PEER_SSL_CERTIFICATE=ON&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"></highlight></codeline>
+<codeline lineno="47"><highlight class="comment">\section<sp/>configure_deps<sp/>Disabling<sp/>Zorba<sp/>Library<sp/>Requirements</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"></highlight></codeline>
+<codeline lineno="49"><highlight class="comment">\subsection<sp/>ZORBA_NO_ICU<sp/>Disable<sp/>ICU<sp/>(Unicode)<sp/>Support</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"></highlight></codeline>
+<codeline lineno="51"><highlight class="comment">The<sp/>ICU<sp/>library<sp/>provides<sp/>Unicode<sp/>functionality,<sp/>and<sp/>is<sp/>required<sp/>by</highlight></codeline>
+<codeline lineno="52"><highlight class="comment">default<sp/>when<sp/>building<sp/>Zorba.<sp/>To<sp/>disable<sp/>this<sp/>requirement,<sp/>configure</highlight></codeline>
+<codeline lineno="53"><highlight class="comment">with<sp/>&lt;tt&gt;-D<sp/>ZORBA_NO_ICU=ON&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"></highlight></codeline>
+<codeline lineno="55"><highlight class="comment">\subsection<sp/>ZORBA_NO_XMLSCHEMA<sp/>Disable<sp/>Xerces<sp/>(XML<sp/>Schema)<sp/>Support</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"></highlight></codeline>
+<codeline lineno="57"><highlight class="comment">The<sp/>Xerces-C<sp/>library<sp/>provides<sp/>XML<sp/>Schema<sp/>functionality,<sp/>and<sp/>is</highlight></codeline>
+<codeline lineno="58"><highlight class="comment">required<sp/>by<sp/>default<sp/>when<sp/>building<sp/>Zorba.<sp/>To<sp/>disable<sp/>this<sp/>requirement,</highlight></codeline>
+<codeline lineno="59"><highlight class="comment">configure<sp/>with<sp/>&lt;tt&gt;-D<sp/>ZORBA_NO_XMLSCHEMA=ON&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"></highlight></codeline>
+<codeline lineno="61"><highlight class="comment">\subsection<sp/>ZORBA_SUPPRESS_CURL<sp/>Disable<sp/>Curl<sp/>(HTTP)<sp/>Support</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"></highlight></codeline>
+<codeline lineno="63"><highlight class="comment">The<sp/>Curl<sp/>library<sp/>provides<sp/>HTTP<sp/>functionality.<sp/>Zorba<sp/>will<sp/>automatically</highlight></codeline>
+<codeline lineno="64"><highlight class="comment">build<sp/>with<sp/>HTTP<sp/>support<sp/>(via<sp/>the<sp/>built-in<sp/>\c<sp/>http-client<sp/>module)<sp/>if<sp/>it</highlight></codeline>
+<codeline lineno="65"><highlight class="comment">detects<sp/>\c<sp/>libcurl.<sp/>To<sp/>suppress<sp/>this<sp/>check<sp/>(so<sp/>you<sp/>can<sp/>build<sp/>Zorba</highlight></codeline>
+<codeline lineno="66"><highlight class="comment">without<sp/>HTTP<sp/>support<sp/>even<sp/>if<sp/>Curl<sp/>is<sp/>installed<sp/>on<sp/>your<sp/>system),</highlight></codeline>
+<codeline lineno="67"><highlight class="comment">configure<sp/>with<sp/>&lt;tt&gt;-D<sp/>ZORBA_SUPPRESS_CURL=ON&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"></highlight></codeline>
+<codeline lineno="69"><highlight class="comment">\section<sp/>configure_buildparams<sp/>Parameters<sp/>for<sp/>Compiling</highlight></codeline>
+<codeline lineno="70"><highlight class="comment"></highlight></codeline>
+<codeline lineno="71"><highlight class="comment">\subsection<sp/>ZORBA_MODULES_DIR<sp/>Specifying<sp/>the<sp/>Directory<sp/>for<sp/>Non-Core<sp/>Modules</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"></highlight></codeline>
+<codeline lineno="73"><highlight class="comment">By<sp/>default,<sp/>Zorba<sp/>will<sp/>automatically<sp/>build<sp/>any<sp/>non-core<sp/>module</highlight></codeline>
+<codeline lineno="74"><highlight class="comment">packages<sp/>it<sp/>finds<sp/>in<sp/>a<sp/>directory<sp/>named<sp/>\c<sp/>zorba_modules<sp/>that<sp/>is<sp/>a</highlight></codeline>
+<codeline lineno="75"><highlight class="comment">sibling<sp/>to<sp/>the<sp/>directory<sp/>containing<sp/>Zorba&apos;s<sp/>own<sp/>source<sp/>(that<sp/>is,</highlight></codeline>
+<codeline lineno="76"><highlight class="comment">\&quot;&lt;tt&gt;../zorba_modules&lt;/tt&gt;\&quot;<sp/>from<sp/>the<sp/>source<sp/>directory).<sp/><sp/>See<sp/>\ref</highlight></codeline>
+<codeline lineno="77"><highlight class="comment">noncore_download<sp/>for<sp/>more<sp/>information.</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"></highlight></codeline>
+<codeline lineno="79"><highlight class="comment">If<sp/>you<sp/>wish<sp/>to<sp/>build<sp/>non-core<sp/>modules<sp/>from<sp/>a<sp/>different<sp/>location,</highlight></codeline>
+<codeline lineno="80"><highlight class="comment">configure<sp/>with<sp/>&lt;tt&gt;-D<sp/>ZORBA_MODULES_DIR=/path/to/modules&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="81"><highlight class="comment"></highlight></codeline>
+<codeline lineno="82"><highlight class="comment">\subsection<sp/>ZORBA_THIRD_PARTY_REQUIREMENTS<sp/>Specifying<sp/>the<sp/>Location<sp/>of<sp/>Third-Party<sp/>Requirements<sp/>on<sp/>Windows</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"></highlight></codeline>
+<codeline lineno="84"><highlight class="comment">On<sp/>Windows,<sp/>you<sp/>should<sp/>configure<sp/>with<sp/>&lt;tt&gt;-D</highlight></codeline>
+<codeline lineno="85"><highlight class="comment">ZORBA_THIRD_PARTY_REQUIREMENTS=/path1;/path2&lt;/tt&gt;<sp/>to<sp/>indicate<sp/>the</highlight></codeline>
+<codeline lineno="86"><highlight class="comment">path(s)<sp/>to<sp/>third-party<sp/>libraries,<sp/>instead<sp/>of<sp/>\c</highlight></codeline>
+<codeline lineno="87"><highlight class="comment">CMAKE_PREFIX_PATH.<sp/>This<sp/>is<sp/>described<sp/>in<sp/>detail<sp/>at<sp/>\ref</highlight></codeline>
+<codeline lineno="88"><highlight class="comment">windows_autodll.</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"></highlight></codeline>
+<codeline lineno="90"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/build_parameters.dox"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,13 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::ExternalFunctionParameter</h1><p class="include">
+            #include &lt;zorba/external_function_parameter.h&gt;
+        </p>
+Instances of subclasses of this abstract class may be used as parameters to the <a href="/pages/3.0/zorba/classzorba_1_1DynamicContext?anchor=aecdf4c714a2a71ac6c3b2dda875dc103">DynamicContext::addExternalFunctionParameter</a> function.     
+This is useful in the implementation of external modules/functions in order to store information between several invocations of the same function.The destroy method is called by <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> at the end of the execution of an <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> program, when the corresponding <a href="/pages/3.0/zorba/classzorba_1_1DynamicContext">DynamicContext</a> is destroyed.     <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#abe1f3c2fb52aaa64617b33efb1ad03dd">destroy</a>()=0</p><span class="signature-description">
+This function is invoked by <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> when the <a href="/pages/3.0/zorba/classzorba_1_1DynamicContext">DynamicContext</a> that contains the instance is destroyed.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a0263f3adfe5ba459a1e7cc53af1b7611">~ExternalFunctionParameter</a>()</p><span class="signature-description">
+Virtual destructor with an empty implementation.         </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="abe1f3c2fb52aaa64617b33efb1ad03dd" class="sect1"><div><h3>destroy</h3></div><div class="signature-box">void<span> </span>destroy()=0</div><div><p class="signature-description">
+This function is invoked by <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> when the <a href="/pages/3.0/zorba/classzorba_1_1DynamicContext">DynamicContext</a> that contains the instance is destroyed.         </p><p class="signature-description">
+This allows the user to release resources. In the simplest case, an implementation might simply call "delete this" to destroy the object.         </p></div></div><div id="a0263f3adfe5ba459a1e7cc53af1b7611" class="sect1"><div><h3>~ExternalFunctionParameter</h3></div><div class="signature-box"><span> </span>~ExternalFunctionParameter()</div><div><p class="signature-description">
+Virtual destructor with an empty implementation.         </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

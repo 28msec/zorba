@@ -1,0 +1,435 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1uuid" kind="struct" prot="public">
+    <compoundname>zorba::uuid</compoundname>
+    <includes refid="uuid_8h" local="no">zorba/util/uuid.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structzorba_1_1uuid_1aefabb8f65444edb7be9caf445e1069b4" prot="public" static="no">
+        <type><ref refid="structzorba_1_1uuid_1afa76cf80f256b37865aad4b0e7f9be2f" kindref="member">const_pointer</ref></type>
+        <definition>typedef const_pointer zorba::uuid::const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="56" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structzorba_1_1uuid_1afa76cf80f256b37865aad4b0e7f9be2f" prot="public" static="no">
+        <type><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref> const *</type>
+        <definition>typedef value_type const* zorba::uuid::const_pointer</definition>
+        <argsstring></argsstring>
+        <name>const_pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="51" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structzorba_1_1uuid_1a27135dec13308dbe5a509267dd961bab" prot="public" static="no">
+        <type><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref> const &amp;</type>
+        <definition>typedef value_type const&amp; zorba::uuid::const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="49" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structzorba_1_1uuid_1ab3e22d69eb7986e417ebca99d0480896" prot="public" static="no">
+        <type>std::ptrdiff_t</type>
+        <definition>typedef std::ptrdiff_t zorba::uuid::difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="53" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structzorba_1_1uuid_1a689d34d0f7315e86c5e44b117f0c83be" prot="public" static="no">
+        <type><ref refid="structzorba_1_1uuid_1a6e1ff9ac3afd0504c1bf0b9c075b1e6e" kindref="member">pointer</ref></type>
+        <definition>typedef pointer zorba::uuid::iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="55" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structzorba_1_1uuid_1a6e1ff9ac3afd0504c1bf0b9c075b1e6e" prot="public" static="no">
+        <type><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref> *</type>
+        <definition>typedef value_type* zorba::uuid::pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="50" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structzorba_1_1uuid_1a792eb4d9e74a81eab35d983bf028f8fb" prot="public" static="no">
+        <type><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref> &amp;</type>
+        <definition>typedef value_type&amp; zorba::uuid::reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="48" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structzorba_1_1uuid_1a7871a098b1978880a827f03225f2d2b1" prot="public" static="no">
+        <type>std::size_t</type>
+        <definition>typedef std::size_t zorba::uuid::size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="52" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" prot="public" static="no">
+        <type>unsigned char</type>
+        <definition>typedef unsigned char zorba::uuid::value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="47" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="enum" id="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0" prot="public" static="no">
+        <name>variant</name>
+        <enumvalue id="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a82dadf54e74056cb885d51d3e049526e" prot="public">
+          <name>ncs</name>
+          <briefdescription>
+<para>NCS backward compatibility. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a68a3f4b5a216f1fe61b7433eb5aa3b66" prot="public">
+          <name>rfc4122</name>
+          <briefdescription>
+<para>RFC 4122. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a9aeca30618768ac5665dc33479a149a1" prot="public">
+          <name>microsoft</name>
+          <briefdescription>
+<para>Microsoft compatibility. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0aec74ee647c93d830a85e88912644c9b5" prot="public">
+          <name>future</name>
+          <briefdescription>
+<para>Reserved for future use. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="58" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="58" bodyend="63"/>
+      </memberdef>
+      <memberdef kind="enum" id="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473" prot="public" static="no">
+        <name>version</name>
+        <enumvalue id="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473a3af1bb9375fb9ccd265e8c037394823f" prot="public">
+          <name>unknown</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473ac481c9c2ac1a28aa6a63b673497cc1a5" prot="public">
+          <name>time_based</name>
+          <initializer> 0x10</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473a201227da8bb76a82ce5277957ad58871" prot="public">
+          <name>dce_security</name>
+          <initializer> 0x20</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473afd52720d2ef1a2d84c7e4f0022aa87a3" prot="public">
+          <name>name_based_md5</name>
+          <initializer> 0x30</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473ac3e6079deb8e990a938e885f0098061e" prot="public">
+          <name>random_number_based</name>
+          <initializer> 0x40</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473a8bf23c0d1d8ba43e7182c14ed22fb5aa" prot="public">
+          <name>name_based_sha1</name>
+          <initializer> 0x50</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="65" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="65" bodyend="72"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structzorba_1_1uuid_1ac46d76bf7250e3579c4b74cf213bf4fa" prot="public" static="no" mutable="no">
+        <type><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref></type>
+        <definition>value_type zorba::uuid::data[16]</definition>
+        <argsstring>[16]</argsstring>
+        <name>data</name>
+        <briefdescription>
+<para>The raw UUID data. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="77" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structzorba_1_1uuid_1ab12c27e02e6513e589dbf039b6bbd472" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void zorba::uuid::create</definition>
+        <argsstring>(uuid *result)</argsstring>
+        <name>create</name>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> *</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>Creates a UUID. </para>        </briefdescription>
+        <detaileddescription>
+<para>The variant and version of the UUID created is platform-dependent.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the result. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="85"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structzorba_1_1uuid_1a689d34d0f7315e86c5e44b117f0c83be" kindref="member">iterator</ref></type>
+        <definition>iterator zorba::uuid::begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+<para>Creates an iterator to the beginning of the data. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said iterator. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="92" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="92" bodyend="94"/>
+        <referencedby refid="namespacezorba_1a952a31aff0b416eca5ca24ab935ff546" compoundref="uuid_8h" startline="197" endline="201">zorba::operator&lt;</referencedby>
+        <referencedby refid="namespacezorba_1a394efee9feac94d7c5ee98b38aa6e80a" compoundref="uuid_8h" startline="175" endline="177">zorba::operator==</referencedby>
+        <referencedby refid="structzorba_1_1uuid_1aeb822b1fd2491191fdb7235f3d84c848" compoundref="uuid_8h" startline="137" endline="139">swap</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="structzorba_1_1uuid_1a93b18f310b922e1b307c9f74e29bdb77" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structzorba_1_1uuid_1aefabb8f65444edb7be9caf445e1069b4" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator zorba::uuid::begin</definition>
+        <argsstring>() const </argsstring>
+        <name>begin</name>
+        <briefdescription>
+<para>Creates a const_iterator to the beginning of the data. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said iterator. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="101" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="101" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="structzorba_1_1uuid_1aa9bb45e592ebb865c5a53c5dca2aa181" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structzorba_1_1uuid_1a689d34d0f7315e86c5e44b117f0c83be" kindref="member">iterator</ref></type>
+        <definition>iterator zorba::uuid::end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <briefdescription>
+<para>Creates an iterator to one past the end of the data. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said iterator. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="110" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="110" bodyend="112"/>
+        <referencedby refid="namespacezorba_1a952a31aff0b416eca5ca24ab935ff546" compoundref="uuid_8h" startline="197" endline="201">zorba::operator&lt;</referencedby>
+        <referencedby refid="namespacezorba_1a394efee9feac94d7c5ee98b38aa6e80a" compoundref="uuid_8h" startline="175" endline="177">zorba::operator==</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="structzorba_1_1uuid_1a0f720c08f3c86ea0f16c459fb0d4894f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structzorba_1_1uuid_1aefabb8f65444edb7be9caf445e1069b4" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator zorba::uuid::end</definition>
+        <argsstring>() const </argsstring>
+        <name>end</name>
+        <briefdescription>
+<para>Creates a const_iterator to one past the end of the data. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said iterator. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="119" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="119" bodyend="121"/>
+      </memberdef>
+      <memberdef kind="function" id="structzorba_1_1uuid_1ab808134f7d7a4d70f1bb7e6ae796abad" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0" kindref="member">variant</ref></type>
+        <definition>variant zorba::uuid::get_variant</definition>
+        <argsstring>() const </argsstring>
+        <name>get_variant</name>
+        <briefdescription>
+<para>Gets the variant of this UUID. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said variant. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="146"/>
+      </memberdef>
+      <memberdef kind="function" id="structzorba_1_1uuid_1a91538b9dcdcfc9927f94ea606d7569c2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473" kindref="member">version</ref></type>
+        <definition>version zorba::uuid::get_version</definition>
+        <argsstring>() const </argsstring>
+        <name>get_version</name>
+        <briefdescription>
+<para>Gets the version of this UUID. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said version. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="153"/>
+      </memberdef>
+      <memberdef kind="function" id="structzorba_1_1uuid_1a3fd156f96357cd809635b4231554d342" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structzorba_1_1uuid_1a7871a098b1978880a827f03225f2d2b1" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::uuid::size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+<para>Gets the size of the UUID data. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Always returns 16. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="128" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="128" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="structzorba_1_1uuid_1aeb822b1fd2491191fdb7235f3d84c848" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::uuid::swap</definition>
+        <argsstring>(uuid &amp;that)</argsstring>
+        <name>swap</name>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> &amp;</type>
+          <declname>that</declname>
+        </param>
+        <briefdescription>
+<para>Swaps this UUID&apos;s data with that of another. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>that</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The other UUID to swap data with. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="137" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="137" bodyend="139"/>
+        <references refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" compoundref="uuid_8h" startline="92" endline="94">begin</references>
+        <referencedby refid="namespacezorba_1acae6c10faa6866fa346861ce0062086c" compoundref="uuid_8h" startline="164" endline="166">zorba::swap</referencedby>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A uuid contains the raw bytes for a UUID. </para>    </briefdescription>
+    <detaileddescription>
+<para>Note that this is intentially a <computeroutput>struct</computeroutput> with no constructors, no destructor, and no user-defined assignment operators so that it remains a POD.</para><para>See also:<itemizedlist>
+<listitem><para>RFC 4122: A Universally Unique IDentifier (UUID) URN Namespace.</para></listitem><listitem><para><ulink url="http://en.wikipedia.org/wiki/Universally_unique_identifier">http://en.wikipedia.org/wiki/Universally_unique_identifier</ulink></para></listitem></itemizedlist>
+</para><para>The UUID data is stored as an array of 16 8-bit bytes comprising the 128 bits that is a UUID. The data is intentionally <emphasis>not</emphasis> stored as shown in &quot;Appendix A - Sample Implementation&quot; of RFC 4122 (the <computeroutput>struct</computeroutput> with individial fields such as <computeroutput>time_low</computeroutput>, <computeroutput>time_mid</computeroutput>, etc.) since C++ does not guarantee that the <computeroutput>struct</computeroutput> fields will be laid out in memory as shown in section &quot;4.1.2. Layout and Byte Order&quot; due to possible padding. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="46" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="46" bodyend="154"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>begin</name></member>
+      <member refid="structzorba_1_1uuid_1a93b18f310b922e1b307c9f74e29bdb77" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>begin</name></member>
+      <member refid="structzorba_1_1uuid_1aefabb8f65444edb7be9caf445e1069b4" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>const_iterator</name></member>
+      <member refid="structzorba_1_1uuid_1afa76cf80f256b37865aad4b0e7f9be2f" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>const_pointer</name></member>
+      <member refid="structzorba_1_1uuid_1a27135dec13308dbe5a509267dd961bab" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>const_reference</name></member>
+      <member refid="structzorba_1_1uuid_1ab12c27e02e6513e589dbf039b6bbd472" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>create</name></member>
+      <member refid="structzorba_1_1uuid_1ac46d76bf7250e3579c4b74cf213bf4fa" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>data</name></member>
+      <member refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473a201227da8bb76a82ce5277957ad58871" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>dce_security</name></member>
+      <member refid="structzorba_1_1uuid_1ab3e22d69eb7986e417ebca99d0480896" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>difference_type</name></member>
+      <member refid="structzorba_1_1uuid_1aa9bb45e592ebb865c5a53c5dca2aa181" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>end</name></member>
+      <member refid="structzorba_1_1uuid_1a0f720c08f3c86ea0f16c459fb0d4894f" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>end</name></member>
+      <member refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0aec74ee647c93d830a85e88912644c9b5" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>future</name></member>
+      <member refid="structzorba_1_1uuid_1ab808134f7d7a4d70f1bb7e6ae796abad" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>get_variant</name></member>
+      <member refid="structzorba_1_1uuid_1a91538b9dcdcfc9927f94ea606d7569c2" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>get_version</name></member>
+      <member refid="structzorba_1_1uuid_1a689d34d0f7315e86c5e44b117f0c83be" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>iterator</name></member>
+      <member refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a9aeca30618768ac5665dc33479a149a1" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>microsoft</name></member>
+      <member refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473afd52720d2ef1a2d84c7e4f0022aa87a3" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>name_based_md5</name></member>
+      <member refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473a8bf23c0d1d8ba43e7182c14ed22fb5aa" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>name_based_sha1</name></member>
+      <member refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a82dadf54e74056cb885d51d3e049526e" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>ncs</name></member>
+      <member refid="structzorba_1_1uuid_1a6e1ff9ac3afd0504c1bf0b9c075b1e6e" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>pointer</name></member>
+      <member refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473ac3e6079deb8e990a938e885f0098061e" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>random_number_based</name></member>
+      <member refid="structzorba_1_1uuid_1a792eb4d9e74a81eab35d983bf028f8fb" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>reference</name></member>
+      <member refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a68a3f4b5a216f1fe61b7433eb5aa3b66" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>rfc4122</name></member>
+      <member refid="structzorba_1_1uuid_1a3fd156f96357cd809635b4231554d342" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>size</name></member>
+      <member refid="structzorba_1_1uuid_1a7871a098b1978880a827f03225f2d2b1" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>size_type</name></member>
+      <member refid="structzorba_1_1uuid_1aeb822b1fd2491191fdb7235f3d84c848" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>swap</name></member>
+      <member refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473ac481c9c2ac1a28aa6a63b673497cc1a5" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>time_based</name></member>
+      <member refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473a3af1bb9375fb9ccd265e8c037394823f" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>unknown</name></member>
+      <member refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>value_type</name></member>
+      <member refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>variant</name></member>
+      <member refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473" prot="public" virt="non-virtual"><scope>zorba::uuid</scope><name>version</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

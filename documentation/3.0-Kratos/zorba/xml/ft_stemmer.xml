@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="ft_stemmer" kind="page">
+    <compoundname>ft_stemmer</compoundname>
+    <title>Full Text Stemming</title>
+    <detaileddescription>
+<sect1 id="ft_stemmer_1ft_stemmer_intro">
+<title>Introduction</title>
+<para>The Zorba XQuery engine implements the <ulink url="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</ulink> specification that, among other things, adds the ability to use stemming for text-matching via the <ulink url="http://www.w3.org/TR/xpath-full-text-10/#ftstemoption">stemming option</ulink>. For example, the query:</para><para><programlisting><codeline><highlight class="normal">let<sp/>$x<sp/>:=<sp/>&lt;msg&gt;Self<sp/>Improvement&lt;/msg&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>$x<sp/>contains<sp/>text<sp/></highlight><highlight class="stringliteral">&quot;improve&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>stemming</highlight></codeline>
+</programlisting></para><para>returns <computeroutput>true</computeroutput> because <computeroutput>$x</computeroutput> contains &quot;Improvment&quot; that has the same stem as &quot;improve&quot;.</para><para>The initial implementation of the stemming option uses the <ulink url="http://snowball.tartarus.org/texts/stemmersoverview.html">Snowball stemmers</ulink> and therefore can stem words in the following languages: Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, and Turkish.</para></sect1>
+<sect1 id="ft_stemmer_1ft_stemmer_providing">
+<title>Providing Your Own Stemmer</title>
+<para>Using the Zorba C++ API, you can provide your own stemmer by deriving from two classes: <computeroutput>Stemmer</computeroutput> and <computeroutput>StemmerProvider</computeroutput>.</para><sect2 id="ft_stemmer_1ft_class_stemmer">
+<title>The Stemmer Class</title>
+<para>The <computeroutput>Stemmer</computeroutput> class is:</para><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Stemmer<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">/*<sp/>implementation-defined<sp/>*/</highlight><highlight class="normal"><sp/>ptr;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Properties<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*uri;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>properties(<sp/>Properties<sp/>*result<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>stem(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;word,<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang,<sp/>String<sp/>*result<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>~Stemmer();</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para><para>For details about the <computeroutput>ptr</computeroutput> type, the <computeroutput>destroy()</computeroutput> function, and why the destructor is <computeroutput>protected</computeroutput>, see the <ref refid="memory_management" kindref="compound">Memory Management</ref> document.</para><para>To implement the <computeroutput>Stemmer</computeroutput>, you need to implement the <computeroutput>stem()</computeroutput> function where:</para><para><table rows="3" cols="2"><row>
+<entry thead="no"><para><computeroutput>word</computeroutput>  </para></entry><entry thead="no"><para>The word to be stemmed.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>lang</computeroutput>  </para></entry><entry thead="no"><para>The language of the word.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>result</computeroutput>  </para></entry><entry thead="no"><para>The stemmed word goes here.  </para></entry></row>
+</table>
+</para><para>Note that <computeroutput>result</computeroutput> should always be set to something. If your stemmer doesn&apos;t know how to stem the given word, you should set <computeroutput>result</computeroutput> to <computeroutput>word</computeroutput>. You also need to implement the <computeroutput>properties()</computeroutput> function and set the identifying URI of your stemmer.</para><para>A very simple stemmer that stems the word &quot;foobar&quot; to &quot;foo&quot; can be implemented as:</para><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">MyStemmer<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>Stemmer<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>properties(<sp/>Properties<sp/>*result<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>stem(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;word,<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang,<sp/>String<sp/>*result<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>MyStemmer();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MyStemmerProvider;<sp/></highlight><highlight class="comment">//<sp/>only<sp/>it<sp/>can<sp/>create<sp/>instances</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyStemmer::destroy()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Do<sp/>nothing<sp/>since<sp/>we<sp/>statically<sp/>allocate<sp/>a<sp/>singleton<sp/>instance<sp/>of<sp/>our<sp/>stemmer.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyStemmer::properties(<sp/>Properties<sp/>*props<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>props-&gt;uri<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://my.example.com/zorba/full-text/stemmer&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyStemmer::stem(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;word,<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang,<sp/>String<sp/>*result<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<sp/>word<sp/>==<sp/></highlight><highlight class="stringliteral">&quot;foobar&quot;</highlight><highlight class="normal"><sp/>)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>*result<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>*result<sp/>=<sp/>word;<sp/></highlight><highlight class="comment">//<sp/>Don&apos;t<sp/>know<sp/>how<sp/>to<sp/>stem<sp/>word:<sp/>set<sp/>result<sp/>to<sp/>word<sp/>as-is.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>A real stemmer would either use a stemming algorithm or a dictionary look-up to stem many words, of course. Although not used in this simple example, <computeroutput>lang</computeroutput> can be used to allow a single stemmer instance to stem words in more than one language.</para></sect2>
+<sect2 id="ft_stemmer_1ft_class_stemmer_provider">
+<title>The StemmerProvider Class</title>
+<para>In addition to a <computeroutput>Stemmer</computeroutput>, you must also implement a <computeroutput>StemmerProvider</computeroutput> that, given a language, provides a <computeroutput>Stemmer</computeroutput> for that language:</para><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">StemmerProvider<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>~StemmerProvider();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>getStemmer(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang,<sp/>Stemmer::ptr<sp/>*s<sp/>=<sp/>0<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para><para>The <computeroutput>getStemmer()</computeroutput> function should return <computeroutput>true</computeroutput> only if it can provide a <computeroutput>Stemmer</computeroutput> for the given language; <computeroutput>false</computeroutput> otherwise. If the <computeroutput>Stemmer::ptr</computeroutput> argument is <computeroutput>null</computeroutput>, the caller wants to check only whether the provider can provide a stemmer for the given language and doesn&apos;t want a <computeroutput>Stemmer</computeroutput> instance created or returned.</para><para>A simple <computeroutput>StemmerProvider</computeroutput> for our simple stemmer can be implemented as:</para><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">MyStemmerProvider<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>StemmerProvider<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>getStemmer(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang<sp/>Stemmer::ptr<sp/>*s<sp/>=<sp/>0<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Stemmer::ptr<sp/>MyStemmerProvider::getStemmer(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>MyStemmer<sp/>stemmer;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Stemmer::ptr<sp/>result;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal"><sp/>(<sp/>lang<sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11f5307e1dac2a5918c6cdf5097e6961" kindref="member" tooltip="English.">iso639_1::en</ref>:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87aee031990e1e595beab62fb5aee7b23d8" kindref="member">iso639_1::unknown</ref>:<sp/></highlight><highlight class="comment">//<sp/>Handle<sp/>&quot;unknown&quot;<sp/>language<sp/>since,<sp/>in<sp/>many<sp/>cases,<sp/>the<sp/>language<sp/>is<sp/>not<sp/>known.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>result.reset(<sp/>&amp;stemmer<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">:<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>We<sp/>have<sp/>no<sp/>stemmer<sp/>for<sp/>the<sp/>given<sp/>language:<sp/>return<sp/>false.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Zorba<sp/>will<sp/>then<sp/>use<sp/>the<sp/>built-in<sp/>stemmer<sp/>for<sp/>the<sp/>given<sp/>language.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="ft_stemmer_1ft_stemmer_enable">
+<title>Using Your Stemmer</title>
+<para>To enable your stemmer to be used, you need to register it with the <computeroutput>XmlDataManager:</computeroutput> </para><para><programlisting><codeline><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>store<sp/>=<sp/>StoreManager::getStore();</highlight></codeline>
+<codeline><highlight class="normal">Zorba<sp/>*</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>zorba<sp/>=<sp/>Zorba::getInstance(<sp/>store<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MyStemmerProvider<sp/>provider;</highlight></codeline>
+<codeline><highlight class="normal">zorba-&gt;getXmlDataManager()-&gt;registerStemmerProvider(<sp/>&amp;provider<sp/>);</highlight></codeline>
+</programlisting> </para></sect2>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

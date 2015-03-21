@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build__and__install_8dox" kind="file">
+    <compoundname>build_and_install.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>build_and_install<sp/>Building<sp/>and<sp/>Installing<sp/>Zorba</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">\section<sp/>build_zorba<sp/>Building<sp/>Zorba</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"></highlight></codeline>
+<codeline lineno="5"><highlight class="comment">Once<sp/>you<sp/>have<sp/>successfully<sp/>configured<sp/>your<sp/>Zorba<sp/>build<sp/>(as<sp/>described</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">in<sp/>\ref<sp/>configure_zorba),<sp/>you<sp/>should<sp/>now<sp/>be<sp/>able<sp/>to<sp/>build<sp/>the<sp/>project.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"></highlight></codeline>
+<codeline lineno="8"><highlight class="comment">-<sp/>For<sp/>Makefile-based<sp/>builds,<sp/>just<sp/>type<sp/>\c<sp/>make<sp/>(or<sp/>\code<sp/>make<sp/>j2<sp/>\endcode<sp/>to</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">do<sp/>a<sp/>parallel<sp/>build<sp/>on<sp/>a<sp/>multi-core<sp/>machine)<sp/>from<sp/>inside<sp/>the<sp/>\c</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">{ZORBABUILD}<sp/>directory.</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"></highlight></codeline>
+<codeline lineno="12"><highlight class="comment">-<sp/>For<sp/>IDE-based<sp/>builds,<sp/>open<sp/>the<sp/>project<sp/>created<sp/>in<sp/>the<sp/>previous<sp/>step</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>and<sp/>build<sp/>the<sp/>&lt;b&gt;ALL&lt;/b&gt;<sp/>target.</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"></highlight></codeline>
+<codeline lineno="15"><highlight class="comment">The<sp/>build<sp/>will<sp/>take<sp/>some<sp/>time.<sp/><sp/>If<sp/>it<sp/>finishes<sp/>successfully,<sp/>you&apos;re</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">ready<sp/>to<sp/>install<sp/>and<sp/>run<sp/>Zorba.</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"></highlight></codeline>
+<codeline lineno="18"><highlight class="comment">\section<sp/>install_zorba<sp/>Installing<sp/>Zorba</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"></highlight></codeline>
+<codeline lineno="20"><highlight class="comment">-<sp/>For<sp/>Makefile-based<sp/>builds,<sp/>just<sp/>type<sp/>\code<sp/>make<sp/>install<sp/>\endcode.<sp/><sp/>There</highlight></codeline>
+<codeline lineno="21"><highlight class="comment">is<sp/>also<sp/>a<sp/>\code<sp/>make<sp/>uninstall<sp/>\endcode<sp/>target.</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"></highlight></codeline>
+<codeline lineno="23"><highlight class="comment">-<sp/>For<sp/>IDE-based<sp/>builds,<sp/>invoke<sp/>the<sp/>&lt;b&gt;INSTALL&lt;/b&gt;<sp/>project.</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"></highlight></codeline>
+<codeline lineno="25"><highlight class="comment">In<sp/>either<sp/>case,<sp/>Zorba<sp/>will<sp/>be<sp/>installed<sp/>into<sp/>the<sp/>location<sp/>specified<sp/>by</highlight></codeline>
+<codeline lineno="26"><highlight class="comment">the<sp/>CMake<sp/>configuration<sp/>parameter<sp/>\c<sp/>CMAKE_INSTALL_PREFIX,<sp/>as</highlight></codeline>
+<codeline lineno="27"><highlight class="comment">described<sp/>in<sp/>\ref<sp/>configure_parameters.</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"></highlight></codeline>
+<codeline lineno="29"><highlight class="comment">\section<sp/>install_paths<sp/>Setting<sp/>the<sp/>PATH</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"></highlight></codeline>
+<codeline lineno="31"><highlight class="comment">In<sp/>order<sp/>for<sp/>users<sp/>on<sp/>your<sp/>system<sp/>to<sp/>use<sp/>Zorba,<sp/>the<sp/>&lt;b&gt;bin/&lt;/b&gt;<sp/>subdirectory</highlight></codeline>
+<codeline lineno="32"><highlight class="comment">of<sp/>your<sp/>installation<sp/>directory<sp/>must<sp/>be<sp/>on<sp/>their<sp/>path.</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"></highlight></codeline>
+<codeline lineno="34"><highlight class="comment">\section<sp/>testing_install<sp/>Testing<sp/>your<sp/>Zorba<sp/>Installation</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"></highlight></codeline>
+<codeline lineno="36"><highlight class="comment">Once<sp/>Zorba<sp/>is<sp/>installed<sp/>and<sp/>on<sp/>your<sp/>path,<sp/>try<sp/>it<sp/>out!<sp/>Type:</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"></highlight></codeline>
+<codeline lineno="38"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="39"><highlight class="comment">zorba<sp/>-q<sp/>&quot;1+1&quot;</highlight></codeline>
+<codeline lineno="40"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"></highlight></codeline>
+<codeline lineno="42"><highlight class="comment">You<sp/>should<sp/>get<sp/>the<sp/>following<sp/>output:</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"></highlight></codeline>
+<codeline lineno="44"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="45"><highlight class="comment">&lt;?xml<sp/>version=&quot;1.0&quot;<sp/>encoding=&quot;UTF-8&quot;?&gt;</highlight></codeline>
+<codeline lineno="46"><highlight class="comment">2</highlight></codeline>
+<codeline lineno="47"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"></highlight></codeline>
+<codeline lineno="49"><highlight class="comment">If<sp/>so<sp/>-<sp/>congratulations!<sp/>You&apos;re<sp/>done<sp/>and<sp/>ready<sp/>to<sp/>use<sp/>Zorba.</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"></highlight></codeline>
+<codeline lineno="51"><highlight class="comment">\section<sp/>build_help<sp/>Help!</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"></highlight></codeline>
+<codeline lineno="53"><highlight class="comment">If<sp/>you<sp/>have<sp/>any<sp/>problems<sp/>building<sp/>or<sp/>running<sp/>Zorba,<sp/>contact<sp/>the<sp/>&lt;b&gt;zorba-users&lt;b&gt;</highlight></codeline>
+<codeline lineno="54"><highlight class="comment">mailing<sp/>list.<sp/>Sign<sp/>up<sp/>and<sp/>see<sp/>other<sp/>instructions<sp/>at</highlight></codeline>
+<codeline lineno="55"><highlight class="comment">https://groups.google.com/forum/?hl=en&amp;fromgroups#!forum/zorba-users<sp/>.</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"></highlight></codeline>
+<codeline lineno="57"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/build_and_install.dox"/>
+  </compounddef>
+</doxygen>

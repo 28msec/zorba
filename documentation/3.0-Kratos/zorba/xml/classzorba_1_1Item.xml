@@ -1,0 +1,1037 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Item" kind="class" prot="public">
+    <compoundname>zorba::Item</compoundname>
+    <includes refid="item_8h" local="no">zorba/item.h</includes>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classzorba_1_1Item_1a3e0633ac5ec941d1abf1a7b5b6ffce25" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class Unmarshaller</definition>
+        <argsstring></argsstring>
+        <name>Unmarshaller</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="505" bodyfile="/home/wcandillon/deadlinks/include/zorba/item.h" bodystart="505" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1Item_1ac62fd8a11298a65259b992172dd27081" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend void</type>
+        <definition>void zorba::serialization::operator&amp;</definition>
+        <argsstring>(zorba::serialization::Archiver &amp;ar, Item &amp;obj)</argsstring>
+        <name>zorba::serialization::operator&amp;</name>
+        <param>
+          <type>zorba::serialization::Archiver &amp;</type>
+          <declname>ar</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>obj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="510"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1Item_1aae8e7832ca53794c469a30cb0e66191c" prot="private" static="no" mutable="no">
+        <type>store::Item *</type>
+        <definition>store::Item* zorba::Item::m_item</definition>
+        <argsstring></argsstring>
+        <name>m_item</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="507" bodyfile="/home/wcandillon/deadlinks/include/zorba/item.h" bodystart="507" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Item_1a58c05d30a079cf404f41433c90acd625" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::Item::close</definition>
+        <argsstring>()</argsstring>
+        <name>close</name>
+        <briefdescription>
+<para>Free all resources aquired by this <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>After calling <ref refid="classzorba_1_1Item_1a58c05d30a079cf404f41433c90acd625" kindref="member">close()</ref> on an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is invalidated, i.e. a subsequent call to <ref refid="classzorba_1_1Item_1ade32511868505ac7e380cbdb5366f9d1" kindref="member">isNull()</ref> will return true.</para><para>Note that calling this function is usually not necessary because <ref refid="classzorba_1_1Item_1a58c05d30a079cf404f41433c90acd625" kindref="member">close()</ref> is implicitly called by the destructor. Calling <ref refid="classzorba_1_1Item_1a58c05d30a079cf404f41433c90acd625" kindref="member">close()</ref> is only necessary if the resources aquired by an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> should be released before the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> goes out of scope, i.e. the destructor is called.</para><para>Also note that this function is available for all types of Items. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a012f3f22de89692a7b8eb8ee6d8151e9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>uint64_t</type>
+        <definition>uint64_t zorba::Item::getArraySize</definition>
+        <argsstring>() const </argsstring>
+        <name>getArraySize</name>
+        <briefdescription>
+<para>Get the size of a JSON Array. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for JSON Arrays.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the size of the array. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type JSON Array). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="389"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a2def8b2cd860ca7991a02b0661233d23" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>Item zorba::Item::getArrayValue</definition>
+        <argsstring>(uint32_t aIndex) const </argsstring>
+        <name>getArrayValue</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>aIndex</declname>
+        </param>
+        <briefdescription>
+<para>Returns the item in the JSON array at the specified index. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for JSON Arrays.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aIndex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the index in the array. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the indexed <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type JSON Array). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="400"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a739ce16d4deb19be168c28381081d5a3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref></type>
+        <definition>Iterator_t zorba::Item::getAtomizationValue</definition>
+        <argsstring>() const </argsstring>
+        <name>getAtomizationValue</name>
+        <briefdescription>
+<para>Get the atomization value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>The atomization value is the value that is returned by atomization (see <ulink url="http://www.w3.org/TR/xquery/#id-atomization">http://www.w3.org/TR/xquery/#id-atomization</ulink>). Note that this function is available for all types of Items.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the atomization value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="173"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1ac766311b163b6887c22cccb48f251058" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref></type>
+        <definition>Iterator_t zorba::Item::getAttributes</definition>
+        <argsstring>() const </argsstring>
+        <name>getAttributes</name>
+        <briefdescription>
+<para>Get an iterator for the attributes of this (node) <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for node Items. The file <ref refid="simple_8cpp-example" kindref="compound">simple.cpp</ref> contains some basic examples that demonstrate the use of this function.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> over the attributes of this node. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured, e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type node. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="313"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a7f4a32d3fb0fd3ae85cfb2bed4bda935" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* zorba::Item::getBase64BinaryValue</definition>
+        <argsstring>(size_t &amp;s) const </argsstring>
+        <name>getBase64BinaryValue</name>
+        <param>
+          <type>size_t &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+<para>Returns the value and size of the given base64Binary item. </para>        </briefdescription>
+        <detaileddescription>
+<para>The value is a string which is <ref refid="namespacezorba_1_1base64" kindref="compound">base64</ref> encoded if <ref refid="classzorba_1_1Item_1af236e4d8800aa7a910a8f26403b9006d" kindref="member">isEncoded()</ref> returns true. Otherwise, it is the original unencoded binary data.</para><para>If the given item is streamable (i.e. <ref refid="classzorba_1_1Item_1a55e8f3fbb3e4614256269ae95764baf6" kindref="member">isStreamable()</ref> returns true), the stream returned by <ref refid="classzorba_1_1Item_1adc23758966e8bbbb7530294190e436f6" kindref="member">getStream()</ref> should to be used to retrieve the value. Otherwise, the contents of the stream will be materialized in main memory. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="470"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1ab1a5b8adad9ec0b89dcb040b9244c38c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::getBooleanValue</definition>
+        <argsstring>() const </argsstring>
+        <name>getBooleanValue</name>
+        <briefdescription>
+<para>Get the bool value of the boolean <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for Items of type boolean.</para><para><simplesect kind="return"><para>true if the boolean value is true, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured, e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type boolean. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="289"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a76e302fd4d47717df2cb90a35955f664" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref></type>
+        <definition>Iterator_t zorba::Item::getChildren</definition>
+        <argsstring>() const </argsstring>
+        <name>getChildren</name>
+        <briefdescription>
+<para>Get an iterator for the children of this (node) <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for node Items. The file <ref refid="simple_8cpp-example" kindref="compound">simple.cpp</ref> contains some basic examples that demonstrate the use of this function.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> over the children of this node. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured, e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type node. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="301"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a72f0072a15e3cdbe98c8d2d232d30ea9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>Item zorba::Item::getCollectionName</definition>
+        <argsstring>() const </argsstring>
+        <name>getCollectionName</name>
+        <briefdescription>
+<para>Returns the name of the collection this node is stored in. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The name of the collection or 0 if the given item is not a node or not stored in a collection. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="478"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a97e3732043d93b2f92bf0859b6a3c795" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double zorba::Item::getDoubleValue</definition>
+        <argsstring>() const </argsstring>
+        <name>getDoubleValue</name>
+        <briefdescription>
+<para>Get the int value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the int value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="209"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a6c5fffac5e91129211eb86055ed9911d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>Item zorba::Item::getEBV</definition>
+        <argsstring>() const </argsstring>
+        <name>getEBV</name>
+        <briefdescription>
+<para>Get the effective boolean value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>The effective boolean value is the result of applying the fn:boolean function on the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> (see <ulink url="http://www.w3.org/TR/xpath-functions/#func-boolean">http://www.w3.org/TR/xpath-functions/#func-boolean</ulink>). Note that this function is available for all types of Items.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the effective boolean value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="229"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a064dc3a8d7a6a4575d8e0182c47316ea" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* zorba::Item::getHexBinaryValue</definition>
+        <argsstring>(size_t &amp;s) const </argsstring>
+        <name>getHexBinaryValue</name>
+        <param>
+          <type>size_t &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+<para>Returns the value and size of the given hexBinary item. </para>        </briefdescription>
+        <detaileddescription>
+<para>The value is a string which is hexBinary encoded if <ref refid="classzorba_1_1Item_1af236e4d8800aa7a910a8f26403b9006d" kindref="member">isEncoded()</ref> returns true. Otherwise, it is the original unencoded binary data.</para><para>If the given item is streamable (i.e. <ref refid="classzorba_1_1Item_1a55e8f3fbb3e4614256269ae95764baf6" kindref="member">isStreamable()</ref> returns true), the stream returned by <ref refid="classzorba_1_1Item_1adc23758966e8bbbb7530294190e436f6" kindref="member">getStream()</ref> should to be used to retrieve the value. Otherwise, the contents of the stream will be materialized in main memory. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="502"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1af941acd3d1d5a96b8d8b71bf8b8ad19a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int32_t</type>
+        <definition>int32_t zorba::Item::getIntValue</definition>
+        <argsstring>() const </argsstring>
+        <name>getIntValue</name>
+        <briefdescription>
+<para>Get the int value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the int value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="193"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a408705a30719e497257525a064db8940" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2" kindref="member">store::StoreConsts::JSONItemKind</ref></type>
+        <definition>store::StoreConsts::JSONItemKind zorba::Item::getJSONItemKind</definition>
+        <argsstring>() const </argsstring>
+        <name>getJSONItemKind</name>
+        <briefdescription>
+<para>Get the kind of this (JSON) <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for JSON Items, that is, Items which return true from <ref refid="classzorba_1_1Item_1aace32b90073698cd9ae040b53282c127" kindref="member">isJSONItem()</ref>.</para><para><simplesect kind="return"><para>the kind of this JSON item </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type JSON). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="379"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a9a6a01b511b59ddeeeebb342bceba21f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>String zorba::Item::getLocalName</definition>
+        <argsstring>() const </argsstring>
+        <name>getLocalName</name>
+        <briefdescription>
+<para>Get the value of a QName&apos;s local name. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for Items of type QName.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1String" kindref="compound">String</ref> the local name of the QName. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured, e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not a QName. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="259"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1acf20391c988befa76668a0bffc99b024" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int64_t</type>
+        <definition>int64_t zorba::Item::getLongValue</definition>
+        <argsstring>() const </argsstring>
+        <name>getLongValue</name>
+        <briefdescription>
+<para>Get the long value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the long value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="217"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a16541003cfd51fea9631368342d5f6c4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>String zorba::Item::getNamespace</definition>
+        <argsstring>() const </argsstring>
+        <name>getNamespace</name>
+        <briefdescription>
+<para>Get the (optional) value of a QName&apos;s namespace. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for Items of type QName.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1String" kindref="compound">String</ref> the namespace URI of the QName. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured, e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not a QName. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="249"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1ab6e6e787eb1bdc72c66025f80ea6816f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::Item::getNamespaceBindings</definition>
+        <argsstring>(NsBindings &amp;aBindings, store::StoreConsts::NsScoping scope=store::StoreConsts::ALL_BINDINGS) const </argsstring>
+        <name>getNamespaceBindings</name>
+        <param>
+          <type><ref refid="namespacezorba_1a88f32864e73bd2d882541275f8cf1cdc" kindref="member">NsBindings</ref> &amp;</type>
+          <declname>aBindings</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0" kindref="member">store::StoreConsts::NsScoping</ref></type>
+          <declname>scope</declname>
+          <defval><ref refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0a0bbf36aace11e4ca2bb654141a32459a" kindref="member">store::StoreConsts::ALL_BINDINGS</ref></defval>
+        </param>
+        <briefdescription>
+<para>Get an iterator for the namespace bindings of this (element) <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for element Items. The file <ref refid="simple_8cpp-example" kindref="compound">simple.cpp</ref> contains some basic examples that demonstrate the use of this function.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aBindings</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An std::vector to receive the namespace bindings of this node (each represented as a std::pair&lt;zorba::String,zorba::String&gt; where the first string is the namespace prefix and the second is the namespace URI). </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>scope</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A value to specify which bindings to return: all bindings (the default); only those that are specified by the namespace declaration attributes of the node (if any); or those that are implied by the qnames of the node and its attributes plus those that are specified by the namespace declaration attributes of the node (if any) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured, e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type element. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="335"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a2c21e1fce7192f4b56607d76c2af8a36" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int zorba::Item::getNodeKind</definition>
+        <argsstring>() const </argsstring>
+        <name>getNodeKind</name>
+        <briefdescription>
+<para>Get the type of this (node) <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for node Items.</para><para><simplesect kind="return"><para>int the kind of this node (the avaialble kinds can be found in the <ref refid="classzorba_1_1store_1_1StoreConsts" kindref="compound">store::StoreConsts</ref> class) </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type node). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="368"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a73940d41ef3d48bb1ce88788194a9db3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::getNodeName</definition>
+        <argsstring>(Item &amp;aNodeName) const </argsstring>
+        <name>getNodeName</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aNodeName</declname>
+        </param>
+        <briefdescription>
+<para>Get the name of this (node) <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for node Items. The file <ref refid="simple_8cpp-example" kindref="compound">simple.cpp</ref> contains some basic examples that demonstrate the use of this function.</para><para><simplesect kind="return"><para>bool if the name of the node was retrieved successfully </para><simplesectsep/><para>aNodeName the name of the node </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type node). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="358"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a2716ff8996e907513a57f1170b3ac9dc" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref></type>
+        <definition>Iterator_t zorba::Item::getObjectKeys</definition>
+        <argsstring>() const </argsstring>
+        <name>getObjectKeys</name>
+        <briefdescription>
+<para>Get the keys of a JSON Object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for JSON Objects.</para><para><simplesect kind="return"><para>Iterator_t an iterator on the keys of the object. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type JSON Object). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="410"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a72c8fd2a44aa45dc9cfd908280264573" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>Item zorba::Item::getObjectValue</definition>
+        <argsstring>(String aName) const </argsstring>
+        <name>getObjectValue</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+          <declname>aName</declname>
+        </param>
+        <briefdescription>
+<para>Returns the value with the given name from a JSON Object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for JSON Objects.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the value in the Object to return. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the named value from the Object. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured (e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type JSON Object). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="421"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a7bf8cd0994745f90db8e9e65f301ee9c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>Item zorba::Item::getParent</definition>
+        <argsstring>() const </argsstring>
+        <name>getParent</name>
+        <briefdescription>
+<para>Get parent of this (node) <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for node Items.</para><para><simplesect kind="return"><para>element or document parent node of this node. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured, e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not of type node. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="345"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1aee3a0fb59a54994788b438ba622809ee" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>String zorba::Item::getPrefix</definition>
+        <argsstring>() const </argsstring>
+        <name>getPrefix</name>
+        <briefdescription>
+<para>Get the (optional) value of a QName&apos;s prefix. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for Items of type QName.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1String" kindref="compound">String</ref> the prefix of the QName. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured, e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not a QName. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="239"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1adc23758966e8bbbb7530294190e436f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::istream &amp;</type>
+        <definition>std::istream&amp; zorba::Item::getStream</definition>
+        <argsstring>()</argsstring>
+        <name>getStream</name>
+        <briefdescription>
+<para>Gets an istream for the item&apos;s content. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>the stream. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the item is not streamable. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="447"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a137321bd5067bd0a29715fb31fefd208" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>String zorba::Item::getStringValue</definition>
+        <argsstring>() const </argsstring>
+        <name>getStringValue</name>
+        <briefdescription>
+<para>Get the string value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>The string value is the string that is extracted by calling the fn:string function on the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> (see <ulink url="http://www.w3.org/TR/xpath-functions/#func-string">http://www.w3.org/TR/xpath-functions/#func-string</ulink>). Note that this function is available for all types of Items.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the string value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="185"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a7978f58f6c14046d56e8f07277997a83" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>Item zorba::Item::getType</definition>
+        <argsstring>() const </argsstring>
+        <name>getType</name>
+        <briefdescription>
+<para>Get the type of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>See <ulink url="http://www.w3.org/TR/xpath-datamodel/#types">http://www.w3.org/TR/xpath-datamodel/#types</ulink>. Note that this function is available for all types of Items.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the type of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> as a QName <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="150"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a06ea0a62837404db4f2dc79518c57a65" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75" kindref="member">store::SchemaTypeCode</ref></type>
+        <definition>store::SchemaTypeCode zorba::Item::getTypeCode</definition>
+        <argsstring>() const </argsstring>
+        <name>getTypeCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>the type of this item based on the enum values in store_const.h </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="139"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a7783167a33e5ac27030f5fb1917f8fcb" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t zorba::Item::getUnsignedIntValue</definition>
+        <argsstring>() const </argsstring>
+        <name>getUnsignedIntValue</name>
+        <briefdescription>
+<para>Get the unsigned int value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> the unsigned int value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="201"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1ae22f43a81ea43c4841b92d1b3ddbbf25" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::isAtomic</definition>
+        <argsstring>() const </argsstring>
+        <name>isAtomic</name>
+        <briefdescription>
+<para>Check if the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is an atomic <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is available for all types of Items.</para><para><simplesect kind="return"><para>true if the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is an atomic <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="134"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1af236e4d8800aa7a910a8f26403b9006d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::isEncoded</definition>
+        <argsstring>() const </argsstring>
+        <name>isEncoded</name>
+        <briefdescription>
+<para>Returns true if the contents of a binary item is already encoded. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>true if the content is already encoded, false otherwise </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="455"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1aace32b90073698cd9ae040b53282c127" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::isJSONItem</definition>
+        <argsstring>() const </argsstring>
+        <name>isJSONItem</name>
+        <briefdescription>
+<para>Check if the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is a JSON <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>, that is, part of the JSONiq data model. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is available for all types of Items.</para><para><simplesect kind="return"><para>true if the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is a JSON <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="161"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a565cb4fd500264ae40ef6233ea17407f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::isNaN</definition>
+        <argsstring>() const </argsstring>
+        <name>isNaN</name>
+        <briefdescription>
+<para>Check if the value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not a number (NaN). </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for numeric Items (e.g. Double or Float).</para><para><simplesect kind="return"><para>true if the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is NaN, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured, e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not a numeric type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="269"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a889da34519fca2fb6af94197e33697fa" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::isNode</definition>
+        <argsstring>() const </argsstring>
+        <name>isNode</name>
+        <briefdescription>
+<para>Check if the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is a node <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is available for all types of Items.</para><para><simplesect kind="return"><para>true if the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is of type node, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="125"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1ade32511868505ac7e380cbdb5366f9d1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::isNull</definition>
+        <argsstring>() const </argsstring>
+        <name>isNull</name>
+        <briefdescription>
+<para>Check if the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is null. </para>        </briefdescription>
+        <detaileddescription>
+<para>If this function returns true, the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not valid. Note that this function is available for all types of Items.</para><para><simplesect kind="return"><para>true if the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is null, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="101"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a2f9b4db0d679f0b118d07a12bdbfe3c3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::isPosOrNegInf</definition>
+        <argsstring>() const </argsstring>
+        <name>isPosOrNegInf</name>
+        <briefdescription>
+<para>Check if the value of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is positive or negative infinity. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this function is only available for numeric Items (e.g. Double or Float).</para><para><simplesect kind="return"><para>true if the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is +/-INF, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured, e.g. the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not a numeric type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="279"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1ae291130e56386201d6e7e841da2da714" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::isSeekable</definition>
+        <argsstring>() const </argsstring>
+        <name>isSeekable</name>
+        <briefdescription>
+<para>Checks whether the item&apos;s streamable content is arbitrarily (forward anb backward) seekable. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>true only if it is. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="438"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a55e8f3fbb3e4614256269ae95764baf6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::isStreamable</definition>
+        <argsstring>() const </argsstring>
+        <name>isStreamable</name>
+        <briefdescription>
+<para>Checks whether the item&apos;s content is streamable. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>true only if it is. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="429"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1afe44dfa2fba165484df8932236e5bdc2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::Item::Item</definition>
+        <argsstring>()</argsstring>
+        <name>Item</name>
+        <briefdescription>
+<para>Default constructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="65"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a369d907f6bb6a97015175bbc015b7012" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::Item::Item</definition>
+        <argsstring>(const Item &amp;other)</argsstring>
+        <name>Item</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Copy constructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="69"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a2003c1a87c9650754eb86b8f43dcd1b2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::Item::Item</definition>
+        <argsstring>(const store::Item *item)</argsstring>
+        <name>Item</name>
+        <param>
+          <type>const store::Item *</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+<para>Constructor that is used to construct Items in the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> engine itself. </para>        </briefdescription>
+        <detaileddescription>
+<para>This constructor is for internal use only. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="75"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a9f18bd146f3a31156c5b965138cfbb62" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t zorba::Item::mem_size</definition>
+        <argsstring>() const </argsstring>
+        <name>mem_size</name>
+        <briefdescription>
+<para>Gets the total amount of memory this <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> and all its child Items are using. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>said total amount of memory. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="487"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1aac9adaf847432fb90110aafb81f915ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+        <definition>const Item&amp; zorba::Item::operator=</definition>
+        <argsstring>(const Item &amp;rhs)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+<para>Assingment operator. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="79"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1ab59249e7dfee3dde4d64d6d4fa3c6b5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+        <definition>const Item&amp; zorba::Item::operator=</definition>
+        <argsstring>(const store::Item *rhs)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const store::Item *</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+<para>Assingment operator that is used in the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> engine itself. </para>        </briefdescription>
+        <detaileddescription>
+<para>This operator is for internal use only. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="85"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a3fb89851f92267ef075c129fcbad193f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Item::operator==</definition>
+        <argsstring>(const Item &amp;rhs)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="87" bodyfile="/home/wcandillon/deadlinks/include/zorba/item.h" bodystart="87" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Item_1a0cf8d344097137301fd9f2c5bbbe5705" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::Item::~Item</definition>
+        <argsstring>()</argsstring>
+        <name>~Item</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="91"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> interface. </para>    </briefdescription>
+    <detaileddescription>
+<para>This class is the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> representation of an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> as defined in the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> 1.0 and XPath 2.0 Data Model (XDM); see <ulink url="http://www.w3.org/TR/xpath-datamodel/">http://www.w3.org/TR/xpath-datamodel/</ulink>.</para><para>Instances of the XDM are a sequence, i.e. an ordered collection of zero or more items. In the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> API, a sequence is represented by the <ref refid="classzorba_1_1ItemSequence" kindref="compound">ItemSequence</ref> class.</para><para>The <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> class is the union of all <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> node and atomic types. The class provides functions to access the information of an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. Note that not all functions are defined on every <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> kind. If a function is called on an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> that does not provide the called function, an ZXQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE error is raised.</para><para>Instances of the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> class are always passed by copy. To check whether a given <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is valid <ref refid="classzorba_1_1Item_1ade32511868505ac7e380cbdb5366f9d1" kindref="member">isNull()</ref> can be called which returns true if the given <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> is not valid and false otherwise. A new atomic <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> can be created using the <ref refid="classzorba_1_1ItemFactory" kindref="compound">ItemFactory</ref>. A new node <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> should be created by the result of a query. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="61" bodyfile="/home/wcandillon/deadlinks/include/zorba/item.h" bodystart="60" bodyend="511"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1Item_1a58c05d30a079cf404f41433c90acd625" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>close</name></member>
+      <member refid="classzorba_1_1Item_1a012f3f22de89692a7b8eb8ee6d8151e9" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getArraySize</name></member>
+      <member refid="classzorba_1_1Item_1a2def8b2cd860ca7991a02b0661233d23" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getArrayValue</name></member>
+      <member refid="classzorba_1_1Item_1a739ce16d4deb19be168c28381081d5a3" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getAtomizationValue</name></member>
+      <member refid="classzorba_1_1Item_1ac766311b163b6887c22cccb48f251058" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getAttributes</name></member>
+      <member refid="classzorba_1_1Item_1a7f4a32d3fb0fd3ae85cfb2bed4bda935" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getBase64BinaryValue</name></member>
+      <member refid="classzorba_1_1Item_1ab1a5b8adad9ec0b89dcb040b9244c38c" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getBooleanValue</name></member>
+      <member refid="classzorba_1_1Item_1a76e302fd4d47717df2cb90a35955f664" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getChildren</name></member>
+      <member refid="classzorba_1_1Item_1a72f0072a15e3cdbe98c8d2d232d30ea9" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getCollectionName</name></member>
+      <member refid="classzorba_1_1Item_1a97e3732043d93b2f92bf0859b6a3c795" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getDoubleValue</name></member>
+      <member refid="classzorba_1_1Item_1a6c5fffac5e91129211eb86055ed9911d" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getEBV</name></member>
+      <member refid="classzorba_1_1Item_1a064dc3a8d7a6a4575d8e0182c47316ea" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getHexBinaryValue</name></member>
+      <member refid="classzorba_1_1Item_1af941acd3d1d5a96b8d8b71bf8b8ad19a" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getIntValue</name></member>
+      <member refid="classzorba_1_1Item_1a408705a30719e497257525a064db8940" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getJSONItemKind</name></member>
+      <member refid="classzorba_1_1Item_1a9a6a01b511b59ddeeeebb342bceba21f" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getLocalName</name></member>
+      <member refid="classzorba_1_1Item_1acf20391c988befa76668a0bffc99b024" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getLongValue</name></member>
+      <member refid="classzorba_1_1Item_1a16541003cfd51fea9631368342d5f6c4" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getNamespace</name></member>
+      <member refid="classzorba_1_1Item_1ab6e6e787eb1bdc72c66025f80ea6816f" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getNamespaceBindings</name></member>
+      <member refid="classzorba_1_1Item_1a2c21e1fce7192f4b56607d76c2af8a36" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getNodeKind</name></member>
+      <member refid="classzorba_1_1Item_1a73940d41ef3d48bb1ce88788194a9db3" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getNodeName</name></member>
+      <member refid="classzorba_1_1Item_1a2716ff8996e907513a57f1170b3ac9dc" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getObjectKeys</name></member>
+      <member refid="classzorba_1_1Item_1a72c8fd2a44aa45dc9cfd908280264573" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getObjectValue</name></member>
+      <member refid="classzorba_1_1Item_1a7bf8cd0994745f90db8e9e65f301ee9c" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getParent</name></member>
+      <member refid="classzorba_1_1Item_1aee3a0fb59a54994788b438ba622809ee" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getPrefix</name></member>
+      <member refid="classzorba_1_1Item_1adc23758966e8bbbb7530294190e436f6" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getStream</name></member>
+      <member refid="classzorba_1_1Item_1a137321bd5067bd0a29715fb31fefd208" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getStringValue</name></member>
+      <member refid="classzorba_1_1Item_1a7978f58f6c14046d56e8f07277997a83" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getType</name></member>
+      <member refid="classzorba_1_1Item_1a06ea0a62837404db4f2dc79518c57a65" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getTypeCode</name></member>
+      <member refid="classzorba_1_1Item_1a7783167a33e5ac27030f5fb1917f8fcb" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>getUnsignedIntValue</name></member>
+      <member refid="classzorba_1_1Item_1ae22f43a81ea43c4841b92d1b3ddbbf25" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>isAtomic</name></member>
+      <member refid="classzorba_1_1Item_1af236e4d8800aa7a910a8f26403b9006d" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>isEncoded</name></member>
+      <member refid="classzorba_1_1Item_1aace32b90073698cd9ae040b53282c127" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>isJSONItem</name></member>
+      <member refid="classzorba_1_1Item_1a565cb4fd500264ae40ef6233ea17407f" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>isNaN</name></member>
+      <member refid="classzorba_1_1Item_1a889da34519fca2fb6af94197e33697fa" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>isNode</name></member>
+      <member refid="classzorba_1_1Item_1ade32511868505ac7e380cbdb5366f9d1" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>isNull</name></member>
+      <member refid="classzorba_1_1Item_1a2f9b4db0d679f0b118d07a12bdbfe3c3" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>isPosOrNegInf</name></member>
+      <member refid="classzorba_1_1Item_1ae291130e56386201d6e7e841da2da714" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>isSeekable</name></member>
+      <member refid="classzorba_1_1Item_1a55e8f3fbb3e4614256269ae95764baf6" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>isStreamable</name></member>
+      <member refid="classzorba_1_1Item_1afe44dfa2fba165484df8932236e5bdc2" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>Item</name></member>
+      <member refid="classzorba_1_1Item_1a369d907f6bb6a97015175bbc015b7012" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>Item</name></member>
+      <member refid="classzorba_1_1Item_1a2003c1a87c9650754eb86b8f43dcd1b2" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>Item</name></member>
+      <member refid="classzorba_1_1Item_1aae8e7832ca53794c469a30cb0e66191c" prot="private" virt="non-virtual"><scope>zorba::Item</scope><name>m_item</name></member>
+      <member refid="classzorba_1_1Item_1a9f18bd146f3a31156c5b965138cfbb62" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>mem_size</name></member>
+      <member refid="classzorba_1_1Item_1aac9adaf847432fb90110aafb81f915ca" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1Item_1ab59249e7dfee3dde4d64d6d4fa3c6b5a" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1Item_1a3fb89851f92267ef075c129fcbad193f" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>operator==</name></member>
+      <member refid="classzorba_1_1Item_1a3e0633ac5ec941d1abf1a7b5b6ffce25" prot="private" virt="non-virtual"><scope>zorba::Item</scope><name>Unmarshaller</name></member>
+      <member refid="classzorba_1_1Item_1ac62fd8a11298a65259b992172dd27081" prot="private" virt="non-virtual"><scope>zorba::Item</scope><name>zorba::serialization::operator&amp;</name></member>
+      <member refid="classzorba_1_1Item_1a0cf8d344097137301fd9f2c5bbbe5705" prot="public" virt="non-virtual"><scope>zorba::Item</scope><name>~Item</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

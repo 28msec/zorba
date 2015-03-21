@@ -1,0 +1,238 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::XQuery</h1><p class="include">
+            #include &lt;zorba/xquery.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1SmartObject.html">zorba::SmartObject</a></p>
+This class is the representation of an XQuery program in the Zorba engine.     
+To compile and execute an <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> program, an instance of this class must be created. This is done by using either the createQuery or compileQuery methods of the <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> class. These methods return an instance of XQuery_t, which is a reference counted smart pointer to a dynamically allocated <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object. The <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object is deleted when all XQuery_t objects that point to it are destroyed.The file <a href="/pages/3.0/zorba/simple_8cpp-example">simple.cpp</a> contains some basic examples the demonstrate the use of this class.Note: This class is reference counted. When writing multi-threaded clients, it is the responibility of the client code to synchronize assignments to the <a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">SmartPtr</a> holding this object.     <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a968d642f8f9df309338fbdd5f680e033">addReference</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba?anchor=ad8b5b1677946bc552eca6d700286a18d">XQuery_t</a></p></td><td><p class="signature"><a href="#ab0bb4c46f5dffe1d1065934dfa3ba3d1">clone</a>() const =0</p><span class="signature-description">
+Clone this query object in order to execute the query in another thread.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#adbb74d7a716e0f4899fc414ca6948a23">close</a>()=0</p><span class="signature-description">
+Close the query and release all of its aquired ressources.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a8408503a6cc5e253b14167e2bb92d1b3">compile</a>(const String &amp;aQuery)=0</p><span class="signature-description">
+Compile a query given as a <a href="/pages/3.0/zorba/classzorba_1_1String">String</a>.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#adfac463b622ac2413d27e8ccb9c217f0">compile</a>(const String &amp;aQuery, const Zorba_CompilerHints_t &amp;aHints)=0</p><span class="signature-description">
+Compile a query given as a <a href="/pages/3.0/zorba/classzorba_1_1String">String</a>, using the given compiler hints.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a57df68ee44f727945382fe1603255ce0">compile</a>(std::istream &amp;aQuery, const Zorba_CompilerHints_t &amp;aHints)=0</p><span class="signature-description">
+Compile a query given as an input stream, using the given compiler hints.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ac2b5db2da59c2491470c090122ad2d49">compile</a>(const String &amp;aQuery, const StaticContext_t &amp;aStaticContext, const Zorba_CompilerHints_t &amp;aHints)=0</p><span class="signature-description">
+Compile a query given as a <a href="/pages/3.0/zorba/classzorba_1_1String">String</a>, using a given static context and compiler hints.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aed40c99c5ce628c9b2f57a1babc73271">compile</a>(std::istream &amp;aQuery, const StaticContext_t &amp;aStaticContext, const Zorba_CompilerHints_t &amp;aHints)=0</p><span class="signature-description">
+Compile a query given as an input stream, using a given static context and compiler hints.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a62758ab41cf088cda72c246b25f668db">execute</a>(std::ostream &amp;aOutStream, const Zorba_SerializerOptions_t *aSerOptions=NULL)=0</p><span class="signature-description">
+Execute the query and write the result to the given output stream.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a470074b64011b3737b3845aa8347bcfc">execute</a>(std::ostream &amp;aOutStream, itemHandler aCallbackFunction, void *aCallbackData, const Zorba_SerializerOptions_t *aSerOptions=NULL)=0</p><span class="signature-description">
+Execute the query and write the result to the given output stream.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a47068cebc58f146abb862a94384a4adb">execute</a>()=0</p><span class="signature-description">
+Execute the (updating) query.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#abc92a24b52aa33894ee13be7d8cc2804">executeSAX</a>(SAX2_ContentHandler *aContentHandler)=0</p><span class="signature-description">
+Serialize the query result as SAX events and call the callbacks of the <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler">SAX2_ContentHandler</a> that is given as input.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#af65562458630636335f510f5971bf382">executeSAX</a>()=0</p><span class="signature-description">
+Serialize the query result as SAX events and call the callbacks of the <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler">SAX2_ContentHandler</a> that has been set using registerSAXHandler.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a87deaaa73d44b839ada0f7dcc2cc2b13">free</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">double</p></td><td><p class="signature"><a href="#af171545243b5cd66525cfbc565f3ae2f">getDocLoadingTime</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">double</p></td><td><p class="signature"><a href="#a254c580091ea7e486ab4de086e5db6d2">getDocLoadingUserTime</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1DynamicContext">DynamicContext</a> *</p></td><td><p class="signature"><a href="#ade775d63d25f849de4a22297e859354c">getDynamicContext</a>() const =0</p><span class="signature-description">
+Get the dynamic context of this query.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ae95826866c11005bdeef7eae5b7f4ed3">getExternalVariables</a>(Iterator_t &amp;aVarsIter) const =0</p><span class="signature-description">
+Returns the QName of all external variables.         </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#af9d7a9a529a95cb5b1c2c4066db83474">getProfileName</a>() const =0</p><span class="signature-description">
+Get the filename of the profile.         </span></td></tr><tr><td class="return-type"><p class="signature">long</p></td><td><p class="signature"><a href="#aa76599b249f441747e996d3630b8f5ca">getRefCount</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1StaticCollectionManager">StaticCollectionManager</a> *</p></td><td><p class="signature"><a href="#abca740ea35f962e5472481bc3114d9ad">getStaticCollectionManager</a>() const =0</p><span class="signature-description">
+Returns a <a href="/pages/3.0/zorba/classzorba_1_1CollectionManager">CollectionManager</a> responsible for all collections which are statically declared in the static context of this query (main module) or any transitively imported library module.         </span></td></tr><tr><td class="return-type"><p class="signature">const <a href="/pages/3.0/zorba/classzorba_1_1StaticContext">StaticContext</a> *</p></td><td><p class="signature"><a href="#a7614f07940007398562e4e014f35e931">getStaticContext</a>() const =0</p><span class="signature-description">
+Get the static context of this query.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a9b207e13e728c1ea6eaf8e910af8a8da">isClosed</a>() const =0</p><span class="signature-description">
+Check if this query object has already been closed.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a668c4eee921f57e6eb6d6aad1cefc446">isSequential</a>() const =0</p><span class="signature-description">
+Check if this query is a sequential query.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#af5c18272f36baed40cac27495448feca">isUpdating</a>() const =0</p><span class="signature-description">
+Check if this query is an updating query.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba?anchor=adf8d7acacbff44c1d19abb360739d2f9">Iterator_t</a></p></td><td><p class="signature"><a href="#a432f79cc3e3d26dd97d69cb4dac06904">iterator</a>()=0</p><span class="signature-description">
+Get an iterator for the result of the query.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a5e95bbc7e19bc4a2bbbadf183bfc7a29">loadExecutionPlan</a>(std::istream &amp;is, SerializationCallback *aCallback=0)=0</p><span class="signature-description">
+Load execution plan.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ad298b0dee0cd9c14637d946c8e91c0ee">parse</a>(std::istream &amp;aQuery)=0</p><span class="signature-description">
+Parse the given query <a href="/pages/3.0/zorba/classzorba_1_1String">String</a>.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#adc916daf5f7e74426a6f75ce709a7451">parse</a>(std::istream &amp;aQuery, ModuleInfo_t &amp;aResult)=0</p><span class="signature-description">
+Parse the given module <a href="/pages/3.0/zorba/classzorba_1_1String">String</a>.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a291cbe7605b6a932f26d3bdfc208ec97">printPlan</a>(std::ostream &amp;aStream, bool aDotFormat=false) const =0</p><span class="signature-description">
+Print the execution plan of this query to the given output stream.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a269ebf498ff1964b72d0b254ef06b554">registerDiagnosticHandler</a>(DiagnosticHandler *handler)=0</p><span class="signature-description">
+Register an <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> to which errors during compilation or execution/serialization are reported.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a53344941d0656cd400738b829a60145e">registerSAXHandler</a>(SAX2_ContentHandler *aContentHandler)=0</p><span class="signature-description">
+Register a <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler">SAX2_ContentHandler</a> for retrieving the serialized query result as SAX events when <a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=af65562458630636335f510f5971bf382">executeSAX()</a> is called.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a32ce26dcd544b131ef8b024972960ebc">removeReference</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a7b2b5f5a422fa38d8ccfcf6c54391a53">resetDiagnosticHandler</a>()=0</p><span class="signature-description">
+Reset the error handling mechanism back to the default, i.e. behave as if no <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> had been set.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a5e13da32db8353aae480dc97af9f57be">saveExecutionPlan</a>(std::ostream &amp;os)=0</p><span class="signature-description">
+Save the compiled execution plan.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#abb8bc2e8cf4566ebae66246a7693bf71">setFileName</a>(const String &amp;flename)=0</p><span class="signature-description">
+Set the filename of a query.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ae03ce9360c0b15d607dca393d51e8b14">setProfileName</a>(std::string aProfileName)=0</p><span class="signature-description">
+Set the filename of the profile.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a4c865fd528ed73ac7e8ac7f2a2c37874">setTimeout</a>(long aTimeout=-1)=0</p><span class="signature-description">
+Set a timeout, after which the execution of the query will be aborted.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a43e747991f7ca268be6829f27eb457c4">~XQuery</a>()</p><span class="signature-description">
+Destructor.         </span></td></tr></table></div><div class="section"><h2>Protected Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">unsigned int</p></td><td><p class="signature"><a href="#a066274b33cffdd451a68a2a0754c6044">theRefCount</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a968d642f8f9df309338fbdd5f680e033" class="sect1"><div><h3>addReference</h3></div><div class="signature-box">void<span> </span>addReference() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab0bb4c46f5dffe1d1065934dfa3ba3d1" class="sect1"><div><h3>clone</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba?anchor=ad8b5b1677946bc552eca6d700286a18d">XQuery_t</a><span> </span>clone() const =0</div><div><p class="signature-description">
+Clone this query object in order to execute the query in another thread.         </p><p class="signature-description">
+Although two or more threads may invoke one of the execute methods on the same <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object, these invocations are serialized internally. For true parallel excetution of a query by multiple threads, the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object needs to be cloned, using this method. However, note that if an <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> has been provided by the user (see <a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=a269ebf498ff1964b72d0b254ef06b554">registerDiagnosticHandler()</a>), this <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> will also be used in the cloned query, and as a result, the user should provide a thread-safe <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a>. Alternatively, a new <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> can be registered in the cloned query by using registerDiagnosticHandler again. Or, the cloned query can be reset to use the default <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> (which just throws exceptions) by calling resetDiagnosticHandler.This function also clones the <a href="/pages/3.0/zorba/classzorba_1_1StaticContext">StaticContext</a> and <a href="/pages/3.0/zorba/classzorba_1_1DynamicContext">DynamicContext</a> of the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object. In the <a href="/pages/3.0/zorba/classzorba_1_1DynamicContext">DynamicContext</a> of the cloned query different variable values can be used, e.g. set different external variable values. For an example of cloning a query and setting different values in the dynamic context see example_10 in file <a href="/pages/3.0/zorba/simple_8cpp-example">simple.cpp</a>.<div><h4>Returns</h4>The cloned <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>SystemException</td><td>
+if the query has not been compiled or is closed. </td></tr></table></div>
+        </p></div></div><div id="adbb74d7a716e0f4899fc414ca6948a23" class="sect1"><div><h3>close</h3></div><div class="signature-box">void<span> </span>close()=0</div><div><p class="signature-description">
+Close the query and release all of its aquired ressources.         </p><p class="signature-description">
+While a query is compiled and/or active, it holds on to a number of resources. Before <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> can be safely shutdown, all resources must be released. For queries this can be done by calling close. However, if close is not called explicitly, it will be automatically called by the <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object's destructor, when the last smart pointer pointing this <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object is destroyed.Note: After an <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object is closed, calling <a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=adbb74d7a716e0f4899fc414ca6948a23">close()</a> again on the same object is a noop. However, calling any method other than <a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=adbb74d7a716e0f4899fc414ca6948a23">close()</a> on a closed <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object is prohibited (an error will be raised).Note: if an iterator has been created to retreive the result of an <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object (<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=a432f79cc3e3d26dd97d69cb4dac06904">iterator()</a>), that itrator will be closed when the query is closed, and the association between <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object and <a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> object will be destroyed. </div>
+        </p></div></div><div id="a8408503a6cc5e253b14167e2bb92d1b3" class="sect1"><div><h3>compile</h3></div><div class="signature-box">void<span> </span>compile(const String &amp;aQuery)=0</div><div><p class="signature-description">
+Compile a query given as a <a href="/pages/3.0/zorba/classzorba_1_1String">String</a>.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aQuery</td><td>
+the query <a href="/pages/3.0/zorba/classzorba_1_1String">String</a> to compile. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if the query has been closed, is already compiled, or an error occurs while compiling the query. </td></tr></table></div>
+        </p></div></div><div id="adfac463b622ac2413d27e8ccb9c217f0" class="sect1"><div><h3>compile</h3></div><div class="signature-box">void<span> </span>compile(const String &amp;aQuery, const Zorba_CompilerHints_t &amp;aHints)=0</div><div><p class="signature-description">
+Compile a query given as a <a href="/pages/3.0/zorba/classzorba_1_1String">String</a>, using the given compiler hints.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aQuery</td><td>
+the query <a href="/pages/3.0/zorba/classzorba_1_1String">String</a> to compile. </td></tr><tr><td>aHints</td><td>
+hints passed to the query compiler. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if the query has been closed, is already compiled, or an error occurs while compiling the query. </td></tr></table></div>
+        </p></div></div><div id="a57df68ee44f727945382fe1603255ce0" class="sect1"><div><h3>compile</h3></div><div class="signature-box">void<span> </span>compile(std::istream &amp;aQuery, const Zorba_CompilerHints_t &amp;aHints)=0</div><div><p class="signature-description">
+Compile a query given as an input stream, using the given compiler hints.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aQuery</td><td>
+the query input stream. </td></tr><tr><td>aHints</td><td>
+hints passed to the query compiler. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if the query has been closed, is already compiled, or an error occurs while compiling the query. </td></tr></table></div>
+        </p></div></div><div id="ac2b5db2da59c2491470c090122ad2d49" class="sect1"><div><h3>compile</h3></div><div class="signature-box">void<span> </span>compile(const String &amp;aQuery, const StaticContext_t &amp;aStaticContext, const Zorba_CompilerHints_t &amp;aHints)=0</div><div><p class="signature-description">
+Compile a query given as a <a href="/pages/3.0/zorba/classzorba_1_1String">String</a>, using a given static context and compiler hints.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aQuery</td><td>
+the query <a href="/pages/3.0/zorba/classzorba_1_1String">String</a> to compile. </td></tr><tr><td>aStaticContext</td><td>
+the static context. </td></tr><tr><td>aHints</td><td>
+hints passed to the query compiler. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if the query has been closed, is already compiled, or an error occurs while compiling the query. </td></tr></table></div>
+        </p></div></div><div id="aed40c99c5ce628c9b2f57a1babc73271" class="sect1"><div><h3>compile</h3></div><div class="signature-box">void<span> </span>compile(std::istream &amp;aQuery, const StaticContext_t &amp;aStaticContext, const Zorba_CompilerHints_t &amp;aHints)=0</div><div><p class="signature-description">
+Compile a query given as an input stream, using a given static context and compiler hints.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aQuery</td><td>
+the query input stream. </td></tr><tr><td>aStaticContext</td><td>
+the static context. </td></tr><tr><td>aHints</td><td>
+hints passed to the query compiler. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if the query has been closed, is already compiled, or an error occurs while compiling the query. </td></tr></table></div>
+        </p></div></div><div id="a62758ab41cf088cda72c246b25f668db" class="sect1"><div><h3>execute</h3></div><div class="signature-box">void<span> </span>execute(std::ostream &amp;aOutStream, const Zorba_SerializerOptions_t *aSerOptions=NULL)=0</div><div><p class="signature-description">
+Execute the query and write the result to the given output stream.         </p><p class="signature-description">
+The query only has a result if it's a non-updating query.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aOutStream</td><td>
+the output stream on which the result is written. </td></tr><tr><td>aSerOptions</td><td>
+an optional set of serialization options. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occurs (e.g. the query is closed or has not been compiled) </td></tr></table></div>
+        </p></div></div><div id="a470074b64011b3737b3845aa8347bcfc" class="sect1"><div><h3>execute</h3></div><div class="signature-box">void<span> </span>execute(std::ostream &amp;aOutStream, itemHandler aCallbackFunction, void *aCallbackData, const Zorba_SerializerOptions_t *aSerOptions=NULL)=0</div><div><p class="signature-description">
+Execute the query and write the result to the given output stream.         </p><p class="signature-description">
+A handler function gets called before the serialization of each item.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aOutStream</td><td>
+the output stream on which the result is written. </td></tr><tr><td>aCallbackFunction</td><td>
+a call back function which is called every time, before the serialization of an item. </td></tr><tr><td>aCallbackData</td><td>
+data which is passed to the call back function. </td></tr><tr><td>aSerOptions</td><td>
+<a href="/pages/3.0/zorba/classzorba_1_1Serializer">Serializer</a> options. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occurs (e.g. the query is closed or has not been compiled) </td></tr></table></div>
+        </p></div></div><div id="a47068cebc58f146abb862a94384a4adb" class="sect1"><div><h3>execute</h3></div><div class="signature-box">void<span> </span>execute()=0</div><div><p class="signature-description">
+Execute the (updating) query.         </p><p class="signature-description">
+The query can be executed with this function only if it is an updating query.<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=af5c18272f36baed40cac27495448feca">isUpdating</a> </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occurs (e.g. the query is closed or has not been compiled or is not updating) </td></tr></table></div>
+        </p></div></div><div id="abc92a24b52aa33894ee13be7d8cc2804" class="sect1"><div><h3>executeSAX</h3></div><div class="signature-box">void<span> </span>executeSAX(SAX2_ContentHandler *aContentHandler)=0</div><div><p class="signature-description">
+Serialize the query result as SAX events and call the callbacks of the <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler">SAX2_ContentHandler</a> that is given as input.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aContentHandler</td><td>
+the content handler on which SAX callbacks are called. </td></tr></table></div>
+        </p></div></div><div id="af65562458630636335f510f5971bf382" class="sect1"><div><h3>executeSAX</h3></div><div class="signature-box">void<span> </span>executeSAX()=0</div><div><p class="signature-description">
+Serialize the query result as SAX events and call the callbacks of the <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler">SAX2_ContentHandler</a> that has been set using registerSAXHandler.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occurs (e.g. no <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler">SAX2_ContentHandler</a> has been registered). </td></tr></table></div>
+        </p></div></div><div id="a87deaaa73d44b839ada0f7dcc2cc2b13" class="sect1"><div><h3>free</h3></div><div class="signature-box">void<span> </span>free()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="af171545243b5cd66525cfbc565f3ae2f" class="sect1"><div><h3>getDocLoadingTime</h3></div><div class="signature-box">double<span> </span>getDocLoadingTime() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a254c580091ea7e486ab4de086e5db6d2" class="sect1"><div><h3>getDocLoadingUserTime</h3></div><div class="signature-box">double<span> </span>getDocLoadingUserTime() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ade775d63d25f849de4a22297e859354c" class="sect1"><div><h3>getDynamicContext</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1DynamicContext">DynamicContext</a> *<span> </span>getDynamicContext() const =0</div><div><p class="signature-description">
+Get the dynamic context of this query.         </p><p class="signature-description">
+This function returns the dynamic context that belongs to this query and is used during query execution. The context can be used, for example, to set values of external variables, the default collation, or the current datetime. It is only available if the query has been compiled, otherwise an error is reported. Moreover, the context must not be modified during the execution of a query (i.e. if a <a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> is opened). The lifetime of the context returned by this function is restricted by the lifetime of the according query object.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>SystemException</td><td>
+if the query has not been compiled or is closed. </td></tr></table></div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1DynamicContext">DynamicContext</a> of this query. </div>
+        </p></div></div><div id="ae95826866c11005bdeef7eae5b7f4ed3" class="sect1"><div><h3>getExternalVariables</h3></div><div class="signature-box">void<span> </span>getExternalVariables(Iterator_t &amp;aVarsIter) const =0</div><div><p class="signature-description">
+Returns the QName of all external variables.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aVarsIter</td><td>
+iterator to store the results. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured. </td></tr></table></div>
+        </p></div></div><div id="af9d7a9a529a95cb5b1c2c4066db83474" class="sect1"><div><h3>getProfileName</h3></div><div class="signature-box">std::string<span> </span>getProfileName() const =0</div><div><p class="signature-description">
+Get the filename of the profile.         </p><p class="signature-description">
+This file will contain the output of <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> profiler.         </p></div></div><div id="aa76599b249f441747e996d3630b8f5ca" class="sect1"><div><h3>getRefCount</h3></div><div class="signature-box">long<span> </span>getRefCount() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="abca740ea35f962e5472481bc3114d9ad" class="sect1"><div><h3>getStaticCollectionManager</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1StaticCollectionManager">StaticCollectionManager</a> *<span> </span>getStaticCollectionManager() const =0</div><div><p class="signature-description">
+Returns a <a href="/pages/3.0/zorba/classzorba_1_1CollectionManager">CollectionManager</a> responsible for all collections which are statically declared in the static context of this query (main module) or any transitively imported library module.         </p><p class="signature-description">
+The collection manager provides a set of functions for managing collections and their contents.<div><h4>Returns</h4>The collection manager responsible for managing collections of this query. </div>
+        </p></div></div><div id="a7614f07940007398562e4e014f35e931" class="sect1"><div><h3>getStaticContext</h3></div><div class="signature-box">const <a href="/pages/3.0/zorba/classzorba_1_1StaticContext">StaticContext</a> *<span> </span>getStaticContext() const =0</div><div><p class="signature-description">
+Get the static context of this query.         </p><p class="signature-description">
+This function returns the static context that belongs to this query. The static context is only available if the query has been compiled, otherwise an error is reported. The context has all the components and values that were set in the static context that was passed when creating the query and those that were set in the prolog of the query. Note that after compilation of the query the static context is a read only structure. Moreover, the lifetime of the context returned by this function is restricted by the lifetime of the corresponding query object.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>SystemException</td><td>
+if the query has not been compiled or is closed. </td></tr></table></div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1StaticContext">StaticContext</a> of this query. </div>
+        </p></div></div><div id="a9b207e13e728c1ea6eaf8e910af8a8da" class="sect1"><div><h3>isClosed</h3></div><div class="signature-box">bool<span> </span>isClosed() const =0</div><div><p class="signature-description">
+Check if this query object has already been closed.         </p><p class="signature-description">
+<div><h4>Returns</h4>true if the query has been closed already or false otherwise. </div>
+        </p></div></div><div id="a668c4eee921f57e6eb6d6aad1cefc446" class="sect1"><div><h3>isSequential</h3></div><div class="signature-box">bool<span> </span>isSequential() const =0</div><div><p class="signature-description">
+Check if this query is a sequential query.         </p><p class="signature-description">
+<div><h4>Returns</h4>true if the query is a sequential query, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>SystemException</td><td>
+if the query is not compiled or has been closed. </td></tr></table></div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=adbb74d7a716e0f4899fc414ca6948a23">close()</a> <simplesectsep/><a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=a8408503a6cc5e253b14167e2bb92d1b3">compile</a>(...) </div>
+        </p></div></div><div id="af5c18272f36baed40cac27495448feca" class="sect1"><div><h3>isUpdating</h3></div><div class="signature-box">bool<span> </span>isUpdating() const =0</div><div><p class="signature-description">
+Check if this query is an updating query.         </p><p class="signature-description">
+<div><h4>Returns</h4>true if the query is an updating query, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>SystemException</td><td>
+if the query is not compiled or has been closed. </td></tr></table></div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=adbb74d7a716e0f4899fc414ca6948a23">close()</a> <simplesectsep/><a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=a8408503a6cc5e253b14167e2bb92d1b3">compile</a>(...) </div>
+        </p></div></div><div id="a432f79cc3e3d26dd97d69cb4dac06904" class="sect1"><div><h3>iterator</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba?anchor=adf8d7acacbff44c1d19abb360739d2f9">Iterator_t</a><span> </span>iterator()=0</div><div><p class="signature-description">
+Get an iterator for the result of the query.         </p><p class="signature-description">
+Allows an application to lazily execute the query, retrieving the result one item at a time.<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> iterator over the result sequence. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occurs (e.g. the query is closed or has not been compiled). </td></tr></table></div>
+        </p></div></div><div id="a5e95bbc7e19bc4a2bbbadf183bfc7a29" class="sect1"><div><h3>loadExecutionPlan</h3></div><div class="signature-box">bool<span> </span>loadExecutionPlan(std::istream &amp;is, SerializationCallback *aCallback=0)=0</div><div><p class="signature-description">
+Load execution plan.         </p><p class="signature-description">
+The serialized execution plan contains a general version for the entire archive and specific versions for each class. <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> does not quarantee that it can load execution plans saved with previous versions of <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a>. In most cases there will be no problems, but the complete backward compatibility cannot be quaranteed.The engine automatically detects the format of the input, either XML or binary.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>is</td><td>
+Reference to std::istream. </td></tr><tr><td>aCallback</td><td>
+optional callback handler (see <a href="/pages/3.0/zorba/classzorba_1_1SerializationCallback">SerializationCallback</a>) that is used to retrieve information that has not been serialized (e.g. external modules). </td></tr></table></div>
+<div><h4>Returns</h4>true if success. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if there are problems loading the execution plan. </td></tr></table></div>
+        </p></div></div><div id="ad298b0dee0cd9c14637d946c8e91c0ee" class="sect1"><div><h3>parse</h3></div><div class="signature-box">void<span> </span>parse(std::istream &amp;aQuery)=0</div><div><p class="signature-description">
+Parse the given query <a href="/pages/3.0/zorba/classzorba_1_1String">String</a>.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aQuery</td><td>
+the query file to parse. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occurs while parsing the query. </td></tr></table></div>
+        </p></div></div><div id="adc916daf5f7e74426a6f75ce709a7451" class="sect1"><div><h3>parse</h3></div><div class="signature-box">void<span> </span>parse(std::istream &amp;aQuery, ModuleInfo_t &amp;aResult)=0</div><div><p class="signature-description">
+Parse the given module <a href="/pages/3.0/zorba/classzorba_1_1String">String</a>.         </p><p class="signature-description">
+This function parses the module string and returns some information about the module.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aQuery</td><td>
+the query file to parse. </td></tr><tr><td>aResult</td><td>
+some information about the module </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occurs while parsing the query. </td></tr></table></div>
+        </p></div></div><div id="a291cbe7605b6a932f26d3bdfc208ec97" class="sect1"><div><h3>printPlan</h3></div><div class="signature-box">void<span> </span>printPlan(std::ostream &amp;aStream, bool aDotFormat=false) const =0</div><div><p class="signature-description">
+Print the execution plan of this query to the given output stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aStream</td><td>
+the output stream to which the execution plan is printed </td></tr><tr><td>aDotFormat</td><td>
+specifies the format of the printed execution plan. If this is true, then the execution plan is printed in the DOT format. If this is false, the plan is printed as XML. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if the query has been closed or is not compiled. </td></tr></table></div>
+        </p></div></div><div id="a269ebf498ff1964b72d0b254ef06b554" class="sect1"><div><h3>registerDiagnosticHandler</h3></div><div class="signature-box">void<span> </span>registerDiagnosticHandler(DiagnosticHandler *handler)=0</div><div><p class="signature-description">
+Register an <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> to which errors during compilation or execution/serialization are reported.         </p><p class="signature-description">
+If no <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> has been set via this function, the default error handling mechanism is to throw instances of the <a href="/pages/3.0/zorba/classzorba_1_1ZorbaException">ZorbaException</a> class.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>handler</td><td>
+<a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> to which errors are reported. The caller retains ownership over the <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> passed as parameter. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>SystemException</td><td>
+if the query has been closed. </td></tr></table></div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=adbb74d7a716e0f4899fc414ca6948a23">close()</a> </div>
+        </p></div></div><div id="a53344941d0656cd400738b829a60145e" class="sect1"><div><h3>registerSAXHandler</h3></div><div class="signature-box">void<span> </span>registerSAXHandler(SAX2_ContentHandler *aContentHandler)=0</div><div><p class="signature-description">
+Register a <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler">SAX2_ContentHandler</a> for retrieving the serialized query result as SAX events when <a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=af65562458630636335f510f5971bf382">executeSAX()</a> is called.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aContentHandler</td><td>
+the content handler on which SAX callbacks are called. </td></tr></table></div>
+        </p></div></div><div id="a32ce26dcd544b131ef8b024972960ebc" class="sect1"><div><h3>removeReference</h3></div><div class="signature-box">void<span> </span>removeReference()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a7b2b5f5a422fa38d8ccfcf6c54391a53" class="sect1"><div><h3>resetDiagnosticHandler</h3></div><div class="signature-box">void<span> </span>resetDiagnosticHandler()=0</div><div><p class="signature-description">
+Reset the error handling mechanism back to the default, i.e. behave as if no <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> had been set.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>SystemException</td><td>
+if the query has been closed already. </td></tr></table></div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=a269ebf498ff1964b72d0b254ef06b554">registerDiagnosticHandler(DiagnosticHandler*)</a> </div>
+        </p></div></div><div id="a5e13da32db8353aae480dc97af9f57be" class="sect1"><div><h3>saveExecutionPlan</h3></div><div class="signature-box">bool<span> </span>saveExecutionPlan(std::ostream &amp;os)=0</div><div><p class="signature-description">
+Save the compiled execution plan.         </p><p class="signature-description">
+After compiling an <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> program you can save the execution plan in some persistent storage. The execution plan is saved in a platform-independent format. You can later load this execution plan into a different <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> object (potentially on a different machine) and execute it like it was compiled in place.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>os</td><td>
+The output stream into which the execution plan is saved. </td></tr></table></div>
+<div><h4>Returns</h4>true if success. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if the query has not been compiled or there are problems serializing the execution plan. </td></tr></table></div>
+        </p></div></div><div id="abb8bc2e8cf4566ebae66246a7693bf71" class="sect1"><div><h3>setFileName</h3></div><div class="signature-box">void<span> </span>setFileName(const String &amp;flename)=0</div><div><p class="signature-description">
+Set the filename of a query.         </p><p class="signature-description">
+This (after URI-encoding) becomes the encapsulating entity's retrieval URI (in RFC 3986 terms), and may be used in the computation of the program's static base URI property, as described at <a href="http://www.w3.org/TR/xquery-30/#dt-base-uri-decl" target="_blank">http://www.w3.org/TR/xquery-30/#dt-base-uri-decl</a>         </p></div></div><div id="ae03ce9360c0b15d607dca393d51e8b14" class="sect1"><div><h3>setProfileName</h3></div><div class="signature-box">void<span> </span>setProfileName(std::string aProfileName)=0</div><div><p class="signature-description">
+Set the filename of the profile.         </p><p class="signature-description">
+This file will contain the output of <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> profiler.         </p></div></div><div id="a4c865fd528ed73ac7e8ac7f2a2c37874" class="sect1"><div><h3>setTimeout</h3></div><div class="signature-box">void<span> </span>setTimeout(long aTimeout=-1)=0</div><div><p class="signature-description">
+Set a timeout, after which the execution of the query will be aborted.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aTimeout</td><td>
+is an optional argument, which declares, that the execution of a query will be aborted after aTimeout number of seconds. If aTimeout is set to -1 (default), the query will never abort. </td></tr></table></div>
+        </p></div></div><div id="a43e747991f7ca268be6829f27eb457c4" class="sect1"><div><h3>~XQuery</h3></div><div class="signature-box"><span> </span>~XQuery()</div><div><p class="signature-description">
+Destructor.         </p><p class="signature-description">
+The destructor is called automatically when there are no more XQuery_t smart pointers pointing to this <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> instance.         </p></div></div></div></div><div class="section"><h2>Protected Attributes</h2><div class="detailed"><div id="a066274b33cffdd451a68a2a0754c6044" class="sect1"><div><h3>theRefCount</h3></div><div class="signature-box">unsigned int<span> </span>theRefCount</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

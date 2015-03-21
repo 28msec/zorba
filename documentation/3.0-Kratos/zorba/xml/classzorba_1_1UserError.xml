@@ -1,0 +1,360 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1UserError" kind="class" prot="public">
+    <compoundname>zorba::UserError</compoundname>
+    <basecompoundref refid="classzorba_1_1Diagnostic" prot="public" virt="non-virtual">zorba::Diagnostic</basecompoundref>
+    <includes refid="error_8h" local="no">zorba/error.h</includes>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classzorba_1_1UserError_1a018bcf0f30d2d142ef4b15926191e4b4" prot="private" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">internal::VariableQName</ref>&lt; std::string &gt;</type>
+        <definition>typedef internal::VariableQName&lt;std::string&gt; zorba::UserError::QName</definition>
+        <argsstring></argsstring>
+        <name>QName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="67" bodyfile="/home/wcandillon/deadlinks/include/zorba/error.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1UserError_1a10b994ab40d5ad95e3115b1281ef9b0d" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">QName</ref></type>
+        <definition>QName zorba::UserError::qname_</definition>
+        <argsstring></argsstring>
+        <name>qname_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="68" bodyfile="/home/wcandillon/deadlinks/include/zorba/error.h" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classzorba_1_1UserError_1a4a8bef2d1a8060fd68299e62fefd15f6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend <ref refid="classzorba_1_1UserError" kindref="compound">UserError</ref></type>
+        <definition>UserError make_user_error</definition>
+        <argsstring>(char const *, char const *, char const *)</argsstring>
+        <name>make_user_error</name>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type>char const *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="80"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1UserError_1ab066a82aab842573402630e815fda91b" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend void</type>
+        <definition>void serialization::operator&amp;</definition>
+        <argsstring>(serialization::Archiver &amp;, const Diagnostic *&amp;)</argsstring>
+        <name>serialization::operator&amp;</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> *&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="85"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1UserError_1a3009c2a8bb8f1e567c4607147d8c11aa" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class UserException</definition>
+        <argsstring></argsstring>
+        <name>UserException</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="79" bodyfile="/home/wcandillon/deadlinks/include/zorba/error.h" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1Diagnostic_1afb81a2ab07a82ca366124911d4d6d09a" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class ZorbaException</definition>
+        <argsstring></argsstring>
+        <name>ZorbaException</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="316" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="316" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Diagnostic_1a26bf8331471f50f339a748b67006591b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="namespacezorba_1_1diagnostic_1a5709afb398f65a318160aa7613abfa9e" kindref="member">diagnostic::kind</ref></type>
+        <definition>virtual diagnostic::kind zorba::Diagnostic::kind</definition>
+        <argsstring>() const </argsstring>
+        <name>kind</name>
+        <reimplementedby refid="classzorba_1_1internal_1_1SystemDiagnostic_1ae8d86c62f67ac02e066c20d1c8b2b47e">kind</reimplementedby>
+        <briefdescription>
+<para>Gets the kind of this diagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said kind. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="295"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Diagnostic_1a26d37747968b7e16cc3bbb564124ab66" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>char const *</type>
+        <definition>virtual char const* zorba::Diagnostic::message</definition>
+        <argsstring>() const </argsstring>
+        <name>message</name>
+        <briefdescription>
+<para>Gets the message of this diagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said message. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="302"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserError_1acc73a22ec2926b8bc097ccc4a4cc530a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1UserError" kindref="compound">UserError</ref> &amp;</type>
+        <definition>UserError&amp; zorba::UserError::operator=</definition>
+        <argsstring>(UserError const &amp;from)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1UserError" kindref="compound">UserError</ref> const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Assigns this UserError from another. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The UserError to assign from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>*this</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserError_1a86d369086e3d44185d0648ebca171fbd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">diagnostic::QName</ref> const &amp;</type>
+        <definition>diagnostic::QName const&amp; zorba::UserError::qname</definition>
+        <argsstring>() const </argsstring>
+        <name>qname</name>
+        <reimplements refid="classzorba_1_1Diagnostic_1ae32b80d36d617c9d142aeec331dd92c6">qname</reimplements>
+        <briefdescription>
+<para>Gets the QName for this diagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said QName. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="60"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserError_1a89279b20623d50deb04790247190d826" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::UserError::UserError</definition>
+        <argsstring>(UserError const &amp;from)</argsstring>
+        <name>UserError</name>
+        <param>
+          <type><ref refid="classzorba_1_1UserError" kindref="compound">UserError</ref> const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Copy-constructs a UserError. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The UserError to copy from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="44"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserError_1a8320c4365185e66f6c2cfb85f87504b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::UserError::~UserError</definition>
+        <argsstring>()</argsstring>
+        <name>~UserError</name>
+        <briefdescription>
+<para>Destroys this UserError. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="49"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1UserError_1a609a979fe0b8a579df7413103f4249e8" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const *</type>
+        <definition>Diagnostic const* zorba::UserError::clone</definition>
+        <argsstring>() const </argsstring>
+        <name>clone</name>
+        <reimplements refid="classzorba_1_1Diagnostic_1a26384c8cc836e3aedaafee7e73e1cac0">clone</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="64"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Diagnostic_1ace559dde0d2a2f708ce7af94cb767e7e" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Diagnostic::destroy</definition>
+        <argsstring>() const </argsstring>
+        <name>destroy</name>
+        <reimplementedby refid="classzorba_1_1internal_1_1SystemDiagnostic_1aa3514301f262258b64fb7c9aa34490cd">destroy</reimplementedby>
+        <briefdescription>
+<para>Destroys a Diagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is the only way a Diagnostic should be destroyed. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="313"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1UserError_1aac3bc4b2b1532770f2b5499688b47bff" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::UserError::UserError</definition>
+        <argsstring>(char const *ns, char const *prefix, char const *localname)</argsstring>
+        <name>UserError</name>
+        <param>
+          <type>char const *</type>
+          <declname>ns</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>prefix</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>localname</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a UserError. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ns</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error&apos;s namespace URI. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>prefix</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error&apos;s prefix. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>localname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error&apos;s local-name. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserError_1a444cde0a8e814973f731cb7625aae3f2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::UserError::UserError</definition>
+        <argsstring>(serialization::Archiver &amp;)</argsstring>
+        <name>UserError</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="83"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A UserError is-a <ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> for user-defined errors via <computeroutput>fn:error()</computeroutput>. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="926">
+        <label>zorba::Diagnostic</label>
+        <link refid="classzorba_1_1Diagnostic"/>
+      </node>
+      <node id="925">
+        <label>zorba::UserError</label>
+        <link refid="classzorba_1_1UserError"/>
+        <childnode refid="926" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="928">
+        <label>zorba::Diagnostic</label>
+        <link refid="classzorba_1_1Diagnostic"/>
+      </node>
+      <node id="927">
+        <label>zorba::UserError</label>
+        <link refid="classzorba_1_1UserError"/>
+        <childnode refid="928" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="37" bodyfile="/home/wcandillon/deadlinks/include/zorba/error.h" bodystart="37" bodyend="86"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1UserError_1a609a979fe0b8a579df7413103f4249e8" prot="protected" virt="virtual"><scope>zorba::UserError</scope><name>clone</name></member>
+      <member refid="classzorba_1_1Diagnostic_1ace559dde0d2a2f708ce7af94cb767e7e" prot="protected" virt="virtual"><scope>zorba::UserError</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1Diagnostic_1a26bf8331471f50f339a748b67006591b" prot="public" virt="virtual"><scope>zorba::UserError</scope><name>kind</name></member>
+      <member refid="classzorba_1_1UserError_1a4a8bef2d1a8060fd68299e62fefd15f6" prot="private" virt="non-virtual"><scope>zorba::UserError</scope><name>make_user_error</name></member>
+      <member refid="classzorba_1_1Diagnostic_1a26d37747968b7e16cc3bbb564124ab66" prot="public" virt="virtual"><scope>zorba::UserError</scope><name>message</name></member>
+      <member refid="classzorba_1_1UserError_1acc73a22ec2926b8bc097ccc4a4cc530a" prot="public" virt="non-virtual"><scope>zorba::UserError</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1UserError_1a018bcf0f30d2d142ef4b15926191e4b4" prot="private" virt="non-virtual"><scope>zorba::UserError</scope><name>QName</name></member>
+      <member refid="classzorba_1_1UserError_1a86d369086e3d44185d0648ebca171fbd" prot="public" virt="virtual"><scope>zorba::UserError</scope><name>qname</name></member>
+      <member refid="classzorba_1_1UserError_1a10b994ab40d5ad95e3115b1281ef9b0d" prot="private" virt="non-virtual"><scope>zorba::UserError</scope><name>qname_</name></member>
+      <member refid="classzorba_1_1UserError_1ab066a82aab842573402630e815fda91b" prot="private" virt="non-virtual"><scope>zorba::UserError</scope><name>serialization::operator&amp;</name></member>
+      <member refid="classzorba_1_1UserError_1a89279b20623d50deb04790247190d826" prot="public" virt="non-virtual"><scope>zorba::UserError</scope><name>UserError</name></member>
+      <member refid="classzorba_1_1UserError_1aac3bc4b2b1532770f2b5499688b47bff" prot="private" virt="non-virtual"><scope>zorba::UserError</scope><name>UserError</name></member>
+      <member refid="classzorba_1_1UserError_1a444cde0a8e814973f731cb7625aae3f2" prot="private" virt="non-virtual"><scope>zorba::UserError</scope><name>UserError</name></member>
+      <member refid="classzorba_1_1UserError_1a3009c2a8bb8f1e567c4607147d8c11aa" prot="private" virt="non-virtual"><scope>zorba::UserError</scope><name>UserException</name></member>
+      <member refid="classzorba_1_1Diagnostic_1afb81a2ab07a82ca366124911d4d6d09a" prot="protected" virt="non-virtual"><scope>zorba::UserError</scope><name>ZorbaException</name></member>
+      <member refid="classzorba_1_1Diagnostic_1ab3e86cf75df94f0b02c2dbc1acbafdd1" prot="protected" virt="virtual"><scope>zorba::UserError</scope><name>~Diagnostic</name></member>
+      <member refid="classzorba_1_1UserError_1a8320c4365185e66f6c2cfb85f87504b6" prot="public" virt="non-virtual"><scope>zorba::UserError</scope><name>~UserError</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

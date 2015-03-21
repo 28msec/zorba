@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1DiagnosticHandler" kind="class" prot="public">
+    <compoundname>zorba::DiagnosticHandler</compoundname>
+    <includes refid="diagnostic__handler_8h" local="no">zorba/diagnostic_handler.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1DiagnosticHandler_1af3425c0a0811d549c45188b0eba044fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DiagnosticHandler::error</definition>
+        <argsstring>(ZorbaException const &amp;exception)</argsstring>
+        <name>error</name>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> const &amp;</type>
+          <declname>exception</declname>
+        </param>
+        <briefdescription>
+<para>This function is called for all exceptions. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>exception</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The exception. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic_handler.h" line="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DiagnosticHandler_1a3705a008e0d3f36109dab05e5a561cfc" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DiagnosticHandler::warning</definition>
+        <argsstring>(XQueryWarning const &amp;warning)</argsstring>
+        <name>warning</name>
+        <param>
+          <type><ref refid="namespacezorba_1a9c43771184bda8659c0e0acc8b89a4ab" kindref="member">XQueryWarning</ref> const &amp;</type>
+          <declname>warning</declname>
+        </param>
+        <briefdescription>
+<para>This function is called for all warnings. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>warning</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The warning. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic_handler.h" line="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DiagnosticHandler_1a5512bc787eb1a0261880666efc792796" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::DiagnosticHandler::~DiagnosticHandler</definition>
+        <argsstring>()</argsstring>
+        <name>~DiagnosticHandler</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic_handler.h" line="32"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>When registered with an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object, a DiagnosticHandler handles all exceptions and warnings that otherwise would have been thrown or reported. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic_handler.h" line="30" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic_handler.h" bodystart="30" bodyend="47"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1DiagnosticHandler_1af3425c0a0811d549c45188b0eba044fe" prot="public" virt="virtual"><scope>zorba::DiagnosticHandler</scope><name>error</name></member>
+      <member refid="classzorba_1_1DiagnosticHandler_1a3705a008e0d3f36109dab05e5a561cfc" prot="public" virt="virtual"><scope>zorba::DiagnosticHandler</scope><name>warning</name></member>
+      <member refid="classzorba_1_1DiagnosticHandler_1a5512bc787eb1a0261880666efc792796" prot="public" virt="virtual"><scope>zorba::DiagnosticHandler</scope><name>~DiagnosticHandler</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

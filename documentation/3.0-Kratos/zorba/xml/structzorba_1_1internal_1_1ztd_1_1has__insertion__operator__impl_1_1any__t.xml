@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1any__t" kind="struct" prot="public">
+    <compoundname>zorba::internal::ztd::has_insertion_operator_impl::any_t</compoundname>
+    <includes refid="ztd_8h" local="no">zorba/internal/ztd.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1any__t_1a020103b650c2ba30b177e2b2c850df36" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>zorba::internal::ztd::has_insertion_operator_impl::any_t::any_t</definition>
+        <argsstring>(T const &amp;)</argsstring>
+        <name>any_t</name>
+        <param>
+          <type>T const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="99"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>This dummy class is used to make the matching of the dummy <ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af6f8268706824cf6c6ae5326cc90e283" kindref="member">operator&lt;&lt;()</ref> <emphasis>worse</emphasis> than the global <computeroutput><ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af6f8268706824cf6c6ae5326cc90e283" kindref="member">operator&lt;&lt;()</ref></computeroutput>, if any. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="98" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="98" bodyend="100"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1any__t_1a020103b650c2ba30b177e2b2c850df36" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::has_insertion_operator_impl::any_t</scope><name>any_t</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

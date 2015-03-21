@@ -1,0 +1,416 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://zorba.io/modules/full-text</xqdoc:uri><xqdoc:name>full-text</xqdoc:name><xqdoc:comment><xqdoc:description> This module provides an XQuery API to full-text functions.
+ For general information about this implementation of the
+ <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0 specification</a>
+ as well as instructions for building an installing a thesaurus,
+ see the <a href="http://zorba.io/documentation/latest/zorba/architecture/ft_intro">Full Text Thesaurus documentation</a>.
+ <h2>Notes on languages</h2>
+ To refer to particular human languages,
+ uses either the
+ <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+ or
+ <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
+ languages codes.
+ Note that only a subset of the
+ <a href="http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">complete list of language codes</a>
+ are supported and not every function supports the same subset.
+ <p/>
+ Most functions in this module take a language as a parameter
+ using the
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>
+ XML schema data type.
+ <h2>Notes on stemming</h2>
+ The <code>stem()</code> functions return the
+ <a href="http://en.wikipedia.org/wiki/Word_stem">stem</a>
+ of a word.
+ The stem of a word itself, however, is not guaranteed to be a word.
+ It is best to consider a stem as an opaque byte sequence.
+ All that is guaranteed about a stem is that,
+ for a given word,
+ the stem of that word will always be the same byte sequence.
+ Hence,
+ you should never compare the result of one of the <code>stem()</code>
+ functions against a non-stemmed string,
+ for example:
+ <pre>
+  if ( ft:stem( "apples" ) eq "apple" )             ** WRONG **
+ </pre>
+ Instead do:
+ <pre>
+  if ( ft:stem( "apples" ) eq ft:stem( "apple" ) )  ** CORRECT **
+ </pre>
+ <h2>Notes on the thesaurus</h2>
+ The <code>thesaurus-lookup()</code> functions have "levels"
+ and "relationship" parameters.
+ The values for these are implementation-defined.
+ The default implementation uses the
+ <a href="http://wordnet.princeton.edu/">WordNet lexical database</a>,
+ version 3.0.
+ <p/>
+ In WordNet,
+ the number of "levels" that two phrases are apart
+ are how many hierarchical meanings apart they are.
+ For example,
+ "canary" is 5 levels away from "vertebrate"
+ (carary &gt; finch &gt; oscine &gt; passerine &gt; bird &gt; vertebrate).
+ <p/>
+ When using the WordNet implementation,
+ all of the relationships (and their abbreviations)
+ specified by
+ <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=7776">ISO 2788</a>
+ and
+ <a href="http://www.niso.org/kst/reports/standards?step=2&amp;gid=&amp;project_key=7cc9b583cb5a62e8c15d3099e0bb46bbae9cf38a">ANSI/NISO Z39.19-2005</a>
+ with the exceptions of "HN" (history note)
+ and "X SN" (see scope note for) are supported.
+ These relationships are:
+  <table>
+    <tr>
+      <th>Rel.</th>
+      <th>Meaning</th>
+      <th>WordNet Rel.</th>
+    </tr>
+    <tr>
+      <td>BT</td>
+      <td>broader term</td>
+      <td>hypernym</td>
+    </tr>
+    <tr>
+      <td>BTG</td>
+      <td>broader term generic</td>
+      <td>hypernym</td>
+    </tr>
+    <tr>
+      <td>BTI</td>
+      <td>broader term instance</td>
+      <td>instance hypernym</td>
+    </tr>
+    <tr>
+      <td>BTP</td>
+      <td>broader term partitive</td>
+      <td>part meronym</td>
+    </tr>
+    <tr>
+      <td>NT</td>
+      <td>narrower term</td>
+      <td>hyponym</td>
+    </tr>
+    <tr>
+      <td>NTG</td>
+      <td>narrower term generic</td>
+      <td>hyponym</td>
+    </tr>
+    <tr>
+      <td>NTI</td>
+      <td>narrower term instance</td>
+      <td>instance hyponym</td>
+    </tr>
+    <tr>
+      <td>NTP</td>
+      <td>narrower term partitive</td>
+      <td>part holonym</td>
+    </tr>
+    <tr>
+      <td>RT</td>
+      <td>related term</td>
+      <td>also see</td>
+    </tr>
+    <tr>
+      <td>SN</td>
+      <td>scope note</td>
+      <td>n/a</td>
+    </tr>
+    <tr>
+      <td>TT</td>
+      <td>top term</td>
+      <td>hypernym</td>
+    </tr>
+    <tr>
+      <td>UF</td>
+      <td>non-preferred term</td>
+      <td>n/a</td>
+    </tr>
+    <tr>
+      <td>USE</td>
+      <td>preferred term</td>
+      <td>n/a</td>
+    </tr>
+  </table>
+ Note that you can specify relationships
+ either by their abbreviation
+ or their meaning.
+ Relationships are case-insensitive.
+ In addition to the
+ <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=7776">ISO 2788</a>
+ and
+ <a href="http://www.niso.org/kst/reports/standards?step=2&amp;gid=&amp;project_key=7cc9b583cb5a62e8c15d3099e0bb46bbae9cf38a">ANSI/NISO Z39.19-2005</a>
+ relationships,
+ All of the relationships offered by WordNet are also supported.
+ These relationships are:
+  <table class="ft_rels">
+    <tr>
+      <th>Relationship</th>
+      <th>Meaning</th>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">also see</td>
+      <td>
+        A word that is related to another,
+        e.g., for "varnished" (furniture)
+        one should <em>also see</em> "finished."
+      </td>
+    </tr>
+    <tr>
+      <td>antonym</td>
+      <td>
+        A word opposite in meaning to another,
+        e.g., "light" is an <em>antonym</em> for "heavy."
+      </td>
+    </tr>
+    <tr>
+      <td>attribute</td>
+      <td>
+        A noun for which adjectives express values,
+        e.g., "weight" is an <em>attribute</em>
+        for which the adjectives "light" and "heavy"
+        express values.
+      </td>
+    </tr>
+    <tr>
+      <td>cause</td>
+      <td>
+        A verb that causes another,
+        e.g., "show" is a <em>cause</em> of "see."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">derivationally related form</td>
+      <td>
+        A word that is derived from a root word,
+        e.g., "metric" is a <em>derivationally related form</em> of "meter."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">derived from adjective</td>
+      <td>
+        An adverb that is derived from an adjective,
+        e.g., "correctly" is <em>derived from the adjective</em> "correct."
+      </td>
+    </tr>
+    <tr>
+      <td>entailment</td>
+      <td>
+        A verb that presupposes another,
+        e.g., "snoring" <em>entails</em> "sleeping."
+      </td>
+    </tr>
+    <tr>
+      <td>hypernym</td>
+      <td>
+        A word with a broad meaning that more specific words fall under,
+        e.g., "meal" is a <em>hypernym</em> of "breakfast."
+      </td>
+    </tr>
+    <tr>
+      <td>hyponym</td>
+      <td>
+        A word of more specific meaning than a general term applicable to it,
+        e.g., "breakfast" is a <em>hyponym</em> of "meal."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">instance hypernym</td>
+      <td>
+        A word that denotes a category of some specific instance,
+        e.g., "author" is an <em>instance hypernym</em> of "Asimov."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">instance hyponym</td>
+      <td>
+        A term that donotes a specific instance of some general category,
+        e.g., "Asimov" is an <em>instance hyponym</em> of "author."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">member holonym</td>
+      <td>
+        A word that denotes a collection of individuals,
+        e.g., "faculty" is a <em>member holonym</em> of "professor."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">member meronym</td>
+      <td>
+        A word that denotes a member of a larger group,
+        e.g., a "person" is a <em>member meronym</em> of a "crowd."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">part holonym</td>
+      <td>
+        A word that denotes a larger whole comprised of some part,
+        e.g., "car" is a <em>part holonym</em> of "engine."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">part meronym</td>
+      <td>
+        A word that denotes a part of a larger whole,
+        e.g., an "engine" is <em>part meronym</em> of a "car."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">participle of verb</td>
+      <td>
+        An adjective that is the participle of some verb,
+        e.g., "breaking" is the <em>participle of the verb</em> "break."
+      </td>
+    </tr>
+    <tr>
+      <td>pertainym</td>
+      <td>
+        An adjective that classifies its noun,
+        e.g., "musical" is a <em>pertainym</em> in "musical instrument."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">similar to</td>
+      <td>
+        Similar, though not necessarily interchangeable, adjectives.
+        For example, "shiny" is <em>similar to</em> "bright",
+        but they have subtle differences.
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">substance holonym</td>
+      <td>
+        A word that denotes a larger whole containing some constituent
+        substance, e.g., "bread" is a <em>substance holonym</em> of "flour."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">substance meronym</td>
+      <td>
+        A word that denotes a constituant substance of some larger whole,
+        e.g., "flour" is a <em>substance meronym</em> of "bread."
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap">verb group</td>
+      <td>
+        A verb that is a member of a group of similar verbs,
+        e.g., "live" is in the <em>verb group</em>
+        of "dwell", "live", "inhabit", etc.
+      </td>
+    </tr>
+  </table>
+ <h2>Notes on tokenization</h2>
+ For general information about the implementation of tokenization,
+ including what constitutes a token,
+ see the <a href="http://zorba.io/pages/3.0/zorba/ft_tokenizer">Full Text Tokenizer</a> documentation.
+</xqdoc:description><xqdoc:author>Paul J. Lucas</xqdoc:author><xqdoc:custom tag="project">Zorba/Full-Text/Full-Text</xqdoc:custom><xqdoc:custom tag="language">xquery</xqdoc:custom><xqdoc:custom tag="version">3.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="err" uri="http://www.w3.org/2005/xqt-errors" isSchema="false"/><xqdoc:namespace prefix="ft" uri="http://zorba.io/modules/full-text" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/><xqdoc:namespace prefix="zerr" uri="http://zorba.io/errors" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports/><xqdoc:variables><xqdoc:variable><xqdoc:uri>ft:LANG-DA</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Danish
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-DE</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the German
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-EN</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the English
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-ES</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Spanish
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-FI</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Finnish
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-FR</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the French
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-HU</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Hungarian
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-IT</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Italian
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-NL</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Dutch
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-NO</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Norwegian
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-PT</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Portuguese
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-RO</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Romanian
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-RU</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Russian
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-SV</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Swedish
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable><xqdoc:variable><xqdoc:uri>ft:LANG-TR</xqdoc:uri><xqdoc:comment><xqdoc:description> Predeclared constant for the Turkish
+ <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
+</xqdoc:description><xqdoc:custom tag="type">xs:language</xqdoc:custom></xqdoc:comment><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri><xqdoc:name>language</xqdoc:name></xqdoc:invoked></xqdoc:variable></xqdoc:variables><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="0"><xqdoc:comment><xqdoc:description> Gets the current compare options.
+</xqdoc:description><xqdoc:return>said compare options.</xqdoc:return><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-current-compare-options-1.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-current-compare-options-2.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:current-compare-options</xqdoc:name><xqdoc:signature>declare function ft:current-compare-options() as object() external</xqdoc:signature><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="0"><xqdoc:comment><xqdoc:description> Gets the current
+ <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>:
+ either the language specified by the
+ <code><a href="http://www.w3.org/TR/xpath-full-text-10/#doc-xquery10-FTOptionDecl">declare ft-option using</a>
+ <a href="http://www.w3.org/TR/xpath-full-text-10/#ftlanguageoption">language</a></code>
+ statement (if any)
+ or the one returned by <code>ft:host-lang()</code> (if none).
+</xqdoc:description><xqdoc:return>said language.</xqdoc:return><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-current-lang-true-1.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:current-lang</xqdoc:name><xqdoc:signature>declare function ft:current-lang() as xs:language external</xqdoc:signature><xqdoc:return><xqdoc:type>xs:language</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="0"><xqdoc:comment><xqdoc:description> Gets the host's current
+ <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>.
+ The "host" is the computer on which the software is running.
+ The host's current language is obtained as follows:
+  <ul>
+    <li>
+      For *nix systems:
+      <ol>
+        <li>
+          If <a ref="http://www.cplusplus.com/reference/clibrary/clocale/setlocale/"><code>setlocale</code>(3)</a> returns non-null,
+          the language corresponding to that locale is used.
+        </li>
+        <li>
+          Else, if the <code>LANG</code> environment variable is set,
+          that language is ued.
+        </li>
+        <li>
+          Otherwise, there is no default language.
+        </li>
+      </ol>
+    </li>
+    <li>
+      For Windows systems,
+      the language corresponding to the locale returned by the
+      <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dd318101(v=vs.85).aspx"><code>GetLocaleInfo()</code></a>
+      function is used.
+    </li>
+  </ul>
+</xqdoc:description><xqdoc:return>said language.</xqdoc:return></xqdoc:comment><xqdoc:name>ft:host-lang</xqdoc:name><xqdoc:signature>declare function ft:host-lang() as xs:language external</xqdoc:signature><xqdoc:return><xqdoc:type>xs:language</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Checks whether the given
+ <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ is supported for stemming.
+</xqdoc:description><xqdoc:param>$lang The language to check.</xqdoc:param><xqdoc:return><code>true</code> only if the language is supported.</xqdoc:return><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-is-stem-lang-es-supported-true.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:is-stem-lang-supported</xqdoc:name><xqdoc:signature>declare function ft:is-stem-lang-supported($lang as xs:language) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Checks whether the given word is a stop-word.
+</xqdoc:description><xqdoc:param>$word The word to check.</xqdoc:param><xqdoc:param>$lang The <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> of <code>$word</code>.</xqdoc:param><xqdoc:return><code>true</code> only if <code>$word</code> is a stop-word.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>$lang</code> is not supported.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-1.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-3.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:is-stop-word</xqdoc:name><xqdoc:signature>declare function ft:is-stop-word($word as xs:string, $lang as xs:language) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>word</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Checks whether the given word is a stop-word.
+</xqdoc:description><xqdoc:param>$word The word to check. The word's <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> is assumed to be the one returned by <code>ft:current-lang()</code>.</xqdoc:param><xqdoc:return><code>true</code> only if <code>$word</code> is a stop-word.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>ft:current-lang()</code> is not supported.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-2.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-true-4.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:is-stop-word</xqdoc:name><xqdoc:signature>declare function ft:is-stop-word($word as xs:string) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>word</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Checks whether the given
+ <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ is supported for stop words.
+</xqdoc:description><xqdoc:param>$lang The language to check.</xqdoc:param><xqdoc:return><code>true</code> only if the language is supported.</xqdoc:return><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-lang-en-supported-true.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-lang-supported-false-1.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-is-stop-word-lang-supported-false-2.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:is-stop-word-lang-supported</xqdoc:name><xqdoc:signature>declare function ft:is-stop-word-lang-supported($lang as xs:language) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Checks whether the given
+ <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ is supported for look-up using the default thesaurus.
+</xqdoc:description><xqdoc:param>$lang The language to check.</xqdoc:param><xqdoc:return><code>true</code> only if the language is supported.</xqdoc:return></xqdoc:comment><xqdoc:name>ft:is-thesaurus-lang-supported</xqdoc:name><xqdoc:signature>declare function ft:is-thesaurus-lang-supported($lang as xs:language) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Checks whether the given
+ <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ is supported for look-up using the thesaurus specified by the given URI.
+</xqdoc:description><xqdoc:param>$uri The URI specifying the thesaurus to use.</xqdoc:param><xqdoc:param>$lang The language to check.</xqdoc:param><xqdoc:return><code>true</code> only if the language is supported.</xqdoc:return><xqdoc:error>err:FTST0018 if <code>$uri</code> refers to a thesaurus that is not found in the statically known thesauri.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-is-thesaurus-lang-supported-true-1.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:is-thesaurus-lang-supported</xqdoc:name><xqdoc:signature>declare function ft:is-thesaurus-lang-supported($uri as xs:string, $lang as xs:language) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>uri</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Checks whether the given
+ <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ is supported for tokenization.
+</xqdoc:description><xqdoc:param>$lang The language to check.</xqdoc:param><xqdoc:return><code>true</code> only if the language is supported.</xqdoc:return></xqdoc:comment><xqdoc:name>ft:is-tokenizer-lang-supported</xqdoc:name><xqdoc:signature>declare function ft:is-tokenizer-lang-supported($lang as xs:language) as xs:boolean external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:boolean</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Stems the given word.
+</xqdoc:description><xqdoc:param>$word The word to stem.</xqdoc:param><xqdoc:param>$lang The <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> of <code>$word</code>.</xqdoc:param><xqdoc:return>the stem of <code>$word</code>.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>$lang</code> is not supported.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-stem-1.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-stem-2.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:stem</xqdoc:name><xqdoc:signature>declare function ft:stem($word as xs:string, $lang as xs:language) as xs:string external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>word</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:string</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Stems the given word.
+</xqdoc:description><xqdoc:param>$word The word to stem. The word's <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> is assumed to be the one returned by <code>ft:current-lang()</code>.</xqdoc:param><xqdoc:return>the stem of <code>$word</code>.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>ft:current-lang()</code> is not supported.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-stem-3.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-stem-4.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:stem</xqdoc:name><xqdoc:signature>declare function ft:stem($word as xs:string) as xs:string external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>word</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:string</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Strips all diacritical marks from all characters.
+</xqdoc:description><xqdoc:param>$string The string to strip diacritical marks from.</xqdoc:param><xqdoc:return><code>$string</code> with diacritical marks stripped.</xqdoc:return><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-strip-diacritics-1.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:strip-diacritics</xqdoc:name><xqdoc:signature>declare function ft:strip-diacritics($string as xs:string) as xs:string external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>string</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:string</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Looks-up the given phrase in the default thesaurus.
+</xqdoc:description><xqdoc:param>$phrase The phrase to look up. The phrase's <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> is assumed to be the one returned by <code>ft:current-lang()</code>.</xqdoc:param><xqdoc:return>the related phrases if <code>$phrase</code> is found in the thesaurus or the empty sequence if not.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>ft:current-lang()</code> is not supported.</xqdoc:error><xqdoc:error>zerr:ZXQP8401 if the thesaurus data file's version is not supported by the currently running version of the software.</xqdoc:error><xqdoc:error>zerr:ZXQP8402 if the thesaurus data file's endianness does not match that of the CPU on which the software is currently running.</xqdoc:error><xqdoc:error>zerr:ZXQP8403 if there was an error reading the thesaurus data.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-1.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:thesaurus-lookup</xqdoc:name><xqdoc:signature>declare function ft:thesaurus-lookup($phrase as xs:string) as xs:string* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>phrase</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">xs:string*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> Looks-up the given phrase in the thesaurus specified by the given URI.
+</xqdoc:description><xqdoc:param>$uri The URI specifying the thesaurus to use.</xqdoc:param><xqdoc:param>$phrase The phrase to look up.</xqdoc:param><xqdoc:param>$lang The <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> of <code>$phrase</code>.</xqdoc:param><xqdoc:return>the related phrases if <code>$phrase</code> is found in the thesaurus or the empty sequence if not.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>$lang</code> is not supported.</xqdoc:error><xqdoc:error>err:FTST0018 if <code>$uri</code> refers to a thesaurus that is not found in the statically known thesauri.</xqdoc:error><xqdoc:error>zerr:ZOSE0001 if the thesaurus data file could not be found.</xqdoc:error><xqdoc:error>zerr:ZOSE0002 if the thesaurus data file is not a plain file.</xqdoc:error><xqdoc:error>zerr:ZXQP8401 if the thesaurus data file's version is not supported by the currently running version of the software.</xqdoc:error><xqdoc:error>zerr:ZXQP8402 if the thesaurus data file's endianness does not match that of the CPU on which the software is currently running.</xqdoc:error><xqdoc:error>zerr:ZXQP8403 if there was an error reading the thesaurus data file.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-2.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:thesaurus-lookup</xqdoc:name><xqdoc:signature>declare function ft:thesaurus-lookup($uri as xs:string, $phrase as xs:string, $lang as xs:language) as xs:string* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>uri</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>phrase</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">xs:string*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Looks-up the given phrase in a thesaurus.
+</xqdoc:description><xqdoc:param>$uri The URI specifying the thesaurus to use.</xqdoc:param><xqdoc:param>$phrase The phrase to look up. The phrase's <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> is assumed to be the one the one returned by <code>ft:current-lang()</code>.</xqdoc:param><xqdoc:return>the related phrases if <code>$phrase</code> is found in the thesaurus or the empty sequence if not.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>ft:current-lang()</code> is unsupported.</xqdoc:error><xqdoc:error>err:FTST0018 if <code>$uri</code> refers to a thesaurus that is not found in the statically known thesauri.</xqdoc:error><xqdoc:error>zerr:ZOSE0001 if the thesaurus data file could not be found.</xqdoc:error><xqdoc:error>zerr:ZOSE0002 if the thesaurus data file is not a plain file.</xqdoc:error><xqdoc:error>zerr:ZXQP8401 if the thesaurus data file's version is not supported by the currently running version of the software.</xqdoc:error><xqdoc:error>zerr:ZXQP8402 if the thesaurus data file's endianness does not match that of the CPU on which the software is currently running.</xqdoc:error><xqdoc:error>zerr:ZXQP8403 if there was an error reading the thesaurus data file.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-3.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:thesaurus-lookup</xqdoc:name><xqdoc:signature>declare function ft:thesaurus-lookup($uri as xs:string, $phrase as xs:string) as xs:string* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>uri</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>phrase</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">xs:string*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="4"><xqdoc:comment><xqdoc:description> Looks-up the given phrase in a thesaurus.
+</xqdoc:description><xqdoc:param>$uri The URI specifying the thesaurus to use.</xqdoc:param><xqdoc:param>$phrase The phrase to look up.</xqdoc:param><xqdoc:param>$lang The <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> of <code>$phrase</code>.</xqdoc:param><xqdoc:param>$relationship The relationship the results are to have to <code>$phrase</code>.</xqdoc:param><xqdoc:return>the related phrases if <code>$phrase</code> is found in the thesaurus or the empty sequence if not.</xqdoc:return><xqdoc:error>err:FTST0018 if <code>$uri</code> refers to a thesaurus that is not found in the statically known thesauri.</xqdoc:error><xqdoc:error>err:FTST0009 if <code>$lang</code> is not supported.</xqdoc:error><xqdoc:error>zerr:ZOSE0001 if the thesaurus data file could not be found.</xqdoc:error><xqdoc:error>zerr:ZOSE0002 if the thesaurus data file is not a plain file.</xqdoc:error><xqdoc:error>zerr:ZXQP8401 if the thesaurus data file's version is not supported by the currently running version of the software.</xqdoc:error><xqdoc:error>zerr:ZXQP8402 if the thesaurus data file's endianness does not match that of the CPU on which the software is currently running.</xqdoc:error><xqdoc:error>zerr:ZXQP8403 if there was an error reading the thesaurus data file.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-4.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:thesaurus-lookup</xqdoc:name><xqdoc:signature>declare function ft:thesaurus-lookup($uri as xs:string, $phrase as xs:string, $lang as xs:language, $relationship as xs:string) as xs:string* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>uri</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>phrase</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>relationship</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">xs:string*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="6"><xqdoc:comment><xqdoc:description> Looks-up the given phrase in a thesaurus.
+</xqdoc:description><xqdoc:param>$uri The URI specifying the thesaurus to use.</xqdoc:param><xqdoc:param>$phrase The phrase to look up.</xqdoc:param><xqdoc:param>$lang The <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> of <code>$phrase</code>.</xqdoc:param><xqdoc:param>$relationship The relationship the results are to have to <code>$phrase</code>.</xqdoc:param><xqdoc:param>$level-least The minimum number of levels within the thesaurus to be traversed.</xqdoc:param><xqdoc:param>$level-most The maximum number of levels within the thesaurus to be traversed.</xqdoc:param><xqdoc:return>the related phrases if <code>$phrase</code> is found in the thesaurus or the empty sequence if not.</xqdoc:return><xqdoc:error>err:FOCA0003 if either <code>$level-least</code> or <code>$level-most</code> is either negative or too large.</xqdoc:error><xqdoc:error>err:FTST0018 if <code>$uri</code> refers to a thesaurus that is not found in the statically known thesauri.</xqdoc:error><xqdoc:error>err:FTST0009 if <code>$lang</code> is not supported.</xqdoc:error><xqdoc:error>zerr:ZOSE0001 if the thesaurus data file could not be found.</xqdoc:error><xqdoc:error>zerr:ZOSE0002 if the thesaurus data file is not a plain file.</xqdoc:error><xqdoc:error>zerr:ZXQP8401 if the thesaurus data file's version is not supported by the currently running version of the software.</xqdoc:error><xqdoc:error>zerr:ZXQP8402 if the thesaurus data file's endianness does not match that of the CPU on which the software is currently running.</xqdoc:error><xqdoc:error>zerr:ZXQP8403 if there was an error reading the thesaurus data file.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-5.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:thesaurus-lookup</xqdoc:name><xqdoc:signature>declare function ft:thesaurus-lookup($uri as xs:string, $phrase as xs:string, $lang as xs:language, $relationship as xs:string, $level-least as xs:integer, $level-most as xs:integer) as xs:string* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>uri</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>phrase</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>relationship</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>level-least</xqdoc:name><xqdoc:type>xs:integer</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>level-most</xqdoc:name><xqdoc:type>xs:integer</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">xs:string*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Tokenizes the given node and all of its decendants.
+</xqdoc:description><xqdoc:param>$node The node to tokenize.</xqdoc:param><xqdoc:param>$lang The default <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> of <code>$node</code>.</xqdoc:param><xqdoc:return>a (possibly empty) sequence of tokens.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>$lang</code> is not supported.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-1.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:tokenize-node</xqdoc:name><xqdoc:signature>declare function ft:tokenize-node($node as node(), $lang as xs:language) as object()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>node</xqdoc:name><xqdoc:type>node()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">object()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Tokenizes the given node and all of its descendants.
+</xqdoc:description><xqdoc:param>$node The node to tokenize. The node's default <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> is assumed to be the one returned by <code>ft:current-lang()</code>.</xqdoc:param><xqdoc:return>a (possibly empty) sequence of tokens.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>ft:current-lang()</code> is not supported.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-2.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-3.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-4.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:tokenize-node</xqdoc:name><xqdoc:signature>declare function ft:tokenize-node($node as node()) as object()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>node</xqdoc:name><xqdoc:type>node()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">object()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
+ descendants) but excluding <code>$excludes</code> (and all of its
+ descendants), if any.
+</xqdoc:description><xqdoc:param>$includes The set of nodes (and its descendants) to include. The default <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> is assumed to be the one returned by <code>ft:current-lang()</code>.</xqdoc:param><xqdoc:param>$excludes The set of nodes (and its descendants) to exclude.</xqdoc:param><xqdoc:return>a (possibly empty) sequence of tokens.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>ft:current-lang()</code> is not supported.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-nodes-1.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:tokenize-nodes</xqdoc:name><xqdoc:signature>declare function ft:tokenize-nodes($includes as node()+, $excludes as node()*) as object()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>includes</xqdoc:name><xqdoc:type occurrence="+">node()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>excludes</xqdoc:name><xqdoc:type occurrence="*">node()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">object()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
+ descendants) but excluding <code>$excludes</code> (and all of its
+ descendants), if any.
+</xqdoc:description><xqdoc:param>$includes The set of nodes (and its descendants) to include.</xqdoc:param><xqdoc:param>$excludes The set of nodes (and its descendants) to exclude.</xqdoc:param><xqdoc:param>$lang The default <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> for nodes.</xqdoc:param><xqdoc:return>a (possibly empty) sequence of tokens.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>$lang</code> is not supported.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-nodes-1.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:tokenize-nodes</xqdoc:name><xqdoc:signature>declare function ft:tokenize-nodes($includes as node()+, $excludes as node()*, $lang as xs:language) as object()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>includes</xqdoc:name><xqdoc:type occurrence="+">node()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>excludes</xqdoc:name><xqdoc:type occurrence="*">node()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">object()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Tokenizes the given string.
+</xqdoc:description><xqdoc:param>$string The string to tokenize.</xqdoc:param><xqdoc:param>$lang The <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> of <code>$string</code>.</xqdoc:param><xqdoc:return>a (possibly empty) sequence of tokens.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>$lang</code> is not supported.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-string-1.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:tokenize-string</xqdoc:name><xqdoc:signature>declare function ft:tokenize-string($string as xs:string, $lang as xs:language) as xs:string* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>string</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">xs:string*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Tokenizes the given string.
+</xqdoc:description><xqdoc:param>$string The string to tokenize. The string's <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> is assumed to be the one returned by <code>ft:current-lang()</code>.</xqdoc:param><xqdoc:return>a (possibly empty) sequence of tokens.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>ft:current-lang()</code> is not supported.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-string-2.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>ft:tokenize-string</xqdoc:name><xqdoc:signature>declare function ft:tokenize-string($string as xs:string) as xs:string* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>string</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">xs:string*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Gets properties of the tokenizer for the given
+ <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>.
+</xqdoc:description><xqdoc:param>$lang The language of the tokenizer to get the properties of.</xqdoc:param><xqdoc:return>said properties.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>$lang</code> is not supported. tokenization specifically.</xqdoc:error></xqdoc:comment><xqdoc:name>ft:tokenizer-properties</xqdoc:name><xqdoc:signature>declare function ft:tokenizer-properties($lang as xs:language) as object() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>lang</xqdoc:name><xqdoc:type>xs:language</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="0"><xqdoc:comment><xqdoc:description> Gets properties of the tokenizer for the
+ <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
+ returned by <code>ft:current-lang()</code>.
+</xqdoc:description><xqdoc:return>said properties.</xqdoc:return><xqdoc:error>err:FTST0009 if <code>ft:current-lang()</code> is not supported.</xqdoc:error></xqdoc:comment><xqdoc:name>ft:tokenizer-properties</xqdoc:name><xqdoc:signature>declare function ft:tokenizer-properties() as object() external</xqdoc:signature><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

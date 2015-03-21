@@ -1,0 +1,93 @@
+<div class="doxygen">
+  <div><h1 class="title">Full Text Stemming</h1>
+<div id="ft_stemmer_intro" class="sect1"><h2>Introduction</h2>
+The Zorba XQuery engine implements the <a href="http://www.w3.org/TR/xpath-full-text-10/" target="_blank">XQuery and XPath Full Text 1.0</a> specification that, among other things, adds the ability to use stemming for text-matching via the <a href="http://www.w3.org/TR/xpath-full-text-10/#ftstemoption" target="_blank">stemming option</a>. For example, the query:<pre class="ace-static" ace-mode="xquery"><span class="normal">let<span> </span>$x<span> </span>:=<span> </span>&lt;msg&gt;Self<span> </span>Improvement&lt;/msg&gt;</span>
+<span class="normal"/><span class="keywordflow">return</span><span class="normal"><span> </span>$x<span> </span>contains<span> </span>text<span> </span></span><span class="stringliteral">"improve"</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">using</span><span class="normal"><span> </span>stemming</span>
+</pre>returns <tt>true</tt> because <tt>$x</tt> contains "Improvment" that has the same stem as "improve".The initial implementation of the stemming option uses the <a href="http://snowball.tartarus.org/texts/stemmersoverview.html" target="_blank">Snowball stemmers</a> and therefore can stem words in the following languages: Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, and Turkish.</div>
+<div id="ft_stemmer_providing" class="sect1"><h2>Providing Your Own Stemmer</h2>
+Using the Zorba C++ API, you can provide your own stemmer by deriving from two classes: <tt>Stemmer</tt> and <tt>StemmerProvider</tt>.<div id="ft_class_stemmer" class="sect2"><h3>The Stemmer Class</h3>
+The <tt>Stemmer</tt> class is:<pre class="ace-static" ace-mode="xquery"><span class="keyword">class<span> </span></span><span class="normal">Stemmer<span> </span>{</span>
+<span class="normal"/><span class="keyword">public</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">typedef</span><span class="normal"><span> </span></span><span class="comment">/*<span> </span>implementation-defined<span> </span>*/</span><span class="normal"><span> </span>ptr;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">struct<span> </span></span><span class="normal">Properties<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordtype">char</span><span class="normal"><span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>*uri;</span>
+<span class="normal"><span> </span><span> </span>};</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>destroy()<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>=<span> </span>0;</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>properties(<span> </span>Properties<span> </span>*result<span> </span>)<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>=<span> </span>0;</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>stem(<span> </span>String<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>&amp;word,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang,<span> </span>String<span> </span>*result<span> </span>)<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>=<span> </span>0;</span>
+<span class="normal"/><span class="keyword">protected</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span>~Stemmer();</span>
+<span class="normal">};</span>
+</pre>For details about the <tt>ptr</tt> type, the <tt>destroy()</tt> function, and why the destructor is <tt>protected</tt>, see the <a href="/pages/3.0/zorba/memory_management">Memory Management</a> document.To implement the <tt>Stemmer</tt>, you need to implement the <tt>stem()</tt> function where:<table class="table table-bordered"><tr>
+<td><tt>word</tt>  </td><td>The word to be stemmed.  </td></tr>
+<tr>
+<td><tt>lang</tt>  </td><td>The language of the word.  </td></tr>
+<tr>
+<td><tt>result</tt>  </td><td>The stemmed word goes here.  </td></tr>
+</table>
+Note that <tt>result</tt> should always be set to something. If your stemmer doesn't know how to stem the given word, you should set <tt>result</tt> to <tt>word</tt>. You also need to implement the <tt>properties()</tt> function and set the identifying URI of your stemmer.A very simple stemmer that stems the word "foobar" to "foo" can be implemented as:<pre class="ace-static" ace-mode="xquery"><span class="keyword">class<span> </span></span><span class="normal">MyStemmer<span> </span>:<span> </span></span><span class="keyword">public</span><span class="normal"><span> </span>Stemmer<span> </span>{</span>
+<span class="normal"/><span class="keyword">public</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>destroy()<span> </span></span><span class="keyword">const</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>properties(<span> </span>Properties<span> </span>*result<span> </span>)<span> </span></span><span class="keyword">const</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>stem(<span> </span>String<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>&amp;word,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang,<span> </span>String<span> </span>*result<span> </span>)<span> </span></span><span class="keyword">const</span><span class="normal">;</span>
+<span class="normal"/><span class="keyword">private</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span>MyStemmer();</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">friend</span><span class="normal"><span> </span></span><span class="keyword">class<span> </span></span><span class="normal">MyStemmerProvider;<span> </span></span><span class="comment">//<span> </span>only<span> </span>it<span> </span>can<span> </span>create<span> </span>instances</span><span class="normal"/>
+<span class="normal">};</span>
+<span class="normal"/>
+<span class="normal"/><span class="keywordtype">void</span><span class="normal"><span> </span>MyStemmer::destroy()</span><span class="keyword"><span> </span>const<span> </span></span><span class="normal">{</span>
+<span class="normal"><span> </span><span> </span></span><span class="comment">//<span> </span>Do<span> </span>nothing<span> </span>since<span> </span>we<span> </span>statically<span> </span>allocate<span> </span>a<span> </span>singleton<span> </span>instance<span> </span>of<span> </span>our<span> </span>stemmer.</span><span class="normal"/>
+<span class="normal">}</span>
+<span class="normal"/>
+<span class="normal"/><span class="keywordtype">void</span><span class="normal"><span> </span>MyStemmer::properties(<span> </span>Properties<span> </span>*props<span> </span>)</span><span class="keyword"><span> </span>const<span> </span></span><span class="normal">{</span>
+<span class="normal"><span> </span><span> </span>props-&gt;uri<span> </span>=<span> </span></span><span class="stringliteral">"http://my.example.com/zorba/full-text/stemmer"</span><span class="normal">;</span>
+<span class="normal">}</span>
+<span class="normal"/>
+<span class="normal"/><span class="keywordtype">void</span><span class="normal"><span> </span>MyStemmer::stem(<span> </span>String<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>&amp;word,<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang,<span> </span>String<span> </span>*result<span> </span>)</span><span class="keyword"><span> </span>const<span> </span></span><span class="normal">{</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">if</span><span class="normal"><span> </span>(<span> </span>word<span> </span>==<span> </span></span><span class="stringliteral">"foobar"</span><span class="normal"><span> </span>)</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>*result<span> </span>=<span> </span></span><span class="stringliteral">"foo"</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">else</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>*result<span> </span>=<span> </span>word;<span> </span></span><span class="comment">//<span> </span>Don't<span> </span>know<span> </span>how<span> </span>to<span> </span>stem<span> </span>word:<span> </span>set<span> </span>result<span> </span>to<span> </span>word<span> </span>as-is.</span><span class="normal"/>
+<span class="normal">}</span>
+</pre>A real stemmer would either use a stemming algorithm or a dictionary look-up to stem many words, of course. Although not used in this simple example, <tt>lang</tt> can be used to allow a single stemmer instance to stem words in more than one language.</div>
+<div id="ft_class_stemmer_provider" class="sect2"><h3>The StemmerProvider Class</h3>
+In addition to a <tt>Stemmer</tt>, you must also implement a <tt>StemmerProvider</tt> that, given a language, provides a <tt>Stemmer</tt> for that language:<pre class="ace-static" ace-mode="xquery"><span class="keyword">class<span> </span></span><span class="normal">StemmerProvider<span> </span>{</span>
+<span class="normal"/><span class="keyword">public</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span>~StemmerProvider();</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">virtual</span><span class="normal"><span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>getStemmer(<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang,<span> </span>Stemmer::ptr<span> </span>*s<span> </span>=<span> </span>0<span> </span>)<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>=<span> </span>0;</span>
+<span class="normal">};</span>
+</pre>The <tt>getStemmer()</tt> function should return <tt>true</tt> only if it can provide a <tt>Stemmer</tt> for the given language; <tt>false</tt> otherwise. If the <tt>Stemmer::ptr</tt> argument is <tt>null</tt>, the caller wants to check only whether the provider can provide a stemmer for the given language and doesn't want a <tt>Stemmer</tt> instance created or returned.A simple <tt>StemmerProvider</tt> for our simple stemmer can be implemented as:<pre class="ace-static" ace-mode="xquery"><span class="keyword">class<span> </span></span><span class="normal">MyStemmerProvider<span> </span>:<span> </span></span><span class="keyword">public</span><span class="normal"><span> </span>StemmerProvider<span> </span>{</span>
+<span class="normal"/><span class="keyword">public</span><span class="normal">:</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">bool</span><span class="normal"><span> </span>getStemmer(<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang<span> </span>Stemmer::ptr<span> </span>*s<span> </span>=<span> </span>0<span> </span>)<span> </span></span><span class="keyword">const</span><span class="normal">;</span>
+<span class="normal">};</span>
+<span class="normal"/>
+<span class="normal">Stemmer::ptr<span> </span>MyStemmerProvider::getStemmer(<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">locale::iso639_1::type</a><span> </span>lang<span> </span>)</span><span class="keyword"><span> </span>const<span> </span></span><span class="normal">{</span>
+<span class="normal"><span> </span><span> </span></span><span class="keyword">static</span><span class="normal"><span> </span>MyStemmer<span> </span>stemmer;</span>
+<span class="normal"><span> </span><span> </span>Stemmer::ptr<span> </span>result;</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">switch</span><span class="normal"><span> </span>(<span> </span>lang<span> </span>)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">case</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11f5307e1dac2a5918c6cdf5097e6961">iso639_1::en</a>:</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">case</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87aee031990e1e595beab62fb5aee7b23d8">iso639_1::unknown</a>:<span> </span></span><span class="comment">//<span> </span>Handle<span> </span>"unknown"<span> </span>language<span> </span>since,<span> </span>in<span> </span>many<span> </span>cases,<span> </span>the<span> </span>language<span> </span>is<span> </span>not<span> </span>known.</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>result.reset(<span> </span>&amp;stemmer<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span></span><span class="keyword">true</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">default</span><span class="normal">:<span> </span></span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>We<span> </span>have<span> </span>no<span> </span>stemmer<span> </span>for<span> </span>the<span> </span>given<span> </span>language:<span> </span>return<span> </span>false.</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>Zorba<span> </span>will<span> </span>then<span> </span>use<span> </span>the<span> </span>built-in<span> </span>stemmer<span> </span>for<span> </span>the<span> </span>given<span> </span>language.</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span></span><span class="keyword">false</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span>}</span>
+<span class="normal">}</span>
+</pre></div>
+<div id="ft_stemmer_enable" class="sect2"><h3>Using Your Stemmer</h3>
+To enable your stemmer to be used, you need to register it with the <tt>XmlDataManager:</tt> <pre class="ace-static" ace-mode="xquery"><span class="keywordtype">void</span><span class="normal"><span> </span>*</span><span class="keyword">const</span><span class="normal"><span> </span>store<span> </span>=<span> </span>StoreManager::getStore();</span>
+<span class="normal">Zorba<span> </span>*</span><span class="keyword">const</span><span class="normal"><span> </span>zorba<span> </span>=<span> </span>Zorba::getInstance(<span> </span>store<span> </span>);</span>
+<span class="normal"/>
+<span class="normal">MyStemmerProvider<span> </span>provider;</span>
+<span class="normal">zorba-&gt;getXmlDataManager()-&gt;registerStemmerProvider(<span> </span>&amp;provider<span> </span>);</span>
+</pre> </div>
+</div>
+    </div>
+</div>

@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build__ubuntu_8dox" kind="file">
+    <compoundname>build_ubuntu.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">\page<sp/>build_ubuntu<sp/>Zorba<sp/>Build<sp/>Notes<sp/>for<sp/>Ubuntu/Debian<sp/>Linux<sp/>Users</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"></highlight></codeline>
+<codeline lineno="5"><highlight class="comment">\section<sp/>ubuntu_packages<sp/>Ubuntu<sp/>Packages</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"></highlight></codeline>
+<codeline lineno="7"><highlight class="comment">Most<sp/>of<sp/>the<sp/>tools<sp/>and<sp/>libraries<sp/>you<sp/>might<sp/>need<sp/>to<sp/>build<sp/>Zorba<sp/>are</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">available<sp/>in<sp/>the<sp/>standard<sp/>Ubuntu/Debian<sp/>repositories.<sp/><sp/>Here<sp/>we<sp/>list</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">the<sp/>packages<sp/>that<sp/>you<sp/>should<sp/>install<sp/>to<sp/>meet<sp/>the<sp/>requirements</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">specified<sp/>at<sp/>\ref<sp/>build_prerequisites.</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"></highlight></codeline>
+<codeline lineno="12"><highlight class="comment">\subsection<sp/>ubuntu_tools<sp/>Tools</highlight></codeline>
+<codeline lineno="13"><highlight class="comment">To<sp/>install<sp/>the<sp/>gcc<sp/>compiler<sp/>and<sp/>CMake:</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="15"><highlight class="comment">sudo<sp/>apt-get<sp/>install<sp/>build-essential<sp/>cmake</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"></highlight></codeline>
+<codeline lineno="18"><highlight class="comment">To<sp/>install<sp/>Bazaar<sp/>(for<sp/>building<sp/>the<sp/>latest<sp/>Zorba<sp/>source,<sp/>or<sp/>for</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">building<sp/>non-core<sp/>modules):</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="21"><highlight class="comment">sudo<sp/>apt-get<sp/>install<sp/>bzr</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"></highlight></codeline>
+<codeline lineno="24"><highlight class="comment">\subsection<sp/>ubuntu_libs<sp/>Core<sp/>Zorba<sp/>Library<sp/>Dependencies</highlight></codeline>
+<codeline lineno="25"><highlight class="comment">Required<sp/>libraries<sp/>for<sp/>core<sp/>Zorba:</highlight></codeline>
+<codeline lineno="26"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="27"><highlight class="comment">sudo<sp/>apt-get<sp/>install<sp/>libxml2-dev<sp/>uuid-dev</highlight></codeline>
+<codeline lineno="28"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"></highlight></codeline>
+<codeline lineno="30"><highlight class="comment">Recommended<sp/>libraries<sp/>for<sp/>core<sp/>Zorba:</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="32"><highlight class="comment">sudo<sp/>apt-get<sp/>install<sp/>libicu-dev<sp/>libxerces-c-dev</highlight></codeline>
+<codeline lineno="33"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"></highlight></codeline>
+<codeline lineno="35"><highlight class="comment">Optional<sp/>libraries<sp/>for<sp/>core<sp/>Zorba:</highlight></codeline>
+<codeline lineno="36"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="37"><highlight class="comment">sudo<sp/>apt-get<sp/>install<sp/>libxslt-dev<sp/>libcurl4-openssl-dev<sp/>libxerces-c-dev</highlight></codeline>
+<codeline lineno="38"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"></highlight></codeline>
+<codeline lineno="40"><highlight class="comment">SWIG<sp/>and<sp/>development<sp/>requirements<sp/>for<sp/>Zorba<sp/>language<sp/>bindings:</highlight></codeline>
+<codeline lineno="41"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="42"><highlight class="comment">sudo<sp/>apt-get<sp/>install<sp/>swig<sp/>python-dev<sp/>php5-dev<sp/>ruby-dev<sp/>openjdk-6-jdk<sp/>libaccess-bridge-java-jni</highlight></codeline>
+<codeline lineno="43"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"></highlight></codeline>
+<codeline lineno="45"><highlight class="comment">\subsection<sp/>ubuntu_noncore_libs<sp/>Non-Core<sp/>Module<sp/>Library<sp/>Dependencies</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"></highlight></codeline>
+<codeline lineno="47"><highlight class="comment">\subsubsection<sp/>ubuntu_html<sp/>HTML<sp/>Module<sp/>(data-converters<sp/>package)</highlight></codeline>
+<codeline lineno="48"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="49"><highlight class="comment">sudo<sp/>apt-get<sp/>install<sp/>libtidy-dev</highlight></codeline>
+<codeline lineno="50"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"></highlight></codeline>
+<codeline lineno="52"><highlight class="comment">\subsubsection<sp/>ubuntu_geos<sp/>Geo<sp/>Module</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"></highlight></codeline>
+<codeline lineno="54"><highlight class="comment">To<sp/>install<sp/>libgeos<sp/>for<sp/>the<sp/>Geo<sp/>Module,<sp/>first<sp/>ensure<sp/>that<sp/>the<sp/>version</highlight></codeline>
+<codeline lineno="55"><highlight class="comment">available<sp/>for<sp/>your<sp/>distribution<sp/>is<sp/>at<sp/>least<sp/>3.2.2:</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"></highlight></codeline>
+<codeline lineno="57"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="58"><highlight class="comment">apt-cache<sp/>show<sp/>libgeos-dev<sp/>|<sp/>grep<sp/>Version:</highlight></codeline>
+<codeline lineno="59"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"></highlight></codeline>
+<codeline lineno="61"><highlight class="comment">If<sp/>it<sp/>is<sp/>lower<sp/>than<sp/>3.2.2,<sp/>then<sp/>you<sp/>may<sp/>add<sp/>our<sp/>PPA<sp/>to<sp/>your<sp/>list<sp/>of</highlight></codeline>
+<codeline lineno="62"><highlight class="comment">repositories<sp/>to<sp/>get<sp/>a<sp/>later<sp/>version:</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"></highlight></codeline>
+<codeline lineno="64"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="65"><highlight class="comment">sudo<sp/>add-apt-repository<sp/>ppa:juan457/zorba</highlight></codeline>
+<codeline lineno="66"><highlight class="comment">sudo<sp/>apt-get<sp/>update</highlight></codeline>
+<codeline lineno="67"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"></highlight></codeline>
+<codeline lineno="69"><highlight class="comment">In<sp/>either<sp/>case,<sp/>install<sp/>libgeos<sp/>with:</highlight></codeline>
+<codeline lineno="70"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="71"><highlight class="comment">sudo<sp/>apt-get<sp/>install<sp/>libgeos-dev</highlight></codeline>
+<codeline lineno="72"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="73"><highlight class="comment"></highlight></codeline>
+<codeline lineno="74"><highlight class="comment">\subsubsection<sp/>ubuntu_imagemagick<sp/>ImageMagick<sp/>(for<sp/>image<sp/>modules)</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"></highlight></codeline>
+<codeline lineno="76"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="77"><highlight class="comment">sudo<sp/>apt-get<sp/>install<sp/>imagemagick<sp/>libmagick++-dev<sp/>libmagickwand-dev</highlight></codeline>
+<codeline lineno="78"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="79"><highlight class="comment"></highlight></codeline>
+<codeline lineno="80"><highlight class="comment">\subsubsection<sp/>ubuntu_cclient<sp/>Email<sp/>Module</highlight></codeline>
+<codeline lineno="81"><highlight class="comment"></highlight></codeline>
+<codeline lineno="82"><highlight class="comment">We<sp/>recommend<sp/>using<sp/>our<sp/>PPA<sp/>to<sp/>install<sp/>the<sp/>C-Client<sp/>module,<sp/>as<sp/>the</highlight></codeline>
+<codeline lineno="83"><highlight class="comment">Ubuntu<sp/>packages<sp/>are<sp/>not<sp/>built<sp/>correctly<sp/>at<sp/>least<sp/>on<sp/>64-bit<sp/>platforms.</highlight></codeline>
+<codeline lineno="84"><highlight class="comment"></highlight></codeline>
+<codeline lineno="85"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="86"><highlight class="comment">sudo<sp/>add-apt-repository<sp/>ppa:juan457/zorba</highlight></codeline>
+<codeline lineno="87"><highlight class="comment">sudo<sp/>apt-get<sp/>update</highlight></codeline>
+<codeline lineno="88"><highlight class="comment">sudo<sp/>sudo<sp/>apt-get<sp/>install<sp/>libc-client2007e<sp/>libc-client2007e-dev</highlight></codeline>
+<codeline lineno="89"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"></highlight></codeline>
+<codeline lineno="91"><highlight class="comment">Or,<sp/>you<sp/>may<sp/>build<sp/>it<sp/>yourself<sp/>from<sp/>source,<sp/>so<sp/>long<sp/>as<sp/>you<sp/>force<sp/>the</highlight></codeline>
+<codeline lineno="92"><highlight class="comment">-fPIC<sp/>option:</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"></highlight></codeline>
+<codeline lineno="94"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="95"><highlight class="comment">wget<sp/>ftp://ftp.cac.washington.edu/imap/imap-2007e.tar.gz</highlight></codeline>
+<codeline lineno="96"><highlight class="comment">tar<sp/>-xf<sp/>imap-2007e.tar.gz</highlight></codeline>
+<codeline lineno="97"><highlight class="comment">sudo<sp/>apt-get<sp/>install<sp/>libpam-dev</highlight></codeline>
+<codeline lineno="98"><highlight class="comment">cd<sp/>imap-2007e</highlight></codeline>
+<codeline lineno="99"><highlight class="comment">make<sp/>lnp<sp/>EXTRACFLAGS=&quot;-I/usr/include/openssl<sp/>-fPIC&quot;</highlight></codeline>
+<codeline lineno="100"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"></highlight></codeline>
+<codeline lineno="102"><highlight class="comment">Note:<sp/>In<sp/>case<sp/>of<sp/>errors,<sp/>delete<sp/>all,<sp/>untar<sp/>and<sp/>make<sp/>again,<sp/>don&apos;t<sp/>trust</highlight></codeline>
+<codeline lineno="103"><highlight class="comment">make<sp/>clean.</highlight></codeline>
+<codeline lineno="104"><highlight class="comment"></highlight></codeline>
+<codeline lineno="105"><highlight class="comment">If<sp/>you<sp/>do<sp/>this,<sp/>be<sp/>sure<sp/>to<sp/>pass<sp/>the<sp/>path<sp/>to<sp/>the<sp/>\&quot;\c<sp/>c-client\&quot;</highlight></codeline>
+<codeline lineno="106"><highlight class="comment">subdirectory<sp/>of<sp/>your<sp/>build<sp/>to<sp/>CMake<sp/>when<sp/>configuring<sp/>Zorba,<sp/>e.g.:</highlight></codeline>
+<codeline lineno="107"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="108"><highlight class="comment">cmake<sp/>-DCMAKE_PREFIX_PATH=&quot;~/imap-2007e/c-client&quot;<sp/>../</highlight></codeline>
+<codeline lineno="109"><highlight class="comment">make</highlight></codeline>
+<codeline lineno="110"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="111"><highlight class="comment"></highlight></codeline>
+<codeline lineno="112"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/build_ubuntu.dox"/>
+  </compounddef>
+</doxygen>

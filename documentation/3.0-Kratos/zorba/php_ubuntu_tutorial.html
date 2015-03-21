@@ -1,0 +1,77 @@
+<div class="doxygen">
+  <div><h1 class="title">Zorba with PHP 5 - Ubuntu Installation</h1>
+<div id="initial_setup" class="sect1"><h2>Initial setup</h2>
+These steps were checked on Ubuntu 10.10. Send us email with the results you had on different platforms.</div>
+<div id="install_apache_http" class="sect1"><h2>Install Apache HTTP Server</h2>
+<pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>apache2</span>
+</pre>Once the web server installation is done, PHP5 needs intalled also.</div>
+<div id="install_php5" class="sect1"><h2>Install PHP5</h2>
+<pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>sudo<span> </span>apt-</span><span class="keyword">get</span><span class="normal"><span> </span>install<span> </span>php5<span> </span>php5-dev<span> </span>libapache2-mod-php5<span> </span>php5-curl<span> </span>php5-gd<span> </span>\</span>
+<span class="normal">php5-idn<span> </span>php-pear<span> </span>php5-imagick<span> </span>php5-imap<span> </span>php5-mcrypt<span> </span>php5-memcache<span> </span>php5-ps<span> </span>\</span>
+<span class="normal">php5-pspell<span> </span>php5-recode<span> </span>php5-snmp<span> </span>php5-tidy<span> </span>php5-xmlrpc<span> </span>php5-xsl<span> </span>php5-common</span>
+</pre>Let's create a new PHP file to ensure everything is working: <pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>sudo<span> </span>pico<span> </span>/var/www/test.php</span>
+</pre>Add this code to the file: <pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;?php</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>phpinfo();</span>
+<span class="normal">?&gt;</span>
+</pre>Restart Apache so all the prior changes get applied: <pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>sudo<span> </span>/etc/init.d/apache2<span> </span>restart</span>
+</pre>Now using a web browser point it to: <a href="http://localhost/test.php" target="_blank">http://localhost/test.php</a>Check if php works corectly.</div>
+<div id="install_zorba" class="sect1"><h2>Installing Zorba</h2>
+Get Zorba sources and follow <a href="/pages/3.0/zorba/build">Zorba Build Instructions</a>.Check Zorba is working.<pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>zorba<span> </span>-q<span> </span></span><span class="stringliteral">'2+1'</span><span class="normal"/>
+<span class="normal">&lt;?xml<span> </span>version=</span><span class="stringliteral">"1.0"</span><span class="normal"><span> </span>encoding=</span><span class="stringliteral">"UTF-8"</span><span class="normal">?&gt;</span>
+<span class="normal">3</span>
+</pre>Check php test is working.<pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>ctest<span> </span>-R<span> </span>php</span>
+<span class="normal">Start<span> </span>processing<span> </span>tests</span>
+<span class="normal">Test<span> </span>project<span> </span>/tmp/zorba-1.2.0/build</span>
+<span class="normal">1188/1188<span> </span>Testing<span> </span>php<span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>Passed</span>
+<span class="normal">100%<span> </span>tests<span> </span>passed,<span> </span>0<span> </span>tests<span> </span>failed<span> </span>out<span> </span>of<span> </span>1</span>
+</pre>Passing the php test means that PHP5 is instlled corectly and there is a succesfull build that includes the PHP swig binding.</div>
+<div id="enable_zorba_extension" class="sect1"><h2>Enable Zorba extension in PHP</h2>
+Copy Zorba extension library files to /usr/local/lib/php/.<pre class="ace-static" ace-mode="xquery"><span class="normal">zorba/build$<span> </span>cp<span> </span>swig/php/zorba_api.so<span> </span>swig/php/zorba_api_wrapper.php<span> </span>/usr/local/lib/php/</span>
+</pre>Add the following lines to /etc/php5/apache2/php.ini file.<pre class="ace-static" ace-mode="xquery"><span class="normal">include_path=</span><span class="stringliteral">"/usr/local/lib/php/"</span><span class="normal"/>
+<span class="normal">extension=/usr/local/lib/php/zorba_api.so</span>
+</pre>Restart Apache Http server<pre class="ace-static" ace-mode="xquery"><span class="normal">$<span> </span>sudo<span> </span>/etc/init.d/apache2<span> </span>restart</span>
+</pre>Refresh browser: <a href="http://localhost/test.php" target="_blank">http://localhost/test.php</a>Check if zorba_api is in the list of php known extensions.</div>
+<div id="verify_it_works" class="sect1"><h2>Verify it works</h2>
+Add the following content to /var/www/zorba.php:<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;html&gt;</span>
+<span class="normal">&lt;title&gt;Zorba<span> </span>test&lt;/title&gt;</span>
+<span class="normal">&lt;body&gt;</span>
+<span class="normal">&lt;?php</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>include<span> </span>Zorba<span> </span>API</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>require_once<span> </span></span><span class="stringliteral">'zorba_api_wrapper.php'</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>create<span> </span>Zorba<span> </span>instance<span> </span>in<span> </span>memory</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>$ms<span> </span>=<span> </span>InMemoryStore::getInstance();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>$zorba<span> </span>=<span> </span>Zorba::getInstance($ms);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">try</span><span class="normal"><span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>create<span> </span>and<span> </span>compile<span> </span>query<span> </span>string&lt;</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>$queryStr<span> </span>=<span> </span></span><span class="stringliteral">'1+2'</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>$query<span> </span>=<span> </span>$zorba-&gt;compileQuery($queryStr);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>execute<span> </span>query<span> </span>and<span> </span>display<span> </span>result</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>$result<span> </span>=<span> </span>$query-&gt;execute();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>echo<span> </span>$result;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>clean<span> </span>up</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>$query-&gt;destroy();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>$zorba-&gt;shutdown();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>InMemoryStore::shutdown($ms);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>}<span> </span></span><span class="keywordflow">catch</span><span class="normal"><span> </span>(Exception<span> </span>$e)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>die(</span><span class="stringliteral">'ERROR:'</span><span class="normal"><span> </span>.<span> </span>$e-&gt;getMessage());</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>}</span>
+<span class="normal">?&gt;</span>
+<span class="normal">&lt;/body&gt;</span>
+<span class="normal">&lt;/html&gt;</span>
+</pre>Point your browser to <a href="http://localhost/zorba.php" target="_blank">http://localhost/zorba.php</a> and see the result.</div>
+<div id="further_reading" class="sect1"><h2>Further reading</h2>
+For more details on how to use Zorba API in PHP go to <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-#N1018E" target="_blank">Building XQuery-powered applications with PHP and Zorba</a> article by Vikram Vaswani.</div>
+<div id="useful_links" class="sect1"><h2>Useful links</h2>
+<ul>
+<li>
+<a href="http://www.giantflyingsaucer.com/blog/?p=1826" target="_blank">Install PHP 5, Apache 2 and MongoDB on Ubuntu 10.10</a> </li>
+<li>
+<a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-" target="_blank">Building XQuery-powered applications with PHP and Zorba</a> </li>
+<li>
+<a href="/pages/3.0/zorba/build">Zorba Build Instructions</a> </li>
+</ul>
+</div>
+    </div>
+</div>

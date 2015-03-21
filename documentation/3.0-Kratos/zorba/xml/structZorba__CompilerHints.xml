@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structZorba__CompilerHints" kind="struct" prot="public">
+    <compoundname>Zorba_CompilerHints</compoundname>
+    <includes refid="options_8h" local="no">zorba/options.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structZorba__CompilerHints_1ae939c45e9ce40f33feea0961a6ef7dac" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a5265c410d55036c463c3464b50a93e68" kindref="member">Zorba_opt_bool_t</ref></type>
+        <definition>Zorba_opt_bool_t Zorba_CompilerHints::for_serialization_only</definition>
+        <argsstring></argsstring>
+        <name>for_serialization_only</name>
+        <briefdescription>
+<para>By default, this flag is set to false. </para>        </briefdescription>
+        <detaileddescription>
+<para>Applications may set it to true if they plan to execute the query only via one of the methods that serialize the query result. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="73" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__CompilerHints_1a5880a23aa05507de27e110a2fe488ae8" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a5265c410d55036c463c3464b50a93e68" kindref="member">Zorba_opt_bool_t</ref></type>
+        <definition>Zorba_opt_bool_t Zorba_CompilerHints::lib_module</definition>
+        <argsstring></argsstring>
+        <name>lib_module</name>
+        <briefdescription>
+<para>Treat the query as a library module. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="66" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__CompilerHints_1a04312cb32e49a63f046dd20c02874557" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a17dc1a3d386720b2751bb62b00ad9652" kindref="member">Zorba_opt_level_t</ref></type>
+        <definition>Zorba_opt_level_t Zorba_CompilerHints::opt_level</definition>
+        <argsstring></argsstring>
+        <name>opt_level</name>
+        <briefdescription>
+<para>The optimization level that is used. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="63" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Set of hints that can be passed to the query compiler. </para>    </briefdescription>
+    <detaileddescription>
+<para>An instance of this class can be passed to the compileQuery function of the Zorba class or the compile function of this class. The members of this class represent hints that are passed to the query compiler. For example, whether optimization of the query should be done (O1) or not (O0).</para><para>example_6 in file <ref refid="simple_8cpp-example" kindref="compound">simple.cpp</ref> shows an example how CompilerHints can be used. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="61" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="60" bodyend="84"/>
+    <listofallmembers>
+      <member refid="structZorba__CompilerHints_1ae939c45e9ce40f33feea0961a6ef7dac" prot="public" virt="non-virtual"><scope>Zorba_CompilerHints</scope><name>for_serialization_only</name></member>
+      <member refid="structZorba__CompilerHints_1a5880a23aa05507de27e110a2fe488ae8" prot="public" virt="non-virtual"><scope>Zorba_CompilerHints</scope><name>lib_module</name></member>
+      <member refid="structZorba__CompilerHints_1a04312cb32e49a63f046dd20c02874557" prot="public" virt="non-virtual"><scope>Zorba_CompilerHints</scope><name>opt_level</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

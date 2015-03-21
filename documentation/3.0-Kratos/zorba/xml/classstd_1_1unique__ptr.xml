@@ -1,0 +1,711 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classstd_1_1unique__ptr" kind="class" prot="public">
+    <compoundname>std::unique_ptr</compoundname>
+    <includes refid="unique__ptr_8h" local="no">zorba/internal/unique_ptr.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>D</declname>
+        <defname>D</defname>
+        <defval><ref refid="structstd_1_1default__delete" kindref="compound">default_delete</ref>&lt;T&gt;</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classstd_1_1unique__ptr_1a397b4aeff6e0efe8485f5383ffc2737c" prot="private" static="no">
+        <type>ZORBA_TR1_NS::add_reference&lt; D const  &gt;::type</type>
+        <definition>typedef ZORBA_TR1_NS::add_reference&lt;D const&gt;::type std::unique_ptr&lt; T, D &gt;::deleter_const_reference</definition>
+        <argsstring></argsstring>
+        <name>deleter_const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="215" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="215" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classstd_1_1unique__ptr_1aa7bbb9640ffa388627372f3e68f73faf" prot="private" static="no">
+        <type>ZORBA_TR1_NS::add_reference&lt; D &gt;::type</type>
+        <definition>typedef ZORBA_TR1_NS::add_reference&lt;D&gt;::type std::unique_ptr&lt; T, D &gt;::deleter_reference</definition>
+        <argsstring></argsstring>
+        <name>deleter_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="212" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classstd_1_1unique__ptr_1a7d8742f12bfc1b4d77056260a5f7e682" prot="private" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool" kindref="compound">zorba::internal::ztd::explicit_bool</ref></type>
+        <definition>typedef zorba::internal::ztd::explicit_bool std::unique_ptr&lt; T, D &gt;::explicit_bool</definition>
+        <argsstring></argsstring>
+        <name>explicit_bool</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="217" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="217" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classstd_1_1unique__ptr_1a0173822d0efb055fe769b3af2cc675c1" prot="public" static="no">
+        <type>D</type>
+        <definition>typedef D std::unique_ptr&lt; T, D &gt;::deleter_type</definition>
+        <argsstring></argsstring>
+        <name>deleter_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="222" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="222" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classstd_1_1unique__ptr_1aa75d4cd6d29aa993a3a4e6a2e65f65b1" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T std::unique_ptr&lt; T, D &gt;::element_type</definition>
+        <argsstring></argsstring>
+        <name>element_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="220" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="220" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classstd_1_1unique__ptr_1a42ef37e17e1558386f0116c6d862310b" prot="public" static="no">
+        <type>T *</type>
+        <definition>typedef T* std::unique_ptr&lt; T, D &gt;::pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="221" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="221" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classstd_1_1unique__ptr_1a199b43280be71090fb2ca35a42680b34" prot="private" static="no" mutable="no">
+        <type><ref refid="classstd_1_1unique__ptr__storage" kindref="compound">unique_ptr_storage</ref>&lt; T, D &gt;</type>
+        <definition>unique_ptr_storage&lt;T,D&gt; std::unique_ptr&lt; T, D &gt;::storage_</definition>
+        <argsstring></argsstring>
+        <name>storage_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="423" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="423" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1ac49c1d319060bdfff94a3a82402342dc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classstd_1_1unique__ptr_1a42ef37e17e1558386f0116c6d862310b" kindref="member">pointer</ref></type>
+        <definition>pointer std::unique_ptr&lt; T, D &gt;::get</definition>
+        <argsstring>() const </argsstring>
+        <name>get</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the pointer. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said pointer. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="355" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="355" bodyend="357"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a60643bf34d2700dee88c7a9ed164c8c3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>deleter_reference</type>
+        <definition>deleter_reference std::unique_ptr&lt; T, D &gt;::get_deleter</definition>
+        <argsstring>()</argsstring>
+        <name>get_deleter</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the deleter in use. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said deleter. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="364" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="364" bodyend="366"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a15e7147ddb2817ea045999005d148231" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>deleter_const_reference</type>
+        <definition>deleter_const_reference std::unique_ptr&lt; T, D &gt;::get_deleter</definition>
+        <argsstring>() const </argsstring>
+        <name>get_deleter</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the deleter in use. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said deleter. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="373" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="373" bodyend="375"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a7650d43d8c3e0b3b07b94013b85fd833" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>std::unique_ptr&lt; T, D &gt;::operator explicit_bool::type</definition>
+        <argsstring>() const </argsstring>
+        <name>operator explicit_bool::type</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Conversion to <computeroutput>bool</computeroutput>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the pointer is not null; <computeroutput>false</computeroutput> only if the pointer is null. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="418" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="418" bodyend="420"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a4796b44ccbd145dff61e6add67e83ef3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classstd_1_1unique__ptr_1aa75d4cd6d29aa993a3a4e6a2e65f65b1" kindref="member">element_type</ref> &amp;</type>
+        <definition>element_type&amp; std::unique_ptr&lt; T, D &gt;::operator*</definition>
+        <argsstring>() const </argsstring>
+        <name>operator*</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Dereferences the pointer. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns a reference to the pointed-to object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="337" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="337" bodyend="339"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a7eef945a0201a6919db03eb5efdd1576" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classstd_1_1unique__ptr_1a42ef37e17e1558386f0116c6d862310b" kindref="member">pointer</ref></type>
+        <definition>pointer std::unique_ptr&lt; T, D &gt;::operator-&gt;</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-&gt;</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the pointer. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said pointer. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="346" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="346" bodyend="348"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a3e903402f7e996d4de552ba33d0833c9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>std::unique_ptr&lt; T, D &gt;::operator::zorba::internal::rv</definition>
+        <argsstring>()</argsstring>
+        <name>operator::zorba::internal::rv</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="437" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="437" bodyend="439"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1adde29eaf655f86ca8e18cb6a371ce3de" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>std::unique_ptr&lt; T, D &gt;::operator::zorba::internal::rv</definition>
+        <argsstring>() const </argsstring>
+        <name>operator::zorba::internal::rv</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="441" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="441" bodyend="443"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a2fcbd0e8ec3aa619f444bc25d11675b1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref> &amp;</type>
+        <definition>unique_ptr&amp; std::unique_ptr&lt; T, D &gt;::operator=</definition>
+        <argsstring>(zorba::internal::rv&lt; unique_ptr &gt; &amp;p)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1rv" kindref="compound">zorba::internal::rv</ref>&lt; <ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref> &gt; &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+<para>Destructive assignment: moves ownership of the object pointed-to by <emphasis>p</emphasis> to this unique_ptr. </para>        </briefdescription>
+        <detaileddescription>
+<para>The object pointed-to by this unique_ptr, if any, is deleted.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique_ptr to move from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>*this</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="299" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="299" bodyend="303"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1aa7bf4e93a9831c85e028713d04d0c851" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename U</type>
+          </param>
+          <param>
+            <type>typename E</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref> &amp;</type>
+        <definition>unique_ptr&amp; std::unique_ptr&lt; T, D &gt;::operator=</definition>
+        <argsstring>(zorba::internal::rv&lt; unique_ptr&lt; U, E &gt; &gt; &amp;p)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1rv" kindref="compound">zorba::internal::rv</ref>&lt; <ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref>&lt; U, E &gt; &gt; &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+<para>Destructive assignment: moves ownership of the object pointed-to by <emphasis>p</emphasis> to this unique_ptr. </para>        </briefdescription>
+        <detaileddescription>
+<para>The object pointed-to by this unique_ptr, if any, is deleted.</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>U</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The pointed-to type such that <computeroutput>U*</computeroutput> is convertible to <computeroutput>T*</computeroutput>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>E</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The deleter of <emphasis>p</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique_ptr to move from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>*this</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="316" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="316" bodyend="320"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a718be713c6c5535ea527d526b1eec23b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref> &amp;</type>
+        <definition>unique_ptr&amp; std::unique_ptr&lt; T, D &gt;::operator=</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+<para>Assignment from null: equivalent to <computeroutput><ref refid="classstd_1_1unique__ptr_1ae87a32ca64200615fec8e2219336a502" kindref="member">reset()</ref></computeroutput>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns <computeroutput>*this</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="327" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="327" bodyend="330"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1afcc631781d2bf472dad301927de4ffed" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classstd_1_1unique__ptr_1a42ef37e17e1558386f0116c6d862310b" kindref="member">pointer</ref></type>
+        <definition>pointer std::unique_ptr&lt; T, D &gt;::release</definition>
+        <argsstring>()</argsstring>
+        <name>release</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Releases ownership of the pointed-to object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Said object will now be the responsibility of the caller.</para><para><simplesect kind="return"><para>Returns a pointer to the object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="383" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="383" bodyend="387"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1ae87a32ca64200615fec8e2219336a502" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void std::unique_ptr&lt; T, D &gt;::reset</definition>
+        <argsstring>(pointer p=nullptr)</argsstring>
+        <name>reset</name>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr_1a42ef37e17e1558386f0116c6d862310b" kindref="member">pointer</ref></type>
+          <declname>p</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Sets the pointer to the given value or null if none. </para>        </briefdescription>
+        <detaileddescription>
+<para>The previosly pointed-to object, if any, is deleted. However, if <emphasis>p</emphasis> equals the current pointer value, then this function does nothing.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The new pointer value, if any. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="396" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="396" bodyend="401"/>
+        <referencedby refid="classstd_1_1unique__ptr_1a2fcbd0e8ec3aa619f444bc25d11675b1" compoundref="unique__ptr_8h" startline="299" endline="303">std::unique_ptr&lt; iterator &gt;::operator=</referencedby>
+        <referencedby refid="classstd_1_1unique__ptr_3_01T[]_00_01D_01_4_1aadb40ef8a13498e0efb2bcbeb404f75f" compoundref="unique__ptr_8h" startline="483" endline="487">std::unique_ptr&lt; T[], D &gt;::operator=</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a9d972355cbc02ff72735e29aa771e197" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void std::unique_ptr&lt; T, D &gt;::swap</definition>
+        <argsstring>(unique_ptr &amp;p)</argsstring>
+        <name>swap</name>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref> &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+<para>Swaps the pointer and deleter with that of another unique_ptr. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique_ptr to swap with. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="408" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="408" bodyend="410"/>
+        <referencedby refid="classstd_1_1unique__ptr_1a9d972355cbc02ff72735e29aa771e197" compoundref="unique__ptr_8h" startline="408" endline="410">std::unique_ptr&lt; iterator &gt;::swap</referencedby>
+        <referencedby refid="classstd_1_1unique__ptr_3_01T[]_00_01D_01_4_1a0aeb873106912ba2a02eb4ea6c6706de" compoundref="unique__ptr_8h" startline="518" endline="520">std::unique_ptr&lt; T[], D &gt;::swap</referencedby>
+        <referencedby refid="namespacestd_1adbe8c1e1d587385493a3076064b111b2" compoundref="unique__ptr_8h" startline="578" endline="580">std::swap</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a18b9bba24966d45257126250b70783fe" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>std::unique_ptr&lt; T, D &gt;::unique_ptr</definition>
+        <argsstring>(pointer p=nullptr)</argsstring>
+        <name>unique_ptr</name>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr_1a42ef37e17e1558386f0116c6d862310b" kindref="member">pointer</ref></type>
+          <declname>p</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Default constructor. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the object to point to, if any. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="229" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="229" bodyend="230"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a7edf85c4e8ace8e30ec7a36ab6189510" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>std::unique_ptr&lt; T, D &gt;::unique_ptr</definition>
+        <argsstring>(pointer p, deleter_reference d)</argsstring>
+        <name>unique_ptr</name>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr_1a42ef37e17e1558386f0116c6d862310b" kindref="member">pointer</ref></type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>deleter_reference</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a unique_ptr using a specific deleter. </para>        </briefdescription>
+        <detaileddescription>
+<para>This unique_ptr now has ownership of the pointed-to object.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the object to own. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>d</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The deleter to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="239" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="239" bodyend="240"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1ad18a80010b90d39d099a45432faabf87" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>std::unique_ptr&lt; T, D &gt;::unique_ptr</definition>
+        <argsstring>(zorba::internal::rv&lt; unique_ptr &gt; &amp;p)</argsstring>
+        <name>unique_ptr</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1rv" kindref="compound">zorba::internal::rv</ref>&lt; <ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref> &gt; &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a unique_ptr from an existing unique_ptr. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that: <programlisting><codeline><highlight class="normal"><sp/><sp/>unique_ptr&lt;int&gt;<sp/>a(<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">(1)<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>unique_ptr&lt;int&gt;<sp/>b(<sp/>a<sp/>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compile-time<sp/>error</highlight></codeline>
+</programlisting> Instead, you must use the <computeroutput><ref refid="namespacestd_1ae27ad1e46de908333a2e28e540ea0b46" kindref="member">move()</ref></computeroutput> function: <programlisting><codeline><highlight class="normal"><sp/><sp/>unique_ptr&lt;int&gt;<sp/>a(<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">(1)<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>unique_ptr&lt;int&gt;<sp/>b(<sp/><ref refid="namespacestd_1ae27ad1e46de908333a2e28e540ea0b46" kindref="member">move</ref>(a)<sp/>);<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>ok<sp/>now</highlight></codeline>
+</programlisting></para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique_ptr to move from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="258" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="256" bodyend="259"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a1d640cacc1cfff7181d2dedaaf810750" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename U</type>
+          </param>
+          <param>
+            <type>typename E</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>std::unique_ptr&lt; T, D &gt;::unique_ptr</definition>
+        <argsstring>(zorba::internal::rv&lt; unique_ptr&lt; U, E &gt; &gt; &amp;p, typename enable_if&lt; ZORBA_TR1_NS::is_convertible&lt; typename unique_ptr&lt; U &gt;::pointer, pointer &gt;::value &amp;&amp;ZORBA_TR1_NS::is_convertible&lt; E, D &gt;::value &amp;&amp;(!ZORBA_TR1_NS::is_reference&lt; D &gt;::value||ZORBA_TR1_NS::is_same&lt; D, E &gt;::value) &gt;::type *=nullptr)</argsstring>
+        <name>unique_ptr</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1rv" kindref="compound">zorba::internal::rv</ref>&lt; <ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref>&lt; U, E &gt; &gt; &amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>typename <ref refid="structstd_1_1enable__if" kindref="compound">enable_if</ref>&lt; ZORBA_TR1_NS::is_convertible&lt; typename <ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref>&lt; U &gt;::<ref refid="classstd_1_1unique__ptr_1a42ef37e17e1558386f0116c6d862310b" kindref="member">pointer</ref>, <ref refid="classstd_1_1unique__ptr_1a42ef37e17e1558386f0116c6d862310b" kindref="member">pointer</ref> &gt;::value &amp;&amp;ZORBA_TR1_NS::is_convertible&lt; E, D &gt;::value &amp;&amp;(!ZORBA_TR1_NS::is_reference&lt; D &gt;::value||ZORBA_TR1_NS::is_same&lt; D, E &gt;::value) &gt;::type *</type>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+<para>Constructs a unique_ptr from an existing unique_ptr. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>U</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The pointed-to type such that <computeroutput>U*</computeroutput> is convertible to <computeroutput>T*</computeroutput>. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>E</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The deleter such that <computeroutput>E</computeroutput> is convertible to <computeroutput>D</computeroutput>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique_ptr to move from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="280" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="269" bodyend="281"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a4b7ef2507f1f1694adb428448325d53b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>std::unique_ptr&lt; T, D &gt;::~unique_ptr</definition>
+        <argsstring>()</argsstring>
+        <name>~unique_ptr</name>
+        <briefdescription>
+<para>Destroys the pointed-to object by calling the deleter (if the pointer is not null). </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="287" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="287" bodyend="289"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a2469cbb3b7d08ad0f51fe04f5b5294dd" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void std::unique_ptr&lt; T, D &gt;::call_deleter</definition>
+        <argsstring>()</argsstring>
+        <name>call_deleter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="425" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="425" bodyend="428"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a75c2403228b963119795727ca07bf760" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref> &amp;</type>
+        <definition>unique_ptr&amp; std::unique_ptr&lt; T, D &gt;::operator=</definition>
+        <argsstring>(unique_ptr &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="432"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1ad5fba0ef75045f0b840327eab0bc162f" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename U</type>
+          </param>
+          <param>
+            <type>typename E</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref> &amp;</type>
+        <definition>unique_ptr&amp; std::unique_ptr&lt; T, D &gt;::operator=</definition>
+        <argsstring>(unique_ptr&lt; U, E &gt; &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref>&lt; U, E &gt; &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="434"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1a684c67e45eae4f7e215d324290b3fbed" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>std::unique_ptr&lt; T, D &gt;::unique_ptr</definition>
+        <argsstring>(unique_ptr &amp;)</argsstring>
+        <name>unique_ptr</name>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="431"/>
+      </memberdef>
+      <memberdef kind="function" id="classstd_1_1unique__ptr_1ae900b6c0d2be68e88ed523ea564141b7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename U</type>
+          </param>
+          <param>
+            <type>typename E</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>std::unique_ptr&lt; T, D &gt;::unique_ptr</definition>
+        <argsstring>(unique_ptr&lt; U, E &gt; &amp;)</argsstring>
+        <name>unique_ptr</name>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref>&lt; U, E &gt; &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="433"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="904">
+        <label>std::unique_ptr&lt; T, D &gt;</label>
+        <link refid="classstd_1_1unique__ptr"/>
+      </node>
+      <node id="906">
+        <label>std::unique_ptr&lt; iterator &gt;</label>
+        <link refid="classstd_1_1unique__ptr"/>
+        <childnode refid="904" relation="template-instance">
+          <edgelabel>&lt; iterator &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="905">
+        <label>std::unique_ptr&lt; internal::proxy_streambuf &gt;</label>
+        <link refid="classstd_1_1unique__ptr"/>
+        <childnode refid="904" relation="template-instance">
+          <edgelabel>&lt; internal::proxy_streambuf &gt;</edgelabel>
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="210" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="210" bodyend="444"/>
+    <listofallmembers>
+      <member refid="classstd_1_1unique__ptr_1a2469cbb3b7d08ad0f51fe04f5b5294dd" prot="private" virt="non-virtual"><scope>std::unique_ptr</scope><name>call_deleter</name></member>
+      <member refid="classstd_1_1unique__ptr_1a397b4aeff6e0efe8485f5383ffc2737c" prot="private" virt="non-virtual"><scope>std::unique_ptr</scope><name>deleter_const_reference</name></member>
+      <member refid="classstd_1_1unique__ptr_1aa7bbb9640ffa388627372f3e68f73faf" prot="private" virt="non-virtual"><scope>std::unique_ptr</scope><name>deleter_reference</name></member>
+      <member refid="classstd_1_1unique__ptr_1a0173822d0efb055fe769b3af2cc675c1" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>deleter_type</name></member>
+      <member refid="classstd_1_1unique__ptr_1aa75d4cd6d29aa993a3a4e6a2e65f65b1" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>element_type</name></member>
+      <member refid="classstd_1_1unique__ptr_1a7d8742f12bfc1b4d77056260a5f7e682" prot="private" virt="non-virtual"><scope>std::unique_ptr</scope><name>explicit_bool</name></member>
+      <member refid="classstd_1_1unique__ptr_1ac49c1d319060bdfff94a3a82402342dc" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>get</name></member>
+      <member refid="classstd_1_1unique__ptr_1a60643bf34d2700dee88c7a9ed164c8c3" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>get_deleter</name></member>
+      <member refid="classstd_1_1unique__ptr_1a15e7147ddb2817ea045999005d148231" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>get_deleter</name></member>
+      <member refid="classstd_1_1unique__ptr_1a7650d43d8c3e0b3b07b94013b85fd833" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>operator explicit_bool::type</name></member>
+      <member refid="classstd_1_1unique__ptr_1a4796b44ccbd145dff61e6add67e83ef3" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>operator*</name></member>
+      <member refid="classstd_1_1unique__ptr_1a7eef945a0201a6919db03eb5efdd1576" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>operator-&gt;</name></member>
+      <member refid="classstd_1_1unique__ptr_1a3e903402f7e996d4de552ba33d0833c9" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>operator::zorba::internal::rv</name></member>
+      <member refid="classstd_1_1unique__ptr_1adde29eaf655f86ca8e18cb6a371ce3de" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>operator::zorba::internal::rv</name></member>
+      <member refid="classstd_1_1unique__ptr_1a2fcbd0e8ec3aa619f444bc25d11675b1" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>operator=</name></member>
+      <member refid="classstd_1_1unique__ptr_1aa7bf4e93a9831c85e028713d04d0c851" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>operator=</name></member>
+      <member refid="classstd_1_1unique__ptr_1a718be713c6c5535ea527d526b1eec23b" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>operator=</name></member>
+      <member refid="classstd_1_1unique__ptr_1a75c2403228b963119795727ca07bf760" prot="private" virt="non-virtual"><scope>std::unique_ptr</scope><name>operator=</name></member>
+      <member refid="classstd_1_1unique__ptr_1ad5fba0ef75045f0b840327eab0bc162f" prot="private" virt="non-virtual"><scope>std::unique_ptr</scope><name>operator=</name></member>
+      <member refid="classstd_1_1unique__ptr_1a42ef37e17e1558386f0116c6d862310b" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>pointer</name></member>
+      <member refid="classstd_1_1unique__ptr_1afcc631781d2bf472dad301927de4ffed" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>release</name></member>
+      <member refid="classstd_1_1unique__ptr_1ae87a32ca64200615fec8e2219336a502" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>reset</name></member>
+      <member refid="classstd_1_1unique__ptr_1a199b43280be71090fb2ca35a42680b34" prot="private" virt="non-virtual"><scope>std::unique_ptr</scope><name>storage_</name></member>
+      <member refid="classstd_1_1unique__ptr_1a9d972355cbc02ff72735e29aa771e197" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>swap</name></member>
+      <member refid="classstd_1_1unique__ptr_1a18b9bba24966d45257126250b70783fe" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>unique_ptr</name></member>
+      <member refid="classstd_1_1unique__ptr_1a7edf85c4e8ace8e30ec7a36ab6189510" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>unique_ptr</name></member>
+      <member refid="classstd_1_1unique__ptr_1ad18a80010b90d39d099a45432faabf87" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>unique_ptr</name></member>
+      <member refid="classstd_1_1unique__ptr_1a1d640cacc1cfff7181d2dedaaf810750" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>unique_ptr</name></member>
+      <member refid="classstd_1_1unique__ptr_1a684c67e45eae4f7e215d324290b3fbed" prot="private" virt="non-virtual"><scope>std::unique_ptr</scope><name>unique_ptr</name></member>
+      <member refid="classstd_1_1unique__ptr_1ae900b6c0d2be68e88ed523ea564141b7" prot="private" virt="non-virtual"><scope>std::unique_ptr</scope><name>unique_ptr</name></member>
+      <member refid="classstd_1_1unique__ptr_1a4b7ef2507f1f1694adb428448325d53b" prot="public" virt="non-virtual"><scope>std::unique_ptr</scope><name>~unique_ptr</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,16 @@
+<div class="doxygen">
+  <div><h1 class="title">Zorba_CompilerHints</h1><p class="include">
+            #include &lt;zorba/options.h&gt;
+        </p>
+Set of hints that can be passed to the query compiler.     
+An instance of this class can be passed to the compileQuery function of the Zorba class or the compile function of this class. The members of this class represent hints that are passed to the query compiler. For example, whether optimization of the query should be done (O1) or not (O0).example_6 in file <a href="/pages/3.0/zorba/simple_8cpp-example">simple.cpp</a> shows an example how CompilerHints can be used.     <div class="section"><h2>Public Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/options_8h?anchor=a5265c410d55036c463c3464b50a93e68">Zorba_opt_bool_t</a></p></td><td><p class="signature"><a href="#ae939c45e9ce40f33feea0961a6ef7dac">for_serialization_only</a></p><span class="signature-description">
+By default, this flag is set to false.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/options_8h?anchor=a5265c410d55036c463c3464b50a93e68">Zorba_opt_bool_t</a></p></td><td><p class="signature"><a href="#a5880a23aa05507de27e110a2fe488ae8">lib_module</a></p><span class="signature-description">
+Treat the query as a library module.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/options_8h?anchor=a17dc1a3d386720b2751bb62b00ad9652">Zorba_opt_level_t</a></p></td><td><p class="signature"><a href="#a04312cb32e49a63f046dd20c02874557">opt_level</a></p><span class="signature-description">
+The optimization level that is used.         </span></td></tr></table></div><div class="section"><h2>Public Attributes</h2><div class="detailed"><div id="ae939c45e9ce40f33feea0961a6ef7dac" class="sect1"><div><h3>for_serialization_only</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/options_8h?anchor=a5265c410d55036c463c3464b50a93e68">Zorba_opt_bool_t</a><span> </span>for_serialization_only</div><div><p class="signature-description">
+By default, this flag is set to false.         </p><p class="signature-description">
+Applications may set it to true if they plan to execute the query only via one of the methods that serialize the query result.         </p></div></div><div id="a5880a23aa05507de27e110a2fe488ae8" class="sect1"><div><h3>lib_module</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/options_8h?anchor=a5265c410d55036c463c3464b50a93e68">Zorba_opt_bool_t</a><span> </span>lib_module</div><div><p class="signature-description">
+Treat the query as a library module.         </p><p class="signature-description">
+        </p></div></div><div id="a04312cb32e49a63f046dd20c02874557" class="sect1"><div><h3>opt_level</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/options_8h?anchor=a17dc1a3d386720b2751bb62b00ad9652">Zorba_opt_level_t</a><span> </span>opt_level</div><div><p class="signature-description">
+The optimization level that is used.         </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

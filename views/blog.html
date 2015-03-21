@@ -1,0 +1,62 @@
+<section class="container" id="blog">
+    <div ng-show="loading && entries.length == 0">
+        <h1 class="text-center">Loading</h1>
+        <h1 class="text-center"><i class="fa-spinner fa-spin fa-large fa"></i></h1>
+    </div>
+    <div ng-show="!loading && entries.length == 0">
+        <ng-include src="'/views/404.html'"></ng-include>
+    </div>
+    <div>
+        <ol class="breadcrumb" ng-show="tagFilter !== null && entries.length > 0">
+            <li><a href="/blog" class="label label-{{tagFilter}}">{{tagFilter}} <i class="fa fa-remove"></i></a></li>
+        </ol>
+        <ol class="breadcrumb row" ng-show="idFilter !== null && entries.length > 0">
+            <li><a href="/blog">Blog</a></li>
+            <li class="active" ng-bind="entries[0].title"></li>
+        </ol>
+        <!--ol class="breadcrumb row visible-xs visible-sm hidden-lg hidden-md" ng-show="idFilter !== null && entries.length > 0">
+            <li><a href="/blog">Blog</a></li>
+        </ol-->
+    </div>
+    
+    <div class="row" ng-show="!loading && entries.length == 1">
+        <h2 ng-bind="entries[0].title"></h2>
+        <p class="date">Posted {{formatDate(entries[0].updated)}} ago</p>
+        <p>
+            <a ng-repeat="tag in entries[0].tags" href="/blog/tags/{{tag}}" class="label label-{{tag}}" ng-bind="tag">
+            </a>
+        </p>
+        <div class="entry" entry=""></div>
+        <div id="disqus" class="disqus" disqus="">
+            <div id="disqus_thread" class="content-panel-content"></div>
+        </div>
+    </div>
+    
+    <div ng-repeat="entry in entries" ng-show="!loading && entries.length > 1">
+        <div class="row">
+            <div class="col-lg-4">
+                <h3><a ng-href="/blog{{entry.id}}" ng-bind="entry.title"></a></h3>
+                <p class="date">Posted {{formatDate(entry.updated)}} ago</p>
+            </div>
+            <div class="col-lg-8">
+                <p ng-bind="entry.summary"></p>
+                <p><a ng-href="/blog{{entry.id}}">Read more →</a></p>
+            </div>
+        </div>
+        <hr>
+                <!--a ng-href="/blog{{entry.id}}" href="#" class="entry">
+                    <div class="thumbnail">
+                        <img ng-src="/blog/images/thumbnails/{{id(entry.id)}}.png">
+                        <div class="caption">
+                            <h3 ng-bind="entry.title"></h3>
+                            <p ng-bind="entry.summary"></p>
+                            <p>
+                                <a ng-repeat="tag in entry.tags"
+                                   href="/blog/tags/{{tag}}"
+                                   class="label label-{{tag}}" ng-bind="tag"></a>
+                            </p>
+                        </div>
+                    </div>
+                </a-->
+    </div>
+</section>

@@ -1,0 +1,1536 @@
+<div class="doxygen">
+  <div><h1 class="title">W3C XQuery 1.0 Conformance</h1>
+In generating the report we used:<ul>
+<li>
+Zorba version 2.9.1 that can be downloaded from <a href="https://launchpad.net/zorba/trunk/2.9" target="_blank">https://launchpad.net/zorba/trunk/2.9</a> </li>
+<li>
+FOTS version 'current' (<a href="http://dev.w3.org/2011/QT3-test-suite/" target="_blank">XQuery/XPath/XSLT 3.* Test Suite</a> taken from W3C CVS as of 2013-05-08) </li>
+</ul>
+Zorba achieves 99.53 for the XQuery 1.0 tests in <a href="http://dev.w3.org/2011/QT3-test-suite/" target="_blank">XQuery/XPath/XSLT 3.* Test Suite</a>.Please see the table below for more details. <table border="1" width="100%">
+  <th>
+    <b> Summary of results for XQuery 1.0 </b>
+  </th>
+  <tr>
+    <td>
+      <table>
+        <tr>
+          <td> Legend:     </td>
+          <td>
+            <table>
+              <tr>
+                <td bgcolor="mediumseagreen">         
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td> passed </td>
+          <td>      </td>
+          <td>
+            <table>
+              <tr>
+                <td bgcolor="palegreen">          </td>
+              </tr>
+            </table>
+          </td>
+          <td> almost passed (≥ 98%) </td>
+          <td>      </td>
+          <td>
+            <table>
+              <tr>
+                <td bgcolor="coral">          </td>
+              </tr>
+            </table>
+          </td>
+          <td> failed </td>
+          <td>      </td>
+          <td>
+            <table>
+              <tr>
+                <td bgcolor="white">          </td>
+              </tr>
+            </table>
+          </td>
+          <td> untested </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table><table border="1" bordercolor="black" bgcolor="lightcyan" cellpadding="2">
+  <tr>
+    <th> Tests </th>
+    <th> Zorba 2.9.1 XQ30 (QT3 vCVS) </th>
+  </tr>
+  <tr>
+    <td valign="top"> fn-abs </td>
+    <td align="center" bgcolor="mediumseagreen"> 183/183 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-adjust-date-to-timezone </td>
+    <td align="center" bgcolor="mediumseagreen"> 40/40 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-adjust-dateTime-to-timezone </td>
+    <td align="center" bgcolor="mediumseagreen"> 47/47 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-adjust-time-to-timezone </td>
+    <td align="center" bgcolor="mediumseagreen"> 41/41 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-analyze-string </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-available-environment-variables </td>
+    <td align="center" bgcolor="mediumseagreen"> 1/1 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-avg </td>
+    <td align="center" bgcolor="mediumseagreen"> 237/237 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-base-uri </td>
+    <td align="center" bgcolor="mediumseagreen"> 62/62 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-boolean </td>
+    <td align="center" bgcolor="mediumseagreen"> 136/136 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-ceiling </td>
+    <td align="center" bgcolor="mediumseagreen"> 87/87 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-codepoint-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 36/36 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-codepoints-to-string </td>
+    <td align="center" bgcolor="mediumseagreen"> 76/76 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-collection </td>
+    <td align="center" bgcolor="coral"> 18/29 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-compare </td>
+    <td align="center" bgcolor="palegreen"> 63/64 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-concat </td>
+    <td align="center" bgcolor="mediumseagreen"> 95/95 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-contains </td>
+    <td align="center" bgcolor="mediumseagreen"> 41/41 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-count </td>
+    <td align="center" bgcolor="mediumseagreen"> 316/316 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-current-date </td>
+    <td align="center" bgcolor="mediumseagreen"> 26/26 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-current-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-current-time </td>
+    <td align="center" bgcolor="mediumseagreen"> 24/24 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-data </td>
+    <td align="center" bgcolor="mediumseagreen"> 53/53 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 52/52 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-day-from-date </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-day-from-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-days-from-duration </td>
+    <td align="center" bgcolor="mediumseagreen"> 31/31 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-deep-equal </td>
+    <td align="center" bgcolor="coral"> 204/210 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-default-collation </td>
+    <td align="center" bgcolor="mediumseagreen"> 7/7 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-distinct-values </td>
+    <td align="center" bgcolor="mediumseagreen"> 104/104 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-doc </td>
+    <td align="center" bgcolor="mediumseagreen"> 43/43 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-doc-available </td>
+    <td align="center" bgcolor="mediumseagreen"> 13/13 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-document-uri </td>
+    <td align="center" bgcolor="mediumseagreen"> 35/35 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-element-with-id </td>
+    <td align="center" bgcolor="mediumseagreen"> 5/5 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-empty </td>
+    <td align="center" bgcolor="mediumseagreen"> 54/54 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-encode-for-uri </td>
+    <td align="center" bgcolor="mediumseagreen"> 29/29 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-ends-with </td>
+    <td align="center" bgcolor="mediumseagreen"> 38/38 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-environment-variable </td>
+    <td align="center" bgcolor="mediumseagreen"> 3/3 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-error </td>
+    <td align="center" bgcolor="mediumseagreen"> 97/97 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-escape-html-uri </td>
+    <td align="center" bgcolor="mediumseagreen"> 34/34 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-exactly-one </td>
+    <td align="center" bgcolor="mediumseagreen"> 54/54 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-exists </td>
+    <td align="center" bgcolor="mediumseagreen"> 58/58 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-false </td>
+    <td align="center" bgcolor="mediumseagreen"> 24/24 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-filter </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-floor </td>
+    <td align="center" bgcolor="mediumseagreen"> 88/88 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-fold-left </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-fold-right </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-format-date </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-format-dateTime </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-format-integer </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-format-number </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-format-time </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-function-lookup </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-function-arity </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-function-name </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-generate-id </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-has-children </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-head </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-hours-from-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-hours-from-duration </td>
+    <td align="center" bgcolor="mediumseagreen"> 31/31 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-hours-from-time </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-id </td>
+    <td align="center" bgcolor="coral"> 39/41 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-idref </td>
+    <td align="center" bgcolor="mediumseagreen"> 30/30 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-implicit-timezone </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-innermost </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-index-of </td>
+    <td align="center" bgcolor="mediumseagreen"> 53/53 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-insert-before </td>
+    <td align="center" bgcolor="mediumseagreen"> 43/43 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-in-scope-prefixes </td>
+    <td align="center" bgcolor="mediumseagreen"> 58/58 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-iri-to-uri </td>
+    <td align="center" bgcolor="mediumseagreen"> 46/46 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-lang </td>
+    <td align="center" bgcolor="mediumseagreen"> 36/36 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-last </td>
+    <td align="center" bgcolor="mediumseagreen"> 65/65 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-local-name </td>
+    <td align="center" bgcolor="mediumseagreen"> 59/59 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-local-name-from-QName </td>
+    <td align="center" bgcolor="mediumseagreen"> 24/24 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-lower-case </td>
+    <td align="center" bgcolor="mediumseagreen"> 24/24 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-map </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-max </td>
+    <td align="center" bgcolor="mediumseagreen"> 201/201 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-map-pairs </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-matches </td>
+    <td align="center" bgcolor="palegreen"> 145/146 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-matches.re </td>
+    <td align="center" bgcolor="mediumseagreen"> 1/1 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-min </td>
+    <td align="center" bgcolor="mediumseagreen"> 200/200 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-minutes-from-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-minutes-from-duration </td>
+    <td align="center" bgcolor="mediumseagreen"> 32/32 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-minutes-from-time </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-month-from-date </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-months-from-duration </td>
+    <td align="center" bgcolor="mediumseagreen"> 31/31 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-month-from-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-name </td>
+    <td align="center" bgcolor="mediumseagreen"> 33/33 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-namespace-uri </td>
+    <td align="center" bgcolor="mediumseagreen"> 33/33 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-namespace-uri-for-prefix </td>
+    <td align="center" bgcolor="mediumseagreen"> 29/29 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-namespace-uri-from-QName </td>
+    <td align="center" bgcolor="mediumseagreen"> 29/29 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-nilled </td>
+    <td align="center" bgcolor="mediumseagreen"> 54/54 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-node-name </td>
+    <td align="center" bgcolor="mediumseagreen"> 35/35 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-normalize-space </td>
+    <td align="center" bgcolor="coral"> 37/39 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-normalize-unicode </td>
+    <td align="center" bgcolor="coral"> 41/44 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-not </td>
+    <td align="center" bgcolor="mediumseagreen"> 83/83 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-number </td>
+    <td align="center" bgcolor="mediumseagreen"> 66/66 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-one-or-more </td>
+    <td align="center" bgcolor="mediumseagreen"> 56/56 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-outermost </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-parse-json </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-parse-xml </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-parse-xml-fragment </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-path </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-position </td>
+    <td align="center" bgcolor="mediumseagreen"> 66/66 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-prefix-from-QName </td>
+    <td align="center" bgcolor="mediumseagreen"> 24/24 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-QName </td>
+    <td align="center" bgcolor="mediumseagreen"> 34/34 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-remove </td>
+    <td align="center" bgcolor="mediumseagreen"> 48/48 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-replace </td>
+    <td align="center" bgcolor="palegreen"> 72/73 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-resolve-QName </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-resolve-uri </td>
+    <td align="center" bgcolor="coral"> 36/38 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-reverse </td>
+    <td align="center" bgcolor="mediumseagreen"> 70/70 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-root </td>
+    <td align="center" bgcolor="mediumseagreen"> 36/36 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-round </td>
+    <td align="center" bgcolor="mediumseagreen"> 245/245 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-round-half-to-even </td>
+    <td align="center" bgcolor="mediumseagreen"> 128/128 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-seconds-from-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-seconds-from-duration </td>
+    <td align="center" bgcolor="mediumseagreen"> 32/32 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-seconds-from-time </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-serialize </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-serialize-json </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-starts-with </td>
+    <td align="center" bgcolor="mediumseagreen"> 39/39 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-static-base-uri </td>
+    <td align="center" bgcolor="mediumseagreen"> 18/18 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-string </td>
+    <td align="center" bgcolor="mediumseagreen"> 62/62 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-string-join </td>
+    <td align="center" bgcolor="mediumseagreen"> 34/34 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-string-length </td>
+    <td align="center" bgcolor="coral"> 33/35 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-string-to-codepoints </td>
+    <td align="center" bgcolor="mediumseagreen"> 44/44 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-subsequence </td>
+    <td align="center" bgcolor="mediumseagreen"> 103/103 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-substring </td>
+    <td align="center" bgcolor="mediumseagreen"> 48/48 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-substring-after </td>
+    <td align="center" bgcolor="coral"> 36/37 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-substring-before </td>
+    <td align="center" bgcolor="coral"> 35/36 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-sum </td>
+    <td align="center" bgcolor="mediumseagreen"> 218/218 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-tail </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-timezone-from-date </td>
+    <td align="center" bgcolor="mediumseagreen"> 34/34 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-timezone-from-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-timezone-from-time </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-tokenize </td>
+    <td align="center" bgcolor="mediumseagreen"> 50/50 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-trace </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-translate </td>
+    <td align="center" bgcolor="mediumseagreen"> 42/42 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-true </td>
+    <td align="center" bgcolor="mediumseagreen"> 24/24 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-unordered </td>
+    <td align="center" bgcolor="mediumseagreen"> 34/34 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-unparsed-text </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-unparsed-text-available </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-unparsed-text-lines </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-upper-case </td>
+    <td align="center" bgcolor="mediumseagreen"> 24/24 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-uri-collection </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-year-from-date </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-years-from-duration </td>
+    <td align="center" bgcolor="mediumseagreen"> 31/31 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-year-from-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> fn-zero-or-one </td>
+    <td align="center" bgcolor="mediumseagreen"> 51/51 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-acos </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-asin </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-atan </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-atan2 </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-cos </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-exp </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-exp10 </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-log </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-log10 </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-pi </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-pow </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-sin </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-sqrt </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> math-tan </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> map-new </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> map-contains </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> map-get </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> map-entry </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> map-size </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> map-keys </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> map-remove </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> map-collation </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> xs-anyURI </td>
+    <td align="center" bgcolor="coral"> 11/13 </td>
+  </tr>
+  <tr>
+    <td valign="top"> xs-base64Binary </td>
+    <td align="center" bgcolor="coral"> 36/37 </td>
+  </tr>
+  <tr>
+    <td valign="top"> xs-dateTimeStamp </td>
+    <td align="center" bgcolor="mediumseagreen"> 6/6 </td>
+  </tr>
+  <tr>
+    <td valign="top"> xs-double </td>
+    <td align="center" bgcolor="mediumseagreen"> 3/3 </td>
+  </tr>
+  <tr>
+    <td valign="top"> xs-error </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> xs-float </td>
+    <td align="center" bgcolor="mediumseagreen"> 5/5 </td>
+  </tr>
+  <tr>
+    <td valign="top"> xs-hexBinary </td>
+    <td align="center" bgcolor="mediumseagreen"> 1/1 </td>
+  </tr>
+  <tr>
+    <td valign="top"> xs-normalizedString </td>
+    <td align="center" bgcolor="mediumseagreen"> 6/6 </td>
+  </tr>
+  <tr>
+    <td valign="top"> xs-token </td>
+    <td align="center" bgcolor="mediumseagreen"> 6/6 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-add-dayTimeDurations </td>
+    <td align="center" bgcolor="mediumseagreen"> 61/61 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-add-dayTimeDuration-to-date </td>
+    <td align="center" bgcolor="mediumseagreen"> 25/25 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-add-dayTimeDuration-to-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-add-dayTimeDuration-to-time </td>
+    <td align="center" bgcolor="mediumseagreen"> 26/26 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-add-yearMonthDurations </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-add-yearMonthDuration-to-date </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-add-yearMonthDuration-to-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 29/29 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-anyURI-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 22/22 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-anyURI-greater-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 10/10 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-anyURI-less-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 8/8 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-bang </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-base64Binary-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 30/30 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-boolean-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 55/55 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-boolean-greater-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 49/49 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-boolean-less-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 49/49 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-concat </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-concatenate </td>
+    <td align="center" bgcolor="mediumseagreen"> 54/54 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-date-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 47/47 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-date-greater-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 48/48 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-date-less-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 48/48 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-dateTime-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 71/71 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-dateTime-greater-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 44/44 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-dateTime-less-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 44/44 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-dayTimeDuration-greater-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 58/58 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-dayTimeDuration-less-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 46/46 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-divide-dayTimeDuration </td>
+    <td align="center" bgcolor="mediumseagreen"> 55/55 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-divide-dayTimeDuration-by-dayTimeDuration </td>
+    <td align="center" bgcolor="mediumseagreen"> 25/25 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-divide-yearMonthDuration </td>
+    <td align="center" bgcolor="mediumseagreen"> 31/31 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-divide-yearMonthDuration-by-yearMonthDuration </td>
+    <td align="center" bgcolor="mediumseagreen"> 23/23 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-duration-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 158/158 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-except </td>
+    <td align="center" bgcolor="mediumseagreen"> 71/71 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-gDay-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 51/51 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-gMonth-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 45/45 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-gMonthDay-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 51/51 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-gYear-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 46/46 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-gYearMonth-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 46/46 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-hexBinary-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 32/32 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-intersect </td>
+    <td align="center" bgcolor="mediumseagreen"> 71/71 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-is-same-node </td>
+    <td align="center" bgcolor="mediumseagreen"> 37/37 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-multiply-dayTimeDuration </td>
+    <td align="center" bgcolor="mediumseagreen"> 46/46 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-multiply-yearMonthDuration </td>
+    <td align="center" bgcolor="mediumseagreen"> 44/44 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-node-after </td>
+    <td align="center" bgcolor="mediumseagreen"> 35/35 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-node-before </td>
+    <td align="center" bgcolor="mediumseagreen"> 35/35 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-NOTATION-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 22/22 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-add </td>
+    <td align="center" bgcolor="mediumseagreen"> 140/140 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 202/202 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-divide </td>
+    <td align="center" bgcolor="mediumseagreen"> 140/140 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-greater-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 116/116 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-integer-divide </td>
+    <td align="center" bgcolor="mediumseagreen"> 136/136 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-less-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 183/183 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-mod </td>
+    <td align="center" bgcolor="mediumseagreen"> 124/124 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-multiply </td>
+    <td align="center" bgcolor="mediumseagreen"> 107/107 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-subtract </td>
+    <td align="center" bgcolor="mediumseagreen"> 119/119 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-unary-minus </td>
+    <td align="center" bgcolor="mediumseagreen"> 64/64 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-numeric-unary-plus </td>
+    <td align="center" bgcolor="mediumseagreen"> 55/55 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-QName-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 38/38 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-string-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 15/15 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-string-greater-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 9/9 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-string-less-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 10/10 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-subtract-dates </td>
+    <td align="center" bgcolor="mediumseagreen"> 30/30 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-subtract-dateTimes </td>
+    <td align="center" bgcolor="mediumseagreen"> 30/30 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-subtract-dayTimeDuration-from-date </td>
+    <td align="center" bgcolor="mediumseagreen"> 23/23 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-subtract-dayTimeDuration-from-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 22/22 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-subtract-dayTimeDuration-from-time </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-subtract-dayTimeDurations </td>
+    <td align="center" bgcolor="mediumseagreen"> 69/69 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-subtract-times </td>
+    <td align="center" bgcolor="mediumseagreen"> 33/33 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-subtract-yearMonthDuration-from-date </td>
+    <td align="center" bgcolor="mediumseagreen"> 25/25 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-subtract-yearMonthDuration-from-dateTime </td>
+    <td align="center" bgcolor="mediumseagreen"> 23/23 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-subtract-yearMonthDurations </td>
+    <td align="center" bgcolor="mediumseagreen"> 33/33 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-time-equal </td>
+    <td align="center" bgcolor="mediumseagreen"> 58/58 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-time-greater-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 44/44 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-time-less-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 44/44 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-to </td>
+    <td align="center" bgcolor="mediumseagreen"> 69/69 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-union </td>
+    <td align="center" bgcolor="mediumseagreen"> 82/82 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-yearMonthDuration-greater-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 34/34 </td>
+  </tr>
+  <tr>
+    <td valign="top"> op-yearMonthDuration-less-than </td>
+    <td align="center" bgcolor="mediumseagreen"> 34/34 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AllowingEmpty </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-Annotation </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AxisStep </td>
+    <td align="center" bgcolor="mediumseagreen"> 330/330 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AxisStep.abbr </td>
+    <td align="center" bgcolor="mediumseagreen"> 23/23 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AxisStep.ancestor </td>
+    <td align="center" bgcolor="mediumseagreen"> 43/43 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AxisStep.ancestor-or-self </td>
+    <td align="center" bgcolor="mediumseagreen"> 31/31 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AxisStep.following </td>
+    <td align="center" bgcolor="mediumseagreen"> 25/25 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AxisStep.following-sibling </td>
+    <td align="center" bgcolor="mediumseagreen"> 33/33 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AxisStep.preceding </td>
+    <td align="center" bgcolor="mediumseagreen"> 31/31 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AxisStep.preceding-sibling </td>
+    <td align="center" bgcolor="mediumseagreen"> 28/28 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AxisStep.static-typing </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-AxisStep.unabbr </td>
+    <td align="center" bgcolor="mediumseagreen"> 26/26 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-BaseURIDecl </td>
+    <td align="center" bgcolor="coral"> 37/38 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-BoundarySpaceDecl </td>
+    <td align="center" bgcolor="mediumseagreen"> 28/28 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CastableExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 799/799 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CastExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 2732/2732 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CastExpr.derived </td>
+    <td align="center" bgcolor="palegreen"> 154/155 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CastExpr.schema </td>
+    <td align="center" bgcolor="mediumseagreen"> 58/58 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-Comment </td>
+    <td align="center" bgcolor="mediumseagreen"> 45/45 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CompAttrConstructor </td>
+    <td align="center" bgcolor="mediumseagreen"> 109/109 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CompDocConstructor </td>
+    <td align="center" bgcolor="palegreen"> 57/58 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CompCommentConstructor </td>
+    <td align="center" bgcolor="mediumseagreen"> 28/28 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CompElemConstructor </td>
+    <td align="center" bgcolor="mediumseagreen"> 72/72 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CompNamespaceConstructor </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CompPIConstructor </td>
+    <td align="center" bgcolor="mediumseagreen"> 54/54 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CompTextConstructor </td>
+    <td align="center" bgcolor="mediumseagreen"> 35/35 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ConstructionDecl </td>
+    <td align="center" bgcolor="mediumseagreen"> 26/26 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ConstructionDecl.schema </td>
+    <td align="center" bgcolor="mediumseagreen"> 4/4 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ContextItemDecl </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ContextItemExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 45/45 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CopyNamespacesDecl </td>
+    <td align="center" bgcolor="mediumseagreen"> 36/36 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-CountClause </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-DecimalFormatDecl </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-DefaultCollationDecl </td>
+    <td align="center" bgcolor="mediumseagreen"> 8/8 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-DefaultNamespaceDecl </td>
+    <td align="center" bgcolor="coral"> 57/59 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-DirAttributeList </td>
+    <td align="center" bgcolor="mediumseagreen"> 124/124 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-DirectConstructor </td>
+    <td align="center" bgcolor="mediumseagreen"> 91/91 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-DirElemConstructor </td>
+    <td align="center" bgcolor="mediumseagreen"> 67/67 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-DirElemContent </td>
+    <td align="center" bgcolor="palegreen"> 126/127 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-DirElemContent.namespace </td>
+    <td align="center" bgcolor="palegreen"> 131/132 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-DirElemContent.whitespace </td>
+    <td align="center" bgcolor="mediumseagreen"> 83/83 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-EmptyOrderDecl </td>
+    <td align="center" bgcolor="mediumseagreen"> 32/32 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-EQName </td>
+    <td align="center" bgcolor="mediumseagreen"> 2/2 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ExtensionExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 51/51 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-FLWORExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 21/21 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-FLWORExpr.static-typing </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ForClause </td>
+    <td align="center" bgcolor="mediumseagreen"> 188/188 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-FunctionCall </td>
+    <td align="center" bgcolor="coral"> 66/69 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-FunctionDecl </td>
+    <td align="center" bgcolor="coral"> 137/152 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-GeneralComp.eq </td>
+    <td align="center" bgcolor="mediumseagreen"> 172/172 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-GeneralComp.ge </td>
+    <td align="center" bgcolor="mediumseagreen"> 110/110 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-GeneralComp.gt </td>
+    <td align="center" bgcolor="mediumseagreen"> 118/118 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-GeneralComp.le </td>
+    <td align="center" bgcolor="mediumseagreen"> 108/108 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-GeneralComp.lt </td>
+    <td align="center" bgcolor="mediumseagreen"> 127/127 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-GeneralComp.ne </td>
+    <td align="center" bgcolor="mediumseagreen"> 140/140 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-GroupByClause </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-IfExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 42/42 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-InstanceofExpr </td>
+    <td align="center" bgcolor="palegreen"> 277/278 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-LetClause </td>
+    <td align="center" bgcolor="mediumseagreen"> 81/81 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-Literal </td>
+    <td align="center" bgcolor="palegreen"> 163/166 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ModuleImport </td>
+    <td align="center" bgcolor="coral"> 72/80 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-NamedFunctionRef </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-NamespaceDecl </td>
+    <td align="center" bgcolor="mediumseagreen"> 44/44 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-NameTest </td>
+    <td align="center" bgcolor="mediumseagreen"> 122/122 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-NodeTest </td>
+    <td align="center" bgcolor="mediumseagreen"> 67/67 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-OptionDecl </td>
+    <td align="center" bgcolor="mediumseagreen"> 8/8 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-OptionDecl.serialization </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-OrExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 371/371 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-OrderByClause </td>
+    <td align="center" bgcolor="coral"> 195/201 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-OrderingModeDecl </td>
+    <td align="center" bgcolor="mediumseagreen"> 27/27 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-PathExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 17/17 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ParenthesizedExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 20/20 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-PositionalVar </td>
+    <td align="center" bgcolor="mediumseagreen"> 34/34 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-Predicate </td>
+    <td align="center" bgcolor="mediumseagreen"> 190/190 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-QuantifiedExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 200/200 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-RequireProhibitFeature </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ReturnClause </td>
+    <td align="center" bgcolor="mediumseagreen"> 21/21 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-SchemaImport </td>
+    <td align="center" bgcolor="coral"> 105/116 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-SequenceType </td>
+    <td align="center" bgcolor="mediumseagreen"> 21/21 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-StepExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 58/58 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-SwitchExpr </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-TreatExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 69/69 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-TryCatchExpr </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-TypeswitchExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 56/56 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-UnorderedExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 26/26 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ValidateExpr </td>
+    <td align="center" bgcolor="mediumseagreen"> 66/66 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-ValueComp </td>
+    <td align="center" bgcolor="mediumseagreen"> 44/44 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-VarDecl </td>
+    <td align="center" bgcolor="mediumseagreen"> 124/124 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-VarDecl.external </td>
+    <td align="center" bgcolor="palegreen"> 94/95 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-VarDefaultValue </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-VersionDecl </td>
+    <td align="center" bgcolor="coral"> 27/28 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-WhereClause </td>
+    <td align="center" bgcolor="mediumseagreen"> 71/71 </td>
+  </tr>
+  <tr>
+    <td valign="top"> prod-WindowClause </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> misc-CombinedErrorCodes </td>
+    <td align="center" bgcolor="mediumseagreen"> 254/254 </td>
+  </tr>
+  <tr>
+    <td valign="top"> misc-AnnexE </td>
+    <td align="center" bgcolor="mediumseagreen"> 8/8 </td>
+  </tr>
+  <tr>
+    <td valign="top"> misc-AppendixA4 </td>
+    <td align="center" bgcolor="mediumseagreen"> 9/9 </td>
+  </tr>
+  <tr>
+    <td valign="top"> misc-ErrorsAndOptimization </td>
+    <td align="center" bgcolor="mediumseagreen"> 7/7 </td>
+  </tr>
+  <tr>
+    <td valign="top"> misc-HigherOrderFunctions </td>
+    <td align="center" bgcolor="white"> 0/0 </td>
+  </tr>
+  <tr>
+    <td valign="top"> misc-MiscFunctions </td>
+    <td align="center" bgcolor="mediumseagreen"> 38/38 </td>
+  </tr>
+  <tr>
+    <td valign="top"> misc-StaticContext </td>
+    <td align="center" bgcolor="mediumseagreen"> 1/1 </td>
+  </tr>
+  <tr>
+    <td valign="top"> misc-Serialization </td>
+    <td align="center" bgcolor="coral"> 4/12 </td>
+  </tr>
+  <tr>
+    <td valign="top"> misc-Surrogates </td>
+    <td align="center" bgcolor="mediumseagreen"> 17/17 </td>
+  </tr>
+  <tr>
+    <td valign="top"> misc-XMLEdition </td>
+    <td align="center" bgcolor="coral"> 9/10 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-CatalogCheck </td>
+    <td align="center" bgcolor="mediumseagreen"> 10/10 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-Demos </td>
+    <td align="center" bgcolor="mediumseagreen"> 4/4 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-FunctxFn </td>
+    <td align="center" bgcolor="mediumseagreen"> 500/500 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-FunctxFunctx </td>
+    <td align="center" bgcolor="mediumseagreen"> 627/627 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-UseCaseNS </td>
+    <td align="center" bgcolor="mediumseagreen"> 8/8 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-UseCasePARTS </td>
+    <td align="center" bgcolor="mediumseagreen"> 1/1 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-UseCaseR </td>
+    <td align="center" bgcolor="mediumseagreen"> 18/18 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-UseCaseSEQ </td>
+    <td align="center" bgcolor="mediumseagreen"> 5/5 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-UseCaseSGML </td>
+    <td align="center" bgcolor="mediumseagreen"> 11/11 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-UseCaseSTRING </td>
+    <td align="center" bgcolor="mediumseagreen"> 4/4 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-UseCaseTREE </td>
+    <td align="center" bgcolor="mediumseagreen"> 6/6 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-UseCaseXMP </td>
+    <td align="center" bgcolor="mediumseagreen"> 12/12 </td>
+  </tr>
+  <tr>
+    <td valign="top"> app-XMark </td>
+    <td align="center" bgcolor="mediumseagreen"> 21/21 </td>
+  </tr>
+</table>     </div>
+</div>

@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4" kind="struct" prot="public">
+    <compoundname>zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;</compoundname>
+    <includes refid="audit__scoped_8h" local="no">zorba/audit_scoped.h</includes>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1a698e6b656b5187b1e3887e407a665a21" prot="public" static="no">
+        <type>long long</type>
+        <definition>typedef long long zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;::audit_type</definition>
+        <argsstring></argsstring>
+        <name>audit_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="175" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="175" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1aa4decf290bd027a6b37b222054dc99bf" prot="public" static="no">
+        <type><ref refid="classzorba_1_1time_1_1Timer" kindref="compound">zorba::time::Timer</ref></type>
+        <definition>typedef zorba::time::Timer zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;::value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="174" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="174" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1afc8caa5186c4ab995f795e7d5ba8870f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1a698e6b656b5187b1e3887e407a665a21" kindref="member">audit_type</ref></type>
+        <definition>static audit_type zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;::end</definition>
+        <argsstring>(value_type &amp;value)</argsstring>
+        <name>end</name>
+        <param>
+          <type><ref refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1aa4decf290bd027a6b37b222054dc99bf" kindref="member">value_type</ref> &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="179" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="179" bodyend="181"/>
+        <references refid="classzorba_1_1time_1_1Timer_1ae58a4b438184a1f41c87486b2a2a69f5" compoundref="timer_8h" startline="34" endline="38">zorba::time::Timer::elapsed</references>
+      </memberdef>
+      <memberdef kind="function" id="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1a600808d2d47b4b8dfe7c85c62be23ad7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;::start</definition>
+        <argsstring>(value_type &amp;value)</argsstring>
+        <name>start</name>
+        <param>
+          <type><ref refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1aa4decf290bd027a6b37b222054dc99bf" kindref="member">value_type</ref> &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="176" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="176" bodyend="178"/>
+        <references refid="classzorba_1_1time_1_1Timer_1a69a8e580f733293ce4b1cd5065975b67" compoundref="timer_8h" startline="30" endline="32">zorba::time::Timer::start</references>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="173" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="173" bodyend="183"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1a698e6b656b5187b1e3887e407a665a21" prot="public" virt="non-virtual"><scope>zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;</scope><name>audit_type</name></member>
+      <member refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1afc8caa5186c4ab995f795e7d5ba8870f" prot="public" virt="non-virtual"><scope>zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;</scope><name>end</name></member>
+      <member refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1a600808d2d47b4b8dfe7c85c62be23ad7" prot="public" virt="non-virtual"><scope>zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;</scope><name>start</name></member>
+      <member refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1aa4decf290bd027a6b37b222054dc99bf" prot="public" virt="non-virtual"><scope>zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

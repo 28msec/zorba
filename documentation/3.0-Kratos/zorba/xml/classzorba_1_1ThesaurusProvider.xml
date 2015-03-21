@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1ThesaurusProvider" kind="class" prot="public">
+    <compoundname>zorba::ThesaurusProvider</compoundname>
+    <basecompoundref refid="classzorba_1_1Resource" prot="public" virt="non-virtual">zorba::Resource</basecompoundref>
+    <includes refid="thesaurus_8h" local="no">zorba/thesaurus.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1ThesaurusProvider_1adba72068d63e7991926faa113d71b021" prot="public" static="no">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref>&lt; <ref refid="classzorba_1_1ThesaurusProvider" kindref="compound">ThesaurusProvider</ref> const, <ref refid="structzorba_1_1internal_1_1ztd_1_1destroy__delete" kindref="compound">internal::ztd::destroy_delete</ref>&lt; <ref refid="classzorba_1_1ThesaurusProvider" kindref="compound">ThesaurusProvider</ref> const  &gt; &gt;</type>
+        <definition>typedef std::unique_ptr&lt; ThesaurusProvider const, internal::ztd::destroy_delete&lt;ThesaurusProvider const&gt; &gt; zorba::ThesaurusProvider::ptr</definition>
+        <argsstring></argsstring>
+        <name>ptr</name>
+        <reimplements refid="classzorba_1_1Resource_1a2fc7456745b8828dd98971e78f85823e">ptr</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="121" bodyfile="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" bodystart="121" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Resource_1a0cc13ffe1069093bf5bdd28642847d9b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Resource::destroy</definition>
+        <argsstring>() const =0</argsstring>
+        <name>destroy</name>
+        <briefdescription>
+<para>Destroy/clean up this <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> will call this method when it no longer needs the <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>. It is the responsibility of subclasses to clean up appropriate when this method is called, including calling &quot;delete this&quot; if the <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> was allocated with &quot;new&quot;. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="66"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ThesaurusProvider_1ac3453e9ea7f5c38972e7ad2053278600" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::ThesaurusProvider::getThesaurus</definition>
+        <argsstring>(locale::iso639_1::type lang, Thesaurus::ptr *t=nullptr) const =0</argsstring>
+        <name>getThesaurus</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref></type>
+          <declname>lang</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Thesaurus_1a84970de9a5c647fcdd7ac56c3244bfb7" kindref="member">Thesaurus::ptr</ref> *</type>
+          <declname>t</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+<para>Gets a <ref refid="classzorba_1_1Thesaurus" kindref="compound">Thesaurus</ref> for the given language. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>lang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The desired language of the thesaurus. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>t</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If not <computeroutput>null</computeroutput>, set to point to a <ref refid="classzorba_1_1Thesaurus" kindref="compound">Thesaurus</ref> for <emphasis>lang</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if this provider can provide a thesaurus for <emphasis>lang</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="132"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A ThesaurusProvider is-a <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> for providing thesauri for a given language. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="894">
+        <label>zorba::ThesaurusProvider</label>
+        <link refid="classzorba_1_1ThesaurusProvider"/>
+        <childnode refid="895" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="895">
+        <label>zorba::Resource</label>
+        <link refid="classzorba_1_1Resource"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="896">
+        <label>zorba::ThesaurusProvider</label>
+        <link refid="classzorba_1_1ThesaurusProvider"/>
+        <childnode refid="897" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="897">
+        <label>zorba::Resource</label>
+        <link refid="classzorba_1_1Resource"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="115" bodyfile="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" bodystart="115" bodyend="133"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1Resource_1a0cc13ffe1069093bf5bdd28642847d9b" prot="public" virt="pure-virtual"><scope>zorba::ThesaurusProvider</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1ThesaurusProvider_1ac3453e9ea7f5c38972e7ad2053278600" prot="public" virt="pure-virtual"><scope>zorba::ThesaurusProvider</scope><name>getThesaurus</name></member>
+      <member refid="classzorba_1_1ThesaurusProvider_1adba72068d63e7991926faa113d71b021" prot="public" virt="non-virtual"><scope>zorba::ThesaurusProvider</scope><name>ptr</name></member>
+      <member refid="classzorba_1_1Resource_1abfa3e48b60d8e12b86bd8a0a97309d8c" prot="public" virt="pure-virtual"><scope>zorba::ThesaurusProvider</scope><name>~Resource</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

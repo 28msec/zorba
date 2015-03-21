@@ -1,0 +1,1411 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1base64" kind="namespace">
+    <compoundname>zorba::base64</compoundname>
+    <innerclass refid="classzorba_1_1base64_1_1auto__attach" prot="public">zorba::base64::auto_attach</innerclass>
+    <innerclass refid="classzorba_1_1base64_1_1exception" prot="public">zorba::base64::exception</innerclass>
+    <innerclass refid="classzorba_1_1base64_1_1stream" prot="public">zorba::base64::stream</innerclass>
+    <innerclass refid="classzorba_1_1base64_1_1streambuf" prot="public">zorba::base64::streambuf</innerclass>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497" prot="public" static="no">
+        <name>decode_options</name>
+        <enumvalue id="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a780ca336a27a5410589850aea958f46c" prot="public">
+          <name>dopt_none</name>
+          <initializer> 0x00</initializer>
+          <briefdescription>
+<para>No options. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a3a95ff1de61b2f4d6f2832026c2bddcd" prot="public">
+          <name>dopt_any_len</name>
+          <initializer> 0x01</initializer>
+          <briefdescription>
+<para>Input length may be non-multiple of 4. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a7554c711484731e6aede33a975e49bf5" prot="public">
+          <name>dopt_ignore_ws</name>
+          <initializer> 0x02</initializer>
+          <briefdescription>
+<para>Ignore all whitespace. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Options to use for decoding. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="43" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="43" bodyend="47"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" prot="public" static="no">
+        <type>size_t</type>
+        <definition>typedef size_t zorba::base64::size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1base64_1acc02be7e81c24ef6fdffb8f0f16c189d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename charT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::base64::attach</definition>
+        <argsstring>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</argsstring>
+        <name>attach</name>
+        <param>
+          <type>std::basic_ios&lt; charT, Traits &gt; &amp;</type>
+          <declname>ios</declname>
+        </param>
+        <briefdescription>
+<para>Attaches a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> to a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para>Unlike using a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> directly, this function will create the streambuf, attach it to the stream, and manage it for the lifetime of the stream automatically.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ios</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to attach the <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> to. If the stream already has a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> attached to it, this function does nothing. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> was attached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="155" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="155" bodyend="167"/>
+        <references refid="namespacezorba_1_1internal_1_1base64_1a4b337606b06bf9c76d59ec5c064130c6">zorba::internal::base64::alloc_streambuf</references>
+        <references refid="namespacezorba_1_1internal_1_1base64_1a295f0351244ea88a57700f176df82d0c">zorba::internal::base64::get_streambuf_index</references>
+        <references refid="namespacezorba_1_1internal_1aa27d36007cc8c4eb9b8716d24f9330ec">zorba::internal::stream_callback</references>
+        <referencedby refid="classzorba_1_1base64_1_1auto__attach_1a143067e84c03aaf2a9f0ac6c5b0edea2" compoundref="base64__stream_8h" startline="275" endline="281">zorba::base64::auto_attach&lt; StreamType &gt;::attach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1ad18050b7525834d08a4b766e595b39f2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::base64::decode</definition>
+        <argsstring>(char const *from, size_type from_len, char *to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a780ca336a27a5410589850aea958f46c" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a Base64-encoded buffer. </para>        </briefdescription>
+        <detaileddescription>
+<para>Embedded newlines and carriage-returns are skipped.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the Base64 buffer to be decoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to decode.  to A pointer to the buffer to receive the decoded bytes. The buffer must be large enough to contain them. Note that the buffer is <emphasis>not</emphasis> null terminated. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The decoding options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>options</emphasis> does not have the <computeroutput>dtop_any_len</computeroutput> bit set and <emphasis>from_len</emphasis> is not a multiple of 4. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1base64_1_1exception" kindref="compound">base64::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an <computeroutput>=</computeroutput> is encountered unexpectedly or an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="namespacezorba_1_1base64_1a3c2caffd1fb57d1aa25734bdaf9f8241" kindref="member">decoded_size()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="104"/>
+        <referencedby refid="namespacezorba_1_1base64_1ab5f20211217a1f3e06730aeb193f4657" compoundref="base64__util_8h" startline="159" endline="169">decode</referencedby>
+        <referencedby refid="namespacezorba_1_1base64_1a91fa177bec263667b9c1187018a0ff43" compoundref="base64__util_8h" startline="294" endline="297">validate</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a0e26cf29432d2df40aa7364103e4b8fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::base64::decode</definition>
+        <argsstring>(char const *from, size_type from_len, std::vector&lt; char &gt; *to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; char &gt; *</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a780ca336a27a5410589850aea958f46c" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a Base64-encoded buffer and appends the decoded bytes onto a vector&lt;char&gt;. </para>        </briefdescription>
+        <detaileddescription>
+<para>Embedded newlines and carriage-returns are skipped.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the vector to append the encoded bytes appended onto. The vector is made large enough to contain the additional bytes. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The decoding options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>options</emphasis> does not have the <computeroutput>dopt_any_len</computeroutput> bit set and the number of Base64 bytes decoded is not a multiple of 4. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1base64_1_1exception" kindref="compound">base64::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an <computeroutput>=</computeroutput> is encountered unexpectedly or an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="123"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a7d8081de425a7ad66ff7cbcc2276a2d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::base64::decode</definition>
+        <argsstring>(char const *from, size_type from_len, std::ostream &amp;to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a780ca336a27a5410589850aea958f46c" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Base64-decodes a buffer and writes the decoded bytes to the given stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the Base64 buffer to be decoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to decode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to write the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>options</emphasis> does not have the <computeroutput>dopt_any_len</computeroutput> bit set and the number of Base64 bytes decoded is not a multiple of 4. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1base64_1_1exception" kindref="compound">base64::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an <computeroutput>=</computeroutput> is encountered unexpectedly or an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="140"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1ab5f20211217a1f3e06730aeb193f4657" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ToStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(ToStringType), <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(ToStringType),size_type&gt;::type zorba::base64::decode</definition>
+        <argsstring>(char const *from, size_type from_len, ToStringType *to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>ToStringType *</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a780ca336a27a5410589850aea958f46c" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a Base64-encoded buffer and appends the decoded bytes onto a string. </para>        </briefdescription>
+        <detaileddescription>
+<para>Embedded newlines and carriage-returns are skipped.</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>ToStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the Base64 buffer to be decoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to decode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to append the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>options</emphasis> does not have the <computeroutput>dopt_any_len</computeroutput> bit set and the number of Base64 bytes decoded is not a multiple of 4. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1base64_1_1exception" kindref="compound">base64::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an <computeroutput>=</computeroutput> is encountered unexpectedly or an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="160" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="159" bodyend="169"/>
+        <references refid="namespacezorba_1_1base64_1ad18050b7525834d08a4b766e595b39f2">decode</references>
+        <references refid="namespacezorba_1_1base64_1a3c2caffd1fb57d1aa25734bdaf9f8241" compoundref="base64__util_8h" startline="81" endline="83">decoded_size</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a3b34bfa413a39144e50f49475a5fd9b0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FromStringType</type>
+          </param>
+          <param>
+            <type>class ToStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(FromStringType)&amp;&amp;<ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(ToStringType), <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(FromStringType) &amp;&amp; ZORBA_IS_STRING(ToStringType), size_type&gt;::type zorba::base64::decode</definition>
+        <argsstring>(FromStringType const &amp;from, ToStringType *to)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>FromStringType const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>ToStringType *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Decodes a Base64-encoded string and appends the decoded bytes onto another string. </para>        </briefdescription>
+        <detaileddescription>
+<para>Embedded newlines and carriage-returns are skipped.</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FromStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>from</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ToStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>to</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The Base64-encoded string to be decoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to append the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>options</emphasis> does not have the <computeroutput>dopt_any_len</computeroutput> bit set and the number of Base64 bytes decoded is not a multiple of 4. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1base64_1_1exception" kindref="compound">base64::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an <computeroutput>=</computeroutput> is encountered unexpectedly or an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="190" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="190" bodyend="192"/>
+        <references refid="namespacezorba_1_1base64_1ad18050b7525834d08a4b766e595b39f2">decode</references>
+        <references refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" compoundref="locale_8h" startline="196">zorba::locale::iso639_1::to</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1aac7a022b8c2a36ecbe4ca77ec0b9632c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::base64::decode</definition>
+        <argsstring>(std::istream &amp;from, std::ostream &amp;to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a780ca336a27a5410589850aea958f46c" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a Base64-encoded istream. </para>        </briefdescription>
+        <detaileddescription>
+<para>Embedded newlines and carriage-returns are skipped.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to write the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>options</emphasis> does not have the <computeroutput>dopt_any_len</computeroutput> bit set and the number of Base64 bytes decoded is not a multiple of 4. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1base64_1_1exception" kindref="compound">base64::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an <computeroutput>=</computeroutput> is encountered unexpectedly or an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="209"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1ab2ccd71d85aff9c0ac5a9492ed89eacd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FromStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(FromStringType), <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(FromStringType),size_type&gt;::type zorba::base64::decode</definition>
+        <argsstring>(FromStringType const &amp;from, std::ostream &amp;to)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>FromStringType const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Base64-decodes a string and writes the decoded bytes to a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FromStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to be decoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to write the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="221" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="221" bodyend="223"/>
+        <references refid="namespacezorba_1_1base64_1ade0d7190a51da7c11c7726aa820715fd">encode</references>
+        <references refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" compoundref="locale_8h" startline="196">zorba::locale::iso639_1::to</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1ab7b4a9e5b8038da5c3d7c2eef3f9dca0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ToStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(ToStringType), <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(ToStringType),size_type&gt;::type zorba::base64::decode</definition>
+        <argsstring>(std::istream &amp;from, ToStringType *to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>ToStringType *</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a780ca336a27a5410589850aea958f46c" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a Base64-encoded istream and appends the decoded bytes to a string. </para>        </briefdescription>
+        <detaileddescription>
+<para>Embedded newlines and carriage-returns are skipped.</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>ToStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to append the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>options</emphasis> does not have the <computeroutput>dopt_any_len</computeroutput> bit set and the number of Base64 bytes decoded is not a multiple of 4. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1base64_1_1exception" kindref="compound">base64::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an <computeroutput>=</computeroutput> is encountered unexpectedly or an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="241" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="241" bodyend="262"/>
+        <references refid="namespacezorba_1_1base64_1ad18050b7525834d08a4b766e595b39f2">decode</references>
+        <references refid="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a7554c711484731e6aede33a975e49bf5" compoundref="base64__util_8h" startline="46">dopt_ignore_ws</references>
+        <references refid="namespacezorba_1ac9b542ae24c7e4ac80b0bbaa4754042f">zorba::read_without_whitespace</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a341df5b4cd9110e9851f52aa63671fbe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::base64::decode</definition>
+        <argsstring>(std::istream &amp;from, std::vector&lt; char &gt; *to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; char &gt; *</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a780ca336a27a5410589850aea958f46c" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a Base64-encoded stream and appends the decoded bytes onto a vector&lt;char;&gt;. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to append the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The options to use. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Returns</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the number of decoded bytes. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>options</emphasis> does not have the <computeroutput>dopt_any_len</computeroutput> bit set and the number of Base64 bytes decoded is not a multiple of 4. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1base64_1_1exception" kindref="compound">base64::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an <computeroutput>=</computeroutput> is encountered unexpectedly or an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="279"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a3c2caffd1fb57d1aa25734bdaf9f8241" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::base64::decoded_size</definition>
+        <argsstring>(size_type n)</argsstring>
+        <name>decoded_size</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the number of bytes required to decode <emphasis>n</emphasis> Base64-encoded bytes. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to decode. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of bytes needed for Base64 decoding. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="81" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="81" bodyend="83"/>
+        <referencedby refid="namespacezorba_1_1base64_1ab5f20211217a1f3e06730aeb193f4657" compoundref="base64__util_8h" startline="159" endline="169">decode</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a31c5d6cf41a6ad8c82178853e7c0bcfc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename charT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::base64::detach</definition>
+        <argsstring>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</argsstring>
+        <name>detach</name>
+        <param>
+          <type>std::basic_ios&lt; charT, Traits &gt; &amp;</type>
+          <declname>ios</declname>
+        </param>
+        <briefdescription>
+<para>Detaches a previously attached <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> from a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para>The streambuf is destroyed and the stream&apos;s original streambuf is restored.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ios</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to detach the <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> from. If the stream doesn&apos;t have a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> attached to it, this function does nothing. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> was detached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="179" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="179" bodyend="188"/>
+        <references refid="namespacezorba_1_1internal_1afc8a1e1bbdcb0e40c72d110a464ea4e5">zorba::internal::dealloc_streambuf</references>
+        <references refid="namespacezorba_1_1internal_1_1base64_1a295f0351244ea88a57700f176df82d0c">zorba::internal::base64::get_streambuf_index</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1ade0d7190a51da7c11c7726aa820715fd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::base64::encode</definition>
+        <argsstring>(char const *from, size_type from_len, char *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Base64-encodes a buffer. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to receive the encoded bytes. The buffer must be large enough to contain them. Note that the buffer is <emphasis>not</emphasis> null terminated. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+<simplesect kind="see"><para><ref refid="namespacezorba_1_1base64_1ac3ec383d6be4fc97688a3dacd221abb1" kindref="member">encoded_size()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="323"/>
+        <referencedby refid="namespacezorba_1_1base64_1ab2ccd71d85aff9c0ac5a9492ed89eacd" compoundref="base64__util_8h" startline="221" endline="223">decode</referencedby>
+        <referencedby refid="namespacezorba_1_1base64_1ad28e55154f9426fb53e66ae081728431" compoundref="base64__util_8h" startline="359" endline="368">encode</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a082bab01a7cba4475ccb23833d7937ce" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::base64::encode</definition>
+        <argsstring>(char const *from, size_type from_len, std::vector&lt; char &gt; *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; char &gt; *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Base64-encodes a buffer and appends the encoded bytes onto a vector&lt;char&gt;. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the vector to append the encoded bytes appended onto. The vector is made large enough to contain the additional bytes. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="335"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1aa98165f1b3c19e153950dc3b66a8e1f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::base64::encode</definition>
+        <argsstring>(char const *from, size_type from_len, std::ostream &amp;to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Base64-encodes a buffer and writes the encoded bytes to the given stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to write the encoded bytes to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="346"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1ad28e55154f9426fb53e66ae081728431" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ToStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(ToStringType), <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(ToStringType),size_type&gt;::type zorba::base64::encode</definition>
+        <argsstring>(char const *from, size_type from_len, ToStringType *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>ToStringType *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Base64-encodes a buffer and appends the encoded bytes onto a string. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>ToStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the string to append the encoded bytes onto. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="359" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="359" bodyend="368"/>
+        <references refid="namespacezorba_1_1base64_1ade0d7190a51da7c11c7726aa820715fd">encode</references>
+        <references refid="namespacezorba_1_1base64_1ac3ec383d6be4fc97688a3dacd221abb1" compoundref="base64__util_8h" startline="307" endline="309">encoded_size</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1afe46148082a2b570ee101b7ee9fe7e13" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FromStringType</type>
+          </param>
+          <param>
+            <type>class ToStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(FromStringType)&amp;&amp;<ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(ToStringType), <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(FromStringType) &amp;&amp; ZORBA_IS_STRING(ToStringType), size_type&gt;::type zorba::base64::encode</definition>
+        <argsstring>(FromStringType const &amp;from, ToStringType *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>FromStringType const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>ToStringType *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Base64-encodes a string and appends the encoded bytes onto another string. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FromStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>from</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ToStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <emphasis>to</emphasis> string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the string to append the encoded bytes onto. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="383" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="383" bodyend="385"/>
+        <references refid="namespacezorba_1_1base64_1ade0d7190a51da7c11c7726aa820715fd">encode</references>
+        <references refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" compoundref="locale_8h" startline="196">zorba::locale::iso639_1::to</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1aab704b34b6d853b084141dd557999f83" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::base64::encode</definition>
+        <argsstring>(std::istream &amp;from, std::ostream &amp;to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Base64-encodes one stream and writes the encoded bytes to another. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to write the encoded bytes to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="395"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a05a8bd29eed75ae734c6a0d92d073500" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FromStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(FromStringType), <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(FromStringType),size_type&gt;::type zorba::base64::encode</definition>
+        <argsstring>(FromStringType const &amp;from, std::ostream &amp;to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>FromStringType const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Base64-encodes a string and writes the encoded bytes to a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>FromStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to write the encoded bytes to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="407" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="407" bodyend="409"/>
+        <references refid="namespacezorba_1_1base64_1ade0d7190a51da7c11c7726aa820715fd">encode</references>
+        <references refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" compoundref="locale_8h" startline="196">zorba::locale::iso639_1::to</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a993f5eb83b39d6c12c967526a61ace84" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ToStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(ToStringType), <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(ToStringType),size_type&gt;::type zorba::base64::encode</definition>
+        <argsstring>(std::istream &amp;from, ToStringType *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>ToStringType *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Encodes a stream to Base64 and appends the encoded bytes to a string. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>ToStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to append the encoded bytes to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="421" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="421" bodyend="435"/>
+        <references refid="namespacezorba_1_1base64_1ade0d7190a51da7c11c7726aa820715fd">encode</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a15fb72a9ae3c31362b3bc6cd4d91d87d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::base64::encode</definition>
+        <argsstring>(std::istream &amp;from, std::vector&lt; char &gt; *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; char &gt; *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Base64-encodes a stream and appends the encoded bytes onto a vector&lt;char;&gt;. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The vector to append the encoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Returns</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the number of encoded bytes. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="446"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1ac3ec383d6be4fc97688a3dacd221abb1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::base64::encoded_size</definition>
+        <argsstring>(size_type n)</argsstring>
+        <name>encoded_size</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the number of bytes required to Base64-encode <emphasis>n</emphasis> bytes. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of bytes needed for Base64 encoding. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="307" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="307" bodyend="309"/>
+        <referencedby refid="namespacezorba_1_1base64_1ad28e55154f9426fb53e66ae081728431" compoundref="base64__util_8h" startline="359" endline="368">encode</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a29f4772679d15d39ab8aec795a0c17f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename charT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::base64::is_attached</definition>
+        <argsstring>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</argsstring>
+        <name>is_attached</name>
+        <param>
+          <type>std::basic_ios&lt; charT, Traits &gt; &amp;</type>
+          <declname>ios</declname>
+        </param>
+        <briefdescription>
+<para>Checks whether the given stream has a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> attached. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ios</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to check. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> is attached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="197" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="197" bodyend="199"/>
+        <references refid="namespacezorba_1_1internal_1_1base64_1a295f0351244ea88a57700f176df82d0c">zorba::internal::base64::get_streambuf_index</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1base64_1a91fa177bec263667b9c1187018a0ff43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::base64::validate</definition>
+        <argsstring>(char const *buf, size_type buf_len, int options=dopt_none)</argsstring>
+        <name>validate</name>
+        <param>
+          <type>char const *</type>
+          <declname>buf</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1base64_1ad04b7fb8662aed83c48a9a87ae49aa88" kindref="member">size_type</ref></type>
+          <declname>buf_len</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1base64_1a6a1cf68e5f14be4e4c9261281d3cc497a780ca336a27a5410589850aea958f46c" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Validates a Base64-encoded buffer. </para>        </briefdescription>
+        <detaileddescription>
+<para>Embedded newlines and carriage-returns are skipped.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>buf</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the Base64 buffer to be validated. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>buf_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to validate. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>options</emphasis> does not have the <computeroutput>dopt_any_len</computeroutput> bit set and the number of Base64 bytes validated is not a multiple of 4. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1base64_1_1exception" kindref="compound">base64::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an <computeroutput>=</computeroutput> is encountered unexpectedly or an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="namespacezorba_1_1base64_1a3c2caffd1fb57d1aa25734bdaf9f8241" kindref="member">decoded_size()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" line="295" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_util.h" bodystart="294" bodyend="297"/>
+        <references refid="namespacezorba_1_1base64_1ad18050b7525834d08a4b766e595b39f2">decode</references>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="27"/>
+  </compounddef>
+</doxygen>

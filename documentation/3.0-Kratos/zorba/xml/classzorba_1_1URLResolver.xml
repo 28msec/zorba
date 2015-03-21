@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1URLResolver" kind="class" prot="public">
+    <compoundname>zorba::URLResolver</compoundname>
+    <includes refid="uri__resolvers_8h" local="no">zorba/uri_resolvers.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1URLResolver_1a490dc8de61ac1ec83f682d5843a2d482" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> *</type>
+        <definition>virtual Resource* zorba::URLResolver::resolveURL</definition>
+        <argsstring>(const zorba::String &amp;aUrl, EntityData const *aEntityData)=0</argsstring>
+        <name>resolveURL</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">zorba::String</ref> &amp;</type>
+          <declname>aUrl</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1EntityData" kindref="compound">EntityData</ref> const *</type>
+          <declname>aEntityData</declname>
+        </param>
+        <briefdescription>
+<para>Transforms an input URL into a <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>The &quot;aEntityData&quot; parameter informs the <ref refid="classzorba_1_1URLResolver" kindref="compound">URLResolver</ref> what kind of entity is being referenced by the URL. URLResolvers may choose to make use of this information to alter their behaviour. URLResolvers must ensure that they return a concrete subclass of <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> which is compatible with the entity kind being resolved.</para><para>Implementers of this method should do nothing if they do not know how to resolve the URL. They should create and return a <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> if they were successfully able to resolve the URL.</para><para>Implementers may throw any exception if they believe that they are canonical for the URL and yet had some error arise attempting to resolve it. Note that because there may be several possible URLs attempted, <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> will catch any exceptions thrown and continue until all all URLs have failed. <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> will not re-throw any of these exceptions directly. However, if the exception thrown extends std::exception, <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> will make efforts to ensure that its error message is included in the exception which is ultimately thrown. For any other thrown objects, only the fact that an exception occurred will be remembered; the exception object itself will be discarded.</para><para>In any case, if they create a <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>, <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> will take memory ownership of the <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> and delete it (by calling destroy() on it) when it is no longer needed. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="186"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1URLResolver_1ad9bc267c34c6346cf3ab281586101a15" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::URLResolver::URLResolver</definition>
+        <argsstring>()</argsstring>
+        <name>URLResolver</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="153"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1URLResolver_1a58422ea90b5c6b7a5bc75eb3d4eb873d" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::URLResolver::~URLResolver</definition>
+        <argsstring>()</argsstring>
+        <name>~URLResolver</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="154"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Interface for URL resolving. </para>    </briefdescription>
+    <detaileddescription>
+<para>Subclass this to provide a URL resolver to the method StaticContext::addURLResolver(). </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="150" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="149" bodyend="187"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1URLResolver_1a490dc8de61ac1ec83f682d5843a2d482" prot="public" virt="pure-virtual"><scope>zorba::URLResolver</scope><name>resolveURL</name></member>
+      <member refid="classzorba_1_1URLResolver_1ad9bc267c34c6346cf3ab281586101a15" prot="public" virt="non-virtual"><scope>zorba::URLResolver</scope><name>URLResolver</name></member>
+      <member refid="classzorba_1_1URLResolver_1a58422ea90b5c6b7a5bc75eb3d4eb873d" prot="public" virt="virtual"><scope>zorba::URLResolver</scope><name>~URLResolver</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

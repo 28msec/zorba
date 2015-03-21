@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1audit_1_1Property" kind="class" prot="public">
+    <compoundname>zorba::audit::Property</compoundname>
+    <includes refid="audit_8h" local="no">zorba/audit.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classzorba_1_1audit_1_1Property_1a3ef1c34f48b4f356353ed155b1082599" prot="public" static="no">
+        <name>Type</name>
+        <enumvalue id="classzorba_1_1audit_1_1Property_1a3ef1c34f48b4f356353ed155b1082599a7ce70eabb9baf200e8439924d1075958" prot="public">
+          <name>INT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1audit_1_1Property_1a3ef1c34f48b4f356353ed155b1082599ac97cee4c35760189fd437e822a6988fe" prot="public">
+          <name>STRING</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="47" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit.h" bodystart="47" bodyend="50"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Property_1a758fb9113c1e58be96762ac92f182b5d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1audit_1_1PropertyGroup" kindref="compound">PropertyGroup</ref> &amp;</type>
+        <definition>virtual const PropertyGroup&amp; zorba::audit::Property::group</definition>
+        <argsstring>() const =0</argsstring>
+        <name>group</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="54"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Property_1adba007a77385c19c51ef26d144c996ca" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>long</type>
+        <definition>virtual long zorba::audit::Property::id</definition>
+        <argsstring>() const =0</argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="56"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Property_1a460fee4e37d9c01643743be0446bc853" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const char *</type>
+        <definition>virtual const char* zorba::audit::Property::name</definition>
+        <argsstring>() const =0</argsstring>
+        <name>name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="55"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Property_1ae10ebe921311ab07fcd4846980b6b751" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1audit_1_1Property_1a3ef1c34f48b4f356353ed155b1082599" kindref="member">Type</ref></type>
+        <definition>virtual Type zorba::audit::Property::type</definition>
+        <argsstring>() const =0</argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Property_1ad1e84823eb05b3f7b2ad5436e6bd7706" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::audit::Property::~Property</definition>
+        <argsstring>()</argsstring>
+        <name>~Property</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="52"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>an identifier for a specific piece of information that can be audited. </para>    </briefdescription>
+    <detaileddescription>
+<para>It is assumed that all instances of <ref refid="classzorba_1_1audit_1_1Property" kindref="compound">Property</ref> are created statically and that they exist while a process exists. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="45" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit.h" bodystart="45" bodyend="58"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1audit_1_1Property_1a758fb9113c1e58be96762ac92f182b5d" prot="public" virt="pure-virtual"><scope>zorba::audit::Property</scope><name>group</name></member>
+      <member refid="classzorba_1_1audit_1_1Property_1adba007a77385c19c51ef26d144c996ca" prot="public" virt="pure-virtual"><scope>zorba::audit::Property</scope><name>id</name></member>
+      <member refid="classzorba_1_1audit_1_1Property_1a3ef1c34f48b4f356353ed155b1082599a7ce70eabb9baf200e8439924d1075958" prot="public" virt="non-virtual"><scope>zorba::audit::Property</scope><name>INT</name></member>
+      <member refid="classzorba_1_1audit_1_1Property_1a460fee4e37d9c01643743be0446bc853" prot="public" virt="pure-virtual"><scope>zorba::audit::Property</scope><name>name</name></member>
+      <member refid="classzorba_1_1audit_1_1Property_1a3ef1c34f48b4f356353ed155b1082599ac97cee4c35760189fd437e822a6988fe" prot="public" virt="non-virtual"><scope>zorba::audit::Property</scope><name>STRING</name></member>
+      <member refid="classzorba_1_1audit_1_1Property_1ae10ebe921311ab07fcd4846980b6b751" prot="public" virt="pure-virtual"><scope>zorba::audit::Property</scope><name>type</name></member>
+      <member refid="classzorba_1_1audit_1_1Property_1a3ef1c34f48b4f356353ed155b1082599" prot="public" virt="non-virtual"><scope>zorba::audit::Property</scope><name>Type</name></member>
+      <member refid="classzorba_1_1audit_1_1Property_1ad1e84823eb05b3f7b2ad5436e6bd7706" prot="public" virt="virtual"><scope>zorba::audit::Property</scope><name>~Property</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

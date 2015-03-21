@@ -1,0 +1,1151 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1hexbinary" kind="namespace">
+    <compoundname>zorba::hexbinary</compoundname>
+    <innerclass refid="classzorba_1_1hexbinary_1_1auto__attach" prot="public">zorba::hexbinary::auto_attach</innerclass>
+    <innerclass refid="classzorba_1_1hexbinary_1_1exception" prot="public">zorba::hexbinary::exception</innerclass>
+    <innerclass refid="classzorba_1_1hexbinary_1_1stream" prot="public">zorba::hexbinary::stream</innerclass>
+    <innerclass refid="classzorba_1_1hexbinary_1_1streambuf" prot="public">zorba::hexbinary::streambuf</innerclass>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682" prot="public" static="no">
+        <name>decode_options</name>
+        <enumvalue id="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682a8b40c81bec3743f0a0590b79553584a7" prot="public">
+          <name>dopt_none</name>
+          <initializer> 0x00</initializer>
+          <briefdescription>
+<para>No options. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682af126fb4646be0235d5d6bde8aa4d41df" prot="public">
+          <name>dopt_ignore_ws</name>
+          <initializer> 0x01</initializer>
+          <briefdescription>
+<para>Ignore all whitespace. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Options to use for decoding. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="43" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" bodystart="43" bodyend="46"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" prot="public" static="no">
+        <type>size_t</type>
+        <definition>typedef size_t zorba::hexbinary::size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a313b9172bcd9513faa146f4940070907" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename charT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::hexbinary::attach</definition>
+        <argsstring>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</argsstring>
+        <name>attach</name>
+        <param>
+          <type>std::basic_ios&lt; charT, Traits &gt; &amp;</type>
+          <declname>ios</declname>
+        </param>
+        <briefdescription>
+<para>Attaches a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> to a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para>Unlike using a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> directly, this function will create the streambuf, attach it to the stream, and manage it for the lifetime of the stream automatically.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ios</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to attach the <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> to. If the stream already has a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> attached to it, this function does nothing. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> was attached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="139" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="139" bodyend="151"/>
+        <references refid="namespacezorba_1_1internal_1_1base64_1a4b337606b06bf9c76d59ec5c064130c6">zorba::internal::base64::alloc_streambuf</references>
+        <references refid="namespacezorba_1_1internal_1_1base64_1a295f0351244ea88a57700f176df82d0c">zorba::internal::base64::get_streambuf_index</references>
+        <references refid="namespacezorba_1_1internal_1aa27d36007cc8c4eb9b8716d24f9330ec">zorba::internal::stream_callback</references>
+        <referencedby refid="classzorba_1_1hexbinary_1_1auto__attach_1a7a4def038890a7dd5be97f00ed3bc401" compoundref="hexbinary__stream_8h" startline="258" endline="264">zorba::hexbinary::auto_attach&lt; StreamType &gt;::attach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1abfea0704d25e5a34af7e7493d3ba484a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::hexbinary::decode</definition>
+        <argsstring>(char const *from, size_type from_len, char *to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682a8b40c81bec3743f0a0590b79553584a7" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a hexBinary-encoded buffer. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the hexBinary buffer to be decoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to decode.  to A pointer to the buffer to receive the decoded bytes. The buffer must be large enough to contain them. Note that the buffer is <emphasis>not</emphasis> null terminated. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The decoding options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>from_len</emphasis> (minus the amount of whitespace if <emphasis>options</emphasis> contains <computeroutput>dopt_ignore_ws</computeroutput>) is not a multiple of 2. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1hexbinary_1_1exception" kindref="compound">hexbinary::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="namespacezorba_1_1hexbinary_1a31d80935f207be3c47f7e8fbb4e7e823" kindref="member">decoded_size()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="101"/>
+        <referencedby refid="namespacezorba_1_1hexbinary_1ab4487e821708a3688eae58463f9db3d6" compoundref="hexbinary__util_8h" startline="152" endline="162">decode</referencedby>
+        <referencedby refid="namespacezorba_1_1hexbinary_1aa00051262d3e533b3f461daf43850ab6" compoundref="hexbinary__util_8h" startline="242" endline="245">validate</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1abfa402f9bfc5ede98b9b656fe7bc4f21" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::hexbinary::decode</definition>
+        <argsstring>(char const *from, size_type from_len, std::vector&lt; char &gt; *to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; char &gt; *</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682a8b40c81bec3743f0a0590b79553584a7" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a hexBinary-encoded buffer and appends the decoded bytes onto a vector&lt;char&gt;. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the vector to append the encoded bytes appended onto. The vector is made large enough to contain the additional bytes. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The decoding options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>from_len</emphasis> (minus the amount of whitespace if <emphasis>options</emphasis> contains <computeroutput>dopt_ignore_ws</computeroutput>) is not a multiple of 2. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1hexbinary_1_1exception" kindref="compound">hexbinary::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="118"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a91e3e13f55e50f71e0cb730db19ea4fc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::hexbinary::decode</definition>
+        <argsstring>(char const *from, size_type from_len, std::ostream &amp;to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682a8b40c81bec3743f0a0590b79553584a7" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a hexBinary-encoded buffer and writes the decoded bytes to the given stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the hexBinary buffer to be decoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to decode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to write the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>from_len</emphasis> (minus the amount of whitespace if <emphasis>options</emphasis> contains <computeroutput>dopt_ignore_ws</computeroutput>) is not a multiple of 2. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1hexbinary_1_1exception" kindref="compound">hexbinary::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="135"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1ab4487e821708a3688eae58463f9db3d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ToStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(ToStringType), <ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(ToStringType),size_type&gt;::type zorba::hexbinary::decode</definition>
+        <argsstring>(char const *from, size_type from_len, ToStringType *to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>ToStringType *</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682a8b40c81bec3743f0a0590b79553584a7" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a hexBinary-encoded buffer and appends the decoded bytes onto a string. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>ToStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the hexBinary buffer to be decoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to decode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to append the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The decoding options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>from_len</emphasis> (minus the amount of whitespace if <emphasis>options</emphasis> contains <computeroutput>dopt_ignore_ws</computeroutput>) is not a multiple of 2. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1hexbinary_1_1exception" kindref="compound">hexbinary::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="153" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" bodystart="152" bodyend="162"/>
+        <references refid="namespacezorba_1_1hexbinary_1abfea0704d25e5a34af7e7493d3ba484a">decode</references>
+        <references refid="namespacezorba_1_1hexbinary_1a31d80935f207be3c47f7e8fbb4e7e823" compoundref="hexbinary__util_8h" startline="81" endline="83">decoded_size</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1ae70c51126bf3cfd25123d642da126db6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::hexbinary::decode</definition>
+        <argsstring>(std::istream &amp;from, std::ostream &amp;to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682a8b40c81bec3743f0a0590b79553584a7" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a hexBinary-encoded istream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to write the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The decoding options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>from_len</emphasis> (minus the amount of whitespace if <emphasis>options</emphasis> contains <computeroutput>dopt_ignore_ws</computeroutput>) is not a multiple of 2. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1hexbinary_1_1exception" kindref="compound">hexbinary::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="176"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a8cdcc5a137d6fe2c06d1afc194ed9611" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ToStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(ToStringType), <ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(ToStringType),size_type&gt;::type zorba::hexbinary::decode</definition>
+        <argsstring>(std::istream &amp;from, ToStringType *to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>ToStringType *</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682a8b40c81bec3743f0a0590b79553584a7" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a hexBinary-encoded istream and appends the decoded bytes to a string. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>ToStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to append the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The decoding options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of decoded bytes. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>from_len</emphasis> (minus the amount of whitespace if <emphasis>options</emphasis> contains <computeroutput>dopt_ignore_ws</computeroutput>) is not a multiple of 2. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1hexbinary_1_1exception" kindref="compound">hexbinary::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="193" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" bodystart="193" bodyend="214"/>
+        <references refid="namespacezorba_1_1hexbinary_1abfea0704d25e5a34af7e7493d3ba484a">decode</references>
+        <references refid="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682af126fb4646be0235d5d6bde8aa4d41df" compoundref="hexbinary__util_8h" startline="45">dopt_ignore_ws</references>
+        <references refid="namespacezorba_1ac9b542ae24c7e4ac80b0bbaa4754042f">zorba::read_without_whitespace</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a32e388300e03489814599c3473134afb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::hexbinary::decode</definition>
+        <argsstring>(std::istream &amp;from, std::vector&lt; char &gt; *to, int options=dopt_none)</argsstring>
+        <name>decode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; char &gt; *</type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682a8b40c81bec3743f0a0590b79553584a7" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Decodes a hexBinary-encoded stream and appends the decoded bytes onto a vector&lt;char;&gt;. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to append the decoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The decoding options to use. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Returns</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the number of decoded bytes. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>from_len</emphasis> (minus the amount of whitespace if <emphasis>options</emphasis> contains <computeroutput>dopt_ignore_ws</computeroutput>) is not a multiple of 2. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1hexbinary_1_1exception" kindref="compound">hexbinary::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="229"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a31d80935f207be3c47f7e8fbb4e7e823" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::hexbinary::decoded_size</definition>
+        <argsstring>(size_type n)</argsstring>
+        <name>decoded_size</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the number of bytes required to decode <emphasis>n</emphasis> hexBinary-encoded bytes. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to decode. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of bytes needed for hexBinary decoding. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="81" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" bodystart="81" bodyend="83"/>
+        <referencedby refid="namespacezorba_1_1hexbinary_1ab4487e821708a3688eae58463f9db3d6" compoundref="hexbinary__util_8h" startline="152" endline="162">decode</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a533baa97c59c0f231e7821db9f6fb40f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename charT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::hexbinary::detach</definition>
+        <argsstring>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</argsstring>
+        <name>detach</name>
+        <param>
+          <type>std::basic_ios&lt; charT, Traits &gt; &amp;</type>
+          <declname>ios</declname>
+        </param>
+        <briefdescription>
+<para>Detaches a previously attached <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> from a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para>The streambuf is destroyed and the stream&apos;s original streambuf is restored.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ios</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to detach the <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> from. If the stream doesn&apos;t have a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> attached to it, this function does nothing. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> was detached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="163" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="163" bodyend="172"/>
+        <references refid="namespacezorba_1_1internal_1afc8a1e1bbdcb0e40c72d110a464ea4e5">zorba::internal::dealloc_streambuf</references>
+        <references refid="namespacezorba_1_1internal_1_1base64_1a295f0351244ea88a57700f176df82d0c">zorba::internal::base64::get_streambuf_index</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a7cf470a25e09390960720d1836df8a17" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::hexbinary::encode</definition>
+        <argsstring>(char const *from, size_type from_len, char *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>HexBinary-encodes a buffer. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to receive the encoded bytes. The buffer must be large enough to contain them. Note that the buffer is <emphasis>not</emphasis> null terminated. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+<simplesect kind="see"><para><ref refid="namespacezorba_1_1hexbinary_1a15e71cfe12aa22e8a3f364c91be6a883" kindref="member">encoded_size()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="270"/>
+        <referencedby refid="namespacezorba_1_1hexbinary_1a9c790cd78a34a4b6b1d8b64554275763" compoundref="hexbinary__util_8h" startline="305" endline="313">encode</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a54a3cb489ee4f84ad98f5c750ab3a688" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::hexbinary::encode</definition>
+        <argsstring>(char const *from, size_type from_len, std::vector&lt; char &gt; *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; char &gt; *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>HexBinary-encodes a buffer and appends the encoded bytes onto a vector&lt;char&gt;. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the vector to append the encoded bytes appended onto. The vector is made large enough to contain the additional bytes. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="281"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1aac6ca373d69885884a49e2ad7113c751" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>ZORBA_DLL_PUBLIC size_type zorba::hexbinary::encode</definition>
+        <argsstring>(char const *from, size_type from_len, std::ostream &amp;to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>HexBinary-encodes a buffer and writes the encoded bytes to the given stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to write the encoded bytes to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="292"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a9c790cd78a34a4b6b1d8b64554275763" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ToStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(ToStringType), <ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(ToStringType),size_type&gt;::type zorba::hexbinary::encode</definition>
+        <argsstring>(char const *from, size_type from_len, ToStringType *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>char const *</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>from_len</declname>
+        </param>
+        <param>
+          <type>ToStringType *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>HexBinary-encodes a buffer and appends the encoded bytes onto a string. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>ToStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the buffer to be encoded. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the string to append the encoded bytes onto. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="305" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" bodystart="305" bodyend="313"/>
+        <references refid="namespacezorba_1_1hexbinary_1a7cf470a25e09390960720d1836df8a17">encode</references>
+        <references refid="namespacezorba_1_1hexbinary_1a15e71cfe12aa22e8a3f364c91be6a883" compoundref="hexbinary__util_8h" startline="255" endline="257">encoded_size</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a98c75930d57b98df3098979357873e3b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::hexbinary::encode</definition>
+        <argsstring>(std::istream &amp;from, std::ostream &amp;to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>HexBinary-encodes one stream and write the encoded bytes to another. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to write the encoded bytes to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="321"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1ab34412a32ce2a5c69d13aa3cb12cb95b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ToStringType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; <ref refid="ztd_8h_1a0958a26ba5538590ef945f07a2251f2d" kindref="member">ZORBA_IS_STRING</ref>(ToStringType), <ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref> &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_IS_STRING(ToStringType),size_type&gt;::type zorba::hexbinary::encode</definition>
+        <argsstring>(std::istream &amp;from, ToStringType *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>ToStringType *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>Encodes a stream to hexBinary and appends the encoded bytes to a string. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>ToStringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to append the encoded bytes to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of encoded bytes. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="333" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" bodystart="333" bodyend="347"/>
+        <references refid="namespacezorba_1_1hexbinary_1a7cf470a25e09390960720d1836df8a17">encode</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1aa8e09534793b59b491f7337c599b3e36" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::hexbinary::encode</definition>
+        <argsstring>(std::istream &amp;from, std::vector&lt; char &gt; *to)</argsstring>
+        <name>encode</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; char &gt; *</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+<para>HexBinary-encodes a stream and appends the encoded bytes onto a vector&lt;char;&gt;. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from until EOF is reached. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The vector to append the encoded bytes to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Returns</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the number of encoded bytes. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="357"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a15e71cfe12aa22e8a3f364c91be6a883" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::hexbinary::encoded_size</definition>
+        <argsstring>(size_type n)</argsstring>
+        <name>encoded_size</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Calculates the number of bytes required to hexBinary-encode <emphasis>n</emphasis> bytes. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to encode. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of bytes needed for hexBinary encoding. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="255" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" bodystart="255" bodyend="257"/>
+        <referencedby refid="namespacezorba_1_1hexbinary_1a9c790cd78a34a4b6b1d8b64554275763" compoundref="hexbinary__util_8h" startline="305" endline="313">encode</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1a356d08540af9507069819ef7a9683a42" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename charT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool zorba::hexbinary::is_attached</definition>
+        <argsstring>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</argsstring>
+        <name>is_attached</name>
+        <param>
+          <type>std::basic_ios&lt; charT, Traits &gt; &amp;</type>
+          <declname>ios</declname>
+        </param>
+        <briefdescription>
+<para>Checks whether the given stream has a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> attached. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ios</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to check. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> is attached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="181" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="181" bodyend="183"/>
+        <references refid="namespacezorba_1_1internal_1_1hexbinary_1ade82f4024e7105a8870734474b4a0f15">zorba::internal::hexbinary::get_streambuf_index</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1hexbinary_1aa00051262d3e533b3f461daf43850ab6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::hexbinary::validate</definition>
+        <argsstring>(char const *buf, size_type buf_len, int options=dopt_none)</argsstring>
+        <name>validate</name>
+        <param>
+          <type>char const *</type>
+          <declname>buf</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1hexbinary_1affb801817b9c5a956787f17b4e79edad" kindref="member">size_type</ref></type>
+          <declname>buf_len</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>options</declname>
+          <defval><ref refid="namespacezorba_1_1hexbinary_1a14376c07c7b2b97f2bee0d61f5e03682a8b40c81bec3743f0a0590b79553584a7" kindref="member">dopt_none</ref></defval>
+        </param>
+        <briefdescription>
+<para>Validates a hexBinary-encoded buffer. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>buf</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the hexBinary buffer to be validated. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>buf_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to validate. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The decoding options to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>from_len</emphasis> (minus the amount of whitespace if <emphasis>options</emphasis> contains <computeroutput>dopt_ignore_ws</computeroutput>) is not a multiple of 2. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1hexbinary_1_1exception" kindref="compound">hexbinary::exception</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an invalid byte is encountered. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="namespacezorba_1_1hexbinary_1a31d80935f207be3c47f7e8fbb4e7e823" kindref="member">decoded_size()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" line="243" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_util.h" bodystart="242" bodyend="245"/>
+        <references refid="namespacezorba_1_1hexbinary_1abfea0704d25e5a34af7e7493d3ba484a">decode</references>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="27"/>
+  </compounddef>
+</doxygen>

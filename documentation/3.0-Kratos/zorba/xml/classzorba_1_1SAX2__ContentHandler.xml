@@ -1,0 +1,366 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1SAX2__ContentHandler" kind="class" prot="public">
+    <compoundname>zorba::SAX2_ContentHandler</compoundname>
+    <derivedcompoundref refid="classzorba_1_1DefaultContentHandler" prot="public" virt="non-virtual">zorba::DefaultContentHandler</derivedcompoundref>
+    <includes refid="sax2_8h" local="no">zorba/sax2.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1aee570b507a69a97fb6c31c2c5dfbdf42" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_ContentHandler::characters</definition>
+        <argsstring>(const String &amp;aText)=0</argsstring>
+        <name>characters</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1a0d80ee86017c6e547d30417d3ae7effb">characters</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aText</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of character data. </para>        </briefdescription>
+        <detaileddescription>
+<para>The serializer will call this method to report each chunk of character data.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aText</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the characters from the serialized result. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1a22d035258014df398aea81e66afb9672" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_ContentHandler::endDocument</definition>
+        <argsstring>()=0</argsstring>
+        <name>endDocument</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1aad417871c959e4a46d0589cc298b3b90">endDocument</reimplementedby>
+        <briefdescription>
+<para>Receive notification of the end of a document. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="53"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1a4a9031fc2824a299b95b89a54c3da5ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_ContentHandler::endElement</definition>
+        <argsstring>(const String &amp;aURI, const String &amp;aLocalname, const String &amp;aQName)=0</argsstring>
+        <name>endElement</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1aa19d8d9cdb8e41fbbe38159cc4aa06a9">endElement</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aLocalname</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of the end of an element. </para>        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>&apos;s serializerwill invoke this method at the end of every element in the serialized query result document; there will be a corresponding <ref refid="classzorba_1_1SAX2__ContentHandler_1a108e19a1effc45fa04ca56cd8b88b845" kindref="member">startElement()</ref> event for every <ref refid="classzorba_1_1SAX2__ContentHandler_1a4a9031fc2824a299b95b89a54c3da5ef" kindref="member">endElement()</ref> event (even when the element is empty).</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the URI of the asscioated namespace for this element </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLocalname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the local part of the element name </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aQName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the QName of this element </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="83"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1a2049f346b4590dbb2e6ce16eb73479cb" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_ContentHandler::endPrefixMapping</definition>
+        <argsstring>(const String &amp;aPrefix)=0</argsstring>
+        <name>endPrefixMapping</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1afbd5dbbfe0409b00f2f45d2825f31971">endPrefixMapping</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aPrefix</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of the end of an namespace prefix mapping. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aPrefix</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace prefix used. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="124"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1a3a9d01ebca8d1215c0a53df1fab372ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_ContentHandler::ignorableWhitespace</definition>
+        <argsstring>(const String &amp;aText)=0</argsstring>
+        <name>ignorableWhitespace</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1a32bddda4463615eff23349921067ade8">ignorableWhitespace</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aText</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of ignorable whitespace in element content. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aText</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the characters from the serialized query result. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="109"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1addfa3848d6e7ff30f920409fdd442b09" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_ContentHandler::processingInstruction</definition>
+        <argsstring>(const String &amp;aTarget, const String &amp;aData)=0</argsstring>
+        <name>processingInstruction</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1afd0fba3f6329509e502acd577a54e284">processingInstruction</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aTarget</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aData</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of a processing instruction. </para>        </briefdescription>
+        <detaileddescription>
+<para>The serializer will invoke this method once for each processing instruction found.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aTarget</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the processing instruction target. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the processing instruction data, or null if none was supplied. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1ac6fceeb90cd3f47e91eaa122e7e2d8b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_ContentHandler::skippedEntity</definition>
+        <argsstring>(const String &amp;aName)=0</argsstring>
+        <name>skippedEntity</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1a9039f1348e98af2f5dda5e2621dd7ec9">skippedEntity</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aName</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of a skipped entity. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the skipped entity. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="131"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1ac5ca0ab724ad6cbb06483167cf8414e1" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_ContentHandler::startDocument</definition>
+        <argsstring>()=0</argsstring>
+        <name>startDocument</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1a8bf89a21d318fc00b9fd191c79f53c76">startDocument</reimplementedby>
+        <briefdescription>
+<para>Receive notification of the beginning of a document. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="48"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1a108e19a1effc45fa04ca56cd8b88b845" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_ContentHandler::startElement</definition>
+        <argsstring>(const String &amp;aURI, const String &amp;aLocalname, const String &amp;aQName, const SAX2_Attributes &amp;aAttrs)=0</argsstring>
+        <name>startElement</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1a7fe7a5072045027193f69a55f570b776">startElement</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aLocalname</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1SAX2__Attributes" kindref="compound">SAX2_Attributes</ref> &amp;</type>
+          <declname>aAttrs</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of the beginning of an element. </para>        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>&apos;s serializer will invoke this method at the beginning of every element of the serialized query result; there will be a corresponding <ref refid="classzorba_1_1SAX2__ContentHandler_1a4a9031fc2824a299b95b89a54c3da5ef" kindref="member">endElement()</ref> event for every <ref refid="classzorba_1_1SAX2__ContentHandler_1a108e19a1effc45fa04ca56cd8b88b845" kindref="member">startElement()</ref> event (even when the element is empty). All of the element&apos;s content will be reported, in order, before the corresponding <ref refid="classzorba_1_1SAX2__ContentHandler_1a4a9031fc2824a299b95b89a54c3da5ef" kindref="member">endElement()</ref> event.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the URI of the associated namespace for this element. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLocalname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>thee local part of the element name. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aQName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the QName of this element. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aAttrs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the attributes attached to the element, if any. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="70"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1adfcd522ba71d88771898ef3510f8863c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_ContentHandler::startPrefixMapping</definition>
+        <argsstring>(const String &amp;aPrefix, const String &amp;aURI)=0</argsstring>
+        <name>startPrefixMapping</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1aebe4771622ed72548e7210bff16aa94e">startPrefixMapping</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aPrefix</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Receive notification of the start of an namespace prefix mapping. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aPrefix</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace prefix used </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the namespace URI used. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="117"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__ContentHandler_1a2dee88a46947ccba8ad8329ed66ccec7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::SAX2_ContentHandler::~SAX2_ContentHandler</definition>
+        <argsstring>()</argsstring>
+        <name>~SAX2_ContentHandler</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="43" bodyfile="/home/wcandillon/deadlinks/include/zorba/sax2.h" bodystart="43" bodyend="43"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Receive notification of events that result from serializing a query result as XML. </para>    </briefdescription>
+    <detaileddescription>
+<para>This is an interface that is used to receive notifications resulting from parsing a query result that was serialized as XML.</para><para>Instances of classes that implement this interface can be registered for a query by calling the <ref refid="classzorba_1_1XQuery_1a53344941d0656cd400738b829a60145e" kindref="member">XQuery::registerSAXHandler</ref> or <ref refid="classzorba_1_1XQuery_1abc92a24b52aa33894ee13be7d8cc2804" kindref="member">XQuery::executeSAX</ref> function. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="795">
+        <label>zorba::DefaultContentHandler</label>
+        <link refid="classzorba_1_1DefaultContentHandler"/>
+        <childnode refid="794" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="794">
+        <label>zorba::SAX2_ContentHandler</label>
+        <link refid="classzorba_1_1SAX2__ContentHandler"/>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="37" bodyfile="/home/wcandillon/deadlinks/include/zorba/sax2.h" bodystart="36" bodyend="132"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1aee570b507a69a97fb6c31c2c5dfbdf42" prot="public" virt="pure-virtual"><scope>zorba::SAX2_ContentHandler</scope><name>characters</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1a22d035258014df398aea81e66afb9672" prot="public" virt="pure-virtual"><scope>zorba::SAX2_ContentHandler</scope><name>endDocument</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1a4a9031fc2824a299b95b89a54c3da5ef" prot="public" virt="pure-virtual"><scope>zorba::SAX2_ContentHandler</scope><name>endElement</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1a2049f346b4590dbb2e6ce16eb73479cb" prot="public" virt="pure-virtual"><scope>zorba::SAX2_ContentHandler</scope><name>endPrefixMapping</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1a3a9d01ebca8d1215c0a53df1fab372ac" prot="public" virt="pure-virtual"><scope>zorba::SAX2_ContentHandler</scope><name>ignorableWhitespace</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1addfa3848d6e7ff30f920409fdd442b09" prot="public" virt="pure-virtual"><scope>zorba::SAX2_ContentHandler</scope><name>processingInstruction</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1ac6fceeb90cd3f47e91eaa122e7e2d8b6" prot="public" virt="pure-virtual"><scope>zorba::SAX2_ContentHandler</scope><name>skippedEntity</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1ac5ca0ab724ad6cbb06483167cf8414e1" prot="public" virt="pure-virtual"><scope>zorba::SAX2_ContentHandler</scope><name>startDocument</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1a108e19a1effc45fa04ca56cd8b88b845" prot="public" virt="pure-virtual"><scope>zorba::SAX2_ContentHandler</scope><name>startElement</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1adfcd522ba71d88771898ef3510f8863c" prot="public" virt="pure-virtual"><scope>zorba::SAX2_ContentHandler</scope><name>startPrefixMapping</name></member>
+      <member refid="classzorba_1_1SAX2__ContentHandler_1a2dee88a46947ccba8ad8329ed66ccec7" prot="public" virt="virtual"><scope>zorba::SAX2_ContentHandler</scope><name>~SAX2_ContentHandler</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

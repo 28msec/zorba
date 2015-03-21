@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1transcode_1_1stream" kind="class" prot="public">
+    <compoundname>zorba::transcode::stream</compoundname>
+    <includes refid="transcode__stream_8h" local="no">zorba/util/transcode_stream.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class StreamType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1transcode_1_1stream_1a8954f37b27f8ca1aeebb0319add6eb6e" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">streambuf</ref></type>
+        <definition>streambuf zorba::transcode::stream&lt; StreamType &gt;::tbuf_</definition>
+        <argsstring></argsstring>
+        <name>tbuf_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="389" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="389" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1stream_1a67e11c1da9d75d0a24c88e1924b3f2c9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::transcode::stream&lt; StreamType &gt;::stream</definition>
+        <argsstring>(char const *charset)</argsstring>
+        <name>stream</name>
+        <param>
+          <type>char const *</type>
+          <declname>charset</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a transcode::stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>charset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the character encoding to convert from/to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>charset</emphasis> is not supported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="332" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="323" bodyend="334"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1stream_1a57537b0e987409b9c917c5b046825a9f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename StreamArgType</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>zorba::transcode::stream&lt; StreamType &gt;::stream</definition>
+        <argsstring>(char const *charset, StreamArgType stream_arg)</argsstring>
+        <name>stream</name>
+        <param>
+          <type>char const *</type>
+          <declname>charset</declname>
+        </param>
+        <param>
+          <type>StreamArgType</type>
+          <declname>stream_arg</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StreamArgType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the first argument of <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>charset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the character encoding to convert from/to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stream_arg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The argument to pass as the first argument to <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>charset</emphasis> is not supported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="357" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="347" bodyend="359"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1stream_1a56c90aec7448aa7026816fb0f3eff856" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename StreamArgType</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>zorba::transcode::stream&lt; StreamType &gt;::stream</definition>
+        <argsstring>(char const *charset, StreamArgType stream_arg, std::ios_base::openmode mode)</argsstring>
+        <name>stream</name>
+        <param>
+          <type>char const *</type>
+          <declname>charset</declname>
+        </param>
+        <param>
+          <type>StreamArgType</type>
+          <declname>stream_arg</declname>
+        </param>
+        <param>
+          <type>std::ios_base::openmode</type>
+          <declname>mode</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a transcode::stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StreamArgType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the first argument of <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>charset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the character encoding to convert from/to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stream_arg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The argument to pass as the first argument to <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The open-mode to pass to <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <emphasis>charset</emphasis> is not supported. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="384" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="373" bodyend="386"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1transcode_1_1stream_1a8bd2f85ec6769df5a11a8ce2259e5a07" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::transcode::stream&lt; StreamType &gt;::init</definition>
+        <argsstring>()</argsstring>
+        <name>init</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="391" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="391" bodyend="393"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A transcode::stream is used to wrap a C++ standard I/O stream with a <ref refid="classzorba_1_1transcode_1_1streambuf" kindref="compound">transcode::streambuf</ref> so that transcoding and the management of the streambuf happens automatically. </para>    </briefdescription>
+    <detaileddescription>
+<para>A transcode::stream is useful for streams created by you.</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StreamType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The I/O stream class type to wrap. It must be a concrete stream class. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" line="315" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/transcode_stream.h" bodystart="315" bodyend="394"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1transcode_1_1stream_1a8bd2f85ec6769df5a11a8ce2259e5a07" prot="private" virt="non-virtual"><scope>zorba::transcode::stream</scope><name>init</name></member>
+      <member refid="classzorba_1_1transcode_1_1stream_1a67e11c1da9d75d0a24c88e1924b3f2c9" prot="public" virt="non-virtual"><scope>zorba::transcode::stream</scope><name>stream</name></member>
+      <member refid="classzorba_1_1transcode_1_1stream_1a57537b0e987409b9c917c5b046825a9f" prot="public" virt="non-virtual"><scope>zorba::transcode::stream</scope><name>stream</name></member>
+      <member refid="classzorba_1_1transcode_1_1stream_1a56c90aec7448aa7026816fb0f3eff856" prot="public" virt="non-virtual"><scope>zorba::transcode::stream</scope><name>stream</name></member>
+      <member refid="classzorba_1_1transcode_1_1stream_1a8954f37b27f8ca1aeebb0319add6eb6e" prot="private" virt="non-virtual"><scope>zorba::transcode::stream</scope><name>tbuf_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,78 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Function</h1><p class="include">
+            #include &lt;zorba/function.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1SmartObject.html">zorba::SmartObject</a></p>
+The <a href="/pages/3.0/zorba/classzorba_1_1Function">Function</a> class represents a function that is callable from <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> code, and it gives access to the various properties that are specified in the declaration of the function within a Prolog.     
+Instances of <a href="/pages/3.0/zorba/classzorba_1_1Function">Function</a> are returned by the <a href="/pages/3.0/zorba/classzorba_1_1StaticContext?anchor=a6f7299958803223b9fa72ba15b554d38">StaticContext::findFunctions()</a> method. To be mopre precise, <a href="/pages/3.0/zorba/classzorba_1_1StaticContext?anchor=a6f7299958803223b9fa72ba15b554d38">StaticContext::findFunctions()</a> returns smart pointers to <a href="/pages/3.0/zorba/classzorba_1_1Function">Function</a> objects. These smart pointers must be destroyed before the <a href="/pages/3.0/zorba/classzorba_1_1StaticContext">StaticContext</a> object they were obtained from is destroyed.Note: Builtin functions are not declared in the Prolog, but the same kind of properties exist for them as well. So, the <a href="/pages/3.0/zorba/classzorba_1_1Function">Function</a> class works for builtin functions as well.     <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a968d642f8f9df309338fbdd5f680e033">addReference</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a87deaaa73d44b839ada0f7dcc2cc2b13">free</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a052e7eea1c429def40f65b92cd6b84f5">getAnnotations</a>(std::vector&lt; Annotation_t &gt; &amp;annotations) const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">size_t</p></td><td><p class="signature"><a href="#a352e5a2c013a3cfa49001b601491ef08">getArity</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a></p></td><td><p class="signature"><a href="#a28041f4f1db4af7513e56efada72a1f9">getLocalName</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a></p></td><td><p class="signature"><a href="#a19b2b3cb9610485e0ed3f31882b0668f">getQName</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">long</p></td><td><p class="signature"><a href="#aa76599b249f441747e996d3630b8f5ca">getRefCount</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a></p></td><td><p class="signature"><a href="#a25699af398c9122e7af28d5ce6f24232">getURI</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a95ea6519077f4ebb58fc7a38164573a5">isBuiltin</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a89733982969b27901ed4e2b2883e0f70">isDeterministic</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a1fbcf5f8ade941f63d3be0e07981f000">isExternal</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a507c9ef32b6c0a2ce98cf850a0598ce6">isPrivate</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a884a0557a7c0455ae534bc96ac707321">isSequential</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a4259bde70987a71e4f8beac8d959c69a">isUpdating</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a25817b2e89de005ca2ab61fe815c244e">isVariadic</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a7de1f55ad3ea396ffc3864b5f92e7ac7">isXQuery</a>() const =0</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a32ce26dcd544b131ef8b024972960ebc">removeReference</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aac0c19d26269ab545dd64c2c52c9ac8a">~Function</a>()</p><span class="signature-description">
+Destructor.         </span></td></tr></table></div><div class="section"><h2>Protected Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">unsigned int</p></td><td><p class="signature"><a href="#a066274b33cffdd451a68a2a0754c6044">theRefCount</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a968d642f8f9df309338fbdd5f680e033" class="sect1"><div><h3>addReference</h3></div><div class="signature-box">void<span> </span>addReference() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a87deaaa73d44b839ada0f7dcc2cc2b13" class="sect1"><div><h3>free</h3></div><div class="signature-box">void<span> </span>free()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a052e7eea1c429def40f65b92cd6b84f5" class="sect1"><div><h3>getAnnotations</h3></div><div class="signature-box">void<span> </span>getAnnotations(std::vector&lt; Annotation_t &gt; &amp;annotations) const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a352e5a2c013a3cfa49001b601491ef08" class="sect1"><div><h3>getArity</h3></div><div class="signature-box">size_t<span> </span>getArity() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>The arity of the function. If the function is variadic (which is possible only for builtin functions), the result of this method is non-deterministic. </div>
+        </p></div></div><div id="a28041f4f1db4af7513e56efada72a1f9" class="sect1"><div><h3>getLocalName</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>getLocalName() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>The local name of the function QName </div>
+        </p></div></div><div id="a19b2b3cb9610485e0ed3f31882b0668f" class="sect1"><div><h3>getQName</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>getQName() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>The expanded QName of the function </div>
+        </p></div></div><div id="aa76599b249f441747e996d3630b8f5ca" class="sect1"><div><h3>getRefCount</h3></div><div class="signature-box">long<span> </span>getRefCount() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a25699af398c9122e7af28d5ce6f24232" class="sect1"><div><h3>getURI</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1String">String</a><span> </span>getURI() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>The namespace URI of the function QName </div>
+        </p></div></div><div id="a95ea6519077f4ebb58fc7a38164573a5" class="sect1"><div><h3>isBuiltin</h3></div><div class="signature-box">bool<span> </span>isBuiltin() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>True if the function is a builtin one (not declared in any prolog); false otherwise </div>
+        </p></div></div><div id="a89733982969b27901ed4e2b2883e0f70" class="sect1"><div><h3>isDeterministic</h3></div><div class="signature-box">bool<span> </span>isDeterministic() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>True if the function is deterministic; false otherwise. </div>
+        </p></div></div><div id="a1fbcf5f8ade941f63d3be0e07981f000" class="sect1"><div><h3>isExternal</h3></div><div class="signature-box">bool<span> </span>isExternal() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>True if the function is an external one; false otherwise </div>
+        </p></div></div><div id="a507c9ef32b6c0a2ce98cf850a0598ce6" class="sect1"><div><h3>isPrivate</h3></div><div class="signature-box">bool<span> </span>isPrivate() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>True if the function is private; false otherwise. </div>
+        </p></div></div><div id="a884a0557a7c0455ae534bc96ac707321" class="sect1"><div><h3>isSequential</h3></div><div class="signature-box">bool<span> </span>isSequential() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>True if the function is sequential; false otherwise. </div>
+        </p></div></div><div id="a4259bde70987a71e4f8beac8d959c69a" class="sect1"><div><h3>isUpdating</h3></div><div class="signature-box">bool<span> </span>isUpdating() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>True if the function is updating; false otherwise. </div>
+        </p></div></div><div id="a25817b2e89de005ca2ab61fe815c244e" class="sect1"><div><h3>isVariadic</h3></div><div class="signature-box">bool<span> </span>isVariadic() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>True if the function is variadic; false otherwise </div>
+        </p></div></div><div id="a7de1f55ad3ea396ffc3864b5f92e7ac7" class="sect1"><div><h3>isXQuery</h3></div><div class="signature-box">bool<span> </span>isXQuery() const =0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+<div><h4>Returns</h4>True if the function implementation is written in <a href="/pages/3.0/zorba/classzorba_1_1XQuery">XQuery</a> (or equivalently, it is a non-external function with a Prolog declaration); false otherwise </div>
+        </p></div></div><div id="a32ce26dcd544b131ef8b024972960ebc" class="sect1"><div><h3>removeReference</h3></div><div class="signature-box">void<span> </span>removeReference()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aac0c19d26269ab545dd64c2c52c9ac8a" class="sect1"><div><h3>~Function</h3></div><div class="signature-box"><span> </span>~Function()</div><div><p class="signature-description">
+Destructor.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Protected Attributes</h2><div class="detailed"><div id="a066274b33cffdd451a68a2a0754c6044" class="sect1"><div><h3>theRefCount</h3></div><div class="signature-box">unsigned int<span> </span>theRefCount</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

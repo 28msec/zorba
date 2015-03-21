@@ -1,0 +1,2522 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1err" kind="namespace">
+    <compoundname>zorba::err</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a2b9c609c8c92e0fdf18192dfe824323b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOAR0001</definition>
+        <argsstring></argsstring>
+        <name>FOAR0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="240"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ab2acb2521ff7074c187bad48cac947ec" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOAR0002</definition>
+        <argsstring></argsstring>
+        <name>FOAR0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="242"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a666263b1b452833fdec4b8236f4ee4fd" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOCA0001</definition>
+        <argsstring></argsstring>
+        <name>FOCA0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="244"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a73e1e8a120072fc6b926ff5e14406e95" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOCA0002</definition>
+        <argsstring></argsstring>
+        <name>FOCA0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="246"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a47b0d29eaf264277c5de3ec79c7270ba" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOCA0003</definition>
+        <argsstring></argsstring>
+        <name>FOCA0003</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="248"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ab97172a88f596a185b230d81ea6cce8a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOCA0005</definition>
+        <argsstring></argsstring>
+        <name>FOCA0005</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="250"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1adfafc8381e5f53d7ef0d582adda5bc74" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOCA0006</definition>
+        <argsstring></argsstring>
+        <name>FOCA0006</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="252"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a067bd4d1b007aec7383db3b980168245" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOCH0001</definition>
+        <argsstring></argsstring>
+        <name>FOCH0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="254"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a5d45c3d4319f22c5ef6a6f6580d5ec6c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOCH0002</definition>
+        <argsstring></argsstring>
+        <name>FOCH0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="256"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a79f338a869e90c269590faf7a657f832" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOCH0003</definition>
+        <argsstring></argsstring>
+        <name>FOCH0003</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="258"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aed47d9b07e4c47e54db94f51b9365263" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOCH0004</definition>
+        <argsstring></argsstring>
+        <name>FOCH0004</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="260"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a13d758ca29d0d79dacd3e826ff6b3e04" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOCZ0001</definition>
+        <argsstring></argsstring>
+        <name>FOCZ0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="328"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a62b70b7be39c65ea115c97a8fcd8a61b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODC0001</definition>
+        <argsstring></argsstring>
+        <name>FODC0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="262"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a5be21d5dcc4139035eb9f27a76dedab7" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODC0002</definition>
+        <argsstring></argsstring>
+        <name>FODC0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="264"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ab90775fecb7f9ddc2e015f56f7e7c801" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODC0003</definition>
+        <argsstring></argsstring>
+        <name>FODC0003</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="266"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1abc4576b3835adb6cbca67a3ebacde81d" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODC0004</definition>
+        <argsstring></argsstring>
+        <name>FODC0004</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="268"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa8ea11c552ed2895e0ef759d8017fbb0" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODC0005</definition>
+        <argsstring></argsstring>
+        <name>FODC0005</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="270"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a0a38100a3a652e669636074fe96bfd58" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODC0006</definition>
+        <argsstring></argsstring>
+        <name>FODC0006</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="272"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a49a7aa7951e6b134c58e73ae19746f82" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODC0007</definition>
+        <argsstring></argsstring>
+        <name>FODC0007</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="274"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae43ea5e8c926260d7dcc68034069bd98" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODF1280</definition>
+        <argsstring></argsstring>
+        <name>FODF1280</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="276"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a44f478ee6de87dae68220c4b41439f8d" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODF1310</definition>
+        <argsstring></argsstring>
+        <name>FODF1310</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="278"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a878515609807f5696dd113360352b01f" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODT0001</definition>
+        <argsstring></argsstring>
+        <name>FODT0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="280"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a49e81a6c00965a65c8b0579802f2d473" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODT0002</definition>
+        <argsstring></argsstring>
+        <name>FODT0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="282"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1af49a496acbb9d64776f94ca7f57e65e6" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FODT0003</definition>
+        <argsstring></argsstring>
+        <name>FODT0003</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="284"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a3511761c198cc16c0ca13c080a57f778" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOER0000</definition>
+        <argsstring></argsstring>
+        <name>FOER0000</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="238"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ab597842329059fd40e6ef4e427bf73ed" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOFD1340</definition>
+        <argsstring></argsstring>
+        <name>FOFD1340</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="218"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae3b9bb7d1dc9b06401f73b3cf911a9e2" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOFD1350</definition>
+        <argsstring></argsstring>
+        <name>FOFD1350</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="220"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a611850688160ab3ecae5a5c38ce387ed" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOFL0001</definition>
+        <argsstring></argsstring>
+        <name>FOFL0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="326"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a3c2c191f5997bd26d993d02c1b250302" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FONS0004</definition>
+        <argsstring></argsstring>
+        <name>FONS0004</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="286"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a566d421a29a294ff6877ff9562359ea5" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FONS0005</definition>
+        <argsstring></argsstring>
+        <name>FONS0005</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="288"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae0ff6240733767068a8136325e5ae989" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORG0001</definition>
+        <argsstring></argsstring>
+        <name>FORG0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="290"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1acde98be72f0edd714711fe4c2391eba2" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORG0002</definition>
+        <argsstring></argsstring>
+        <name>FORG0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="292"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae2ce3e61331b0559d471becce0a30a6a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORG0003</definition>
+        <argsstring></argsstring>
+        <name>FORG0003</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="294"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a5d8905978c07bdd3d677ae1e599e1bda" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORG0004</definition>
+        <argsstring></argsstring>
+        <name>FORG0004</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="296"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ad4191fd1152263e8c68e77ee98f63959" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORG0005</definition>
+        <argsstring></argsstring>
+        <name>FORG0005</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="298"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa436d4da7bf4010b0a1505aff5e04f69" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORG0006</definition>
+        <argsstring></argsstring>
+        <name>FORG0006</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="300"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1acc134f2abe6bb8ae9d936871dcb0744c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORG0008</definition>
+        <argsstring></argsstring>
+        <name>FORG0008</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="302"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae163c35ac9c1e4d06d58a83ccaa974bd" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORG0009</definition>
+        <argsstring></argsstring>
+        <name>FORG0009</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="304"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a756f49604cfe558d6848421526888234" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORX0001</definition>
+        <argsstring></argsstring>
+        <name>FORX0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="306"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae6ef956a3f9f47ada29c713d2bc9641b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORX0002</definition>
+        <argsstring></argsstring>
+        <name>FORX0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="308"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a6d495f601a72e6eb3fa721b1a89f71ff" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORX0003</definition>
+        <argsstring></argsstring>
+        <name>FORX0003</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="310"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a3094c00d417dfa1769c12fb4477b7727" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FORX0004</definition>
+        <argsstring></argsstring>
+        <name>FORX0004</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="312"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ab35bd8bff785edaaaab4450aeb15de9f" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOTY0012</definition>
+        <argsstring></argsstring>
+        <name>FOTY0012</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="314"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a2ef1fd862b9c6f5b5b6ca625a872e8be" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOTY0013</definition>
+        <argsstring></argsstring>
+        <name>FOTY0013</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="316"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ac8ed3bea8500559a838b72ccb6f0cbf5" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOTY0014</definition>
+        <argsstring></argsstring>
+        <name>FOTY0014</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="318"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1acde1bed3e898893bb5e0dd045eabd423" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOTY0015</definition>
+        <argsstring></argsstring>
+        <name>FOTY0015</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="320"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ade439af6b9d4cb80ba19addba91e4b06" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOUP0001</definition>
+        <argsstring></argsstring>
+        <name>FOUP0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="386"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ac59f3769045cc8016e449da6aaacfbe5" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOUP0002</definition>
+        <argsstring></argsstring>
+        <name>FOUP0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="388"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae4d3577b94a363dbe7bbcfc059354389" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOUT1170</definition>
+        <argsstring></argsstring>
+        <name>FOUT1170</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="322"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a16d840b635322ee027eee392252e2950" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FOUT1190</definition>
+        <argsstring></argsstring>
+        <name>FOUT1190</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="324"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a6ad004b0e8a6535b8b8db7310c27ee30" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FTDY0016</definition>
+        <argsstring></argsstring>
+        <name>FTDY0016</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="227"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a774edb63eeb14df70c8b0ada6e344f8b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FTDY0017</definition>
+        <argsstring></argsstring>
+        <name>FTDY0017</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="229"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1acbaeac3f2d91a7ea0e2c59499d3fb6b8" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FTDY0020</definition>
+        <argsstring></argsstring>
+        <name>FTDY0020</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="235"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1acfca14db7a5587e4abd3c7d28c055f1a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FTST0008</definition>
+        <argsstring></argsstring>
+        <name>FTST0008</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="223"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1af10475eb392bd535fb04f8e1219ce53f" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FTST0009</definition>
+        <argsstring></argsstring>
+        <name>FTST0009</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="225"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ad5301fa8861e0861c277a37f17e476b9" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FTST0018</definition>
+        <argsstring></argsstring>
+        <name>FTST0018</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="231"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a94a36e38b3ac061b2893f350414b4f3c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::FTST0019</definition>
+        <argsstring></argsstring>
+        <name>FTST0019</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="233"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a3ffd3a3738174d56073a0083b4b1b730" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SENR0001</definition>
+        <argsstring></argsstring>
+        <name>SENR0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="390"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a8dca3332e10613bf3215d435e39c511e" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SEPM0004</definition>
+        <argsstring></argsstring>
+        <name>SEPM0004</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="394"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a69ae778c3af7a23cf5a29101ca971679" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SEPM0009</definition>
+        <argsstring></argsstring>
+        <name>SEPM0009</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="404"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a50e16002dc268f80b8578adf36440334" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SEPM0010</definition>
+        <argsstring></argsstring>
+        <name>SEPM0010</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="406"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a9177676b7d61e701ff825e577bd10c0a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SEPM0016</definition>
+        <argsstring></argsstring>
+        <name>SEPM0016</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="418"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aff3af3c1bfd3724489ed957a49e7b97a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SERE0003</definition>
+        <argsstring></argsstring>
+        <name>SERE0003</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="392"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa244a7394872b7f936d79b89d90e659a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SERE0005</definition>
+        <argsstring></argsstring>
+        <name>SERE0005</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="396"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a06dfa5e415ffb0f110febf03aee2c23a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SERE0006</definition>
+        <argsstring></argsstring>
+        <name>SERE0006</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="398"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a1a54a3c538199f3f498e098b467025c8" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SERE0008</definition>
+        <argsstring></argsstring>
+        <name>SERE0008</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="402"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a149c63c790decff12051c322a8c34523" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SERE0012</definition>
+        <argsstring></argsstring>
+        <name>SERE0012</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="410"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae52f853fe5e895e65ca615ea7f3d621b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SERE0014</definition>
+        <argsstring></argsstring>
+        <name>SERE0014</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="414"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a5af4039f5157635ac512815e0bc12032" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SERE0015</definition>
+        <argsstring></argsstring>
+        <name>SERE0015</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="416"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a537c2ce3908fb4124019e29642d67faf" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SESU0007</definition>
+        <argsstring></argsstring>
+        <name>SESU0007</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="400"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ac3f8a83518559a7be19b78dd9f562f07" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SESU0011</definition>
+        <argsstring></argsstring>
+        <name>SESU0011</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="408"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a81d465166706e2113ad2742397425604" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::SESU0013</definition>
+        <argsstring></argsstring>
+        <name>SESU0013</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="412"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a285b0b33573ace1d8dcbe47a8c668d3a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPDY0002</definition>
+        <argsstring></argsstring>
+        <name>XPDY0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="180"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ad2c8abedc5d61c6eca58a450e088f88e" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPDY0050</definition>
+        <argsstring></argsstring>
+        <name>XPDY0050</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="182"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ab5731f9bb22f41bffc6f72ac6fb8c151" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPST0001</definition>
+        <argsstring></argsstring>
+        <name>XPST0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="32"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa94c640ef3eef3853c7f77dcb61983e3" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPST0003</definition>
+        <argsstring></argsstring>
+        <name>XPST0003</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="34"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ad20e6a50d2dc68c13ddb12f1783498a4" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPST0005</definition>
+        <argsstring></argsstring>
+        <name>XPST0005</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="36"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a6d13d15689bb0cfb6a0ed73b43e6a6cf" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPST0008</definition>
+        <argsstring></argsstring>
+        <name>XPST0008</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="38"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1af138af440a449d2e4439547d9c4668ba" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPST0017</definition>
+        <argsstring></argsstring>
+        <name>XPST0017</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="40"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa16ca7a4ef878311238630118b036f71" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPST0051</definition>
+        <argsstring></argsstring>
+        <name>XPST0051</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="42"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a3c39c1cde851605c0f0b8c3d8c346b75" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPST0080</definition>
+        <argsstring></argsstring>
+        <name>XPST0080</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="44"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae05dc6e1c28732625da429830f7ae865" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPST0081</definition>
+        <argsstring></argsstring>
+        <name>XPST0081</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="46"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa44a3c04c3ddebe3d9f036a936081081" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPST0083</definition>
+        <argsstring></argsstring>
+        <name>XPST0083</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="48"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ad7d1a9dd8243aeb5d7c2671882a09839" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPTY0004</definition>
+        <argsstring></argsstring>
+        <name>XPTY0004</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="50"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a4e52127f474c72effcf547cec0d47be7" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPTY0018</definition>
+        <argsstring></argsstring>
+        <name>XPTY0018</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="52"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae6a53a27c7841ae33cf816061510abe1" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPTY0019</definition>
+        <argsstring></argsstring>
+        <name>XPTY0019</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="54"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a6878c368ffdf7144889fd735c26bc9ff" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPTY0020</definition>
+        <argsstring></argsstring>
+        <name>XPTY0020</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="56"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aef4b8e4793a4749cf7f6bceef18617e6" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XPTY0117</definition>
+        <argsstring></argsstring>
+        <name>XPTY0117</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="58"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa0cf2c6318b2733e10e90ce9ff7b203d" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0025</definition>
+        <argsstring></argsstring>
+        <name>XQDY0025</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="184"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a14ec74a8633932619c4b47c427ad2740" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0026</definition>
+        <argsstring></argsstring>
+        <name>XQDY0026</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="186"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a34477fbe5389a82126396f8b0d32b533" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0027</definition>
+        <argsstring></argsstring>
+        <name>XQDY0027</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="188"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a7e5b52d10b9c982be50e93f17107c9aa" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0041</definition>
+        <argsstring></argsstring>
+        <name>XQDY0041</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="190"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a327bb33602a2455918f1816bf46f8151" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0044</definition>
+        <argsstring></argsstring>
+        <name>XQDY0044</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="192"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a4a1ec4716fd046351862e0a7c1d8ef82" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0054</definition>
+        <argsstring></argsstring>
+        <name>XQDY0054</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="194"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a56bb704061213d018bc2e37c9effb9df" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0061</definition>
+        <argsstring></argsstring>
+        <name>XQDY0061</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="196"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a2dbb063782a08fa3902bdb6843153370" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0064</definition>
+        <argsstring></argsstring>
+        <name>XQDY0064</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="198"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a3d2128b84261a656751ea6edf8b38f75" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0072</definition>
+        <argsstring></argsstring>
+        <name>XQDY0072</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="200"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a44156716a9a22be2ddfa2aac43dca627" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0074</definition>
+        <argsstring></argsstring>
+        <name>XQDY0074</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="202"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ada6383778c238d7c70422c7dd8579dcf" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0084</definition>
+        <argsstring></argsstring>
+        <name>XQDY0084</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="204"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1abd0e5ef38ad9d1150468148fe87c11eb" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0091</definition>
+        <argsstring></argsstring>
+        <name>XQDY0091</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="206"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a1d84ecd46c7a40f1af8259cccd48acd7" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0092</definition>
+        <argsstring></argsstring>
+        <name>XQDY0092</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="208"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a4aa99fcd0899d2fc039f5bde4871b3d8" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0096</definition>
+        <argsstring></argsstring>
+        <name>XQDY0096</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="210"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a878a1897ec3dfd2644a2b37b62704fbf" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0101</definition>
+        <argsstring></argsstring>
+        <name>XQDY0101</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="212"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a1d5831c871b45871e9f3f15679f9ce38" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQDY0102</definition>
+        <argsstring></argsstring>
+        <name>XQDY0102</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="214"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a5142d1f5308cc4a2ccc859c20d9fab17" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0009</definition>
+        <argsstring></argsstring>
+        <name>XQST0009</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="68"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a0e3c47fdee680f4b5e4986b4c69774ce" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0012</definition>
+        <argsstring></argsstring>
+        <name>XQST0012</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="70"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a525ade99daa6b5c8dfa195798db3ce81" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0013</definition>
+        <argsstring></argsstring>
+        <name>XQST0013</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="72"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a64f6881ba5622352b5a68e80cd94da45" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0022</definition>
+        <argsstring></argsstring>
+        <name>XQST0022</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="74"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a37fc60eb97ca13e5685816d4e7fd2387" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0031</definition>
+        <argsstring></argsstring>
+        <name>XQST0031</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="76"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a091848de4780cf0fd351b8880e2f6583" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0032</definition>
+        <argsstring></argsstring>
+        <name>XQST0032</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="78"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a75ee2528e405ff2ddfed06baaabe3568" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0033</definition>
+        <argsstring></argsstring>
+        <name>XQST0033</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="80"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a6352dd79c805ca48438385344d9e2bb9" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0034</definition>
+        <argsstring></argsstring>
+        <name>XQST0034</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="82"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a7754160273f8dfec3698f3d15cd44acc" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0035</definition>
+        <argsstring></argsstring>
+        <name>XQST0035</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="84"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1af791e8f2031be90be3b54a7f458aa90b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0036</definition>
+        <argsstring></argsstring>
+        <name>XQST0036</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="86"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a111f75e3c70f57380c69548de1ab7a52" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0038</definition>
+        <argsstring></argsstring>
+        <name>XQST0038</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="88"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa78afacb92db4f72b9fb507be67e1a7a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0039</definition>
+        <argsstring></argsstring>
+        <name>XQST0039</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="90"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1add5cf07baee4fd146318e22d8b96f680" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0040</definition>
+        <argsstring></argsstring>
+        <name>XQST0040</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="92"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a10045e5ed71114784bc185713500035c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0045</definition>
+        <argsstring></argsstring>
+        <name>XQST0045</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="94"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a4b462b52b7de5d28bcb843c549278d0f" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0046</definition>
+        <argsstring></argsstring>
+        <name>XQST0046</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="96"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ad6d190c8c2ae224b84df238511a5ad8e" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0047</definition>
+        <argsstring></argsstring>
+        <name>XQST0047</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="98"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1af94e59c28d56c72e8b31b8d9ce3865dc" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0048</definition>
+        <argsstring></argsstring>
+        <name>XQST0048</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="100"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1af60b41fe399beffa57c42f8380f94509" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0049</definition>
+        <argsstring></argsstring>
+        <name>XQST0049</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="102"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a8323e893a28ca578c4613f61f766cc70" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0052</definition>
+        <argsstring></argsstring>
+        <name>XQST0052</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="104"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a421066df199839eaa6dd86ad05cc95ce" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0054</definition>
+        <argsstring></argsstring>
+        <name>XQST0054</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="106"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1adc11195415b9f05717fbc5aa9d7b4d31" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0055</definition>
+        <argsstring></argsstring>
+        <name>XQST0055</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="108"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a5432669c60d25ad6c075db6ce0aa2f81" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0057</definition>
+        <argsstring></argsstring>
+        <name>XQST0057</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="110"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a7cc0b9e5990768fba3ede0915263a381" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0058</definition>
+        <argsstring></argsstring>
+        <name>XQST0058</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="112"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aaeecbdd5acfd0fb5202f13e335948311" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0059</definition>
+        <argsstring></argsstring>
+        <name>XQST0059</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="114"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a6c028c8ec5e12e6828370c64f63f2993" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0060</definition>
+        <argsstring></argsstring>
+        <name>XQST0060</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="116"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a98931a05b709760e95e26df22445c285" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0065</definition>
+        <argsstring></argsstring>
+        <name>XQST0065</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="118"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a7dc65d342f37245469011bceb911f4c8" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0066</definition>
+        <argsstring></argsstring>
+        <name>XQST0066</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="120"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a8ecf45e5e514ad71d2a137f7de7a3236" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0067</definition>
+        <argsstring></argsstring>
+        <name>XQST0067</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="122"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a980a6ca8bbb2e2d10736207030c84958" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0068</definition>
+        <argsstring></argsstring>
+        <name>XQST0068</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="124"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a47f3c10d4bce0f76029d1587c11ab043" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0069</definition>
+        <argsstring></argsstring>
+        <name>XQST0069</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="126"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a49dc8693b3fa5910c05c60d1051b1f95" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0070</definition>
+        <argsstring></argsstring>
+        <name>XQST0070</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="128"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a7f82afc73b09f7572b7e403957a49a3b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0071</definition>
+        <argsstring></argsstring>
+        <name>XQST0071</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="130"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a86d26cb0ac2f448eb69b6436719d2b3d" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0076</definition>
+        <argsstring></argsstring>
+        <name>XQST0076</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="132"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a595c83a5176316a390d8305992de5a0c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0079</definition>
+        <argsstring></argsstring>
+        <name>XQST0079</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="134"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ad4a0b4515d5be7bec8120c2ae500639c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0085</definition>
+        <argsstring></argsstring>
+        <name>XQST0085</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="136"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a9a2248d13c614eca5797edd631d191bf" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0087</definition>
+        <argsstring></argsstring>
+        <name>XQST0087</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="138"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a52d46b04e5407dfe0003b932d59b5f58" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0088</definition>
+        <argsstring></argsstring>
+        <name>XQST0088</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="140"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a3e57afe00d2daa651583cb903cf8d428" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0089</definition>
+        <argsstring></argsstring>
+        <name>XQST0089</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="142"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1af0ac8000537ece2cb857df3a6ffe629b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0090</definition>
+        <argsstring></argsstring>
+        <name>XQST0090</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="144"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a0c7ce77dc2baf8f7ef58e75bb8d6e9d2" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0093</definition>
+        <argsstring></argsstring>
+        <name>XQST0093</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="146"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a37c46ccf3337d62a5fa4ebc740e6e229" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0094</definition>
+        <argsstring></argsstring>
+        <name>XQST0094</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="148"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ab71ce9f4a0262a24f63c5b6a6f962ee3" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0097</definition>
+        <argsstring></argsstring>
+        <name>XQST0097</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="150"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a15bebf3320ab12deaa9866b88d52e6d2" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0098</definition>
+        <argsstring></argsstring>
+        <name>XQST0098</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="152"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1abb9790438de29ce2aee705fb33bf516b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0099</definition>
+        <argsstring></argsstring>
+        <name>XQST0099</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="154"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a258463bd1a98db422c75a6f020eadc44" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0103</definition>
+        <argsstring></argsstring>
+        <name>XQST0103</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="156"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a64f00efabe89059d8eb02c947501e05b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0106</definition>
+        <argsstring></argsstring>
+        <name>XQST0106</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="158"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ac01e474736930286203aac7afef3d212" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0111</definition>
+        <argsstring></argsstring>
+        <name>XQST0111</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="160"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a4abc8b3d6491b3c981f2b1ef733e1a73" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0113</definition>
+        <argsstring></argsstring>
+        <name>XQST0113</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="162"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a5298f3f2950e8c36a0f53386889ebc19" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0114</definition>
+        <argsstring></argsstring>
+        <name>XQST0114</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="164"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a83054462111751ee175fa6207ff25720" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0116</definition>
+        <argsstring></argsstring>
+        <name>XQST0116</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="166"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a6f003b0be83c055e1b37b9030cd5ab06" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0120</definition>
+        <argsstring></argsstring>
+        <name>XQST0120</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="168"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa905f39f81ffe4631ee06cd49e62b2f8" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0122</definition>
+        <argsstring></argsstring>
+        <name>XQST0122</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="170"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1affd473a93df00c74246956b2dde71f52" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0123</definition>
+        <argsstring></argsstring>
+        <name>XQST0123</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="172"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ad352245403508f09fac43698caa98e1c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0126</definition>
+        <argsstring></argsstring>
+        <name>XQST0126</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="174"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a1a4ebd2f9cd519f6acf473917874649b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0127</definition>
+        <argsstring></argsstring>
+        <name>XQST0127</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="176"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a68fcdad771540101ca1c88a69ff3eeb5" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQST0128</definition>
+        <argsstring></argsstring>
+        <name>XQST0128</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="178"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a703d2f3d1efca6ea3cd3d39472f7485a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQTY0024</definition>
+        <argsstring></argsstring>
+        <name>XQTY0024</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="60"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa7526ff915f68d260da15b5cd39bc874" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQTY0030</definition>
+        <argsstring></argsstring>
+        <name>XQTY0030</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="62"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa4315bc6377ac4db76a34ceb8642e6de" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQTY0086</definition>
+        <argsstring></argsstring>
+        <name>XQTY0086</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="64"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a55d6b30f1f1ad29b99fc8114e4e96e66" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XQTY0105</definition>
+        <argsstring></argsstring>
+        <name>XQTY0105</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="66"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1adf7936b8e86b6dec461f19c5ad5f2428" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XTDE1310</definition>
+        <argsstring></argsstring>
+        <name>XTDE1310</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="216"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a7dd56515575e13d9599379d4f19c74ee" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0009</definition>
+        <argsstring></argsstring>
+        <name>XUDY0009</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="346"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a92aae7abd50244f8e7a41cd2ea5fa820" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0014</definition>
+        <argsstring></argsstring>
+        <name>XUDY0014</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="356"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1af3d16d0dd04eaf0f181c368087acdd41" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0015</definition>
+        <argsstring></argsstring>
+        <name>XUDY0015</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="358"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aeb62a0b804a116175caf542a03dba890" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0016</definition>
+        <argsstring></argsstring>
+        <name>XUDY0016</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="360"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae1e60e66a532674c0de3ff48cb3210cc" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0017</definition>
+        <argsstring></argsstring>
+        <name>XUDY0017</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="362"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a8f66f490bc836d4421f5cf9c31b81423" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0018</definition>
+        <argsstring></argsstring>
+        <name>XUDY0018</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="364"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a47848429d1c05521d88ed10d3d133f46" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0019</definition>
+        <argsstring></argsstring>
+        <name>XUDY0019</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="366"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a95c562ccfd8df0244d50ce92256fd79a" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0021</definition>
+        <argsstring></argsstring>
+        <name>XUDY0021</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="368"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ac4e16a561094cccbf879f65ba8057784" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0023</definition>
+        <argsstring></argsstring>
+        <name>XUDY0023</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="372"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ab9a9d54ca9de2afb692adf7dcb928458" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0024</definition>
+        <argsstring></argsstring>
+        <name>XUDY0024</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="374"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aafac8f62904241b19d3129c1e93e91d0" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0027</definition>
+        <argsstring></argsstring>
+        <name>XUDY0027</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="376"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aeae90bd67a4439256a850033908c6258" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0029</definition>
+        <argsstring></argsstring>
+        <name>XUDY0029</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="380"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ab984f0df0f3687c08f839604a22248c2" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0030</definition>
+        <argsstring></argsstring>
+        <name>XUDY0030</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="382"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa8f23737bf48c0985b6f3fad656322a6" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUDY0031</definition>
+        <argsstring></argsstring>
+        <name>XUDY0031</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="384"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa85e7bd6b94713fbf40998e3b58e0984" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUST0001</definition>
+        <argsstring></argsstring>
+        <name>XUST0001</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="330"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ac073bc1ab11823c6c1a3c3cffe2c1bc7" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUST0002</definition>
+        <argsstring></argsstring>
+        <name>XUST0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="332"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a40bbedb87104362b5826f7f74527eedb" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUST0003</definition>
+        <argsstring></argsstring>
+        <name>XUST0003</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="334"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a227a3ef3fb7f7a6d8e35c32e9413c31b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUST0028</definition>
+        <argsstring></argsstring>
+        <name>XUST0028</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="378"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1aa3b5f7aa11c6e37106b49a2cb637f0f8" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUTY0004</definition>
+        <argsstring></argsstring>
+        <name>XUTY0004</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="336"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1af1ea3cc754088c8b529882f477df3eaa" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUTY0005</definition>
+        <argsstring></argsstring>
+        <name>XUTY0005</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="338"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ae4fc44d091f9bae5ebf586522be9a7ef" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUTY0006</definition>
+        <argsstring></argsstring>
+        <name>XUTY0006</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="340"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a3aff60ae4a77e19efc99ca37747e5236" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUTY0007</definition>
+        <argsstring></argsstring>
+        <name>XUTY0007</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="342"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a7d52642923c02ba15ce684aaf2baf6c8" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUTY0008</definition>
+        <argsstring></argsstring>
+        <name>XUTY0008</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="344"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a40ec6e5580f19f8fc4323a75649f8d12" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUTY0010</definition>
+        <argsstring></argsstring>
+        <name>XUTY0010</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="348"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a08e18cd589f2f998305f803cc4b19b5d" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUTY0011</definition>
+        <argsstring></argsstring>
+        <name>XUTY0011</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="350"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a3e7f5ffa01bbf08361f958ffa48a5e6c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUTY0012</definition>
+        <argsstring></argsstring>
+        <name>XUTY0012</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="352"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1ac293a1e15cdc2df51665be4236b14bc5" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUTY0013</definition>
+        <argsstring></argsstring>
+        <name>XUTY0013</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="354"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1err_1a1349def86654c9083afd89fb385c4a3c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" kindref="member">XQueryErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC XQueryErrorCode zorba::err::XUTY0022</definition>
+        <argsstring></argsstring>
+        <name>XUTY0022</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="370"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="30"/>
+  </compounddef>
+</doxygen>

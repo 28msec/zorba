@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1Tokenizer_1_1Properties" kind="struct" prot="public">
+    <compoundname>zorba::Tokenizer::Properties</compoundname>
+    <includes refid="tokenizer_8h" local="no">zorba/tokenizer.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structzorba_1_1Tokenizer_1_1Properties_1a0ac548e60e52893d02781884e58ea79f" prot="public" static="no">
+        <type>std::vector&lt; <ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref> &gt;</type>
+        <definition>typedef std::vector&lt;locale::iso639_1::type&gt; zorba::Tokenizer::Properties::languages_type</definition>
+        <argsstring></argsstring>
+        <name>languages_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="114" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="114" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structzorba_1_1Tokenizer_1_1Properties_1a620e79be436f548d3fd7469be4459a51" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool zorba::Tokenizer::Properties::comments_separate_tokens</definition>
+        <argsstring></argsstring>
+        <name>comments_separate_tokens</name>
+        <briefdescription>
+<para>If <computeroutput>true</computeroutput>, XML comments separate tokens. </para>        </briefdescription>
+        <detaileddescription>
+<para>For example, <computeroutput>net&lt;!----&gt;work</computeroutput> would be 2 tokens instead of 1. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="120" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="120" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structzorba_1_1Tokenizer_1_1Properties_1afa6f171307c94afbb4e75e490d327358" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool zorba::Tokenizer::Properties::elements_separate_tokens</definition>
+        <argsstring></argsstring>
+        <name>elements_separate_tokens</name>
+        <briefdescription>
+<para>If <computeroutput>true</computeroutput>, XML elements separate tokens. </para>        </briefdescription>
+        <detaileddescription>
+<para>For example, <computeroutput>&lt;b&gt;B&lt;/b&gt;old</computeroutput> would be 2 tokens instead of 1. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="126" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="126" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structzorba_1_1Tokenizer_1_1Properties_1a7aa68e42f6c9c830b3e686d84dab542b" prot="public" static="no" mutable="no">
+        <type><ref refid="structzorba_1_1Tokenizer_1_1Properties_1a0ac548e60e52893d02781884e58ea79f" kindref="member">languages_type</ref></type>
+        <definition>languages_type zorba::Tokenizer::Properties::languages</definition>
+        <argsstring></argsstring>
+        <name>languages</name>
+        <briefdescription>
+<para>The set of languages supported. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="137" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="137" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structzorba_1_1Tokenizer_1_1Properties_1a8605c5db1eea69c4000cd00d58f9ea4f" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool zorba::Tokenizer::Properties::processing_instructions_separate_tokens</definition>
+        <argsstring></argsstring>
+        <name>processing_instructions_separate_tokens</name>
+        <briefdescription>
+<para>If <computeroutput>true</computeroutput>, XML processing instructions separate tokens. </para>        </briefdescription>
+        <detaileddescription>
+<para>For example, <computeroutput>net&lt;?PI pi?&gt;work</computeroutput> would be 2 tokens instead of 1. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="132" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="132" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structzorba_1_1Tokenizer_1_1Properties_1ae93b36226ae697fe1c6369c6361b4116" prot="public" static="no" mutable="no">
+        <type>char const *</type>
+        <definition>char const* zorba::Tokenizer::Properties::uri</definition>
+        <argsstring></argsstring>
+        <name>uri</name>
+        <briefdescription>
+<para>The URI that uniquely identifies this Tokenizer. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="142" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="142" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Various properties of this Tokenizer. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="113" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="113" bodyend="143"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1Tokenizer_1_1Properties_1a620e79be436f548d3fd7469be4459a51" prot="public" virt="non-virtual"><scope>zorba::Tokenizer::Properties</scope><name>comments_separate_tokens</name></member>
+      <member refid="structzorba_1_1Tokenizer_1_1Properties_1afa6f171307c94afbb4e75e490d327358" prot="public" virt="non-virtual"><scope>zorba::Tokenizer::Properties</scope><name>elements_separate_tokens</name></member>
+      <member refid="structzorba_1_1Tokenizer_1_1Properties_1a7aa68e42f6c9c830b3e686d84dab542b" prot="public" virt="non-virtual"><scope>zorba::Tokenizer::Properties</scope><name>languages</name></member>
+      <member refid="structzorba_1_1Tokenizer_1_1Properties_1a0ac548e60e52893d02781884e58ea79f" prot="public" virt="non-virtual"><scope>zorba::Tokenizer::Properties</scope><name>languages_type</name></member>
+      <member refid="structzorba_1_1Tokenizer_1_1Properties_1a8605c5db1eea69c4000cd00d58f9ea4f" prot="public" virt="non-virtual"><scope>zorba::Tokenizer::Properties</scope><name>processing_instructions_separate_tokens</name></member>
+      <member refid="structzorba_1_1Tokenizer_1_1Properties_1ae93b36226ae697fe1c6369c6361b4116" prot="public" virt="non-virtual"><scope>zorba::Tokenizer::Properties</scope><name>uri</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

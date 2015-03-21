@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="ft_intro" kind="page">
+    <compoundname>ft_intro</compoundname>
+    <title>Full Text</title>
+    <detaileddescription>
+<para>The Zorba processor implements the <ulink url="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</ulink> specification.</para><para>Additional documentation:</para><para><itemizedlist>
+<listitem><para><ref refid="ft_stemmer" kindref="compound">Full Text Stemming</ref></para></listitem><listitem><para><ref refid="ft_thesaurus" kindref="compound">Full Text Thesaurus</ref></para></listitem><listitem><para><ref refid="ft_tokenizer" kindref="compound">Full Text Tokenizer</ref></para></listitem><listitem><para><ulink url="/modules/latest/zorba.io/modules/full-text">Full Text Module</ulink></para></listitem></itemizedlist>
+</para><sect1 id="ft_intro_1ft_unimplemented">
+<title>Unimplemented Features</title>
+<para>The full text specification is mostly, but not completely, implemented. The features that are not (completely) implemented are:</para><para><itemizedlist>
+<listitem><para>The <ulink url="http://www.w3.org/TR/xpath-full-text-10/#ftignoreoption">Ignore Option</ulink> (bug <ulink url="https://bugs.launchpad.net/zorba/+bug/866924">866924</ulink>).</para></listitem><listitem><para><ulink url="http://www.w3.org/TR/xpath-full-text-10/#section-score-variables">Score Variables</ulink> and <ulink url="http://www.w3.org/TR/xpath-full-text-10/#section-using-weights">Using Weights Within a Scored FTContainsExpr</ulink> (bug <ulink url="https://bugs.launchpad.net/zorba/+bug/866923">866923</ulink>). </para></listitem></itemizedlist>
+</para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

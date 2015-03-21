@@ -1,0 +1,466 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1store" kind="namespace">
+    <compoundname>zorba::store</compoundname>
+    <innerclass refid="classzorba_1_1store_1_1StoreConsts" prot="public">zorba::store::StoreConsts</innerclass>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75" prot="public" static="no">
+        <name>SchemaTypeCode</name>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a5fa8af3586a98cf4e9b6e5e9dea49f8e" prot="public">
+          <name>XS_ANY_ATOMIC</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a53539e7a2eaa6fc03ea7cc61ad1a3c1f" prot="public">
+          <name>XS_STRING</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab946b063c9dd7dcf02b976bf8c3f89fb" prot="public">
+          <name>XS_NORMALIZED_STRING</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a87f27b8ffb25bfa1f2400dde1db05886" prot="public">
+          <name>XS_TOKEN</name>
+          <initializer> 3</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a516b054f6c1feb7fbddf56e4f4e0fae2" prot="public">
+          <name>XS_LANGUAGE</name>
+          <initializer> 4</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a9b2c570f88ea81c3006b43148922e079" prot="public">
+          <name>XS_NMTOKEN</name>
+          <initializer> 5</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a76ac1179277bfa4e57ca86542aa16e15" prot="public">
+          <name>XS_NAME</name>
+          <initializer> 6</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a42849cde7ba7553c7ed9c01964901872" prot="public">
+          <name>XS_NCNAME</name>
+          <initializer> 7</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a00d61c56227e8809520d04431eb394a6" prot="public">
+          <name>XS_ID</name>
+          <initializer> 8</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a49a8ee6fe377ab83b33ebeb47cd05d1e" prot="public">
+          <name>XS_IDREF</name>
+          <initializer> 9</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a47f13b6a5f641bbb90772674a390f205" prot="public">
+          <name>XS_ENTITY</name>
+          <initializer> 10</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75accb8f9339b8b67e8deccbc1c7c8f23dd" prot="public">
+          <name>XS_UNTYPED_ATOMIC</name>
+          <initializer> 11</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ac755e4b7bb945c691ae422b9347f8181" prot="public">
+          <name>XS_DATETIME</name>
+          <initializer> 12</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab2ce5f4b83a82d77a7571431a5c55589" prot="public">
+          <name>XS_DATE</name>
+          <initializer> 13</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a331388676b7b1b2f1ef888d69d646ba6" prot="public">
+          <name>XS_TIME</name>
+          <initializer> 14</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab48c798e3740df2e0a174ace6c6ff8f8" prot="public">
+          <name>XS_DURATION</name>
+          <initializer> 15</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75afadd35345d03b076d368320e50ddc9ef" prot="public">
+          <name>XS_DT_DURATION</name>
+          <initializer> 16</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a8978c1bbfb892c32dfc771c0cbe63b8a" prot="public">
+          <name>XS_YM_DURATION</name>
+          <initializer> 17</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ae0f5a894b13d14d83ae532eba9bfe1ef" prot="public">
+          <name>XS_FLOAT</name>
+          <initializer> 18</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a337d6d1c0e3c45411afd7c89a8ec11c9" prot="public">
+          <name>XS_DOUBLE</name>
+          <initializer> 19</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a96884a6dc63fd7864bc44e5b3f506b34" prot="public">
+          <name>XS_DECIMAL</name>
+          <initializer> 20</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1296d71bd5f2d0cfeff52fd185b0b4d2" prot="public">
+          <name>XS_INTEGER</name>
+          <initializer> 21</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1065cbde851dd30db383cdd719c90bfb" prot="public">
+          <name>XS_NON_POSITIVE_INTEGER</name>
+          <initializer> 22</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75aa7e94ff6a287f3bcad1788d5cc3a9e83" prot="public">
+          <name>XS_NEGATIVE_INTEGER</name>
+          <initializer> 23</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a12f0af23dce9e8362cf8389c144b6e35" prot="public">
+          <name>XS_LONG</name>
+          <initializer> 24</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ac8777e214daf4c5a8f79f840381c7b40" prot="public">
+          <name>XS_INT</name>
+          <initializer> 25</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ace4b451e3f7396582fb102d031825d89" prot="public">
+          <name>XS_SHORT</name>
+          <initializer> 26</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75af9d4f4851e13982a2d5ca9e29721d0c8" prot="public">
+          <name>XS_BYTE</name>
+          <initializer> 27</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab601bf2124b3ead371f79f5dc0f0a713" prot="public">
+          <name>XS_NON_NEGATIVE_INTEGER</name>
+          <initializer> 28</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ad862bfb2b16bf060886b66f060d4a73a" prot="public">
+          <name>XS_UNSIGNED_LONG</name>
+          <initializer> 29</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75afe94aaba61473ef08b0238ff91065f50" prot="public">
+          <name>XS_UNSIGNED_INT</name>
+          <initializer> 30</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a2141df3c82dea8cc1d135d8eae6f93e0" prot="public">
+          <name>XS_UNSIGNED_SHORT</name>
+          <initializer> 31</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a940f9b261081f7a6dea1a2812a69bacc" prot="public">
+          <name>XS_UNSIGNED_BYTE</name>
+          <initializer> 32</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a03f02c6178dc7333ddfb61b108a93a9b" prot="public">
+          <name>XS_POSITIVE_INTEGER</name>
+          <initializer> 33</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1adbcdfb8b70926bb369ac0a8c5f3d2b" prot="public">
+          <name>XS_GYEAR_MONTH</name>
+          <initializer> 34</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a723ab330dff9ba1377473d49d1d11375" prot="public">
+          <name>XS_GYEAR</name>
+          <initializer> 35</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ad939fec6a295ce96b7d0bd12cd799c93" prot="public">
+          <name>XS_GMONTH_DAY</name>
+          <initializer> 36</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ad4651fb145392a8d68bfb69f4a95b32a" prot="public">
+          <name>XS_GDAY</name>
+          <initializer> 37</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a798e38593af0debc4026eb084e8a4bb4" prot="public">
+          <name>XS_GMONTH</name>
+          <initializer> 38</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a1adba41464de02db00b19e9a401c050c" prot="public">
+          <name>XS_BOOLEAN</name>
+          <initializer> 39</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75afa7ac37464c93c32d32baafa75751151" prot="public">
+          <name>XS_BASE64BINARY</name>
+          <initializer> 40</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a88b82934627e67dfb97b4dc468a99365" prot="public">
+          <name>XS_HEXBINARY</name>
+          <initializer> 41</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ab00135dd8d7d7d8abf369b64d3877da2" prot="public">
+          <name>XS_ANY_URI</name>
+          <initializer> 42</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a6b57cf23b117ffded077a48858a8d954" prot="public">
+          <name>XS_QNAME</name>
+          <initializer> 43</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a204c539a8fc27e1462b003a54a4a1910" prot="public">
+          <name>XS_NOTATION</name>
+          <initializer> 44</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a41a22df0609915ab0e1669d71230031d" prot="public">
+          <name>JS_NULL</name>
+          <initializer> 45</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75ac9850d2e47c4ea89b91a787952fae10d" prot="public">
+          <name>XS_DATETIME_STAMP</name>
+          <initializer> 46</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75a432b45351299b06e2cf3902e54fbac7e" prot="public">
+          <name>XS_LAST</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h" line="33" bodyfile="/home/wcandillon/deadlinks/include/zorba/store_consts.h" bodystart="32" bodyend="95"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1store_1aa2c1609d0d37f413d933de8104562fe0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::store::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;, SchemaTypeCode)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1store_1a9c16b65ef5d440314887ea5e61a8cf75" kindref="member">SchemaTypeCode</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h" line="98"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1store_1afbbbeedd377dcb2cde2324f3f7eb99c3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::store::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;, StoreConsts::NodeKind)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033" kindref="member">StoreConsts::NodeKind</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h" line="157"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1store_1a4d226636867a536c1cb8c383350f4296" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::store::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;, StoreConsts::JSONItemKind)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2" kindref="member">StoreConsts::JSONItemKind</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h" line="160"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="28"/>
+  </compounddef>
+</doxygen>

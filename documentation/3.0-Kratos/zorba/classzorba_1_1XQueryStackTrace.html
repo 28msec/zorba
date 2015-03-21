@@ -1,0 +1,58 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::XQueryStackTrace</h1><p class="include">
+            #include &lt;zorba/xquery_stack_trace.h&gt;
+        </p>
+    
+    <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">unsigned short</p></td><td><p class="signature"><a href="#a0d6a1906a7667fef1b797e90b4f21d26">column_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">trace_t::const_iterator</p></td><td><p class="signature"><a href="#a4ac4b593e4d1da238438735d678143b8">const_iterator</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">trace_t::const_reverse_iterator</p></td><td><p class="signature"><a href="#ae730cf61a91c35f70e05dc64de21878e">const_reverse_iterator</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">unsigned short</p></td><td><p class="signature"><a href="#a31276b541b49d9ace4cf08b3c80b3d50">fn_arity_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1VariableQName">internal::VariableQName</a>&lt; std::string &gt;</p></td><td><p class="signature"><a href="#a2b138e519d1117218f0b7552aaf0df39">fn_name_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">unsigned</p></td><td><p class="signature"><a href="#a5dde7c2476d590b3f3e608a182f82e06">line_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">trace_t::size_type</p></td><td><p class="signature"><a href="#ab8e19274de964517eeaad8659c2ce1a9">size_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::vector&lt; <a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace_1_1Entry">Entry</a> &gt;</p></td><td><p class="signature"><a href="#a4bceee214464cd20f12b8df698ae9ae4">trace_t</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=a4bceee214464cd20f12b8df698ae9ae4">trace_t</a></p></td><td><p class="signature"><a href="#a872fc7b62721a10ce1f6fb9bbfcb2da0">trace_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=a4ac4b593e4d1da238438735d678143b8">const_iterator</a></p></td><td><p class="signature"><a href="#ae9909dfb22e03469f0191f80d9b88cb9">begin</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a7238e996d95372ba62694b0a36d93534">empty</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=a4ac4b593e4d1da238438735d678143b8">const_iterator</a></p></td><td><p class="signature"><a href="#a61061e945dc64b989e88f8082b372702">end</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#abb14f7dc4be7e7512caaad082778f0ee">push</a>(Entry const &amp;entry)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=ae730cf61a91c35f70e05dc64de21878e">const_reverse_iterator</a></p></td><td><p class="signature"><a href="#a4ccea5746cdf177513208b96743c96b3">rbegin</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=ae730cf61a91c35f70e05dc64de21878e">const_reverse_iterator</a></p></td><td><p class="signature"><a href="#ae55c4ab229902966ad34953d21a51381">rend</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=ab8e19274de964517eeaad8659c2ce1a9">size_type</a></p></td><td><p class="signature"><a href="#ac38e45f2653e0974c99cbfa07e9d567c">size</a>() const </p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Friend Classes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">friend void</p></td><td><p class="signature"><a href="#a93138aee5526eae73d2a7519cee3307b">serialization::operator&amp;</a>(serialization::Archiver &amp;, XQueryStackTrace &amp;)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a0d6a1906a7667fef1b797e90b4f21d26" class="sect1"><div><h3>column_type</h3></div><div class="signature-box">unsigned short<span> </span>column_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4ac4b593e4d1da238438735d678143b8" class="sect1"><div><h3>const_iterator</h3></div><div class="signature-box">trace_t::const_iterator<span> </span>const_iterator</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ae730cf61a91c35f70e05dc64de21878e" class="sect1"><div><h3>const_reverse_iterator</h3></div><div class="signature-box">trace_t::const_reverse_iterator<span> </span>const_reverse_iterator</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a31276b541b49d9ace4cf08b3c80b3d50" class="sect1"><div><h3>fn_arity_type</h3></div><div class="signature-box">unsigned short<span> </span>fn_arity_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a2b138e519d1117218f0b7552aaf0df39" class="sect1"><div><h3>fn_name_type</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1VariableQName">internal::VariableQName</a>&lt; std::string &gt;<span> </span>fn_name_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a5dde7c2476d590b3f3e608a182f82e06" class="sect1"><div><h3>line_type</h3></div><div class="signature-box">unsigned<span> </span>line_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab8e19274de964517eeaad8659c2ce1a9" class="sect1"><div><h3>size_type</h3></div><div class="signature-box">trace_t::size_type<span> </span>size_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4bceee214464cd20f12b8df698ae9ae4" class="sect1"><div><h3>trace_t</h3></div><div class="signature-box">std::vector&lt; <a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace_1_1Entry">Entry</a> &gt;<span> </span>trace_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a872fc7b62721a10ce1f6fb9bbfcb2da0" class="sect1"><div><h3>trace_</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=a4bceee214464cd20f12b8df698ae9ae4">trace_t</a><span> </span>trace_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="ae9909dfb22e03469f0191f80d9b88cb9" class="sect1"><div><h3>begin</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=a4ac4b593e4d1da238438735d678143b8">const_iterator</a><span> </span>begin() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a7238e996d95372ba62694b0a36d93534" class="sect1"><div><h3>empty</h3></div><div class="signature-box">bool<span> </span>empty() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a61061e945dc64b989e88f8082b372702" class="sect1"><div><h3>end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=a4ac4b593e4d1da238438735d678143b8">const_iterator</a><span> </span>end() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="abb14f7dc4be7e7512caaad082778f0ee" class="sect1"><div><h3>push</h3></div><div class="signature-box">void<span> </span>push(Entry const &amp;entry)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4ccea5746cdf177513208b96743c96b3" class="sect1"><div><h3>rbegin</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=ae730cf61a91c35f70e05dc64de21878e">const_reverse_iterator</a><span> </span>rbegin() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ae55c4ab229902966ad34953d21a51381" class="sect1"><div><h3>rend</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=ae730cf61a91c35f70e05dc64de21878e">const_reverse_iterator</a><span> </span>rend() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ac38e45f2653e0974c99cbfa07e9d567c" class="sect1"><div><h3>size</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1XQueryStackTrace?anchor=ab8e19274de964517eeaad8659c2ce1a9">size_type</a><span> </span>size() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Friend Classes</h2><div class="detailed"><div id="a93138aee5526eae73d2a7519cee3307b" class="sect1"><div><h3>serialization::operator&amp;</h3></div><div class="signature-box">friend void<span> </span>serialization::operator&amp;(serialization::Archiver &amp;, XQueryStackTrace &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

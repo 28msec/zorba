@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1audit" kind="namespace">
+    <compoundname>zorba::audit</compoundname>
+    <innerclass refid="structzorba_1_1audit_1_1AuditorTraits" prot="public">zorba::audit::AuditorTraits</innerclass>
+    <innerclass refid="structzorba_1_1audit_1_1AuditorTraits_3_01const_01char_01_5_01_4" prot="public">zorba::audit::AuditorTraits&lt; const char * &gt;</innerclass>
+    <innerclass refid="structzorba_1_1audit_1_1AuditorTraits_3_01const_01int_01_4" prot="public">zorba::audit::AuditorTraits&lt; const int &gt;</innerclass>
+    <innerclass refid="structzorba_1_1audit_1_1AuditorTraits_3_01const_01std_1_1string_01_4" prot="public">zorba::audit::AuditorTraits&lt; const std::string &gt;</innerclass>
+    <innerclass refid="structzorba_1_1audit_1_1AuditorTraits_3_01std_1_1pair_3_01std_1_1streampos_00_01std_1_1istream_01_5_01_4_01_4" prot="public">zorba::audit::AuditorTraits&lt; std::pair&lt; std::streampos, std::istream * &gt; &gt;</innerclass>
+    <innerclass refid="structzorba_1_1audit_1_1AuditorTraits_3_01std_1_1pair_3_01std_1_1streampos_00_01std_1_1ostream_01_5_01_4_01_4" prot="public">zorba::audit::AuditorTraits&lt; std::pair&lt; std::streampos, std::ostream * &gt; &gt;</innerclass>
+    <innerclass refid="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4" prot="public">zorba::audit::AuditorTraits&lt; String &gt;</innerclass>
+    <innerclass refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4" prot="public">zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;</innerclass>
+    <innerclass refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_00_010x1_01_4" prot="public">zorba::audit::AuditorTraits&lt; zorba::time::Timer, 0x1 &gt;</innerclass>
+    <innerclass refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_00_010x2_01_4" prot="public">zorba::audit::AuditorTraits&lt; zorba::time::Timer, 0x2 &gt;</innerclass>
+    <innerclass refid="classzorba_1_1audit_1_1Configuration" prot="public">zorba::audit::Configuration</innerclass>
+    <innerclass refid="classzorba_1_1audit_1_1Event" prot="public">zorba::audit::Event</innerclass>
+    <innerclass refid="classzorba_1_1audit_1_1Observation" prot="public">zorba::audit::Observation</innerclass>
+    <innerclass refid="classzorba_1_1audit_1_1Property" prot="public">zorba::audit::Property</innerclass>
+    <innerclass refid="classzorba_1_1audit_1_1PropertyGroup" prot="public">zorba::audit::PropertyGroup</innerclass>
+    <innerclass refid="classzorba_1_1audit_1_1Provider" prot="public">zorba::audit::Provider</innerclass>
+    <innerclass refid="classzorba_1_1audit_1_1Record" prot="public">zorba::audit::Record</innerclass>
+    <innerclass refid="classzorba_1_1audit_1_1ScopedAuditor" prot="public">zorba::audit::ScopedAuditor</innerclass>
+    <innerclass refid="classzorba_1_1audit_1_1ScopedRecord" prot="public">zorba::audit::ScopedRecord</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacezorba_1_1audit_1af21f62c35617df55b055e8b6805c679b" prot="public" static="no">
+        <type><ref refid="classzorba_1_1audit_1_1ScopedAuditor" kindref="compound">ScopedAuditor</ref>&lt; <ref refid="classzorba_1_1time_1_1Timer" kindref="compound">zorba::time::Timer</ref> &gt;</type>
+        <definition>typedef ScopedAuditor&lt;zorba::time::Timer&gt; zorba::audit::DurationAuditor</definition>
+        <argsstring></argsstring>
+        <name>DurationAuditor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="107" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1_1audit_1ae549dd94468094c129ed73fc774c0e83" prot="public" static="no">
+        <type><ref refid="classzorba_1_1audit_1_1ScopedAuditor" kindref="compound">ScopedAuditor</ref>&lt; const int &gt;</type>
+        <definition>typedef ScopedAuditor&lt;const int&gt; zorba::audit::IntAuditor</definition>
+        <argsstring></argsstring>
+        <name>IntAuditor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="106" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1_1audit_1aa23d11d7bf7417c9ad8b376250aab331" prot="public" static="no">
+        <type><ref refid="classzorba_1_1audit_1_1ScopedAuditor" kindref="compound">ScopedAuditor</ref>&lt; <ref refid="classzorba_1_1time_1_1Timer" kindref="compound">zorba::time::Timer</ref>, 0x2 &gt;</type>
+        <definition>typedef ScopedAuditor&lt;zorba::time::Timer, 0x2&gt; zorba::audit::MicroDurationAuditor</definition>
+        <argsstring></argsstring>
+        <name>MicroDurationAuditor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="109" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1_1audit_1a5455b006130952caabd75be3b7c6bc09" prot="public" static="no">
+        <type><ref refid="classzorba_1_1audit_1_1ScopedAuditor" kindref="compound">ScopedAuditor</ref>&lt; const std::string &gt;</type>
+        <definition>typedef ScopedAuditor&lt;const std::string&gt; zorba::audit::StringAuditor</definition>
+        <argsstring></argsstring>
+        <name>StringAuditor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="105" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="105" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1_1audit_1ad114c0a800fbdd26f8496d0e5c0a5e20" prot="public" static="no">
+        <type><ref refid="classzorba_1_1audit_1_1ScopedAuditor" kindref="compound">ScopedAuditor</ref>&lt; <ref refid="classzorba_1_1time_1_1Timer" kindref="compound">zorba::time::Timer</ref>, 0x1 &gt;</type>
+        <definition>typedef ScopedAuditor&lt;zorba::time::Timer, 0x1&gt; zorba::audit::TimestampAuditor</definition>
+        <argsstring></argsstring>
+        <name>TimestampAuditor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="108" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="76"/>
+  </compounddef>
+</doxygen>

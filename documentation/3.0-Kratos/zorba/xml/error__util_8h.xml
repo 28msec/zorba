@@ -1,0 +1,288 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="error__util_8h" kind="file">
+    <compoundname>error_util.h</compoundname>
+    <includes local="no">zorba/config.h</includes>
+    <includes refid="cxx__util_8h" local="no">zorba/internal/cxx_util.h</includes>
+    <includes refid="type__traits_8h" local="no">zorba/internal/type_traits.h</includes>
+    <includes refid="ztd_8h" local="no">zorba/internal/ztd.h</includes>
+    <includes local="no">stdexcept</includes>
+    <includes local="no">cerrno</includes>
+    <includedby refid="fs__util_8h" local="no">fs_util.h</includedby>
+    <incdepgraph>
+      <node id="1754">
+        <label>functional</label>
+      </node>
+      <node id="1749">
+        <label>zorba/internal/cxx_util.h</label>
+        <link refid="cxx__util_8h"/>
+        <childnode refid="1748" relation="include">
+        </childnode>
+      </node>
+      <node id="1747">
+        <label>error_util.h</label>
+        <link refid="error_util.h"/>
+        <childnode refid="1748" relation="include">
+        </childnode>
+        <childnode refid="1749" relation="include">
+        </childnode>
+        <childnode refid="1750" relation="include">
+        </childnode>
+        <childnode refid="1752" relation="include">
+        </childnode>
+        <childnode refid="1757" relation="include">
+        </childnode>
+        <childnode refid="1758" relation="include">
+        </childnode>
+      </node>
+      <node id="1757">
+        <label>stdexcept</label>
+      </node>
+      <node id="1756">
+        <label>string</label>
+      </node>
+      <node id="1750">
+        <label>zorba/internal/type_traits.h</label>
+        <link refid="type__traits_8h"/>
+        <childnode refid="1748" relation="include">
+        </childnode>
+        <childnode refid="1751" relation="include">
+        </childnode>
+      </node>
+      <node id="1755">
+        <label>sstream</label>
+      </node>
+      <node id="1758">
+        <label>cerrno</label>
+      </node>
+      <node id="1752">
+        <label>zorba/internal/ztd.h</label>
+        <link refid="ztd_8h"/>
+        <childnode refid="1753" relation="include">
+        </childnode>
+        <childnode refid="1754" relation="include">
+        </childnode>
+        <childnode refid="1755" relation="include">
+        </childnode>
+        <childnode refid="1756" relation="include">
+        </childnode>
+        <childnode refid="1748" relation="include">
+        </childnode>
+        <childnode refid="1749" relation="include">
+        </childnode>
+        <childnode refid="1750" relation="include">
+        </childnode>
+      </node>
+      <node id="1751">
+        <label>type_traits</label>
+      </node>
+      <node id="1748">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="1753">
+        <label>cstring</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1759">
+        <label>error_util.h</label>
+        <link refid="error_util.h"/>
+        <childnode refid="1760" relation="include">
+        </childnode>
+      </node>
+      <node id="1760">
+        <label>fs_util.h</label>
+        <link refid="fs__util_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1os__error_1_1exception" prot="public">zorba::os_error::exception</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <innernamespace refid="namespacezorba_1_1os__error">zorba::os_error</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_API_ERROR_UTIL_H</highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_API_ERROR_UTIL_H</highlight></codeline>
+<codeline lineno="20"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="cxx__util_8h" kindref="compound">zorba/internal/cxx_util.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="type__traits_8h" kindref="compound">zorba/internal/type_traits.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="ztd_8h" kindref="compound">zorba/internal/ztd.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdexcept&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>WIN32</highlight></codeline>
+<codeline lineno="28"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;cerrno&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight></codeline>
+<codeline lineno="30"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;windows.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>WIN32<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="34" refid="namespacezorba_1_1os__error" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">os_error<sp/>{</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="36"><highlight class="comment">//////////<sp/>types<sp/>//////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>WIN32</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>DWORD<sp/><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref>;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight></codeline>
+<codeline lineno="41" refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" refkind="member"><highlight class="preprocessor"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref>;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>WIN32<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="44"><highlight class="comment">//////////<sp/>Exceptions<sp/>/////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="46"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/>*<sp/>An<sp/>%exception<sp/>is-a<sp/>std::runtime_error<sp/>for<sp/>reporting<sp/>errors<sp/>with<sp/>operating</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/>*<sp/>system<sp/>or<sp/>library<sp/>functions.</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50" refid="classzorba_1_1os__error_1_1exception" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1os__error_1_1exception" kindref="compound" tooltip="An exception is-a std::runtime_error for reporting errors with operating system or library functions...">exception</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>std::<ref refid="classzorba_1_1os__error_1_1exception" kindref="compound" tooltip="An exception is-a std::runtime_error for reporting errors with operating system or library functions...">exception</ref><sp/>{</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Constructs<sp/>an<sp/>%exception.</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>function<sp/>The<sp/>name<sp/>of<sp/>the<sp/>operating<sp/>system<sp/>function<sp/>that<sp/>failed,<sp/>if</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/>*<sp/>any.</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>path<sp/>The<sp/>full<sp/>path<sp/>of<sp/>the<sp/>file<sp/>or<sp/>directory<sp/>involved<sp/>in<sp/>the</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/>*<sp/>failure,<sp/>if<sp/>any.</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>err_string<sp/>If<sp/>not<sp/>\c<sp/>nullptr,<sp/>the<sp/>error<sp/>string<sp/>to<sp/>use<sp/>instead<sp/>of</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/>*<sp/>the<sp/>operating<sp/>system<sp/>error<sp/>string;<sp/>if<sp/>empty,<sp/>no<sp/>error<sp/>string<sp/>is<sp/>used.</highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1fs_1aa8105bb284bd6467038629d03be1f466" kindref="member">exception</ref>(<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*</highlight><highlight class="keyword">function</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*path,</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*err_string<sp/>=<sp/></highlight><highlight class="keyword">nullptr</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Destroys<sp/>an<sp/>%exception.</highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/>~<ref refid="classzorba_1_1os__error_1_1exception" kindref="compound" tooltip="An exception is-a std::runtime_error for reporting errors with operating system or library functions...">exception</ref>()<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal">();</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Gets<sp/>the<sp/>name<sp/>of<sp/>the<sp/>function<sp/>that<sp/>failed.</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>function<sp/>name.</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="75" refid="classzorba_1_1os__error_1_1exception_1a6924e8fe65292fdb0229cdb5d16c32a2" refkind="member"><highlight class="normal"><sp/><sp/>std::string<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/></highlight><highlight class="keyword">function</highlight><highlight class="normal">()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal">()<sp/>{</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>function_;</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="80"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Gets<sp/>the<sp/>full<sp/>path<sp/>of<sp/>the<sp/>file<sp/>or<sp/>directory<sp/>involved<sp/>in<sp/>the<sp/>failure.</highlight></codeline>
+<codeline lineno="81"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>path.</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="84" refid="classzorba_1_1os__error_1_1exception_1aa212d0ddb261f5238889137918ae62bb" refkind="member"><highlight class="normal"><sp/><sp/>std::string<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/><ref refid="classzorba_1_1os__error_1_1exception_1aa212d0ddb261f5238889137918ae62bb" kindref="member" tooltip="Gets the full path of the file or directory involved in the failure.">path</ref>()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>throw()<sp/>{</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>path_;</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>inherited</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>what()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>throw();</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal">protected:</highlight></codeline>
+<codeline lineno="92" refid="classzorba_1_1os__error_1_1exception_1add7d63af8491b3c77b936d756ab4bc5e" refkind="member"><highlight class="normal"><sp/><sp/>std::</highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>message_;</highlight></codeline>
+<codeline lineno="93" refid="classzorba_1_1os__error_1_1exception_1a76ebbb097300a7e0e7c9bf916f2b70c4" refkind="member"><highlight class="normal"><sp/><sp/>std::</highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>function_;</highlight></codeline>
+<codeline lineno="94" refid="classzorba_1_1os__error_1_1exception_1a11507bfbc4888cadc767835d0b030860" refkind="member"><highlight class="normal"><sp/><sp/>std::</highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>path_;</highlight></codeline>
+<codeline lineno="95"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="97"><highlight class="comment">//////////<sp/>Operating<sp/>system<sp/>errors<sp/>////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="98"><highlight class="comment"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="99"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="100"><highlight class="comment"><sp/>*<sp/>Formats<sp/>an<sp/>error<sp/>string.</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="102"><highlight class="comment"><sp/>*<sp/>@param<sp/>function<sp/>The<sp/>function<sp/>that<sp/>failed<sp/>or<sp/>\c<sp/>nullptr.</highlight></codeline>
+<codeline lineno="103"><highlight class="comment"><sp/>*<sp/>@param<sp/>err_string<sp/>The<sp/>error<sp/>string.</highlight></codeline>
+<codeline lineno="104"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>error<sp/>string.</highlight></codeline>
+<codeline lineno="105"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal">ZORBA_DLL_PUBLIC</highlight></codeline>
+<codeline lineno="107"><highlight class="normal">std::</highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1os__error_1a4c12b41065030ea61a6d53a081f8c3fd" kindref="member" tooltip="Formats an error string.">format_err_string</ref>(<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>const<sp/>*function,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>const<sp/>*err_string<sp/>);</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="109"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/>*<sp/>Formats<sp/>an<sp/>error<sp/>string.</highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="112"><highlight class="comment"><sp/>*<sp/>@param<sp/>function<sp/>The<sp/>function<sp/>that<sp/>failed<sp/>or<sp/>\c<sp/>nullptr.</highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/>*<sp/>@param<sp/>code<sp/>The<sp/>operating<sp/>system<sp/>error<sp/>code.</highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/>*<sp/>@param<sp/>err_string<sp/>The<sp/>error<sp/>string.</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>error<sp/>string.</highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal">ZORBA_DLL_PUBLIC</highlight></codeline>
+<codeline lineno="118"><highlight class="normal">std::</highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1os__error_1a4c12b41065030ea61a6d53a081f8c3fd" kindref="member" tooltip="Formats an error string.">format_err_string</ref>(<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>const<sp/>*function,<sp/><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref><sp/>code,</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>const<sp/>*err_string<sp/>);</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="121"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/>*<sp/>Gets<sp/>the<sp/>most<sp/>recent<sp/>operating<sp/>system<sp/>error<sp/>code.</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>error<sp/>code.</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="126" refid="namespacezorba_1_1os__error_1a3e2dfaebb7d03986994e7dc0ffea756e" refkind="member"><highlight class="normal">inline<sp/><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref><sp/><ref refid="namespacezorba_1_1os__error_1a3e2dfaebb7d03986994e7dc0ffea756e" kindref="member" tooltip="Gets the most recent operating system error code.">get_err_code</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>WIN32</highlight></codeline>
+<codeline lineno="128"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/>return<sp/>::GetLastError();</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight></codeline>
+<codeline lineno="130"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>errno;</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>WIN32<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="134"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="135"><highlight class="comment"><sp/>*<sp/>Gets<sp/>the<sp/>error<sp/>string<sp/>for<sp/>the<sp/>given<sp/>operating<sp/>system<sp/>error<sp/>code.</highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="137"><highlight class="comment"><sp/>*<sp/>@param<sp/>function<sp/>The<sp/>function<sp/>that<sp/>failed<sp/>or<sp/>\c<sp/>nullptr.</highlight></codeline>
+<codeline lineno="138"><highlight class="comment"><sp/>*<sp/>@param<sp/>code<sp/>The<sp/>operating<sp/>system<sp/>error<sp/>code.</highlight></codeline>
+<codeline lineno="139"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>error<sp/>string.</highlight></codeline>
+<codeline lineno="140"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="141"><highlight class="normal">ZORBA_DLL_PUBLIC</highlight></codeline>
+<codeline lineno="142"><highlight class="normal">std::string<sp/><ref refid="namespacezorba_1_1os__error_1a2932d8a5e9e71868bd76a2b10b4b377d" kindref="member" tooltip="Gets the error string for the given operating system error code.">get_err_string</ref>(<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*</highlight><highlight class="keyword">function</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref><sp/>code<sp/>=<sp/><ref refid="namespacezorba_1_1os__error_1a3e2dfaebb7d03986994e7dc0ffea756e" kindref="member" tooltip="Gets the most recent operating system error code.">get_err_code</ref>()<sp/>);</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="145"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="146"><highlight class="comment"><sp/>*<sp/>Gets<sp/>the<sp/>error<sp/>string<sp/>for<sp/>the<sp/>given<sp/>operating<sp/>system<sp/>error<sp/>code.</highlight></codeline>
+<codeline lineno="147"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="148"><highlight class="comment"><sp/>*<sp/>@tparam<sp/>StringType<sp/>The<sp/>\a<sp/>function<sp/>string<sp/>type.</highlight></codeline>
+<codeline lineno="149"><highlight class="comment"><sp/>*<sp/>@param<sp/>function<sp/>The<sp/>function<sp/>that<sp/>failed.</highlight></codeline>
+<codeline lineno="150"><highlight class="comment"><sp/>*<sp/>@param<sp/>code<sp/>The<sp/>operating<sp/>system<sp/>error<sp/>code.</highlight></codeline>
+<codeline lineno="151"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>error<sp/>string.</highlight></codeline>
+<codeline lineno="152"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StringType&gt;<sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if&lt;ZORBA_HAS_C_STR(StringType),std::string&gt;::type</ref></highlight></codeline>
+<codeline lineno="155" refid="namespacezorba_1_1os__error_1a0cbf17540f8b3fea2dc321f3f7ccb84e" refkind="member"><highlight class="normal"><ref refid="namespacezorba_1_1os__error_1a2932d8a5e9e71868bd76a2b10b4b377d" kindref="member" tooltip="Gets the error string for the given operating system error code.">get_err_string</ref>(<sp/>StringType<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;</highlight><highlight class="keyword">function</highlight><highlight class="normal">,<sp/><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref><sp/>code<sp/>=<sp/><ref refid="namespacezorba_1_1os__error_1a3e2dfaebb7d03986994e7dc0ffea756e" kindref="member" tooltip="Gets the most recent operating system error code.">get_err_code</ref>()<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1os__error_1a2932d8a5e9e71868bd76a2b10b4b377d" kindref="member" tooltip="Gets the error string for the given operating system error code.">get_err_string</ref>(<sp/></highlight><highlight class="keyword">function</highlight><highlight class="normal">.<ref refid="namespacezorba_1_1internal_1_1ztd_1aab6211f3f098e27c67a814d90ca66224" kindref="member">c_str</ref>(),<sp/>code<sp/>);</highlight></codeline>
+<codeline lineno="157"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="159"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="160"><highlight class="comment"><sp/>*<sp/>Gets<sp/>the<sp/>error<sp/>string<sp/>for<sp/>the<sp/>given<sp/>operating<sp/>system<sp/>error<sp/>code.</highlight></codeline>
+<codeline lineno="161"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="162"><highlight class="comment"><sp/>*<sp/>@param<sp/>code<sp/>The<sp/>operating<sp/>system<sp/>error<sp/>code.</highlight></codeline>
+<codeline lineno="163"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>error<sp/>string.</highlight></codeline>
+<codeline lineno="164"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="165" refid="namespacezorba_1_1os__error_1a63d5fe343d3df99aeb27e2c60f037475" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>std::string<sp/><ref refid="namespacezorba_1_1os__error_1a2932d8a5e9e71868bd76a2b10b4b377d" kindref="member" tooltip="Gets the error string for the given operating system error code.">get_err_string</ref>(<sp/><ref refid="namespacezorba_1_1os__error_1ae3a0f1108774ccc3ff4d12c48bbe745e" kindref="member">code_type</ref><sp/>code<sp/>=<sp/><ref refid="namespacezorba_1_1os__error_1a3e2dfaebb7d03986994e7dc0ffea756e" kindref="member" tooltip="Gets the most recent operating system error code.">get_err_code</ref>()<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1os__error_1a2932d8a5e9e71868bd76a2b10b4b377d" kindref="member" tooltip="Gets the error string for the given operating system error code.">get_err_string</ref>(<sp/></highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">,<sp/>code<sp/>);</highlight></codeline>
+<codeline lineno="167"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="169"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="170"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="171"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>os_error</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="172"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="173"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_API_ERROR_UTIL_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="174"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="175"><highlight class="comment"><sp/>*<sp/>Local<sp/>variables:</highlight></codeline>
+<codeline lineno="176"><highlight class="comment"><sp/>*<sp/>mode:<sp/>c++</highlight></codeline>
+<codeline lineno="177"><highlight class="comment"><sp/>*<sp/>End:</highlight></codeline>
+<codeline lineno="178"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="179"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h"/>
+  </compounddef>
+</doxygen>

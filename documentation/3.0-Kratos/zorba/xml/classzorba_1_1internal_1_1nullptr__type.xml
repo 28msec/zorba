@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1nullptr__type" kind="class" prot="public">
+    <compoundname>zorba::internal::nullptr_type</compoundname>
+    <includes refid="cxx__util_8h" local="no">zorba/internal/cxx_util.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1nullptr__type_1abf72be3c21a03f7f1804ee44cc772082" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>zorba::internal::nullptr_type::operator T *</definition>
+        <argsstring>() const </argsstring>
+        <name>operator T *</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/cxx_util.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/cxx_util.h" bodystart="40" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1nullptr__type_1a2777827abd5161e30b40373afbf35437" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>zorba::internal::nullptr_type::operator T C::*</definition>
+        <argsstring>() const </argsstring>
+        <name>operator T C::*</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/cxx_util.h" line="44" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/cxx_util.h" bodystart="44" bodyend="46"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1nullptr__type_1af0471360ecd47b8f7f10fc18a12ed69e" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::internal::nullptr_type::operator&amp;</definition>
+        <argsstring>() const </argsstring>
+        <name>operator&amp;</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/cxx_util.h" line="48"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/cxx_util.h" line="37" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/cxx_util.h" bodystart="37" bodyend="49"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1nullptr__type_1abf72be3c21a03f7f1804ee44cc772082" prot="public" virt="non-virtual"><scope>zorba::internal::nullptr_type</scope><name>operator T *</name></member>
+      <member refid="classzorba_1_1internal_1_1nullptr__type_1a2777827abd5161e30b40373afbf35437" prot="public" virt="non-virtual"><scope>zorba::internal::nullptr_type</scope><name>operator T C::*</name></member>
+      <member refid="classzorba_1_1internal_1_1nullptr__type_1af0471360ecd47b8f7f10fc18a12ed69e" prot="private" virt="non-virtual"><scope>zorba::internal::nullptr_type</scope><name>operator&amp;</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

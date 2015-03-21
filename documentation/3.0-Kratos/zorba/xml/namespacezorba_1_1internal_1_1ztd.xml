@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1internal_1_1ztd" kind="namespace">
+    <compoundname>zorba::internal::ztd</compoundname>
+    <innerclass refid="structzorba_1_1internal_1_1ztd_1_1destroy__delete" prot="public">zorba::internal::ztd::destroy_delete</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool" prot="public">zorba::internal::ztd::explicit_bool</innerclass>
+    <innerclass refid="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator" prot="public">zorba::internal::ztd::has_insertion_operator</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1ztd_1_1is__c__string" prot="public">zorba::internal::ztd::is_c_string</innerclass>
+    <innerclass refid="structzorba_1_1internal_1_1ztd_1_1less" prot="public">zorba::internal::ztd::less</innerclass>
+    <innerclass refid="structzorba_1_1internal_1_1ztd_1_1less_3_01char_01const_01_5_01_4" prot="public">zorba::internal::ztd::less&lt; char const * &gt;</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1ztd_1_1proxy" prot="public">zorba::internal::ztd::proxy</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1ztd_1_1sfinae__base" prot="public">zorba::internal::ztd::sfinae_base</innerclass>
+    <innernamespace refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl">zorba::internal::ztd::has_insertion_operator_impl</innernamespace>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacezorba_1_1internal_1_1ztd_1a85da7d6ba8de0c23e2346189a73adc29" prot="public" static="no" mutable="no">
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt;!<ref refid="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator" kindref="compound">has_insertion_operator</ref>&lt;T &gt;::value &amp;&amp;!<ref refid="ztd_8h_1a67def45b6f7f4daa8a69dcfb6a66008b" kindref="member">ZORBA_HAS_C_STR</ref>(T)&amp;&amp;has_str&lt; T, std::string(T::*)() const  &gt;::value &amp;&amp;!has_toString&lt; T, std::string(T::*)() const  &gt;::value, std::string &gt;::type</type>
+        <definition>std::enable_if&lt;!has_insertion_operator&lt;T &gt;::value &amp;&amp;!ZORBA_HAS_C_STR(T)&amp;&amp;!has_str&lt; T, std::string(T::*)() const  &gt;::value &amp;&amp;has_toString&lt; T, std::string(T::*)() const  &gt;::value, std::string &gt;::type zorba::internal::ztd::to_string</definition>
+        <argsstring>(T const &amp;t)</argsstring>
+        <name>to_string</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="358" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="358" bodyend="360"/>
+        <referencedby refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a4edb4813fb095a50bed69b0f792f0066" compoundref="internal_2diagnostic_8h" startline="297" endline="300">zorba::internal::diagnostic::parameters::operator,</referencedby>
+        <referencedby refid="namespacezorba_1_1internal_1_1ztd_1a1f5944573fe9f2c47c421a6cc54b2044" compoundref="ztd_8h" startline="398" endline="402">to_string</referencedby>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1aab6211f3f098e27c67a814d90ca66224" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class StringType</type>
+          </param>
+        </templateparamlist>
+        <type>StringType::const_pointer</type>
+        <definition>StringType::const_pointer zorba::internal::ztd::c_str</definition>
+        <argsstring>(StringType const &amp;s)</argsstring>
+        <name>c_str</name>
+        <param>
+          <type>StringType const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="180" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="180" bodyend="182"/>
+        <referencedby refid="namespacezorba_1_1os__error_1a0cbf17540f8b3fea2dc321f3f7ccb84e" compoundref="error__util_8h" startline="155" endline="157">zorba::os_error::get_err_string</referencedby>
+        <referencedby refid="classzorba_1_1internal_1_1FixedQName_1a46fa747edd34f16e20a6def41f87f005" compoundref="qname_8h" startline="68" endline="68">zorba::internal::FixedQName&lt; JSONiqErrorQName, char const * &gt;::localname</referencedby>
+        <referencedby refid="classzorba_1_1internal_1_1VariableQName_1a518a57ef0cd33722c8eb70119236fb61" compoundref="qname_8h" startline="98" endline="98">zorba::internal::VariableQName&lt; std::string &gt;::localname</referencedby>
+        <referencedby refid="namespacezorba_1_1fs_1ae323f59361a3a0bfb5951a8ae1beb21f" compoundref="fs__util_8h" startline="591" endline="603">zorba::fs::make_absolute</referencedby>
+        <referencedby refid="classzorba_1_1internal_1_1FixedQName_1a94722d636aef2e443ee628bdd250feaa" compoundref="qname_8h" startline="66" endline="66">zorba::internal::FixedQName&lt; JSONiqErrorQName, char const * &gt;::ns</referencedby>
+        <referencedby refid="classzorba_1_1internal_1_1VariableQName_1ad7c9604cfb6f1dbf17aed047c2a3e827" compoundref="qname_8h" startline="96" endline="96">zorba::internal::VariableQName&lt; std::string &gt;::ns</referencedby>
+        <referencedby refid="classzorba_1_1internal_1_1FixedQName_1a73dea6ab417987b41fecee2ef8e07b06" compoundref="qname_8h" startline="67" endline="67">zorba::internal::FixedQName&lt; JSONiqErrorQName, char const * &gt;::prefix</referencedby>
+        <referencedby refid="classzorba_1_1internal_1_1VariableQName_1a3dac355c972df627508fe2e3124e44f1" compoundref="qname_8h" startline="97" endline="97">zorba::internal::VariableQName&lt; std::string &gt;::prefix</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1aa95677649ec420ff4d6d6d2f1d0a1cc8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::internal::ztd::c_str</definition>
+        <argsstring>(char const *s)</argsstring>
+        <name>c_str</name>
+        <param>
+          <type>char const *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="191" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="191" bodyend="193"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1aa00785de2ef579d23b02fc8c8c3cba8f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt;!ZORBA_TR1_NS::is_array&lt; T &gt;::value &amp;&amp;!ZORBA_TR1_NS::is_pointer&lt; T &gt;::value &amp;&amp;<ref refid="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator" kindref="compound">has_insertion_operator</ref>&lt;T &gt;::value, std::string &gt;::type</type>
+        <definition>std::enable_if&lt;!ZORBA_TR1_NS::is_array&lt;T&gt;::value &amp;&amp; !ZORBA_TR1_NS::is_pointer&lt;T&gt;::value &amp;&amp; has_insertion_operator&lt;T&gt;::value, std::string&gt;::type zorba::internal::ztd::to_string</definition>
+        <argsstring>(T const &amp;t)</argsstring>
+        <name>to_string</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="314" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="314" bodyend="318"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1a1f5944573fe9f2c47c421a6cc54b2044" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; ZORBA_TR1_NS::is_pointer&lt; T &gt;::value &amp;&amp;!<ref refid="classzorba_1_1internal_1_1ztd_1_1is__c__string" kindref="compound">is_c_string</ref>&lt; T &gt;::value, std::string &gt;::type</type>
+        <definition>std::enable_if&lt;ZORBA_TR1_NS::is_pointer&lt;T&gt;::value &amp;&amp; !is_c_string&lt;T&gt;::value, std::string&gt;::type zorba::internal::ztd::to_string</definition>
+        <argsstring>(T p)</argsstring>
+        <name>to_string</name>
+        <param>
+          <type>T</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="398" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="398" bodyend="402"/>
+        <references refid="namespacezorba_1_1internal_1_1ztd_1a85da7d6ba8de0c23e2346189a73adc29" compoundref="ztd_8h" startline="358" endline="360">to_string</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1a5cbe42061080109de9dd887ad8b23eb9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string zorba::internal::ztd::to_string</definition>
+        <argsstring>(char const *s)</argsstring>
+        <name>to_string</name>
+        <param>
+          <type>char const *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="411" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="411" bodyend="413"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1a223c8dc477c8907589e714b6ee7bdbc5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string zorba::internal::ztd::to_string</definition>
+        <argsstring>(unsigned char const *s)</argsstring>
+        <name>to_string</name>
+        <param>
+          <type>unsigned char const *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="422" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="422" bodyend="424"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1a34d4a193ceda163e3932f95fa5ce2265" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::ztd::ZORBA_DECL_HAS_MEM_FN</definition>
+        <argsstring>(c_str)</argsstring>
+        <name>ZORBA_DECL_HAS_MEM_FN</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1internal_1_1ztd_1aab6211f3f098e27c67a814d90ca66224" kindref="member">c_str</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="259"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1aa7e759d0783bf6676366fee8220e3ded" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::ztd::ZORBA_DECL_HAS_MEM_FN</definition>
+        <argsstring>(str)</argsstring>
+        <name>ZORBA_DECL_HAS_MEM_FN</name>
+        <param>
+          <type>str</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="260"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1ztd_1abaab3f5e0b83220ae11bab740e91f442" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::ztd::ZORBA_DECL_HAS_MEM_FN</definition>
+        <argsstring>(toString)</argsstring>
+        <name>ZORBA_DECL_HAS_MEM_FN</name>
+        <param>
+          <type>toString</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="261"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/proxy.h" line="22"/>
+  </compounddef>
+</doxygen>

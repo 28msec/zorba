@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1StoreManager" kind="class" prot="public">
+    <compoundname>zorba::StoreManager</compoundname>
+    <includes refid="store__manager_8h" local="no">zorba/store_manager.h</includes>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1StoreManager_1a9be91dfe800748ca7d955a88f9d85ed9" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>static void* zorba::StoreManager::getStore</definition>
+        <argsstring>()</argsstring>
+        <name>getStore</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_manager.h" line="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StoreManager_1a8aeeb96827e683d5f498c7a8a767357e" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void zorba::StoreManager::shutdownStore</definition>
+        <argsstring>(void *store)</argsstring>
+        <name>shutdownStore</name>
+        <param>
+          <type>void *</type>
+          <declname>store</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_manager.h" line="34"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Class contains helper functions to create and destroy the store that is to be used by the zorba library. </para>    </briefdescription>
+    <detaileddescription>
+<para>The functions must be implemented in the code of each store module. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/store_manager.h" line="30" bodyfile="/home/wcandillon/deadlinks/include/zorba/store_manager.h" bodystart="29" bodyend="35"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1StoreManager_1a9be91dfe800748ca7d955a88f9d85ed9" prot="public" virt="non-virtual"><scope>zorba::StoreManager</scope><name>getStore</name></member>
+      <member refid="classzorba_1_1StoreManager_1a8aeeb96827e683d5f498c7a8a767357e" prot="public" virt="non-virtual"><scope>zorba::StoreManager</scope><name>shutdownStore</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

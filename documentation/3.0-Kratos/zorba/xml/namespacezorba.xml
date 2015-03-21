@@ -1,0 +1,2138 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba" kind="namespace">
+    <compoundname>zorba</compoundname>
+    <innerclass refid="classzorba_1_1Annotation" prot="public">zorba::Annotation</innerclass>
+    <innerclass refid="classzorba_1_1Collection" prot="public">zorba::Collection</innerclass>
+    <innerclass refid="classzorba_1_1CollectionManager" prot="public">zorba::CollectionManager</innerclass>
+    <innerclass refid="classzorba_1_1ContextualExternalFunction" prot="public">zorba::ContextualExternalFunction</innerclass>
+    <innerclass refid="classzorba_1_1DebuggerClient" prot="public">zorba::DebuggerClient</innerclass>
+    <innerclass refid="classzorba_1_1DebuggerEventHandler" prot="public">zorba::DebuggerEventHandler</innerclass>
+    <innerclass refid="classzorba_1_1DebuggerSocketException" prot="public">zorba::DebuggerSocketException</innerclass>
+    <innerclass refid="classzorba_1_1DefaultContentHandler" prot="public">zorba::DefaultContentHandler</innerclass>
+    <innerclass refid="classzorba_1_1DefaultDebuggerEventHandler" prot="public">zorba::DefaultDebuggerEventHandler</innerclass>
+    <innerclass refid="classzorba_1_1Diagnostic" prot="public">zorba::Diagnostic</innerclass>
+    <innerclass refid="classzorba_1_1DiagnosticHandler" prot="public">zorba::DiagnosticHandler</innerclass>
+    <innerclass refid="classzorba_1_1DocumentManager" prot="public">zorba::DocumentManager</innerclass>
+    <innerclass refid="classzorba_1_1DynamicContext" prot="public">zorba::DynamicContext</innerclass>
+    <innerclass refid="classzorba_1_1EmptySequence" prot="public">zorba::EmptySequence</innerclass>
+    <innerclass refid="classzorba_1_1EntityData" prot="public">zorba::EntityData</innerclass>
+    <innerclass refid="classzorba_1_1ExternalFunction" prot="public">zorba::ExternalFunction</innerclass>
+    <innerclass refid="classzorba_1_1ExternalFunctionParameter" prot="public">zorba::ExternalFunctionParameter</innerclass>
+    <innerclass refid="classzorba_1_1ExternalModule" prot="public">zorba::ExternalModule</innerclass>
+    <innerclass refid="classzorba_1_1Function" prot="public">zorba::Function</innerclass>
+    <innerclass refid="classzorba_1_1Item" prot="public">zorba::Item</innerclass>
+    <innerclass refid="classzorba_1_1ItemFactory" prot="public">zorba::ItemFactory</innerclass>
+    <innerclass refid="classzorba_1_1ItemSequence" prot="public">zorba::ItemSequence</innerclass>
+    <innerclass refid="classzorba_1_1Iterator" prot="public">zorba::Iterator</innerclass>
+    <innerclass refid="classzorba_1_1ModuleInfo" prot="public">zorba::ModuleInfo</innerclass>
+    <innerclass refid="classzorba_1_1NonContextualExternalFunction" prot="public">zorba::NonContextualExternalFunction</innerclass>
+    <innerclass refid="classzorba_1_1OneToOneURIMapper" prot="public">zorba::OneToOneURIMapper</innerclass>
+    <innerclass refid="classzorba_1_1PropertiesBase" prot="public">zorba::PropertiesBase</innerclass>
+    <innerclass refid="classzorba_1_1PropertiesGlobal" prot="public">zorba::PropertiesGlobal</innerclass>
+    <innerclass refid="classzorba_1_1QueryLocation" prot="public">zorba::QueryLocation</innerclass>
+    <innerclass refid="classzorba_1_1Resource" prot="public">zorba::Resource</innerclass>
+    <innerclass refid="classzorba_1_1SAX2__Attributes" prot="public">zorba::SAX2_Attributes</innerclass>
+    <innerclass refid="classzorba_1_1SAX2__ContentHandler" prot="public">zorba::SAX2_ContentHandler</innerclass>
+    <innerclass refid="classzorba_1_1SAX2__LexicalHandler" prot="public">zorba::SAX2_LexicalHandler</innerclass>
+    <innerclass refid="classzorba_1_1Sequence" prot="public">zorba::Sequence</innerclass>
+    <innerclass refid="classzorba_1_1SequenceType" prot="public">zorba::SequenceType</innerclass>
+    <innerclass refid="classzorba_1_1SerializationCallback" prot="public">zorba::SerializationCallback</innerclass>
+    <innerclass refid="classzorba_1_1Serializer" prot="public">zorba::Serializer</innerclass>
+    <innerclass refid="classzorba_1_1SingletonItemSequence" prot="public">zorba::SingletonItemSequence</innerclass>
+    <innerclass refid="classzorba_1_1SmartObject" prot="public">zorba::SmartObject</innerclass>
+    <innerclass refid="classzorba_1_1SmartPtr" prot="public">zorba::SmartPtr</innerclass>
+    <innerclass refid="classzorba_1_1StackFrame" prot="public">zorba::StackFrame</innerclass>
+    <innerclass refid="classzorba_1_1StaticCollectionManager" prot="public">zorba::StaticCollectionManager</innerclass>
+    <innerclass refid="classzorba_1_1StaticContext" prot="public">zorba::StaticContext</innerclass>
+    <innerclass refid="classzorba_1_1Stemmer" prot="public">zorba::Stemmer</innerclass>
+    <innerclass refid="classzorba_1_1StemmerProvider" prot="public">zorba::StemmerProvider</innerclass>
+    <innerclass refid="classzorba_1_1StoreManager" prot="public">zorba::StoreManager</innerclass>
+    <innerclass refid="classzorba_1_1StreamResource" prot="public">zorba::StreamResource</innerclass>
+    <innerclass refid="classzorba_1_1String" prot="public">zorba::String</innerclass>
+    <innerclass refid="classzorba_1_1Thesaurus" prot="public">zorba::Thesaurus</innerclass>
+    <innerclass refid="classzorba_1_1ThesaurusProvider" prot="public">zorba::ThesaurusProvider</innerclass>
+    <innerclass refid="classzorba_1_1Tokenizer" prot="public">zorba::Tokenizer</innerclass>
+    <innerclass refid="classzorba_1_1TokenizerProvider" prot="public">zorba::TokenizerProvider</innerclass>
+    <innerclass refid="classzorba_1_1URIHelper" prot="public">zorba::URIHelper</innerclass>
+    <innerclass refid="classzorba_1_1URIMapper" prot="public">zorba::URIMapper</innerclass>
+    <innerclass refid="classzorba_1_1URLResolver" prot="public">zorba::URLResolver</innerclass>
+    <innerclass refid="classzorba_1_1UserError" prot="public">zorba::UserError</innerclass>
+    <innerclass refid="classzorba_1_1UserException" prot="public">zorba::UserException</innerclass>
+    <innerclass refid="structzorba_1_1uuid" prot="public">zorba::uuid</innerclass>
+    <innerclass refid="classzorba_1_1VectorItemSequence" prot="public">zorba::VectorItemSequence</innerclass>
+    <innerclass refid="classzorba_1_1Version" prot="public">zorba::Version</innerclass>
+    <innerclass refid="classzorba_1_1XmlDataManager" prot="public">zorba::XmlDataManager</innerclass>
+    <innerclass refid="classzorba_1_1XQuery" prot="public">zorba::XQuery</innerclass>
+    <innerclass refid="classzorba_1_1XQueryException" prot="public">zorba::XQueryException</innerclass>
+    <innerclass refid="classzorba_1_1XQueryStackTrace" prot="public">zorba::XQueryStackTrace</innerclass>
+    <innerclass refid="classzorba_1_1Zorba" prot="public">zorba::Zorba</innerclass>
+    <innerclass refid="classzorba_1_1ZorbaException" prot="public">zorba::ZorbaException</innerclass>
+    <innernamespace refid="namespacezorba_1_1audit">zorba::audit</innernamespace>
+    <innernamespace refid="namespacezorba_1_1base64">zorba::base64</innernamespace>
+    <innernamespace refid="namespacezorba_1_1csv">zorba::csv</innernamespace>
+    <innernamespace refid="namespacezorba_1_1diagnostic">zorba::diagnostic</innernamespace>
+    <innernamespace refid="namespacezorba_1_1dt">zorba::dt</innernamespace>
+    <innernamespace refid="namespacezorba_1_1err">zorba::err</innernamespace>
+    <innernamespace refid="namespacezorba_1_1fn">zorba::fn</innernamespace>
+    <innernamespace refid="namespacezorba_1_1fs">zorba::fs</innernamespace>
+    <innernamespace refid="namespacezorba_1_1hexbinary">zorba::hexbinary</innernamespace>
+    <innernamespace refid="namespacezorba_1_1internal">zorba::internal</innernamespace>
+    <innernamespace refid="namespacezorba_1_1jerr">zorba::jerr</innernamespace>
+    <innernamespace refid="namespacezorba_1_1locale">zorba::locale</innernamespace>
+    <innernamespace refid="namespacezorba_1_1os__error">zorba::os_error</innernamespace>
+    <innernamespace refid="namespacezorba_1_1serialization">zorba::serialization</innernamespace>
+    <innernamespace refid="namespacezorba_1_1store">zorba::store</innernamespace>
+    <innernamespace refid="namespacezorba_1_1time">zorba::time</innernamespace>
+    <innernamespace refid="namespacezorba_1_1transcode">zorba::transcode</innernamespace>
+    <innernamespace refid="namespacezorba_1_1UnitTests">zorba::UnitTests</innernamespace>
+    <innernamespace refid="namespacezorba_1_1zerr">zorba::zerr</innernamespace>
+    <innernamespace refid="namespacezorba_1_1zfn">zorba::zfn</innernamespace>
+    <innernamespace refid="namespacezorba_1_1zuri">zorba::zuri</innernamespace>
+    <innernamespace refid="namespacezorba_1_1zwarn">zorba::zwarn</innernamespace>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacezorba_1a6627dc4004037f565b99ccf00f4d63cb" prot="public" static="no">
+        <name>boundary_space_mode_t</name>
+        <enumvalue id="namespacezorba_1a6627dc4004037f565b99ccf00f4d63cba659a1851aa633c5f08cb41d00229c444" prot="public">
+          <name>preserve_space</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1a6627dc4004037f565b99ccf00f4d63cbaee9fda6f89e0141d2479648c721631bd" prot="public">
+          <name>strip_space</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Boundary-space policy as defined in <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="48" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="48" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1a4e1072d3044e494cb76e59289e30310f" prot="public" static="no">
+        <name>construction_mode_t</name>
+        <enumvalue id="namespacezorba_1a4e1072d3044e494cb76e59289e30310fa5370952faff336f56d12883f75ced617" prot="public">
+          <name>preserve_cons</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1a4e1072d3044e494cb76e59289e30310fa6feadc159fef96fa3e99dd64d6f00ea2" prot="public">
+          <name>strip_cons</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Construction mode as defined in <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="52" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="52" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1a9bc4b8de63ef9c69ee8258911b159c08" prot="public" static="no">
+        <name>index_container_kind_t</name>
+        <enumvalue id="namespacezorba_1a9bc4b8de63ef9c69ee8258911b159c08afc42abab936432741e97fb094b93257d" prot="public">
+          <name>index_hash</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1a9bc4b8de63ef9c69ee8258911b159c08a0076cdee8135609dbcadb7103c4ce6b6" prot="public">
+          <name>index_tree</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Container kind of an index as defined in the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> Data Definition Facility. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="75" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="75" bodyend="75"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1a2188517ab2f3e28f472d4edc6ff15bc6" prot="public" static="no">
+        <name>index_maintenance_mode_t</name>
+        <enumvalue id="namespacezorba_1a2188517ab2f3e28f472d4edc6ff15bc6aa3ce52f03083387d93ddb8b9a473b2dc" prot="public">
+          <name>index_automatic</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1a2188517ab2f3e28f472d4edc6ff15bc6ab11ec8264ac35925c17dfb727cfe73df" prot="public">
+          <name>index_manual</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Maintenance mode of an index as defined in the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> Data Definition Facility. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="70" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="70" bodyend="70"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1a6d664ab06d77c71376b72583d9c76e94" prot="public" static="no">
+        <name>inherit_mode_t</name>
+        <enumvalue id="namespacezorba_1a6d664ab06d77c71376b72583d9c76e94ae190942325e7a70f6aea5c92732eb7d8" prot="public">
+          <name>inherit_ns</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1a6d664ab06d77c71376b72583d9c76e94a8a85cfa38f57c6204358bf1b1dc14af6" prot="public">
+          <name>no_inherit_ns</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Inherit part of the Copy-namespace mode as defined in <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="39" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1a93922af20969649ae76634c99192bfa8" prot="public" static="no">
+        <name>jsoniq_version_t</name>
+        <enumvalue id="namespacezorba_1a93922af20969649ae76634c99192bfa8acabe2a3a9f877bdecf125955d8de6d87" prot="public">
+          <name>jsoniq_version_undefined</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1a93922af20969649ae76634c99192bfa8ae1a9b28e1b279bc9b55dac0a6873697c" prot="public">
+          <name>jsoniq_version_1_0</name>
+          <initializer> 100</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>The JSONiq version. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="59" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="59" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1a68a06499a5fa26a391e4ec8f8800f1eb" prot="public" static="no">
+        <name>order_empty_mode_t</name>
+        <enumvalue id="namespacezorba_1a68a06499a5fa26a391e4ec8f8800f1eba042ec539b6feee4b7042c668542b1f25" prot="public">
+          <name>empty_greatest</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1a68a06499a5fa26a391e4ec8f8800f1eba8cee70d5e838e3e59d104edec064f161" prot="public">
+          <name>empty_least</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Default order for empty sequences as defined in <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="34" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="34" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1acf239253638cf017b2a8e29f47be25d3" prot="public" static="no">
+        <name>ordering_mode_t</name>
+        <enumvalue id="namespacezorba_1acf239253638cf017b2a8e29f47be25d3ac9eb30d96464f101853e7daea626bd98" prot="public">
+          <name>ordered</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1acf239253638cf017b2a8e29f47be25d3a6de5feb1f9d785543b013e72b88d97ce" prot="public">
+          <name>unordered</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Ordering mode as defined in <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="29" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="29" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1a4169935c02d1a13c22131558ef2f57cf" prot="public" static="no">
+        <name>preserve_mode_t</name>
+        <enumvalue id="namespacezorba_1a4169935c02d1a13c22131558ef2f57cfa165d9f1347d07b21fa532eb6ffd7455a" prot="public">
+          <name>preserve_ns</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1a4169935c02d1a13c22131558ef2f57cfac2a296ef44df961ea77b783a91c0ce4b" prot="public">
+          <name>no_preserve_ns</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Preserve part of the Copy-namespace mode as defined in <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="44" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="44" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4ca" prot="public" static="no">
+        <name>validation_mode_t</name>
+        <enumvalue id="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4caa67564dcc0fac18ffeab5446c00a0fc94" prot="public">
+          <name>validate_skip</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4caa327a688b87c5f30d8301671851ec1e54" prot="public">
+          <name>validate_lax</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4caae3f5124a59e3dc0a0aff4755bb98abb1" prot="public">
+          <name>validate_lax_dtd</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4caa4d338fc1285b3821c050247b5e84b2fe" prot="public">
+          <name>validate_strict</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Revalidation mode as defined in <ulink url="http://www.w3.org/TR/xquery-update-10/#id-revalidation-declaration">http://www.w3.org/TR/xquery-update-10/#id-revalidation-declaration</ulink> Note: when DTD validation is needed the use of validate_lax_dtd is required. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="65" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="65" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1a869910a131d93b8a3333d35bba8cb4c5" prot="public" static="no">
+        <name>xpath1_0compatib_mode_t</name>
+        <enumvalue id="namespacezorba_1a869910a131d93b8a3333d35bba8cb4c5a7d2856e7a661bb12252ed4511523149f" prot="public">
+          <name>xpath2_0</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1a869910a131d93b8a3333d35bba8cb4c5a12ccc878062b54dea7d638030415c2f1" prot="public">
+          <name>xpath1_0</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>XPath 1.0 compatibility mode as defined in <ulink url="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</ulink>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="25" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="25" bodyend="25"/>
+      </memberdef>
+      <memberdef kind="enum" id="namespacezorba_1a0b004b7103901f1b44b5b2ebc3035abd" prot="public" static="no">
+        <name>xquery_version_t</name>
+        <enumvalue id="namespacezorba_1a0b004b7103901f1b44b5b2ebc3035abda903841f309587df69c34f4a2e666144d" prot="public">
+          <name>xquery_version_1_0</name>
+          <initializer> 100</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1a0b004b7103901f1b44b5b2ebc3035abdaa7d1fe20e6b303bace6c7d4c635aa79f" prot="public">
+          <name>xquery_version_3_0</name>
+          <initializer> 300</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>The <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> version, taken from the version declaration, an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> 3.0 feature. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" line="56" bodyfile="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h" bodystart="56" bodyend="56"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacezorba_1a2ec75c29e084faf0a908f2b5545b9ed2" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1Annotation" kindref="compound">Annotation</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;Annotation&gt; zorba::Annotation_t</definition>
+        <argsstring></argsstring>
+        <name>Annotation_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="55" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a291189546e49e82a0c583e69665fab70" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1Collection" kindref="compound">Collection</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;Collection&gt; zorba::Collection_t</definition>
+        <argsstring></argsstring>
+        <name>Collection_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="56" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a0299a82ee3cd6825cc41a5794e257c48" prot="public" static="no">
+        <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref></type>
+        <definition>typedef Diagnostic zorba::Error</definition>
+        <argsstring></argsstring>
+        <name>Error</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/error.h" line="32" bodyfile="/home/wcandillon/deadlinks/include/zorba/error.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a14ebd231017771b2f2ab42b14eed3ff6" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1Function" kindref="compound">Function</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;Function&gt; zorba::Function_t</definition>
+        <argsstring></argsstring>
+        <name>Function_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="57" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a8df43daa49453badc49fdf745e5da41c" prot="public" static="no">
+        <type><ref refid="options_8h_1a4da3881b368a669bb110f8f198272159" kindref="member">Zorba_SerializerOptions_t</ref> *(*</type>
+        <definition>typedef Zorba_SerializerOptions_t*(* zorba::itemHandler)(void *aUserData)</definition>
+        <argsstring>)(void *aUserData)</argsstring>
+        <name>itemHandler</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="29" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1ItemSequence" kindref="compound">ItemSequence</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;ItemSequence&gt; zorba::ItemSequence_t</definition>
+        <argsstring></argsstring>
+        <name>ItemSequence_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="58" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;Iterator&gt; zorba::Iterator_t</definition>
+        <argsstring></argsstring>
+        <name>Iterator_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="59" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1SystemDiagnostic" kindref="compound">internal::SystemDiagnostic</ref>&lt; <ref refid="classzorba_1_1internal_1_1JSONiqErrorQName" kindref="compound">internal::JSONiqErrorQName</ref> &gt;</type>
+        <definition>typedef internal::SystemDiagnostic&lt;internal::JSONiqErrorQName&gt; zorba::JSONiqErrorCode</definition>
+        <argsstring></argsstring>
+        <name>JSONiqErrorCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" line="109" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a70597055d1d80f62684a2ad64cc825f0" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1ModuleInfo" kindref="compound">ModuleInfo</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;ModuleInfo&gt; zorba::ModuleInfo_t</definition>
+        <argsstring></argsstring>
+        <name>ModuleInfo_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="60" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a88f32864e73bd2d882541275f8cf1cdc" prot="public" static="no">
+        <type>std::vector&lt; std::pair&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref>, <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &gt;</type>
+        <definition>typedef std::vector&lt;std::pair&lt;String, String&gt; &gt; zorba::NsBindings</definition>
+        <argsstring></argsstring>
+        <name>NsBindings</name>
+        <briefdescription>
+<para>Used for <ref refid="classzorba_1_1Item_1ab6e6e787eb1bdc72c66025f80ea6816f" kindref="member">Item::getNamespaceBindings()</ref> and <ref refid="classzorba_1_1ItemFactory_1a14062c6c65134bbe5e4aa913103f1ce8" kindref="member">ItemFactory::createElementNode()</ref>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/item.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a78d62a531f86641ced1f270a9b94d822" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1QueryLocation" kindref="compound">QueryLocation</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;QueryLocation&gt; zorba::QueryLocation_t</definition>
+        <argsstring></argsstring>
+        <name>QueryLocation_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="61" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1acdfa38cd908238b68199f29d6c3392f9" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1Serializer" kindref="compound">Serializer</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;Serializer&gt; zorba::Serializer_t</definition>
+        <argsstring></argsstring>
+        <name>Serializer_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="62" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;StaticContext&gt; zorba::StaticContext_t</definition>
+        <argsstring></argsstring>
+        <name>StaticContext_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="63" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a048f5444424c91e41e452e2b9590cea5" prot="public" static="no">
+        <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref></type>
+        <definition>typedef Diagnostic zorba::Warning</definition>
+        <argsstring></argsstring>
+        <name>Warning</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_warning.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_warning.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a71ab77999abc9a60012b2c63a848c2ce" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1XmlDataManager" kindref="compound">XmlDataManager</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;XmlDataManager&gt; zorba::XmlDataManager_t</definition>
+        <argsstring></argsstring>
+        <name>XmlDataManager_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="64" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" prot="public" static="no">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> &gt;</type>
+        <definition>typedef SmartPtr&lt;XQuery&gt; zorba::XQuery_t</definition>
+        <argsstring></argsstring>
+        <name>XQuery_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" line="65" bodyfile="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a002a5f107545ad0ebb3114c7ec56ce30" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1SystemDiagnostic" kindref="compound">internal::SystemDiagnostic</ref>&lt; <ref refid="classzorba_1_1internal_1_1XQueryErrorQName" kindref="compound">internal::XQueryErrorQName</ref> &gt;</type>
+        <definition>typedef internal::SystemDiagnostic&lt;internal::XQueryErrorQName&gt; zorba::XQueryErrorCode</definition>
+        <argsstring></argsstring>
+        <name>XQueryErrorCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" line="108" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a9c43771184bda8659c0e0acc8b89a4ab" prot="public" static="no">
+        <type><ref refid="classzorba_1_1XQueryException" kindref="compound">XQueryException</ref></type>
+        <definition>typedef XQueryException zorba::XQueryWarning</definition>
+        <argsstring></argsstring>
+        <name>XQueryWarning</name>
+        <briefdescription>
+<para>Re-use an <ref refid="classzorba_1_1XQueryException" kindref="compound">XQueryException</ref> as an XQueryWarning to: </para>        </briefdescription>
+        <detaileddescription>
+<para><itemizedlist>
+<listitem><para>leverage all the localization and printing code</para></listitem><listitem><para>allow warnings to be treated as exceptions and thrown </para></listitem></itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_warning.h" line="34" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_warning.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a1b46fb2e4c82e802a47f62901d99caf8" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1SystemDiagnostic" kindref="compound">internal::SystemDiagnostic</ref>&lt; <ref refid="classzorba_1_1internal_1_1ZorbaCSVErrorQName" kindref="compound">internal::ZorbaCSVErrorQName</ref> &gt;</type>
+        <definition>typedef internal::SystemDiagnostic&lt;internal::ZorbaCSVErrorQName&gt; zorba::ZorbaCSVErrorCode</definition>
+        <argsstring></argsstring>
+        <name>ZorbaCSVErrorCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" line="112" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" bodystart="112" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a40864017864903189f5960af52725cd5" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1SystemDiagnostic" kindref="compound">internal::SystemDiagnostic</ref>&lt; <ref refid="classzorba_1_1internal_1_1ZorbaDateTimeErrorQName" kindref="compound">internal::ZorbaDateTimeErrorQName</ref> &gt;</type>
+        <definition>typedef internal::SystemDiagnostic&lt;internal::ZorbaDateTimeErrorQName&gt; zorba::ZorbaDateTimeErrorCode</definition>
+        <argsstring></argsstring>
+        <name>ZorbaDateTimeErrorCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" line="113" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1ac1db729dc5408427922f94597372955a" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1SystemDiagnostic" kindref="compound">internal::SystemDiagnostic</ref>&lt; <ref refid="classzorba_1_1internal_1_1ZorbaErrorQName" kindref="compound">internal::ZorbaErrorQName</ref> &gt;</type>
+        <definition>typedef internal::SystemDiagnostic&lt;internal::ZorbaErrorQName&gt; zorba::ZorbaErrorCode</definition>
+        <argsstring></argsstring>
+        <name>ZorbaErrorCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" line="110" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" bodystart="110" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a887f81405addcb31dd11322020506603" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1SystemDiagnostic" kindref="compound">internal::SystemDiagnostic</ref>&lt; <ref refid="classzorba_1_1internal_1_1ZorbaURIErrorQName" kindref="compound">internal::ZorbaURIErrorQName</ref> &gt;</type>
+        <definition>typedef internal::SystemDiagnostic&lt;internal::ZorbaURIErrorQName&gt; zorba::ZorbaURIErrorCode</definition>
+        <argsstring></argsstring>
+        <name>ZorbaURIErrorCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" line="114" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" bodystart="114" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1a3d266c3a858a16ec06c2ef3a77af2df1" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1SystemDiagnostic" kindref="compound">internal::SystemDiagnostic</ref>&lt; <ref refid="classzorba_1_1internal_1_1ZorbaWarningQName" kindref="compound">internal::ZorbaWarningQName</ref> &gt;</type>
+        <definition>typedef internal::SystemDiagnostic&lt;internal::ZorbaWarningQName&gt; zorba::ZorbaWarningCode</definition>
+        <argsstring></argsstring>
+        <name>ZorbaWarningCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" line="111" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/qnames.h" bodystart="111" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1aaeb7da255da17dd4a89229b84481dba3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator!=</definition>
+        <argsstring>(uuid const &amp;u1, uuid const &amp;u2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u1</declname>
+        </param>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two UUIDs for inequality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>u1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first UUID. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>u2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second UUID. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the two UUIDs are not equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="186" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="186" bodyend="188"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1adfd6a24c31e042dda8845ee71335e8df" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator!=</definition>
+        <argsstring>(Diagnostic const &amp;d1, Diagnostic const &amp;d2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+          <declname>d1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+          <declname>d2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two diagnostics for inequality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>d1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first diagnostic. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>d2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second diagnostic. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the diagnostics&apos; QNames are not equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="337" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="337" bodyend="339"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a9ce8030dd9f093476fb966621ec3b138" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator!=</definition>
+        <argsstring>(String const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1349" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1349" bodyend="1351"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a1912c5f4b6ebccad32acdd4c02b17248" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator!=</definition>
+        <argsstring>(String const &amp;s1, std::string const &amp;s2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1353" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1353" bodyend="1355"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a87740b27314a56416964d6340cddffca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator!=</definition>
+        <argsstring>(String const &amp;s1, String::const_pointer s2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1357" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1357" bodyend="1359"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a80ee2e0bc3f3db03fc7eb0c4584ac171" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator!=</definition>
+        <argsstring>(std::string const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1361" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1361" bodyend="1363"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a2e08b752a7ce5a985afb2339374cb830" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator!=</definition>
+        <argsstring>(String::const_pointer s1, String const &amp;s2)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1365" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1365" bodyend="1367"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1aadb1db04f795083f75dc077475abf5c3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>ZORBA_DLL_PUBLIC String zorba::operator+</definition>
+        <argsstring>(String const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1411"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1aa816d321a84b5b127fd339483b2803a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>ZORBA_DLL_PUBLIC String zorba::operator+</definition>
+        <argsstring>(String const &amp;s1, std::string const &amp;s2)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1412"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a8ccc4e0a2fbe463496762367c476767e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>ZORBA_DLL_PUBLIC String zorba::operator+</definition>
+        <argsstring>(String const &amp;s1, String::const_pointer s2)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1413"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1aa190860dcdf7895bf6ba2738ef63abc4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>ZORBA_DLL_PUBLIC String zorba::operator+</definition>
+        <argsstring>(std::string const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1414"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a0dbeb8efba328ea355aa609784a77438" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>ZORBA_DLL_PUBLIC String zorba::operator+</definition>
+        <argsstring>(String::const_pointer s1, String const &amp;s2)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1415"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a952a31aff0b416eca5ca24ab935ff546" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&lt;</definition>
+        <argsstring>(uuid const &amp;u1, uuid const &amp;u2)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u1</declname>
+        </param>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two UUIDs for less-than. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>u1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first UUID. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>u2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second UUID. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the first UUID is less than the second. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="197" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="197" bodyend="201"/>
+        <references refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" compoundref="uuid_8h" startline="92" endline="94">zorba::uuid::begin</references>
+        <references refid="structzorba_1_1uuid_1aa9bb45e592ebb865c5a53c5dca2aa181" compoundref="uuid_8h" startline="110" endline="112">zorba::uuid::end</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a612ede05e6be581fdd07ab4bb731e8a9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator&lt;</definition>
+        <argsstring>(String const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1329"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1abbc16648bc9dc3a29dd1a71dc489882f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator&lt;</definition>
+        <argsstring>(String const &amp;s1, std::string const &amp;s2)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1330"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1abb35b01acfef6c6a24ffb5f04d87fc87" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator&lt;</definition>
+        <argsstring>(String const &amp;s1, String::const_pointer s2)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1331"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a8819bd0c705ed40278acfbc5458cc51f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator&lt;</definition>
+        <argsstring>(std::string const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1332"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1af34626c39c2e617a48f173ed9dca7836" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator&lt;</definition>
+        <argsstring>(String::const_pointer s1, String const &amp;s2)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1333"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1aec67c4279177892eaa9d14c9ca0c0374" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const QueryLocation &amp;aQuery)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1QueryLocation" kindref="compound">QueryLocation</ref> &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="48"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a8e223eb0ab1c0c0434a4bc816482fd27" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const QueryLocation *aQuery)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1QueryLocation" kindref="compound">QueryLocation</ref> *</type>
+          <declname>aQuery</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="50"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a1896838c2abdf3626147ede023619fb1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const Version &amp;aVersion)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1Version" kindref="compound">Version</ref> &amp;</type>
+          <declname>aVersion</declname>
+        </param>
+        <briefdescription>
+<para>Write the result of calling aVersiongetVersion() to the given output stream. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/version.h" line="65"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a007d6f87e8af759b818adf8fe40e2c82" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; zorba::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;o, ZorbaException const &amp;e)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> const &amp;</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+<para>Emits the given <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> to the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to emit to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>e</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> to emit. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>o</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="209" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="209" bodyend="211"/>
+        <references refid="classzorba_1_1ZorbaException_1adc4984f60a8efd83c117e7288c49a2cb">zorba::ZorbaException::print</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a113f31a4428f49866ff67b707bad1b1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; zorba::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;o, ZorbaException::print_format f)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" kindref="member">ZorbaException::print_format</ref></type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+<para>Sets the format for the next <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> that&apos;s printed. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to affect. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>f</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The print_format to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>o</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="221" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="220" bodyend="224"/>
+        <references refid="classzorba_1_1ZorbaException_1ab13a584d2d9398fc0285ee44d8c26e27" compoundref="zorba__exception_8h" startline="133" endline="135">zorba::ZorbaException::set_print_format</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a712ec03669d307bf4cad95c8ca8d607a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, uuid const &amp;u)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u</declname>
+        </param>
+        <briefdescription>
+<para>Emits the given UUID to the given ostream in canonical UUID format. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>os</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to emit to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>u</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The UUID to emit. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>os</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="246"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a824162ce75016ccf34fb1bb42cbda0bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; zorba::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;o, XQueryException::print_trace t)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XQueryException_1adf30bab42a7e9e441a42ebb9b4a9b1fe" kindref="member">XQueryException::print_trace</ref></type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+<para>Sets whether to include the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> stack trace for the next <ref refid="classzorba_1_1XQueryException" kindref="compound">XQueryException</ref> that&apos;s printed. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to affect. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>t</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The print_trace value. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>o</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="406" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="405" bodyend="409"/>
+        <references refid="classzorba_1_1XQueryException_1a911f5714ef169dd932982103972b0dab" compoundref="xquery__exception_8h" startline="326" endline="328">zorba::XQueryException::set_print_trace</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a1bf36bbe09b4cf82a46e32042b0b088c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const XQuery_t &amp;aQuery)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref> &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="559"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1ab16cebdf97548ed4c85a7bb5785bc51b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, XQuery *aQuery)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> *</type>
+          <declname>aQuery</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="562"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1ae083c199f9dcf76478124ec92eafa64f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC std::ostream&amp; zorba::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;o, String const &amp;s)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1419"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a85f83e3303329acdaa008a56b4b39956" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&lt;=</definition>
+        <argsstring>(uuid const &amp;u1, uuid const &amp;u2)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u1</declname>
+        </param>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two UUIDs for less-than-or-equal-to. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>u1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first UUID. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>u2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second UUID. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the first UUID is less than or equal to the second. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="211" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="211" bodyend="213"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a2aa43e0198a0ff9cb6ecfd10f5334c09" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator&lt;=</definition>
+        <argsstring>(String const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1335"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a971ef177237523b8b9610b1763224710" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator&lt;=</definition>
+        <argsstring>(String const &amp;s1, std::string const &amp;s2)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1336"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a009f937e82370e221a4f8c8e7240b002" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator&lt;=</definition>
+        <argsstring>(String const &amp;s1, String::const_pointer s2)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1337"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a697765c53db70189f7a7406e569be8e1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator&lt;=</definition>
+        <argsstring>(std::string const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1338"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a135ed050f33029f2c2f452b7afc65be5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator&lt;=</definition>
+        <argsstring>(String::const_pointer s1, String const &amp;s2)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1339"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a394efee9feac94d7c5ee98b38aa6e80a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator==</definition>
+        <argsstring>(uuid const &amp;u1, uuid const &amp;u2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u1</declname>
+        </param>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two UUIDs for equality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>u1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first UUID. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>u2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second UUID. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the two UUIDs are equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="175" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="175" bodyend="177"/>
+        <references refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" compoundref="uuid_8h" startline="92" endline="94">zorba::uuid::begin</references>
+        <references refid="structzorba_1_1uuid_1aa9bb45e592ebb865c5a53c5dca2aa181" compoundref="uuid_8h" startline="110" endline="112">zorba::uuid::end</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1adf799320d83872ba0b8c9c4a140a6e97" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator==</definition>
+        <argsstring>(Diagnostic const &amp;d1, Diagnostic const &amp;d2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+          <declname>d1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+          <declname>d2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two diagnostics for equality. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>d1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first diagnostic. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>d2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second diagnostic. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the diagnostics&apos; QNames are equal. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="326" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="326" bodyend="328"/>
+        <references refid="classzorba_1_1Diagnostic_1ae32b80d36d617c9d142aeec331dd92c6">zorba::Diagnostic::qname</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1ab92304272b8943fa3deaaca2847ceae6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator==</definition>
+        <argsstring>(String const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1325"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a905eb71c66a5ae6f1915e6a2ad39334a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator==</definition>
+        <argsstring>(String const &amp;s1, std::string const &amp;s2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1326"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a4623fcec3ef0bec416878ebe08a7ff67" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::operator==</definition>
+        <argsstring>(String const &amp;s1, String::const_pointer s2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1327"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a25cf981ef13e65ec7a953630c625dcc3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator==</definition>
+        <argsstring>(std::string const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1341" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1341" bodyend="1343"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1adbcd9166a86ed1e9d58c542984631a1a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator==</definition>
+        <argsstring>(String::const_pointer s1, String const &amp;s2)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1345" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1345" bodyend="1347"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a8df3ad1b043596da4613df67b3699a08" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;</definition>
+        <argsstring>(uuid const &amp;u1, uuid const &amp;u2)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u1</declname>
+        </param>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two UUIDs for greater-than. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>u1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first UUID. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>u2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second UUID. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the first UUID is greater than the second. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="222" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="222" bodyend="224"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a6fec26345f1905ac6f2ac1e74a692696" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;</definition>
+        <argsstring>(String const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1389" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1389" bodyend="1391"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1aacc7b826052b5b1d23b290032e44f9a2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;</definition>
+        <argsstring>(String const &amp;s1, std::string const &amp;s2)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1393" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1393" bodyend="1395"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1abe9b9eeacae585862796ec354b4cb5f2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;</definition>
+        <argsstring>(String const &amp;s1, String::const_pointer s2)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1397" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1397" bodyend="1399"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a8a6a97fb0c6fb1e0889e10a39b78d532" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;</definition>
+        <argsstring>(std::string const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1401" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1401" bodyend="1403"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a7815c2a59f3a9712ec3f064df104de94" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;</definition>
+        <argsstring>(String::const_pointer s1, String const &amp;s2)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1405" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1405" bodyend="1407"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a6583cf855d9f3f51cd24fef4b6730a9b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;=</definition>
+        <argsstring>(uuid const &amp;u1, uuid const &amp;u2)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u1</declname>
+        </param>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> const &amp;</type>
+          <declname>u2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two UUIDs for greater-than-or-equal-to. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>u1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first UUID. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>u2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second UUID. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the first UUID is greater than or equal to the second. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="234" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="234" bodyend="236"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a423d40b2029a595ee1b4977e638bd180" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;=</definition>
+        <argsstring>(String const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1369" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1369" bodyend="1371"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a9078e87c54ffbde30c54300db934f80d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;=</definition>
+        <argsstring>(String const &amp;s1, std::string const &amp;s2)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1373" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1373" bodyend="1375"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a1314d7ae6610c96c5bac0a3faafd161c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;=</definition>
+        <argsstring>(String const &amp;s1, String::const_pointer s2)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1377" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1377" bodyend="1379"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1afdef53b8ad8635ab10da80b9b5e5ed57" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;=</definition>
+        <argsstring>(std::string const &amp;s1, String const &amp;s2)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1381" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1381" bodyend="1383"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1aaab6ca1727320ff99bdf1d324999ba1d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::operator&gt;=</definition>
+        <argsstring>(String::const_pointer s1, String const &amp;s2)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type><ref refid="classzorba_1_1String_1aa8ee14c8eaa862982a480a9aeef07af6" kindref="member">String::const_pointer</ref></type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1385" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1385" bodyend="1387"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1ac9b542ae24c7e4ac80b0bbaa4754042f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::streamsize</type>
+        <definition>ZORBA_DLL_PUBLIC std::streamsize zorba::read_without_whitespace</definition>
+        <argsstring>(std::istream &amp;is, char *buf, std::streamsize n)</argsstring>
+        <name>read_without_whitespace</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>buf</declname>
+        </param>
+        <param>
+          <type>std::streamsize</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Reads from the given istream until <emphasis>n</emphasis> non-whitespace characters are read or until EOF is encountered. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>is</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read from. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>buf</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the start of a buffer to read into. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of non-whitespace characters to read. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the number of non-whitespace characters read. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/stream_util.h" line="49"/>
+        <referencedby refid="namespacezorba_1_1hexbinary_1a8cdcc5a137d6fe2c06d1afc194ed9611" compoundref="hexbinary__util_8h" startline="193" endline="214">zorba::hexbinary::decode</referencedby>
+        <referencedby refid="namespacezorba_1_1base64_1ab7b4a9e5b8038da5c3d7c2eef3f9dca0" compoundref="base64__util_8h" startline="241" endline="262">zorba::base64::decode</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1a97b0b44f939ee8eb2702fa1cd53ef731" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::skip_utf8_bom</definition>
+        <argsstring>(std::istream &amp;is)</argsstring>
+        <name>skip_utf8_bom</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>is</declname>
+        </param>
+        <briefdescription>
+<para>Skips the UTF-8 byte order mark (BOM), if any. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>is</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The istream to read. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if a BOM was present and skipped. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/stream_util.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1acae6c10faa6866fa346861ce0062086c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::swap</definition>
+        <argsstring>(uuid &amp;u1, uuid &amp;u2)</argsstring>
+        <name>swap</name>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> &amp;</type>
+          <declname>u1</declname>
+        </param>
+        <param>
+          <type><ref refid="structzorba_1_1uuid" kindref="compound">uuid</ref> &amp;</type>
+          <declname>u2</declname>
+        </param>
+        <briefdescription>
+<para>Swaps two UUIDs&apos; data. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>u1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The first UUID. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>u2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The second UUID. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" line="164" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/uuid.h" bodystart="164" bodyend="166"/>
+        <references refid="structzorba_1_1uuid_1aeb822b1fd2491191fdb7235f3d84c848" compoundref="uuid_8h" startline="137" endline="139">zorba::uuid::swap</references>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Copyright 2006-2013 The FLWOR Foundation. </para>    </briefdescription>
+    <detaileddescription>
+<para>This header includes utility functions for certain timing-related operations, namely getting current wall-clock time and current CPU-used time values in a platform-dependent fashion, and computing deltas for both types.</para><para>Licensed under the Apache License, <ref refid="classzorba_1_1Version" kindref="compound">Version</ref> 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at</para><para><ulink url="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</ulink></para><para>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</para><para>Types: cputime - type representing CPU time utilized thus far by this process walltime - type representing wall-clock time since some platform-dependent epoch</para><para><ref refid="classzorba_1_1Function" kindref="compound">Function</ref> signatures: void get_current_cputime(cputime&amp; t) - returns current CPU time</para><para>double get_cputime_elapsed(const cputime&amp; t0, const cputime&amp; t1) - calculates elapsed CPU time (in ms) between two cputimes</para><para>void get_current_walltime(walltime&amp; t) - returns current wall-clock time</para><para>double get_walltime_elapsed(const walltime&amp; t0, const walltime&amp; t1) - calculates elapsed wall-clock time (in ms) between two walltimes TODO These functions should probably be defined in a .cpp file somewhere rather than here in <ref refid="time_8h" kindref="compound">time.h</ref>; as it is they will be compiled into every .o that uses them. So far, though, this is only zorbacmd and the implementation of fn:doc(), so it&apos;s not too bad. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/annotation.h" line="23"/>
+  </compounddef>
+</doxygen>

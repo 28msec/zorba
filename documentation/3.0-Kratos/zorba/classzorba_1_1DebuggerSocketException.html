@@ -1,0 +1,23 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::DebuggerSocketException</h1><p class="include">
+            #include &lt;zorba/debugger_exception.h&gt;
+        </p>
+Signals a problem with the execution of a socket call.     
+    <div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a14f7eb9c37dfca28340631806c038b51">userMessage</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a4c2b7c91deb0ee4324e26d2e6a3018d2">DebuggerSocketException</a>(const std::string &amp;message, bool inclSysMsg=false)</p><span class="signature-description">
+Construct a SocketException with a explanatory message.         </span></td></tr><tr><td class="return-type"><p class="signature">const char *</p></td><td><p class="signature"><a href="#a82f1e573207d62095ac25044e5436078">what</a>() const </p><span class="signature-description">
+Get the exception message.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ab2ea1dc2029e32c8146dfa1f05623690">~DebuggerSocketException</a>()</p><span class="signature-description">
+Provided just to guarantee that no exceptions are thrown.         </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a14f7eb9c37dfca28340631806c038b51" class="sect1"><div><h3>userMessage</h3></div><div class="signature-box">std::string<span> </span>userMessage</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a4c2b7c91deb0ee4324e26d2e6a3018d2" class="sect1"><div><h3>DebuggerSocketException</h3></div><div class="signature-box"><span> </span>DebuggerSocketException(const std::string &amp;message, bool inclSysMsg=false)</div><div><p class="signature-description">
+Construct a SocketException with a explanatory message.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>message</td><td>
+explanatory message </td></tr><tr><td>inclSysMsg</td><td>
+true if system message (from strerror(errno)) should be postfixed to the user provided message </td></tr></table></div>
+        </p></div></div><div id="a82f1e573207d62095ac25044e5436078" class="sect1"><div><h3>what</h3></div><div class="signature-box">const char *<span> </span>what() const </div><div><p class="signature-description">
+Get the exception message.         </p><p class="signature-description">
+<div><h4>Returns</h4>exception message </div>
+        </p></div></div><div id="ab2ea1dc2029e32c8146dfa1f05623690" class="sect1"><div><h3>~DebuggerSocketException</h3></div><div class="signature-box"><span> </span>~DebuggerSocketException()</div><div><p class="signature-description">
+Provided just to guarantee that no exceptions are thrown.         </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

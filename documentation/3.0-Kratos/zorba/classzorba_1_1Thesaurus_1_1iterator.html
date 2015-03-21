@@ -1,0 +1,22 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Thesaurus::iterator</h1><p class="include">
+            #include &lt;zorba/thesaurus.h&gt;
+        </p>
+An iterator is used to iterate over lookup results.     
+    <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Thesaurus_1_1iterator">iterator</a>, <a href="/pages/3.0/zorba/structzorba_1_1internal_1_1ztd_1_1destroy__delete">internal::ztd::destroy_delete</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Thesaurus_1_1iterator">iterator</a> &gt; &gt;</p></td><td><p class="signature"><a href="#a2d404bc5c65201236a67ededd2895104">ptr</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ac0e0dc9493ac91975213a581370f0a36">destroy</a>() const =0</p><span class="signature-description">
+Destroys this iterator.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a37380f3329abffb1d6bcec95471f5dfd">next</a>(String *synonym)=0</p><span class="signature-description">
+Gets the next synonym.         </span></td></tr></table></div><div class="section"><h2>Protected Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a477cb6ee1b85a658764ee560bd1d7b21">~iterator</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a2d404bc5c65201236a67ededd2895104" class="sect1"><div><h3>ptr</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Thesaurus_1_1iterator">iterator</a>, <a href="/pages/3.0/zorba/structzorba_1_1internal_1_1ztd_1_1destroy__delete">internal::ztd::destroy_delete</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Thesaurus_1_1iterator">iterator</a> &gt; &gt;<span> </span>ptr</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="ac0e0dc9493ac91975213a581370f0a36" class="sect1"><div><h3>destroy</h3></div><div class="signature-box">void<span> </span>destroy() const =0</div><div><p class="signature-description">
+Destroys this iterator.         </p><p class="signature-description">
+        </p></div></div><div id="a37380f3329abffb1d6bcec95471f5dfd" class="sect1"><div><h3>next</h3></div><div class="signature-box">bool<span> </span>next(String *synonym)=0</div><div><p class="signature-description">
+Gets the next synonym.         </p><p class="signature-description">
+This function must always include the original phrase that was looked up in its results.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>synonym</td><td>
+A pointer to the string to receive the next synonym. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <tt>true</tt> only if there is a next synonym. </div>
+        </p></div></div></div></div><div class="section"><h2>Protected Functions</h2><div class="detailed"><div id="a477cb6ee1b85a658764ee560bd1d7b21" class="sect1"><div><h3>~iterator</h3></div><div class="signature-box"><span> </span>~iterator()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

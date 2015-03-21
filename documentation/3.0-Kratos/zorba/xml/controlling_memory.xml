@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="controlling_memory" kind="page">
+    <compoundname>controlling_memory</compoundname>
+    <title>Controling Memory Consumption and Performance</title>
+    <detaileddescription>
+<para>Info to be added. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

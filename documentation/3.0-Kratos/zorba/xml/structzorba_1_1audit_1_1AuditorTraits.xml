@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1audit_1_1AuditorTraits" kind="struct" prot="public">
+    <compoundname>zorba::audit::AuditorTraits</compoundname>
+    <includes refid="audit__scoped_8h" local="no">zorba/audit_scoped.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>unsigned char</type>
+        <declname>flags</declname>
+        <defname>flags</defname>
+        <defval>0</defval>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="60" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="60" bodyend="61"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

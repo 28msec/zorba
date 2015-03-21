@@ -1,0 +1,443 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1base64_1_1streambuf" kind="class" prot="public">
+    <compoundname>zorba::base64::streambuf</compoundname>
+    <includes refid="base64__stream_8h" local="no">zorba/util/base64_stream.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1base64_1_1streambuf_1a4bb2b987203fd04923de71df22d6c409" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char zorba::base64::streambuf::gbuf_[3]</definition>
+        <argsstring>[3]</argsstring>
+        <name>gbuf_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="109" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1base64_1_1streambuf_1abb5f740700d0735769082c1abd5f61a6" prot="private" static="no" mutable="no">
+        <type>std::streambuf *</type>
+        <definition>std::streambuf* zorba::base64::streambuf::orig_buf_</definition>
+        <argsstring></argsstring>
+        <name>orig_buf_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="107" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1base64_1_1streambuf_1aaf7ffea984b4de2fa48ac5eddd04e04e" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char zorba::base64::streambuf::pbuf_[3]</definition>
+        <argsstring>[3]</argsstring>
+        <name>pbuf_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="110" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="110" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1base64_1_1streambuf_1a2b5b8be1345ef35a45b2e63fa07b747c" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int zorba::base64::streambuf::plen_</definition>
+        <argsstring></argsstring>
+        <name>plen_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="111" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="111" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a5f36ef76b1158e7e93ad0a2ca2674edc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::streambuf *</type>
+        <definition>std::streambuf* zorba::base64::streambuf::orig_streambuf</definition>
+        <argsstring>() const </argsstring>
+        <name>orig_streambuf</name>
+        <briefdescription>
+<para>Gets the original streambuf. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>said streambuf. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="89" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="89" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1aa80d49523c963b2aabe481fc0711ee8d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::base64::streambuf::streambuf</definition>
+        <argsstring>(std::streambuf *orig)</argsstring>
+        <name>streambuf</name>
+        <param>
+          <type>std::streambuf *</type>
+          <declname>orig</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a base64::streambuf. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>orig</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The original streambuf to read/write from/to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if is not supported or <emphasis>orig</emphasis> is null. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a566ff2c585c5f36dc48ef89762301cf4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::base64::streambuf::~streambuf</definition>
+        <argsstring>()</argsstring>
+        <name>~streambuf</name>
+        <briefdescription>
+<para>Destructs a base64::streambuf. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="82"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a83becd37506c943cb3563f8f66e5a820" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::base64::streambuf::imbue</definition>
+        <argsstring>(std::locale const &amp;)</argsstring>
+        <name>imbue</name>
+        <param>
+          <type>std::locale const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="94"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a758cb6b7e573eada5fd8ce6edd591d1c" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int_type</type>
+        <definition>int_type zorba::base64::streambuf::overflow</definition>
+        <argsstring>(int_type)</argsstring>
+        <name>overflow</name>
+        <param>
+          <type>int_type</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a4099a6371329796ddf1839b39a18eb29" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int_type</type>
+        <definition>int_type zorba::base64::streambuf::pbackfail</definition>
+        <argsstring>(int_type)</argsstring>
+        <name>pbackfail</name>
+        <param>
+          <type>int_type</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="101"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a2dd7d6fad94c85978586790c5ac67a45" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>pos_type</type>
+        <definition>pos_type zorba::base64::streambuf::seekoff</definition>
+        <argsstring>(off_type, std::ios_base::seekdir, std::ios_base::openmode)</argsstring>
+        <name>seekoff</name>
+        <param>
+          <type>off_type</type>
+        </param>
+        <param>
+          <type>std::ios_base::seekdir</type>
+        </param>
+        <param>
+          <type>std::ios_base::openmode</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="95"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a6dab0424ea94f9a6cc404fcef755b231" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>pos_type</type>
+        <definition>pos_type zorba::base64::streambuf::seekpos</definition>
+        <argsstring>(pos_type, std::ios_base::openmode)</argsstring>
+        <name>seekpos</name>
+        <param>
+          <type>pos_type</type>
+        </param>
+        <param>
+          <type>std::ios_base::openmode</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="96"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1aa7bdd8dea0b296b300b941cff25381b1" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::streambuf *</type>
+        <definition>std::streambuf* zorba::base64::streambuf::setbuf</definition>
+        <argsstring>(char_type *, std::streamsize)</argsstring>
+        <name>setbuf</name>
+        <param>
+          <type>char_type *</type>
+        </param>
+        <param>
+          <type>std::streamsize</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a70e3f6f2960527c5d3d46f97dc6c6797" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::streamsize</type>
+        <definition>std::streamsize zorba::base64::streambuf::showmanyc</definition>
+        <argsstring>()</argsstring>
+        <name>showmanyc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a94e63c9d95e2cf339cfa798cba62dccc" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int zorba::base64::streambuf::sync</definition>
+        <argsstring>()</argsstring>
+        <name>sync</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="99"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1adeec3b4fcdbdbd2cae757c85309f5a0e" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int_type</type>
+        <definition>int_type zorba::base64::streambuf::underflow</definition>
+        <argsstring>()</argsstring>
+        <name>underflow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a260a9dd741a01841a12db2f1aa255270" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::streamsize</type>
+        <definition>std::streamsize zorba::base64::streambuf::xsgetn</definition>
+        <argsstring>(char_type *, std::streamsize)</argsstring>
+        <name>xsgetn</name>
+        <param>
+          <type>char_type *</type>
+        </param>
+        <param>
+          <type>std::streamsize</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="103"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a08d1983f2cf4d1584b70523564e614ec" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::streamsize</type>
+        <definition>std::streamsize zorba::base64::streambuf::xsputn</definition>
+        <argsstring>(char_type const *, std::streamsize)</argsstring>
+        <name>xsputn</name>
+        <param>
+          <type>char_type const *</type>
+        </param>
+        <param>
+          <type>std::streamsize</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="104"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1af3d1d6a8042b400ba65fa8b0f3e5844a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::base64::streambuf::clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="113"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a50862d12369ba2f42ce0a34c9a0eb481" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">streambuf</ref> &amp;</type>
+        <definition>streambuf&amp; zorba::base64::streambuf::operator=</definition>
+        <argsstring>(streambuf const &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">streambuf</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="120"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a474622ccf2314e452e49e9fc4e51dff8" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::base64::streambuf::resetg</definition>
+        <argsstring>()</argsstring>
+        <name>resetg</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="114"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a2320d48d49b3717a8bc91392484d53b5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::base64::streambuf::resetp</definition>
+        <argsstring>()</argsstring>
+        <name>resetp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="115"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a9af6500bbd4de771928ce4aa6917738c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::base64::streambuf::streambuf</definition>
+        <argsstring>(streambuf const &amp;)</argsstring>
+        <name>streambuf</name>
+        <param>
+          <type><ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">streambuf</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="119"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1streambuf_1a1f1945b63aeba0638a0569a304d60a1f" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::base64::streambuf::writep</definition>
+        <argsstring>()</argsstring>
+        <name>writep</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="116"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A base64::streambuf is-a std::streambuf for decoding from and encoding to Base64 on-the-fly while reading or writing, respectively. </para>    </briefdescription>
+    <detaileddescription>
+<para>To use it, replace a stream&apos;s streambuf: <programlisting><codeline><highlight class="normal"><sp/><sp/>istream<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>base64::streambuf<sp/>b64buf(<sp/>is.rdbuf()<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>is.ios::rdbuf(<sp/>&amp;b64buf<sp/>);</highlight></codeline>
+</programlisting> Note that the base64::streambuf must exist for as long as it&apos;s being used by the stream. If you are replacing the streabuf for a stream you did not create, you should set it back to the original streambuf: <programlisting><codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f(<sp/>ostream<sp/>&amp;os<sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>base64::streambuf<sp/>b64buf(<sp/>os.rdbuf()<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>os.ios::rdbuf(<sp/>&amp;b64buf<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal"><sp/>(<sp/>...<sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>os.ios::rdbuf(<sp/>b64buf.orig_streambuf()<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>os.ios::rdbuf(<sp/>b64buf.orig_streambuf()<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+</programlisting> Alternatively, you may wish to use either <computeroutput><ref refid="namespacezorba_1_1base64_1acc02be7e81c24ef6fdffb8f0f16c189d" kindref="member">attach()</ref></computeroutput>, <computeroutput><ref refid="classzorba_1_1base64_1_1auto__attach" kindref="compound">auto_attach</ref></computeroutput>, or <computeroutput><ref refid="classzorba_1_1base64_1_1stream" kindref="compound">base64::stream</ref></computeroutput> instead.</para><para><bold>Note:</bold> due to the nature of Base64-encoding, when writing, you <emphasis>must</emphasis> ensure that the streambuf is flushed (by calling either <computeroutput>pubsync()</computeroutput> on the streambuf or <computeroutput>flush()</computeroutput> on the owning stream) when done.</para><para>While base64::streambuf does support seeking, the positions are relative to the original byte stream. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="69" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="69" bodyend="121"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1base64_1_1streambuf_1af3d1d6a8042b400ba65fa8b0f3e5844a" prot="private" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>clear</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a4bb2b987203fd04923de71df22d6c409" prot="private" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>gbuf_</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a83becd37506c943cb3563f8f66e5a820" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>imbue</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a50862d12369ba2f42ce0a34c9a0eb481" prot="private" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1abb5f740700d0735769082c1abd5f61a6" prot="private" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>orig_buf_</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a5f36ef76b1158e7e93ad0a2ca2674edc" prot="public" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>orig_streambuf</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a758cb6b7e573eada5fd8ce6edd591d1c" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>overflow</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a4099a6371329796ddf1839b39a18eb29" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>pbackfail</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1aaf7ffea984b4de2fa48ac5eddd04e04e" prot="private" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>pbuf_</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a2b5b8be1345ef35a45b2e63fa07b747c" prot="private" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>plen_</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a474622ccf2314e452e49e9fc4e51dff8" prot="private" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>resetg</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a2320d48d49b3717a8bc91392484d53b5" prot="private" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>resetp</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a2dd7d6fad94c85978586790c5ac67a45" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>seekoff</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a6dab0424ea94f9a6cc404fcef755b231" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>seekpos</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1aa7bdd8dea0b296b300b941cff25381b1" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>setbuf</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a70e3f6f2960527c5d3d46f97dc6c6797" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>showmanyc</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1aa80d49523c963b2aabe481fc0711ee8d" prot="public" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>streambuf</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a9af6500bbd4de771928ce4aa6917738c" prot="private" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>streambuf</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a94e63c9d95e2cf339cfa798cba62dccc" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>sync</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1adeec3b4fcdbdbd2cae757c85309f5a0e" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>underflow</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a1f1945b63aeba0638a0569a304d60a1f" prot="private" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>writep</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a260a9dd741a01841a12db2f1aa255270" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>xsgetn</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a08d1983f2cf4d1584b70523564e614ec" prot="protected" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>xsputn</name></member>
+      <member refid="classzorba_1_1base64_1_1streambuf_1a566ff2c585c5f36dc48ef89762301cf4" prot="public" virt="non-virtual"><scope>zorba::base64::streambuf</scope><name>~streambuf</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

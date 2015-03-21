@@ -1,0 +1,1139 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="scripting_spec" kind="page">
+    <compoundname>scripting_spec</compoundname>
+    <title>XQuery Scripting Extension Proposal</title>
+    <detaileddescription>
+<para><htmlonly>&lt;html&gt;
+  &lt;head&gt;
+    &lt;style type=&quot;text/css&quot;&gt;
+      /**/
+      code{
+        font-family:monospace;
+      }
+      
+      div.constraint,
+      div.issue,
+      div.note,
+      div.notice{
+        margin-left:2em;
+      }
+      
+      div.issue
+      p.title{
+        margin-left:-2em;
+      }
+      
+      ol.enumar{
+        list-style-type:decimal;
+      }
+      ol.enumla{
+        list-style-type:lower-alpha;
+      }
+      ol.enumlr{
+        list-style-type:lower-roman;
+      }
+      ol.enumua{
+        list-style-type:upper-alpha;
+      }
+      ol.enumur{
+        list-style-type:upper-roman;
+      }
+      
+      li p{
+        margin-top:0.3em;
+        margin-bottom:0.3em;
+      }
+      
+      sup small{
+        font-style:italic;
+        color:#8F8F8F;
+      }
+      
+      div.exampleInner pre{
+        margin-left:1em;
+        margin-top:0em;
+        margin-bottom:0em
+      }
+      div.exampleOuter{
+        border:4px double gray;
+        margin:0em;
+        padding:0em
+      }
+      div.exampleInner{
+        background-color:#d5dee3;
+        border-top-width:4px;
+        border-top-style:double;
+        border-top-color:#d3d3d3;
+        border-bottom-width:4px;
+        border-bottom-style:double;
+        border-bottom-color:#d3d3d3;
+        padding:4px;
+        margin:0em
+      }
+      div.exampleWrapper{
+        margin:4px
+      }
+      div.exampleHeader{
+        font-weight:bold;
+        margin:4px}
+      
+      div.issue{
+        border-bottom-color:black;
+        border-bottom-style:solid;
+        border-bottom-width:1pt;
+        margin-bottom:20pt;
+      }
+      
+      th.issue-toc-head{
+        border-bottom-color:black;
+        border-bottom-style:solid;
+        border-bottom-width:1pt;
+      }
+      
+      
+      table.small{
+        font-size:x-small;
+      }
+      
+      a.judgment:visited,
+      a.judgment:link{
+        font-family:sans-serif;
+        color:black;
+        text-decoration:none}
+      a.processing:visited,
+      a.processing:link{
+        color:black;
+        text-decoration:none}
+      a.env:visited,
+      a.env:link{
+        color:black;
+        text-decoration:none}
+      /**/&lt;/style&gt;
+    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/css/W3C-WD.css&quot; /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h2&gt;Authors&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Matthias Brantner, 28msec, Inc., matthias.brantner@28msec.com&lt;/li&gt;
+      &lt;li&gt;Daniela Florescu, Oracle Corporation, daniela.florescu@oracle.com&lt;/li&gt;
+      &lt;li&gt;Ghislain Fourny, ETH Zurich, ghislain.fourny@inf.ethz.ch&lt;/li&gt;
+      &lt;li&gt;Josh Spiegel, Oracle Corporation, josh.spiegel@oracle.com&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;h1&gt;Abstract&lt;/h1&gt;
+    &lt;p&gt;This specification defines an extension to XQuery 3.0 and XQuery Update Facility 1.0. It
+      introduces statements including the apply, local variable declaration, assignment, while, exit
+      and block statements, as well as statement counterparts to FLWOR, If, Switch, Typeswitch,
+      Trycatch expressions. Statements do not return any value but can have side effects such as
+      applying a PUL or reassigning a variable. It also introduces block expressions, which may
+      contain statements and thus also have side effects. Such expressions must be evaluated in a
+      specific order, which is described here. Subsequent expressions can see the effects of the
+      expressions that came before them. &lt;/p&gt;
+    &lt;h1&gt;Table of Contents&lt;/h1&gt;
+    &lt;ol&gt;
+      &lt;li&gt;&lt;a href=&quot;#Introduction&quot;&gt;Introduction&lt;/a&gt;&lt;ol&gt;&lt;/ol&gt;
+        &lt;ol&gt;&lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#id-extensions-to-processing-model&quot;&gt;Extensions to the Processing Model&lt;/a&gt;&lt;ol&gt;&lt;/ol&gt;
+        &lt;ol&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-statements&quot;&gt;Statements&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-expressions&quot;&gt;Expressions&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-evaluation-order&quot;&gt;Evaluation Order&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-snapshot-scope&quot;&gt;Snapshots&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-nested-snapshots&quot;&gt;Nested Snapshots&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-variable-revalidation&quot;&gt;Variable Binding Revalidation&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-query-body&quot;&gt;Main module&lt;/a&gt;&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#id-extensions-to-prolog&quot;&gt;Extensions to the Prolog&lt;/a&gt;&lt;ol&gt;&lt;/ol&gt;
+        &lt;ol&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-assignable-global-var&quot;&gt;Global Variable Declarations&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-function-decl&quot;&gt;Function Declarations&lt;/a&gt;&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#id-new-statements&quot;&gt;Statements&lt;/a&gt;&lt;ol&gt;&lt;/ol&gt;
+        &lt;ol&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-apply&quot;&gt;Apply Statement&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-assignment&quot;&gt;Assignment Statement&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-break&quot;&gt;Break Statement&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-continue&quot;&gt;Continue Statement&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-exit&quot;&gt;Exit Statement&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-vardecl-statement&quot;&gt;Variable Declaration Statement&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-while-statement&quot;&gt;While Statement&lt;/a&gt;&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#id-statements-expressions&quot;&gt;Statement counterparts of existing expressions&lt;/a&gt;&lt;ol&gt;&lt;/ol&gt;
+        &lt;ol&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-flwor-statement&quot;&gt;FLWOR Statements and Expressions&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-if-statement&quot;&gt;Conditional Statements and Expressions&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-switch-statement&quot;&gt;Switch Statements and Expressions&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-trycatch-statement&quot;&gt;Try-Catch Statements and Expressions&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-typeswitch-statement&quot;&gt;Typeswitch Statements and Expressions&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-block-statement&quot;&gt;Block Statements and Expressions&lt;/a&gt;&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#id-expr-changes&quot;&gt;Changes to existing expressions&lt;/a&gt;&lt;ol&gt;&lt;/ol&gt;
+        &lt;ol&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-node-constructors-statements&quot;&gt;Direct and Computed Node
+            Constructors&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-predicate-quantified&quot;&gt;Filter and quantified expressions.&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#id-other-expr&quot;&gt;Other Expressions&lt;/a&gt;&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#id-example&quot;&gt;Example&lt;/a&gt;&lt;ol&gt;&lt;/ol&gt;
+        &lt;ol&gt;&lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#id-extra-grammatical&quot;&gt;Extra-Grammatical Constraints&lt;/a&gt;&lt;ol&gt;&lt;/ol&gt;
+        &lt;ol&gt;&lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#id-lookahead&quot;&gt;Alternative simplified grammar for LL-Parsers&lt;/a&gt;&lt;ol&gt;&lt;/ol&gt;
+        &lt;ol&gt;&lt;/ol&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+    &lt;ol&gt;&lt;/ol&gt;
+    &lt;h1&gt;&lt;a name=&quot;Introduction&quot;&gt;&lt;/a&gt;1. Introduction &lt;/h1&gt;
+    &lt;p&gt;XQuery Scripting Extension Proposal extends XQuery 3.0, enabling it to serve as a scripting
+      language in order to satisfy XQuery Scripting Requirements. A prerequisite for this extension
+      is XQuery Update Facility 1.0. The following abbreviations are used in this specification:
+        [&lt;b&gt;XQUF&lt;/b&gt; is an abbreviation for XQuery Update Facility 1.0.] [&lt;b&gt;XQSX&lt;/b&gt; is an
+      abbreviation for XQuery Scripting Extension.] &lt;/p&gt;
+    &lt;p&gt;XQSX has the following properties:&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;It is a strict superset of XQuery 3.0, in the sense that all valid XQuery 3.0 expressions
+          are also valid XQSX expressions and have the same meaning. &lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;It is a strict superset of XQUF, in the sense that all valid XQUF expressions are also
+          valid XQSX expressions and have the same meaning. &lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;p&gt;This specification makes use of the prefix an for some annotations, bound with the namespace
+      http://zorba.io/annotations&lt;/p&gt;
+    &lt;h1&gt;&lt;a name=&quot;id-extensions-to-processing-model&quot;&gt;&lt;/a&gt;2. Extensions to the Processing Model &lt;/h1&gt;
+    &lt;p&gt; Expressions in XQSX may have side-effects that are visible to subsequent expressions
+      (according to their evaluation order). This requires a number of extensions to the XQuery 3.0
+      and XQUF processing model. &lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-statements&quot;&gt;&lt;/a&gt;2.1. Statements &lt;/h2&gt;
+    &lt;p&gt; [A &lt;b&gt;statement&lt;/b&gt; is a grammatical construct which does not return anything (no XDM, no
+      PUL) but can have side-effects. Statements have to be executed in the evaluation order defined
+      in XQSX.] &lt;/p&gt;
+    &lt;p&gt;XQSX introduces the following statements: &lt;ul&gt;
+        &lt;li&gt;
+          &lt;p&gt;Apply statements&lt;/p&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;p&gt;Variable declaration statements&lt;/p&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;p&gt;Variable assignment statements&lt;/p&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;p&gt;Control flow statements: While, Break, Continue and Exit&lt;/p&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;p&gt;Statements which have expression counterparts: If-Then-Else, FLWOR, Try-Catch, Switch,
+            Typeswitch and Block. &lt;/p&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-expressions&quot;&gt;&lt;/a&gt;2.2. Expressions &lt;/h2&gt;
+    &lt;h3&gt;&lt;a name=&quot;id-updating-constraint&quot;&gt;&lt;/a&gt;2.2.1. Updating Expressions &lt;/h3&gt;
+    &lt;p&gt; XQSX builds on top of XQuery 3.0 and XQuery Update 1.0, so that it keeps the same
+      constraints about an expression being simple (if it returns an empty PUL), updating (if it
+      returns an empty XDM) or vacuous (if both are empty). &lt;/p&gt;
+    &lt;p&gt;This specification takes into account the fact that the XQUF specification might evolve and
+      allow an updating expression to return both a PUL and an XDM. We use the terminology of
+      &quot;non-updating&quot; for simple expressions. &lt;/p&gt;
+    &lt;p&gt;The composability constraints and category rules for updating expressions are inherited from
+      the XQUF specification. Composability constraints are given for updating expressions in new
+      expressions as well as for sequential expressions. &lt;/p&gt;
+    &lt;h3&gt;&lt;a name=&quot;id-sequential&quot;&gt;&lt;/a&gt;2.2.2. Sequential Expressions &lt;/h3&gt;
+    &lt;p&gt; In addition to the updating/non-updating categorization, XQSX introduces another dimension
+      to classify expressions: sequential/non-sequential expressions. &lt;/p&gt;
+    &lt;ol&gt;
+      &lt;li&gt;
+        &lt;p&gt; [A &lt;b&gt;sequential expression&lt;/b&gt; is an expression that can have side effects other than
+          constructing a new node or raising an error.] Side effects include applying updates to an
+          XDM instance, altering the dynamic context, or affecting the flow of control. &lt;/p&gt;
+        &lt;p&gt;An expression is sequential if it contains, directly or nested:&lt;/p&gt;
+        &lt;ul&gt;
+          &lt;li&gt;
+            &lt;p&gt;a call to a sequential function.&lt;/p&gt;
+          &lt;/li&gt;
+          &lt;li&gt;
+            &lt;p&gt;an assign statement, and the affected variable is declared outside of the expression.
+            &lt;/p&gt;
+          &lt;/li&gt;
+          &lt;li&gt;
+            &lt;p&gt;an apply statement, the operand of which is updating.&lt;/p&gt;
+          &lt;/li&gt;
+          &lt;li&gt;
+            &lt;p&gt;a break or continue statement without FLWOR or while statement inbetween in the
+              expression tree.&lt;/p&gt;
+          &lt;/li&gt;
+          &lt;li&gt;
+            &lt;p&gt;an exit statement.&lt;/p&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;p&gt; The side effects of a sequential expression are immediately effective and are visible to
+          subsequent expressions. Because of their side effects, sequential expressions must be
+          evaluated in evaluation order, as defined in this specification. In addition to its side
+          effects, a sequential expression may return an XDM instance. &lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt; [A &lt;b&gt;non-sequential expression&lt;/b&gt; is an expression that is is not sequential.] &lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+    &lt;p&gt;The classification of each expression into one of the above categories is performed by static
+      analysis. &lt;/p&gt;
+    &lt;p&gt; Note that updating/non-updating and sequential/non-sequential are two orthogonal
+      classification dimensions. Hence, an expression can be non-updating and non-sequential,
+      non-updating and sequential, or updating and non-sequential. &lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-evaluation-order&quot;&gt;&lt;/a&gt;2.3. Evaluation Order &lt;/h2&gt;
+    &lt;p&gt; [XQSX defines an &lt;b&gt;evaluation order&lt;/b&gt; on many kinds of XQuery expressions, which is the
+      order that operand expressions must be evaluated in order to determine what side-effects are
+      visible to later expressions.] &lt;/p&gt;
+    &lt;p&gt;Unless otherwise stated, in an evaluation of a sequential expression or of a statement, the
+      operand expressions or statements must be evaluated exactly once, from left to right. &lt;/p&gt;
+    &lt;p&gt; An implementation may use any execution strategy as long as the result complies with the
+      semantics of this ordering. &lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-snapshot-scope&quot;&gt;&lt;/a&gt;2.4. Snapshots &lt;/h2&gt;
+    &lt;p&gt;The term &lt;b&gt;snapshot&lt;/b&gt; is defined in XQuery Update Facility as follows: [A &lt;b&gt;snapshot&lt;/b&gt;
+      is a scope within which expressions are evaluated with respect to a fixed XDM instance,
+      accessible through the dynamic context&apos;s bindings, and updates are held pending.] A snapshot
+      is terminated by invocation of the upd:applyUpdates operation. Unlike XQUF, XQSX permits an
+      XQuery program to contain more than one snapshot. &lt;/p&gt;
+    &lt;p&gt; XQuery 1.0 and XPath 2.0 Functions and Operators defines certain functions as stable. Stable
+      functions such as fn:current-time and fn:doc are defined to return the same result given the
+      same arguments within an execution scope. XQSX permits an XQuery program to contain more than
+      one execution scope. &lt;/p&gt;
+    &lt;p&gt;In XQSX, a snapshot and execution scope is defined as the lapse between two side effects to
+      the environment, reachable through the dynamic context, on which the XQuery program operates. &lt;/p&gt;
+    &lt;p&gt;Each of the following events marks the end of the current snapshot and execution scope, and
+      the beginning of a new one:&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;The invocation of upd:applyUpdates,&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Calling an external, sequential function,&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Assigning a new value to a variable.&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-nested-snapshots&quot;&gt;&lt;/a&gt;2.5. Nested Snapshots &lt;/h2&gt;
+    &lt;p&gt; To avoid nested snapshots, it is forbidden for an expression to be both updating and
+      sequential. If such is the case, a static error is raised. &lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-variable-revalidation&quot;&gt;&lt;/a&gt;2.6. Variable Binding Revalidation &lt;/h2&gt;
+    &lt;p&gt; To ensure type soundness, variable bindings are revalidated at the end of each scope to
+      check that any updates applied have not made them invalid with repect to their declared types.
+      It is a dynamic error if, after applying a pending update list (using upd:applyUpdates), the
+      XDM instance bound to any in-scope variable does not match the static type of that variable
+      according to SequenceType matching rules. &lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-query-body&quot;&gt;&lt;/a&gt;2.7. Main module &lt;/h2&gt;
+    &lt;pre&gt;
+0 - &lt;a name=&quot;MainModule&quot; class=&quot;ext&quot;&gt;MainModule&lt;/a&gt; ::= &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Prolog&quot; class=&quot;new&quot;&gt;Prolog&lt;/a&gt; &lt;a href=&quot;#Program&quot; class=&quot;new&quot;&gt;Program&lt;/a&gt;
+    &lt;/pre&gt;&lt;pre&gt;
+1 - &lt;a name=&quot;Program&quot; class=&quot;ext&quot;&gt;Program&lt;/a&gt; ::= &lt;a href=&quot;#StatementsAndOptionalExpr&quot; class=&quot;new&quot;&gt;StatementsAndOptionalExpr&lt;/a&gt;
+    &lt;/pre&gt;&lt;pre&gt;
+4 - &lt;a name=&quot;StatementsAndOptionalExpr&quot; class=&quot;new&quot;&gt;StatementsAndOptionalExpr&lt;/a&gt; ::= &lt;a href=&quot;#Statements&quot; class=&quot;new&quot;&gt;Statements&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt;?
+    &lt;/pre&gt;
+    &lt;p&gt;A main module is redefined to be be a prolog followed by a program.&lt;/p&gt;
+    &lt;p&gt;A program corresponds to the body of a block expression, except that the final expression may
+      be omitted. If such is the case, the final expression is considered to be the empty sequence. &lt;/p&gt;
+    &lt;p&gt;The program is evaluated like a block expression. The semantics are those of XQuery 3.0 or
+      XQuery Update Facility 1.0, i.e., its XDM value is the result of the program and the PUL it
+      returns is applied &lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt;The current XQUF specification only allows either a non-empty XDM or a non-empty PUL to be
+      returned.&lt;/p&gt;
+    &lt;h1&gt;&lt;a name=&quot;id-extensions-to-prolog&quot;&gt;&lt;/a&gt;3. Extensions to the Prolog &lt;/h1&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-assignable-global-var&quot;&gt;&lt;/a&gt;3.1. Global Variable Declarations &lt;/h2&gt;
+    &lt;pre&gt;
+[unchanged] AnnotatedDecl ::= &quot;declare&quot; Annotation* (VarDecl | FunctionDecl)
+    &lt;/pre&gt;&lt;pre&gt;
+[unchanged] Annotation : =  &quot;%&quot; EQName ( &quot;(&quot; Literal (&quot;,&quot; Literal)* &quot;)&quot; ) ?
+    &lt;/pre&gt;&lt;pre&gt;
+[unchanged] VarDecl ::= &quot;variable&quot; &quot;$&quot; VarName TypeDeclaration? ((&quot;:=&quot; VarValue) | (&quot;external&quot; (&quot;:=&quot; VarDefaultValue)?)))
+    &lt;/pre&gt;
+    &lt;b&gt;Definitions:&lt;/b&gt;
+    &lt;p&gt; XQSX allows the built-in annotations %an:assignable and %an:nonassignable to be used in a
+      Prolog variable declaration. If both annotations are used, a static error is raised. &lt;/p&gt;
+    &lt;p&gt; [An &lt;b&gt;assignable prolog variable&lt;/b&gt; is a global variable whose declaration specifies
+      %an:assignable, and may have its value changed by an assign statement.] &lt;/p&gt;
+    &lt;p&gt; [An &lt;b&gt;unassignable prolog variable&lt;/b&gt; is a global variable whose declaration specifies
+      %an:nonassignable, and may not have its value changed by an assign statement.] &lt;/p&gt;
+    &lt;p&gt;If an assignment qualifier is not used, the default is unassignable. &lt;/p&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;The initializing expression of a prolog variable (whether assignable or not) must be a
+      non-updating and non-sequential expression . &lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;The semantics of declaring assignable variables are the same as the semantics of unassignable
+      variables, except that the static type of an assignable variable without a declared type is
+      always item()*. &lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-function-decl&quot;&gt;&lt;/a&gt;3.2. Function Declarations &lt;/h2&gt;
+    &lt;pre&gt;
+33 - &lt;a name=&quot;FunctionDecl&quot; class=&quot;ext&quot;&gt;FunctionDecl&lt;/a&gt; ::= &quot;function&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName&quot; class=&quot;un&quot;&gt;EQName&lt;/a&gt; &quot;(&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-ParamList&quot; class=&quot;un&quot;&gt;ParamList&lt;/a&gt;? &quot;)&quot;
+                      (&quot;as&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-SequenceType&quot; class=&quot;un&quot;&gt;SequenceType&lt;/a&gt;)? (&quot;{&quot; &lt;a href=&quot;#StatementsAndOptionalExpr&quot; class=&quot;new&quot;&gt;StatementsAndOptionalExpr&lt;/a&gt; &quot;}&quot; | &quot;external&quot;))
+    &lt;/pre&gt;&lt;pre&gt;
+[unchanged] Annotation : =  &quot;%&quot; EQName ( &quot;(&quot; Literal (&quot;,&quot; Literal)* &quot;)&quot; ) ?
+    &lt;/pre&gt;&lt;pre&gt;&lt;/pre&gt;&lt;pre&gt;
+4 - &lt;a name=&quot;StatementsAndOptionalExpr&quot; class=&quot;new&quot;&gt;StatementsAndOptionalExpr&lt;/a&gt; ::= &lt;a href=&quot;#Statements&quot; class=&quot;new&quot;&gt;Statements&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt;?
+    &lt;/pre&gt;
+    &lt;b&gt;Definitions:&lt;/b&gt;
+    &lt;p&gt; XQSX allows the built-in annotations %an:sequential and %an:nonsequential to be used in a
+      Prolog function declaration. If both annotations are used, a static error is raised. &lt;/p&gt;
+    &lt;p&gt; [A &lt;b&gt;non-sequential function&lt;/b&gt; is a function whose declaration specifies
+      %an:nonsequential . ] &lt;/p&gt;
+    &lt;p&gt; [A &lt;b&gt;sequential function&lt;/b&gt; is a function whose declaration specifies the annotation
+      %an:sequential.] &lt;/p&gt;
+    &lt;p&gt;If a qualifier is not used, the default is non-sequential.&lt;/p&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;A function body corresponds to a block expression, except that the final expression may be
+      omitted (i.e., there are only statements). If such is the case, the final expression is
+      considered to be the empty sequence. Therefore in the following explanations, we identify the
+      function body with a block expression. &lt;/p&gt;
+    &lt;p&gt; The body of an non-sequential function must be a non-sequential expression, except if the
+      only reason why the expression is sequential is that it contains an exit statement. Otherwise,
+      a static error is raised. &lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;The semantics of functions are as follows. The function body is evaluated like a block
+      expression. Its result is determined by the first exit statement encountered during evaluation
+      of the Block. If no exit statement is encountered, the result of the function is the value
+      returned by the block expression (an empty XDM and an empty PUL if the final expression is
+      omitted). Other than that, the semantics is as defined in XQuery Update Facility 1.0. &lt;/p&gt;
+    &lt;h1&gt;&lt;a name=&quot;id-new-statements&quot;&gt;&lt;/a&gt;4. Statements &lt;/h1&gt;
+    &lt;p&gt;XQSX extends the XQuery 1.0 syntax by adding statements to the grammar. A statement may or
+      may not have side effects, and does not return anything. There are the following kinds of
+      statements: &lt;/p&gt;
+    &lt;pre&gt;
+5 - &lt;a name=&quot;Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt; ::=
+      &lt;a href=&quot;#ApplyStatement&quot; class=&quot;new&quot;&gt;ApplyStatement&lt;/a&gt;
+    | &lt;a href=&quot;#AssignStatement&quot; class=&quot;new&quot;&gt;AssignStatement&lt;/a&gt;
+    | &lt;a href=&quot;#BlockStatement&quot; class=&quot;new&quot;&gt;BlockStatement&lt;/a&gt;
+    | &lt;a href=&quot;#BreakStatement&quot; class=&quot;new&quot;&gt;BreakStatement&lt;/a&gt;
+    | &lt;a href=&quot;#ContinueStatement&quot; class=&quot;new&quot;&gt;ContinueStatement&lt;/a&gt;
+    | &lt;a href=&quot;#ExitStatement&quot; class=&quot;new&quot;&gt;ExitStatement&lt;/a&gt;
+    | &lt;a href=&quot;#FLWORStatement&quot; class=&quot;new&quot;&gt;FLWORStatement&lt;/a&gt;
+    | &lt;a href=&quot;#IfStatement&quot; class=&quot;new&quot;&gt;IfStatement&lt;/a&gt;
+    | &lt;a href=&quot;#SwitchStatement&quot; class=&quot;new&quot;&gt;SwitchStatement&lt;/a&gt;
+    | &lt;a href=&quot;#TryCatchStatement&quot; class=&quot;new&quot;&gt;TryCatchStatement&lt;/a&gt;
+    | &lt;a href=&quot;#TypeswitchStatement&quot; class=&quot;new&quot;&gt;TypeswitchStatement&lt;/a&gt;
+    | &lt;a href=&quot;#VarDeclStatement&quot; class=&quot;new&quot;&gt;VarDeclStatement&lt;/a&gt;
+    | &lt;a href=&quot;#WhileStatement&quot; class=&quot;new&quot;&gt;WhileStatement&lt;/a&gt;
+    &lt;/pre&gt;
+    &lt;p&gt;This part presents the statements that have no expression counterpart because they provide
+      new semantic features. &lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-apply&quot;&gt;&lt;/a&gt;4.1. Apply Statement &lt;/h2&gt;
+    &lt;pre&gt;
+6 - &lt;a name=&quot;ApplyStatement&quot; class=&quot;new&quot;&gt;ApplyStatement&lt;/a&gt; ::= &lt;a href=&quot;#ExprSimple&quot; class=&quot;new&quot;&gt;ExprSimple&lt;/a&gt; &quot;;&quot;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;(none).&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt; After the evaluation of SimpleExpr, the pending update list returned by this expression is
+      applied (by upd:applyUpdates). The XDM instance returned by this expression is discarded. &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt; SimpleExpr is evaluated exactly once before the semantics of the Apply Statement is applied. &lt;/p&gt;
+    &lt;b&gt;Example:&lt;/b&gt;
+    &lt;pre&gt;
+delete nodes ($user, $items, $bids);
+            &lt;/pre&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-assignment&quot;&gt;&lt;/a&gt;4.2. Assignment Statement &lt;/h2&gt;
+    &lt;pre&gt;
+7 - &lt;a name=&quot;AssignStatement&quot; class=&quot;new&quot;&gt;AssignStatement&lt;/a&gt; ::= &quot;$&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName&quot; class=&quot;un&quot;&gt;VarName&lt;/a&gt; &quot;:=&quot; &lt;a href=&quot;#ExprSingle&quot; class=&quot;ext&quot;&gt;ExprSingle&lt;/a&gt; &quot;;&quot;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;The operand must be non-updating.&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;The variable on the left-hand side of the assignment must be in scope and declared
+      assignable, otherwise a static error is raised. In particular, it must have been declared by a
+      variable declaration, local or in the prolog. &lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt;Variables bound in FLWOR, typeswitch, or quantified expressions or statements, as well as
+      function parameters, may not appear on the left-hand side of an assignment. &lt;/p&gt;
+    &lt;p&gt; The expression on the right-hand side is evaluated, resulting in an XDM instance. &lt;/p&gt;
+    &lt;p&gt;If the XDM instance returned by the expression on the right-hand side does not match the
+      declared type of the variable according to SequenceType matching rules, a type error is raised
+      . If the types match, the XDM instance returned by the expression is bound to the variable
+      (added to variable values in the dynamic context.) &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt; The operand expression is evaluated exactly once before the semantics of the Assignment
+      Statement is applied. &lt;/p&gt;
+    &lt;b&gt;Example:&lt;/b&gt;
+    &lt;pre&gt;
+$result := &quot;Bidding exceeded 60000&quot;;
+              &lt;/pre&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-break&quot;&gt;&lt;/a&gt;4.3. Break Statement &lt;/h2&gt;
+    &lt;pre&gt;
+9 - &lt;a name=&quot;BreakStatement&quot; class=&quot;new&quot;&gt;BreakStatement&lt;/a&gt; ::= &quot;break&quot; &quot;loop&quot; &quot;;&quot;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;(none)&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;A break statement interrupts the execution of the innermost while or FLWOR statement. The
+      execution of the program continues as if the execution of the while or FLWOR statement had
+      properly finished. &lt;/p&gt;
+    &lt;p&gt;A static error is raised if there is no enclosing while or FLWOR statement.&lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt;A break statement does not interfere with a FLWOR expression, only with FLWOR statements.&lt;/p&gt;
+    &lt;b&gt;Example:&lt;/b&gt;
+    &lt;pre&gt;
+break loop;              &lt;/pre&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-continue&quot;&gt;&lt;/a&gt;4.4. Continue Statement &lt;/h2&gt;
+    &lt;pre&gt;
+10 - &lt;a name=&quot;ContinueStatement&quot; class=&quot;new&quot;&gt;ContinueStatement&lt;/a&gt; ::= &quot;continue&quot; &quot;loop&quot; &quot;;&quot;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;(none)&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;A continue statement interrupts the current execution of the operand or return statement of
+      the innermost while or FLWOR statement. In the case of a while statement, the resumes with a
+      new evaluation of the test expression and, possibly, of the inner statement. In the case of a
+      FLWOR statement, the execution resumes with the next tuple. &lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt;A continue statement does not interfere with a FLWOR expression, only with FLWOR
+      statements.&lt;/p&gt;
+    &lt;b&gt;Example:&lt;/b&gt;
+    &lt;pre&gt;
+continue loop;              &lt;/pre&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-exit&quot;&gt;&lt;/a&gt;4.5. Exit Statement &lt;/h2&gt;
+    &lt;pre&gt;
+11 - &lt;a name=&quot;ExitStatement&quot; class=&quot;new&quot;&gt;ExitStatement&lt;/a&gt; ::= &quot;exit&quot; &quot;returning&quot; &lt;a href=&quot;#ExprSingle&quot; class=&quot;ext&quot;&gt;ExprSingle&lt;/a&gt; &quot;;&quot;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;(none)&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;An exit statement serves to define the result of the enclosing function or query body.&lt;/p&gt;
+    &lt;p&gt; The operand expression of the exit expression is evaluated, resulting in an XDM instance and
+      a pending update list. &lt;/p&gt;
+    &lt;p&gt;If an exit statement is evaluated within the body of a function, further evaluation of the
+      function body is interrupted and the XDM instance and pending update list returned by the
+      operand expression are returned as the result of the function call. &lt;/p&gt;
+    &lt;p&gt;If an exit statement is evaluated within a query body (i.e., not within the body of a
+      function), further evaluation of the query is interrupted and the XDM instance and pending
+      update list returned by the operand expression are returned as the result of the query. &lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt;An exit statement in a block terminates evaluation of the enclosing function body or program,
+      not just the immediately enclosing block. &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt; The operand expression is evaluated exactly once before the semantics of the Exit Statement
+      is applied. Subsequent expressions or statements within the enclosing function body or query
+      are not evaluated at all. &lt;/p&gt;
+    &lt;b&gt;Example:&lt;/b&gt;
+    &lt;pre&gt;
+exit returning local:error(concat(&quot;You cannot use the &quot;,
+                                  $request/method,
+                                  &quot; method with this URL.&quot;));              &lt;/pre&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-vardecl-statement&quot;&gt;&lt;/a&gt;4.6. Variable Declaration Statement &lt;/h2&gt;
+    &lt;pre&gt;
+20 - &lt;a name=&quot;VarDeclStatement&quot; class=&quot;new&quot;&gt;VarDeclStatement&lt;/a&gt; ::= &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Annotation&quot; class=&quot;un&quot;&gt;Annotation&lt;/a&gt;* &quot;variable&quot; &quot;$&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName&quot; class=&quot;un&quot;&gt;VarName&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeDeclaration&quot; class=&quot;un&quot;&gt;TypeDeclaration&lt;/a&gt;? (&quot;:=&quot; &lt;a href=&quot;#ExprSingle&quot; class=&quot;ext&quot;&gt;ExprSingle&lt;/a&gt;)?
+    (&quot;,&quot; &quot;$&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName&quot; class=&quot;un&quot;&gt;VarName&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeDeclaration&quot; class=&quot;un&quot;&gt;TypeDeclaration&lt;/a&gt;? (&quot;:=&quot; &lt;a href=&quot;#ExprSingle&quot; class=&quot;ext&quot;&gt;ExprSingle&lt;/a&gt;)?)* &quot;;&quot;
+    &lt;/pre&gt;
+    &lt;p&gt; [The expression on the right-hand side of a variable declaration is called an
+        &lt;b&gt;initializing expression&lt;/b&gt;.] &lt;/p&gt;
+    &lt;p&gt; [The &lt;b&gt;scope expression&lt;/b&gt; of a variable declaration is the innermost block expression,
+      control flow clause (then/else clause, Switch/Typeswitch/FLWOR return clause, while body
+      clause), function body or program containing the variable declaration expression.] &lt;/p&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;The initializing expression must be non-updating.&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;A variable declaration defines a local variable whose scope is the remainder of its scope
+      expression (not including its initializing expression). The variable defined in a variable
+      declaration occludes (hides) any variable of the same name that is in scope at the location
+      where the innermost block appears. &lt;/p&gt;
+    &lt;p&gt;The variable may be annotated as assignable or as unassignable. By default, it is assignable.
+      It may only be modified by assignment statements if it is assignable. &lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt;The default for local variable declarations is different from variables declared in the
+      prolog. The latter are unassignable if there is no annotation. &lt;/p&gt;
+    &lt;p&gt;It is a static error if two or more variables declared in the same scope expression have the
+      same expanded QName. &lt;/p&gt;
+    &lt;p&gt;The type of each declared variable is added to in-scope variables in the static context of
+      subsequent expressions in the enclosing block, function body or program. If a variable has
+      both an explicit type declaration and an initializing expression, the value of the
+      initializing expression must match the declared type according to SequenceType matching rules;
+      otherwise a type error is raised . If no explicit type is declared and the variable is
+      assignable, the type of the variable is item()*. If no explicit type is declared and the
+      variable is unassignable, the type is statically inferred from the initializing expression. &lt;/p&gt;
+    &lt;p&gt;The block variable declaration evaluates its initializing expression and binds the resulting
+      XDM instance to the variable values in the dynamic context of subsequent expressions in the
+      enclosing block, function body or program. If no initializing expression is present, the
+      variable has no initial value. A reference to a variable, other than on the left-hand side of
+      an assignment expression, is an error if the variable has no value in variable values when the
+      reference is evaluated . &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt; The operand expression is evaluated exactly once before the semantics of the Declaration
+      Statement is applied. &lt;/p&gt;
+    &lt;b&gt;Example:&lt;/b&gt;
+    &lt;pre&gt;
+variable $uid := doc(&quot;users.xml&quot;)/users/user_tuple
+                 [name = &quot;Roger Smith&quot;]/userid;              &lt;/pre&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-while-statement&quot;&gt;&lt;/a&gt;4.7. While Statement &lt;/h2&gt;
+    &lt;pre&gt;
+21 - &lt;a name=&quot;WhileStatement&quot; class=&quot;new&quot;&gt;WhileStatement&lt;/a&gt; ::= &quot;while&quot; &quot;(&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;)&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt; [The expression enclosed in the parentheses of a while expression is called a &lt;b&gt;test
+        expression&lt;/b&gt;.] &lt;/p&gt;
+    &lt;p&gt;The test expression must be non-updating.&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;The while statement is used for conditional iteration. It is evaluated as follows:&lt;/p&gt;
+    &lt;p&gt; The test expression is evaluated, resulting in an XDM instance. &lt;/p&gt;
+    &lt;p&gt; If the effective Boolean value of the test expression is false, the block is not evaluated.
+      If the effective Boolean value of the test expression is true, the statement is evaluated
+      repeatedly. Each evaluation of the statement may cause side effects that affect the result of
+      re-evaluating the test expression. The test expression is re-evaluated after each evaluation
+      of the statement. This process continues until the effective Boolean value of the test
+      expression is evaluated to be false. &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt; The test expression is evaluated once. Then if the EBV of the test expression is true, the
+      statement is executed exactly once and the test expression is evaluated again. These steps are
+      repeated until the EBV of the test expression is false. &lt;/p&gt;
+    &lt;b&gt;Example:&lt;/b&gt;
+    &lt;p&gt;In the following query, a while statement is used to compute a sequence containing all the
+      Fibonacci numbers that are less than 100. &lt;/p&gt;
+    &lt;pre&gt;
+variable $a as xs:integer := 0;
+variable $b as xs:integer := 1;  
+variable $c as xs:integer := $a + $b;
+variable $fibseq as xs:integer* := ($a, $b);
+
+while ($c &amp;lt; 100) { 
+  $fibseq := ($fibseq, $c);
+  $a := $b;
+  $b := $c;
+  $c := $a + $b;
+}
+              &lt;/pre&gt;
+    &lt;h1&gt;&lt;a name=&quot;id-statements-expressions&quot;&gt;&lt;/a&gt;5. Statement counterparts of existing expressions &lt;/h1&gt;
+    &lt;p&gt;XQSX defines statement counterparts for control flow expressions (FLWOR, IfThenElse, Switch,
+      Typeswitch, Trycatch). It also defines an evaluation order for statements and sequential
+      expressions. An expression or statement following another according to this evaluation order
+      sees the side effects of this other expression or statement. &lt;/p&gt;
+    &lt;p&gt;Composability Contraints for updating expressions that are operands of any expressions
+      defined in XQUF are extended to operand expressions of their statement counterparts
+      (non-return expressions in FLWOR statements, test expressions in conditional statements,
+      switch statements and typeswitch statements). &lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-flwor-statement&quot;&gt;&lt;/a&gt;5.1. FLWOR Statements and Expressions &lt;/h2&gt;
+    &lt;p&gt;In addition to FLWOR Expressions, XQSX introduces FLWOR Statements, defined like FLWOR
+      Expressions except that the final clause is a statement. &lt;/p&gt;
+    &lt;pre&gt;
+12 - &lt;a name=&quot;FLWORStatement&quot; class=&quot;new&quot;&gt;FLWORStatement&lt;/a&gt; ::= &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-InitialClause&quot; class=&quot;un&quot;&gt;InitialClause&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-IntermediateClause&quot; class=&quot;un&quot;&gt;IntermediateClause&lt;/a&gt;* &lt;a href=&quot;#DoStatement&quot; class=&quot;new&quot;&gt;ReturnStatement&lt;/a&gt;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt; The XQUF specification currently forbids clauses other than return clauses of a FLWOR
+      expression to be updating. Furthermore, it specifies that the category (updating or not) of a
+      FLWOR expression is the same as that of its return clause. &lt;/p&gt;
+    &lt;p&gt;The expressions in the window-start, window-end, order-by, group-by, where and count clauses
+      must be non-sequential. &lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;The semantics of FLWOR Expressions is unchanged.&lt;/p&gt;
+    &lt;p&gt;For FLWOR Statements, the input tuple stream is generated as described in XQuery 3.0. The
+      return statement is then executed for each tuple in its input tuple stream, using the variable
+      bindings in the respective tuples. &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt;Each FLWOR clause is evaluated exactly once, one after the other, from left to right. In the
+      evaluation of the first clause, the operand expression is evaluated exactly once. In the
+      evaluation of each other clause, the operand expression is evaluated exactly once for every
+      tuple in the input stream produced by the former clause, in the exact same order as in the
+      stream. &lt;/p&gt;
+    &lt;b&gt;Example:&lt;/b&gt;
+    &lt;pre&gt;
+for $book in book:search($eventNode/preceding-sibling::xhtml:input[1])
+return 
+insert node
+&amp;lt;xhtml:tr&amp;gt;
+  &amp;lt;xhtml:td&amp;gt;{data($book/title)}&amp;lt;/xhtml:td&amp;gt;
+  &amp;lt;xhtml:td&amp;gt;{data($book/isbn)}&amp;lt;/xhtml:td&amp;gt;
+  &amp;lt;xhtml:td/&amp;gt;
+&amp;lt;/xhtml:tr&amp;gt;
+as last into $table;
+              &lt;/pre&gt;
+    &lt;p&gt;The same with bulk updates:&lt;/p&gt;
+    &lt;pre&gt;
+(for $book in book:search($eventNode/preceding-sibling::xhtml:input[1])
+return 
+insert node
+&amp;lt;xhtml:tr&amp;gt;
+  &amp;lt;xhtml:td&amp;gt;{data($book/title)}&amp;lt;/xhtml:td&amp;gt;
+  &amp;lt;xhtml:td&amp;gt;{data($book/isbn)}&amp;lt;/xhtml:td&amp;gt;
+  &amp;lt;xhtml:td/&amp;gt;
+&amp;lt;/xhtml:tr&amp;gt;
+as last into $table);
+              &lt;/pre&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-if-statement&quot;&gt;&lt;/a&gt;5.2. Conditional Statements and Expressions &lt;/h2&gt;
+    &lt;p&gt;In addition to Conditional Expressions, XQSX introduces Conditional Statements, defined like
+      Conditional Expressions except that the then and the else clause are statements. &lt;/p&gt;
+    &lt;pre&gt;
+14 - &lt;a name=&quot;IfStatement&quot; class=&quot;new&quot;&gt;IfStatement&lt;/a&gt; ::= &quot;if&quot; &quot;(&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;)&quot; &quot;then&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt; &quot;else&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt; The XQUF specification currently forbids the test expression to be updating. &lt;/p&gt;
+    &lt;p&gt;(none)&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;The semantics of Conditional Expressions is unchanged.&lt;/p&gt;
+    &lt;p&gt;For Conditional Statements, the test expression is evaluated. If the EBV of its returned XDM
+      is true, then the then statement is executed, otherwise the else statement is executed. &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt;The test expression is evaluated exactly once. Then, depending on the EBV of the test
+      expression, either the then clause or the else clause (but not both) is evaluated, exactly
+      once. &lt;/p&gt;
+    &lt;b&gt;Example:&lt;/b&gt;
+    &lt;pre&gt;
+if($newbid &amp;lt;= 60000) then {
+  insert nodes
+  &amp;lt;bid_tuple&amp;gt;
+    { $uid, $item/itemno }
+    &amp;lt;bid&amp;gt;{ $newbid }&amp;lt;/bid&amp;gt; 
+    &amp;lt;bid_date&amp;gt;{ fn:current-date() }&amp;lt;/bid_date&amp;gt; 
+  &amp;lt;/bid_tuple&amp;gt;
+  into doc(&quot;bids.xml&quot;)/bids;
+  $result := concat(&quot;What a bargain! You got a helicopter for &quot;,
+                    $newbid);
+} else {
+  $result := &quot;Bidding exceeded 60000&quot;;
+  $maximumExceeded := true();
+}
+              &lt;/pre&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-switch-statement&quot;&gt;&lt;/a&gt;5.3. Switch Statements and Expressions &lt;/h2&gt;
+    &lt;p&gt;In addition to Switch Expressions, XQSX introduces Switch Statements, defined like Switch
+      Expressions except that the return clauses are statements. &lt;/p&gt;
+    &lt;pre&gt;
+15 - &lt;a name=&quot;SwitchStatement&quot; class=&quot;new&quot;&gt;SwitchStatement&lt;/a&gt; ::= &quot;switch&quot; &quot;(&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;)&quot; &lt;a href=&quot;#SwitchCaseStatement&quot; class=&quot;new&quot;&gt;SwitchCaseStatement&lt;/a&gt;+ &quot;default&quot; &quot;return&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt;The XQUF specification does not yet take into account the switch expressions introduced in
+      XQuery 3.0. It is outside of the scope of this XQuery Scripting specification to do so, but
+      until the XQUF 3.0 specification is ready we consider that all operand expressions must be
+      non-updating. &lt;/p&gt;
+    &lt;p&gt;(none)&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;The semantics of Switch Expressions is unchanged.&lt;/p&gt;
+    &lt;p&gt;For Switch Statements, the return statement in the effective case is executed. &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt;The test expression is evaluated exactly once. Then, only the return clause in the effective
+      case is evaluated, exactly once.&lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-trycatch-statement&quot;&gt;&lt;/a&gt;5.4. Try-Catch Statements and Expressions &lt;/h2&gt;
+    &lt;p&gt;In addition to Try-Catch Expressions, XQSX introduces Try-Catch Statements, defined like
+      Try-Catch Expressions except that the try and catch clauses are statements. &lt;/p&gt;
+    &lt;pre&gt;
+17 - &lt;a name=&quot;TryCatchStatement&quot; class=&quot;new&quot;&gt;TryCatchStatement&lt;/a&gt; ::= &quot;try&quot; &lt;a href=&quot;#BlockStatement&quot; class=&quot;new&quot;&gt;BlockStatement&lt;/a&gt; (&quot;catch&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-CatchErrorList&quot; class=&quot;un&quot;&gt;CatchErrorList&lt;/a&gt; &lt;a href=&quot;#BlockStatement&quot; class=&quot;new&quot;&gt;BlockStatement&lt;/a&gt;)+
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt;The XQUF specification does not yet take into account the try-catch expressions introduced in
+      XQuery 3.0. It is outside of the scope of this XQuery Scripting specification to do so, but
+      until XQUF 3.0 is ready we will consider that try and catch expressions must be either all
+      updating or all non-updating. &lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;The semantics of Try-Catch Expressions is unchanged.&lt;/p&gt;
+    &lt;p&gt;For Try-Catch Statements, the try statement is executed. If this execution raises a dynamic
+      error or a type error, the first catch statement that &quot;matches&quot; the error value is executed. &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt;If no error is dynamic or type error is raised during the evaluation of the try clause, no
+      catch clause gets executed. Otherwise, the execution of the try clause is interrupted when
+      this error is raised, and only the first catch statement that &quot;matches&quot; the error value is
+      executed, exactly once. &lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-typeswitch-statement&quot;&gt;&lt;/a&gt;5.5. Typeswitch Statements and Expressions &lt;/h2&gt;
+    &lt;p&gt;In addition to Typeswitch Expressions, XQSX introduces Typeswitch Statements, defined like
+      Typeswitch Expressions except that the clauses are statements. &lt;/p&gt;
+    &lt;pre&gt;
+18 - &lt;a name=&quot;TypeswitchStatement&quot; class=&quot;new&quot;&gt;TypeswitchStatement&lt;/a&gt; ::= &quot;typeswitch&quot; &quot;(&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;)&quot; &lt;a href=&quot;#CaseStatement&quot; class=&quot;new&quot;&gt;CaseStatement&lt;/a&gt;+ &quot;default&quot; (&quot;$&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName&quot; class=&quot;un&quot;&gt;VarName&lt;/a&gt;)? &quot;return&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt; The XQUF specification currently forbids the operand expressions of a typeswitch expression
+      to be updating. &lt;/p&gt;
+    &lt;p&gt;(none)&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;The semantics of Typeswitch Expressions is unchanged.&lt;/p&gt;
+    &lt;p&gt;For Typeswitch Statements, the return statement in the effective case is executed. &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt;The test expression is evaluated exactly once. Then, only the return clause in the effective
+      case is evaluated, exactly once.&lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-block-statement&quot;&gt;&lt;/a&gt;5.6. Block Statements and Expressions &lt;/h2&gt;
+    &lt;p&gt;A block statement is a concatenation of zero, one or more statements, surrounded by curly
+      braces.&lt;/p&gt;
+    &lt;p&gt;A block expression is a concatenation of zero, one or more statements and one expression,
+      surrounded by curly braces.&lt;/p&gt;
+    &lt;pre&gt;
+31 - &lt;a name=&quot;PrimaryExpr&quot; class=&quot;ext&quot;&gt;PrimaryExpr&lt;/a&gt; ::=
+      &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Literal&quot; class=&quot;un&quot;&gt;Literal&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarRef&quot; class=&quot;un&quot;&gt;VarRef&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-ParenthesizedExpr&quot; class=&quot;un&quot;&gt;ParenthesizedExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-ContextItemExpr&quot; class=&quot;un&quot;&gt;ContextItemExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-FunctionCall&quot; class=&quot;un&quot;&gt;FunctionCall&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-OrderedExpr&quot; class=&quot;un&quot;&gt;OrderedExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-UnorderedExpr&quot; class=&quot;un&quot;&gt;UnorderedExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Constructor&quot; class=&quot;un&quot;&gt;Constructor&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-FunctionItemExpr&quot; class=&quot;un&quot;&gt;FunctionItemExpr&lt;/a&gt;
+  |   &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;
+    &lt;/pre&gt;&lt;pre&gt;
+32 - &lt;a name=&quot;BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt; ::= &quot;{&quot; &lt;a href=&quot;#StatementsAndExpr&quot; class=&quot;new&quot;&gt;StatementsAndExpr&lt;/a&gt; &quot;}
+    &lt;/pre&gt;&lt;pre&gt;
+3 - &lt;a name=&quot;StatementsAndExpr&quot; class=&quot;new&quot;&gt;StatementsAndExpr&lt;/a&gt; ::= &lt;a href=&quot;#Statements&quot; class=&quot;new&quot;&gt;Statements&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt;
+    &lt;/pre&gt;&lt;pre&gt;
+2 - &lt;a name=&quot;Statements&quot; class=&quot;new&quot;&gt;Statements&lt;/a&gt; ::= &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;*
+    &lt;/pre&gt;&lt;pre&gt;
+8 - &lt;a name=&quot;BlockStatement&quot; class=&quot;new&quot;&gt;BlockStatement&lt;/a&gt; ::= &quot;{&quot; &lt;a href=&quot;#Statements&quot; class=&quot;new&quot;&gt;Statements&lt;/a&gt; &quot;}&quot;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;If the final expression is non-updating, the block expression is non-updating. If the final
+      expression is updating, the block expression is updating. &lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;Each statement, as well as the final expression if any, is evaluated.&lt;/p&gt;
+    &lt;p&gt;The result of a block expression is the XDM and PUL returned by its final expression.&lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt;The statements (and the final expression for a Block Expression) are evaluated in the order
+      they appear.&lt;/p&gt;
+    &lt;b&gt;Example:&lt;/b&gt;
+    &lt;pre&gt;
+{
+variable $uid := doc(&quot;users.xml&quot;)/users/user_tuple[name = &quot;Roger Smith&quot;]/userid;
+variable $topbid := max(doc(&quot;bids.xml&quot;)/bids/bid_tuple[itemno = 1002]/bid);
+variable $newbid := $topbid * 1.1;
+
+insert nodes
+&amp;lt;bid_tuple&amp;gt; 
+  &amp;lt;userid&amp;gt;{ data($uid) }&amp;lt;/userid&amp;gt; 
+  &amp;lt;itemno&amp;gt;1002&amp;lt;/itemno&amp;gt; 
+  &amp;lt;bid&amp;gt;{ $newbid }&amp;lt;/bid&amp;gt; 
+  &amp;lt;bid_date&amp;gt;1999-03-03&amp;lt;/bid_date&amp;gt; 
+&amp;lt;/bid_tuple&amp;gt;
+into doc(&quot;bids.xml&quot;)/bids;
+
+&amp;lt;new_bid&amp;gt;{ $newbid }&amp;lt;/new_bid&amp;gt;
+}
+              &lt;/pre&gt;
+    &lt;h1&gt;&lt;a name=&quot;id-expr-changes&quot;&gt;&lt;/a&gt;6. Changes to existing expressions &lt;/h1&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-node-constructors-statements&quot;&gt;&lt;/a&gt;6.1. Direct and Computed Node Constructors &lt;/h2&gt;
+    &lt;p&gt;Node constructors are extended to allow statements in their content.&lt;/p&gt;
+    &lt;pre&gt;
+24 - &lt;a name=&quot;CommonContent&quot; class=&quot;ext&quot;&gt;CommonContent&lt;/a&gt; ::= &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-PredefinedEntityRef&quot; class=&quot;un&quot;&gt;PredefinedEntityRef&lt;/a&gt; | &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-CharRef&quot; class=&quot;un&quot;&gt;CharRef&lt;/a&gt; | &quot;{{&quot; | &quot;}}&quot; | &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;
+&lt;/pre&gt;&lt;pre&gt;
+25 - &lt;a name=&quot;ContentExpr&quot; class=&quot;ext&quot;&gt;ContentExpr&lt;/a&gt; ::= &lt;a href=&quot;#StatementsAndExpr&quot; class=&quot;new&quot;&gt;StatementsAndExpr&lt;/a&gt;
+
+26 - CompDocConstructor ::= &quot;document&quot; &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;
+
+27 - CompAttrConstructor ::= &quot;attribute&quot; (&lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName&quot; class=&quot;un&quot;&gt;EQName&lt;/a&gt; | (&quot;{&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;}&quot;)) (&quot;{&quot; &quot;}&quot; | &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;)
+
+28 - CompPIConstructor ::= &quot;processing-instruction&quot; (&lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-NCName&quot; class=&quot;un&quot;&gt;NCName&lt;/a&gt; | (&quot;{&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;}&quot;)) (&quot;{&quot; &quot;}&quot; | &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;)
+
+29 - CompCommentConstructor ::= &quot;comment&quot; &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;
+
+30 - CompTextConstructor ::= &quot;text&quot; &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;
+    &lt;/pre&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;(none)&lt;/p&gt;
+    &lt;b&gt;Semantics:&lt;/b&gt;
+    &lt;p&gt;The semantics are the same as in XQuery 3.0.&lt;/p&gt;
+    &lt;p&gt;The block expression is evaluated as such and its results are used as specified in XQuery
+      3.0. &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt;The operands are evaluated from left to right.&lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-predicate-quantified&quot;&gt;&lt;/a&gt;6.2. Filter and quantified expressions. &lt;/h2&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt; The expression in square brackets in a filter expression, as well as the conditional
+      expression (second operand) in a quantified expression, must be non-sequential. &lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt; The motivation behind this restriction is that their operands can be converted to where
+      clauses in FLWOR expressions in the query plan. &lt;/p&gt;
+    &lt;b&gt;Evaluation order:&lt;/b&gt;
+    &lt;p&gt;The base expression in a filter expression is evaluated exactly once.&lt;/p&gt;
+    &lt;p&gt;The base expression (first operand) in a quantified expression is evaluated exactly once.&lt;/p&gt;
+    &lt;h2&gt;&lt;a name=&quot;id-other-expr&quot;&gt;&lt;/a&gt;6.3. Other Expressions &lt;/h2&gt;
+    &lt;p&gt; All expressions not listed above are extended as follows. This includes the following kinds
+      of expressions: &lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;Path expressions&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Concatenation expressions&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Function calls&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Range expressions&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Transform expressions&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Union, intersect, and except expressions&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Arithmetic, comparison, and logical expressions&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Ordered and unordered expressions&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Instance of, cast, castable, and treat expressions&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Validate expressions&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Extension expressions (pragmas)&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;b&gt;Composability Constraints:&lt;/b&gt;
+    &lt;p&gt;(node)&lt;/p&gt;
+    &lt;b&gt;Evaluation Order:&lt;/b&gt;
+    &lt;p&gt; Operand expressions are evaluated from left to right, bottom-up in the expression tree
+      (i.e., in a function call, the parameters are evaluated before the function body is
+      evaluated). &lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt; Since insert, delete, replace and rename are updating expressions, their operands must be
+      non-effecting, such that the evaluation order is irrelevant for them. &lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/p&gt;
+    &lt;p&gt; In transform expressions, since the modify clause must be updating (or vacuous) according to
+      XQUF, it must also be non-sequential. Furthermore, XQUF specifies that the return clause sees
+      that the side-effect of applying the PUL returned by the modify expression is visible to the
+      return expression. &lt;/p&gt;
+    &lt;h1&gt;&lt;a name=&quot;id-example&quot;&gt;&lt;/a&gt;7. Example &lt;/h1&gt;
+    &lt;p&gt;The following function returns true or false according to whether its parameter is a known
+      user name, and logs the event: &lt;/p&gt;
+    &lt;pre&gt;declare %an:sequential function validate-and-log($username as xs:string)
+    as xs:boolean {
+  variable $log as document-node() := fn:doc(&quot;log.xml&quot;); 
+
+  variable $entry as element() :=
+    &amp;lt;access-attempt&amp;gt;
+      &amp;lt;timestamp&amp;gt;{fn:current-dateTime()}&amp;lt;/timestamp&amp;gt;
+      &amp;lt;user-name&amp;gt;{$username}&amp;lt;/user-name&amp;gt;
+      &amp;lt;access-allowed/&amp;gt;
+    &amp;lt;/access-attempt&amp;gt; ;
+
+  variable  $result as xs:boolean;
+
+  if ($username = doc(&quot;users.xml&quot;)/current-users/user/name )
+  then {
+    replace value of node $entry/access-allowed with &quot;Yes&quot;;
+    $result := true();
+  } else {
+    replace value of node $entry/access-allowed with &quot;No&quot;;
+   $result := false();
+  }
+  
+  insert node $entry as last into $log; 
+  
+  fn:put($log, &quot;log.xml&quot;); 
+  
+  $result
+} 
+&lt;/pre&gt;
+    &lt;h1&gt;&lt;a name=&quot;id-extra-grammatical&quot;&gt;&lt;/a&gt;8. Extra-Grammatical Constraints &lt;/h1&gt;
+    &lt;p&gt;Although the grammar allows syntactically an empty program, this is now allowed.&lt;/p&gt;
+    &lt;p&gt;A program must consist of at least one statement, or at least an expression.&lt;/p&gt;
+    &lt;h1&gt;&lt;a name=&quot;id-lookahead&quot;&gt;&lt;/a&gt;9. Alternative simplified grammar for LL-Parsers &lt;/h1&gt;
+    &lt;p&gt;For implementors using LL-parsers, the grammar described in this specification (which is
+      LR(1)) needs an arbitrary lookahead (as opposed to a lookahead of 1 for LR-parsers). This
+      arbitrary lookahead can be removed by using a subset of this proposal specified by the
+      following changes. This makes the grammar LL(2). &lt;/p&gt;
+    &lt;p&gt;In a nutshell, block expressions are not available, and statements that could be mistaken for
+      the beginning of an expression (with a lookahead of 2) need to be put in block statements.
+      This happens in function bodies, node constructors and block expressions. &lt;/p&gt;
+    &lt;pre&gt;
+[unchanged] PrimaryExpr ::= /* as in XQuery 3.0, no standalone BlockExpr */
+      Literal
+  |   VarRef
+  |   ParenthesizedExpr
+  |   ContextItemExpr
+  |   FunctionCall
+  |   OrderedExpr
+  |   UnorderedExpr
+  |   Constructor
+  |   FunctionItemExpr
+
+Statement ::= Statement1 | Statement2
+
+Statement1 :=
+   AssignStatement
+ | BlockStatement
+ | BreakStatement
+ | ContinueStatement
+ | ExitStatement
+ | VarDeclStatement
+ | WhileStatement
+
+Statement2 :=
+   ApplyStatement
+ | FLWORStatement
+ | IfStatement
+ | SwitchStatement
+ | TryCatchStatement
+ | TypeswitchStatement
+ 
+StatementsAndOptionalExpr ::= Statements1 Expr?
+
+Statements1 := Statement1*
+ 
+    &lt;/pre&gt;
+    &lt;h1&gt;Complete Grammar&lt;/h1&gt;
+    &lt;h2&gt;Grammar Proposal&lt;/h2&gt; (Non-terminals without a rule correspond to those, unchanged, in
+    XQuery 3.0/XQuery Update 1.0) &lt;h3&gt;New query body for main
+      modules&lt;/h3&gt;&lt;pre&gt;
+0 - &lt;a name=&quot;MainModule&quot; class=&quot;ext&quot;&gt;MainModule&lt;/a&gt; ::= &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Prolog&quot; class=&quot;new&quot;&gt;Prolog&lt;/a&gt; &lt;a href=&quot;Program&quot; class=&quot;new&quot;&gt;Program&lt;/a&gt;
+    
+1 - &lt;a name=&quot;Program&quot; class=&quot;ext&quot;&gt;Program&lt;/a&gt; ::= &lt;a href=&quot;#StatementsAndOptionalExpr&quot; class=&quot;new&quot;&gt;StatementsAndOptionalExpr&lt;/a&gt;
+    &lt;/pre&gt;&lt;h3&gt;Mixing
+      Expressions and
+      Statements&lt;/h3&gt;&lt;pre xml:space=&quot;preserve&quot;&gt;
+          
+2 - &lt;a name=&quot;Statements&quot; class=&quot;new&quot;&gt;Statements&lt;/a&gt; ::= &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;*
+    
+          
+3 - &lt;a name=&quot;StatementsAndExpr&quot; class=&quot;new&quot;&gt;StatementsAndExpr&lt;/a&gt; ::= &lt;a href=&quot;#Statements&quot; class=&quot;new&quot;&gt;Statements&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt;
+    
+          
+4 - &lt;a name=&quot;StatementsAndOptionalExpr&quot; class=&quot;new&quot;&gt;StatementsAndOptionalExpr&lt;/a&gt; ::= &lt;a href=&quot;#Statements&quot; class=&quot;new&quot;&gt;Statements&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt;?
+    
+      &lt;/pre&gt;&lt;h3&gt;Statements&lt;/h3&gt;&lt;pre xml:space=&quot;preserve&quot;&gt;
+          
+5 - &lt;a name=&quot;Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt; ::=
+      &lt;a href=&quot;#ApplyStatement&quot; class=&quot;new&quot;&gt;ApplyStatement&lt;/a&gt;
+    | &lt;a href=&quot;#AssignStatement&quot; class=&quot;new&quot;&gt;AssignStatement&lt;/a&gt;
+    | &lt;a href=&quot;#BlockStatement&quot; class=&quot;new&quot;&gt;BlockStatement&lt;/a&gt;
+    | &lt;a href=&quot;#BreakStatement&quot; class=&quot;new&quot;&gt;BreakStatement&lt;/a&gt;
+    | &lt;a href=&quot;#ContinueStatement&quot; class=&quot;new&quot;&gt;ContinueStatement&lt;/a&gt;
+    | &lt;a href=&quot;#ExitStatement&quot; class=&quot;new&quot;&gt;ExitStatement&lt;/a&gt;
+    | &lt;a href=&quot;#FLWORStatement&quot; class=&quot;new&quot;&gt;FLWORStatement&lt;/a&gt;
+    | &lt;a href=&quot;#IfStatement&quot; class=&quot;new&quot;&gt;IfStatement&lt;/a&gt;
+    | &lt;a href=&quot;#SwitchStatement&quot; class=&quot;new&quot;&gt;SwitchStatement&lt;/a&gt;
+    | &lt;a href=&quot;#TryCatchStatement&quot; class=&quot;new&quot;&gt;TryCatchStatement&lt;/a&gt;
+    | &lt;a href=&quot;#TypeswitchStatement&quot; class=&quot;new&quot;&gt;TypeswitchStatement&lt;/a&gt;
+    | &lt;a href=&quot;#VarDeclStatement&quot; class=&quot;new&quot;&gt;VarDeclStatement&lt;/a&gt;
+    | &lt;a href=&quot;#WhileStatement&quot; class=&quot;new&quot;&gt;WhileStatement&lt;/a&gt;
+    
+
+          
+6 - &lt;a name=&quot;ApplyStatement&quot; class=&quot;new&quot;&gt;ApplyStatement&lt;/a&gt; ::= &lt;a href=&quot;#ExprSimple&quot; class=&quot;new&quot;&gt;ExprSimple&lt;/a&gt; &quot;;&quot;
+    
+
+          
+7 - &lt;a name=&quot;AssignStatement&quot; class=&quot;new&quot;&gt;AssignStatement&lt;/a&gt; ::= &quot;$&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName&quot; class=&quot;un&quot;&gt;VarName&lt;/a&gt; &quot;:=&quot; &lt;a href=&quot;#ExprSingle&quot; class=&quot;ext&quot;&gt;ExprSingle&lt;/a&gt; &quot;;&quot;
+    
+
+          
+8 - &lt;a name=&quot;BlockStatement&quot; class=&quot;new&quot;&gt;BlockStatement&lt;/a&gt; ::= &quot;{&quot; &lt;a href=&quot;#Statements&quot; class=&quot;new&quot;&gt;Statements&lt;/a&gt; &quot;}&quot;
+    
+
+          
+9 - &lt;a name=&quot;BreakStatement&quot; class=&quot;new&quot;&gt;BreakStatement&lt;/a&gt; ::= &quot;break&quot; &quot;loop&quot; &quot;;&quot;
+    
+
+          
+10 - &lt;a name=&quot;ContinueStatement&quot; class=&quot;new&quot;&gt;ContinueStatement&lt;/a&gt; ::= &quot;continue&quot; &quot;loop&quot; &quot;;&quot;
+    
+
+          
+11 - &lt;a name=&quot;ExitStatement&quot; class=&quot;new&quot;&gt;ExitStatement&lt;/a&gt; ::= &quot;exit&quot; &quot;returning&quot; &lt;a href=&quot;#ExprSingle&quot; class=&quot;ext&quot;&gt;ExprSingle&lt;/a&gt; &quot;;&quot;
+    
+
+          
+12 - &lt;a name=&quot;FLWORStatement&quot; class=&quot;new&quot;&gt;FLWORStatement&lt;/a&gt; ::= &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-InitialClause&quot; class=&quot;un&quot;&gt;InitialClause&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-IntermediateClause&quot; class=&quot;un&quot;&gt;IntermediateClause&lt;/a&gt;* &lt;a href=&quot;#DoStatement&quot; class=&quot;new&quot;&gt;ReturnStatement&lt;/a&gt;
+    
+          
+13 - &lt;a name=&quot;ReturnStatement&quot; class=&quot;new&quot;&gt;ReturnStatement&lt;/a&gt; ::= &quot;return&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    
+
+          
+14 - &lt;a name=&quot;IfStatement&quot; class=&quot;new&quot;&gt;IfStatement&lt;/a&gt; ::= &quot;if&quot; &quot;(&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;)&quot; &quot;then&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt; &quot;else&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    
+
+          
+15 - &lt;a name=&quot;SwitchStatement&quot; class=&quot;new&quot;&gt;SwitchStatement&lt;/a&gt; ::= &quot;switch&quot; &quot;(&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;)&quot; &lt;a href=&quot;#SwitchCaseStatement&quot; class=&quot;new&quot;&gt;SwitchCaseStatement&lt;/a&gt;+ &quot;default&quot; &quot;return&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    
+          
+16 - &lt;a name=&quot;SwitchCaseStatement&quot; class=&quot;new&quot;&gt;SwitchCaseStatement&lt;/a&gt; ::= (&quot;case&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-SwitchCaseOperand&quot; class=&quot;un&quot;&gt;SwitchCaseOperand&lt;/a&gt;)+ &quot;return&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    
+
+          
+17 - &lt;a name=&quot;TryCatchStatement&quot; class=&quot;new&quot;&gt;TryCatchStatement&lt;/a&gt; ::= &quot;try&quot; &lt;a href=&quot;#BlockStatement&quot; class=&quot;new&quot;&gt;BlockStatement&lt;/a&gt; (&quot;catch&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-CatchErrorList&quot; class=&quot;un&quot;&gt;CatchErrorList&lt;/a&gt; &lt;a href=&quot;#BlockStatement&quot; class=&quot;new&quot;&gt;BlockStatement&lt;/a&gt;)+
+    
+
+          
+18 - &lt;a name=&quot;TypeswitchStatement&quot; class=&quot;new&quot;&gt;TypeswitchStatement&lt;/a&gt; ::= &quot;typeswitch&quot; &quot;(&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;)&quot; &lt;a href=&quot;#CaseStatement&quot; class=&quot;new&quot;&gt;CaseStatement&lt;/a&gt;+ &quot;default&quot; (&quot;$&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName&quot; class=&quot;un&quot;&gt;VarName&lt;/a&gt;)? &quot;return&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    
+          
+19 - &lt;a name=&quot;CaseStatement&quot; class=&quot;new&quot;&gt;CaseStatement&lt;/a&gt; ::= &quot;case&quot; (&quot;$&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName&quot; class=&quot;un&quot;&gt;VarName&lt;/a&gt; &quot;as&quot;)? &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-SequenceType&quot; class=&quot;un&quot;&gt;SequenceType&lt;/a&gt; &quot;return&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    
+
+          
+20 - &lt;a name=&quot;VarDeclStatement&quot; class=&quot;new&quot;&gt;VarDeclStatement&lt;/a&gt; ::= &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Annotation&quot; class=&quot;un&quot;&gt;Annotation&lt;/a&gt;* &quot;variable&quot; &quot;$&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName&quot; class=&quot;un&quot;&gt;VarName&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeDeclaration&quot; class=&quot;un&quot;&gt;TypeDeclaration&lt;/a&gt;? (&quot;:=&quot; &lt;a href=&quot;#ExprSingle&quot; class=&quot;ext&quot;&gt;ExprSingle&lt;/a&gt;)?
+    (&quot;,&quot; &quot;$&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName&quot; class=&quot;un&quot;&gt;VarName&lt;/a&gt; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeDeclaration&quot; class=&quot;un&quot;&gt;TypeDeclaration&lt;/a&gt;? (&quot;:=&quot; &lt;a href=&quot;#ExprSingle&quot; class=&quot;ext&quot;&gt;ExprSingle&lt;/a&gt;)?)* &quot;;&quot;
+    
+
+          
+21 - &lt;a name=&quot;WhileStatement&quot; class=&quot;new&quot;&gt;WhileStatement&lt;/a&gt; ::= &quot;while&quot; &quot;(&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;)&quot; &lt;a href=&quot;#Statement&quot; class=&quot;new&quot;&gt;Statement&lt;/a&gt;
+    
+      &lt;/pre&gt;&lt;h3&gt;Expressions&lt;/h3&gt;
+    (Separating control-flow expressions)
+    &lt;pre&gt;
+22 - &lt;a name=&quot;ExprSingle&quot; class=&quot;ext&quot;&gt;ExprSingle&lt;/a&gt; ::=
+      &lt;a href=&quot;#ExprSimple&quot; class=&quot;new&quot;&gt;ExprSimple&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-FLWORExpr&quot; class=&quot;un&quot;&gt;FLWORExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-IfExpr&quot; class=&quot;un&quot;&gt;IfExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-SwitchExpr&quot; class=&quot;un&quot;&gt;SwitchExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-TryCatchExpr&quot; class=&quot;un&quot;&gt;TryCatchExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeswitchExpr&quot; class=&quot;un&quot;&gt;TypeswitchExpr&lt;/a&gt;
+    
+23 - &lt;a name=&quot;ExprSimple&quot; class=&quot;new&quot;&gt;ExprSimple&lt;/a&gt; ::=
+      &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-QuantifiedExpr&quot; class=&quot;un&quot;&gt;QuantifiedExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-OrExpr&quot; class=&quot;un&quot;&gt;OrExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-update-10/#prod-xquery-InsertExpr&quot; class=&quot;up&quot;&gt;InsertExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-update-10/#prod-xquery-DeleteExpr&quot; class=&quot;up&quot;&gt;DeleteExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-update-10/#prod-xquery-RenameExpr&quot; class=&quot;up&quot;&gt;RenameExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-update-10/#prod-xquery-ReplaceExpr&quot; class=&quot;up&quot;&gt;ReplaceExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-update-10/#prod-xquery-TransformExpr&quot; class=&quot;up&quot;&gt;TransformExpr&lt;/a&gt;    &lt;/pre&gt;
+    (Direct element constructors)
+    &lt;pre&gt;
+24 - &lt;a name=&quot;CommonContent&quot; class=&quot;ext&quot;&gt;CommonContent&lt;/a&gt; ::= &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-PredefinedEntityRef&quot; class=&quot;un&quot;&gt;PredefinedEntityRef&lt;/a&gt; | &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-CharRef&quot; class=&quot;un&quot;&gt;CharRef&lt;/a&gt; | &quot;{{&quot; | &quot;}}&quot; | &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;
+&lt;/pre&gt;
+    (Computed element constructors)
+    &lt;pre&gt;
+25 - &lt;a name=&quot;ContentExpr&quot; class=&quot;ext&quot;&gt;ContentExpr&lt;/a&gt; ::= &lt;a href=&quot;#StatementsAndOptionalExpr&quot; class=&quot;new&quot;&gt;StatementsAndExpr&lt;/a&gt;
+
+26 - CompDocConstructor ::= &quot;document&quot; &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;
+
+27 - CompAttrConstructor ::= &quot;attribute&quot; (&lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName&quot; class=&quot;un&quot;&gt;EQName&lt;/a&gt; | (&quot;{&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;}&quot;)) (&quot;{&quot; &quot;}&quot; | &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;)
+
+28 - CompPIConstructor ::= &quot;processing-instruction&quot; (&lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-NCName&quot; class=&quot;un&quot;&gt;NCName&lt;/a&gt; | (&quot;{&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr&quot; class=&quot;un&quot;&gt;Expr&lt;/a&gt; &quot;}&quot;)) (&quot;{&quot; &quot;}&quot; | &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;)
+
+29 - CompCommentConstructor ::= &quot;comment&quot; &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;
+
+30 - CompTextConstructor ::= &quot;text&quot; &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;
+    &lt;/pre&gt;
+    (Block expression)
+      &lt;pre&gt;
+31 - &lt;a name=&quot;PrimaryExpr&quot; class=&quot;ext&quot;&gt;PrimaryExpr&lt;/a&gt; ::=
+      &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Literal&quot; class=&quot;un&quot;&gt;Literal&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-VarRef&quot; class=&quot;un&quot;&gt;VarRef&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-ParenthesizedExpr&quot; class=&quot;un&quot;&gt;ParenthesizedExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-ContextItemExpr&quot; class=&quot;un&quot;&gt;ContextItemExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-FunctionCall&quot; class=&quot;un&quot;&gt;FunctionCall&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-OrderedExpr&quot; class=&quot;un&quot;&gt;OrderedExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-UnorderedExpr&quot; class=&quot;un&quot;&gt;UnorderedExpr&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-Constructor&quot; class=&quot;un&quot;&gt;Constructor&lt;/a&gt;
+  |   &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-FunctionItemExpr&quot; class=&quot;un&quot;&gt;FunctionItemExpr&lt;/a&gt;
+  |   &lt;a href=&quot;#BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt;
+    
+32 - &lt;a name=&quot;BlockExpr&quot; class=&quot;new&quot;&gt;BlockExpr&lt;/a&gt; ::= &quot;{&quot; &lt;a href=&quot;#StatementsAndExpr&quot; class=&quot;new&quot;&gt;StatementsAndExpr&lt;/a&gt; &quot;}
+    &lt;/pre&gt;&lt;h3&gt;Function
+      body&lt;/h3&gt;&lt;pre&gt;
+33 - &lt;a name=&quot;FunctionDecl&quot; class=&quot;ext&quot;&gt;FunctionDecl&lt;/a&gt; ::= &quot;function&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName&quot; class=&quot;un&quot;&gt;EQName&lt;/a&gt; &quot;(&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-ParamList&quot; class=&quot;un&quot;&gt;ParamList&lt;/a&gt;? &quot;)&quot;
+                      (&quot;as&quot; &lt;a href=&quot;http://www.w3.org/TR/xquery-30/#doc-xquery30-SequenceType&quot; class=&quot;un&quot;&gt;SequenceType&lt;/a&gt;)? (&quot;{&quot; &lt;a href=&quot;#StatementsAndOptionalExpr&quot; class=&quot;new&quot;&gt;StatementsAndOptionalExpr&lt;/a&gt; &quot;}&quot; | &quot;external&quot;))
+    &lt;/pre&gt;&lt;/body&gt;
+&lt;/html&gt;
+</htmlonly> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

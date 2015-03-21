@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1diagnostic_1_1QName" kind="class" prot="public">
+    <compoundname>zorba::diagnostic::QName</compoundname>
+    <derivedcompoundref refid="classzorba_1_1internal_1_1FixedQName" prot="public" virt="non-virtual">zorba::internal::FixedQName&lt; JSONiqErrorQName, char const * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1internal_1_1FixedQName" prot="public" virt="non-virtual">zorba::internal::FixedQName&lt; XQueryErrorQName, char const * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1internal_1_1FixedQName" prot="public" virt="non-virtual">zorba::internal::FixedQName&lt; ZorbaCSVErrorQName, char const * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1internal_1_1FixedQName" prot="public" virt="non-virtual">zorba::internal::FixedQName&lt; ZorbaDateTimeErrorQName, char const * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1internal_1_1FixedQName" prot="public" virt="non-virtual">zorba::internal::FixedQName&lt; ZorbaErrorQName, char const * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1internal_1_1FixedQName" prot="public" virt="non-virtual">zorba::internal::FixedQName&lt; ZorbaURIErrorQName, char const * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1internal_1_1FixedQName" prot="public" virt="non-virtual">zorba::internal::FixedQName&lt; ZorbaWarningQName, char const * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1internal_1_1VariableQName" prot="public" virt="non-virtual">zorba::internal::VariableQName&lt; std::string &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1internal_1_1FixedQName" prot="public" virt="non-virtual">zorba::internal::FixedQName&lt; QNameTraits, LocalnameType &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1internal_1_1VariableQName" prot="public" virt="non-virtual">zorba::internal::VariableQName&lt; StringType &gt;</derivedcompoundref>
+    <includes refid="diagnostic_8h" local="no">zorba/diagnostic.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1diagnostic_1_1QName_1a0ae1baf1f7f84522fc6d0012a0b191f1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>char const *</type>
+        <definition>virtual char const* zorba::diagnostic::QName::localname</definition>
+        <argsstring>() const =0</argsstring>
+        <name>localname</name>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a46fa747edd34f16e20a6def41f87f005">localname</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a46fa747edd34f16e20a6def41f87f005">localname</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a46fa747edd34f16e20a6def41f87f005">localname</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a46fa747edd34f16e20a6def41f87f005">localname</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a46fa747edd34f16e20a6def41f87f005">localname</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a46fa747edd34f16e20a6def41f87f005">localname</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a46fa747edd34f16e20a6def41f87f005">localname</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a46fa747edd34f16e20a6def41f87f005">localname</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1VariableQName_1a518a57ef0cd33722c8eb70119236fb61">localname</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1VariableQName_1a518a57ef0cd33722c8eb70119236fb61">localname</reimplementedby>
+        <briefdescription>
+<para>Gets this <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>&apos;s local name. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said local name. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="56"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1diagnostic_1_1QName_1aa95a327a0d580e71f79abe2ff63444ff" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>char const *</type>
+        <definition>virtual char const* zorba::diagnostic::QName::ns</definition>
+        <argsstring>() const =0</argsstring>
+        <name>ns</name>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a94722d636aef2e443ee628bdd250feaa">ns</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a94722d636aef2e443ee628bdd250feaa">ns</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a94722d636aef2e443ee628bdd250feaa">ns</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a94722d636aef2e443ee628bdd250feaa">ns</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a94722d636aef2e443ee628bdd250feaa">ns</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a94722d636aef2e443ee628bdd250feaa">ns</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a94722d636aef2e443ee628bdd250feaa">ns</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a94722d636aef2e443ee628bdd250feaa">ns</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1VariableQName_1ad7c9604cfb6f1dbf17aed047c2a3e827">ns</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1VariableQName_1ad7c9604cfb6f1dbf17aed047c2a3e827">ns</reimplementedby>
+        <briefdescription>
+<para>Gets this <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>&apos;s namespace URI. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said URI. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="42"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1diagnostic_1_1QName_1a84e269f4ab8a31f4e6d29578fb7b5dff" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>char const *</type>
+        <definition>virtual char const* zorba::diagnostic::QName::prefix</definition>
+        <argsstring>() const =0</argsstring>
+        <name>prefix</name>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a73dea6ab417987b41fecee2ef8e07b06">prefix</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a73dea6ab417987b41fecee2ef8e07b06">prefix</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a73dea6ab417987b41fecee2ef8e07b06">prefix</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a73dea6ab417987b41fecee2ef8e07b06">prefix</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a73dea6ab417987b41fecee2ef8e07b06">prefix</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a73dea6ab417987b41fecee2ef8e07b06">prefix</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a73dea6ab417987b41fecee2ef8e07b06">prefix</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1FixedQName_1a73dea6ab417987b41fecee2ef8e07b06">prefix</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1VariableQName_1a3dac355c972df627508fe2e3124e44f1">prefix</reimplementedby>
+        <reimplementedby refid="classzorba_1_1internal_1_1VariableQName_1a3dac355c972df627508fe2e3124e44f1">prefix</reimplementedby>
+        <briefdescription>
+<para>Gets this <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>&apos;s prefix. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said prefix. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="49"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1diagnostic_1_1QName_1a8fffab5462e2b8348a3b263ee92beee5" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::diagnostic::QName::~QName</definition>
+        <argsstring>()</argsstring>
+        <name>~QName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="35"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A QName is the abstract base class for a <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">QName</ref>. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="774">
+        <label>zorba::internal::FixedQName&lt; ZorbaWarningQName, char const * &gt;</label>
+        <link refid="classzorba_1_1internal_1_1FixedQName"/>
+        <childnode refid="761" relation="public-inheritance">
+        </childnode>
+        <childnode refid="777" relation="template-instance">
+          <edgelabel>&lt; ZorbaWarningQName, char const * &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="769">
+        <label>zorba::internal::ZorbaDateTimeErrorQName</label>
+        <link refid="classzorba_1_1internal_1_1ZorbaDateTimeErrorQName"/>
+        <childnode refid="768" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="763">
+        <label>zorba::internal::JSONiqErrorQName</label>
+        <link refid="classzorba_1_1internal_1_1JSONiqErrorQName"/>
+        <childnode refid="762" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="764">
+        <label>zorba::internal::FixedQName&lt; XQueryErrorQName, char const * &gt;</label>
+        <link refid="classzorba_1_1internal_1_1FixedQName"/>
+        <childnode refid="761" relation="public-inheritance">
+        </childnode>
+        <childnode refid="777" relation="template-instance">
+          <edgelabel>&lt; XQueryErrorQName, char const * &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="770">
+        <label>zorba::internal::FixedQName&lt; ZorbaErrorQName, char const * &gt;</label>
+        <link refid="classzorba_1_1internal_1_1FixedQName"/>
+        <childnode refid="761" relation="public-inheritance">
+        </childnode>
+        <childnode refid="777" relation="template-instance">
+          <edgelabel>&lt; ZorbaErrorQName, char const * &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="777">
+        <label>zorba::internal::FixedQName&lt; QNameTraits, LocalnameType &gt;</label>
+        <link refid="classzorba_1_1internal_1_1FixedQName"/>
+        <childnode refid="761" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="761">
+        <label>zorba::diagnostic::QName</label>
+        <link refid="classzorba_1_1diagnostic_1_1QName"/>
+      </node>
+      <node id="778">
+        <label>zorba::internal::VariableQName&lt; StringType &gt;</label>
+        <link refid="classzorba_1_1internal_1_1VariableQName"/>
+        <childnode refid="761" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="776">
+        <label>zorba::internal::VariableQName&lt; std::string &gt;</label>
+        <link refid="classzorba_1_1internal_1_1VariableQName"/>
+        <childnode refid="761" relation="public-inheritance">
+        </childnode>
+        <childnode refid="778" relation="template-instance">
+          <edgelabel>&lt; std::string &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="768">
+        <label>zorba::internal::FixedQName&lt; ZorbaDateTimeErrorQName, char const * &gt;</label>
+        <link refid="classzorba_1_1internal_1_1FixedQName"/>
+        <childnode refid="761" relation="public-inheritance">
+        </childnode>
+        <childnode refid="777" relation="template-instance">
+          <edgelabel>&lt; ZorbaDateTimeErrorQName, char const * &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="773">
+        <label>zorba::internal::ZorbaURIErrorQName</label>
+        <link refid="classzorba_1_1internal_1_1ZorbaURIErrorQName"/>
+        <childnode refid="772" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="766">
+        <label>zorba::internal::FixedQName&lt; ZorbaCSVErrorQName, char const * &gt;</label>
+        <link refid="classzorba_1_1internal_1_1FixedQName"/>
+        <childnode refid="761" relation="public-inheritance">
+        </childnode>
+        <childnode refid="777" relation="template-instance">
+          <edgelabel>&lt; ZorbaCSVErrorQName, char const * &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="762">
+        <label>zorba::internal::FixedQName&lt; JSONiqErrorQName, char const * &gt;</label>
+        <link refid="classzorba_1_1internal_1_1FixedQName"/>
+        <childnode refid="761" relation="public-inheritance">
+        </childnode>
+        <childnode refid="777" relation="template-instance">
+          <edgelabel>&lt; JSONiqErrorQName, char const * &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="767">
+        <label>zorba::internal::ZorbaCSVErrorQName</label>
+        <link refid="classzorba_1_1internal_1_1ZorbaCSVErrorQName"/>
+        <childnode refid="766" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="765">
+        <label>zorba::internal::XQueryErrorQName</label>
+        <link refid="classzorba_1_1internal_1_1XQueryErrorQName"/>
+        <childnode refid="764" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="775">
+        <label>zorba::internal::ZorbaWarningQName</label>
+        <link refid="classzorba_1_1internal_1_1ZorbaWarningQName"/>
+        <childnode refid="774" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="772">
+        <label>zorba::internal::FixedQName&lt; ZorbaURIErrorQName, char const * &gt;</label>
+        <link refid="classzorba_1_1internal_1_1FixedQName"/>
+        <childnode refid="761" relation="public-inheritance">
+        </childnode>
+        <childnode refid="777" relation="template-instance">
+          <edgelabel>&lt; ZorbaURIErrorQName, char const * &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="771">
+        <label>zorba::internal::ZorbaErrorQName</label>
+        <link refid="classzorba_1_1internal_1_1ZorbaErrorQName"/>
+        <childnode refid="770" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" line="33" bodyfile="/home/wcandillon/deadlinks/include/zorba/diagnostic.h" bodystart="33" bodyend="57"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1diagnostic_1_1QName_1a0ae1baf1f7f84522fc6d0012a0b191f1" prot="public" virt="pure-virtual"><scope>zorba::diagnostic::QName</scope><name>localname</name></member>
+      <member refid="classzorba_1_1diagnostic_1_1QName_1aa95a327a0d580e71f79abe2ff63444ff" prot="public" virt="pure-virtual"><scope>zorba::diagnostic::QName</scope><name>ns</name></member>
+      <member refid="classzorba_1_1diagnostic_1_1QName_1a84e269f4ab8a31f4e6d29578fb7b5dff" prot="public" virt="pure-virtual"><scope>zorba::diagnostic::QName</scope><name>prefix</name></member>
+      <member refid="classzorba_1_1diagnostic_1_1QName_1a8fffab5462e2b8348a3b263ee92beee5" prot="public" virt="virtual"><scope>zorba::diagnostic::QName</scope><name>~QName</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

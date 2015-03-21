@@ -1,0 +1,271 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1XQueryStackTrace" kind="class" prot="public">
+    <compoundname>zorba::XQueryStackTrace</compoundname>
+    <includes refid="xquery__stack__trace_8h" local="no">zorba/xquery_stack_trace.h</includes>
+    <innerclass refid="classzorba_1_1XQueryStackTrace_1_1Entry" prot="public">zorba::XQueryStackTrace::Entry</innerclass>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" prot="public" static="no">
+        <type>unsigned short</type>
+        <definition>typedef unsigned short zorba::XQueryStackTrace::column_type</definition>
+        <argsstring></argsstring>
+        <name>column_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="41" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1XQueryStackTrace_1a4ac4b593e4d1da238438735d678143b8" prot="public" static="no">
+        <type>trace_t::const_iterator</type>
+        <definition>typedef trace_t::const_iterator zorba::XQueryStackTrace::const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="120" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="120" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1XQueryStackTrace_1ae730cf61a91c35f70e05dc64de21878e" prot="public" static="no">
+        <type>trace_t::const_reverse_iterator</type>
+        <definition>typedef trace_t::const_reverse_iterator zorba::XQueryStackTrace::const_reverse_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_reverse_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="121" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="121" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1XQueryStackTrace_1a31276b541b49d9ace4cf08b3c80b3d50" prot="public" static="no">
+        <type>unsigned short</type>
+        <definition>typedef unsigned short zorba::XQueryStackTrace::fn_arity_type</definition>
+        <argsstring></argsstring>
+        <name>fn_arity_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1XQueryStackTrace_1a2b138e519d1117218f0b7552aaf0df39" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">internal::VariableQName</ref>&lt; std::string &gt;</type>
+        <definition>typedef internal::VariableQName&lt;std::string&gt; zorba::XQueryStackTrace::fn_name_type</definition>
+        <argsstring></argsstring>
+        <name>fn_name_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned zorba::XQueryStackTrace::line_type</definition>
+        <argsstring></argsstring>
+        <name>line_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1XQueryStackTrace_1ab8e19274de964517eeaad8659c2ce1a9" prot="public" static="no">
+        <type>trace_t::size_type</type>
+        <definition>typedef trace_t::size_type zorba::XQueryStackTrace::size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="119" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="119" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1XQueryStackTrace_1a4bceee214464cd20f12b8df698ae9ae4" prot="public" static="no">
+        <type>std::vector&lt; <ref refid="classzorba_1_1XQueryStackTrace_1_1Entry" kindref="compound">Entry</ref> &gt;</type>
+        <definition>typedef std::vector&lt;Entry&gt; zorba::XQueryStackTrace::trace_t</definition>
+        <argsstring></argsstring>
+        <name>trace_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="118" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="118" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1XQueryStackTrace_1a872fc7b62721a10ce1f6fb9bbfcb2da0" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1XQueryStackTrace_1a4bceee214464cd20f12b8df698ae9ae4" kindref="member">trace_t</ref></type>
+        <definition>trace_t zorba::XQueryStackTrace::trace_</definition>
+        <argsstring></argsstring>
+        <name>trace_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="150" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="150" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1XQueryStackTrace_1ae9909dfb22e03469f0191f80d9b88cb9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryStackTrace_1a4ac4b593e4d1da238438735d678143b8" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator zorba::XQueryStackTrace::begin</definition>
+        <argsstring>() const </argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="127" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="127" bodyend="129"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryStackTrace_1a7238e996d95372ba62694b0a36d93534" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::XQueryStackTrace::empty</definition>
+        <argsstring>() const </argsstring>
+        <name>empty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="123" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="123" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryStackTrace_1a61061e945dc64b989e88f8082b372702" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryStackTrace_1a4ac4b593e4d1da238438735d678143b8" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator zorba::XQueryStackTrace::end</definition>
+        <argsstring>() const </argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="131" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="131" bodyend="133"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryStackTrace_1abb14f7dc4be7e7512caaad082778f0ee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::XQueryStackTrace::push</definition>
+        <argsstring>(Entry const &amp;entry)</argsstring>
+        <name>push</name>
+        <param>
+          <type><ref refid="classzorba_1_1XQueryStackTrace_1_1Entry" kindref="compound">Entry</ref> const &amp;</type>
+          <declname>entry</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="143"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryStackTrace_1a4ccea5746cdf177513208b96743c96b3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryStackTrace_1ae730cf61a91c35f70e05dc64de21878e" kindref="member">const_reverse_iterator</ref></type>
+        <definition>const_reverse_iterator zorba::XQueryStackTrace::rbegin</definition>
+        <argsstring>() const </argsstring>
+        <name>rbegin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="135" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="135" bodyend="137"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryStackTrace_1ae55c4ab229902966ad34953d21a51381" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryStackTrace_1ae730cf61a91c35f70e05dc64de21878e" kindref="member">const_reverse_iterator</ref></type>
+        <definition>const_reverse_iterator zorba::XQueryStackTrace::rend</definition>
+        <argsstring>() const </argsstring>
+        <name>rend</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="139" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="139" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryStackTrace_1ac38e45f2653e0974c99cbfa07e9d567c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryStackTrace_1ab8e19274de964517eeaad8659c2ce1a9" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::XQueryStackTrace::size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="145" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="145" bodyend="147"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classzorba_1_1XQueryStackTrace_1a93138aee5526eae73d2a7519cee3307b" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend void</type>
+        <definition>void serialization::operator&amp;</definition>
+        <argsstring>(serialization::Archiver &amp;, XQueryStackTrace &amp;)</argsstring>
+        <name>serialization::operator&amp;</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XQueryStackTrace" kindref="compound">XQueryStackTrace</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="153"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" line="36" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_stack_trace.h" bodystart="36" bodyend="154"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1XQueryStackTrace_1ae9909dfb22e03469f0191f80d9b88cb9" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>begin</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a0d6a1906a7667fef1b797e90b4f21d26" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>column_type</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a4ac4b593e4d1da238438735d678143b8" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>const_iterator</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1ae730cf61a91c35f70e05dc64de21878e" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>const_reverse_iterator</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a7238e996d95372ba62694b0a36d93534" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>empty</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a61061e945dc64b989e88f8082b372702" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>end</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a31276b541b49d9ace4cf08b3c80b3d50" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>fn_arity_type</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a2b138e519d1117218f0b7552aaf0df39" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>fn_name_type</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a5dde7c2476d590b3f3e608a182f82e06" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>line_type</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1abb14f7dc4be7e7512caaad082778f0ee" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>push</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a4ccea5746cdf177513208b96743c96b3" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>rbegin</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1ae55c4ab229902966ad34953d21a51381" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>rend</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a93138aee5526eae73d2a7519cee3307b" prot="private" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>serialization::operator&amp;</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1ac38e45f2653e0974c99cbfa07e9d567c" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>size</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1ab8e19274de964517eeaad8659c2ce1a9" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>size_type</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a872fc7b62721a10ce1f6fb9bbfcb2da0" prot="private" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>trace_</name></member>
+      <member refid="classzorba_1_1XQueryStackTrace_1a4bceee214464cd20f12b8df698ae9ae4" prot="public" virt="non-virtual"><scope>zorba::XQueryStackTrace</scope><name>trace_t</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

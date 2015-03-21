@@ -1,0 +1,297 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="uuid_8h" kind="file">
+    <compoundname>uuid.h</compoundname>
+    <includes local="no">algorithm</includes>
+    <includes local="no">iostream</includes>
+    <includes local="no">zorba/config.h</includes>
+    <incdepgraph>
+      <node id="2461">
+        <label>iostream</label>
+      </node>
+      <node id="2459">
+        <label>uuid.h</label>
+        <link refid="uuid.h"/>
+        <childnode refid="2460" relation="include">
+        </childnode>
+        <childnode refid="2461" relation="include">
+        </childnode>
+        <childnode refid="2462" relation="include">
+        </childnode>
+      </node>
+      <node id="2462">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="2460">
+        <label>algorithm</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structzorba_1_1uuid" prot="public">zorba::uuid</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_UUID_H</highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_UUID_H</highlight></codeline>
+<codeline lineno="20"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;algorithm&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="28"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="30"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/>*<sp/>A<sp/>%uuid<sp/>contains<sp/>the<sp/>raw<sp/>bytes<sp/>for<sp/>a<sp/>UUID.<sp/><sp/>Note<sp/>that<sp/>this<sp/>is<sp/>intentially<sp/>a</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/>*<sp/>\c<sp/>struct<sp/>with<sp/>no<sp/>constructors,<sp/>no<sp/>destructor,<sp/>and<sp/>no<sp/>user-defined</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/>*<sp/>assignment<sp/>operators<sp/>so<sp/>that<sp/>it<sp/>remains<sp/>a<sp/>POD.</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/>*<sp/>See<sp/>also:</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/>*<sp/><sp/>-<sp/>RFC<sp/>4122:<sp/>A<sp/>Universally<sp/>Unique<sp/>IDentifier<sp/>(UUID)<sp/>URN<sp/>Namespace.</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/>*<sp/><sp/>-<sp/>http://en.wikipedia.org/wiki/Universally_unique_identifier</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/>*<sp/>The<sp/>UUID<sp/>data<sp/>is<sp/>stored<sp/>as<sp/>an<sp/>array<sp/>of<sp/>16<sp/>8-bit<sp/>bytes<sp/>comprising<sp/>the<sp/>128</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/>*<sp/>bits<sp/>that<sp/>is<sp/>a<sp/>UUID.<sp/><sp/>The<sp/>data<sp/>is<sp/>intentionally<sp/>\e<sp/>not<sp/>stored<sp/>as<sp/>shown<sp/>in</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/>*<sp/>&quot;Appendix<sp/>A<sp/>-<sp/>Sample<sp/>Implementation&quot;<sp/>of<sp/>RFC<sp/>4122<sp/>(the<sp/>\c<sp/>struct<sp/>with</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/>*<sp/>individial<sp/>fields<sp/>such<sp/>as<sp/>\c<sp/>time_low,<sp/>\c<sp/>time_mid,<sp/>etc.)<sp/>since<sp/>C++<sp/>does<sp/>not</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/>*<sp/>guarantee<sp/>that<sp/>the<sp/>\c<sp/>struct<sp/>fields<sp/>will<sp/>be<sp/>laid<sp/>out<sp/>in<sp/>memory<sp/>as<sp/>shown<sp/>in</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/>*<sp/>section<sp/>&quot;4.1.2.<sp/>Layout<sp/>and<sp/>Byte<sp/>Order&quot;<sp/>due<sp/>to<sp/>possible<sp/>padding.</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46" refid="structzorba_1_1uuid" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/>{</highlight></codeline>
+<codeline lineno="47" refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref>;</highlight></codeline>
+<codeline lineno="48" refid="structzorba_1_1uuid_1a792eb4d9e74a81eab35d983bf028f8fb" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref>&amp;<sp/><ref refid="structzorba_1_1uuid_1a792eb4d9e74a81eab35d983bf028f8fb" kindref="member">reference</ref>;</highlight></codeline>
+<codeline lineno="49" refid="structzorba_1_1uuid_1a27135dec13308dbe5a509267dd961bab" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/><ref refid="structzorba_1_1uuid_1a27135dec13308dbe5a509267dd961bab" kindref="member">const_reference</ref>;</highlight></codeline>
+<codeline lineno="50" refid="structzorba_1_1uuid_1a6e1ff9ac3afd0504c1bf0b9c075b1e6e" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref>*<sp/><ref refid="structzorba_1_1uuid_1a6e1ff9ac3afd0504c1bf0b9c075b1e6e" kindref="member">pointer</ref>;</highlight></codeline>
+<codeline lineno="51" refid="structzorba_1_1uuid_1afa76cf80f256b37865aad4b0e7f9be2f" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/><ref refid="structzorba_1_1uuid_1afa76cf80f256b37865aad4b0e7f9be2f" kindref="member">const_pointer</ref>;</highlight></codeline>
+<codeline lineno="52" refid="structzorba_1_1uuid_1a7871a098b1978880a827f03225f2d2b1" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::size_t<sp/><ref refid="structzorba_1_1uuid_1a7871a098b1978880a827f03225f2d2b1" kindref="member">size_type</ref>;</highlight></codeline>
+<codeline lineno="53" refid="structzorba_1_1uuid_1ab3e22d69eb7986e417ebca99d0480896" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::ptrdiff_t<sp/><ref refid="structzorba_1_1uuid_1ab3e22d69eb7986e417ebca99d0480896" kindref="member">difference_type</ref>;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55" refid="structzorba_1_1uuid_1a689d34d0f7315e86c5e44b117f0c83be" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="structzorba_1_1uuid_1a6e1ff9ac3afd0504c1bf0b9c075b1e6e" kindref="member">pointer</ref><sp/><ref refid="structzorba_1_1uuid_1a689d34d0f7315e86c5e44b117f0c83be" kindref="member">iterator</ref>;</highlight></codeline>
+<codeline lineno="56" refid="structzorba_1_1uuid_1aefabb8f65444edb7be9caf445e1069b4" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="structzorba_1_1uuid_1afa76cf80f256b37865aad4b0e7f9be2f" kindref="member">const_pointer</ref><sp/><ref refid="structzorba_1_1uuid_1aefabb8f65444edb7be9caf445e1069b4" kindref="member">const_iterator</ref>;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58" refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0" kindref="member">variant</ref><sp/>{</highlight></codeline>
+<codeline lineno="59" refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a82dadf54e74056cb885d51d3e049526e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a82dadf54e74056cb885d51d3e049526e" kindref="member" tooltip="NCS backward compatibility.">ncs</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>NCS<sp/>backward<sp/>compatibility</highlight></codeline>
+<codeline lineno="60" refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a68a3f4b5a216f1fe61b7433eb5aa3b66" refkind="member"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a68a3f4b5a216f1fe61b7433eb5aa3b66" kindref="member" tooltip="RFC 4122.">rfc4122</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>RFC<sp/>4122</highlight></codeline>
+<codeline lineno="61" refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a9aeca30618768ac5665dc33479a149a1" refkind="member"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0a9aeca30618768ac5665dc33479a149a1" kindref="member" tooltip="Microsoft compatibility.">microsoft</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Microsoft<sp/>compatibility</highlight></codeline>
+<codeline lineno="62" refid="structzorba_1_1uuid_1afc3fd70575f919057ee2a30bc1cb37d0aec74ee647c93d830a85e88912644c9b5" refkind="member"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/>future<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Reserved<sp/>for<sp/>future<sp/>use</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65" refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473" kindref="member">version</ref><sp/>{</highlight></codeline>
+<codeline lineno="66" refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473a3af1bb9375fb9ccd265e8c037394823f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473a3af1bb9375fb9ccd265e8c037394823f" kindref="member">unknown</ref>,</highlight></codeline>
+<codeline lineno="67" refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473ac481c9c2ac1a28aa6a63b673497cc1a5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>time_based<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>0x10,</highlight></codeline>
+<codeline lineno="68" refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473a201227da8bb76a82ce5277957ad58871" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>dce_security<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>0x20,</highlight></codeline>
+<codeline lineno="69" refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473afd52720d2ef1a2d84c7e4f0022aa87a3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>name_based_md5<sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>0x30,</highlight></codeline>
+<codeline lineno="70" refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473ac3e6079deb8e990a938e885f0098061e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>random_number_based<sp/>=<sp/>0x40,</highlight></codeline>
+<codeline lineno="71" refid="structzorba_1_1uuid_1aa3449ee36dee9c914cf08fb60b22c473a8bf23c0d1d8ba43e7182c14ed22fb5aa" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>name_based_sha1<sp/><sp/><sp/><sp/><sp/>=<sp/>0x50</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/>*<sp/>The<sp/>raw<sp/>UUID<sp/>data.</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="77" refid="structzorba_1_1uuid_1ac46d76bf7250e3579c4b74cf213bf4fa" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="structzorba_1_1uuid_1a48ec908583be9c92f95e35c93cad4a4b" kindref="member">value_type</ref><sp/>data[16];</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="80"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Creates<sp/>a<sp/>UUID.<sp/><sp/>The<sp/>variant<sp/>and<sp/>version<sp/>of<sp/>the<sp/>UUID<sp/>created<sp/>is</highlight></codeline>
+<codeline lineno="81"><highlight class="comment"><sp/><sp/><sp/>*<sp/>platform-dependent.</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>result<sp/>A<sp/>pointer<sp/>to<sp/>the<sp/>result.</highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>create(<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/>*result<sp/>);</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Creates<sp/>an<sp/>iterator<sp/>to<sp/>the<sp/>beginning<sp/>of<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>iterator.</highlight></codeline>
+<codeline lineno="91"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="92" refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="structzorba_1_1uuid_1a689d34d0f7315e86c5e44b117f0c83be" kindref="member">iterator</ref><sp/><ref refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" kindref="member" tooltip="Creates an iterator to the beginning of the data.">begin</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>data;</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="97"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Creates<sp/>a<sp/>const_iterator<sp/>to<sp/>the<sp/>beginning<sp/>of<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="98"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="99"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>iterator.</highlight></codeline>
+<codeline lineno="100"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101" refid="structzorba_1_1uuid_1a93b18f310b922e1b307c9f74e29bdb77" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="structzorba_1_1uuid_1aefabb8f65444edb7be9caf445e1069b4" kindref="member">const_iterator</ref><sp/><ref refid="structzorba_1_1uuid_1a93b18f310b922e1b307c9f74e29bdb77" kindref="member" tooltip="Creates a const_iterator to the beginning of the data.">begin</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>data;</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="105"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="106"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Creates<sp/>an<sp/>iterator<sp/>to<sp/>one<sp/>past<sp/>the<sp/>end<sp/>of<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="107"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>iterator.</highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="110" refid="structzorba_1_1uuid_1aa9bb45e592ebb865c5a53c5dca2aa181" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="structzorba_1_1uuid_1a689d34d0f7315e86c5e44b117f0c83be" kindref="member">iterator</ref><sp/><ref refid="structzorba_1_1uuid_1aa9bb45e592ebb865c5a53c5dca2aa181" kindref="member" tooltip="Creates an iterator to one past the end of the data.">end</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>data<sp/>+<sp/>size();</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Creates<sp/>a<sp/>const_iterator<sp/>to<sp/>one<sp/>past<sp/>the<sp/>end<sp/>of<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>iterator.</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="119" refid="structzorba_1_1uuid_1a0f720c08f3c86ea0f16c459fb0d4894f" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="structzorba_1_1uuid_1aefabb8f65444edb7be9caf445e1069b4" kindref="member">const_iterator</ref><sp/><ref refid="structzorba_1_1uuid_1a0f720c08f3c86ea0f16c459fb0d4894f" kindref="member" tooltip="Creates a const_iterator to one past the end of the data.">end</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>data<sp/>+<sp/>size();</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Gets<sp/>the<sp/>size<sp/>of<sp/>the<sp/>UUID<sp/>data.</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="126"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Always<sp/>returns<sp/>16.</highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="128" refid="structzorba_1_1uuid_1a3fd156f96357cd809635b4231554d342" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="structzorba_1_1uuid_1a7871a098b1978880a827f03225f2d2b1" kindref="member">size_type</ref><sp/><ref refid="structzorba_1_1uuid_1a3fd156f96357cd809635b4231554d342" kindref="member" tooltip="Gets the size of the UUID data.">size</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<sp/>data<sp/>);</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="132"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="133"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Swaps<sp/>this<sp/>UUID&apos;s<sp/>data<sp/>with<sp/>that<sp/>of<sp/>another.</highlight></codeline>
+<codeline lineno="134"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="135"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>that<sp/>The<sp/>other<sp/>UUID<sp/>to<sp/>swap<sp/>data<sp/>with.</highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="137" refid="structzorba_1_1uuid_1aeb822b1fd2491191fdb7235f3d84c848" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="structzorba_1_1uuid_1aeb822b1fd2491191fdb7235f3d84c848" kindref="member" tooltip="Swaps this UUID&amp;#39;s data with that of another.">swap</ref>(<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/>&amp;that<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/>std::swap_ranges(<sp/>begin(),<sp/>end(),<sp/>that.<ref refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" kindref="member" tooltip="Creates an iterator to the beginning of the data.">begin</ref>()<sp/>);</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="141"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="142"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Gets<sp/>the<sp/>variant<sp/>of<sp/>this<sp/>UUID.</highlight></codeline>
+<codeline lineno="143"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="144"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>variant.</highlight></codeline>
+<codeline lineno="145"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/>variant<sp/>get_variant()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="148"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="149"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Gets<sp/>the<sp/>version<sp/>of<sp/>this<sp/>UUID.</highlight></codeline>
+<codeline lineno="150"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="151"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>Returns<sp/>said<sp/>version.</highlight></codeline>
+<codeline lineno="152"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/>version<sp/>get_version()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="154"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="156"><highlight class="comment">//////////<sp/>Functions<sp/>//////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="157"><highlight class="comment"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="158"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="159"><highlight class="comment"><sp/>*<sp/>Swaps<sp/>two<sp/>UUIDs&apos;<sp/>data.</highlight></codeline>
+<codeline lineno="160"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="161"><highlight class="comment"><sp/>*<sp/>@param<sp/>u1<sp/>The<sp/>first<sp/>UUID.</highlight></codeline>
+<codeline lineno="162"><highlight class="comment"><sp/>*<sp/>@param<sp/>u2<sp/>The<sp/>second<sp/>UUID.</highlight></codeline>
+<codeline lineno="163"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164" refid="namespacezorba_1acae6c10faa6866fa346861ce0062086c" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1acae6c10faa6866fa346861ce0062086c" kindref="member" tooltip="Swaps two UUIDs&amp;#39; data.">swap</ref>(<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/>&amp;u1,<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/>&amp;u2<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/>u1.<ref refid="structzorba_1_1uuid_1aeb822b1fd2491191fdb7235f3d84c848" kindref="member" tooltip="Swaps this UUID&amp;#39;s data with that of another.">swap</ref>(<sp/>u2<sp/>);</highlight></codeline>
+<codeline lineno="166"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="168"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="169"><highlight class="comment"><sp/>*<sp/>Compares<sp/>two<sp/>UUIDs<sp/>for<sp/>equality.</highlight></codeline>
+<codeline lineno="170"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="171"><highlight class="comment"><sp/>*<sp/>@param<sp/>u1<sp/>The<sp/>first<sp/>UUID.</highlight></codeline>
+<codeline lineno="172"><highlight class="comment"><sp/>*<sp/>@param<sp/>u2<sp/>The<sp/>second<sp/>UUID.</highlight></codeline>
+<codeline lineno="173"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>\c<sp/>true<sp/>only<sp/>if<sp/>the<sp/>two<sp/>UUIDs<sp/>are<sp/>equal.</highlight></codeline>
+<codeline lineno="174"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="175" refid="namespacezorba_1a394efee9feac94d7c5ee98b38aa6e80a" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1adf799320d83872ba0b8c9c4a140a6e97" kindref="member" tooltip="Compares two diagnostics for equality.">operator==</ref>(<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u1,<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u2<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>std::equal(<sp/>u1.<ref refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" kindref="member" tooltip="Creates an iterator to the beginning of the data.">begin</ref>(),<sp/>u1.<ref refid="structzorba_1_1uuid_1aa9bb45e592ebb865c5a53c5dca2aa181" kindref="member" tooltip="Creates an iterator to one past the end of the data.">end</ref>(),<sp/>u2.<ref refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" kindref="member" tooltip="Creates an iterator to the beginning of the data.">begin</ref>()<sp/>);</highlight></codeline>
+<codeline lineno="177"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="179"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="180"><highlight class="comment"><sp/>*<sp/>Compares<sp/>two<sp/>UUIDs<sp/>for<sp/>inequality.</highlight></codeline>
+<codeline lineno="181"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="182"><highlight class="comment"><sp/>*<sp/>@param<sp/>u1<sp/>The<sp/>first<sp/>UUID.</highlight></codeline>
+<codeline lineno="183"><highlight class="comment"><sp/>*<sp/>@param<sp/>u2<sp/>The<sp/>second<sp/>UUID.</highlight></codeline>
+<codeline lineno="184"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>\c<sp/>true<sp/>only<sp/>if<sp/>the<sp/>two<sp/>UUIDs<sp/>are<sp/>not<sp/>equal.</highlight></codeline>
+<codeline lineno="185"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="186" refid="namespacezorba_1aaeb7da255da17dd4a89229b84481dba3" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1adfd6a24c31e042dda8845ee71335e8df" kindref="member" tooltip="Compares two diagnostics for inequality.">operator!=</ref>(<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u1,<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u2<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>!(u1<sp/>==<sp/>u2);</highlight></codeline>
+<codeline lineno="188"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="190"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="191"><highlight class="comment"><sp/>*<sp/>Compares<sp/>two<sp/>UUIDs<sp/>for<sp/>less-than.</highlight></codeline>
+<codeline lineno="192"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="193"><highlight class="comment"><sp/>*<sp/>@param<sp/>u1<sp/>The<sp/>first<sp/>UUID.</highlight></codeline>
+<codeline lineno="194"><highlight class="comment"><sp/>*<sp/>@param<sp/>u2<sp/>The<sp/>second<sp/>UUID.</highlight></codeline>
+<codeline lineno="195"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>\c<sp/>true<sp/>only<sp/>if<sp/>the<sp/>first<sp/>UUID<sp/>is<sp/>less<sp/>than<sp/>the<sp/>second.</highlight></codeline>
+<codeline lineno="196"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="197" refid="namespacezorba_1a952a31aff0b416eca5ca24ab935ff546" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1a952a31aff0b416eca5ca24ab935ff546" kindref="member" tooltip="Compares two UUIDs for less-than.">operator&lt;</ref>(<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u1,<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u2<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>std::lexicographical_compare(</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/>u1.<ref refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" kindref="member" tooltip="Creates an iterator to the beginning of the data.">begin</ref>(),<sp/>u1.<ref refid="structzorba_1_1uuid_1aa9bb45e592ebb865c5a53c5dca2aa181" kindref="member" tooltip="Creates an iterator to one past the end of the data.">end</ref>(),<sp/>u2.<ref refid="structzorba_1_1uuid_1ae7e96f06e0325e2747a1f69a5306827e" kindref="member" tooltip="Creates an iterator to the beginning of the data.">begin</ref>(),<sp/>u2.<ref refid="structzorba_1_1uuid_1aa9bb45e592ebb865c5a53c5dca2aa181" kindref="member" tooltip="Creates an iterator to one past the end of the data.">end</ref>()</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/>);</highlight></codeline>
+<codeline lineno="201"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="203"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="204"><highlight class="comment"><sp/>*<sp/>Compares<sp/>two<sp/>UUIDs<sp/>for<sp/>less-than-or-equal-to.</highlight></codeline>
+<codeline lineno="205"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="206"><highlight class="comment"><sp/>*<sp/>@param<sp/>u1<sp/>The<sp/>first<sp/>UUID.</highlight></codeline>
+<codeline lineno="207"><highlight class="comment"><sp/>*<sp/>@param<sp/>u2<sp/>The<sp/>second<sp/>UUID.</highlight></codeline>
+<codeline lineno="208"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>\c<sp/>true<sp/>only<sp/>if<sp/>the<sp/>first<sp/>UUID<sp/>is<sp/>less<sp/>than<sp/>or<sp/>equal<sp/>to<sp/>the</highlight></codeline>
+<codeline lineno="209"><highlight class="comment"><sp/>*<sp/>second.</highlight></codeline>
+<codeline lineno="210"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="211" refid="namespacezorba_1a85f83e3303329acdaa008a56b4b39956" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1a85f83e3303329acdaa008a56b4b39956" kindref="member" tooltip="Compares two UUIDs for less-than-or-equal-to.">operator&lt;=</ref>(<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u1,<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u2<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>!(u2<sp/>&lt;<sp/>u1);</highlight></codeline>
+<codeline lineno="213"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="215"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="216"><highlight class="comment"><sp/>*<sp/>Compares<sp/>two<sp/>UUIDs<sp/>for<sp/>greater-than.</highlight></codeline>
+<codeline lineno="217"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="218"><highlight class="comment"><sp/>*<sp/>@param<sp/>u1<sp/>The<sp/>first<sp/>UUID.</highlight></codeline>
+<codeline lineno="219"><highlight class="comment"><sp/>*<sp/>@param<sp/>u2<sp/>The<sp/>second<sp/>UUID.</highlight></codeline>
+<codeline lineno="220"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>\c<sp/>true<sp/>only<sp/>if<sp/>the<sp/>first<sp/>UUID<sp/>is<sp/>greater<sp/>than<sp/>the<sp/>second.</highlight></codeline>
+<codeline lineno="221"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="222" refid="namespacezorba_1a8df3ad1b043596da4613df67b3699a08" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1a8df3ad1b043596da4613df67b3699a08" kindref="member" tooltip="Compares two UUIDs for greater-than.">operator&gt;</ref>(<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u1,<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u2<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>u2<sp/>&lt;<sp/>u1;</highlight></codeline>
+<codeline lineno="224"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="226"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="227"><highlight class="comment"><sp/>*<sp/>Compares<sp/>two<sp/>UUIDs<sp/>for<sp/>greater-than-or-equal-to.</highlight></codeline>
+<codeline lineno="228"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="229"><highlight class="comment"><sp/>*<sp/>@param<sp/>u1<sp/>The<sp/>first<sp/>UUID.</highlight></codeline>
+<codeline lineno="230"><highlight class="comment"><sp/>*<sp/>@param<sp/>u2<sp/>The<sp/>second<sp/>UUID.</highlight></codeline>
+<codeline lineno="231"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>\c<sp/>true<sp/>only<sp/>if<sp/>the<sp/>first<sp/>UUID<sp/>is<sp/>greater<sp/>than<sp/>or<sp/>equal<sp/>to</highlight></codeline>
+<codeline lineno="232"><highlight class="comment"><sp/>*<sp/>the<sp/>second.</highlight></codeline>
+<codeline lineno="233"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="234" refid="namespacezorba_1a6583cf855d9f3f51cd24fef4b6730a9b" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1a6583cf855d9f3f51cd24fef4b6730a9b" kindref="member" tooltip="Compares two UUIDs for greater-than-or-equal-to.">operator&gt;=</ref>(<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u1,<sp/><ref refid="structzorba_1_1uuid" kindref="compound" tooltip="A uuid contains the raw bytes for a UUID.">uuid</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u2<sp/>)<sp/>{</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>!(u1<sp/>&lt;<sp/>u2);</highlight></codeline>
+<codeline lineno="236"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="237"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="238"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="239"><highlight class="comment"><sp/>*<sp/>Emits<sp/>the<sp/>given<sp/>UUID<sp/>to<sp/>the<sp/>given<sp/>ostream<sp/>in<sp/>canonical<sp/>UUID<sp/>format.</highlight></codeline>
+<codeline lineno="240"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="241"><highlight class="comment"><sp/>*<sp/>@param<sp/>os<sp/>The<sp/>ostream<sp/>to<sp/>emit<sp/>to.</highlight></codeline>
+<codeline lineno="242"><highlight class="comment"><sp/>*<sp/>@param<sp/>u<sp/>The<sp/>UUID<sp/>to<sp/>emit.</highlight></codeline>
+<codeline lineno="243"><highlight class="comment"><sp/>*<sp/>@return<sp/>Returns<sp/>\a<sp/>os.</highlight></codeline>
+<codeline lineno="244"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="245"><highlight class="normal">ZORBA_DLL_PUBLIC</highlight></codeline>
+<codeline lineno="246"><highlight class="normal">std::ostream&amp;<sp/><ref refid="namespacezorba_1aec67c4279177892eaa9d14c9ca0c0374" kindref="member">operator&lt;&lt;</ref>(<sp/>std::ostream<sp/>&amp;<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abd9d340f17925d6dcfdf23e0ff40ddf1" kindref="member" tooltip="Ossetian; Ossetic.">os</ref>,<sp/>uuid<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;u<sp/>);</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="248"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="249"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="250"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="251"><highlight class="normal"></highlight></codeline>
+<codeline lineno="252"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_UUID_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="253"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="254"><highlight class="comment"><sp/>*<sp/>Local<sp/>variables:</highlight></codeline>
+<codeline lineno="255"><highlight class="comment"><sp/>*<sp/>mode:<sp/>c++</highlight></codeline>
+<codeline lineno="256"><highlight class="comment"><sp/>*<sp/>End:</highlight></codeline>
+<codeline lineno="257"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="258"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/uuid.h"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="modules__top_8dox" kind="file">
+    <compoundname>modules_top.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>modules_top<sp/>Modules<sp/>in<sp/>Zorba</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">Zorba&apos;s<sp/>functionality<sp/>can<sp/>be<sp/>greatly<sp/>extended<sp/>through<sp/>the<sp/>use<sp/>of</highlight></codeline>
+<codeline lineno="4"><highlight class="comment">&lt;i&gt;modules&lt;/i&gt;.<sp/>Modules<sp/>are<sp/>libraries<sp/>of<sp/>XQuery<sp/>functions<sp/>and</highlight></codeline>
+<codeline lineno="5"><highlight class="comment">variables<sp/>which<sp/>provide<sp/>additional<sp/>functionality.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"></highlight></codeline>
+<codeline lineno="7"><highlight class="comment">Those<sp/>included<sp/>with<sp/>the<sp/>Zorba<sp/>processor<sp/>library<sp/>are<sp/>\ref<sp/>core_modules,</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">the<sp/>ones<sp/>that<sp/>are<sp/>distributed<sp/>as<sp/>separate<sp/>libraries<sp/>are<sp/>\ref<sp/>non_core_modules.</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"></highlight></codeline>
+<codeline lineno="10"><highlight class="comment">\section<sp/>core_modules<sp/>Core<sp/>Modules</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"></highlight></codeline>
+<codeline lineno="12"><highlight class="comment">The<sp/>Zorba<sp/>code<sp/>includes<sp/>a<sp/>few<sp/>core<sp/>modules:</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"></highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.w3.org/2005/xpath-functions&quot;&gt;xpath&lt;/a&gt;</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules/node&quot;&gt;XDM&lt;/a&gt;</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules/store/dynamic/collections/ddl&quot;&gt;store&lt;/a&gt;</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/introspection/sctx&quot;&gt;introspection&lt;/a&gt;</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/reflection&quot;&gt;reflection&lt;/a&gt;</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/expath.org/ns/file&quot;&gt;file&lt;/a&gt;</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/fetch&quot;&gt;fetch&lt;/a&gt;</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/http-client&quot;&gt;http-client&lt;/a&gt;</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/xqdoc&quot;&gt;xqdoc&lt;/a&gt;</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.functx.com.html&quot;&gt;functx&lt;/a&gt;</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"></highlight></codeline>
+<codeline lineno="25"><highlight class="comment">\section<sp/>non_core_modules<sp/>Non-core<sp/>Modules</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"></highlight></codeline>
+<codeline lineno="27"><highlight class="comment">In<sp/>addition,<sp/>the<sp/>Zorba<sp/>team<sp/>supports<sp/>a<sp/>large<sp/>number<sp/>of<sp/>non-core<sp/>modules:</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"></highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/><sp/>-<sp/>data-cleaning:<sp/>&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules/data-cleaning/hybrid-string-similarity&quot;&gt;hybrid-string-similarity&lt;/a&gt;,<sp/>&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules/data-cleaning/normalization&quot;&gt;normalization&lt;/a&gt;</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/><sp/>-<sp/>data-converters:<sp/>&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules/json-xml&quot;&gt;JSON&lt;/a&gt;,<sp/>&lt;a<sp/>href=&quot;/modules/latest/modules/zorba.io/modules/csv&quot;&gt;CSV&lt;/a&gt;,<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/converters/html&quot;&gt;HTML&lt;/a&gt;</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/><sp/>-<sp/>data-formatting:<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/xsl-fo&quot;&gt;XSL-FO&lt;/a&gt;</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/email/smtp&quot;&gt;email&lt;/a&gt;</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules/excel/statistical&quot;&gt;excel&lt;/a&gt;</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/expath.org/ns/geo&quot;&gt;geo&lt;/a&gt;</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/expath.org/ns/http-client&quot;&gt;http-client&lt;/a&gt;</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/image/manipulation&quot;&gt;image&lt;/a&gt;</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/>-<sp/>programming<sp/>languages:<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/languages/xslt&quot;&gt;XSLT&lt;/a&gt;</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/oauth/client&quot;&gt;oauth&lt;/a&gt;</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/process.&quot;&gt;process&lt;/a&gt;</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/www.zorba-xquery.com/modules/cryptography_hmac&quot;&gt;security&lt;/a&gt;</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules/system&quot;&gt;system&lt;/a&gt;</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"></highlight></codeline>
+<codeline lineno="43"><highlight class="comment">For<sp/>a<sp/>complete<sp/>list<sp/>of<sp/>these<sp/>modules,<sp/>see:<sp/>&lt;b&gt;&lt;a</highlight></codeline>
+<codeline lineno="44"><highlight class="comment">href=&quot;/documentation/latest/modules&quot;&gt;XQuery<sp/>Module<sp/>Library&lt;/a&gt;&lt;/b&gt;.</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"></highlight></codeline>
+<codeline lineno="46"><highlight class="comment">\section<sp/>module_usage<sp/>Using</highlight></codeline>
+<codeline lineno="47"><highlight class="comment">To<sp/>write<sp/>queries<sp/>using<sp/>these<sp/>modules,<sp/>first<sp/>read<sp/>&lt;b&gt;\ref</highlight></codeline>
+<codeline lineno="48"><highlight class="comment">mod_importing&lt;/b&gt;,<sp/>and<sp/>then<sp/>&lt;b&gt;\ref<sp/>mod_versioning&lt;/b&gt;.</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"></highlight></codeline>
+<codeline lineno="50"><highlight class="comment">You<sp/>can<sp/>also<sp/>write<sp/>your<sp/>own<sp/>modules<sp/>to<sp/>encapsulate<sp/>features<sp/>or<sp/>for</highlight></codeline>
+<codeline lineno="51"><highlight class="comment">re-use<sp/>by<sp/>others.<sp/>For<sp/>information<sp/>on<sp/>this,<sp/>see<sp/>&lt;b&gt;\ref<sp/>modules_authoring&lt;/b&gt;<sp/>and</highlight></codeline>
+<codeline lineno="52"><highlight class="comment">&lt;b&gt;\ref<sp/>external_functions&lt;/b&gt;.</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"></highlight></codeline>
+<codeline lineno="54"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/modules_top.dox"/>
+  </compounddef>
+</doxygen>

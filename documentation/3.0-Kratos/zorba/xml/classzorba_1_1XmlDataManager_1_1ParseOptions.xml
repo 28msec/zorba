@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1XmlDataManager_1_1ParseOptions" kind="class" prot="public">
+    <compoundname>zorba::XmlDataManager::ParseOptions</compoundname>
+    <includes refid="xmldatamanager_8h" local="no">zorba/xmldatamanager.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1XmlDataManager_1_1ParseOptions_1a57ed25cbac0da96ee6e55505cc301400" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool zorba::XmlDataManager::ParseOptions::theDtdValidation</definition>
+        <argsstring></argsstring>
+        <name>theDtdValidation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="43" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1XmlDataManager_1_1ParseOptions_1a34e0e044b99950d7145f51b2558dbe2a" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool zorba::XmlDataManager::ParseOptions::theExternalEntityProcessing</definition>
+        <argsstring></argsstring>
+        <name>theExternalEntityProcessing</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="44" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1_1ParseOptions_1a2f037d29d5896bd4b27153cdf6bb23e1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::XmlDataManager::ParseOptions::isDtdValidationEnabled</definition>
+        <argsstring>() const </argsstring>
+        <name>isDtdValidationEnabled</name>
+        <briefdescription>
+<para>Returns true if dtd validation is enabled, false otherwise. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="70" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="69" bodyend="72"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1_1ParseOptions_1ac1bb15171690244a9e36cb4590b8ada3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::XmlDataManager::ParseOptions::isExternalEntityProcessingEnabled</definition>
+        <argsstring>() const </argsstring>
+        <name>isExternalEntityProcessingEnabled</name>
+        <briefdescription>
+<para>Returns true if external entity processig is enabled, false otherwise. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="91" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="90" bodyend="93"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1_1ParseOptions_1aba66302b85a29c91e79771ce62092ce0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::XmlDataManager::ParseOptions::ParseOptions</definition>
+        <argsstring>()</argsstring>
+        <name>ParseOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="51" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="47" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1_1ParseOptions_1a67070663f86891561f82bd530e20487b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::XmlDataManager::ParseOptions::setDtdValidation</definition>
+        <argsstring>(bool aEnable)</argsstring>
+        <name>setDtdValidation</name>
+        <param>
+          <type>bool</type>
+          <declname>aEnable</declname>
+        </param>
+        <briefdescription>
+<para>Set the property enableDtd, which specifies whether the document should be validated against its associated DTD (if any). </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="62" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="61" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1_1ParseOptions_1a0e5663d89760e5ca44f6740ff21713b2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::XmlDataManager::ParseOptions::setExternalEntityProcessing</definition>
+        <argsstring>(bool aEnable)</argsstring>
+        <name>setExternalEntityProcessing</name>
+        <param>
+          <type>bool</type>
+          <declname>aEnable</declname>
+        </param>
+        <briefdescription>
+<para>Set the property to enable or disable processing of XML external entities. </para>        </briefdescription>
+        <detaileddescription>
+<para>If the option is enabled, the input must conform to the syntax _extParsedEnt_ (production [78] in XML 1.0); and since there is no DTD, the content must include no entity references. The result of the function call is a sequence of nodes. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="82" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="81" bodyend="84"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1_1ParseOptions_1a5e414ff8a57e36b79b53d58931081a01" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::XmlDataManager::ParseOptions::~ParseOptions</definition>
+        <argsstring>()</argsstring>
+        <name>~ParseOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="54" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="54" bodyend="54"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The <ref refid="classzorba_1_1XmlDataManager_1_1ParseOptions" kindref="compound">ParseOptions</ref> class stores various properties that affect how a document is parsed. </para>    </briefdescription>
+    <detaileddescription>
+<para>An instance of this class is passed as input to the parseXML function. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="41" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="40" bodyend="94"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a2f037d29d5896bd4b27153cdf6bb23e1" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager::ParseOptions</scope><name>isDtdValidationEnabled</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1ac1bb15171690244a9e36cb4590b8ada3" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager::ParseOptions</scope><name>isExternalEntityProcessingEnabled</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1aba66302b85a29c91e79771ce62092ce0" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager::ParseOptions</scope><name>ParseOptions</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a67070663f86891561f82bd530e20487b" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager::ParseOptions</scope><name>setDtdValidation</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a0e5663d89760e5ca44f6740ff21713b2" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager::ParseOptions</scope><name>setExternalEntityProcessing</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a57ed25cbac0da96ee6e55505cc301400" prot="private" virt="non-virtual"><scope>zorba::XmlDataManager::ParseOptions</scope><name>theDtdValidation</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a34e0e044b99950d7145f51b2558dbe2a" prot="private" virt="non-virtual"><scope>zorba::XmlDataManager::ParseOptions</scope><name>theExternalEntityProcessing</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1_1ParseOptions_1a5e414ff8a57e36b79b53d58931081a01" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager::ParseOptions</scope><name>~ParseOptions</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

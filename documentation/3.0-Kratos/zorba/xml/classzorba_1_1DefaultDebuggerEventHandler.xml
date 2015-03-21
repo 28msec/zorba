@@ -1,0 +1,240 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1DefaultDebuggerEventHandler" kind="class" prot="public">
+    <compoundname>zorba::DefaultDebuggerEventHandler</compoundname>
+    <basecompoundref refid="classzorba_1_1DebuggerEventHandler" prot="public" virt="non-virtual">zorba::DebuggerEventHandler</basecompoundref>
+    <includes refid="debugger__default__event__handler_8h" local="no">zorba/debugger_default_event_handler.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1DebuggerEventHandler_1a9c2140f80f99be86c096561c00c1b501" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DebuggerEventHandler::error</definition>
+        <argsstring>(unsigned int errcode, const std::string &amp;msg)=0</argsstring>
+        <name>error</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>errcode</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>msg</declname>
+        </param>
+        <briefdescription>
+<para>Method which gets called if an error occurs. </para>        </briefdescription>
+        <detaileddescription>
+<para>This method gets called if an error occurs. This can be either an error in the client or in the parser.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>errcode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error code. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>msg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A UI usable message. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_event_handler.h" line="44"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultDebuggerEventHandler_1aa4da116691bf95b5c11a8188c5671a48" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DefaultDebuggerEventHandler::evaluated</definition>
+        <argsstring>(String &amp;anExpr, std::list&lt; std::pair&lt; String, String &gt; &gt; &amp;aValuesAndTypes)</argsstring>
+        <name>evaluated</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>anExpr</declname>
+        </param>
+        <param>
+          <type>std::list&lt; std::pair&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref>, <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &gt; &amp;</type>
+          <declname>aValuesAndTypes</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_default_event_handler.h" line="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultDebuggerEventHandler_1a142e0235a8b047526637c6cfb6ad0f12" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DefaultDebuggerEventHandler::evaluated</definition>
+        <argsstring>(String &amp;anExpr, String &amp;anError)</argsstring>
+        <name>evaluated</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>anExpr</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>anError</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_default_event_handler.h" line="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultDebuggerEventHandler_1a148f323d5a92d9a3ba351fbab6dd72b2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultDebuggerEventHandler::idle</definition>
+        <argsstring>()</argsstring>
+        <name>idle</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_default_event_handler.h" line="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerEventHandler_1a35229f4e00c4f3355610e455281f15aa" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DebuggerEventHandler::parseMessage</definition>
+        <argsstring>(const std::string &amp;aMessage)=0</argsstring>
+        <name>parseMessage</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aMessage</declname>
+        </param>
+        <briefdescription>
+<para>This method gets called whenever the debugger client gets a message from the debug engine. </para>        </briefdescription>
+        <detaileddescription>
+<para>When the client gets a message from the debug engine, it reads the message to a string and calls this method. The message is an XML document - so the implementation has to parse this node.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMessage</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The message recieved from the debug engine. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_event_handler.h" line="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultDebuggerEventHandler_1afaeb261fef78ac2e93ab93e981d2ced5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultDebuggerEventHandler::resumed</definition>
+        <argsstring>()</argsstring>
+        <name>resumed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_default_event_handler.h" line="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultDebuggerEventHandler_1ad9567b3ab8c57c916aacb5c2edd1b795" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultDebuggerEventHandler::started</definition>
+        <argsstring>()</argsstring>
+        <name>started</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_default_event_handler.h" line="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultDebuggerEventHandler_1a06987f9d58d56ba5e3f0c2f510a60429" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultDebuggerEventHandler::suspended</definition>
+        <argsstring>(QueryLocation &amp;aLocation, SuspendedBy aCause)</argsstring>
+        <name>suspended</name>
+        <param>
+          <type><ref refid="classzorba_1_1QueryLocation" kindref="compound">QueryLocation</ref> &amp;</type>
+          <declname>aLocation</declname>
+        </param>
+        <param>
+          <type>SuspendedBy</type>
+          <declname>aCause</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_default_event_handler.h" line="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultDebuggerEventHandler_1a13ecc12b1e8d3d032cd62dde2e2ccf45" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::DefaultDebuggerEventHandler::terminated</definition>
+        <argsstring>()</argsstring>
+        <name>terminated</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_default_event_handler.h" line="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DefaultDebuggerEventHandler_1aa1daa5fa4459798410c533f93d270aa9" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::DefaultDebuggerEventHandler::~DefaultDebuggerEventHandler</definition>
+        <argsstring>()</argsstring>
+        <name>~DefaultDebuggerEventHandler</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_default_event_handler.h" line="27"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="576">
+        <label>zorba::DefaultDebuggerEventHandler</label>
+        <link refid="classzorba_1_1DefaultDebuggerEventHandler"/>
+        <childnode refid="577" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="577">
+        <label>zorba::DebuggerEventHandler</label>
+        <link refid="classzorba_1_1DebuggerEventHandler"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="578">
+        <label>zorba::DefaultDebuggerEventHandler</label>
+        <link refid="classzorba_1_1DefaultDebuggerEventHandler"/>
+        <childnode refid="579" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="579">
+        <label>zorba::DebuggerEventHandler</label>
+        <link refid="classzorba_1_1DebuggerEventHandler"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/debugger_default_event_handler.h" line="24" bodyfile="/home/wcandillon/deadlinks/include/zorba/debugger_default_event_handler.h" bodystart="23" bodyend="44"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1DebuggerEventHandler_1a9c2140f80f99be86c096561c00c1b501" prot="public" virt="pure-virtual"><scope>zorba::DefaultDebuggerEventHandler</scope><name>error</name></member>
+      <member refid="classzorba_1_1DefaultDebuggerEventHandler_1aa4da116691bf95b5c11a8188c5671a48" prot="public" virt="virtual"><scope>zorba::DefaultDebuggerEventHandler</scope><name>evaluated</name></member>
+      <member refid="classzorba_1_1DefaultDebuggerEventHandler_1a142e0235a8b047526637c6cfb6ad0f12" prot="public" virt="virtual"><scope>zorba::DefaultDebuggerEventHandler</scope><name>evaluated</name></member>
+      <member refid="classzorba_1_1DefaultDebuggerEventHandler_1a148f323d5a92d9a3ba351fbab6dd72b2" prot="public" virt="non-virtual"><scope>zorba::DefaultDebuggerEventHandler</scope><name>idle</name></member>
+      <member refid="classzorba_1_1DebuggerEventHandler_1a35229f4e00c4f3355610e455281f15aa" prot="public" virt="pure-virtual"><scope>zorba::DefaultDebuggerEventHandler</scope><name>parseMessage</name></member>
+      <member refid="classzorba_1_1DefaultDebuggerEventHandler_1afaeb261fef78ac2e93ab93e981d2ced5" prot="public" virt="non-virtual"><scope>zorba::DefaultDebuggerEventHandler</scope><name>resumed</name></member>
+      <member refid="classzorba_1_1DefaultDebuggerEventHandler_1ad9567b3ab8c57c916aacb5c2edd1b795" prot="public" virt="non-virtual"><scope>zorba::DefaultDebuggerEventHandler</scope><name>started</name></member>
+      <member refid="classzorba_1_1DefaultDebuggerEventHandler_1a06987f9d58d56ba5e3f0c2f510a60429" prot="public" virt="non-virtual"><scope>zorba::DefaultDebuggerEventHandler</scope><name>suspended</name></member>
+      <member refid="classzorba_1_1DefaultDebuggerEventHandler_1a13ecc12b1e8d3d032cd62dde2e2ccf45" prot="public" virt="non-virtual"><scope>zorba::DefaultDebuggerEventHandler</scope><name>terminated</name></member>
+      <member refid="classzorba_1_1DefaultDebuggerEventHandler_1aa1daa5fa4459798410c533f93d270aa9" prot="public" virt="virtual"><scope>zorba::DefaultDebuggerEventHandler</scope><name>~DefaultDebuggerEventHandler</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

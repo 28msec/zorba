@@ -1,0 +1,39 @@
+<div class="doxygen">
+  <div><h1 class="title">Zorba Build Notes for Windows Users</h1>
+<div id="windows_requirements" class="sect1"><h2>Requirements for Windows Builds</h2>
+<ul>
+<li>In order to compile Zorba on Windows, you need a working Visual Studio (Express) installation (2008, 2010).</li><li>If you want to compile Zorba using Visual Studio 2008, you will need to install the <a href="http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7" target="_blank">Visual C++ 2008 Feature Pack Release</a>.</li><li>Make sure that the libraries required for Zorba are built with the same version of Visual Studio that you use.</li><li>The Windows version of some required packages are distributed by other web sites (all of them are pointed to from the main package web sites indicated in the <a href="/pages/3.0/zorba/build_prerequisites?anchor=third_party_libs">Library Dependencies</a> section):<ul>
+<li>Libxml2 and Iconv: <a href="http://www.zlatkovic.com/libxml.en.html" target="_blank">http://www.zlatkovic.com/libxml.en.html</a></li><li>CURL: <a href="http://curl.haxx.se/download.html" target="_blank">http://curl.haxx.se/download.html</a></li><li>Libxslt: <a href="http://www.zlatkovic.com/pub/libxml/" target="_blank">http://www.zlatkovic.com/pub/libxml/</a></li></ul>
+</li></ul>
+</div>
+<div id="windows_autodll" class="sect1"><h2>Zorba's Automatic DLL Detection Mechanism</h2>
+Zorba has in place an automatic DLL detection mechanism. This will try to automatically gather all the DLLs from the third party libraries and install them with Zorba when you do "make install" or you build the Visual Studio INSTALL project, to ensure that your installation will function regardless of the system or user's PATH.Zorba will search for the third party libraries in order in:<ol>
+<li>all the directories pointed by the <tt>ZORBA_THIRD_PARTY_REQUIREMENTS</tt> CMake configuration parameter<ul>
+<li>e.g. if you have Xerces in "C:\tools" and IConv in "D:\tools", you must configure your build as follows: <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>cmake<span> </span>-D<span> </span>ZORBA_THIRD_PARTY_REQUIREMENTS=C:\tools;D:\tool<span> </span>{ZORBASRC}</span>
+</pre> and Zorba will find all it needs from Xerces and Iconv. (The directory names must contain "xerces" and "iconv" respectively, case insensitive)</li></ul>
+</li><li>the <tt>Program Files</tt> directory on your system<ul>
+<li>e.g. if you have cURL installed in "C:\Program Files\*cURL*", Zorba will find all it needs from cURL. (The directory must contain "curl", case insensitive.)</li></ul>
+</li><li>all the paths in the <tt>PATH</tt> variable<ul>
+<li>e.g. if you have "C:\tools\*ICU*\bin" in your path, Zorba will find all it needs from ICU. (The directory must only contain "icu".)</li></ul>
+</li></ol>
+The important thing to note here is that if you have any third-party requirements installed in unusual locations, you should use the CMake configuration parameter <tt>ZORBA_THIRD_PARTY_REQUIREMENTS</tt> instead of <tt>CMAKE_PREFIX_PATH</tt> to specify those locations when configuring Zorba.</div>
+<div id="windows_nmake" class="sect1"><h2>Building Zorba using a NMake Project</h2>
+<ol>
+<li>Start a Visual Studio Command Line.</li><li>Change the current working directory to the <tt>{ZORBABUILD}</tt> directory (as described in <a href="/pages/3.0/zorba/build_prepare?anchor=create_build_dir">Creating a Build Directory</a>).</li><li>Execute CMake as follows: <pre class="ace-static" ace-mode="xquery"><span class="normal">cmake<span> </span>-G<span> </span></span><span class="stringliteral">"NMake<span> </span>Makefiles"</span><span class="normal"><span> </span>{ZORBASRC}</span>
+</pre></li><li>Now you are ready to call "<tt>nmake"</tt> from the <tt>{ZORBABUILD}</tt> directory.</li></ol>
+</div>
+<div id="windows_visualstudio" class="sect1"><h2>Building Zorba using a Visual Studio Project</h2>
+<ol>
+<li>Start Visual Studio Command Line</li><li>Change the current working directory into the <tt>{ZORBABUILD}</tt> directory (as described in <a href="/pages/3.0/zorba/build_prepare?anchor=create_build_dir">Creating a Build Directory</a>).</li><li>Execute CMake with the appropriate CMake Visual Studio generator for your installation (see <tt>cmake --help</tt> for a list of generators). For instance, <pre class="ace-static" ace-mode="xquery"><span class="normal">cmake<span> </span>-G<span> </span></span><span class="stringliteral">"Visual<span> </span>Studio<span> </span>10"</span><span class="normal"><span> </span>{ZORBASRC}</span>
+</pre></li><li>Start Visual Studio, open the generated <tt>zorba.sln</tt> project file in <tt>{ZORBABUILD}</tt>, and build the <tt>ALL</tt> project.</li></ol>
+</div>
+<div id="windows_https_support" class="sect1"><h2>HTTPS support</h2>
+<ul>
+<li>In order to have SSL support in Zorba, you have to use the CURL library that has SSL support.</li><li>There is one more thing: in order to validate the server's certificate, CURL+SSL needs to know about the root Certificates of Authenticity (CA): a set of public keys freely available on the internet.</li><li>On Windows, Zorba expects this file to be called <tt>cacert.pem</tt> and searches for it in the current directory and system paths.</li><li>This <tt>cacert.pem</tt> file can be found on the curl page: <a href="http://curl.haxx.se/docs/caextract.html" target="_blank">http://curl.haxx.se/docs/caextract.html</a> .</li><li>In order to disable the validation of the server certificate, the <tt>ZORBA_VERIFY_PEER_SSL_CERTIFICATE</tt> can be set to <tt>OFF</tt> in cmake (and actually this is the default value). Set it to <tt>ON</tt> to validate server certificate chain on every access to  .</li><li>To read more about CURL+SSL: <a href="http://curl.haxx.se/docs/sslcerts.html" target="_blank">http://curl.haxx.se/docs/sslcerts.html</a> .</li><li>As an <tt>https</tt> test page, we used for example the rss feed fn:doc('<a href="https://www.npr.org/rss/rss.php?id=1001'" target="_blank">https://www.npr.org/rss/rss.php?id=1001'</a>) .</li></ul>
+</div>
+<div id="windows_noncore_modules" class="sect1"><h2>Downloads for Non-Core Modules</h2>
+<div id="windows_imagemagick" class="sect2"><h3>ImageMagick (image-processing modules)</h3>
+Just download the ImageMagick Windows binary from <a href="http://www.imagemagick.org/script/binary-releases.php" target="_blank">http://www.imagemagick.org/script/binary-releases.php</a> and install it. We recommend the latest "Q8-windows-dll" version. </div>
+</div>
+    </div>
+</div>

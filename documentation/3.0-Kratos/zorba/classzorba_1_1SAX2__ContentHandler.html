@@ -1,0 +1,63 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::SAX2_ContentHandler</h1><p class="include">
+            #include &lt;zorba/sax2.h&gt;
+        </p>
+Receive notification of events that result from serializing a query result as XML.     
+This is an interface that is used to receive notifications resulting from parsing a query result that was serialized as XML.Instances of classes that implement this interface can be registered for a query by calling the <a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=a53344941d0656cd400738b829a60145e">XQuery::registerSAXHandler</a> or <a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=abc92a24b52aa33894ee13be7d8cc2804">XQuery::executeSAX</a> function.     <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aee570b507a69a97fb6c31c2c5dfbdf42">characters</a>(const String &amp;aText)=0</p><span class="signature-description">
+Receive notification of character data.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a22d035258014df398aea81e66afb9672">endDocument</a>()=0</p><span class="signature-description">
+Receive notification of the end of a document.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a4a9031fc2824a299b95b89a54c3da5ef">endElement</a>(const String &amp;aURI, const String &amp;aLocalname, const String &amp;aQName)=0</p><span class="signature-description">
+Receive notification of the end of an element.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a2049f346b4590dbb2e6ce16eb73479cb">endPrefixMapping</a>(const String &amp;aPrefix)=0</p><span class="signature-description">
+Receive notification of the end of an namespace prefix mapping.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a3a9d01ebca8d1215c0a53df1fab372ac">ignorableWhitespace</a>(const String &amp;aText)=0</p><span class="signature-description">
+Receive notification of ignorable whitespace in element content.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#addfa3848d6e7ff30f920409fdd442b09">processingInstruction</a>(const String &amp;aTarget, const String &amp;aData)=0</p><span class="signature-description">
+Receive notification of a processing instruction.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ac6fceeb90cd3f47e91eaa122e7e2d8b6">skippedEntity</a>(const String &amp;aName)=0</p><span class="signature-description">
+Receive notification of a skipped entity.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ac5ca0ab724ad6cbb06483167cf8414e1">startDocument</a>()=0</p><span class="signature-description">
+Receive notification of the beginning of a document.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a108e19a1effc45fa04ca56cd8b88b845">startElement</a>(const String &amp;aURI, const String &amp;aLocalname, const String &amp;aQName, const SAX2_Attributes &amp;aAttrs)=0</p><span class="signature-description">
+Receive notification of the beginning of an element.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#adfcd522ba71d88771898ef3510f8863c">startPrefixMapping</a>(const String &amp;aPrefix, const String &amp;aURI)=0</p><span class="signature-description">
+Receive notification of the start of an namespace prefix mapping.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a2dee88a46947ccba8ad8329ed66ccec7">~SAX2_ContentHandler</a>()</p><span class="signature-description">
+Destructor.         </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="aee570b507a69a97fb6c31c2c5dfbdf42" class="sect1"><div><h3>characters</h3></div><div class="signature-box">void<span> </span>characters(const String &amp;aText)=0</div><div><p class="signature-description">
+Receive notification of character data.         </p><p class="signature-description">
+The serializer will call this method to report each chunk of character data.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aText</td><td>
+the characters from the serialized result. </td></tr></table></div>
+        </p></div></div><div id="a22d035258014df398aea81e66afb9672" class="sect1"><div><h3>endDocument</h3></div><div class="signature-box">void<span> </span>endDocument()=0</div><div><p class="signature-description">
+Receive notification of the end of a document.         </p><p class="signature-description">
+        </p></div></div><div id="a4a9031fc2824a299b95b89a54c3da5ef" class="sect1"><div><h3>endElement</h3></div><div class="signature-box">void<span> </span>endElement(const String &amp;aURI, const String &amp;aLocalname, const String &amp;aQName)=0</div><div><p class="signature-description">
+Receive notification of the end of an element.         </p><p class="signature-description">
+<a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a>'s serializerwill invoke this method at the end of every element in the serialized query result document; there will be a corresponding <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler?anchor=a108e19a1effc45fa04ca56cd8b88b845">startElement()</a> event for every <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler?anchor=a4a9031fc2824a299b95b89a54c3da5ef">endElement()</a> event (even when the element is empty).<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aURI</td><td>
+the URI of the asscioated namespace for this element </td></tr><tr><td>aLocalname</td><td>
+the local part of the element name </td></tr><tr><td>aQName</td><td>
+the QName of this element </td></tr></table></div>
+        </p></div></div><div id="a2049f346b4590dbb2e6ce16eb73479cb" class="sect1"><div><h3>endPrefixMapping</h3></div><div class="signature-box">void<span> </span>endPrefixMapping(const String &amp;aPrefix)=0</div><div><p class="signature-description">
+Receive notification of the end of an namespace prefix mapping.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aPrefix</td><td>
+the namespace prefix used. </td></tr></table></div>
+        </p></div></div><div id="a3a9d01ebca8d1215c0a53df1fab372ac" class="sect1"><div><h3>ignorableWhitespace</h3></div><div class="signature-box">void<span> </span>ignorableWhitespace(const String &amp;aText)=0</div><div><p class="signature-description">
+Receive notification of ignorable whitespace in element content.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aText</td><td>
+the characters from the serialized query result. </td></tr></table></div>
+        </p></div></div><div id="addfa3848d6e7ff30f920409fdd442b09" class="sect1"><div><h3>processingInstruction</h3></div><div class="signature-box">void<span> </span>processingInstruction(const String &amp;aTarget, const String &amp;aData)=0</div><div><p class="signature-description">
+Receive notification of a processing instruction.         </p><p class="signature-description">
+The serializer will invoke this method once for each processing instruction found.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aTarget</td><td>
+the processing instruction target. </td></tr><tr><td>aData</td><td>
+the processing instruction data, or null if none was supplied. </td></tr></table></div>
+        </p></div></div><div id="ac6fceeb90cd3f47e91eaa122e7e2d8b6" class="sect1"><div><h3>skippedEntity</h3></div><div class="signature-box">void<span> </span>skippedEntity(const String &amp;aName)=0</div><div><p class="signature-description">
+Receive notification of a skipped entity.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aName</td><td>
+the name of the skipped entity. </td></tr></table></div>
+        </p></div></div><div id="ac5ca0ab724ad6cbb06483167cf8414e1" class="sect1"><div><h3>startDocument</h3></div><div class="signature-box">void<span> </span>startDocument()=0</div><div><p class="signature-description">
+Receive notification of the beginning of a document.         </p><p class="signature-description">
+        </p></div></div><div id="a108e19a1effc45fa04ca56cd8b88b845" class="sect1"><div><h3>startElement</h3></div><div class="signature-box">void<span> </span>startElement(const String &amp;aURI, const String &amp;aLocalname, const String &amp;aQName, const SAX2_Attributes &amp;aAttrs)=0</div><div><p class="signature-description">
+Receive notification of the beginning of an element.         </p><p class="signature-description">
+<a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a>'s serializer will invoke this method at the beginning of every element of the serialized query result; there will be a corresponding <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler?anchor=a4a9031fc2824a299b95b89a54c3da5ef">endElement()</a> event for every <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler?anchor=a108e19a1effc45fa04ca56cd8b88b845">startElement()</a> event (even when the element is empty). All of the element's content will be reported, in order, before the corresponding <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler?anchor=a4a9031fc2824a299b95b89a54c3da5ef">endElement()</a> event.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aURI</td><td>
+the URI of the associated namespace for this element. </td></tr><tr><td>aLocalname</td><td>
+thee local part of the element name. </td></tr><tr><td>aQName</td><td>
+the QName of this element. </td></tr><tr><td>aAttrs</td><td>
+the attributes attached to the element, if any. </td></tr></table></div>
+        </p></div></div><div id="adfcd522ba71d88771898ef3510f8863c" class="sect1"><div><h3>startPrefixMapping</h3></div><div class="signature-box">void<span> </span>startPrefixMapping(const String &amp;aPrefix, const String &amp;aURI)=0</div><div><p class="signature-description">
+Receive notification of the start of an namespace prefix mapping.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aPrefix</td><td>
+the namespace prefix used </td></tr><tr><td>aURI</td><td>
+the namespace URI used. </td></tr></table></div>
+        </p></div></div><div id="a2dee88a46947ccba8ad8329ed66ccec7" class="sect1"><div><h3>~SAX2_ContentHandler</h3></div><div class="signature-box"><span> </span>~SAX2_ContentHandler()</div><div><p class="signature-description">
+Destructor.         </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

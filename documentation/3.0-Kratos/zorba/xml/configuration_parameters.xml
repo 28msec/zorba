@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="configuration_parameters" kind="page">
+    <compoundname>configuration_parameters</compoundname>
+    <title>Zorba Configuration Parameters</title>
+    <detaileddescription>
+<para>This is a list of all published Zorba configuration parameters.</para><para>You specify these parameters at CMake configuration time with the <computeroutput>-D</computeroutput> argument. See <ref refid="configure_zorba_1configure_parameters" kindref="member">Configuration Parameters (the -D arguments)</ref> for more information.</para><sect1 id="configuration_parameters_1configure_enable">
+<title>Enabling/Disabling Zorba Features</title>
+<sect2 id="configuration_parameters_1ZORBA_WITH_BIG_INTEGER">
+<title>Big Integer Support</title>
+<para>The Zorba XQuery processor by default has arbitrary precision for the <computeroutput>xs:integer</computeroutput> type. Compared to a C++ <computeroutput>int</computeroutput>, however, arbitrary precision integers are orders of magnitude slower. If arbitrary precision integers are not needed, they can be disabled by configuring Zorba with the <computeroutput>ZORBA_WITH_BIG_INTEGER</computeroutput> option set to <computeroutput>OFF</computeroutput>, i.e. <computeroutput>-D ZORBA_WITH_BIG_INTEGER=OFF</computeroutput></para><para>When arbitrary precision integers are disabled, Zorba uses a C++ <computeroutput>long long</computeroutput> for <computeroutput>xs:integer</computeroutput>, the precision for which is dependent on your C++ implementation. Typically, however, the precision is at least 64 bits. However, in order to maintain the condition that the value space for <computeroutput>xs:nonNegativeInteger</computeroutput> is a subset of that of <computeroutput>xs:integer</computeroutput>, one less bit is allowed for <computeroutput>xs:nonNegativeInteger</computeroutput>.</para></sect2>
+<sect2 id="configuration_parameters_1ZORBA_NO_FULL_TEXT">
+<title>XQuery Full-Text Support</title>
+<para>Zorba by default supports the XQuery Full-Text specification (<ulink url="http://www.w3.org/TR/xpath-full-text-10/">http://www.w3.org/TR/xpath-full-text-10/</ulink> ). If you wish to disable this support, configure with <computeroutput>-D ZORBA_NO_FULL_TEXT=ON</computeroutput>.</para></sect2>
+<sect2 id="configuration_parameters_1ZORBA_XQUERX">
+<title>XQueryX Support</title>
+<para>Zorba by default does not build with support for XQueryX (which is an alternate representation of XQuery using pure XML). To enable this support, configure with <computeroutput>-DZORBA_XQUERYX=ON</computeroutput>. Note that building with XQueryX support requires LibXslt to be available.</para></sect2>
+<sect2 id="configuration_parameters_1ZORBA_VERIFY_PEER_SSL_CERTIFICATE">
+<title>Enabling SSL Peer Verification</title>
+<para>By default, Zorba&apos;s HTTP module does not validate the SSL certificate sent to it by HTTPS servers. This is because not all systems have a complete or valid set of root certificates against which to validate said server certificates. If you wish to enable SSL peer validation, configure with <computeroutput>-D ZORBA_VERIFY_PEER_SSL_CERTIFICATE=ON</computeroutput>.</para></sect2>
+</sect1>
+<sect1 id="configuration_parameters_1configure_deps">
+<title>Disabling Zorba Library Requirements</title>
+<sect2 id="configuration_parameters_1ZORBA_NO_ICU">
+<title>Disable ICU (Unicode) Support</title>
+<para>The ICU library provides Unicode functionality, and is required by default when building Zorba. To disable this requirement, configure with <computeroutput>-D ZORBA_NO_ICU=ON</computeroutput>.</para></sect2>
+<sect2 id="configuration_parameters_1ZORBA_NO_XMLSCHEMA">
+<title>Disable Xerces (XML Schema) Support</title>
+<para>The Xerces-C library provides XML Schema functionality, and is required by default when building Zorba. To disable this requirement, configure with <computeroutput>-D ZORBA_NO_XMLSCHEMA=ON</computeroutput>.</para></sect2>
+<sect2 id="configuration_parameters_1ZORBA_SUPPRESS_CURL">
+<title>Disable Curl (HTTP) Support</title>
+<para>The Curl library provides HTTP functionality. Zorba will automatically build with HTTP support (via the built-in <computeroutput>http-client</computeroutput> module) if it detects <computeroutput>libcurl</computeroutput>. To suppress this check (so you can build Zorba without HTTP support even if Curl is installed on your system), configure with <computeroutput>-D ZORBA_SUPPRESS_CURL=ON</computeroutput>.</para></sect2>
+</sect1>
+<sect1 id="configuration_parameters_1configure_buildparams">
+<title>Parameters for Compiling</title>
+<sect2 id="configuration_parameters_1ZORBA_MODULES_DIR">
+<title>Specifying the Directory for Non-Core Modules</title>
+<para>By default, Zorba will automatically build any non-core module packages it finds in a directory named <computeroutput>zorba_modules</computeroutput> that is a sibling to the directory containing Zorba&apos;s own source (that is, "<computeroutput>../zorba_modules</computeroutput>" from the source directory). See <ref refid="build_prepare_1noncore_download" kindref="member">Downloading source code for non-core modules</ref> for more information.</para><para>If you wish to build non-core modules from a different location, configure with <computeroutput>-D ZORBA_MODULES_DIR=/path/to/modules</computeroutput>.</para></sect2>
+<sect2 id="configuration_parameters_1ZORBA_THIRD_PARTY_REQUIREMENTS">
+<title>Specifying the Location of Third-Party Requirements on Windows</title>
+<para>On Windows, you should configure with <computeroutput>-D ZORBA_THIRD_PARTY_REQUIREMENTS=/path1;/path2</computeroutput> to indicate the path(s) to third-party libraries, instead of <computeroutput>CMAKE_PREFIX_PATH</computeroutput>. This is described in detail at <ref refid="build_windows_1windows_autodll" kindref="member">Zorba&apos;s Automatic DLL Detection Mechanism</ref>. </para></sect2>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,227 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Iterator" kind="class" prot="public">
+    <compoundname>zorba::Iterator</compoundname>
+    <basecompoundref refid="classzorba_1_1SmartObject" prot="public" virt="virtual">zorba::SmartObject</basecompoundref>
+    <derivedcompoundref refid="classzorba_1_1EmptySequence_1_1InternalIterator" prot="public" virt="non-virtual">zorba::EmptySequence::InternalIterator</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1SingletonItemSequence_1_1InternalIterator" prot="public" virt="non-virtual">zorba::SingletonItemSequence::InternalIterator</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1VectorItemSequence_1_1InternalIterator" prot="public" virt="non-virtual">zorba::VectorItemSequence::InternalIterator</derivedcompoundref>
+    <includes refid="iterator_8h" local="no">zorba/iterator.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::addReference</definition>
+        <argsstring>() const </argsstring>
+        <name>addReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Iterator_1a6d63bc7bc1674bc8036fb0e81390f1b2" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Iterator::close</definition>
+        <argsstring>()=0</argsstring>
+        <name>close</name>
+        <briefdescription>
+<para>Stop iterating. </para>        </briefdescription>
+        <detaileddescription>
+<para>The purpose of this method is to release resources that were allocated during open. After calling <ref refid="classzorba_1_1Iterator_1a6d63bc7bc1674bc8036fb0e81390f1b2" kindref="member">close()</ref>, neither <ref refid="classzorba_1_1Iterator_1a6d63bc7bc1674bc8036fb0e81390f1b2" kindref="member">close()</ref> nor <ref refid="classzorba_1_1Iterator_1ad2840d07f460b016f2781589060f5ee1" kindref="member">next()</ref> may be called again. However, the iterator may be re-opened (by calling <ref refid="classzorba_1_1Iterator_1aa6f000276940a2948f447ec8b7eb17f4" kindref="member">open()</ref>).</para><para><parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occurs, or the <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> has not been opened. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/iterator.h" line="73"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SmartObject::free</definition>
+        <argsstring>()</argsstring>
+        <name>free</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>long zorba::SmartObject::getRefCount</definition>
+        <argsstring>() const </argsstring>
+        <name>getRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Iterator_1a4f313bce8eb62f6934289786992fa9ea" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Iterator::isOpen</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isOpen</name>
+        <briefdescription>
+<para>brief Check whether the iterator is open or not </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/iterator.h" line="79"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Iterator_1ad2840d07f460b016f2781589060f5ee1" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Iterator::next</definition>
+        <argsstring>(Item &amp;aItem)=0</argsstring>
+        <name>next</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aItem</declname>
+        </param>
+        <briefdescription>
+<para>Get the next <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> of the sequence. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the next <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> of the sequence, unless all the items of the sequence have been returned already by previous invocations of <ref refid="classzorba_1_1Iterator_1ad2840d07f460b016f2781589060f5ee1" kindref="member">next()</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>false if all the items of the sequence have been returned already by previous invocations of <ref refid="classzorba_1_1Iterator_1ad2840d07f460b016f2781589060f5ee1" kindref="member">next()</ref>; true otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occurs, or the <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> has not been opened. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/iterator.h" line="62"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Iterator_1aa6f000276940a2948f447ec8b7eb17f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Iterator::open</definition>
+        <argsstring>()=0</argsstring>
+        <name>open</name>
+        <briefdescription>
+<para>Start iterating. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function needs to be called before calling <ref refid="classzorba_1_1Iterator_1ad2840d07f460b016f2781589060f5ee1" kindref="member">next()</ref> or <ref refid="classzorba_1_1Iterator_1a6d63bc7bc1674bc8036fb0e81390f1b2" kindref="member">close()</ref>. Its purpose is to create and initialize any resources that may be needed during the iteration. It should not be called again until after <ref refid="classzorba_1_1Iterator_1a6d63bc7bc1674bc8036fb0e81390f1b2" kindref="member">close()</ref> has been called.</para><para><parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occurs, or the iterator is open already. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/iterator.h" line="51"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::removeReference</definition>
+        <argsstring>()</argsstring>
+        <name>removeReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Iterator_1a09c348dbacd4a9b83e951760ca4e7e13" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::Iterator::~Iterator</definition>
+        <argsstring>()</argsstring>
+        <name>~Iterator</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/iterator.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/iterator.h" bodystart="39" bodyend="39"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" static="no" mutable="yes">
+        <type>unsigned int</type>
+        <definition>unsigned int zorba::SmartObject::theRefCount</definition>
+        <argsstring></argsstring>
+        <name>theRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Interface for an <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> over a sequence of items. </para>    </briefdescription>
+    <detaileddescription>
+<para>An iterator can be in one of the following two states: open or not-open. When in open state, only methods <ref refid="classzorba_1_1Iterator_1a4f313bce8eb62f6934289786992fa9ea" kindref="member">isOpen()</ref>, <ref refid="classzorba_1_1Iterator_1ad2840d07f460b016f2781589060f5ee1" kindref="member">next()</ref> and <ref refid="classzorba_1_1Iterator_1a6d63bc7bc1674bc8036fb0e81390f1b2" kindref="member">close()</ref> may be called. When in not-open state, only <ref refid="classzorba_1_1Iterator_1a4f313bce8eb62f6934289786992fa9ea" kindref="member">isOpen()</ref> and <ref refid="classzorba_1_1Iterator_1aa6f000276940a2948f447ec8b7eb17f4" kindref="member">open()</ref> may be called. The <ref refid="classzorba_1_1Iterator_1aa6f000276940a2948f447ec8b7eb17f4" kindref="member">open()</ref> method changes the state from non-open to open, and the <ref refid="classzorba_1_1Iterator_1a6d63bc7bc1674bc8036fb0e81390f1b2" kindref="member">close()</ref> method changes the state from open to not-open. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="697">
+        <label>zorba::Iterator</label>
+        <link refid="classzorba_1_1Iterator"/>
+        <childnode refid="698" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="698">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="699">
+        <label>zorba::Iterator</label>
+        <link refid="classzorba_1_1Iterator"/>
+        <childnode refid="700" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="700">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/iterator.h" line="35" bodyfile="/home/wcandillon/deadlinks/include/zorba/iterator.h" bodystart="34" bodyend="80"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" virt="non-virtual"><scope>zorba::Iterator</scope><name>addReference</name></member>
+      <member refid="classzorba_1_1Iterator_1a6d63bc7bc1674bc8036fb0e81390f1b2" prot="public" virt="pure-virtual"><scope>zorba::Iterator</scope><name>close</name></member>
+      <member refid="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" virt="virtual"><scope>zorba::Iterator</scope><name>free</name></member>
+      <member refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" virt="non-virtual"><scope>zorba::Iterator</scope><name>getRefCount</name></member>
+      <member refid="classzorba_1_1Iterator_1a4f313bce8eb62f6934289786992fa9ea" prot="public" virt="pure-virtual"><scope>zorba::Iterator</scope><name>isOpen</name></member>
+      <member refid="classzorba_1_1Iterator_1ad2840d07f460b016f2781589060f5ee1" prot="public" virt="pure-virtual"><scope>zorba::Iterator</scope><name>next</name></member>
+      <member refid="classzorba_1_1Iterator_1aa6f000276940a2948f447ec8b7eb17f4" prot="public" virt="pure-virtual"><scope>zorba::Iterator</scope><name>open</name></member>
+      <member refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" virt="non-virtual"><scope>zorba::Iterator</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" virt="non-virtual"><scope>zorba::Iterator</scope><name>removeReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" virt="non-virtual"><scope>zorba::Iterator</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" virt="non-virtual"><scope>zorba::Iterator</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" virt="non-virtual"><scope>zorba::Iterator</scope><name>theRefCount</name></member>
+      <member refid="classzorba_1_1Iterator_1a09c348dbacd4a9b83e951760ca4e7e13" prot="public" virt="virtual"><scope>zorba::Iterator</scope><name>~Iterator</name></member>
+      <member refid="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" virt="virtual"><scope>zorba::Iterator</scope><name>~SmartObject</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

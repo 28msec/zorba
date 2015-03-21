@@ -1,0 +1,97 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://jsoniq.org/functions</xqdoc:uri><xqdoc:name>functions</xqdoc:name><xqdoc:comment><xqdoc:description> This module provides the functions defined by the JSONiq specification,
+ sections 1.7 (Functions) and 1.10 (Update Primitives). JSONiq extends
+ the XQuery specification to also deal with JSON data natively. See
+     http://jsoniq.org/
+ for details.
+</xqdoc:description><xqdoc:author>Markos Zaharioudakis, Matthias Brantner, Ghislain Fourny</xqdoc:author><xqdoc:custom tag="project">JSONiq/Functions</xqdoc:custom><xqdoc:custom tag="language">jsoniq</xqdoc:custom><xqdoc:custom tag="version">1.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="err" uri="http://www.w3.org/2005/xqt-errors" isSchema="false"/><xqdoc:namespace prefix="jerr" uri="http://jsoniq.org/errors" isSchema="false"/><xqdoc:namespace prefix="jn" uri="http://jsoniq.org/functions" isSchema="false"/><xqdoc:namespace prefix="js" uri="http://jsoniq.org/types" isSchema="false"/><xqdoc:namespace prefix="schema" uri="http://zorba.io/modules/schema" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports><xqdoc:import type="library"><xqdoc:uri>http://zorba.io/modules/schema</xqdoc:uri></xqdoc:import></xqdoc:imports><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> This function decodes non-JSON types previously encoded with
+ jn:encode-for-roundtrip.
+ Calling this version of the function is equivalent to calling the
+ 2 argument version of the function with the second argument
+   { "prefix" : "Q{http://jsoniq.org/roundtrip}" }
+</xqdoc:description><xqdoc:param>$items the items to be decoded.</xqdoc:param><xqdoc:return>the decoded items.</xqdoc:return></xqdoc:comment><xqdoc:name>jn:decode-from-roundtrip</xqdoc:name><xqdoc:signature>declare function jn:decode-from-roundtrip($items as item()*) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>items</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> This function decodes non-JSON types previously encoded with
+ jn:encode-for-roundtrip.
+ The $options parameter contains options for the decoding process.
+ Currently the only supported option is "prefix". It specifies the prefix
+ that determines if this function decodes an item.
+ Example:
+   jn:decode-from-roundtrip(
+     { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } },
+     { "prefix" : "pre-" }
+   )
+ returns the same instance that would be constructed by
+   { "nan" : xs:double("NaN") }
+ So
+   let $decoded := jn:decode-from-roundtrip(
+           { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } },
+           { "prefix" : "pre-" }
+       )
+   let $nan := $decoded("nan")
+   return
+       ($nan instance of xs:double, $nan)
+ returns
+   true NaN
+</xqdoc:description><xqdoc:param>$items the items to be decoded.</xqdoc:param><xqdoc:param>$options the decoding options.</xqdoc:param><xqdoc:return>the decoded items.</xqdoc:return><xqdoc:error>jerr:JNTY0023 if $options("prefix") is not a string</xqdoc:error></xqdoc:comment><xqdoc:name>jn:decode-from-roundtrip</xqdoc:name><xqdoc:signature>declare function jn:decode-from-roundtrip($items as item()*, $options as object()) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>items</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>options</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> This function recursively encodes non-JSON types in such a way that they
+ can be serialized as JSON while keeping roundtrip capability.
+ Calling this version of the function is equivalent to calling the
+ 2 argument version of the function with the second argument
+  {
+    "prefix" : "Q{http://jsoniq.org/roundtrip}"
+    "serialization-parameters" : <serialization-parameters xmlns="http://www.w3.org/2010/xslt-xquery-serialization"/>
+  }
+ Note: The computations are made with respect to the static context of the
+ caller, so that the schema type definitions are available.
+</xqdoc:description><xqdoc:param>$items the items to be encoded.</xqdoc:param><xqdoc:return>the encoded items.</xqdoc:return></xqdoc:comment><xqdoc:name>jn:encode-for-roundtrip</xqdoc:name><xqdoc:signature>declare function jn:encode-for-roundtrip($items as item()*) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>items</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> This function recursively encodes non-JSON types in such a way that they
+ can be serialized as JSON while keeping roundtrip capability.
+ Note: The computations are made with respect to the static context of the
+ caller, so that the schema type definitions are available.
+ Example:
+   jn:encode-for-roundtrip(
+     { "nan" : xs:double("NaN") },
+     { "prefix" : "pre-" }
+   )
+ returns
+   { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } }
+</xqdoc:description><xqdoc:param>$items the items to be encoded.</xqdoc:param><xqdoc:param>$options the encoding options.</xqdoc:param><xqdoc:return>the encoded items.</xqdoc:return><xqdoc:error>jerr:JNTY0023 if $options("prefix") is not a string or</xqdoc:error><xqdoc:error>err:XQDY0027 if $options("serialization-parameters") is not a valid serialization-parameters element</xqdoc:error></xqdoc:comment><xqdoc:name>jn:encode-for-roundtrip</xqdoc:name><xqdoc:signature>declare function jn:encode-for-roundtrip($items as item()*, $options as object()) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>items</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>options</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> This function parses a given string as JSON and returns a sequence
+ of Objects or Arrays.
+ Please note that this function allows to parse sequences of whitespace
+ separated objects and arrays.
+</xqdoc:description><xqdoc:param>$j A string containing a valid JSON text.</xqdoc:param><xqdoc:return>A sequence of JSON Object or Array item.</xqdoc:return><xqdoc:error>jerr:JNDY0021 if the given string is not valid JSON.</xqdoc:error></xqdoc:comment><xqdoc:name>jn:parse-json</xqdoc:name><xqdoc:signature>declare function jn:parse-json($j as string?) as json-item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>j</xqdoc:name><xqdoc:type occurrence="?">string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">json-item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> This function parses a given string as JSON and returns a sequence
+ of Objects or Arrays.
+</xqdoc:description><xqdoc:param>$j A string containing a valid JSON text.</xqdoc:param><xqdoc:param>$o A JSON object defining options to configure the parser. Allowed options are <ul> <li>jsoniq-multiple-top-level-items: allow parsing of sequences of JSON Objects and Arrays (boolean; default: true)</li> <li>jsoniq-strip-top-level-array: if the top-level JSON item is an array, strip it and return its elements as multiple top-level items (boolean; default: false)</li> </ul></xqdoc:param><xqdoc:return>a sequence of JSON Object or Array item.</xqdoc:return><xqdoc:error>jerr:JNDY0021 if the given string is not valid JSON or if jsoniq-multiple-top-level-items is false and there is additional content after the first JSON Object or Array.</xqdoc:error><xqdoc:error>jerr:JNTY0020 if the value for the option jsoniq-multiple-top-level-items is not of type boolean.</xqdoc:error></xqdoc:comment><xqdoc:name>jn:parse-json</xqdoc:name><xqdoc:signature>declare function jn:parse-json($j as string?, $o as object()) as json-item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>j</xqdoc:name><xqdoc:type occurrence="?">string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>o</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">json-item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Returns the set of keys belonging to the objects found inside a given
+ sequence of items. The keys are returned in an implementation-defined
+ order. Duplicate keys are eliminated.
+</xqdoc:description><xqdoc:param>$o A sequence of items. Only object items are actually processed; items of any other kind are simply skipped.</xqdoc:param><xqdoc:return>The distinct keys of the objects in the input sequence.</xqdoc:return></xqdoc:comment><xqdoc:name>jn:keys</xqdoc:name><xqdoc:signature>declare function jn:keys($o as item()*) as string* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>o</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">string*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> For each item in the given sequence, this function returns the item itself,
+ if it is not an object, or its "projected" copy if it is an object. Projecting
+ an object by a set of keys means creating a new object from the specified pairs
+ of the source object. Specifically, for each key in $keys, if the object has a
+ pair with that key, then a copy of that pair is included in the new object.
+</xqdoc:description><xqdoc:param>$items A sequence of items.</xqdoc:param><xqdoc:param>$keys The keys of the pairs to include from each object in $items.</xqdoc:param><xqdoc:return>The projection of the original sequence.</xqdoc:return></xqdoc:comment><xqdoc:name>jn:project</xqdoc:name><xqdoc:signature>declare function jn:project($items as item()*, $keys as string*) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>items</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>keys</xqdoc:name><xqdoc:type occurrence="*">string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> For each item in the given sequence, this function returns the item itself,
+ if it is not an object, or its "trimmed" copy, if it is an object. Trimming
+ an object by a set of keys means creating a new object containing all the
+ pairs of the source object except the ones whose key appears in the given
+ set of keys.
+</xqdoc:description><xqdoc:param>$items A sequence of items.</xqdoc:param><xqdoc:param>$keys The keys of the pairs to exclude from each object in $items.</xqdoc:param><xqdoc:return>The trimmed version of the input sequence.</xqdoc:return></xqdoc:comment><xqdoc:name>jn:trim</xqdoc:name><xqdoc:signature>declare function jn:trim($items as item()*, $keys as string*) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>items</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>keys</xqdoc:name><xqdoc:type occurrence="*">string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Returns the size of a JSON array, or the empty sequence if no array is given.
+ The size of an Array is the number of members contained within it.
+</xqdoc:description><xqdoc:param>$array A JSON array.</xqdoc:param><xqdoc:return>The number of items in $array, or the empty sequence if $array is empty.</xqdoc:return></xqdoc:comment><xqdoc:name>jn:size</xqdoc:name><xqdoc:signature>declare function jn:size($a as array()?) as integer? external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>a</xqdoc:name><xqdoc:type occurrence="?">array()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="?">integer?</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Returns the items belonging to the arrays found inside a given sequence
+ of items. The items are returned in an implementation-defined order.
+</xqdoc:description><xqdoc:param>$a A sequence of items. Only array items are actually processed; items of any other kind are simply skipped.</xqdoc:param><xqdoc:return>The members of the arrays in the input sequence.</xqdoc:return></xqdoc:comment><xqdoc:name>jn:members</xqdoc:name><xqdoc:signature>declare function jn:members($a as item()*) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>a</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> For each item in the given sequence, this function returns the item itself,
+ if it is not an array, or a sequence of items "flattened-out" from the array.
+ Flattening an array means replacing the array with its members, and recursively
+ flattening any arrays in the members sequence.
+ Note: The function is equivalent to
+   define function jn:flatten($args as item()*)
+   {
+     for $arg in args
+     return
+       if ($arg instance of array())
+       then
+         for $value in $arg[]
+         return
+           if ($value instance of array())
+           then jn:flatten($value[])
+           else $value
+       else
+         $arg
+   };
+</xqdoc:description><xqdoc:param>$items A sequence of items</xqdoc:param><xqdoc:return>The flattened-out items of the arrays in $items.</xqdoc:return></xqdoc:comment><xqdoc:name>jn:flatten</xqdoc:name><xqdoc:signature>declare function jn:flatten($items as item()*) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>items</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="0"><xqdoc:comment><xqdoc:description> Returns the JSON null.
+</xqdoc:description><xqdoc:return>The JSON null.</xqdoc:return></xqdoc:comment><xqdoc:name>jn:null</xqdoc:name><xqdoc:signature>declare function jn:null() as js:null external</xqdoc:signature><xqdoc:return><xqdoc:type>js:null</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

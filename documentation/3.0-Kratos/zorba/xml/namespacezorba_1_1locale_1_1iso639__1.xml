@@ -1,0 +1,1339 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1locale_1_1iso639__1" kind="namespace">
+    <compoundname>zorba::locale::iso639_1</compoundname>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" prot="public" static="no">
+        <name>type</name>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a71afb11fdc2a4095810477f6085b9ea0" prot="public">
+          <name>unknown</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abb8ad1be6fb469d75f99ca81ce8e1a71" prot="public">
+          <name>aa</name>
+          <briefdescription>
+<para>Afar. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ad36e8c012221772f6686870ccd820979" prot="public">
+          <name>ab</name>
+          <briefdescription>
+<para>Abkhazian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aa8e7bb321f4fd898cab2238284ad20b3" prot="public">
+          <name>ae</name>
+          <briefdescription>
+<para>Avestan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae7f785f1ebc37cb765b08205ff2b25fc" prot="public">
+          <name>af</name>
+          <briefdescription>
+<para>Afrikaans. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a04de01d8eadbd9f81b9858405341bee5" prot="public">
+          <name>ak</name>
+          <briefdescription>
+<para>Akan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae0ea58ad6bee32cecd92a38eb6c943a6" prot="public">
+          <name>am</name>
+          <briefdescription>
+<para>Amharic. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abdd3c2de1222fd3167e2675969aa694c" prot="public">
+          <name>an</name>
+          <briefdescription>
+<para>Aragonese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ab85becba4ad7e7540e1d75a41b481e02" prot="public">
+          <name>ar</name>
+          <briefdescription>
+<para>Arabic. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" prot="public">
+          <name>as</name>
+          <briefdescription>
+<para>Assamese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a3511a0ed91f33f8f8fa4e455a88542bb" prot="public">
+          <name>av</name>
+          <briefdescription>
+<para>Avaric. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae91781e65eb8ed9b5a0c9e4029626e9d" prot="public">
+          <name>ay</name>
+          <briefdescription>
+<para>Aymara. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781afee7413e309a941510d4fadc18ffdb5e" prot="public">
+          <name>az</name>
+          <briefdescription>
+<para>Azerbaijani. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a051d17492fb670866b289d999f4a0f21" prot="public">
+          <name>ba</name>
+          <briefdescription>
+<para>Bashkir. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af560bc79bfed1a18fa5f40193d92ee8d" prot="public">
+          <name>be</name>
+          <briefdescription>
+<para>Byelorussian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a022440b18c11bc2e9f77b19da17b0812" prot="public">
+          <name>bg</name>
+          <briefdescription>
+<para>Bulgarian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ac92d119315bba4f0d785d76ed7417652" prot="public">
+          <name>bh</name>
+          <briefdescription>
+<para>Bihari. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae12f58f21db303e0f734706d49a68bf2" prot="public">
+          <name>bi</name>
+          <briefdescription>
+<para>Bislama. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ad442477154b86ec2a1d7cbbafa33ecad" prot="public">
+          <name>bm</name>
+          <briefdescription>
+<para>Bambara. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a472067c3c0ec8095c3e8c2d253aa02d6" prot="public">
+          <name>bn</name>
+          <briefdescription>
+<para>Bengali; Bangla. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a9d3049b21b1100dfdc1b55122c4911aa" prot="public">
+          <name>bo</name>
+          <briefdescription>
+<para>Tibetan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a4b58eb5ee9bdf10ee9bdfc5a7e75c36f" prot="public">
+          <name>br</name>
+          <briefdescription>
+<para>Breton. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a9edbcc0a7533f994af3dfd7212f5a0ed" prot="public">
+          <name>bs</name>
+          <briefdescription>
+<para>Bosnian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a2288f4a193c0c6da30ef865e9b8bae73" prot="public">
+          <name>ca</name>
+          <briefdescription>
+<para>Catalan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a26f4eb524f6bae3ad9fb4bfc97838bba" prot="public">
+          <name>ce</name>
+          <briefdescription>
+<para>Chechen. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1a5f8d85155f410df0c3685e13e08c49" prot="public">
+          <name>ch</name>
+          <briefdescription>
+<para>Chamorro. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aa974fb4d11f9ed5cb66c34d729387b93" prot="public">
+          <name>co</name>
+          <briefdescription>
+<para>Corsican. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ad310fe2daa946d98d88e6d7f738c703c" prot="public">
+          <name>cr</name>
+          <briefdescription>
+<para>Cree. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a2d78f524326ef79e13677ff54b14d331" prot="public">
+          <name>cs</name>
+          <briefdescription>
+<para>Czech. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abb4e15fd7012b16aae46e39b7bce43fe" prot="public">
+          <name>cu</name>
+          <briefdescription>
+<para>Church Slavic; Church Slavonic. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a8ba6125bdc18854f04e11eb1188fbe0d" prot="public">
+          <name>cv</name>
+          <briefdescription>
+<para>Chuvash. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a85be0e13733eae6ff72a56bdff0ea987" prot="public">
+          <name>cy</name>
+          <briefdescription>
+<para>Welsh. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781afe28405eeef40d70a981d148ec8c74e1" prot="public">
+          <name>da</name>
+          <briefdescription>
+<para>Danish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aeaa2456934255d38f8a3111a0d82ebf0" prot="public">
+          <name>de</name>
+          <briefdescription>
+<para>German. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a156d8e0c48acf5373fb42b824b0ad9f5" prot="public">
+          <name>dv</name>
+          <briefdescription>
+<para>Divehi. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ac8442dfe00977a3c5c440198ab73edf5" prot="public">
+          <name>dz</name>
+          <briefdescription>
+<para>Bhutani. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a53d706f17c76dcc8ceefe2e242d51b1a" prot="public">
+          <name>ee</name>
+          <briefdescription>
+<para>Ewe. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a7788e0d5ed72c4a6c9080ae7e2d2f8fa" prot="public">
+          <name>el</name>
+          <briefdescription>
+<para>Greek. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11f5307e1dac2a5918c6cdf5097e6961" prot="public">
+          <name>en</name>
+          <briefdescription>
+<para>English. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a153b532994707e3fbdc3dca20171ae78" prot="public">
+          <name>eo</name>
+          <briefdescription>
+<para>Esperanto. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aa06ac6537e8a7f685249911b4d5d5dce" prot="public">
+          <name>es</name>
+          <briefdescription>
+<para>Spanish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a98a3affb838510ba3927c5c37bfb4f8d" prot="public">
+          <name>et</name>
+          <briefdescription>
+<para>Estonian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a93a06fe370bb8f6bcc5afc1aa5204565" prot="public">
+          <name>eu</name>
+          <briefdescription>
+<para>Basque. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a52a3ee894425823f75b3271e9a233bd1" prot="public">
+          <name>fa</name>
+          <briefdescription>
+<para>Persian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a12e87ada3e9eb37364cfb40df7db2960" prot="public">
+          <name>ff</name>
+          <briefdescription>
+<para>Fulah. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781adf8afce911c417db87822acde873bc7e" prot="public">
+          <name>fi</name>
+          <briefdescription>
+<para>Finnish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ac35f00ad25f753d15dbb6a3945bc40f2" prot="public">
+          <name>fj</name>
+          <briefdescription>
+<para>Fiji. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acccd315221286eb9043df67e0f4ad7ad" prot="public">
+          <name>fo</name>
+          <briefdescription>
+<para>Faroese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a5b254f8a43d422074e951cd96c9226b7" prot="public">
+          <name>fr</name>
+          <briefdescription>
+<para>French. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af8e104a27d7fab7e4bd8ed563cf1b368" prot="public">
+          <name>fy</name>
+          <briefdescription>
+<para>Frisian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a9e9c164e93d59d730452c28397f54e9b" prot="public">
+          <name>ga</name>
+          <briefdescription>
+<para>Irish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a480448ca2371dd6953dad29afe381b8b" prot="public">
+          <name>gd</name>
+          <briefdescription>
+<para>Scots Gaelic. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a743e3597118dd4eb036db18ec4d9919d" prot="public">
+          <name>gl</name>
+          <briefdescription>
+<para>Galician. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1bcc806abe3efa3cf0b6f164cd3847eb" prot="public">
+          <name>gn</name>
+          <briefdescription>
+<para>Guarani. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aabf592e5c7aed19d1a2807c2abbad928" prot="public">
+          <name>gu</name>
+          <briefdescription>
+<para>Gujarati. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a46af277e007d6f888bc678ed4b249338" prot="public">
+          <name>gv</name>
+          <briefdescription>
+<para>Manx. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a8d146fb66227bde3bcb00c2baaa0aae5" prot="public">
+          <name>ha</name>
+          <briefdescription>
+<para>Hausa. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a48ecfc2c10f6f64822b7eeac9d5f5a40" prot="public">
+          <name>he</name>
+          <briefdescription>
+<para>Hebrew (formerly iw) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a42dfaafd141c764eef1bbc68d2508381" prot="public">
+          <name>hi</name>
+          <briefdescription>
+<para>Hindi. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aa6cfe070bc6d5ae4ac0fac832ae4a198" prot="public">
+          <name>ho</name>
+          <briefdescription>
+<para>Hiri Motu. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a7c5747ed4aad4ebda8a8ac83c7df6662" prot="public">
+          <name>hr</name>
+          <briefdescription>
+<para>Croatian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a34cad000e5b2d92c119e7bf695223cb7" prot="public">
+          <name>ht</name>
+          <briefdescription>
+<para>Haitian Creole. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a8a9f6a8bfda66799a65bd9ab7cd97a6a" prot="public">
+          <name>hu</name>
+          <briefdescription>
+<para>Hungarian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0e7829ae006b881ab7ce08f7c7a9234d" prot="public">
+          <name>hy</name>
+          <briefdescription>
+<para>Armenian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a69b995ccf69169423d09cdfdd03b30e5" prot="public">
+          <name>hz</name>
+          <briefdescription>
+<para>Herero. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a69f885d066d9ebf12b2213e5cccd67d8" prot="public">
+          <name>ia</name>
+          <briefdescription>
+<para>Interlingua. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a36d6b16ade33b5f43df326111285b4e5" prot="public">
+          <name>id</name>
+          <briefdescription>
+<para>Indonesian (formerly in) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aca6954f42cba6d1497b59435fbe76ef5" prot="public">
+          <name>ie</name>
+          <briefdescription>
+<para>Interlingue. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae13f4b3c3cd5b5f16c26ab7c4a3b448b" prot="public">
+          <name>ig</name>
+          <briefdescription>
+<para>Igbo. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ac5ef0cb171434e722e2c142fac595bb1" prot="public">
+          <name>ii</name>
+          <briefdescription>
+<para>Nuosu. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a6e5a8ea60c3e2f2fb8c6992a99634b30" prot="public">
+          <name>ik</name>
+          <briefdescription>
+<para>Inupiak. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a87a21b4ea0a9d3696e4a516fce162192" prot="public">
+          <name>io</name>
+          <briefdescription>
+<para>Ido. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" prot="public">
+          <name>is</name>
+          <briefdescription>
+<para>Icelandic. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a5bcb20f9f7d5ec85c6415fee76c6ef5f" prot="public">
+          <name>it</name>
+          <briefdescription>
+<para>Italian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ac5be6a2ce0c960405717653c68f94261" prot="public">
+          <name>iu</name>
+          <briefdescription>
+<para>Inuktitut. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aa363b3e097b11ad6ede5f2d92710413a" prot="public">
+          <name>ja</name>
+          <briefdescription>
+<para>Japanese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a92f8d46b2f3ba138c82ace2dd76ac6e4" prot="public">
+          <name>jv</name>
+          <briefdescription>
+<para>Javanese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781adcad5e00619fbc2e064198a197c43249" prot="public">
+          <name>ka</name>
+          <briefdescription>
+<para>Georgian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a4d1f9815e090d88ffc076123e7e7d7f6" prot="public">
+          <name>kg</name>
+          <briefdescription>
+<para>Kongo. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a29ae1634d1349a3de180157540954d43" prot="public">
+          <name>ki</name>
+          <briefdescription>
+<para>Gikuyu. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ade06c0a39a19706fc9a461d0027cfca5" prot="public">
+          <name>kj</name>
+          <briefdescription>
+<para>Kuanyama. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a5c3d61361842b192d18c5d8bf9572754" prot="public">
+          <name>kk</name>
+          <briefdescription>
+<para>Kazakh. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0788874d6988ed4917190436349835cb" prot="public">
+          <name>kl</name>
+          <briefdescription>
+<para>Greenlandic. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1a1088d1338c73c7ebbc977a5c411e0c" prot="public">
+          <name>km</name>
+          <briefdescription>
+<para>Cambodian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a485e83de002c57f59b76882b28c977fb" prot="public">
+          <name>kn</name>
+          <briefdescription>
+<para>Kannada. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af346754030aaec3f17259dc0fe246987" prot="public">
+          <name>ko</name>
+          <briefdescription>
+<para>Korean. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ab45e01fedfc96d21cd328a8050abe707" prot="public">
+          <name>kr</name>
+          <briefdescription>
+<para>Kanuri. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0212b7f46b100cec49082a459c79780e" prot="public">
+          <name>ks</name>
+          <briefdescription>
+<para>Kashmiri. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a4e915b213349b2bf00eb28cf96f78894" prot="public">
+          <name>ku</name>
+          <briefdescription>
+<para>Kurdish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a34c3102599d7f37b9db964e366602249" prot="public">
+          <name>kv</name>
+          <briefdescription>
+<para>Komi. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a576f51ff8585f770bbaec81ccd551ddd" prot="public">
+          <name>kw</name>
+          <briefdescription>
+<para>Cornish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aaaf820d1b3246c9508124b8d95f7665f" prot="public">
+          <name>ky</name>
+          <briefdescription>
+<para>Kirghiz. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a894500eb1fe0b378d96da05fbe0b2449" prot="public">
+          <name>la</name>
+          <briefdescription>
+<para>Latin. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a2fde3651a241298f4a64b166d11716ed" prot="public">
+          <name>lb</name>
+          <briefdescription>
+<para>Letzeburgesch. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0a64e46556403cba5f9e5ac248ec0785" prot="public">
+          <name>lg</name>
+          <briefdescription>
+<para>Ganda. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae1e05a24b946ed01d4c92800e85b9b54" prot="public">
+          <name>li</name>
+          <briefdescription>
+<para>Limburgan; Limburger; Limburgish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aef420e700449e6665ba8b733c409da16" prot="public">
+          <name>ln</name>
+          <briefdescription>
+<para>Lingala. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abb1718d40cfe6969aa378de53439c3d4" prot="public">
+          <name>lo</name>
+          <briefdescription>
+<para>Laothian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4cc31a78980ad0261dd5c418aba1d3" prot="public">
+          <name>lt</name>
+          <briefdescription>
+<para>Lithuanian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acedfd2eeb504bb9cdab4683ccb6a44bb" prot="public">
+          <name>lu</name>
+          <briefdescription>
+<para>Luba-Katanga. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a76dd521e3109001a37a71f0a6bebba04" prot="public">
+          <name>lv</name>
+          <briefdescription>
+<para>Latvian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ad3cba0fbe35e743f974ce0db447f2429" prot="public">
+          <name>mg</name>
+          <briefdescription>
+<para>Malagasy. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a848ba0062781e942ae8780a82bc6f1d8" prot="public">
+          <name>mh</name>
+          <briefdescription>
+<para>Marshallese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0c145a89c40f35a42507eec1c13c9e04" prot="public">
+          <name>mi</name>
+          <briefdescription>
+<para>Maori. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a09ccb1a3f6fe60c7d130c8d58fcc753e" prot="public">
+          <name>mk</name>
+          <briefdescription>
+<para>Macedonian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aabd4b64811698a103717bf7f8891ec76" prot="public">
+          <name>ml</name>
+          <briefdescription>
+<para>Malayalam. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a30dae22aa66369a1fef3dbabf6d97a77" prot="public">
+          <name>mn</name>
+          <briefdescription>
+<para>Mongolian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0963e591b13cd6be29344f909a78390f" prot="public">
+          <name>mo</name>
+          <briefdescription>
+<para>Moldavian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0371bbdb043c3c5279ff75b2d73f213f" prot="public">
+          <name>mr</name>
+          <briefdescription>
+<para>Marathi. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acbfa42c150ae4e43aadfcb66a4502a38" prot="public">
+          <name>ms</name>
+          <briefdescription>
+<para>Malay. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a7a247adb84a5543fe510c6c3be5f7f5f" prot="public">
+          <name>mt</name>
+          <briefdescription>
+<para>Maltese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acc7c1f0e7924f696fa18d2bacdd1d092" prot="public">
+          <name>my</name>
+          <briefdescription>
+<para>Burmese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ab2322e0851b4e301e183f33a60426d90" prot="public">
+          <name>na</name>
+          <briefdescription>
+<para>Nauru. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a2082c2de86ec5faf249cffeb59d031c8" prot="public">
+          <name>nb</name>
+          <briefdescription>
+<para>Norwegian Bokmal. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aac09debe22a0b2895be9aa689d7f6611" prot="public">
+          <name>nd</name>
+          <briefdescription>
+<para>Ndebele, North. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a01b5f3751916332050bb6289af60a7d7" prot="public">
+          <name>ne</name>
+          <briefdescription>
+<para>Nepali. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af909c179937513464ca11ef63bede6db" prot="public">
+          <name>ng</name>
+          <briefdescription>
+<para>Ndonga. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a7579d790d4faed7ccbe127b2459c834d" prot="public">
+          <name>nl</name>
+          <briefdescription>
+<para>Dutch. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0b25603fb20def2afca0ed4dfeab1182" prot="public">
+          <name>nn</name>
+          <briefdescription>
+<para>Norwegian Nynorsk. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a00cc505e1f482614b7cac071072f3003" prot="public">
+          <name>no</name>
+          <briefdescription>
+<para>Norwegian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aaee43b070200247876aa4cef1b15dfdb" prot="public">
+          <name>nr</name>
+          <briefdescription>
+<para>Ndebele, South. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a62976d40287c0a4a96c8c548618491ff" prot="public">
+          <name>nv</name>
+          <briefdescription>
+<para>Navajo; Navaho. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1f0e4d31b1e42dcc0c0691879fc54373" prot="public">
+          <name>ny</name>
+          <briefdescription>
+<para>Chichewa; Chewa; Nyanja. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af52580b80999cc5c3d7e985fe341604f" prot="public">
+          <name>oc</name>
+          <briefdescription>
+<para>Occitan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a234549b6ec85e2d537200d0f86f24acb" prot="public">
+          <name>oj</name>
+          <briefdescription>
+<para>Ojibwa. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ab58f6b3c624c921a77552f1e344c38f8" prot="public">
+          <name>om</name>
+          <briefdescription>
+<para>Oromo. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a33367ee85ce2dd5d33761cf6441494cd" prot="public">
+          <name>or_</name>
+          <briefdescription>
+<para>Oriya. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abd9d340f17925d6dcfdf23e0ff40ddf1" prot="public">
+          <name>os</name>
+          <briefdescription>
+<para>Ossetian; Ossetic. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ad2919a659799b4c96c833e0d58b5a82b" prot="public">
+          <name>pa</name>
+          <briefdescription>
+<para>Panjabi; Punjabi. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a780303e14f1f5ea8097818720619ca61" prot="public">
+          <name>pi</name>
+          <briefdescription>
+<para>Pali. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ac2dd4ee3ecdb9f1baf1cb84faab9bc30" prot="public">
+          <name>pl</name>
+          <briefdescription>
+<para>Polish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a52ffd43862a1d6f9e245206a022b99ea" prot="public">
+          <name>ps</name>
+          <briefdescription>
+<para>Pashto, Pushto. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1869055e0117ffbf98ea07dae8465efd" prot="public">
+          <name>pt</name>
+          <briefdescription>
+<para>Portuguese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af997c168126fa3388dba857171f9a8eb" prot="public">
+          <name>qu</name>
+          <briefdescription>
+<para>Quechua. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a43959508785f04b877d14175544b35c3" prot="public">
+          <name>rm</name>
+          <briefdescription>
+<para>Romansh. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ac5868f4216a8a52a363f6b9bf1a1bd19" prot="public">
+          <name>rn</name>
+          <briefdescription>
+<para>Kirundi. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ab29a3fe5ecbad21188d87155f5bdf942" prot="public">
+          <name>ro</name>
+          <briefdescription>
+<para>Romanian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae5aafcb2393e7de89998667725e8de8c" prot="public">
+          <name>ru</name>
+          <briefdescription>
+<para>Russian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aa3888a2e28df6987da423bcac8bfc121" prot="public">
+          <name>rw</name>
+          <briefdescription>
+<para>Kinyarwanda. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ab6cc6f325ffbd1ff99a45e5789393cc6" prot="public">
+          <name>sa</name>
+          <briefdescription>
+<para>Sanskrit. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acf706a3915939cf09e5b332770a20321" prot="public">
+          <name>sc</name>
+          <briefdescription>
+<para>Sardinian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a93f66750cc68155cdd1a8612fd46dffd" prot="public">
+          <name>sd</name>
+          <briefdescription>
+<para>Sindhi. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a753ba4443cf5568e40eb2ef86465a7ef" prot="public">
+          <name>se</name>
+          <briefdescription>
+<para>Northern Sami. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a41003396295d026092437059d7fbb3f7" prot="public">
+          <name>sg</name>
+          <briefdescription>
+<para>Sangho. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a815330d45e34e2644a660187fd33eb40" prot="public">
+          <name>sh</name>
+          <briefdescription>
+<para>Serbo-Croatian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a6a4e43959d3ae1aa46f63d18b7ed971a" prot="public">
+          <name>si</name>
+          <briefdescription>
+<para>Sinhalese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a903fd8d6805e22e4c1b27cdbf3c66a5d" prot="public">
+          <name>sk</name>
+          <briefdescription>
+<para>Slovak. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a3d563a4c48e90cd25f7116e1aa356a1f" prot="public">
+          <name>sl</name>
+          <briefdescription>
+<para>Slovenian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a80852b1c77b694c755e2a563d28ca12b" prot="public">
+          <name>sm</name>
+          <briefdescription>
+<para>Samoan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af02a96e37988d65d39c1d60628a1cae3" prot="public">
+          <name>sn</name>
+          <briefdescription>
+<para>Shona. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a8ea57334ea60c0f50d4f50683c3cbfa5" prot="public">
+          <name>so</name>
+          <briefdescription>
+<para>Somali. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781adc8b8e3a7538c3101d4cf57f029d9d0d" prot="public">
+          <name>sq</name>
+          <briefdescription>
+<para>Albanian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a3af2ffc3678cbb4b820324cc30c4046d" prot="public">
+          <name>sr</name>
+          <briefdescription>
+<para>Serbian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a66f34f6dcad3179e8f25d46a78736e3d" prot="public">
+          <name>ss</name>
+          <briefdescription>
+<para>Siswati. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aef3722fca5f8c3b8dce55a5228c0e0e4" prot="public">
+          <name>st</name>
+          <briefdescription>
+<para>Sesotho. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a8482f68e49523976a7e29594d2cbe2a3" prot="public">
+          <name>su</name>
+          <briefdescription>
+<para>Sundanese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a8231e11930497f3bfaf94e4c643fa3bd" prot="public">
+          <name>sv</name>
+          <briefdescription>
+<para>Swedish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aef9ef184a503281dc0e58c2c3f3d6f54" prot="public">
+          <name>sw</name>
+          <briefdescription>
+<para>Swahili. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781aab1bb8e15bb54f749c9dbb74fedf9b8b" prot="public">
+          <name>ta</name>
+          <briefdescription>
+<para>Tamil. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ad67a1681968a8b41c9c9bede152110c5" prot="public">
+          <name>te</name>
+          <briefdescription>
+<para>Telugu. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acc3bd9514793862f99d7d95e2015eacd" prot="public">
+          <name>tg</name>
+          <briefdescription>
+<para>Tajik. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae9afe6cadaba030a26b44e16fcdb6c60" prot="public">
+          <name>th</name>
+          <briefdescription>
+<para>Thai. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a52f63fc2dcc2da1d0ee58b682ef0f6d9" prot="public">
+          <name>ti</name>
+          <briefdescription>
+<para>Tigrinya. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a94ab90c1677e976dbc3dc15d2bbb9736" prot="public">
+          <name>tk</name>
+          <briefdescription>
+<para>Turkmen. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a9cbaf30bb432e3aae7d637eb44ca50d6" prot="public">
+          <name>tl</name>
+          <briefdescription>
+<para>Tagalog. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abb918582085e412d633579a96cee0a47" prot="public">
+          <name>tn</name>
+          <briefdescription>
+<para>Setswana. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" prot="public">
+          <name>to</name>
+          <briefdescription>
+<para>Tonga. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a3acbcdcccc931818fa0ec6aac2698242" prot="public">
+          <name>tr</name>
+          <briefdescription>
+<para>Turkish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a6a213afaf63f79d7e2608b5db7033ce2" prot="public">
+          <name>ts</name>
+          <briefdescription>
+<para>Tsonga. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781afea8057bab62d4532dc1d7e7627a95f2" prot="public">
+          <name>tt</name>
+          <briefdescription>
+<para>Tatar. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1d437e9e726c177680c9afca49c17212" prot="public">
+          <name>tw</name>
+          <briefdescription>
+<para>Twi. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a14e898feeb75b1ba4667eeb8d964f1f2" prot="public">
+          <name>ty</name>
+          <briefdescription>
+<para>Tahitian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a37301e7e21f78bbfb0875e2ca00a4659" prot="public">
+          <name>ug</name>
+          <briefdescription>
+<para>Uighur. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a64028dfd214c6771faf8768593a554e5" prot="public">
+          <name>uk</name>
+          <briefdescription>
+<para>Ukrainian. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ab1e537f899e3dbc7954d6842d1a10399" prot="public">
+          <name>ur</name>
+          <briefdescription>
+<para>Urdu. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ad0dd0e452f6e5758df67b235d62c4885" prot="public">
+          <name>uz</name>
+          <briefdescription>
+<para>Uzbek. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af3f5db275d08aa800cf176b3e4e9aa82" prot="public">
+          <name>ve</name>
+          <briefdescription>
+<para>Venda. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a722ab08f6ae50b30f28bba591196191b" prot="public">
+          <name>vi</name>
+          <briefdescription>
+<para>Vietnamese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abb9ca5e5ec0cea36c6271455fa216d90" prot="public">
+          <name>vo</name>
+          <briefdescription>
+<para>Volapuk. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a20e5fa9cbd07f75b709fe5df1dd86dc6" prot="public">
+          <name>wa</name>
+          <briefdescription>
+<para>Walloon. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1291a4e5239f1696141ca06c93e1dbdb" prot="public">
+          <name>wo</name>
+          <briefdescription>
+<para>Wolof. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a78e4a1d4533048e41ec1ff3b2a2b932b" prot="public">
+          <name>xh</name>
+          <briefdescription>
+<para>Xhosa. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ac1a0b0cfd933b3c2cf785560f1cde8df" prot="public">
+          <name>yi</name>
+          <briefdescription>
+<para>Yiddish. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a9b17a4627f5f587d2f88329b5f902f48" prot="public">
+          <name>yo</name>
+          <briefdescription>
+<para>Yoruba. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a8a4d2482b4b8b2f56bd82a885e172fbc" prot="public">
+          <name>za</name>
+          <briefdescription>
+<para>Zhuang. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a2d0737bb21ae7640a39ddee3e628294a" prot="public">
+          <name>zh</name>
+          <briefdescription>
+<para>Chinese. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781adad9cbb6fd762575470eda3815fd0c7c" prot="public">
+          <name>zu</name>
+          <briefdescription>
+<para>Zulu. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a33ad91563ddc21c6082fd59d288b801d" prot="public">
+          <name>NUM_ENTRIES</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/locale.h" line="29" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/locale.h" bodystart="29" bodyend="218"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Defines constants for all ISO 639-1 language codes. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/locale.h" line="28"/>
+  </compounddef>
+</doxygen>

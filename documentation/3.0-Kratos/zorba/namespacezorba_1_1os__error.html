@@ -1,0 +1,49 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::os_error</h1>
+    
+    <div class="section"><h2>Type Definitions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#ae3a0f1108774ccc3ff4d12c48bbe745e">code_type</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC std::string</p></td><td><p class="signature"><a href="#a4c12b41065030ea61a6d53a081f8c3fd">format_err_string</a>(char const *function, char const *err_string)</p><span class="signature-description">
+Formats an error string.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC std::string</p></td><td><p class="signature"><a href="#a30630db965141de38e94ce92eb4bfbcc">format_err_string</a>(char const *function, code_type code, char const *err_string)</p><span class="signature-description">
+Formats an error string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1os__error?anchor=ae3a0f1108774ccc3ff4d12c48bbe745e">code_type</a></p></td><td><p class="signature"><a href="#a3e2dfaebb7d03986994e7dc0ffea756e">get_err_code</a>()</p><span class="signature-description">
+Gets the most recent operating system error code.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC std::string</p></td><td><p class="signature"><a href="#a2932d8a5e9e71868bd76a2b10b4b377d">get_err_string</a>(char const *function, code_type code=get_err_code())</p><span class="signature-description">
+Gets the error string for the given operating system error code.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(StringType), std::string &gt;::type</p></td><td><p class="signature"><a href="#a0cbf17540f8b3fea2dc321f3f7ccb84e">get_err_string</a>(StringType const &amp;function, code_type code=get_err_code())</p><span class="signature-description">
+Gets the error string for the given operating system error code.         </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a63d5fe343d3df99aeb27e2c60f037475">get_err_string</a>(code_type code=get_err_code())</p><span class="signature-description">
+Gets the error string for the given operating system error code.         </span></td></tr></table></div><div class="section"><h2>Type Definitions</h2><div class="detailed"><div id="ae3a0f1108774ccc3ff4d12c48bbe745e" class="sect1"><div><h3>code_type</h3></div><div class="signature-box">int<span> </span>code_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Functions</h2><div class="detailed"><div id="a4c12b41065030ea61a6d53a081f8c3fd" class="sect1"><div><h3>format_err_string</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC std::string<span> </span>format_err_string(char const *function, char const *err_string)</div><div><p class="signature-description">
+Formats an error string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>function</td><td>
+The function that failed or <tt>nullptr</tt>. </td></tr><tr><td>err_string</td><td>
+The error string. </td></tr></table></div>
+<div><h4>Returns</h4>Returns said error string. </div>
+        </p></div></div><div id="a30630db965141de38e94ce92eb4bfbcc" class="sect1"><div><h3>format_err_string</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC std::string<span> </span>format_err_string(char const *function, code_type code, char const *err_string)</div><div><p class="signature-description">
+Formats an error string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>function</td><td>
+The function that failed or <tt>nullptr</tt>. </td></tr><tr><td>code</td><td>
+The operating system error code. </td></tr><tr><td>err_string</td><td>
+The error string. </td></tr></table></div>
+<div><h4>Returns</h4>Returns said error string. </div>
+        </p></div></div><div id="a3e2dfaebb7d03986994e7dc0ffea756e" class="sect1"><div><h3>get_err_code</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1os__error?anchor=ae3a0f1108774ccc3ff4d12c48bbe745e">code_type</a><span> </span>get_err_code()</div><div><p class="signature-description">
+Gets the most recent operating system error code.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said error code. </div>
+        </p></div></div><div id="a2932d8a5e9e71868bd76a2b10b4b377d" class="sect1"><div><h3>get_err_string</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC std::string<span> </span>get_err_string(char const *function, code_type code=get_err_code())</div><div><p class="signature-description">
+Gets the error string for the given operating system error code.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>function</td><td>
+The function that failed or <tt>nullptr</tt>. </td></tr><tr><td>code</td><td>
+The operating system error code. </td></tr></table></div>
+<div><h4>Returns</h4>Returns said error string. </div>
+        </p></div></div><div id="a0cbf17540f8b3fea2dc321f3f7ccb84e" class="sect1"><div><h3>get_err_string</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(StringType), std::string &gt;::type<span> </span>get_err_string(StringType const &amp;function, code_type code=get_err_code())</div><div><p class="signature-description">
+Gets the error string for the given operating system error code.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>StringType</td><td>
+The <em>function</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>function</td><td>
+The function that failed. </td></tr><tr><td>code</td><td>
+The operating system error code. </td></tr></table></div>
+<div><h4>Returns</h4>Returns said error string. </div>
+        </p></div></div><div id="a63d5fe343d3df99aeb27e2c60f037475" class="sect1"><div><h3>get_err_string</h3></div><div class="signature-box">std::string<span> </span>get_err_string(code_type code=get_err_code())</div><div><p class="signature-description">
+Gets the error string for the given operating system error code.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>code</td><td>
+The operating system error code. </td></tr></table></div>
+<div><h4>Returns</h4>Returns said error string. </div>
+        </p></div></div></div></div></div>
+</div>

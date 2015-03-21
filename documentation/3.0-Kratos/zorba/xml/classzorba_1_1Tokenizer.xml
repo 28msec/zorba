@@ -1,0 +1,443 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Tokenizer" kind="class" prot="public">
+    <compoundname>zorba::Tokenizer</compoundname>
+    <includes refid="tokenizer_8h" local="no">zorba/tokenizer.h</includes>
+    <innerclass refid="classzorba_1_1Tokenizer_1_1Callback" prot="public">zorba::Tokenizer::Callback</innerclass>
+    <innerclass refid="structzorba_1_1Tokenizer_1_1Properties" prot="public">zorba::Tokenizer::Properties</innerclass>
+    <innerclass refid="structzorba_1_1Tokenizer_1_1State" prot="public">zorba::Tokenizer::State</innerclass>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1Tokenizer_1aca3811e6d2e00c3b1a16d262ee4c0049" prot="public" static="no">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref>&lt; <ref refid="classzorba_1_1Tokenizer" kindref="compound">Tokenizer</ref>, <ref refid="structzorba_1_1internal_1_1ztd_1_1destroy__delete" kindref="compound">internal::ztd::destroy_delete</ref>&lt; <ref refid="classzorba_1_1Tokenizer" kindref="compound">Tokenizer</ref> &gt; &gt;</type>
+        <definition>typedef std::unique_ptr&lt;Tokenizer,internal::ztd::destroy_delete&lt;Tokenizer&gt; &gt; zorba::Tokenizer::ptr</definition>
+        <argsstring></argsstring>
+        <name>ptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="45" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1Tokenizer_1aa5e55ee2bd87d3ec759382c6bb104656" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned zorba::Tokenizer::size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="47" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1Tokenizer_1a53a7758a4adca6ee3a01c2bb511fb380" prot="private" static="no" mutable="no">
+        <type><ref refid="structzorba_1_1Tokenizer_1_1State" kindref="compound">State</ref> *</type>
+        <definition>State* zorba::Tokenizer::state_</definition>
+        <argsstring></argsstring>
+        <name>state_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="261" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="261" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1a28b04557b67830bb0427cc895c45de33" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Tokenizer::destroy</definition>
+        <argsstring>() const =0</argsstring>
+        <name>destroy</name>
+        <briefdescription>
+<para>Destroys this Tokenizer. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is called by <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> when the Tokenizer is no longer needed.</para><para>If your <ref refid="classzorba_1_1TokenizerProvider" kindref="compound">TokenizerProvider</ref> dynamically allocates Tokenizer objects, then the implementation can simply be (and usually is) <computeroutput>delete this</computeroutput>.</para><para>If your <ref refid="classzorba_1_1TokenizerProvider" kindref="compound">TokenizerProvider</ref> returns a pointer to a static Tokenizer object, then the implementation should do nothing. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="164"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1a87df8703ab77464b4fda6cdf60b03e1f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Tokenizer::properties</definition>
+        <argsstring>(Properties *result) const =0</argsstring>
+        <name>properties</name>
+        <param>
+          <type><ref refid="structzorba_1_1Tokenizer_1_1Properties" kindref="compound">Properties</ref> *</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>Gets the <ref refid="structzorba_1_1Tokenizer_1_1Properties" kindref="compound">Properties</ref> of this Tokenizer. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="structzorba_1_1Tokenizer_1_1Properties" kindref="compound">Properties</ref> to populate. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="150"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1a2cbcc4bb9b9acb72650da650c7e60632" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structzorba_1_1Tokenizer_1_1State" kindref="compound">State</ref> &amp;</type>
+        <definition>Tokenizer::State &amp; zorba::Tokenizer::state</definition>
+        <argsstring>()</argsstring>
+        <name>state</name>
+        <briefdescription>
+<para>Gets this Tokenizer&apos;s associated <ref refid="structzorba_1_1Tokenizer_1_1State" kindref="compound">State</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said <ref refid="structzorba_1_1Tokenizer_1_1State" kindref="compound">State</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="171" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="267" bodyend="269"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1a6e0ab4fd18ac9733aa60a0d180b49838" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structzorba_1_1Tokenizer_1_1State" kindref="compound">State</ref> const &amp;</type>
+        <definition>Tokenizer::State const &amp; zorba::Tokenizer::state</definition>
+        <argsstring>() const </argsstring>
+        <name>state</name>
+        <briefdescription>
+<para>Gets this Tokenizer&apos;s associated <ref refid="structzorba_1_1Tokenizer_1_1State" kindref="compound">State</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said <ref refid="structzorba_1_1Tokenizer_1_1State" kindref="compound">State</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="178" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="271" bodyend="273"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1a91bb0bf2b10141b516de44e501d78d51" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::Tokenizer::tokenize_node</definition>
+        <argsstring>(Item const &amp;node, locale::iso639_1::type lang, Callback &amp;callback)</argsstring>
+        <name>tokenize_node</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> const &amp;</type>
+          <declname>node</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref></type>
+          <declname>lang</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Tokenizer_1_1Callback" kindref="compound">Callback</ref> &amp;</type>
+          <declname>callback</declname>
+        </param>
+        <briefdescription>
+<para>Tokenizes the given node. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>node</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The node to tokenize. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The default language to use. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>callback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="classzorba_1_1Tokenizer_1_1Callback" kindref="compound">Callback</ref> to call once per token. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="188" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="275" bodyend="279"/>
+        <references refid="classzorba_1_1Tokenizer_1a8a9c065343124b0ef37bc21714bcc849">tokenize_node_impl</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1a4d8c865b6b8596a9ea405f4877be1db7" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Tokenizer::tokenize_string</definition>
+        <argsstring>(char const *utf8_s, size_type utf8_len, locale::iso639_1::type lang, bool wildcards, Callback &amp;callback, Item const *item=nullptr)=0</argsstring>
+        <name>tokenize_string</name>
+        <param>
+          <type>char const *</type>
+          <declname>utf8_s</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Tokenizer_1aa5e55ee2bd87d3ec759382c6bb104656" kindref="member">size_type</ref></type>
+          <declname>utf8_len</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref></type>
+          <declname>lang</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>wildcards</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Tokenizer_1_1Callback" kindref="compound">Callback</ref> &amp;</type>
+          <declname>callback</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> const *</type>
+          <declname>item</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+<para>Tokenizes the given string. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>utf8_s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The UTF-8 string to tokenize. It need not be null-terminated. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>utf8_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes in the string to be tokenized. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The language of the string. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>wildcards</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If <computeroutput>true</computeroutput>, allows <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> wildcard syntax characters to be part of tokens. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>callback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="classzorba_1_1Tokenizer_1_1Callback" kindref="compound">Callback</ref> to call once per token. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> this string is from, if any. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="205"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1a565ee74326899fb796799f79f8880857" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::Tokenizer::find_lang_attribute</definition>
+        <argsstring>(Item const &amp;element, locale::iso639_1::type *lang)</argsstring>
+        <name>find_lang_attribute</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> const &amp;</type>
+          <declname>element</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref> *</type>
+          <declname>lang</declname>
+        </param>
+        <briefdescription>
+<para>Given an element, finds its <computeroutput>xml:lang</computeroutput> attribute, if any, and gets its value. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>element</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The element to check. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to where to put the found language, if any. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if an <computeroutput>xml:lang</computeroutput> attribute is found and the value is a known language. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="231"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1a802a3812893f1ce2cdf10f02fc67990b" prot="protected" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Tokenizer::item</definition>
+        <argsstring>(Item const &amp;item, bool entering)</argsstring>
+        <name>item</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> const &amp;</type>
+          <declname>item</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>entering</declname>
+        </param>
+        <briefdescription>
+<para>This member-function is called whenever an item that is being tokenized is entered or exited. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The item being entered or exited. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>entering</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If <computeroutput>true</computeroutput>, the item is being entered; if <computeroutput>false</computeroutput>, the item is being exited. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="241"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1a8a9c065343124b0ef37bc21714bcc849" prot="protected" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Tokenizer::tokenize_node_impl</definition>
+        <argsstring>(Item const &amp;node, locale::iso639_1::type lang, Callback &amp;callback, bool tokenize_acp)</argsstring>
+        <name>tokenize_node_impl</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> const &amp;</type>
+          <declname>node</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref></type>
+          <declname>lang</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Tokenizer_1_1Callback" kindref="compound">Callback</ref> &amp;</type>
+          <declname>callback</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>tokenize_acp</declname>
+        </param>
+        <briefdescription>
+<para>Tokenizes the given node and all of its child nodes, if any. </para>        </briefdescription>
+        <detaileddescription>
+<para>For each node, it is required that this function call the <ref refid="classzorba_1_1Tokenizer_1a802a3812893f1ce2cdf10f02fc67990b" kindref="member">item()</ref> member function of both this Tokenizer and of the <ref refid="classzorba_1_1Tokenizer_1_1Callback" kindref="compound">Callback</ref> twice, once each for entrance and exit.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>node</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The node to tokenize. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The default language to use. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>callback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="classzorba_1_1Tokenizer_1_1Callback" kindref="compound">Callback</ref> to call per token. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>tokenize_acp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If <computeroutput>true</computeroutput>, additionally tokenize all attribute, comment, and processing-instruction nodes encountered; if <computeroutput>false</computeroutput>, skip them. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="258"/>
+        <referencedby refid="classzorba_1_1Tokenizer_1a91bb0bf2b10141b516de44e501d78d51" compoundref="tokenizer_8h" startline="275" endline="279">tokenize_node</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1a8a3a36518144be3a6eaadeec541cc477" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::Tokenizer::Tokenizer</definition>
+        <argsstring>(State &amp;state)</argsstring>
+        <name>Tokenizer</name>
+        <param>
+          <type><ref refid="structzorba_1_1Tokenizer_1_1State" kindref="compound">State</ref> &amp;</type>
+          <declname>state</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a Tokenizer. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>state</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the <ref refid="structzorba_1_1Tokenizer_1_1State" kindref="compound">State</ref> to use. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="215" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="264" bodyend="265"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1afe50136981c99f4ec1a0d2b463fb5bc8" prot="protected" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type></type>
+        <definition>virtual zorba::Tokenizer::~Tokenizer</definition>
+        <argsstring>()=0</argsstring>
+        <name>~Tokenizer</name>
+        <briefdescription>
+<para>Destroys a Tokenizer. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="220"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A Tokenizer breaks a string into a stream of word tokens. </para>    </briefdescription>
+    <detaileddescription>
+<para>Each token is assigned a token, sentence, and paragraph number.</para><para>A Tokenizer determines word and sentence boundaries automatically, but must be told when to increment the paragraph number. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="42" bodyend="262"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1Tokenizer_1a28b04557b67830bb0427cc895c45de33" prot="public" virt="pure-virtual"><scope>zorba::Tokenizer</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1Tokenizer_1a565ee74326899fb796799f79f8880857" prot="protected" virt="non-virtual"><scope>zorba::Tokenizer</scope><name>find_lang_attribute</name></member>
+      <member refid="classzorba_1_1Tokenizer_1a802a3812893f1ce2cdf10f02fc67990b" prot="protected" virt="virtual"><scope>zorba::Tokenizer</scope><name>item</name></member>
+      <member refid="classzorba_1_1Tokenizer_1a87df8703ab77464b4fda6cdf60b03e1f" prot="public" virt="pure-virtual"><scope>zorba::Tokenizer</scope><name>properties</name></member>
+      <member refid="classzorba_1_1Tokenizer_1aca3811e6d2e00c3b1a16d262ee4c0049" prot="public" virt="non-virtual"><scope>zorba::Tokenizer</scope><name>ptr</name></member>
+      <member refid="classzorba_1_1Tokenizer_1aa5e55ee2bd87d3ec759382c6bb104656" prot="public" virt="non-virtual"><scope>zorba::Tokenizer</scope><name>size_type</name></member>
+      <member refid="classzorba_1_1Tokenizer_1a2cbcc4bb9b9acb72650da650c7e60632" prot="public" virt="non-virtual"><scope>zorba::Tokenizer</scope><name>state</name></member>
+      <member refid="classzorba_1_1Tokenizer_1a6e0ab4fd18ac9733aa60a0d180b49838" prot="public" virt="non-virtual"><scope>zorba::Tokenizer</scope><name>state</name></member>
+      <member refid="classzorba_1_1Tokenizer_1a53a7758a4adca6ee3a01c2bb511fb380" prot="private" virt="non-virtual"><scope>zorba::Tokenizer</scope><name>state_</name></member>
+      <member refid="classzorba_1_1Tokenizer_1a91bb0bf2b10141b516de44e501d78d51" prot="public" virt="non-virtual"><scope>zorba::Tokenizer</scope><name>tokenize_node</name></member>
+      <member refid="classzorba_1_1Tokenizer_1a8a9c065343124b0ef37bc21714bcc849" prot="protected" virt="virtual"><scope>zorba::Tokenizer</scope><name>tokenize_node_impl</name></member>
+      <member refid="classzorba_1_1Tokenizer_1a4d8c865b6b8596a9ea405f4877be1db7" prot="public" virt="pure-virtual"><scope>zorba::Tokenizer</scope><name>tokenize_string</name></member>
+      <member refid="classzorba_1_1Tokenizer_1a8a3a36518144be3a6eaadeec541cc477" prot="protected" virt="non-virtual"><scope>zorba::Tokenizer</scope><name>Tokenizer</name></member>
+      <member refid="classzorba_1_1Tokenizer_1afe50136981c99f4ec1a0d2b463fb5bc8" prot="protected" virt="pure-virtual"><scope>zorba::Tokenizer</scope><name>~Tokenizer</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

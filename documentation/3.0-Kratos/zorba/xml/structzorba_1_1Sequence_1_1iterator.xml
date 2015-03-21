@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1Sequence_1_1iterator" kind="struct" prot="public">
+    <compoundname>zorba::Sequence::iterator</compoundname>
+    <includes refid="xquery__functions_8h" local="no">zorba/xquery_functions.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structzorba_1_1Sequence_1_1iterator_1a7f7ff7ef3d00da46e4ced7aea2bfcabf" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Sequence&lt; T &gt;::iterator::next</definition>
+        <argsstring>(value_type *result)=0</argsstring>
+        <name>next</name>
+        <param>
+          <type><ref refid="classzorba_1_1Sequence_1a09044eafdee04467d89d90ad19f7f945" kindref="member">value_type</ref> *</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="41"/>
+      </memberdef>
+      <memberdef kind="function" id="structzorba_1_1Sequence_1_1iterator_1a42a4c486cd7e1390cf0485650da3c7a2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::Sequence&lt; T &gt;::iterator::~iterator</definition>
+        <argsstring>()</argsstring>
+        <name>~iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" bodystart="39" bodyend="42"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1Sequence_1_1iterator_1a7f7ff7ef3d00da46e4ced7aea2bfcabf" prot="public" virt="pure-virtual"><scope>zorba::Sequence::iterator</scope><name>next</name></member>
+      <member refid="structzorba_1_1Sequence_1_1iterator_1a42a4c486cd7e1390cf0485650da3c7a2" prot="public" virt="virtual"><scope>zorba::Sequence::iterator</scope><name>~iterator</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

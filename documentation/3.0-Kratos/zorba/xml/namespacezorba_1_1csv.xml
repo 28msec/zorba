@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1csv" kind="namespace">
+    <compoundname>zorba::csv</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacezorba_1_1csv_1a62127be45286819a9f514d8826550fea" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a1b46fb2e4c82e802a47f62901d99caf8" kindref="member">ZorbaCSVErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaCSVErrorCode zorba::csv::EXTRA_VALUE</definition>
+        <argsstring></argsstring>
+        <name>EXTRA_VALUE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="960"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1csv_1aa281b1c43cbe7a73b64570ffcd26a4a9" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a1b46fb2e4c82e802a47f62901d99caf8" kindref="member">ZorbaCSVErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaCSVErrorCode zorba::csv::INVALID_OPTION</definition>
+        <argsstring></argsstring>
+        <name>INVALID_OPTION</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="956"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1csv_1acac4e3a79a0d7d22e7f0afbdb167df31" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a1b46fb2e4c82e802a47f62901d99caf8" kindref="member">ZorbaCSVErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC ZorbaCSVErrorCode zorba::csv::MISSING_VALUE</definition>
+        <argsstring></argsstring>
+        <name>MISSING_VALUE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="958"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="954"/>
+  </compounddef>
+</doxygen>

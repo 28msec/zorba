@@ -1,0 +1,422 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="typeident_8h" kind="file">
+    <compoundname>typeident.h</compoundname>
+    <includes local="no">zorba/config.h</includes>
+    <includes refid="api__shared__types_8h" local="no">zorba/api_shared_types.h</includes>
+    <includes refid="zorba__string_8h" local="no">zorba/zorba_string.h</includes>
+    <includes local="no">iostream</includes>
+    <includedby refid="static__context_8h" local="no">static_context.h</includedby>
+    <incdepgraph>
+      <node id="2362">
+        <label>iterator</label>
+      </node>
+      <node id="2360">
+        <label>zorba/util/smart_ptr.h</label>
+        <link refid="smart__ptr_8h"/>
+        <childnode refid="2358" relation="include">
+        </childnode>
+      </node>
+      <node id="2363">
+        <label>string</label>
+      </node>
+      <node id="2361">
+        <label>zorba/zorba_string.h</label>
+        <link refid="zorba__string_8h"/>
+        <childnode refid="2362" relation="include">
+        </childnode>
+        <childnode refid="2363" relation="include">
+        </childnode>
+        <childnode refid="2358" relation="include">
+        </childnode>
+      </node>
+      <node id="2364">
+        <label>iostream</label>
+      </node>
+      <node id="2357">
+        <label>typeident.h</label>
+        <link refid="typeident.h"/>
+        <childnode refid="2358" relation="include">
+        </childnode>
+        <childnode refid="2359" relation="include">
+        </childnode>
+        <childnode refid="2361" relation="include">
+        </childnode>
+        <childnode refid="2364" relation="include">
+        </childnode>
+      </node>
+      <node id="2358">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="2359">
+        <label>zorba/api_shared_types.h</label>
+        <link refid="api__shared__types_8h"/>
+        <childnode refid="2358" relation="include">
+        </childnode>
+        <childnode refid="2360" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2367">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="2366" relation="include">
+        </childnode>
+      </node>
+      <node id="2366">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="2367" relation="include">
+        </childnode>
+      </node>
+      <node id="2365">
+        <label>typeident.h</label>
+        <link refid="typeident.h"/>
+        <childnode refid="2366" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1SequenceType" prot="public">zorba::SequenceType</innerclass>
+    <innernamespace refid="namespacestd">std</innernamespace>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_TYPES_TYPEIDENT_H</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_TYPES_TYPEIDENT_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="api__shared__types_8h" kindref="compound">zorba/api_shared_types.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="zorba__string_8h" kindref="compound">zorba/zorba_string.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">XQType;</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="30"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/>*<sp/>\brief<sp/>Representation<sp/>and<sp/>factory<sp/>for<sp/>xquery<sp/>sequence<sp/>types.</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/>*<sp/>Class<sp/>SequenceType<sp/>represents<sp/>xquery<sp/>sequence<sp/>types,<sp/>as<sp/>defined<sp/>in</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/>*<sp/>http://www.w3.org/TR/xquery-30/#id-sequencetype-syntax.<sp/>Instances<sp/>of</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/>*<sp/>SequenceType<sp/>may<sp/>be<sp/>returned<sp/>by<sp/>methods<sp/>of<sp/>Zorba&apos;s<sp/>C++<sp/>API.<sp/>The<sp/>class<sp/>also</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/>*<sp/>provides<sp/>static<sp/>methods<sp/>to<sp/>create<sp/>instances<sp/>of<sp/>SequenceType,<sp/>which<sp/>can<sp/>then</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/>*<sp/>be<sp/>passed<sp/>as<sp/>arguments<sp/>to<sp/>other<sp/>methods<sp/>of<sp/>Zorba&apos;s<sp/>C++<sp/>API.</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39" refid="classzorba_1_1SequenceType" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref></highlight></codeline>
+<codeline lineno="40"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="42" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline lineno="44" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aeb8e0b26d64df3e8a7ee5ec634d7b3d2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aeb8e0b26d64df3e8a7ee5ec634d7b3d2" kindref="member">EMPTY_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>empty-sequence()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5af64e34411dd620ad681b30a5c9458c85" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5af64e34411dd620ad681b30a5c9458c85" kindref="member">ITEM_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>item()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a94a20a427da80bc8e18e570965577605" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a94a20a427da80bc8e18e570965577605" kindref="member">ATOMIC_OR_UNION_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>AtomicOrUnionType</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5ad5b3260820cdb0e77bc7c990f531b43d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5ad5b3260820cdb0e77bc7c990f531b43d" kindref="member">FUNCTION_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>function(*)<sp/>and<sp/>subtypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5af155f4ef5243d84a80786ea944c32cf7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5af155f4ef5243d84a80786ea944c32cf7" kindref="member">STRUCTURED_ITEM_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>structured-item()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a21085de965b4613e20969cd5f2344b7b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a21085de965b4613e20969cd5f2344b7b" kindref="member">NODE_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>node()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a125c6a646275c950eefa864afd7f8b1b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a125c6a646275c950eefa864afd7f8b1b" kindref="member">DOCUMENT_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>document-node()<sp/>and<sp/>subtypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aa21e249d12485bcabc9b275ed83d6e4e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aa21e249d12485bcabc9b275ed83d6e4e" kindref="member">ELEMENT_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>element()<sp/>and<sp/>subtypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5abef49fe23d76cd4cb7fd8a30b9af9623" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5abef49fe23d76cd4cb7fd8a30b9af9623" kindref="member">SCHEMA_ELEMENT_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>schema-element()<sp/>and<sp/>subtypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a937cc8c631cfd69afa47f88da07ec17f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a937cc8c631cfd69afa47f88da07ec17f" kindref="member">ATTRIBUTE_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>attribute()<sp/>and<sp/>subtypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="54" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a50fb30cb95bf3af4af3d6e9b65d1917e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a50fb30cb95bf3af4af3d6e9b65d1917e" kindref="member">SCHEMA_ATTRIBUTE_TYPE</ref>,<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>schema-attribute()<sp/>and<sp/>subtypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aac4228ac2113af4df3fecbf8eddc3f57" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aac4228ac2113af4df3fecbf8eddc3f57" kindref="member">PI_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>processing-instruction()<sp/>and<sp/>subtypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aafc1c881edaec28dbeab54eeef0ccd7d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5aafc1c881edaec28dbeab54eeef0ccd7d" kindref="member">TEXT_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>text()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="57" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5ab7a3007339a4f69168b2d068b09f1ea3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5ab7a3007339a4f69168b2d068b09f1ea3" kindref="member">COMMENT_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>comment()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a548febdfaa0a8132af4265fd119b22a5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a548febdfaa0a8132af4265fd119b22a5" kindref="member">NAMESPACE_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>namespace-node()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a653a33761fd1aa53db251f7b3ca2655f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a653a33761fd1aa53db251f7b3ca2655f" kindref="member">JSON_ITEM_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>json-item()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a66472454aeebb35b4e42bcc7e397b16c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a66472454aeebb35b4e42bcc7e397b16c" kindref="member">JSON_OBJECT_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>object()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a992de00ebc86f77b19020a3dca78635d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5a992de00ebc86f77b19020a3dca78635d" kindref="member">JSON_ARRAY_TYPE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>array()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62" refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5abffa95297b7fb4944526d58b8374f212" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>INVALID_TYPE</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/>}<sp/>Kind;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66" refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline lineno="68" refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a0d0a3267a27b7d3890bb4558449da2ce" kindref="member">QUANT_ONE</ref>,</highlight></codeline>
+<codeline lineno="69" refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066aef23c702e820d91711cd03cbb9ca4941" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066aef23c702e820d91711cd03cbb9ca4941" kindref="member">QUANT_QUESTION</ref>,</highlight></codeline>
+<codeline lineno="70" refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a733900d8e032eb5b420c99012aa22bb3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066a733900d8e032eb5b420c99012aa22bb3" kindref="member">QUANT_STAR</ref>,</highlight></codeline>
+<codeline lineno="71" refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066aedfec7f088f6cdeb5c36e9a5c3177616" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066aedfec7f088f6cdeb5c36e9a5c3177616" kindref="member">QUANT_PLUS</ref>,</highlight></codeline>
+<codeline lineno="72" refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066ab93c33d7b0a012f8f6cf479c5dc44992" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>QUANT_INVALID</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/>}<sp/>Quantifier;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Create<sp/>an<sp/>empty-sequence()<sp/>type</highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createEmptyType();</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Create<sp/>an<sp/>item()<sp/>type<sp/>with<sp/>quantifier</highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createItemType(Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Create<sp/>a<sp/>generalized<sp/>atomic<sp/>type<sp/>(see</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/><sp/>*<sp/>http://www.w3.org/TR/xquery-30/#dt-generalized-atomic-type<sp/>)<sp/>with<sp/>quantifier</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="91"><highlight class="comment"><sp/><sp/><sp/>*<sp/>A<sp/>generalized<sp/>atomic<sp/>type<sp/>is<sp/>specified<sp/>simply<sp/>as<sp/>a<sp/>QName,<sp/>which<sp/>may<sp/>identify</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/><sp/><sp/>*<sp/>an<sp/>XMLSchema<sp/>builtin<sp/>atomic<sp/>type<sp/>or<sp/>a<sp/>user-defined<sp/>atomic<sp/>or<sp/>pure<sp/>union<sp/>type.</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"><sp/><sp/><sp/>*<sp/>In<sp/>the<sp/>case<sp/>of<sp/>user-defined<sp/>types,<sp/>the<sp/>QName<sp/>must<sp/>be<sp/>among<sp/>the<sp/>in-scope</highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/><sp/><sp/>*<sp/>type<sp/>names<sp/>of<sp/>a<sp/>given<sp/>static<sp/>context.<sp/>Otherwise,<sp/>for<sp/>builtin<sp/>types,<sp/>the</highlight></codeline>
+<codeline lineno="95"><highlight class="comment"><sp/><sp/><sp/>*<sp/>given<sp/>sctx<sp/>may<sp/>be<sp/>NULL.</highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="97"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>the<sp/>given<sp/>QName<sp/>(uri<sp/>and<sp/>local<sp/>name<sp/>pair)<sp/>does<sp/>not<sp/>specify<sp/>a<sp/>generalized</highlight></codeline>
+<codeline lineno="98"><highlight class="comment"><sp/><sp/><sp/>*<sp/>atomic<sp/>type<sp/>among<sp/>the<sp/>in-scope<sp/>type<sp/>names<sp/>of<sp/>a<sp/>given<sp/>static<sp/>context,<sp/>an</highlight></codeline>
+<codeline lineno="99"><highlight class="comment"><sp/><sp/><sp/>*<sp/>invalid<sp/>SequenceType<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="100"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createAtomicOrUnionType(</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">StaticContext_t</ref>&amp;<sp/>sctx,</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>uri,</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>localName,</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="107"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Create<sp/>an<sp/>structured-item()<sp/>type<sp/>with<sp/>quantifier</highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createStructuredItemType(Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="112"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Create<sp/>an<sp/>node()<sp/>type<sp/>with<sp/>quantifier</highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createAnyNodeType(Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Create<sp/>a<sp/>document-node()<sp/>type<sp/>or<sp/>subtype<sp/>with<sp/>quantifier</highlight></codeline>
+<codeline lineno="119"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createDocumentType(</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref>&amp;<sp/>contentType,</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Create<sp/>an<sp/>element()<sp/>type<sp/>or<sp/>subtype<sp/>with<sp/>quantifier</highlight></codeline>
+<codeline lineno="126"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createElementType(</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">StaticContext_t</ref>&amp;<sp/>sctx,</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>nodeUri,</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>nodeLocalName,</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>contentTypeUri,</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>contentTypeLocalName,</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>nillable,</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>Quantifier<sp/>quant<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="137"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="138"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createSchemaElementType(</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">StaticContext_t</ref>&amp;<sp/>sctx,</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>uri,</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>localName,</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>Quantifier<sp/>quant<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="145"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="146"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="147"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createAttributeType(</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">StaticContext_t</ref>&amp;<sp/>sctx,</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>nodeUri,</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>nodeLocalName,</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>contentTypeUri,</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>contentTypeLocalName,</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>Quantifier<sp/>quant<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="156"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="157"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="158"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createSchemaAttributeType(</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">StaticContext_t</ref>&amp;<sp/>sctx,</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>uri,</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>&amp;<sp/>localName,</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>Quantifier<sp/>quant<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="165"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="166"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="167"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createPIType(Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="170"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="171"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="172"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createTextType(Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="175"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="176"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="177"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createCommentType(Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="180"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="181"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="182"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createNamespaceType(Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="185"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="186"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="187"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createJSONItemType(Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="190"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="191"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="192"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createJSONObjectType(Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="195"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="196"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="197"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>createJSONArrayType(Quantifier<sp/>q<sp/>=<sp/>QUANT_ONE);</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"></highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="201"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="202"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Constructor<sp/>for<sp/>an<sp/>invalid<sp/>(NULL)<sp/>type.</highlight></codeline>
+<codeline lineno="203"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref>();</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="206"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="207"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Copy<sp/>constructor</highlight></codeline>
+<codeline lineno="208"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref>&amp;<sp/><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22a695149cd22831c06e408b1101e4075f1" kindref="member">other</ref>);</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="211"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="212"><highlight class="comment"><sp/><sp/><sp/>*<sp/>\brief<sp/>Destructor</highlight></codeline>
+<codeline lineno="213"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/>~<ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref>();</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="216"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="217"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Returns<sp/>true<sp/>if<sp/>this<sp/>a<sp/>valid<sp/>(non-NULL)<sp/>type;<sp/>otherwise,<sp/>returns<sp/>false.</highlight></codeline>
+<codeline lineno="218"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>isValid()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="221"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="222"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="223"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/>Kind<sp/>getKind()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="226"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="227"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="228"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="229"><highlight class="normal"><sp/><sp/>Quantifier<sp/>getQuantifier()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="231"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="232"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>this<sp/>is<sp/>a<sp/>generalized<sp/>atomic<sp/>type,<sp/>this<sp/>method<sp/>returns<sp/>the<sp/>URI<sp/>of</highlight></codeline>
+<codeline lineno="233"><highlight class="comment"><sp/><sp/><sp/>*<sp/>the<sp/>type<sp/>name.<sp/>For<sp/>other<sp/>kinds<sp/>of<sp/>types,<sp/>an<sp/>empty<sp/>string<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="234"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>getTypeUri()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="236"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="237"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="238"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>this<sp/>is<sp/>a<sp/>generalized<sp/>atomic<sp/>type,<sp/>this<sp/>method<sp/>returns<sp/>the<sp/>local<sp/>part<sp/>of</highlight></codeline>
+<codeline lineno="239"><highlight class="comment"><sp/><sp/><sp/>*<sp/>the<sp/>type<sp/>name.<sp/>For<sp/>other<sp/>kinds<sp/>of<sp/>types,<sp/>an<sp/>empty<sp/>string<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="240"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>getTypeLocalName()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="243"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="244"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>this<sp/>is<sp/>an<sp/>element()<sp/>or<sp/>attribute()<sp/>type<sp/>that<sp/>contains<sp/>a<sp/>NodeName,</highlight></codeline>
+<codeline lineno="245"><highlight class="comment"><sp/><sp/><sp/>*<sp/>this<sp/>method<sp/>returns<sp/>the<sp/>URI<sp/>of<sp/>that<sp/>NodeName.<sp/>If<sp/>this<sp/>is<sp/>a<sp/>schema-element(N)</highlight></codeline>
+<codeline lineno="246"><highlight class="comment"><sp/><sp/><sp/>*<sp/>or<sp/>schema-attribute(N)<sp/>type,<sp/>the<sp/>method<sp/>returns<sp/>the<sp/>URI<sp/>of<sp/>N.<sp/>In<sp/>all<sp/>other</highlight></codeline>
+<codeline lineno="247"><highlight class="comment"><sp/><sp/><sp/>*<sp/>cases,<sp/>an<sp/>empty<sp/>string<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="248"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="249"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>getNodeUri()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="250"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="251"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="252"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>this<sp/>is<sp/>an<sp/>element()<sp/>or<sp/>attribute()<sp/>type<sp/>that<sp/>contains<sp/>a<sp/>NodeName,</highlight></codeline>
+<codeline lineno="253"><highlight class="comment"><sp/><sp/><sp/>*<sp/>this<sp/>method<sp/>returns<sp/>the<sp/>local<sp/>part<sp/>of<sp/>that<sp/>NodeName.<sp/>If<sp/>this<sp/>is<sp/>a</highlight></codeline>
+<codeline lineno="254"><highlight class="comment"><sp/><sp/><sp/>*<sp/>schema-element(N)<sp/>or<sp/>schema-attribute(N)<sp/>type,<sp/>the<sp/>method<sp/>returns<sp/>the</highlight></codeline>
+<codeline lineno="255"><highlight class="comment"><sp/><sp/><sp/>*<sp/>local<sp/>part<sp/>of<sp/>N.<sp/>If<sp/>this<sp/>is<sp/>a<sp/>processing-instruction()<sp/>that<sp/>contains<sp/>a</highlight></codeline>
+<codeline lineno="256"><highlight class="comment"><sp/><sp/><sp/>*<sp/>TargetName,<sp/>that<sp/>TargetName<sp/>is<sp/>returned.<sp/>In<sp/>all<sp/>other<sp/>cases,<sp/>an<sp/>empty</highlight></codeline>
+<codeline lineno="257"><highlight class="comment"><sp/><sp/><sp/>*<sp/>string<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="258"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="259"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>getNodeLocalName()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="260"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="261"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="262"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>this<sp/>is<sp/>an<sp/>element()<sp/>or<sp/>attribute()<sp/>type<sp/>that<sp/>does<sp/>not<sp/>contain<sp/>a</highlight></codeline>
+<codeline lineno="263"><highlight class="comment"><sp/><sp/><sp/>*<sp/>NodeName,<sp/>this<sp/>method<sp/>returns<sp/>true.<sp/>In<sp/>all<sp/>other<sp/>cases,<sp/>false<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="264"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="265"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>isWildcard()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="267"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="268"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>this<sp/>is<sp/>an<sp/>document-node()<sp/>type<sp/>that<sp/>contains<sp/>an<sp/>embedded<sp/>element()</highlight></codeline>
+<codeline lineno="269"><highlight class="comment"><sp/><sp/><sp/>*<sp/>type,<sp/>this<sp/>method<sp/>returns<sp/>the<sp/>embedded<sp/>element()<sp/>type.<sp/>In<sp/>all<sp/>other<sp/>cases,</highlight></codeline>
+<codeline lineno="270"><highlight class="comment"><sp/><sp/><sp/>*<sp/>an<sp/>invalid<sp/>SequenceType<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="271"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref><sp/>getContentType()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="274"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="275"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>this<sp/>is<sp/>an<sp/>element()<sp/>or<sp/>attribute()<sp/>type<sp/>that<sp/>contains<sp/>a<sp/>TypeName,<sp/>this</highlight></codeline>
+<codeline lineno="276"><highlight class="comment"><sp/><sp/><sp/>*<sp/>method<sp/>returns<sp/>the<sp/>URI<sp/>of<sp/>that<sp/>TypeName.<sp/>If<sp/>this<sp/>is<sp/>a<sp/>schema-element(N)<sp/>or</highlight></codeline>
+<codeline lineno="277"><highlight class="comment"><sp/><sp/><sp/>*<sp/>schema-attribute(N)<sp/>type,<sp/>the<sp/>method<sp/>returns<sp/>the<sp/>URI<sp/>of<sp/>the<sp/>XMLSchema<sp/>type</highlight></codeline>
+<codeline lineno="278"><highlight class="comment"><sp/><sp/><sp/>*<sp/>associated<sp/>with<sp/>the<sp/>global<sp/>element<sp/>or<sp/>attribute<sp/>declaration<sp/>N.<sp/>In<sp/>all<sp/>other</highlight></codeline>
+<codeline lineno="279"><highlight class="comment"><sp/><sp/><sp/>*<sp/>cases,<sp/>it<sp/>returns<sp/>an<sp/>empty<sp/>string.</highlight></codeline>
+<codeline lineno="280"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="281"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>getContentTypeUri()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="282"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="283"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="284"><highlight class="comment"><sp/><sp/><sp/>*<sp/>If<sp/>this<sp/>is<sp/>an<sp/>element()<sp/>or<sp/>attribute()<sp/>type<sp/>that<sp/>contains<sp/>a<sp/>TypeName,<sp/>this</highlight></codeline>
+<codeline lineno="285"><highlight class="comment"><sp/><sp/><sp/>*<sp/>method<sp/>returns<sp/>the<sp/>local<sp/>name<sp/>of<sp/>that<sp/>TypeName.<sp/>If<sp/>this<sp/>is<sp/>a<sp/>schema-element(N)</highlight></codeline>
+<codeline lineno="286"><highlight class="comment"><sp/><sp/><sp/>*<sp/>or<sp/>schema-attribute(N)<sp/>type,<sp/>the<sp/>method<sp/>returns<sp/>the<sp/>local<sp/>name<sp/>of<sp/>the</highlight></codeline>
+<codeline lineno="287"><highlight class="comment"><sp/><sp/><sp/>*<sp/>XMLSchema<sp/>type<sp/>associated<sp/>with<sp/>the<sp/>global<sp/>element<sp/>or<sp/>attribute<sp/>declaration<sp/>N.</highlight></codeline>
+<codeline lineno="288"><highlight class="comment"><sp/><sp/><sp/>*<sp/>In<sp/>all<sp/>other<sp/>cases,<sp/>it<sp/>returns<sp/>an<sp/>empty<sp/>string.</highlight></codeline>
+<codeline lineno="289"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="290"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>getContentTypeLocalName()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="292"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="293"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Return<sp/>true<sp/>if<sp/>this<sp/>type<sp/>is<sp/>a<sp/>schema-element()<sp/>or<sp/>schema-attribute()<sp/>type,</highlight></codeline>
+<codeline lineno="294"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Otherwise<sp/>return<sp/>false.</highlight></codeline>
+<codeline lineno="295"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="296"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>isSchemaTest()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="297"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="298"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="299"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="300"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/>std::ostream&amp;<sp/>emit(std::ostream&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"></highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="304"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">SequenceType</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>XQType*<sp/>t);</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"></highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="307" refid="classzorba_1_1SequenceType_1a04be66dbeeb779697acff7c3897832a3" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>kind_string_of[];</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"></highlight></codeline>
+<codeline lineno="309" refid="classzorba_1_1SequenceType_1a4caa9374aba976920cdb541c29b1a1b8" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>quantifier_string_of[];</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"></highlight></codeline>
+<codeline lineno="311"><highlight class="normal"><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="312" refid="classzorba_1_1SequenceType_1a3e0633ac5ec941d1abf1a7b5b6ffce25" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Unmarshaller;</highlight></codeline>
+<codeline lineno="313"><highlight class="normal"></highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>XQType<sp/><sp/>*<sp/>theType;</highlight></codeline>
+<codeline lineno="315"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="316"><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="317"><highlight class="normal"></highlight></codeline>
+<codeline lineno="318"><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>zorba<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="319"><highlight class="normal"></highlight></codeline>
+<codeline lineno="320"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">std<sp/></highlight></codeline>
+<codeline lineno="321"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="322"><highlight class="normal"></highlight></codeline>
+<codeline lineno="323"><highlight class="normal">ZORBA_DLL_PUBLIC<sp/>ostream&amp;<sp/><ref refid="namespacestd_1ada12521e7f242af25ad3d79a6ad41401" kindref="member">operator&lt;&lt;</ref>(ostream&amp;<sp/>o,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType" kindref="compound" tooltip="Representation and factory for xquery sequence types.">zorba::SequenceType</ref>&amp;<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a52f63fc2dcc2da1d0ee58b682ef0f6d9" kindref="member" tooltip="Tigrinya.">ti</ref>);</highlight></codeline>
+<codeline lineno="324"><highlight class="normal"></highlight></codeline>
+<codeline lineno="325"><highlight class="normal">ZORBA_DLL_PUBLIC<sp/>ostream&amp;<sp/><ref refid="namespacestd_1ada12521e7f242af25ad3d79a6ad41401" kindref="member">operator&lt;&lt;</ref>(ostream&amp;<sp/>o,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5" kindref="member">zorba::SequenceType::Kind</ref><sp/>k);</highlight></codeline>
+<codeline lineno="326"><highlight class="normal">ZORBA_DLL_PUBLIC<sp/>ostream&amp;<sp/><ref refid="namespacestd_1ada12521e7f242af25ad3d79a6ad41401" kindref="member">operator&lt;&lt;</ref>(ostream&amp;<sp/>o,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">zorba::SequenceType::Quantifier</ref><sp/>q);</highlight></codeline>
+<codeline lineno="327"><highlight class="normal"></highlight></codeline>
+<codeline lineno="328"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="329"><highlight class="normal"></highlight></codeline>
+<codeline lineno="330"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_TYPES_TYPEIDENT_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="331"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h"/>
+  </compounddef>
+</doxygen>

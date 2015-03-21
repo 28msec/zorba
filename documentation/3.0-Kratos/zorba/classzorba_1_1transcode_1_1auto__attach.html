@@ -1,0 +1,48 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::transcode::auto_attach</h1><p class="include">
+            #include &lt;zorba/util/transcode_stream.h&gt;
+        </p>
+A transcode::auto_attach is a class that attaches a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> to a stream and automatically detaches it when the auto_attach object is destroyed.     
+<pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>f(<span> </span>ostream<span> </span>&amp;<a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781abd9d340f17925d6dcfdf23e0ff40ddf1">os</a><span> </span>)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>transcode::auto_attach&lt;ostream&gt;<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>raii(<span> </span>os,<span> </span></span><span class="stringliteral">"ISO-8859-1"</span><span class="normal"><span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>...</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>}</span>
+</pre> A transcode::auto_attach is useful for streams not created by you.<div><h4>Returns</h4><a href="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization" target="_blank">http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization</a> </div>
+    <div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">StreamType *</p></td><td><p class="signature"><a href="#a272bef9bbebc667a67963c598c62f026">stream_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#aa3965d631f5331cfc0d71c969615cb56">attach</a>(StreamType &amp;stream, char const *charset)</p><span class="signature-description">
+Calls <a href="/pages/3.0/zorba/namespacezorba_1_1transcode?anchor=a44eff53620b083f7384c20eea64a534b">transcode::attach()</a> on the given stream.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a03330aca248ff4936b5c25a69b5361e7">auto_attach</a>()</p><span class="signature-description">
+Default constructor; does nothing.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ae62db14aa0cddc2c707b65fed7634253">auto_attach</a>(StreamType &amp;stream, char const *charset)</p><span class="signature-description">
+Constructs an auto_attach object calling <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1auto__attach?anchor=aa3965d631f5331cfc0d71c969615cb56">attach()</a> on the given stream.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a8280cc474b828ec97f5870ccbdf655e7">auto_attach</a>(auto_attach &amp;from)</p><span class="signature-description">
+Copy constructor that takes ownership of the stream.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a6859243e6b019f44fbbbbb29c3e04e74">detach</a>()</p><span class="signature-description">
+Calls <a href="/pages/3.0/zorba/namespacezorba_1_1transcode?anchor=ac1a9e5e77b37b933a78581467f24ee1d">transcode::detach()</a>.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1auto__attach">auto_attach</a> &amp;</p></td><td><p class="signature"><a href="#a98afbb042f37d36124a6b513a74bbcb9">operator=</a>(auto_attach &amp;from)</p><span class="signature-description">
+Assignment operator that takes ownership of the stream.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#accbfbc96eb1e2940225879dc1974f1b2">~auto_attach</a>()</p><span class="signature-description">
+Destroys this auto_attach object calling <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1auto__attach?anchor=a6859243e6b019f44fbbbbb29c3e04e74">detach()</a> on the previously attached stream, if any.         </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a272bef9bbebc667a67963c598c62f026" class="sect1"><div><h3>stream_</h3></div><div class="signature-box">StreamType *<span> </span>stream_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="aa3965d631f5331cfc0d71c969615cb56" class="sect1"><div><h3>attach</h3></div><div class="signature-box">bool<span> </span>attach(StreamType &amp;stream, char const *charset)</div><div><p class="signature-description">
+Calls <a href="/pages/3.0/zorba/namespacezorba_1_1transcode?anchor=a44eff53620b083f7384c20eea64a534b">transcode::attach()</a> on the given stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>stream</td><td>
+The stream to attach the <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> to. If the stream already has a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> attached to it, this contructor does nothing. </td></tr><tr><td>charset</td><td>
+The name of the character encoding to convert from/to. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> was attached. </div>
+        </p></div></div><div id="a03330aca248ff4936b5c25a69b5361e7" class="sect1"><div><h3>auto_attach</h3></div><div class="signature-box"><span> </span>auto_attach()</div><div><p class="signature-description">
+Default constructor; does nothing.         </p><p class="signature-description">
+        </p></div></div><div id="ae62db14aa0cddc2c707b65fed7634253" class="sect1"><div><h3>auto_attach</h3></div><div class="signature-box"><span> </span>auto_attach(StreamType &amp;stream, char const *charset)</div><div><p class="signature-description">
+Constructs an auto_attach object calling <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1auto__attach?anchor=aa3965d631f5331cfc0d71c969615cb56">attach()</a> on the given stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>stream</td><td>
+The stream to attach the <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> to. If the stream already has a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> attached to it, this contructor does nothing. </td></tr><tr><td>charset</td><td>
+The name of the character encoding to convert from/to. </td></tr></table></div>
+        </p></div></div><div id="a8280cc474b828ec97f5870ccbdf655e7" class="sect1"><div><h3>auto_attach</h3></div><div class="signature-box"><span> </span>auto_attach(auto_attach &amp;from)</div><div><p class="signature-description">
+Copy constructor that takes ownership of the stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The auto_attach to take ownership from. </td></tr></table></div>
+        </p></div></div><div id="a6859243e6b019f44fbbbbb29c3e04e74" class="sect1"><div><h3>detach</h3></div><div class="signature-box">void<span> </span>detach()</div><div><p class="signature-description">
+Calls <a href="/pages/3.0/zorba/namespacezorba_1_1transcode?anchor=ac1a9e5e77b37b933a78581467f24ee1d">transcode::detach()</a>.         </p><p class="signature-description">
+        </p></div></div><div id="a98afbb042f37d36124a6b513a74bbcb9" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1auto__attach">auto_attach</a> &amp;<span> </span>operator=(auto_attach &amp;from)</div><div><p class="signature-description">
+Assignment operator that takes ownership of the stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The auto_attach to take ownership from. </td></tr></table></div>
+<div><h4>Returns</h4><tt>*this</tt>. </div>
+        </p></div></div><div id="accbfbc96eb1e2940225879dc1974f1b2" class="sect1"><div><h3>~auto_attach</h3></div><div class="signature-box"><span> </span>~auto_attach()</div><div><p class="signature-description">
+Destroys this auto_attach object calling <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1auto__attach?anchor=a6859243e6b019f44fbbbbb29c3e04e74">detach()</a> on the previously attached stream, if any.         </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

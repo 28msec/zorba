@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1os__error_1_1exception" kind="class" prot="public">
+    <compoundname>zorba::os_error::exception</compoundname>
+    <includes refid="error__util_8h" local="no">zorba/util/error_util.h</includes>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1os__error_1_1exception_1a76ebbb097300a7e0e7c9bf916f2b70c4" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string zorba::os_error::exception::function_</definition>
+        <argsstring></argsstring>
+        <name>function_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="93" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1os__error_1_1exception_1add7d63af8491b3c77b936d756ab4bc5e" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string zorba::os_error::exception::message_</definition>
+        <argsstring></argsstring>
+        <name>message_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="92" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1os__error_1_1exception_1a11507bfbc4888cadc767835d0b030860" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string zorba::os_error::exception::path_</definition>
+        <argsstring></argsstring>
+        <name>path_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="94" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1os__error_1_1exception_1a23717ee6083026d2c0b46ab638397453" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::os_error::exception::exception</definition>
+        <argsstring>(char const *function, char const *path, char const *err_string=nullptr)</argsstring>
+        <name>exception</name>
+        <param>
+          <type>char const *</type>
+          <declname>function</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>path</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>err_string</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+<para>Constructs an exception. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>function</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the operating system function that failed, if any. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The full path of the file or directory involved in the failure, if any. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>err_string</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If not <computeroutput>nullptr</computeroutput>, the error string to use instead of the operating system error string; if empty, no error string is used. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="63"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1os__error_1_1exception_1a6924e8fe65292fdb0229cdb5d16c32a2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string const &amp;</type>
+        <definition>std::string const&amp; zorba::os_error::exception::function</definition>
+        <argsstring>() const </argsstring>
+        <name>function</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the name of the function that failed. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said function name. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="75" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" bodystart="75" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1os__error_1_1exception_1aa212d0ddb261f5238889137918ae62bb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string const &amp;</type>
+        <definition>std::string const&amp; zorba::os_error::exception::path</definition>
+        <argsstring>() const </argsstring>
+        <name>path</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the full path of the file or directory involved in the failure. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said path. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="84" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" bodystart="84" bodyend="86"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1os__error_1_1exception_1a56903413b83b672cd2d5eab992e1b657" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::os_error::exception::what</definition>
+        <argsstring>() const </argsstring>
+        <name>what</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="89"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1os__error_1_1exception_1a107ce579bd0dca06de81adaccbed781b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::os_error::exception::~exception</definition>
+        <argsstring>()</argsstring>
+        <name>~exception</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Destroys an exception. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="68"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>An exception is-a std::runtime_error for reporting errors with operating system or library functions. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" line="50" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/error_util.h" bodystart="50" bodyend="95"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1os__error_1_1exception_1a23717ee6083026d2c0b46ab638397453" prot="public" virt="non-virtual"><scope>zorba::os_error::exception</scope><name>exception</name></member>
+      <member refid="classzorba_1_1os__error_1_1exception_1a6924e8fe65292fdb0229cdb5d16c32a2" prot="public" virt="non-virtual"><scope>zorba::os_error::exception</scope><name>function</name></member>
+      <member refid="classzorba_1_1os__error_1_1exception_1a76ebbb097300a7e0e7c9bf916f2b70c4" prot="protected" virt="non-virtual"><scope>zorba::os_error::exception</scope><name>function_</name></member>
+      <member refid="classzorba_1_1os__error_1_1exception_1add7d63af8491b3c77b936d756ab4bc5e" prot="protected" virt="non-virtual"><scope>zorba::os_error::exception</scope><name>message_</name></member>
+      <member refid="classzorba_1_1os__error_1_1exception_1aa212d0ddb261f5238889137918ae62bb" prot="public" virt="non-virtual"><scope>zorba::os_error::exception</scope><name>path</name></member>
+      <member refid="classzorba_1_1os__error_1_1exception_1a11507bfbc4888cadc767835d0b030860" prot="protected" virt="non-virtual"><scope>zorba::os_error::exception</scope><name>path_</name></member>
+      <member refid="classzorba_1_1os__error_1_1exception_1a56903413b83b672cd2d5eab992e1b657" prot="public" virt="non-virtual"><scope>zorba::os_error::exception</scope><name>what</name></member>
+      <member refid="classzorba_1_1os__error_1_1exception_1a107ce579bd0dca06de81adaccbed781b" prot="public" virt="non-virtual"><scope>zorba::os_error::exception</scope><name>~exception</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

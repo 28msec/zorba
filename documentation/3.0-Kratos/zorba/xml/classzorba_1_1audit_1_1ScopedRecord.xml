@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1audit_1_1ScopedRecord" kind="class" prot="public">
+    <compoundname>zorba::audit::ScopedRecord</compoundname>
+    <includes refid="audit__scoped_8h" local="no">zorba/audit_scoped.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1audit_1_1ScopedRecord_1a0c324cf4612edd152181de911bd29a01" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1audit_1_1Event" kindref="compound">Event</ref> *</type>
+        <definition>Event* zorba::audit::ScopedRecord::theEvent</definition>
+        <argsstring></argsstring>
+        <name>theEvent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="56" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1audit_1_1ScopedRecord_1a41b034d9cea6547c8538ba8811208dcf" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1audit_1_1Record" kindref="compound">Record</ref> *</type>
+        <definition>Record* zorba::audit::ScopedRecord::theRecord</definition>
+        <argsstring></argsstring>
+        <name>theRecord</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="57" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1audit_1_1ScopedRecord_1abaa5cb0211f801c41b383ab921cc8e5a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1audit_1_1Event" kindref="compound">Event</ref> *</type>
+        <definition>Event* zorba::audit::ScopedRecord::getEvent</definition>
+        <argsstring>()</argsstring>
+        <name>getEvent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="44" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="44" bodyend="46"/>
+        <referencedby refid="classzorba_1_1audit_1_1ScopedAuditor_1a34c403cf4c8055d4d053ea9f591d12b9" compoundref="audit__scoped_8h" startline="65" endline="71">zorba::audit::ScopedAuditor&lt; T, flags &gt;::ScopedAuditor</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1ScopedRecord_1a4b446d4ac3b2e28d5600e585fccb44b6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1audit_1_1Record" kindref="compound">Record</ref> *</type>
+        <definition>Record* zorba::audit::ScopedRecord::getRecord</definition>
+        <argsstring>()</argsstring>
+        <name>getRecord</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="48" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="48" bodyend="53"/>
+        <referencedby refid="classzorba_1_1audit_1_1ScopedAuditor_1a92b0cec322aedf6e993ddf74b3153803" compoundref="audit__scoped_8h" startline="87" endline="93">zorba::audit::ScopedAuditor&lt; T, flags &gt;::now</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1ScopedRecord_1a5dd6a0a319ed464cb2bb04d4e1d4dbca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::audit::ScopedRecord::ScopedRecord</definition>
+        <argsstring>(Event *event)</argsstring>
+        <name>ScopedRecord</name>
+        <param>
+          <type><ref refid="classzorba_1_1audit_1_1Event" kindref="compound">Event</ref> *</type>
+          <declname>event</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="33" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="31" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1ScopedRecord_1a9861fe40d900215343bcc8929d3cc05b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::audit::ScopedRecord::~ScopedRecord</definition>
+        <argsstring>()</argsstring>
+        <name>~ScopedRecord</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="37" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="37" bodyend="42"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="29" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="29" bodyend="58"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1audit_1_1ScopedRecord_1abaa5cb0211f801c41b383ab921cc8e5a" prot="public" virt="non-virtual"><scope>zorba::audit::ScopedRecord</scope><name>getEvent</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedRecord_1a4b446d4ac3b2e28d5600e585fccb44b6" prot="public" virt="non-virtual"><scope>zorba::audit::ScopedRecord</scope><name>getRecord</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedRecord_1a5dd6a0a319ed464cb2bb04d4e1d4dbca" prot="public" virt="non-virtual"><scope>zorba::audit::ScopedRecord</scope><name>ScopedRecord</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedRecord_1a0c324cf4612edd152181de911bd29a01" prot="private" virt="non-virtual"><scope>zorba::audit::ScopedRecord</scope><name>theEvent</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedRecord_1a41b034d9cea6547c8538ba8811208dcf" prot="private" virt="non-virtual"><scope>zorba::audit::ScopedRecord</scope><name>theRecord</name></member>
+      <member refid="classzorba_1_1audit_1_1ScopedRecord_1a9861fe40d900215343bcc8929d3cc05b" prot="public" virt="non-virtual"><scope>zorba::audit::ScopedRecord</scope><name>~ScopedRecord</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

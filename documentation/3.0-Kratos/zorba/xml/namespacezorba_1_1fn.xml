@@ -1,0 +1,340 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1fn" kind="namespace">
+    <compoundname>zorba::fn</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1fn_1acc3abf399f9121f194d9e6f002130e82" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>ZORBA_DLL_PUBLIC String zorba::fn::encode_for_uri</definition>
+        <argsstring>(String const &amp;uri_part)</argsstring>
+        <name>encode_for_uri</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>uri_part</declname>
+        </param>
+        <briefdescription>
+<para>Encodes reserved characters in an xs:string that is intended to be used in the path segment of a URI. </para>        </briefdescription>
+        <detaileddescription>
+<para>It is invertible but not idempotent.</para><para>This function applies the URI escaping rules defined in section 2 of [RFC 3986] to the xs:string supplied as <emphasis>uri_part</emphasis>. The effect of the function is to escape reserved characters. Each such character in the string is replaced with its percent-encoded form as described in [RFC 3986].</para><para>All characters are escaped except those identified as &quot;unreserved&quot; by [RFC 3986], that is the upper- and lower-case letters A-Z, the digits 0-9, HYPHEN-MINUS (&quot;-&quot;), LOW LINE (&quot;_&quot;), FULL STOP &quot;.&quot;, and TILDE &quot;~&quot;.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>uri_part</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The URI to be encoded. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the encoded string. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="181"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fn_1a13ee0dc2e640c8d17375b5a2dbc90480" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::fn::ends_with</definition>
+        <argsstring>(String const &amp;arg1, String const &amp;arg2)</argsstring>
+        <name>ends_with</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>arg1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>arg2</declname>
+        </param>
+        <briefdescription>
+<para>Tests whether or not the value of <emphasis>arg1</emphasis> ends with a sequence of collation units that provides a match to the collation units of <emphasis>arg2</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>arg1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to test. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>arg2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The substring. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if <emphasis>arg1</emphasis> ends with <emphasis>arg2</emphasis> or <emphasis>arg2</emphasis> is the zero-length string. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="124"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fn_1a8c4104881240098ee2b3c981e902122b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::fn::ends_with</definition>
+        <argsstring>(String const &amp;arg1, char const *arg2)</argsstring>
+        <name>ends_with</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>arg1</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>arg2</declname>
+        </param>
+        <briefdescription>
+<para>Tests whether or not the value of <emphasis>arg1</emphasis> ends with a sequence of collation units that provides a match to the collation units of <emphasis>arg2</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>arg1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to test. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>arg2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The substring. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if <emphasis>arg1</emphasis> ends with <emphasis>arg2</emphasis> or <emphasis>arg2</emphasis> is the zero-length string. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="136"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fn_1a7e2d96040bd5f3c33e21c831da771e71" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>ZORBA_DLL_PUBLIC String zorba::fn::lower_case</definition>
+        <argsstring>(String const &amp;arg)</argsstring>
+        <name>lower_case</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>arg</declname>
+        </param>
+        <briefdescription>
+<para>Translates every character to its lower-case correspondent as defined in the appropriate case mappings section in the Unicode standard. </para>        </briefdescription>
+        <detaileddescription>
+<para>Every upper-case character that does not have a lower-case correspondent, as well as every lower-case character, is included in the returned value in its original form.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>arg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to translate. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><emphasis>arg</emphasis> translated to lower-case. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="110"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fn_1a440d54d344d183d26f604491cbfed2d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::fn::starts_with</definition>
+        <argsstring>(String const &amp;arg1, String const &amp;arg2)</argsstring>
+        <name>starts_with</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>arg1</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>arg2</declname>
+        </param>
+        <briefdescription>
+<para>Tests whether or not the value of <emphasis>arg1</emphasis> starts with a sequence of collation units that provides a match to the collation units of <emphasis>arg2</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>arg1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to test. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>arg2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The substring. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if <emphasis>arg1</emphasis> starts with <emphasis>arg2</emphasis> or <emphasis>arg2</emphasis> is the zero-length string. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="148"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fn_1a596fa12be5668b71aa618ee98d1fd48e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC bool</type>
+        <definition>ZORBA_DLL_PUBLIC bool zorba::fn::starts_with</definition>
+        <argsstring>(String const &amp;arg1, char const *arg2)</argsstring>
+        <name>starts_with</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>arg1</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>arg2</declname>
+        </param>
+        <briefdescription>
+<para>Tests whether or not the value of <emphasis>arg1</emphasis> starts with a sequence of collation units that provides a match to the collation units of <emphasis>arg2</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>arg1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to test. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>arg2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The substring. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if <emphasis>arg1</emphasis> starts with <emphasis>arg2</emphasis> or <emphasis>arg2</emphasis> is the zero-length string. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="160"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fn_1aeeba766657532850344abf0bc70bb4e3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1Sequence" kindref="compound">Sequence</ref>&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt;</type>
+        <definition>ZORBA_DLL_PUBLIC Sequence&lt;String&gt; zorba::fn::tokenize</definition>
+        <argsstring>(String const &amp;input, char const *pattern, char const *flags=&quot;&quot;)</argsstring>
+        <name>tokenize</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>pattern</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>flags</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>This function breaks the <emphasis>input</emphasis> string into a sequence of strings, treating any substring that matches <emphasis>pattern</emphasis> as a separator. </para>        </briefdescription>
+        <detaileddescription>
+<para>The separators themselves are not returned.</para><para>Performance note: if <emphasis>pattern</emphasis> is a simple string (not a regular expression with meta-characers), it is more efficient to use <ref refid="classzorba_1_1String_1a29c02ca220d6417b27fddadea99572b3" kindref="member">String::find()</ref>.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>input</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to be split into tokens. If <emphasis>input</emphasis> is the empty sequence, or if <emphasis>input</emphasis> is the zero-length string, the result is the empty sequence. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pattern</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The regular expression. If it matches a zero-length string, then an error is raised: [err:FORX0003]. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>flags</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The regular expression flags, if any. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a sequence of strings for the tokens. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="203"/>
+        <referencedby refid="namespacezorba_1_1fn_1aec9cbe6bd918c599a9c4584190e3f2a9" compoundref="xquery__functions_8h" startline="222" endline="225">tokenize</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fn_1aec9cbe6bd918c599a9c4584190e3f2a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Sequence" kindref="compound">Sequence</ref>&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt;</type>
+        <definition>Sequence&lt;String&gt; zorba::fn::tokenize</definition>
+        <argsstring>(String const &amp;input, String const &amp;pattern, char const *flags=&quot;&quot;)</argsstring>
+        <name>tokenize</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>pattern</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>flags</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>This function breaks the <emphasis>input</emphasis> string into a sequence of strings, treating any substring that matches <emphasis>pattern</emphasis> as a separator. </para>        </briefdescription>
+        <detaileddescription>
+<para>The separators themselves are not returned.</para><para>Performance note: if <emphasis>pattern</emphasis> is a simple string (not a regular expression with meta-characers), it is more efficient to use <ref refid="classzorba_1_1String_1a29c02ca220d6417b27fddadea99572b3" kindref="member">String::find()</ref>.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>input</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to be split into tokens. If <emphasis>input</emphasis> is the empty sequence, or if <emphasis>input</emphasis> is the zero-length string, the result is the empty sequence. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pattern</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The regular expression. If it matches a zero-length string, then an error is raised: [err:FORX0003]. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>flags</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The regular expression flags, if any. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a sequence of strings for the tokens. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="223" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" bodystart="222" bodyend="225"/>
+        <references refid="classzorba_1_1String_1a96b65111db89355b959066ccab039698">zorba::String::c_str</references>
+        <references refid="namespacezorba_1_1fn_1aeeba766657532850344abf0bc70bb4e3">tokenize</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1fn_1aaa8effb83bef7eb3351939f2bc91df29" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>ZORBA_DLL_PUBLIC String zorba::fn::upper_case</definition>
+        <argsstring>(String const &amp;arg)</argsstring>
+        <name>upper_case</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>arg</declname>
+        </param>
+        <briefdescription>
+<para>Translates every character to its upper-case correspondent as defined in the appropriate case mappings section in the Unicode standard. </para>        </briefdescription>
+        <detaileddescription>
+<para>Every lower-case character that does not have an upper-case correspondent, as well as every upper-case character, is included in the returned value in its original form.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>arg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to translate. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><emphasis>arg</emphasis> translated to upper-case. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="96"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/xquery_functions.h" line="80"/>
+  </compounddef>
+</doxygen>

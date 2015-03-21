@@ -1,0 +1,28 @@
+<div class="doxygen">
+  <div><h1 class="title">Zorba Configuration Parameters</h1>
+This is a list of all published Zorba configuration parameters.You specify these parameters at CMake configuration time with the <tt>-D</tt> argument. See <a href="/pages/3.0/zorba/configure_zorba?anchor=configure_parameters">Configuration Parameters (the -D arguments)</a> for more information.<div id="configure_enable" class="sect1"><h2>Enabling/Disabling Zorba Features</h2>
+<div id="ZORBA_WITH_BIG_INTEGER" class="sect2"><h3>Big Integer Support</h3>
+The Zorba XQuery processor by default has arbitrary precision for the <tt>xs:integer</tt> type. Compared to a C++ <tt>int</tt>, however, arbitrary precision integers are orders of magnitude slower. If arbitrary precision integers are not needed, they can be disabled by configuring Zorba with the <tt>ZORBA_WITH_BIG_INTEGER</tt> option set to <tt>OFF</tt>, i.e. <tt>-D ZORBA_WITH_BIG_INTEGER=OFF</tt>When arbitrary precision integers are disabled, Zorba uses a C++ <tt>long long</tt> for <tt>xs:integer</tt>, the precision for which is dependent on your C++ implementation. Typically, however, the precision is at least 64 bits. However, in order to maintain the condition that the value space for <tt>xs:nonNegativeInteger</tt> is a subset of that of <tt>xs:integer</tt>, one less bit is allowed for <tt>xs:nonNegativeInteger</tt>.</div>
+<div id="ZORBA_NO_FULL_TEXT" class="sect2"><h3>XQuery Full-Text Support</h3>
+Zorba by default supports the XQuery Full-Text specification (<a href="http://www.w3.org/TR/xpath-full-text-10/" target="_blank">http://www.w3.org/TR/xpath-full-text-10/</a> ). If you wish to disable this support, configure with <tt>-D ZORBA_NO_FULL_TEXT=ON</tt>.</div>
+<div id="ZORBA_XQUERX" class="sect2"><h3>XQueryX Support</h3>
+Zorba by default does not build with support for XQueryX (which is an alternate representation of XQuery using pure XML). To enable this support, configure with <tt>-DZORBA_XQUERYX=ON</tt>. Note that building with XQueryX support requires LibXslt to be available.</div>
+<div id="ZORBA_VERIFY_PEER_SSL_CERTIFICATE" class="sect2"><h3>Enabling SSL Peer Verification</h3>
+By default, Zorba's HTTP module does not validate the SSL certificate sent to it by HTTPS servers. This is because not all systems have a complete or valid set of root certificates against which to validate said server certificates. If you wish to enable SSL peer validation, configure with <tt>-D ZORBA_VERIFY_PEER_SSL_CERTIFICATE=ON</tt>.</div>
+</div>
+<div id="configure_deps" class="sect1"><h2>Disabling Zorba Library Requirements</h2>
+<div id="ZORBA_NO_ICU" class="sect2"><h3>Disable ICU (Unicode) Support</h3>
+The ICU library provides Unicode functionality, and is required by default when building Zorba. To disable this requirement, configure with <tt>-D ZORBA_NO_ICU=ON</tt>.</div>
+<div id="ZORBA_NO_XMLSCHEMA" class="sect2"><h3>Disable Xerces (XML Schema) Support</h3>
+The Xerces-C library provides XML Schema functionality, and is required by default when building Zorba. To disable this requirement, configure with <tt>-D ZORBA_NO_XMLSCHEMA=ON</tt>.</div>
+<div id="ZORBA_SUPPRESS_CURL" class="sect2"><h3>Disable Curl (HTTP) Support</h3>
+The Curl library provides HTTP functionality. Zorba will automatically build with HTTP support (via the built-in <tt>http-client</tt> module) if it detects <tt>libcurl</tt>. To suppress this check (so you can build Zorba without HTTP support even if Curl is installed on your system), configure with <tt>-D ZORBA_SUPPRESS_CURL=ON</tt>.</div>
+</div>
+<div id="configure_buildparams" class="sect1"><h2>Parameters for Compiling</h2>
+<div id="ZORBA_MODULES_DIR" class="sect2"><h3>Specifying the Directory for Non-Core Modules</h3>
+By default, Zorba will automatically build any non-core module packages it finds in a directory named <tt>zorba_modules</tt> that is a sibling to the directory containing Zorba's own source (that is, "<tt>../zorba_modules</tt>" from the source directory). See <a href="/pages/3.0/zorba/build_prepare?anchor=noncore_download">Downloading source code for non-core modules</a> for more information.If you wish to build non-core modules from a different location, configure with <tt>-D ZORBA_MODULES_DIR=/path/to/modules</tt>.</div>
+<div id="ZORBA_THIRD_PARTY_REQUIREMENTS" class="sect2"><h3>Specifying the Location of Third-Party Requirements on Windows</h3>
+On Windows, you should configure with <tt>-D ZORBA_THIRD_PARTY_REQUIREMENTS=/path1;/path2</tt> to indicate the path(s) to third-party libraries, instead of <tt>CMAKE_PREFIX_PATH</tt>. This is described in detail at <a href="/pages/3.0/zorba/build_windows?anchor=windows_autodll">Zorba's Automatic DLL Detection Mechanism</a>. </div>
+</div>
+    </div>
+</div>

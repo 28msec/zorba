@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1internal_1_1ztd_1_1explicit__bool_1_1pointer__conversion" kind="struct" prot="private">
+    <compoundname>zorba::internal::ztd::explicit_bool::pointer_conversion</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structzorba_1_1internal_1_1ztd_1_1explicit__bool_1_1pointer__conversion_1a91d7dc10b3f7891c5773cb6f37a05995" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int zorba::internal::ztd::explicit_bool::pointer_conversion::valid</definition>
+        <argsstring></argsstring>
+        <name>valid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="443" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="443" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="443" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="443" bodyend="443"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1internal_1_1ztd_1_1explicit__bool_1_1pointer__conversion_1a91d7dc10b3f7891c5773cb6f37a05995" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::explicit_bool::pointer_conversion</scope><name>valid</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

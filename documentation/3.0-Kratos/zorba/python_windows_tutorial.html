@@ -1,0 +1,77 @@
+<div class="doxygen">
+  <div><h1 class="title">Zorba with Python - Windows Installation</h1>
+These steps were checked on Windows 7 and Python 2.7 (32bits) with the Zorba Revision 10986 from Jun 29th, 2011, this revision has important bug fixing and it requires at least this version to work.It should work fine with any Python 2.7.X (32 bits) version.<div id="install_python" class="sect1"><h2>Install Python</h2>
+Download and install Python binaries from <a href="http://www.python.org/getit/" target="_blank">http://www.python.org/getit/</a>. If you want to debug the python binding you will need to download the sources and compile python in order to get the debug library of python: <em>python_d.lib</em>.</div>
+<div id="install_swig" class="sect1"><h2>Install Swig</h2>
+Zorba uses Swig to create the binding in python language, you only need the binary to create it, download from <a href="http://www.swig.org/download.html" target="_blank">http://www.swig.org/download.html</a> and install.</div>
+<div id="install_zorba" class="sect1"><h2>Installing Zorba</h2>
+Get Zorba sources and follow the <a href="/pages/3.0/zorba/build">Zorba Build Instructions</a>.</div>
+<div id="compiling_zorba" class="sect1"><h2>Compiling the Zorba Python Library</h2>
+In order to compile the Python binding you need first to follow the steps to compile Zorba, but before compiling, you must need to add one extra variable to the CMAKE command line:-D ZORBA_USE_SWIG=ON Turn on the Swig library, in case you have other bindings, this flag will help to activate them.You should not need any other extra flag, cmake should be able to detect python at this point, but in case cmake can't find python installation you can add these two flags:-D PYTHON_LIBRARIES=... Specify where the libs directory is located, i.e. "C:\Python27\libs"-D PYTHON_INCLUDE_PATH=... Specify where the include directory is located, i.e. "C:\Python27\include".After adding those lines CMAKE will add automatically the Python binding project and after compiling you will get two files:<em> _zorba_api.pyd</em> and <em>zorba_api.py</em>, these files are the binding for zorba.</div>
+<div id="testing" class="sect1"><h2>Testing</h2>
+Verify that Zorba is working by command line: <pre class="ace-static" ace-mode="xquery"><span class="normal">C:\&gt;zorba.exe<span> </span>-q<span> </span></span><span class="stringliteral">'2+1'</span><span class="normal"/>
+<span class="normal">&lt;?xml<span> </span>version=</span><span class="stringliteral">"1.0"</span><span class="normal"><span> </span>encoding=</span><span class="stringliteral">"UTF-8"</span><span class="normal">?&gt;</span>
+<span class="normal">3</span>
+</pre>Test the following example in python, this example contains a direct path to the two files generated, you can change this according to your configuration or by moving those files to libs directory:<pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>sys</span>
+<span class="normal">sys.path.insert(0,<span> </span></span><span class="stringliteral">'C:\\zorba\\vs2010\\swig\\python'</span><span class="normal">)</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>zorba_api</span>
+<span class="normal"/>
+<span class="normal">def<span> </span>example1(zorba):</span>
+<span class="normal"><span> </span><span> </span>xquery<span> </span>=<span> </span>zorba.compileQuery(</span><span class="stringliteral">"1+2"</span><span class="normal">)</span>
+<span class="normal"><span> </span><span> </span>print<span> </span>xquery.printPlanAsXML()</span>
+<span class="normal"><span> </span><span> </span>print<span> </span>xquery.execute()</span>
+<span class="normal"><span> </span><span> </span>return</span>
+<span class="normal">def<span> </span>example2(zorba):</span>
+<span class="normal"><span> </span><span> </span>xquery<span> </span>=<span> </span>zorba.compileQuery(</span><span class="stringliteral">"(1,2,3,4,5)"</span><span class="normal">)</span>
+<span class="normal"><span> </span><span> </span>iter<span> </span>=<span> </span>xquery.iterator()</span>
+<span class="normal"><span> </span><span> </span>iter.open()</span>
+<span class="normal"><span> </span><span> </span>item<span> </span>=<span> </span>zorba_api.Item_createEmptyItem()</span>
+<span class="normal"><span> </span><span> </span>while<span> </span>iter.next(item):</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>print<span> </span>item.getStringValue()</span>
+<span class="normal"><span> </span><span> </span>iter.close()</span>
+<span class="normal"><span> </span><span> </span>iter.destroy()</span>
+<span class="normal"><span> </span><span> </span>return</span>
+<span class="normal"><span> </span><span> </span></span>
+<span class="normal">def<span> </span>example3(zorba):</span>
+<span class="normal"><span> </span><span> </span>try:</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>xquery<span> </span>=<span> </span>zorba.compileQuery(</span><span class="stringliteral">"1<span> </span>div<span> </span>0"</span><span class="normal">)</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>print<span> </span>xquery.execute()</span>
+<span class="normal"><span> </span><span> </span>except<span> </span>RuntimeError,<span> </span>e:</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>print<span> </span>e</span>
+<span class="normal"><span> </span><span> </span>return</span>
+<span class="normal"/>
+<span class="normal">def<span> </span>example4(zorba):</span>
+<span class="normal"><span> </span><span> </span>try:</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>xquery<span> </span>=<span> </span>zorba.compileQuery(</span><span class="stringliteral">"for<span> </span>$i<span> </span>in<span> </span>(1,2,"</span><span class="normal">)</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>print<span> </span>xquery.execute()</span>
+<span class="normal"><span> </span><span> </span>except<span> </span>RuntimeError,<span> </span>e:</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>print<span> </span>e</span>
+<span class="normal"><span> </span><span> </span>return</span>
+<span class="normal"/>
+<span class="normal">store<span> </span>=<span> </span>zorba_api.InMemoryStore_getInstance()</span>
+<span class="normal">zorba<span> </span>=<span> </span>zorba_api.Zorba_getInstance(store)</span>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">"Example1:"</span><span class="normal"/>
+<span class="normal">example1(zorba)</span>
+<span class="normal">print<span> </span></span><span class="stringliteral">""</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">"Example2:"</span><span class="normal"/>
+<span class="normal"><span> </span>example2(zorba)</span>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">""</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">"Example3:"</span><span class="normal"/>
+<span class="normal"><span> </span>example3(zorba)</span>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">""</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">"Example4:"</span><span class="normal"/>
+<span class="normal"><span> </span>example4(zorba)</span>
+<span class="normal"/>
+<span class="normal">print<span> </span></span><span class="stringliteral">""</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal">zorba.shutdown()</span>
+<span class="normal">zorba_api.InMemoryStore_shutdown(store)</span>
+</pre><b> Useful links</b> <a href="/documentation/2.9/python/" target="_blank">Zorba Python API Documentation</a> </div>
+    </div>
+</div>

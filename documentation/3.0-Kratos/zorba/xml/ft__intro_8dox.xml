@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="ft__intro_8dox" kind="file">
+    <compoundname>ft_intro.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>ft_intro<sp/>Full<sp/>Text</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">The<sp/>Zorba<sp/>processor<sp/>implements<sp/>the</highlight></codeline>
+<codeline lineno="4"><highlight class="comment">&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-full-text-10/&quot;&gt;XQuery<sp/>and<sp/>XPath<sp/>Full<sp/>Text<sp/>1.0&lt;/a&gt;</highlight></codeline>
+<codeline lineno="5"><highlight class="comment">specification.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Additional<sp/>documentation:</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"></highlight></codeline>
+<codeline lineno="8"><highlight class="comment">-<sp/>\ref<sp/>ft_stemmer</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">-<sp/>\ref<sp/>ft_thesaurus</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">-<sp/>\ref<sp/>ft_tokenizer</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">-<sp/>&lt;a<sp/>href=&quot;/modules/latest/zorba.io/modules/full-text&quot;&gt;Full<sp/>Text<sp/>Module&lt;/a&gt;</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">\section<sp/>ft_unimplemented<sp/>Unimplemented<sp/>Features</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"></highlight></codeline>
+<codeline lineno="15"><highlight class="comment">The<sp/>full<sp/>text<sp/>specification<sp/>is<sp/>mostly,</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">but<sp/>not<sp/>completely,</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">implemented.</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">The<sp/>features<sp/>that<sp/>are<sp/>not<sp/>(completely)<sp/>implemented<sp/>are:</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"></highlight></codeline>
+<codeline lineno="20"><highlight class="comment">-<sp/>The<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-full-text-10/#ftignoreoption&quot;&gt;Ignore<sp/>Option&lt;/a&gt;</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/><sp/>(bug<sp/>&lt;a<sp/>href=&quot;https://bugs.launchpad.net/zorba/+bug/866924&quot;&gt;866924&lt;/a&gt;).</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">-<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-full-text-10/#section-score-variables&quot;&gt;Score<sp/>Variables&lt;/a&gt;</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/><sp/>and<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-full-text-10/#section-using-weights&quot;&gt;Using<sp/>Weights<sp/>Within<sp/>a<sp/>Scored<sp/>FTContainsExpr&lt;/a&gt;</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/><sp/>(bug<sp/>&lt;a<sp/>href=&quot;https://bugs.launchpad.net/zorba/+bug/866923&quot;&gt;866923&lt;/a&gt;).</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"></highlight></codeline>
+<codeline lineno="26"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/ft_intro.dox"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,204 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::DynamicContext</h1><p class="include">
+            #include &lt;zorba/dynamic_context.h&gt;
+        </p>
+Instances of the class <a href="/pages/3.0/zorba/classzorba_1_1DynamicContext">DynamicContext</a> contain the information that is available at the time the query is executed.     
+The class contains the information that is defined in the XQuery specification (see <a href="http://www.w3.org/TR/xquery/#eval_context" target="_blank">http://www.w3.org/TR/xquery/#eval_context</a>).A dynamic context always belongs to a particular query and, hence, can be retrieved by calling getDynamicContext on a compiled query (see <a href="/pages/3.0/zorba/classzorba_1_1XQuery?anchor=ade775d63d25f849de4a22297e859354c">XQuery::getDynamicContext()</a>).     <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#aaeb3a0dc7a9e4a1a28cfe79ec66c519a">addExternalFunctionParam</a>(const String &amp;aName, void *aValue)=0</p><span class="signature-description">
+Add a name-value pair to this context.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#aecdf4c714a2a71ac6c3b2dda875dc103">addExternalFunctionParameter</a>(const String &amp;aName, ExternalFunctionParameter *aParam) const =0</p><span class="signature-description">
+Add a name-value pair to this context.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">time::calendar::type</a></p></td><td><p class="signature"><a href="#a366552303b48532ab29d886825cbf471">getCalendar</a>() const =0</p><span class="signature-description">
+Gets the current calendar.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a32c3f0b0535e1926d0490ffd7632b8e9">getContextItem</a>(Item &amp;aItem) const =0</p><span class="signature-description">
+Returns the current value of the context item.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#ab90900dc02bf7620a3f11485b8b1bc60">getContextPosition</a>(Item &amp;aItem) const =0</p><span class="signature-description">
+Returns the current value of the context item position.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a7ec40fc41e8a6d772ed32d63ceb33c37">getContextSize</a>(Item &amp;aItem) const =0</p><span class="signature-description">
+Returns the current value of the context item size.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a></p></td><td><p class="signature"><a href="#a05f801768847f0c9d46059bd814438ed">getCurrentDateTime</a>() const =0</p><span class="signature-description">
+Retrieve the dateTime <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> used at the time the query is executed (see <a href="/pages/3.0/zorba/classzorba_1_1DynamicContext?anchor=a18706917b4936a76359713f83deeb1ed">setCurrentDateTime()</a>).         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a></p></td><td><p class="signature"><a href="#adeba489a47e347b43c67979f645fcdf3">getDefaultCollection</a>() const =0</p><span class="signature-description">
+Return the value of the default collection that is used when calling the fn:collection function without a parameter.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#ac16f86447ea4a21b6d8eb59d080d6483">getExternalFunctionParam</a>(const String &amp;aName, void *&amp;aValue) const =0</p><span class="signature-description">
+Get the value of a pair that was registered using the addExternalFunctionParam method.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1ExternalFunctionParameter">ExternalFunctionParameter</a> *</p></td><td><p class="signature"><a href="#ac92732c6029291dfe4c59492c85294a4">getExternalFunctionParameter</a>(const String &amp;aName) const =0</p><span class="signature-description">
+Get the value of a pair that was registered using the addExternalFunctionParam method.         </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#ab4da904ba389c8345b0fa41deec7a803">getImplicitTimezone</a>() const =0</p><span class="signature-description">
+Retrieve the implicit timezone used in comparisons or arithmetic operations of date, time, or dateTime values.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ae1604f9706db691b9ca37f13025df6f9">getLocale</a>(locale::iso639_1::type *aLang, locale::iso3166_1::type *aCountry) const =0</p><span class="signature-description">
+Gets the locale.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a0d8d0c9398aaea49f884d1e591f0db31">getVariable</a>(const String &amp;aNamespace, const String &amp;aLocalname, Item &amp;aItem, Iterator_t &amp;aIterator) const =0</p><span class="signature-description">
+Returns the current value of an external variable.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a331115d6083496de95a61e45b868baa8">isBoundContextItem</a>() const =0</p><span class="signature-description">
+Returns true if a context item has been bound to the Dynamic Context.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a414b6d8ffcaf09aabc1b90519953d937">isBoundExternalVariable</a>(const String &amp;aNamespace, const String &amp;aLocalname) const =0</p><span class="signature-description">
+Returns true if the variable is bound to a value.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a7d7039a7b939e3eda034d11bbe59250e">setCalendar</a>(time::calendar::type aCalendar)=0</p><span class="signature-description">
+Sets the calendar.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#ad7613dd6f1cb97e94dcc403e265b57df">setContextItem</a>(const Item &amp;aItem)=0</p><span class="signature-description">
+Defines the context item.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a91717c215e40cf0020467e30fdb870a0">setContextPosition</a>(const Item &amp;aItem)=0</p><span class="signature-description">
+Defines the context item position.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#ab0f266dfd982f4a297046c20880a87a4">setContextSize</a>(const Item &amp;aItem)=0</p><span class="signature-description">
+Defines the context item size.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a18706917b4936a76359713f83deeb1ed">setCurrentDateTime</a>(const Item &amp;aDateTimeItem)=0</p><span class="signature-description">
+Defines the value of the current date time that can be accessed by the fn:current-dateTime() function at the time the query is executed.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a109e269c97fe0ab18e04871cecc065ca">setDefaultCollection</a>(const Item &amp;aCollectionUri)=0</p><span class="signature-description">
+Defines the value of the default collection that is used when calling the fn:collection function without a parameter.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a75f34355ef45a68d1f6186bb884fc5a2">setImplicitTimezone</a>(int aTimezone)=0</p><span class="signature-description">
+Defines the variable of the implicit timezone to be used when a date, time, or dateTime value that does not have a timezone is used in a comparison or arithmetic operation.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#abad7fc31d41880cd22e2a6428eb9eb76">setLocale</a>(locale::iso639_1::type aLang, locale::iso3166_1::type aCountry)=0</p><span class="signature-description">
+Sets the locale.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#adf567bf8b8396bc6cd0cd805bb511a91">setVariable</a>(const String &amp;aQName, const Item &amp;aItem)=0</p><span class="signature-description">
+Defines the external variable identified by aQName and assigns it the value of aItem.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#aae0407571969889e2590ecfedc3ea8fb">setVariable</a>(const String &amp;inNamespace, const String &amp;inLocalname, const Item &amp;inValue)=0</p><span class="signature-description">
+Defines the external variable identified by an expanded QName and assigns it the value of aItem.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#aca600091163f6e9590d80ad04c78d095">setVariable</a>(const String &amp;aQName, const Iterator_t &amp;aIterator)=0</p><span class="signature-description">
+Defines the external variable identified by aQName and assigns it the sequence that is returned by evaluating aIterator.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a0b8187e2037fc037482d685573536c07">setVariable</a>(const String &amp;aNamespace, const String &amp;aLocalname, const Iterator_t &amp;aIterator)=0</p><span class="signature-description">
+Defines the external variable identified by an expanded QName and assigns it the sequence that is returned by evaluating aIterator.         </span></td></tr></table></div><div class="section"><h2>Protected Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a5ca3479a17daeb5690a6a82d87e0dd3d">~DynamicContext</a>()</p><span class="signature-description">
+Destructor.         </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="aaeb3a0dc7a9e4a1a28cfe79ec66c519a" class="sect1"><div><h3>addExternalFunctionParam</h3></div><div class="signature-box">bool<span> </span>addExternalFunctionParam(const String &amp;aName, void *aValue)=0</div><div><p class="signature-description">
+Add a name-value pair to this context.         </p><p class="signature-description">
+The value can be accessed in the evaluate method of external functions (see <a href="/pages/3.0/zorba/classzorba_1_1ContextualExternalFunction">ContextualExternalFunction</a>).<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aName</td><td>
+the name of the parameter to add. If an entry with the same name already exists, the existing entry is replaced. </td></tr><tr><td>aValue</td><td>
+the value that can be accessed in the evaluate method. </td></tr></table></div>
+<div><h4>Returns</h4>returns true if an entry with the same name did not already exist, false otherwise. </div>
+        </p></div></div><div id="aecdf4c714a2a71ac6c3b2dda875dc103" class="sect1"><div><h3>addExternalFunctionParameter</h3></div><div class="signature-box">bool<span> </span>addExternalFunctionParameter(const String &amp;aName, ExternalFunctionParameter *aParam) const =0</div><div><p class="signature-description">
+Add a name-value pair to this context.         </p><p class="signature-description">
+The value can be accessed in the evaluate method of external functions (see <a href="/pages/3.0/zorba/classzorba_1_1ContextualExternalFunction">ContextualExternalFunction</a>).<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aName</td><td>
+the name of the parameter to add. If an entry with the same name already exists, the existing entry is replaced. </td></tr><tr><td>aParam</td><td>
+the parameter to add </td></tr></table></div>
+<div><h4>Returns</h4>true if an entry with the same name did not exist already, false otherwise. </div>
+        </p></div></div><div id="a366552303b48532ab29d886825cbf471" class="sect1"><div><h3>getCalendar</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">time::calendar::type</a><span> </span>getCalendar() const =0</div><div><p class="signature-description">
+Gets the current calendar.         </p><p class="signature-description">
+<div><h4>Returns</h4>the current calendar. </div>
+        </p></div></div><div id="a32c3f0b0535e1926d0490ffd7632b8e9" class="sect1"><div><h3>getContextItem</h3></div><div class="signature-box">bool<span> </span>getContextItem(Item &amp;aItem) const =0</div><div><p class="signature-description">
+Returns the current value of the context item.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aItem</td><td>
+an <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> representing the current value of the context item. </td></tr></table></div>
+<div><h4>Returns</h4>true if the variable has been retrieved successfully, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured. </td></tr></table></div>
+        </p></div></div><div id="ab90900dc02bf7620a3f11485b8b1bc60" class="sect1"><div><h3>getContextPosition</h3></div><div class="signature-box">bool<span> </span>getContextPosition(Item &amp;aItem) const =0</div><div><p class="signature-description">
+Returns the current value of the context item position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aItem</td><td>
+an <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> representing the current value of the context item position. </td></tr></table></div>
+<div><h4>Returns</h4>true if the variable has been retrieved successfully, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured. </td></tr></table></div>
+        </p></div></div><div id="a7ec40fc41e8a6d772ed32d63ceb33c37" class="sect1"><div><h3>getContextSize</h3></div><div class="signature-box">bool<span> </span>getContextSize(Item &amp;aItem) const =0</div><div><p class="signature-description">
+Returns the current value of the context item size.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aItem</td><td>
+an <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> representing the current value of the context item size. </td></tr></table></div>
+<div><h4>Returns</h4>true if the variable has been retrieved successfully, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured. </td></tr></table></div>
+        </p></div></div><div id="a05f801768847f0c9d46059bd814438ed" class="sect1"><div><h3>getCurrentDateTime</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>getCurrentDateTime() const =0</div><div><p class="signature-description">
+Retrieve the dateTime <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> used at the time the query is executed (see <a href="/pages/3.0/zorba/classzorba_1_1DynamicContext?anchor=a18706917b4936a76359713f83deeb1ed">setCurrentDateTime()</a>).         </p><p class="signature-description">
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> the dateTime <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> used at the time the query is executed. </div>
+        </p></div></div><div id="adeba489a47e347b43c67979f645fcdf3" class="sect1"><div><h3>getDefaultCollection</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>getDefaultCollection() const =0</div><div><p class="signature-description">
+Return the value of the default collection that is used when calling the fn:collection function without a parameter.         </p><p class="signature-description">
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> the default collection that is set in this dynamic context. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured. </td></tr></table></div>
+        </p></div></div><div id="ac16f86447ea4a21b6d8eb59d080d6483" class="sect1"><div><h3>getExternalFunctionParam</h3></div><div class="signature-box">bool<span> </span>getExternalFunctionParam(const String &amp;aName, void *&amp;aValue) const =0</div><div><p class="signature-description">
+Get the value of a pair that was registered using the addExternalFunctionParam method.         </p><p class="signature-description">
+This can be used in the evaluate method of external functions (see <a href="/pages/3.0/zorba/classzorba_1_1ContextualExternalFunction">ContextualExternalFunction</a>).<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aName</td><td>
+the name of the parameter to retrieve </td></tr><tr><td>aValue</td><td>
+the value matching the given name if true is returned. </td></tr></table></div>
+<div><h4>Returns</h4>true if an entry with the given name was found, false otherwise. </div>
+        </p></div></div><div id="ac92732c6029291dfe4c59492c85294a4" class="sect1"><div><h3>getExternalFunctionParameter</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1ExternalFunctionParameter">ExternalFunctionParameter</a> *<span> </span>getExternalFunctionParameter(const String &amp;aName) const =0</div><div><p class="signature-description">
+Get the value of a pair that was registered using the addExternalFunctionParam method.         </p><p class="signature-description">
+This can be used in the evaluate method of external functions (see <a href="/pages/3.0/zorba/classzorba_1_1ContextualExternalFunction">ContextualExternalFunction</a>).<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aName</td><td>
+the name of the parameter to retrieve </td></tr></table></div>
+<div><h4>Returns</h4>the ExternalFunctionParameter* that was added using addExternalFunctionParameter, or 0 if no entry with the given name was found. </div>
+        </p></div></div><div id="ab4da904ba389c8345b0fa41deec7a803" class="sect1"><div><h3>getImplicitTimezone</h3></div><div class="signature-box">int<span> </span>getImplicitTimezone() const =0</div><div><p class="signature-description">
+Retrieve the implicit timezone used in comparisons or arithmetic operations of date, time, or dateTime values.         </p><p class="signature-description">
+<div><h4>Returns</h4>the implicit timezone as the number of seconds east of the prime medidian. Note that 0 is returned if an error occured and an <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> is used. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured. </td></tr></table></div>
+        </p></div></div><div id="ae1604f9706db691b9ca37f13025df6f9" class="sect1"><div><h3>getLocale</h3></div><div class="signature-box">void<span> </span>getLocale(locale::iso639_1::type *aLang, locale::iso3166_1::type *aCountry) const =0</div><div><p class="signature-description">
+Gets the locale.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aLang</td><td>
+A pointer to a <tt>iso639_1::type</tt> to receive the language. If <tt>null</tt>, this is not set. </td></tr><tr><td>aCountry</td><td>
+A pointer to a <tt>iso3166_1::type</tt> to receive the country. If <tt>null</tt>, this is not set. </td></tr></table></div>
+        </p></div></div><div id="a0d8d0c9398aaea49f884d1e591f0db31" class="sect1"><div><h3>getVariable</h3></div><div class="signature-box">bool<span> </span>getVariable(const String &amp;aNamespace, const String &amp;aLocalname, Item &amp;aItem, Iterator_t &amp;aIterator) const =0</div><div><p class="signature-description">
+Returns the current value of an external variable.         </p><p class="signature-description">
+Exactly one of the two return values (aItem or aIterator) will be non-null; that is, have isNull() == false.The named external variable may be located in the main query or in any modules imported directly or indirectly by the query.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aNamespace</td><td>
+the namespace URI of the variable's expanded QName </td></tr><tr><td>aLocalname</td><td>
+the local name of the variable's expanded QName </td></tr><tr><td>aItem</td><td>
+an <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> representing the current (single-item) value of the external variable. </td></tr><tr><td>aIterator</td><td>
+an <a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> representing the current (possibly multi-item) value of the external variable. </td></tr></table></div>
+<div><h4>Returns</h4>true if the variable has been retrieved successfully, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured. </td></tr></table></div>
+        </p></div></div><div id="a331115d6083496de95a61e45b868baa8" class="sect1"><div><h3>isBoundContextItem</h3></div><div class="signature-box">bool<span> </span>isBoundContextItem() const =0</div><div><p class="signature-description">
+Returns true if a context item has been bound to the Dynamic Context.         </p><p class="signature-description">
+        </p></div></div><div id="a414b6d8ffcaf09aabc1b90519953d937" class="sect1"><div><h3>isBoundExternalVariable</h3></div><div class="signature-box">bool<span> </span>isBoundExternalVariable(const String &amp;aNamespace, const String &amp;aLocalname) const =0</div><div><p class="signature-description">
+Returns true if the variable is bound to a value.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aNamespace</td><td>
+the namespace of the qname of the variable to check </td></tr><tr><td>aLocalname</td><td>
+the localname of the qname of the variable to check </td></tr></table></div>
+        </p></div></div><div id="a7d7039a7b939e3eda034d11bbe59250e" class="sect1"><div><h3>setCalendar</h3></div><div class="signature-box">void<span> </span>setCalendar(time::calendar::type aCalendar)=0</div><div><p class="signature-description">
+Sets the calendar.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aCalendar</td><td>
+The calendar to use. </td></tr></table></div>
+        </p></div></div><div id="ad7613dd6f1cb97e94dcc403e265b57df" class="sect1"><div><h3>setContextItem</h3></div><div class="signature-box">bool<span> </span>setContextItem(const Item &amp;aItem)=0</div><div><p class="signature-description">
+Defines the context item.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aItem</td><td>
+the <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> that is used as value for the context item. </td></tr></table></div>
+<div><h4>Returns</h4>true if the context item was set, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured (e.g. the given <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> is not valid). </td></tr></table></div>
+        </p></div></div><div id="a91717c215e40cf0020467e30fdb870a0" class="sect1"><div><h3>setContextPosition</h3></div><div class="signature-box">bool<span> </span>setContextPosition(const Item &amp;aItem)=0</div><div><p class="signature-description">
+Defines the context item position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aItem</td><td>
+the <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> that is used as value for the context item position. </td></tr></table></div>
+<div><h4>Returns</h4>true if the context item position was set, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured (e.g. the given <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> is not valid). </td></tr></table></div>
+        </p></div></div><div id="ab0f266dfd982f4a297046c20880a87a4" class="sect1"><div><h3>setContextSize</h3></div><div class="signature-box">bool<span> </span>setContextSize(const Item &amp;aItem)=0</div><div><p class="signature-description">
+Defines the context item size.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aItem</td><td>
+the <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> that is used as value for the context item size. </td></tr></table></div>
+<div><h4>Returns</h4>true if the context item size was set, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured (e.g. the given <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> is not valid). </td></tr></table></div>
+        </p></div></div><div id="a18706917b4936a76359713f83deeb1ed" class="sect1"><div><h3>setCurrentDateTime</h3></div><div class="signature-box">bool<span> </span>setCurrentDateTime(const Item &amp;aDateTimeItem)=0</div><div><p class="signature-description">
+Defines the value of the current date time that can be accessed by the fn:current-dateTime() function at the time the query is executed.         </p><p class="signature-description">
+If the current date time has not been set explicitly the value of the date and time is used at the time the query is created or cloned, respectively.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aDateTimeItem</td><td>
+the dateTime <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a>. </td></tr></table></div>
+<div><h4>Returns</h4>true if the variable has been set successfully, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured (e.g. the given <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> is invalid or not a <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> of type dateTime) </td></tr></table></div>
+        </p></div></div><div id="a109e269c97fe0ab18e04871cecc065ca" class="sect1"><div><h3>setDefaultCollection</h3></div><div class="signature-box">bool<span> </span>setDefaultCollection(const Item &amp;aCollectionUri)=0</div><div><p class="signature-description">
+Defines the value of the default collection that is used when calling the fn:collection function without a parameter.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aCollectionUri</td><td>
+the URI of the collection used by the fn:collection function. </td></tr></table></div>
+<div><h4>Returns</h4>true if the default collection has been set successfully, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured. </td></tr></table></div>
+        </p></div></div><div id="a75f34355ef45a68d1f6186bb884fc5a2" class="sect1"><div><h3>setImplicitTimezone</h3></div><div class="signature-box">bool<span> </span>setImplicitTimezone(int aTimezone)=0</div><div><p class="signature-description">
+Defines the variable of the implicit timezone to be used when a date, time, or dateTime value that does not have a timezone is used in a comparison or arithmetic operation.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aTimezone</td><td>
+the number of seconds east of the prime meridian. </td></tr></table></div>
+<div><h4>Returns</h4>true if the implicit timezone has been set successfully, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured. </td></tr></table></div>
+        </p></div></div><div id="abad7fc31d41880cd22e2a6428eb9eb76" class="sect1"><div><h3>setLocale</h3></div><div class="signature-box">void<span> </span>setLocale(locale::iso639_1::type aLang, locale::iso3166_1::type aCountry)=0</div><div><p class="signature-description">
+Sets the locale.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aLang</td><td>
+The language to set. </td></tr><tr><td>aCountry</td><td>
+The country to set. </td></tr></table></div>
+        </p></div></div><div id="adf567bf8b8396bc6cd0cd805bb511a91" class="sect1"><div><h3>setVariable</h3></div><div class="signature-box">bool<span> </span>setVariable(const String &amp;aQName, const Item &amp;aItem)=0</div><div><p class="signature-description">
+Defines the external variable identified by aQName and assigns it the value of aItem.         </p><p class="signature-description">
+aQName may be in one of two forms: A lexical QName (eg. "ns:foo"), or a James Clark-style universal name (eg. "{nsuri}:foo"). If it is a universal name, then this method will find the named external variable in the main query or in any modules imported directly or indirectly by the query. If it is a lexical QName, then it is only possible to resolve the prefix in the the context of the main query, hence only external variables in the main query or those in directly-imported modules may be bound.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aQName</td><td>
+the QName that identifies the external variable. </td></tr><tr><td>aItem</td><td>
+the <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> that is used as value for the variable. </td></tr></table></div>
+<div><h4>Returns</h4>true if the variable has been set, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured (e.g. the given <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> is not valid). </td></tr></table></div>
+        </p></div></div><div id="aae0407571969889e2590ecfedc3ea8fb" class="sect1"><div><h3>setVariable</h3></div><div class="signature-box">bool<span> </span>setVariable(const String &amp;inNamespace, const String &amp;inLocalname, const Item &amp;inValue)=0</div><div><p class="signature-description">
+Defines the external variable identified by an expanded QName and assigns it the value of aItem.         </p><p class="signature-description">
+The named external variable may be located in the main query or in any modules imported directly or indirectly by the query.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aNamespace</td><td>
+the namespace URI of the variable's expanded QName </td></tr><tr><td>aLocalname</td><td>
+the local name of the variable's expanded QName </td></tr><tr><td>aItem</td><td>
+the <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> that is used as value for the variable. </td></tr></table></div>
+<div><h4>Returns</h4>true if the variable has been set successfully, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured (e.g. the given <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> is not valid). </td></tr></table></div>
+        </p></div></div><div id="aca600091163f6e9590d80ad04c78d095" class="sect1"><div><h3>setVariable</h3></div><div class="signature-box">bool<span> </span>setVariable(const String &amp;aQName, const Iterator_t &amp;aIterator)=0</div><div><p class="signature-description">
+Defines the external variable identified by aQName and assigns it the sequence that is returned by evaluating aIterator.         </p><p class="signature-description">
+aQName may be in one of two forms: A lexical QName (eg. "ns:foo"), or a James Clark-style universal name (eg. "{nsuri}:foo"). If it is a universal name, then this method will find the named external variable in the main query or in any modules imported directly or indirectly by the query. If it is a lexical QName, then it is only possible to resolve the prefix in the the context of the main query, hence only external variables in the main query or those in directly-imported modules may be bound.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aQName</td><td>
+the QName that identifies the external variable. </td></tr><tr><td>aIterator</td><td>
+the <a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> producing the sequence that is assigned to the variable. </td></tr></table></div>
+<div><h4>Returns</h4>true if the variable has been set successfully, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured (e.g. the given <a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> is not valid). </td></tr></table></div>
+        </p></div></div><div id="a0b8187e2037fc037482d685573536c07" class="sect1"><div><h3>setVariable</h3></div><div class="signature-box">bool<span> </span>setVariable(const String &amp;aNamespace, const String &amp;aLocalname, const Iterator_t &amp;aIterator)=0</div><div><p class="signature-description">
+Defines the external variable identified by an expanded QName and assigns it the sequence that is returned by evaluating aIterator.         </p><p class="signature-description">
+The named external variable may be located in the main query or in any modules imported directly or indirectly by the query.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aNamespace</td><td>
+the namespace URI of the variable's expanded QName </td></tr><tr><td>aLocalname</td><td>
+the local name of the variable's expanded QName </td></tr><tr><td>aIterator</td><td>
+the <a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> producing the sequence that is assigned to the variable. </td></tr></table></div>
+<div><h4>Returns</h4>true if the variable has been set successfully, false otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occured (e.g. the given <a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> is not valid). </td></tr></table></div>
+        </p></div></div></div></div><div class="section"><h2>Protected Functions</h2><div class="detailed"><div id="a5ca3479a17daeb5690a6a82d87e0dd3d" class="sect1"><div><h3>~DynamicContext</h3></div><div class="signature-box"><span> </span>~DynamicContext()</div><div><p class="signature-description">
+Destructor.         </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

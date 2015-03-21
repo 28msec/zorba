@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1base64_1_1stream" kind="class" prot="public">
+    <compoundname>zorba::base64::stream</compoundname>
+    <includes refid="base64__stream_8h" local="no">zorba/util/base64_stream.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class StreamType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1base64_1_1stream_1a6e7a57d2657b9b1105271f507586a209" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">streambuf</ref></type>
+        <definition>streambuf zorba::base64::stream&lt; StreamType &gt;::b64buf_</definition>
+        <argsstring></argsstring>
+        <name>b64buf_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="376" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="376" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1base64_1_1stream_1a45d2daf5f1b7e975efcf0bcb8fa4af78" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::base64::stream&lt; StreamType &gt;::stream</definition>
+        <argsstring>()</argsstring>
+        <name>stream</name>
+        <briefdescription>
+<para>Constructs a base64::stream. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="324" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="315" bodyend="326"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1stream_1ac90d8b7d364cf85e4c945be6cbff7e52" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename StreamArgType</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>zorba::base64::stream&lt; StreamType &gt;::stream</definition>
+        <argsstring>(StreamArgType stream_arg)</argsstring>
+        <name>stream</name>
+        <param>
+          <type>StreamArgType</type>
+          <declname>stream_arg</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StreamArgType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the first argument of <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream_arg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The argument to pass as the first argument to <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="347" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="337" bodyend="349"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1base64_1_1stream_1a904c72cf6d51918f1aae0a06671f3a5c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename StreamArgType</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>zorba::base64::stream&lt; StreamType &gt;::stream</definition>
+        <argsstring>(StreamArgType stream_arg, std::ios_base::openmode mode)</argsstring>
+        <name>stream</name>
+        <param>
+          <type>StreamArgType</type>
+          <declname>stream_arg</declname>
+        </param>
+        <param>
+          <type>std::ios_base::openmode</type>
+          <declname>mode</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a base64::stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StreamArgType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the first argument of <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream_arg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The argument to pass as the first argument to <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The open-mode to pass to <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="371" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="361" bodyend="373"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1base64_1_1stream_1ac5d031dd81ef03c4415b3cb65da1d1c0" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::base64::stream&lt; StreamType &gt;::init</definition>
+        <argsstring>()</argsstring>
+        <name>init</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="378" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="378" bodyend="380"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A base64::stream is used to wrap a C++ standard I/O stream with a <ref refid="classzorba_1_1base64_1_1streambuf" kindref="compound">base64::streambuf</ref> so that encoding/decoding and the management of the streambuf happens automatically. </para>    </briefdescription>
+    <detaileddescription>
+<para>A base64::stream is useful for streams created by you.</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StreamType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The I/O stream class type to wrap. It must be a concrete stream class. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" line="310" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/base64_stream.h" bodystart="310" bodyend="381"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1base64_1_1stream_1a6e7a57d2657b9b1105271f507586a209" prot="private" virt="non-virtual"><scope>zorba::base64::stream</scope><name>b64buf_</name></member>
+      <member refid="classzorba_1_1base64_1_1stream_1ac5d031dd81ef03c4415b3cb65da1d1c0" prot="private" virt="non-virtual"><scope>zorba::base64::stream</scope><name>init</name></member>
+      <member refid="classzorba_1_1base64_1_1stream_1a45d2daf5f1b7e975efcf0bcb8fa4af78" prot="public" virt="non-virtual"><scope>zorba::base64::stream</scope><name>stream</name></member>
+      <member refid="classzorba_1_1base64_1_1stream_1ac90d8b7d364cf85e4c945be6cbff7e52" prot="public" virt="non-virtual"><scope>zorba::base64::stream</scope><name>stream</name></member>
+      <member refid="classzorba_1_1base64_1_1stream_1a904c72cf6d51918f1aae0a06671f3a5c" prot="public" virt="non-virtual"><scope>zorba::base64::stream</scope><name>stream</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

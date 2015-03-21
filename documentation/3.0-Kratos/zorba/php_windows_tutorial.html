@@ -1,0 +1,70 @@
+<div class="doxygen">
+  <div><h1 class="title">Zorba with PHP 5 - Windows Installation</h1>
+These steps were checked on Windows 7.It should work fine with any PHP 5.X version and any other W32 platform.<div id="apache_httpd_install" class="sect1"><h2>Install Apache HTTP Server</h2>
+Download and install Apache Server from <a href="http://httpd.apache.org/download.cgi" target="_blank">http://httpd.apache.org/download.cgi</a>. You can also get Apache compiled and optimized with Visual Studio VC9 and other modules (like PHP5 module) from <a href="http://apachelounge.com/" target="_blank">Apache Lounge</a>.</div>
+<div id="php5_install" class="sect1"><h2>Install PHP5</h2>
+Download and install PHP5 from <a href="http://windows.php.net/download/" target="_blank">http://windows.php.net/download/</a>. Remember to download and install according your VC version.PHP will automatically install itself in to your apache server. If you got Apache from Apache Lounge you may need their PHP module version.You can verify your install by adding a file in your htdocs directory with the following code:<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;strong&gt;info.php&lt;/strong&gt;</span>
+<span class="normal">&lt;?php</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>phpinfo();</span>
+<span class="normal">?&gt;</span>
+</pre></div>
+<div id="zorba_install" class="sect1"><h2>Install Zorba</h2>
+You can install the latest version of Zorba by <a href="" target="_blank">downloading the most recent binaries</a>, additionaly you can also compile Zorba from source by following <a href="/pages/3.0/zorba/build">Zorba Build Instructions</a>.</div>
+<div id="compile_zorba_php" class="sect1"><h2>Compiling the Zorba PHP Extension</h2>
+If you are compiling Zorba, you will need also to compile the PHP Wrapper, to do this you besides the <a href="/pages/3.0/zorba/build">Zorba Build Instructions</a> you need to add these three variables to your CMAKE command line:<pre class="ace-static" ace-mode="xquery"><span class="normal">-D<span> </span>PHP5_BINARY_DIR=[PHP<span> </span>INSTALL]</span>
+<span class="normal">[PHP<span> </span>INSTALL]<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a><span> </span>the<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22af89a5bc95208c01b9f59b3193d67a3f2">directory</a><span> </span>where<span> </span>php.exe<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a><span> </span>located,<span> </span>i.e.<span> </span></span><span class="stringliteral">"C:\php"</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal">-D<span> </span>PHP5_INCLUDE_DIR=[PHP<span> </span>INCLUDE<span> </span>DIR]</span>
+<span class="normal">[PHP<span> </span>INCLUDE<span> </span>DIR]<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a><span> </span>the<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22af89a5bc95208c01b9f59b3193d67a3f2">directory</a><span> </span>where<span> </span>the<span> </span>php<span> </span>source<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a><span> </span>located,<span> </span>i.e.<span> </span></span><span class="stringliteral">"C:\php-5.3.5"</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal">-D<span> </span>PHP5_LIBRARY=[PHP<span> </span>LIBRARY]</span>
+<span class="normal">[PHP<span> </span>LIBRARY]<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a><span> </span>the<span> </span>path<span> </span>where<span> </span>the<span> </span>php5ts.lib<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a><span> </span>located,<span> </span></span><span class="keyword">this</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0">file</a><span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a><span> </span>usually<span> </span>located<span> </span>in<span> </span>dev<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1fs?anchor=a33bc6a07dd3ac39c5107606fc21bea22af89a5bc95208c01b9f59b3193d67a3f2">directory</a><span> </span>from<span> </span>the<span> </span>binary<span> </span>php<span> </span>installation,<span> </span>i.e.<span> </span></span><span class="stringliteral">"C:/php/dev/php5ts.lib"</span>
+</pre>After adding those lines CMAKE will add automatically the PHP Wrapper project and you will be able to get zorba_api.dll, which is the extension you can use in your php binary installation.</div>
+<div id="verify_zorba" class="sect1"><h2>Verify Zorba</h2>
+Check Zorba is working by command line:<pre class="ace-static" ace-mode="xquery"><span class="normal">C:\zorba.exe<span> </span>-q<span> </span></span><span class="stringliteral">'2+1'</span><span class="normal"/>
+<span class="normal">&lt;?xml<span> </span>version=</span><span class="stringliteral">"1.0"</span><span class="normal"><span> </span>encoding=</span><span class="stringliteral">"UTF-8"</span><span class="normal">?&gt;</span>
+<span class="normal">3</span>
+</pre></div>
+<div id="php_enable_zorba_extension" class="sect1"><h2>Enable Zorba extension in PHP</h2>
+Copy Zorba extension zorba_api.dll file into your php extensions directory, this extension is located on: Zorba compiled from sources: [ZORBA BUILD DIRECTORY]\[DEBUG/RELEASE IF VISUAL STUDIO] Zorba installed binaries: [ZORBA INSTALL DIRECTORY]\this file must be copied to your extensions directory that may be: <pre class="ace-static" ace-mode="xquery"><span class="normal">C:\php\ext\</span>
+</pre>Modify your php.iniAdd the following line to php.ini<tt> extension=zorba_api.dll </tt>In your Zorba directory, locate the files zorba_api_wrapper.php and XQueryProcessor.php, copy them it to your include directory from where php can find it, this location is set on your php.ini file with the name &lt;cope&gt;include_path, i.e.<tt> ; Windows: "\path1;\path2" include_path = ".;C:\php\include" Restart Apache Http server </tt>Refresh your browser with previous info file: <a href="http://localhost/info.php" target="_blank">http://localhost/info.php</a>Check if zorba_api is in the list of php known extensions.</div>
+<div id="verify_it_works" class="sect1"><h2>Verify it works</h2>
+Add the following content in to a file on your htdocs directory:<b>test.php</b> <pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;html&gt;</span>
+<span class="normal">&lt;title&gt;Zorba<span> </span>test&lt;/title&gt;</span>
+<span class="normal">&lt;body&gt;</span>
+<span class="normal">&lt;?php</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>include<span> </span>Zorba<span> </span>API</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>require_once<span> </span></span><span class="stringliteral">'zorba_api_wrapper.php'</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>create<span> </span>Zorba<span> </span>instance<span> </span>in<span> </span>memory</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>$ms<span> </span>=<span> </span>InMemoryStore::getInstance();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>$zorba<span> </span>=<span> </span>Zorba::getInstance($ms);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">try</span><span class="normal"><span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>create<span> </span>and<span> </span>compile<span> </span>query<span> </span>string&lt;</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>$queryStr<span> </span>=<span> </span></span><span class="stringliteral">'1+2'</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>$query<span> </span>=<span> </span>$zorba-&gt;compileQuery($queryStr);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>execute<span> </span>query<span> </span>and<span> </span>display<span> </span>result</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>$result<span> </span>=<span> </span>$query-&gt;execute();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>echo<span> </span>$result;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>clean<span> </span>up</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>$query-&gt;destroy();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>$zorba-&gt;shutdown();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>InMemoryStore::shutdown($ms);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>}<span> </span></span><span class="keywordflow">catch</span><span class="normal"><span> </span>(Exception<span> </span>$e)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>die(</span><span class="stringliteral">'ERROR:'</span><span class="normal"><span> </span>.<span> </span>$e-&gt;getMessage());</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>}</span>
+<span class="normal">?&gt;</span>
+<span class="normal">&lt;/body&gt;</span>
+<span class="normal">&lt;/html&gt;</span>
+</pre>Point your browser to <a href="http://localhost/test.php" target="_blank">http://localhost/test.php</a> and see the result.</div>
+<div id="further_reading" class="sect1"><h2>Further reading</h2>
+For more details on how to use Zorba API in PHP go to <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-#N1018E" target="_blank">Building XQuery-powered applications with PHP and Zorba</a> article by Vikram Vaswani.</div>
+<div id="useful_links" class="sect1"><h2>Useful links</h2>
+<ul>
+<li>
+<a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-" target="_blank">Building XQuery-powered applications with PHP and Zorba</a>  </li>
+<li>
+<a href="/pages/3.0/zorba/build">Zorba Build Instructions</a>  </li>
+</ul>
+</div>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1internal_1_1hexbinary" kind="namespace">
+    <compoundname>zorba::internal::hexbinary</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1hexbinary_1a524ea4df4b25cbef5a2b65ef0461bef4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC std::streambuf *</type>
+        <definition>ZORBA_DLL_PUBLIC std::streambuf* zorba::internal::hexbinary::alloc_streambuf</definition>
+        <argsstring>(std::streambuf *orig)</argsstring>
+        <name>alloc_streambuf</name>
+        <param>
+          <type>std::streambuf *</type>
+          <declname>orig</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="115"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1_1hexbinary_1ade82f4024e7105a8870734474b4a0f15" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC int</type>
+        <definition>ZORBA_DLL_PUBLIC int zorba::internal::hexbinary::get_streambuf_index</definition>
+        <argsstring>()</argsstring>
+        <name>get_streambuf_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="118"/>
+        <referencedby refid="namespacezorba_1_1hexbinary_1a356d08540af9507069819ef7a9683a42" compoundref="hexbinary__stream_8h" startline="181" endline="183">zorba::hexbinary::is_attached</referencedby>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="112"/>
+  </compounddef>
+</doxygen>

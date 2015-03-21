@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba__static__assert_3_01true_01_4" kind="struct" prot="public">
+    <compoundname>zorba_static_assert&lt; true &gt;</compoundname>
+    <includes refid="cxx__util_8h" local="no">zorba/internal/cxx_util.h</includes>
+    <templateparamlist>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/cxx_util.h" line="74" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/cxx_util.h" bodystart="74" bodyend="74"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

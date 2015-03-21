@@ -1,0 +1,544 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Collection" kind="class" prot="public">
+    <compoundname>zorba::Collection</compoundname>
+    <basecompoundref refid="classzorba_1_1SmartObject" prot="public" virt="non-virtual">zorba::SmartObject</basecompoundref>
+    <includes refid="collection_8h" local="no">zorba/collection.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::addReference</definition>
+        <argsstring>() const </argsstring>
+        <name>addReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a4f798518e9e2973461b9fff262f764de" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref></type>
+        <definition>virtual ItemSequence_t zorba::Collection::contents</definition>
+        <argsstring>()=0</argsstring>
+        <name>contents</name>
+        <briefdescription>
+<para>This function returns the sequence of nodes of the collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The sequence contained in the given collection. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1aa599c1223963baab06f13284e2bfee7c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::deleteNodeFirst</definition>
+        <argsstring>()=0</argsstring>
+        <name>deleteNodeFirst</name>
+        <briefdescription>
+<para>This function deletes the first node from a collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0011</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the collection doesn&apos;t contain any node. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="129"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a6341e48596150d322e983efb9819dfd6" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::deleteNodeLast</definition>
+        <argsstring>()=0</argsstring>
+        <name>deleteNodeLast</name>
+        <briefdescription>
+<para>This function deletes the last node from a collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0011</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the collection doesn&apos;t contain any node. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="147"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a5e4581f04346d1bdc1b4c77763227115" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::deleteNodes</definition>
+        <argsstring>(const ItemSequence_t &amp;aNodes)=0</argsstring>
+        <name>deleteNodes</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref> &amp;</type>
+          <declname>aNodes</declname>
+        </param>
+        <briefdescription>
+<para>This function deletes zero of more nodes from a collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNodes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the nodes in the collection that should be deleted.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0011</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if any nodes in the given sequence is not a member of a collection or not all nodes of the sequence belong to the same collection. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="120"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1acc323c39f6edeba7983796e232fbec15" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::deleteNodesFirst</definition>
+        <argsstring>(unsigned long aNumNodes)=0</argsstring>
+        <name>deleteNodesFirst</name>
+        <param>
+          <type>unsigned long</type>
+          <declname>aNumNodes</declname>
+        </param>
+        <briefdescription>
+<para>This function deletes the n first nodes from a collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0011</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the collection doesn&apos;t contain any node. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="138"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1ad0adb256338ef59a50a8e6de3ffc2053" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::deleteNodesLast</definition>
+        <argsstring>(unsigned long aNumNodes)=0</argsstring>
+        <name>deleteNodesLast</name>
+        <param>
+          <type>unsigned long</type>
+          <declname>aNumNodes</declname>
+        </param>
+        <briefdescription>
+<para>This function deletes the n last nodes from a collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0011</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the collection doesn&apos;t contain any node. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="156"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SmartObject::free</definition>
+        <argsstring>()</argsstring>
+        <name>free</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1af11115575dbc055392710b0514669845" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::getAnnotations</definition>
+        <argsstring>(std::vector&lt; Annotation_t &gt; &amp;aAnnotations) const =0</argsstring>
+        <name>getAnnotations</name>
+        <param>
+          <type>std::vector&lt; <ref refid="namespacezorba_1a2ec75c29e084faf0a908f2b5545b9ed2" kindref="member">Annotation_t</ref> &gt; &amp;</type>
+          <declname>aAnnotations</declname>
+        </param>
+        <briefdescription>
+<para>Retrieves all annotations for the given collection. </para>        </briefdescription>
+        <detaileddescription>
+<para>If the collection is a statically declared collection, the annotations are the ones that haven been given in the declaration of the collection (or the defaults). If the collection is a dynamic collection, the annotations are the default ones for dynamic collections.</para><para><simplesect kind="return"><para>a list of all annotations for the given collection (if found) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="195"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a844d382e3987bcfb3c4879f5524dc57f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual const Item zorba::Collection::getName</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getName</name>
+        <briefdescription>
+<para>Get the name of the collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The name of the collection. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="48"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>long zorba::SmartObject::getRefCount</definition>
+        <argsstring>() const </argsstring>
+        <name>getRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a3800e0b444c8833cbdf63a1cdb8e0f04" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1SequenceType" kindref="compound">SequenceType</ref></type>
+        <definition>virtual SequenceType zorba::Collection::getType</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getType</name>
+        <briefdescription>
+<para>Retrieves the sequence type for this (static declared) collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>the sequence type for the said collection, or 0 if this collection is not statically declared.</para></simplesect>
+<simplesect kind="see"><para><ref refid="classzorba_1_1Collection_1a600ea73f19ef5fe25c7d5c86f9518ae2" kindref="member">isStatic()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="214"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a8b5259bbd9713957038f0263f1ed965e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>long long</type>
+        <definition>virtual long long zorba::Collection::indexOf</definition>
+        <argsstring>(const Item &amp;aNode)=0</argsstring>
+        <name>indexOf</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aNode</declname>
+        </param>
+        <briefdescription>
+<para>This function returns the index of the given node in the collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The node to retrieve the index from.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns the position of the given node in the collection.</para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0011</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if node is not contained in any collection. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="169"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a6191462f5a90c8bf80fbe82cf63a6d6f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::insertNodesAfter</definition>
+        <argsstring>(const Item &amp;aTarget, const ItemSequence_t &amp;aNodes)=0</argsstring>
+        <name>insertNodesAfter</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aTarget</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref> &amp;</type>
+          <declname>aNodes</declname>
+        </param>
+        <briefdescription>
+<para>This function inserts copies of the given nodes into a collection at the position directly following the given target node. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aTarget</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the node in the collection after which the sequence should be inserted. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aNodes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The sequences of nodes whose copies should be added to the collection.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0011</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if any nodes in the sequence is not a member of a collection or not all nodes of the sequence belong to the same collection. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="108"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1ab449412b2c8db8e9699540e5bfa0f8df" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::insertNodesBefore</definition>
+        <argsstring>(const Item &amp;aTarget, const ItemSequence_t &amp;aNodes)=0</argsstring>
+        <name>insertNodesBefore</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aTarget</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref> &amp;</type>
+          <declname>aNodes</declname>
+        </param>
+        <briefdescription>
+<para>This function inserts copies of the given nodes into a collection at the position directly preceding the given target node. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aTarget</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the node in the collection before which the sequence should be inserted. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aNodes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The sequences of nodes whose copies should be added to the collection.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>XDDY0011</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if any nodes in the sequence is not a member of a collection or not all nodes of the sequence belong to the same collection. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="89"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a3d362a173424366efa9f224d4e1657cf" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::insertNodesFirst</definition>
+        <argsstring>(const ItemSequence_t &amp;aNodes)=0</argsstring>
+        <name>insertNodesFirst</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref> &amp;</type>
+          <declname>aNodes</declname>
+        </param>
+        <briefdescription>
+<para>This function inserts copies of the given nodes at the beginning of the collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNodes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The sequences of nodes whose copies should be added to the collection. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="59"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a10661e21e905cb5c49a6f12586cc6480" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::insertNodesLast</definition>
+        <argsstring>(const ItemSequence_t &amp;aNodes)=0</argsstring>
+        <name>insertNodesLast</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref> &amp;</type>
+          <declname>aNodes</declname>
+        </param>
+        <briefdescription>
+<para>This function inserts copies of the given nodes at the end of the collection. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNodes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The sequences of nodes whose copies should be added to the collection. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="70"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a600ea73f19ef5fe25c7d5c86f9518ae2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Collection::isStatic</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isStatic</name>
+        <briefdescription>
+<para>The function checks if this collection has been statically declared. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>true if the collection is a static collection, false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="203"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a5ed341d2ea971005bc3d96dffeacc1fd" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Collection::registerDiagnosticHandler</definition>
+        <argsstring>(DiagnosticHandler *aDiagnosticHandler)=0</argsstring>
+        <name>registerDiagnosticHandler</name>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+        </param>
+        <briefdescription>
+<para>Register a <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors occuring during the management or manipulation of this collection are reported. </para>        </briefdescription>
+        <detaileddescription>
+<para>If no <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> has been set using (1) this function, (2) the corresponding function of the <ref refid="classzorba_1_1XmlDataManager" kindref="compound">XmlDataManager</ref>, or (3) the corresponding function of the <ref refid="classzorba_1_1CollectionManager" kindref="compound">CollectionManager</ref> then subclasses of the <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> class are thrown to report errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors are reported. The caller retains ownership over the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> passed as parameter. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="232"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::removeReference</definition>
+        <argsstring>()</argsstring>
+        <name>removeReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Collection_1a4605973da34970b57c0945bae65e7def" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::Collection::~Collection</definition>
+        <argsstring>()</argsstring>
+        <name>~Collection</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="183" bodyfile="/home/wcandillon/deadlinks/include/zorba/collection.h" bodystart="183" bodyend="183"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" static="no" mutable="yes">
+        <type>unsigned int</type>
+        <definition>unsigned int zorba::SmartObject::theRefCount</definition>
+        <argsstring></argsstring>
+        <name>theRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A <ref refid="classzorba_1_1Collection" kindref="compound">Collection</ref> is a persistent sequence of node items. </para>    </briefdescription>
+    <detaileddescription>
+<para>Instances of this class can be used to modify or retrieve the contents of a collection.</para><para>The variable aNodes passed to any of the insert functions is evaluated as though it were an enclosed expression in an element constructor. The result of this step is a sequence of nodes to be inserted into the collection.</para><para>Note: This class is reference counted. When writing multi-threaded clients, it is the responibility of the client code to synchronize assignments to the <ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> holding this object. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="544">
+        <label>zorba::Collection</label>
+        <link refid="classzorba_1_1Collection"/>
+        <childnode refid="545" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="545">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="546">
+        <label>zorba::Collection</label>
+        <link refid="classzorba_1_1Collection"/>
+        <childnode refid="547" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="547">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/collection.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/collection.h" bodystart="39" bodyend="234"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" virt="non-virtual"><scope>zorba::Collection</scope><name>addReference</name></member>
+      <member refid="classzorba_1_1Collection_1a4f798518e9e2973461b9fff262f764de" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>contents</name></member>
+      <member refid="classzorba_1_1Collection_1aa599c1223963baab06f13284e2bfee7c" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>deleteNodeFirst</name></member>
+      <member refid="classzorba_1_1Collection_1a6341e48596150d322e983efb9819dfd6" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>deleteNodeLast</name></member>
+      <member refid="classzorba_1_1Collection_1a5e4581f04346d1bdc1b4c77763227115" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>deleteNodes</name></member>
+      <member refid="classzorba_1_1Collection_1acc323c39f6edeba7983796e232fbec15" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>deleteNodesFirst</name></member>
+      <member refid="classzorba_1_1Collection_1ad0adb256338ef59a50a8e6de3ffc2053" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>deleteNodesLast</name></member>
+      <member refid="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" virt="virtual"><scope>zorba::Collection</scope><name>free</name></member>
+      <member refid="classzorba_1_1Collection_1af11115575dbc055392710b0514669845" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>getAnnotations</name></member>
+      <member refid="classzorba_1_1Collection_1a844d382e3987bcfb3c4879f5524dc57f" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>getName</name></member>
+      <member refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" virt="non-virtual"><scope>zorba::Collection</scope><name>getRefCount</name></member>
+      <member refid="classzorba_1_1Collection_1a3800e0b444c8833cbdf63a1cdb8e0f04" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>getType</name></member>
+      <member refid="classzorba_1_1Collection_1a8b5259bbd9713957038f0263f1ed965e" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>indexOf</name></member>
+      <member refid="classzorba_1_1Collection_1a6191462f5a90c8bf80fbe82cf63a6d6f" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>insertNodesAfter</name></member>
+      <member refid="classzorba_1_1Collection_1ab449412b2c8db8e9699540e5bfa0f8df" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>insertNodesBefore</name></member>
+      <member refid="classzorba_1_1Collection_1a3d362a173424366efa9f224d4e1657cf" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>insertNodesFirst</name></member>
+      <member refid="classzorba_1_1Collection_1a10661e21e905cb5c49a6f12586cc6480" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>insertNodesLast</name></member>
+      <member refid="classzorba_1_1Collection_1a600ea73f19ef5fe25c7d5c86f9518ae2" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>isStatic</name></member>
+      <member refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" virt="non-virtual"><scope>zorba::Collection</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1Collection_1a5ed341d2ea971005bc3d96dffeacc1fd" prot="public" virt="pure-virtual"><scope>zorba::Collection</scope><name>registerDiagnosticHandler</name></member>
+      <member refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" virt="non-virtual"><scope>zorba::Collection</scope><name>removeReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" virt="non-virtual"><scope>zorba::Collection</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" virt="non-virtual"><scope>zorba::Collection</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" virt="non-virtual"><scope>zorba::Collection</scope><name>theRefCount</name></member>
+      <member refid="classzorba_1_1Collection_1a4605973da34970b57c0945bae65e7def" prot="public" virt="virtual"><scope>zorba::Collection</scope><name>~Collection</name></member>
+      <member refid="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" virt="virtual"><scope>zorba::Collection</scope><name>~SmartObject</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

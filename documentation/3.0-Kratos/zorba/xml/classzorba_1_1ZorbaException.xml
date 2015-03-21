@@ -1,0 +1,676 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1ZorbaException" kind="class" prot="public">
+    <compoundname>zorba::ZorbaException</compoundname>
+    <derivedcompoundref refid="classzorba_1_1XQueryException" prot="public" virt="non-virtual">zorba::XQueryException</derivedcompoundref>
+    <includes refid="zorba__exception_8h" local="no">zorba/zorba_exception.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">internal::diagnostic::location::line_type</ref></type>
+        <definition>typedef internal::diagnostic::location::line_type zorba::ZorbaException::line_type</definition>
+        <argsstring></argsstring>
+        <name>line_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="44" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="enum" id="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" prot="public" static="no">
+        <name>print_format</name>
+        <enumvalue id="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eaa06aae456821a23f9edac3506ce303d9" prot="public">
+          <name>format_text</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+<para>plain text </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eae8425bd8d157137536b9c28f2932361e" prot="public">
+          <name>format_xml</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+<para>XML without unnecessary whitespace. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eae16f287a3ad3a6149045673f2fbdefe4" prot="public">
+          <name>format_xml_indented</name>
+          <initializer> 3</initializer>
+          <briefdescription>
+<para>XML with newlines and indentation. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>The format to print exceptions as to an ostream. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="49" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="49" bodyend="53"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1ZorbaException_1a110ada779b2054146ad208871105bdab" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const *</type>
+        <definition>Diagnostic const* zorba::ZorbaException::diagnostic_</definition>
+        <argsstring></argsstring>
+        <name>diagnostic_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="172" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="172" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1ZorbaException_1a0aded340aefd755acff922fdc476e83b" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string zorba::ZorbaException::message_</definition>
+        <argsstring></argsstring>
+        <name>message_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="175" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="175" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1ZorbaException_1a386fae840be0990139bc4465a055224b" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string zorba::ZorbaException::raise_file_</definition>
+        <argsstring></argsstring>
+        <name>raise_file_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="173" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="173" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1ZorbaException_1a2c32356c1bf106dfacaaa8f9441465e1" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::ZorbaException::raise_line_</definition>
+        <argsstring></argsstring>
+        <name>raise_line_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="174" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="174" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1aa65d6b38bb602256104499c3807185b1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+        <definition>Diagnostic const&amp; zorba::ZorbaException::diagnostic</definition>
+        <argsstring>() const </argsstring>
+        <name>diagnostic</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the diagnostic carried by this exception. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said diagnostic. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="80" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="80" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1af7022c8b865b4dec8d862c80977b6472" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> &amp;</type>
+        <definition>ZorbaException&amp; zorba::ZorbaException::operator=</definition>
+        <argsstring>(ZorbaException const &amp;from)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Assigns this ZorbaException from another. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ZorbaException to assign from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>*this</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="73"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1ac21520939be81ac0e529fc39ab83ab00" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::ZorbaException::polymorphic_throw</definition>
+        <argsstring>() const </argsstring>
+        <name>polymorphic_throw</name>
+        <reimplementedby refid="classzorba_1_1UserException_1a4b44e05962489003a608d929ed416e00">polymorphic_throw</reimplementedby>
+        <reimplementedby refid="classzorba_1_1XQueryException_1aed772c15c0a6f13ac5b40316485a22b5">polymorphic_throw</reimplementedby>
+        <briefdescription>
+<para>Throws itself polymorphically; see <ulink url="http://www.parashift.com/c++-faq-lite/exceptions.html#faq-17.16">http://www.parashift.com/c++-faq-lite/exceptions.html#faq-17.16</ulink>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1a6b5e2e711fe5a54ed08d51d6dbbad8ef" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::ZorbaException::raise_file</definition>
+        <argsstring>() const </argsstring>
+        <name>raise_file</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the C++ source-code file name whence this exception was raised. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said file name. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="114" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="114" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1ac8566af4cbcece74394cfd528a257781" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::ZorbaException::raise_line</definition>
+        <argsstring>() const </argsstring>
+        <name>raise_line</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the C++ source-code line number whence this exception was raised. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said line number. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="123" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="123" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1ab17a11fa7a552fd4a2c9ac1033183b01" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::ZorbaException::set_diagnostic</definition>
+        <argsstring>(Diagnostic const &amp;diagnostic)</argsstring>
+        <name>set_diagnostic</name>
+        <param>
+          <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+          <declname>diagnostic</declname>
+        </param>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Sets the diagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>diagnostic</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The diagnostic. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="105" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="105" bodyend="107"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1a30aa6df89d2188198da3b5cf4a2e95b0" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::ZorbaException::what</definition>
+        <argsstring>() const </argsstring>
+        <name>what</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="138"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1a28f102be92c15d29ed78845a025ab887" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::ZorbaException::ZorbaException</definition>
+        <argsstring>(ZorbaException const &amp;from)</argsstring>
+        <name>ZorbaException</name>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Copy-constructs a ZorbaException. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ZorbaException to copy from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="60"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1af90f04a5f9294dec7d752812fc4a84dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::ZorbaException::~ZorbaException</definition>
+        <argsstring>()</argsstring>
+        <name>~ZorbaException</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Destroys this ZorbaException. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="65"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1ae5e8c070b2b96a9a5c2926956f49a9a9" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" kindref="member">print_format</ref></type>
+        <definition>static print_format zorba::ZorbaException::get_print_format</definition>
+        <argsstring>(std::ostream &amp;o)</argsstring>
+        <name>get_print_format</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Gets the current print_format associated with the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to get the print_format of. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns said print_format. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="90" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="90" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1ab13a584d2d9398fc0285ee44d8c26e27" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void zorba::ZorbaException::set_print_format</definition>
+        <argsstring>(std::ostream &amp;o, print_format f)</argsstring>
+        <name>set_print_format</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" kindref="member">print_format</ref></type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+<para>Sets the print_format of the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to set the print_format of. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>f</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The print_format value. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="133" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="133" bodyend="135"/>
+        <referencedby refid="namespacezorba_1a113f31a4428f49866ff67b707bad1b1f" compoundref="zorba__exception_8h" startline="220" endline="224">zorba::operator&lt;&lt;</referencedby>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1a158a2132577b14df71f052d890b4f611" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref>&lt; <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> &gt;</type>
+        <definition>virtual std::unique_ptr&lt;ZorbaException&gt; zorba::ZorbaException::clone</definition>
+        <argsstring>() const </argsstring>
+        <name>clone</name>
+        <reimplementedby refid="classzorba_1_1UserException_1a971d995caaef374a61b11dda5e1d421f">clone</reimplementedby>
+        <reimplementedby refid="classzorba_1_1XQueryException_1a5c9bc5830acb26fa0da4e5e5826b6a09">clone</reimplementedby>
+        <briefdescription>
+<para>Clones this exception object. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns a clone of this exception. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="159"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1adc4984f60a8efd83c117e7288c49a2cb" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; zorba::ZorbaException::print</definition>
+        <argsstring>(std::ostream &amp;) const </argsstring>
+        <name>print</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <briefdescription>
+<para>Prints the exception to the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to print to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>o</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="167"/>
+        <referencedby refid="namespacezorba_1a007d6f87e8af759b818adf8fe40e2c82" compoundref="zorba__exception_8h" startline="209" endline="211">zorba::operator&lt;&lt;</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1ac0df829ea847ecf21637525490cfb4fd" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::ostream &amp;</type>
+        <definition>virtual std::ostream&amp; zorba::ZorbaException::print_impl</definition>
+        <argsstring>(std::ostream &amp;o) const </argsstring>
+        <name>print_impl</name>
+        <reimplementedby refid="classzorba_1_1XQueryException_1ae528c5f932510d0a7daf96134150f905">print_impl</reimplementedby>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="169"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1a53f5ca62ecfdab6bfc9913523e6022c9" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::ZorbaException::ZorbaException</definition>
+        <argsstring>(Diagnostic const &amp;diagnostic, char const *raise_file, line_type raise_line, char const *message)</argsstring>
+        <name>ZorbaException</name>
+        <param>
+          <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+          <declname>diagnostic</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a ZorbaException. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>diagnostic</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The diagnostic. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>raise_file</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The C++ source-code file name whence the exception was raised. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>raise_line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The C++ source-code line number whence the exception was raised. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>message</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The diagnostic message. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="152"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1af738e68ba25c551a3bb68b7f51be48ea" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::ZorbaException::ZorbaException</definition>
+        <argsstring>(serialization::Archiver &amp;)</argsstring>
+        <name>ZorbaException</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="195"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1a9175e4498553db1f2a1430e560fc4a2b" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>static int zorba::ZorbaException::get_ios_format_index</definition>
+        <argsstring>()</argsstring>
+        <name>get_ios_format_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="177"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classzorba_1_1ZorbaException_1ae20a0a810b8027aafd337f6bfd465097" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend <ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref>&lt; <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> &gt;</type>
+        <definition>std::unique_ptr&lt;ZorbaException&gt; clone</definition>
+        <argsstring>(ZorbaException const &amp;)</argsstring>
+        <name>clone</name>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="179"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1ZorbaException_1ae1f1f8731b5659ba1080a9fe3068b410" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></type>
+        <definition>ZorbaException make_zorba_exception</definition>
+        <argsstring>(char const *, line_type, Diagnostic const &amp;, internal::diagnostic::parameters const &amp;)</argsstring>
+        <name>make_zorba_exception</name>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters" kindref="compound">internal::diagnostic::parameters</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="184"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1ZorbaException_1a065cb809141dec284a1ecc6cfecfc0d6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> *</type>
+        <definition>ZorbaException* new_zorba_exception</definition>
+        <argsstring>(char const *, line_type, Diagnostic const &amp;, internal::diagnostic::parameters const &amp;)</argsstring>
+        <name>new_zorba_exception</name>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters" kindref="compound">internal::diagnostic::parameters</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="189"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1ZorbaException_1ace38bca7ab22589909a4f42ca925e3da" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend std::ostream &amp;</type>
+        <definition>std::ostream&amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;, ZorbaException const &amp;)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <defname>o</defname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> const &amp;</type>
+          <defname>e</defname>
+        </param>
+        <briefdescription>
+<para>Emits the given <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> to the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to emit to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>e</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> to emit. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>o</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="191" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="209" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1ZorbaException_1addd8220965a72d41d9fa0ada3ecf562d" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend void</type>
+        <definition>void serialization::operator&amp;</definition>
+        <argsstring>(serialization::Archiver &amp;, ZorbaException *&amp;)</argsstring>
+        <name>serialization::operator&amp;</name>
+        <reimplementedby refid="classzorba_1_1UserException_1addd8220965a72d41d9fa0ada3ecf562d">serialization::operator&amp;</reimplementedby>
+        <reimplementedby refid="classzorba_1_1XQueryException_1addd8220965a72d41d9fa0ada3ecf562d">serialization::operator&amp;</reimplementedby>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> *&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="197"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A ZorbaException is the base class for all <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> exceptions. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1011">
+        <label>zorba::XQueryException</label>
+        <link refid="classzorba_1_1XQueryException"/>
+        <childnode refid="1010" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1010">
+        <label>zorba::ZorbaException</label>
+        <link refid="classzorba_1_1ZorbaException"/>
+      </node>
+      <node id="1012">
+        <label>zorba::UserException</label>
+        <link refid="classzorba_1_1UserException"/>
+        <childnode refid="1011" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="42" bodyend="198"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1ZorbaException_1a158a2132577b14df71f052d890b4f611" prot="protected" virt="virtual"><scope>zorba::ZorbaException</scope><name>clone</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ae20a0a810b8027aafd337f6bfd465097" prot="private" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>clone</name></member>
+      <member refid="classzorba_1_1ZorbaException_1aa65d6b38bb602256104499c3807185b1" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>diagnostic</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a110ada779b2054146ad208871105bdab" prot="private" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>diagnostic_</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eaa06aae456821a23f9edac3506ce303d9" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>format_text</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eae8425bd8d157137536b9c28f2932361e" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>format_xml</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eae16f287a3ad3a6149045673f2fbdefe4" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>format_xml_indented</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a9175e4498553db1f2a1430e560fc4a2b" prot="private" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>get_ios_format_index</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ae5e8c070b2b96a9a5c2926956f49a9a9" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>get_print_format</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>line_type</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ae1f1f8731b5659ba1080a9fe3068b410" prot="private" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>make_zorba_exception</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a0aded340aefd755acff922fdc476e83b" prot="private" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>message_</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a065cb809141dec284a1ecc6cfecfc0d6" prot="private" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>new_zorba_exception</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ace38bca7ab22589909a4f42ca925e3da" prot="private" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classzorba_1_1ZorbaException_1af7022c8b865b4dec8d862c80977b6472" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ac21520939be81ac0e529fc39ab83ab00" prot="public" virt="virtual"><scope>zorba::ZorbaException</scope><name>polymorphic_throw</name></member>
+      <member refid="classzorba_1_1ZorbaException_1adc4984f60a8efd83c117e7288c49a2cb" prot="protected" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>print</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>print_format</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ac0df829ea847ecf21637525490cfb4fd" prot="protected" virt="virtual"><scope>zorba::ZorbaException</scope><name>print_impl</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a6b5e2e711fe5a54ed08d51d6dbbad8ef" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>raise_file</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a386fae840be0990139bc4465a055224b" prot="private" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>raise_file_</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ac8566af4cbcece74394cfd528a257781" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>raise_line</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a2c32356c1bf106dfacaaa8f9441465e1" prot="private" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>raise_line_</name></member>
+      <member refid="classzorba_1_1ZorbaException_1addd8220965a72d41d9fa0ada3ecf562d" prot="protected" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>serialization::operator&amp;</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ab17a11fa7a552fd4a2c9ac1033183b01" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>set_diagnostic</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ab13a584d2d9398fc0285ee44d8c26e27" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>set_print_format</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a30aa6df89d2188198da3b5cf4a2e95b0" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>what</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a28f102be92c15d29ed78845a025ab887" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>ZorbaException</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a53f5ca62ecfdab6bfc9913523e6022c9" prot="protected" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>ZorbaException</name></member>
+      <member refid="classzorba_1_1ZorbaException_1af738e68ba25c551a3bb68b7f51be48ea" prot="protected" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>ZorbaException</name></member>
+      <member refid="classzorba_1_1ZorbaException_1af90f04a5f9294dec7d752812fc4a84dc" prot="public" virt="non-virtual"><scope>zorba::ZorbaException</scope><name>~ZorbaException</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

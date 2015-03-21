@@ -1,0 +1,2731 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1ItemFactory" kind="class" prot="public">
+    <compoundname>zorba::ItemFactory</compoundname>
+    <includes refid="item__factory_8h" local="no">zorba/item_factory.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a1e8ce6958d79e2c467ece6c255de4fdd" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::ItemFactory::assignElementTypedValue</definition>
+        <argsstring>(Item &amp;aElement, Item aTypedValue)=0</argsstring>
+        <name>assignElementTypedValue</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aElement</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aTypedValue</declname>
+        </param>
+        <briefdescription>
+<para>Assigns a simple typed value to an element node. </para>        </briefdescription>
+        <detaileddescription>
+<para>Creates a simple typed value for an element. Note that this may only be done once per element. This method should only be used during creation of a new tree. Using this method to modify elements after processing has begun has undefined results.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aElement</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The element for the typed value; may not be NULL. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aTypedValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The typed value for the element. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="794"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a263a9f78f19a1b1947186a6ac2841ea4" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::ItemFactory::assignElementTypedValue</definition>
+        <argsstring>(Item &amp;aElement, std::vector&lt; Item &gt; &amp;aTypedValue)=0</argsstring>
+        <name>assignElementTypedValue</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aElement</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &gt; &amp;</type>
+          <declname>aTypedValue</declname>
+        </param>
+        <briefdescription>
+<para>Assigns a simple typed value to an element node. </para>        </briefdescription>
+        <detaileddescription>
+<para>Creates a simple typed value for an element. Note that this may only be done once per element. This method should only be used during creation of a new tree. Using this method to modify elements after processing has begun has undefined results.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aElement</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The element for the typed value; may not be NULL. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aTypedValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The typed value for the element. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="809"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ad3f5ce07396e116a8267202fcc27008a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createAnyURI</definition>
+        <argsstring>(const String &amp;aURI)=0</argsstring>
+        <name>createAnyURI</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+<para>Creates an AnyURI <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#anyURI">http://www.w3.org/TR/xmlschema-2/#anyURI</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the AnyURI. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The AnyURI <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="94"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1afecff2c548c1df4f2dd473a9dc672c7a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createAttributeNode</definition>
+        <argsstring>(Item aParent, Item aNodeName, Item aTypeName, Item aTypedValue)=0</argsstring>
+        <name>createAttributeNode</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aParent</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aNodeName</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aTypeName</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aTypedValue</declname>
+        </param>
+        <briefdescription>
+<para>Create a new attribute node N and place it among the attributes of a given parent node. </para>        </briefdescription>
+        <detaileddescription>
+<para>If no parent is given, N becomes the root (and single node) of a new XML tree.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aParent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent P of the new node; may be NULL. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aNodeName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The fully qualified name of the new node. The nemaspace binding implied by this name will be added to the namespaces of P. If the name prefix is &quot;xml&quot; and the local name is &quot;base&quot;, then the base-uri property of P will be set or updated accordingly. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aTypeName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The fully qualified name of the new node&apos;s type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aTypedValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The typed value of the new node. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new node N created by this method </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="701"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a5ee14f6ca164abc610c5297890be593e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createAttributeNode</definition>
+        <argsstring>(Item aParent, Item aNodeName, Item aTypeName, std::vector&lt; Item &gt; aTypedValue)=0</argsstring>
+        <name>createAttributeNode</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aParent</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aNodeName</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aTypeName</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &gt;</type>
+          <declname>aTypedValue</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="707"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a915762a9a1ddb21dc5f9d07dd150fe52" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createBase64Binary</definition>
+        <argsstring>(const char *aData, size_t aLength, bool aIsBase64)=0</argsstring>
+        <name>createBase64Binary</name>
+        <param>
+          <type>const char *</type>
+          <declname>aData</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>aLength</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>aIsBase64</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Base64Binary <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#base64Binary">http://www.w3.org/TR/xmlschema-2/#base64Binary</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a pointer to the data. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLength</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the length of the data (in bytes). </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aIsBase64</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If <computeroutput>true</computeroutput>, <emphasis>aData</emphasis> is already Base-64 encoded; if <computeroutput>false</computeroutput>, <emphasis>aData</emphasis> is binary data that will first be Base-64 encoded. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Base64Binary <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="151"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1abce2daad7c2b91f6a7f40b756212af19" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createBase64Binary</definition>
+        <argsstring>(std::istream &amp;aStream)=0</argsstring>
+        <name>createBase64Binary</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aStream</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Base64Binary <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#base64Binary">http://www.w3.org/TR/xmlschema-2/#base64Binary</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aStream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A stream containing the Base64 encoded data. The data is copied from aStream immediately. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the Base64Binary <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="161"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a7820fe4ef6bd43d30c6caffc7daf1b72" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createBoolean</definition>
+        <argsstring>(bool aValue)=0</argsstring>
+        <name>createBoolean</name>
+        <param>
+          <type>bool</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Boolean <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#bool">http://www.w3.org/TR/xmlschema-2/#bool</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>bool representation of the Boolean. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Boolean <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="211"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a746e45a703c5538361723ab8b62e6928" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createByte</definition>
+        <argsstring>(char aByte)=0</argsstring>
+        <name>createByte</name>
+        <param>
+          <type>char</type>
+          <declname>aByte</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Byte <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#byte">http://www.w3.org/TR/xmlschema-2/#byte</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aByte</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>char representation of the Byte. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Byte <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="292"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a7f88edbf86f43e744fae61e3a7ca3a11" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createCommentNode</definition>
+        <argsstring>(Item aParent, String &amp;aContent)=0</argsstring>
+        <name>createCommentNode</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aParent</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aContent</declname>
+        </param>
+        <briefdescription>
+<para>Create a new comment node N and place it as the last child of a given parent node. </para>        </briefdescription>
+        <detaileddescription>
+<para>If no parent is given, N becomes the root (and single node) of a new XML tree.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aParent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent P of the new node; may be NULL. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aContent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The content of the new node. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new node N created by this method </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="720"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1aa58821e76d1da2cf194829e4456419aa" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDate</definition>
+        <argsstring>(const String &amp;aDate)=0</argsstring>
+        <name>createDate</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aDate</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Date <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#date">http://www.w3.org/TR/xmlschema-2/#date</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aDate</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the Date (e.g. 2002-10-10). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Date <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="301"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1affb928954c61eed74708468c45085a7c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDate</definition>
+        <argsstring>(short aYear, short aMonth, short aDay)=0</argsstring>
+        <name>createDate</name>
+        <param>
+          <type>short</type>
+          <declname>aYear</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMonth</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aDay</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Date <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#date">http://www.w3.org/TR/xmlschema-2/#date</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aYear</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the year. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMonth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the month. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDay</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the day. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Date <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="312"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a500c342b71dc730d2fcce3ad5ada875e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDateTime</definition>
+        <argsstring>(short aYear, short aMonth, short aDay, short aHour, short aMinute, double aSecond, int aTimeZone)=0</argsstring>
+        <name>createDateTime</name>
+        <param>
+          <type>short</type>
+          <declname>aYear</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMonth</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aDay</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aHour</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMinute</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>aSecond</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aTimeZone</declname>
+        </param>
+        <briefdescription>
+<para>Creates a DateTime <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#dateTime">http://www.w3.org/TR/xmlschema-2/#dateTime</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aYear</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the year. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMonth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the month [1-12]. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDay</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the day [1-31]. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHour</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the hour [0-23]. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMinute</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the minute [0-59]. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aSecond</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the seconds and fractional seconds. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aTimeZone</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the number of seconds east of the prime meridian. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The DateTime <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="329"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a9ec00c8953c2aa5ac9a65cd44e1ce8b3" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDateTime</definition>
+        <argsstring>(short aYear, short aMonth, short aDay, short aHour, short aMinute, double aSecond)=0</argsstring>
+        <name>createDateTime</name>
+        <param>
+          <type>short</type>
+          <declname>aYear</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMonth</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aDay</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aHour</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMinute</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>aSecond</declname>
+        </param>
+        <briefdescription>
+<para>Creates a DateTime <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> without setting a time zone. </para>        </briefdescription>
+        <detaileddescription>
+<para>see [<ulink url="http://www.w3.org/TR/xmlschema-2/#dateTime">http://www.w3.org/TR/xmlschema-2/#dateTime</ulink>]</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aYear</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the year. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMonth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the month [1-12]. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDay</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the day [1-31]. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHour</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the hour [0-23]. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMinute</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the minute [0-59]. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aSecond</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the seconds and fractional seconds. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The DateTime <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="344"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a6edd242b7b55ea057b6ebfdb350d774c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDateTime</definition>
+        <argsstring>(const String &amp;aDateTimeValue)=0</argsstring>
+        <name>createDateTime</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aDateTimeValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a DateTime <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#dateTime">http://www.w3.org/TR/xmlschema-2/#dateTime</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aDateTimeValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the datetime value (for example, 2002-10-10T12:00:00-05:00). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The DateTime <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="354"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a6f0fff15abb7ffcdc5c1226c762ba02e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDateTimeStamp</definition>
+        <argsstring>(short aYear, short aMonth, short aDay, short aHour, short aMinute, double aSecond, int aTimeZone)=0</argsstring>
+        <name>createDateTimeStamp</name>
+        <param>
+          <type>short</type>
+          <declname>aYear</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMonth</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aDay</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aHour</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMinute</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>aSecond</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aTimeZone</declname>
+        </param>
+        <briefdescription>
+<para>Creates a DateTimeStamp <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [www.w3.org/TR/xmlschema11-2/#dateTimeStamp]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aYear</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the year. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMonth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the month. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDay</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the day. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHour</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the hour. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMinute</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the minute. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aSecond</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>double-valued representation of the seconds and fractional seconds. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aTimeZone</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the number of seconds east of the prime meridian. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The DateTimeStamp <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="837"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1afaaee049b4f34a6d3e70c1db4535d88d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDateTimeStamp</definition>
+        <argsstring>(const String &amp;aDateTimeStampValue)=0</argsstring>
+        <name>createDateTimeStamp</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aDateTimeStampValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a DateTimeStamp <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [www.w3.org/TR/xmlschema11-2/#dateTimeStamp]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aDateTimeStampValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the datetimeStamp value (for example, 2002-10-10T12:00:00-05:00). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The DateTimeStamp <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="847"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a5ee4a08dc9d22cd45133f1306ccaa368" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDayTimeDuration</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createDayTimeDuration</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a dayTimeDuration <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xpath-functions/#duration-subtypes">http://www.w3.org/TR/xpath-functions/#duration-subtypes</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> lexical representation of the duration. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the dayTimeDuration <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="405"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a2ec71bdcafbf3d110458cb456e3958a0" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDecimal</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createDecimal</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Decimal <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#decimal">http://www.w3.org/TR/xmlschema-2/#decimal</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the Decimal (e.g. 12678967.543233). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Decimal <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="238"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a6ecebff20f912393fecf5d3a7b89f5fc" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDecimalFromDouble</definition>
+        <argsstring>(double aValue)=0</argsstring>
+        <name>createDecimalFromDouble</name>
+        <param>
+          <type>double</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Decimal <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#decimal">http://www.w3.org/TR/xmlschema-2/#decimal</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>double representation of the Decimal. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Decimal <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="229"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a308cbe54321e49ffcbeac048f08e8e3f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDecimalFromLong</definition>
+        <argsstring>(unsigned long aValue)=0</argsstring>
+        <name>createDecimalFromLong</name>
+        <param>
+          <type>unsigned long</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Decimal <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#decimal">http://www.w3.org/TR/xmlschema-2/#decimal</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>unsigned long representation of the Decimal. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Decimal <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="220"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ad67a518abfd2df801f5617ec2365fe1d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDocumentNode</definition>
+        <argsstring>(const String &amp;aBaseUri, const String &amp;aDocUri)=0</argsstring>
+        <name>createDocumentNode</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aBaseUri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aDocUri</declname>
+        </param>
+        <briefdescription>
+<para>Creates a documentNode <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xpath-functions/#duration-subtypes">http://www.w3.org/TR/xpath-functions/#duration-subtypes</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aBaseUri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the Base URI. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDocUri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the Document URI. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the documentNode <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="424"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a5ed848df66dbd0532fbbddd79085f316" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDouble</definition>
+        <argsstring>(double aValue)=0</argsstring>
+        <name>createDouble</name>
+        <param>
+          <type>double</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Double <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#double">http://www.w3.org/TR/xmlschema-2/#double</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>double representation of the Double. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Double <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="363"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a3fee4db982547185493e768ed02d6e5e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDouble</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createDouble</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Double <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#double">http://www.w3.org/TR/xmlschema-2/#double</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the Double. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Double <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="372"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a2fdba562b037509c9fac94b576baaa8d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDuration</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createDuration</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Duration <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#duration">http://www.w3.org/TR/xmlschema-2/#duration</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the NCName. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Duration <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="381"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a3fb2e104f2eb629bd3dc26e1537dbb9e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createDuration</definition>
+        <argsstring>(short aYear, short aMonths, short aDays, short aHours, short aMinutes, double aSeconds)=0</argsstring>
+        <name>createDuration</name>
+        <param>
+          <type>short</type>
+          <declname>aYear</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMonths</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aDays</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aHours</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMinutes</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>aSeconds</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Duration <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#duration">http://www.w3.org/TR/xmlschema-2/#duration</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aYear</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the years. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMonths</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the months. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDays</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the days. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHours</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the hours. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMinutes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short-valued representation of the minutes. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aSeconds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>double-valued representation of the seconds and fractional seconds. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Duration <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="396"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a14062c6c65134bbe5e4aa913103f1ce8" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createElementNode</definition>
+        <argsstring>(Item &amp;aParent, Item aNodeName, Item aTypeName, bool aHasTypedValue, bool aHasEmptyValue, NsBindings aNsBindings)=0</argsstring>
+        <name>createElementNode</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aParent</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aNodeName</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aTypeName</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>aHasTypedValue</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>aHasEmptyValue</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1a88f32864e73bd2d882541275f8cf1cdc" kindref="member">NsBindings</ref></type>
+          <declname>aNsBindings</declname>
+        </param>
+        <briefdescription>
+<para>Creates a new element node. </para>        </briefdescription>
+        <detaileddescription>
+<para>Create a new element node N and place it at the end among the children of a given parent node. If no parent is given, N becomes the root (and single node) of a new XML tree.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aParent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent P of the new node; may be NULL. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aNodeName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The fully qualified name of the new node. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aTypeName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The fully qualified name of the new node&apos;s type. Not allowed to be NULL, use xsd:untyped instead. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHasTypedValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether the node has a typed value or not (element nodes with complex type and element-only content do not have typed value). </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHasEmptyValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>True if the typed value of the node is the empty sequence. This is the case if the element has a complex type with empty content. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aNsBindings</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A set of namespace bindings. The namespaces property of N will be the union of this set and the namespaces property of P. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new node N created by this method </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="681"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1aeb93409c8ff171faad3dd6fda31341bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createFloat</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createFloat</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>creates a float item see [<ulink url="http://www.w3.org/tr/xmlschema-2/#float">http://www.w3.org/tr/xmlschema-2/#float</ulink>] </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>string representation of the float. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the float item. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="433"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a53357db97e70e0dfadf1553ea22e9bb8" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createFloat</definition>
+        <argsstring>(float aValue)=0</argsstring>
+        <name>createFloat</name>
+        <param>
+          <type>float</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>creates a float item see [<ulink url="http://www.w3.org/tr/xmlschema-2/#float">http://www.w3.org/tr/xmlschema-2/#float</ulink>] </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>float representation of the float. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the float item. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="442"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a7dab3c4d4f49eabcf2967c895b9c57cd" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createGDay</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createGDay</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a gDay <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#gDay">http://www.w3.org/TR/xmlschema-2/#gDay</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the gDay. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The gDay <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="451"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a1a9ad9c846f7e5ee4f51ba340ad93eaa" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createGDay</definition>
+        <argsstring>(short aDay)=0</argsstring>
+        <name>createGDay</name>
+        <param>
+          <type>short</type>
+          <declname>aDay</declname>
+        </param>
+        <briefdescription>
+<para>Creates a gDay <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#gDay">http://www.w3.org/TR/xmlschema-2/#gDay</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aDay</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the gDay. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The gDay <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="460"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a3b92431c2d1127ec80c47c03d71d2931" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createGMonth</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createGMonth</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a gMonth <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#gMonth">http://www.w3.org/TR/xmlschema-2/#gMonth</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the gMonth. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The gMonth <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="469"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ace0f7397155f6ae0ff8fb8fc2680bdf3" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createGMonth</definition>
+        <argsstring>(short aMonth)=0</argsstring>
+        <name>createGMonth</name>
+        <param>
+          <type>short</type>
+          <declname>aMonth</declname>
+        </param>
+        <briefdescription>
+<para>Creates a gMonth <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#gMonth">http://www.w3.org/TR/xmlschema-2/#gMonth</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMonth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the gMonth. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The gMonth <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="478"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a46be9e96da55a8b8ce62923ce979b120" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createGMonthDay</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createGMonthDay</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a gMonthDay <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#gMonthDay">http://www.w3.org/TR/xmlschema-2/#gMonthDay</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the gMonthDay. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The gMonthDay <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="487"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1aeebfe37cf6591c8b7f836facf4ac4ae4" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createGMonthDay</definition>
+        <argsstring>(short aMonth, short aDay)=0</argsstring>
+        <name>createGMonthDay</name>
+        <param>
+          <type>short</type>
+          <declname>aMonth</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aDay</declname>
+        </param>
+        <briefdescription>
+<para>Creates a gMonthDay <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#gMonthDay">http://www.w3.org/TR/xmlschema-2/#gMonthDay</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aMonth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the month. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDay</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the day. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The gMonthDay <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="497"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a37f2022b1392d628f794fe01179ed05a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createGYear</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createGYear</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a gYear <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#gYear">http://www.w3.org/TR/xmlschema-2/#gYear</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the gYear. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The gYear <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="506"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a7d8c283606543b6c04bd32853bd2e66b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createGYear</definition>
+        <argsstring>(short aYear)=0</argsstring>
+        <name>createGYear</name>
+        <param>
+          <type>short</type>
+          <declname>aYear</declname>
+        </param>
+        <briefdescription>
+<para>Creates a gYear <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#gYear">http://www.w3.org/TR/xmlschema-2/#gYear</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aYear</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the gYear. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The gYear <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="515"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a8c9c78e34c5cf9b6c8e09dfb4423050a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createGYearMonth</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createGYearMonth</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a gYearMonth <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#gYearMonth">http://www.w3.org/TR/xmlschema-2/#gYearMonth</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the gYearMonth. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The gYearMonth <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="524"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1aeb9846878941e00d1eb1bccf2ea08088" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createGYearMonth</definition>
+        <argsstring>(short aYear, short aMonth)=0</argsstring>
+        <name>createGYearMonth</name>
+        <param>
+          <type>short</type>
+          <declname>aYear</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMonth</declname>
+        </param>
+        <briefdescription>
+<para>Creates a gYearMonth <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#gYearMonth">http://www.w3.org/TR/xmlschema-2/#gYearMonth</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aYear</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the year. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMonth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the month. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The gYearMonth <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="534"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a342c1d7008ea3b2822c86f00817e1a3d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createHexBinary</definition>
+        <argsstring>(const char *aData, size_t aSize, bool aIsEncoded=true)=0</argsstring>
+        <name>createHexBinary</name>
+        <param>
+          <type>const char *</type>
+          <declname>aData</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>aSize</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>aIsEncoded</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Creates a HexBinary <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#hexBinary">http://www.w3.org/TR/xmlschema-2/#hexBinary</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the data. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>size of the data in bytes. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aIsEncoded</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if <computeroutput>true</computeroutput>, the <emphasis>aData</emphasis> is already HexBinary encoded. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The HexBinary <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="547"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a3eee22947dd89c1ded61ab9803339f46" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createInt</definition>
+        <argsstring>(int aInt)=0</argsstring>
+        <name>createInt</name>
+        <param>
+          <type>int</type>
+          <declname>aInt</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Int <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#int">http://www.w3.org/TR/xmlschema-2/#int</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aInt</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>int representation of the Int. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The NCName <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="274"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ace01349e1e21b5760446dc1865cb7d4f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createInteger</definition>
+        <argsstring>(long long aInteger)=0</argsstring>
+        <name>createInteger</name>
+        <param>
+          <type>long long</type>
+          <declname>aInteger</declname>
+        </param>
+        <briefdescription>
+<para>Creates an Integer <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#integer">http://www.w3.org/TR/xmlschema-2/#integer</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aInteger</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>unsigned long representation of the Integer. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Integer <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="247"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1aae9f10dc363448dd055960a3ec8b44f1" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createInteger</definition>
+        <argsstring>(const String &amp;aInteger)=0</argsstring>
+        <name>createInteger</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aInteger</declname>
+        </param>
+        <briefdescription>
+<para>Creates an Integer <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#integer">http://www.w3.org/TR/xmlschema-2/#integer</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aInteger</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the Integer. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Integer <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="256"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1acbd1d06c0ed42fb38adbb87e961ed704" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createJSONArray</definition>
+        <argsstring>(std::vector&lt; Item &gt; &amp;aItems)=0</argsstring>
+        <name>createJSONArray</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &gt; &amp;</type>
+          <declname>aItems</declname>
+        </param>
+        <briefdescription>
+<para>Create a JSON Array containing the specified items. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aItems</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A std::vector&lt;Item&gt; containing Items which may be stored in a JSON Array (namely JSON Arrays, JSON Objects, JSON nulls, valid JSON numeric types, or xs:strings). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="778"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a117d32d15231ec8e0a247dc5fbdca6d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createJSONNull</definition>
+        <argsstring>()=0</argsstring>
+        <name>createJSONNull</name>
+        <briefdescription>
+<para>Create a JSON null item. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="762"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a6f16548ab143da967b352ded05c125cd" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createJSONObject</definition>
+        <argsstring>(std::vector&lt; std::pair&lt; Item, Item &gt; &gt; &amp;aNames)=0</argsstring>
+        <name>createJSONObject</name>
+        <param>
+          <type>std::vector&lt; std::pair&lt; <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>, <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &gt; &gt; &amp;</type>
+          <declname>aNames</declname>
+        </param>
+        <briefdescription>
+<para>Create a JSON Object containing the specified JSON Pairs. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNames</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A vector containing the name and value of each pair. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="769"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a2acae30b62b413b3b4f307c49deff986" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createLong</definition>
+        <argsstring>(long long aLong)=0</argsstring>
+        <name>createLong</name>
+        <param>
+          <type>long long</type>
+          <declname>aLong</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Long <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#long">http://www.w3.org/TR/xmlschema-2/#long</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aLong</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>long long representation of the Long. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Long <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="265"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a6a4c1fd7d3b666d7145f59f00baec4bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createNCName</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createNCName</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a NCName <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#NCName">http://www.w3.org/TR/xmlschema-2/#NCName</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the NCName. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The NCName <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="138"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a0675b9e294c7e04aa9c5ff9b498aa47f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createNegativeInteger</definition>
+        <argsstring>(long long aValue)=0</argsstring>
+        <name>createNegativeInteger</name>
+        <param>
+          <type>long long</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a negativeInteger <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#negativeInteger">http://www.w3.org/TR/xmlschema-2/#negativeInteger</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>long long representation of the negativeInteger. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The negativeInteger <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="556"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ab95b5c6434583640bb1aff2b40761dbc" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createNonNegativeInteger</definition>
+        <argsstring>(unsigned long long aValue)=0</argsstring>
+        <name>createNonNegativeInteger</name>
+        <param>
+          <type>unsigned long long</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a nonNegativeInteger <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger">http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>unsigned long representation of the nonNegativeInteger. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The nonNegativeInteger <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="565"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a2c8fdeacc2d34b3826ec61963205add3" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createNonPositiveInteger</definition>
+        <argsstring>(long long aValue)=0</argsstring>
+        <name>createNonPositiveInteger</name>
+        <param>
+          <type>long long</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a nonPositiveInteger <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger">http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>long long representation of the NCName. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The nonPositiveInteger <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="574"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ab3ebb9de0413dd8bf831e39c85d8632e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createPiNode</definition>
+        <argsstring>(Item aParent, String &amp;aTarget, String &amp;aContent, String &amp;aBaseUri)=0</argsstring>
+        <name>createPiNode</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>aParent</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aTarget</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aContent</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aBaseUri</declname>
+        </param>
+        <briefdescription>
+<para>Create a new Processing Instruction node N and place it among the children of a given parent node. </para>        </briefdescription>
+        <detaileddescription>
+<para>If no parent is given, N becomes the root (and single node) of a new XML tree.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aParent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent P of the new node; may be NULL. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aTarget</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The Target of the new node. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aContent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The Content of the new node. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aBaseUri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The Base URI of the new node, may be NULL. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new node N created by this method </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="737"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a0cbecd2e31c494438222f477cb514e54" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createPositiveInteger</definition>
+        <argsstring>(unsigned long long aValue)=0</argsstring>
+        <name>createPositiveInteger</name>
+        <param>
+          <type>unsigned long long</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a positiveInteger\ <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#positiveInteger">http://www.w3.org/TR/xmlschema-2/#positiveInteger</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>unsigned long representation of the positiveInteger. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The positiveInteger <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="583"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a78bb17c9101e0e2b08c331f7a0b28026" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createQName</definition>
+        <argsstring>(const String &amp;aNamespace, const String &amp;aPrefix, const String &amp;aLocalname)=0</argsstring>
+        <name>createQName</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aNamespace</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aPrefix</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aLocalname</declname>
+        </param>
+        <briefdescription>
+<para>Creates a QName <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#QName">http://www.w3.org/TR/xmlschema-2/#QName</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNamespace</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the namespace. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aPrefix</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the prefix. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLocalname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the localname.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The QName <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="107"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1aa789b231da0d7629369270838c4ccb64" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createQName</definition>
+        <argsstring>(const String &amp;aNamespace, const String &amp;aLocalname)=0</argsstring>
+        <name>createQName</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aNamespace</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aLocalname</declname>
+        </param>
+        <briefdescription>
+<para>Creates a QName <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#QName">http://www.w3.org/TR/xmlschema-2/#QName</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aNamespace</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the namespace. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLocalname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the localname. * </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The QName <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="117"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a47620c159149ab41852ead3e6c64553f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createQName</definition>
+        <argsstring>(const String &amp;aQNameString)=0</argsstring>
+        <name>createQName</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQNameString</declname>
+        </param>
+        <briefdescription>
+<para>Creates a QName <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#QName">http://www.w3.org/TR/xmlschema-2/#QName</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para>The QName is constructed by parsing the string using the notation invented by James Clark (i.e. {namespace}localname).</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQNameString</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> in the QName notation by James Clark. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The QName <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="129"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ad0d225d3ca2ba6db1a749be99a889604" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createShort</definition>
+        <argsstring>(short aShort)=0</argsstring>
+        <name>createShort</name>
+        <param>
+          <type>short</type>
+          <declname>aShort</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Short <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#short">http://www.w3.org/TR/xmlschema-2/#short</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aShort</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the Short. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Short <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="283"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a5a533d3ce064b42350cebe1583cf9f53" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createStreamableBase64Binary</definition>
+        <argsstring>(std::istream &amp;stream, StreamReleaser streamReleaser, bool seekable=false, bool encoded=false)=0</argsstring>
+        <name>createStreamableBase64Binary</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <param>
+          <type><ref refid="streams_8h_1a3f517c3d1f2e28152eeb3f47e7fd67b4" kindref="member">StreamReleaser</ref></type>
+          <declname>streamReleaser</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>seekable</declname>
+          <defval>false</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>encoded</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Creates a streamable Base64Binary <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#base64Binary">http://www.w3.org/TR/xmlschema-2/#base64Binary</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An istream from where to read the binary&apos;s content. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>streamReleaser</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A function pointer which is invoked once the StreamableBase64Binary is destroyed. Normally this function will delete the std::istream object passed to it. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>seekable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>is the given stream seekable </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>encoded</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>is the contents of the given stream already <ref refid="namespacezorba_1_1base64" kindref="compound">base64</ref> encoded </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The streamable <ref refid="classzorba_1_1String" kindref="compound">String</ref> <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="180"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1aebe6578c38ea92e9460ce570d101c247" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createStreamableBase64Binary</definition>
+        <argsstring>(std::istream &amp;stream, StreamReleaser streamReleaser, char const *uri, bool seekable=false, bool encoded=false)=0</argsstring>
+        <name>createStreamableBase64Binary</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <param>
+          <type><ref refid="streams_8h_1a3f517c3d1f2e28152eeb3f47e7fd67b4" kindref="member">StreamReleaser</ref></type>
+          <declname>streamReleaser</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>seekable</declname>
+          <defval>false</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>encoded</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Creates a streamable Base64Binary <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#base64Binary">http://www.w3.org/TR/xmlschema-2/#base64Binary</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An istream from where to read the binary&apos;s content. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>streamReleaser</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A function pointer which is invoked once the StreamableBase64Binary is destroyed. Normally this function will delete the std::istream object passed to it. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The URI is intended to be used to note the origination URI (e.g., file) that data is coming from. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>seekable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>is the given stream seekable </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>encoded</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>is the contents of the given stream already <ref refid="namespacezorba_1_1base64" kindref="compound">base64</ref> encoded </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The streamable <ref refid="classzorba_1_1String" kindref="compound">String</ref> <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="202"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ac60907dc921d98bc949ce5474e04e3fd" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createStreamableString</definition>
+        <argsstring>(std::istream &amp;stream, StreamReleaser streamReleaser, bool seekable=false)=0</argsstring>
+        <name>createStreamableString</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <param>
+          <type><ref refid="streams_8h_1a3f517c3d1f2e28152eeb3f47e7fd67b4" kindref="member">StreamReleaser</ref></type>
+          <declname>streamReleaser</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>seekable</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Creates a streamable <ref refid="classzorba_1_1String" kindref="compound">String</ref> <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#string">http://www.w3.org/TR/xmlschema-2/#string</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An istream from where to read the string&apos;s content. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>streamReleaser</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A function pointer which is invoked once the StreamableStringItem is destroyed. Normally this function will delete the std::istream object passed to it. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>seekable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The streamable <ref refid="classzorba_1_1String" kindref="compound">String</ref> <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="67"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a6ce543f677ef2f58b568b9a6674742b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createStreamableString</definition>
+        <argsstring>(std::istream &amp;stream, StreamReleaser streamReleaser, char const *uri, bool seekable=false)=0</argsstring>
+        <name>createStreamableString</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <param>
+          <type><ref refid="streams_8h_1a3f517c3d1f2e28152eeb3f47e7fd67b4" kindref="member">StreamReleaser</ref></type>
+          <declname>streamReleaser</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>seekable</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Creates a streamable <ref refid="classzorba_1_1String" kindref="compound">String</ref> <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#string">http://www.w3.org/TR/xmlschema-2/#string</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An istream from where to read the string&apos;s content. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>streamReleaser</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A function pointer which is invoked once the StreamableStringItem is destroyed. Normally this function will delete the std::istream object passed to it. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The URI is intended to be used to note the origination URI (e.g., file) that data is coming from. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>seekable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The streamable <ref refid="classzorba_1_1String" kindref="compound">String</ref> <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="85"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a70521456bbea6dc0a8064fd319d8f51b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createString</definition>
+        <argsstring>(const String &amp;aString)=0</argsstring>
+        <name>createString</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aString</declname>
+        </param>
+        <briefdescription>
+<para>Creates a <ref refid="classzorba_1_1String" kindref="compound">String</ref> <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#string">http://www.w3.org/TR/xmlschema-2/#string</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aString</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the <ref refid="classzorba_1_1String" kindref="compound">String</ref> <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The <ref refid="classzorba_1_1String" kindref="compound">String</ref> <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a3ad14b0a6ff85b87cb82740fcf84a47c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createTextNode</definition>
+        <argsstring>(Item parent, String content)=0</argsstring>
+        <name>createTextNode</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+          <declname>content</declname>
+        </param>
+        <briefdescription>
+<para>Create a new text node N and place it among the children of a given parent node. </para>        </briefdescription>
+        <detaileddescription>
+<para>If no parent is given, N becomes the root (and single node) of a new XML tree.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>parent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent P of the new node; may be NULL. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>content</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The content of the new node. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new node N created by this method </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="750"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a832fbddc026f63741cf4978237890b00" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createTime</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createTime</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Time <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#time">http://www.w3.org/TR/xmlschema-2/#time</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the Time. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Time <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="592"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ae9bcce08848218252818942d79b45bd4" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createTime</definition>
+        <argsstring>(short aHour, short aMinute, double aSecond)=0</argsstring>
+        <name>createTime</name>
+        <param>
+          <type>short</type>
+          <declname>aHour</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMinute</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>aSecond</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Time <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#time">http://www.w3.org/TR/xmlschema-2/#time</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aHour</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the hour. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMinute</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the minute. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aSecond</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>double representation of the seconds and fractional seconds. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Time <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="603"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a1c2b399b2c8a310416c98706092c09e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createTime</definition>
+        <argsstring>(short aHour, short aMinute, double aSecond, int aTimeZone)=0</argsstring>
+        <name>createTime</name>
+        <param>
+          <type>short</type>
+          <declname>aHour</declname>
+        </param>
+        <param>
+          <type>short</type>
+          <declname>aMinute</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>aSecond</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aTimeZone</declname>
+        </param>
+        <briefdescription>
+<para>Creates a Time <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#time">http://www.w3.org/TR/xmlschema-2/#time</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aHour</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the hour. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMinute</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>short representation of the minute. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aSecond</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>double representation of the seconds and fractional seconds. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aTimeZone</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the number of seconds east of the prime meridian. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Time <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="615"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a30893848b8ae5ef3c8cb045877b2d516" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createUnsignedByte</definition>
+        <argsstring>(const unsigned char aValue)=0</argsstring>
+        <name>createUnsignedByte</name>
+        <param>
+          <type>const unsigned char</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates an Unsigned Byte <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#unsignedByte">http://www.w3.org/TR/xmlschema-2/#unsignedByte</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>unsignedByte unsigned char representation of the unsigned byte. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The Unsigned Byte <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="624"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1aea1198c8699e9694781d25bdaa4caa04" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createUnsignedInt</definition>
+        <argsstring>(unsigned int aValue)=0</argsstring>
+        <name>createUnsignedInt</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates an unsigned int <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#unsignedInt">http://www.w3.org/TR/xmlschema-2/#unsignedInt</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>unsigned int representation of the unsignedInt. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The unsignedInt <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="633"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1afb1829fdaea6261c43a3d7fccc37616c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createUnsignedLong</definition>
+        <argsstring>(unsigned long long aValue)=0</argsstring>
+        <name>createUnsignedLong</name>
+        <param>
+          <type>unsigned long long</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates an unsignedLong <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#unsignedLong">http://www.w3.org/TR/xmlschema-2/#unsignedLong</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>unsignedLong long long representation of the unsignedLong. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The unsignedLong <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="642"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1aeed4cb116eed8964a25396d94ff9d1f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createUnsignedShort</definition>
+        <argsstring>(unsigned short aValue)=0</argsstring>
+        <name>createUnsignedShort</name>
+        <param>
+          <type>unsigned short</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a unsignedShort <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xmlschema-2/#unsignedShort">http://www.w3.org/TR/xmlschema-2/#unsignedShort</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>unsigned short representation of the unsignedShort. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The unsignedShort <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="651"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ac9922900869e4d2bbde5072d7a36d240" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createUntypedAtomic</definition>
+        <argsstring>(const String &amp;value)=0</argsstring>
+        <name>createUntypedAtomic</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Creates a UntypedAtomic <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> representation of the UntypedAtomic <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The UntypedAtomic <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="757"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a261c1b07062df982cdf8d48d25a7d918" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createUserTypedAtomicItem</definition>
+        <argsstring>(Item &amp;aBaseItem, Item &amp;aTypeName)=0</argsstring>
+        <name>createUserTypedAtomicItem</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aBaseItem</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aTypeName</declname>
+        </param>
+        <briefdescription>
+<para>Create an atomic item having a user-defined atomic type. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aBaseItem</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the base item of the item to create. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aTypeName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the type of the item to create.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a new atomic item having the given user-defined atomic type. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="820"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1ae2c0fdefd2515bed1a2ef479ac99883f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::ItemFactory::createYearMonthDuration</definition>
+        <argsstring>(const String &amp;aValue)=0</argsstring>
+        <name>createYearMonthDuration</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Creates a yearMonthDuration <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> see [<ulink url="http://www.w3.org/TR/xpath-functions/#duration-subtypes">http://www.w3.org/TR/xpath-functions/#duration-subtypes</ulink>]. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1String" kindref="compound">String</ref> lexical representation of the duration. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the yearMonthDuration <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="414"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ItemFactory_1a8d7d8c6cf7e1ced52d68372b58a44af3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::ItemFactory::~ItemFactory</definition>
+        <argsstring>()</argsstring>
+        <name>~ItemFactory</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="43" bodyfile="/home/wcandillon/deadlinks/include/zorba/item_factory.h" bodystart="43" bodyend="43"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classzorba_1_1ItemFactory" kindref="compound">ItemFactory</ref> to create Items. </para>    </briefdescription>
+    <detaileddescription>
+<para>An instance of this class can be obtained by calling getItemFactory on the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> object.</para><para>Each createXXX function of this class creates an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> of an XML Schema item. If an isNull() call on an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> created by one of these functions returns true the <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> could not be created. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/item_factory.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/item_factory.h" bodystart="38" bodyend="849"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1ItemFactory_1a1e8ce6958d79e2c467ece6c255de4fdd" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>assignElementTypedValue</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a263a9f78f19a1b1947186a6ac2841ea4" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>assignElementTypedValue</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ad3f5ce07396e116a8267202fcc27008a" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createAnyURI</name></member>
+      <member refid="classzorba_1_1ItemFactory_1afecff2c548c1df4f2dd473a9dc672c7a" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createAttributeNode</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a5ee14f6ca164abc610c5297890be593e" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createAttributeNode</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a915762a9a1ddb21dc5f9d07dd150fe52" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createBase64Binary</name></member>
+      <member refid="classzorba_1_1ItemFactory_1abce2daad7c2b91f6a7f40b756212af19" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createBase64Binary</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a7820fe4ef6bd43d30c6caffc7daf1b72" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createBoolean</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a746e45a703c5538361723ab8b62e6928" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createByte</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a7f88edbf86f43e744fae61e3a7ca3a11" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createCommentNode</name></member>
+      <member refid="classzorba_1_1ItemFactory_1aa58821e76d1da2cf194829e4456419aa" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDate</name></member>
+      <member refid="classzorba_1_1ItemFactory_1affb928954c61eed74708468c45085a7c" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDate</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a500c342b71dc730d2fcce3ad5ada875e" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDateTime</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a9ec00c8953c2aa5ac9a65cd44e1ce8b3" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDateTime</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a6edd242b7b55ea057b6ebfdb350d774c" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDateTime</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a6f0fff15abb7ffcdc5c1226c762ba02e" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDateTimeStamp</name></member>
+      <member refid="classzorba_1_1ItemFactory_1afaaee049b4f34a6d3e70c1db4535d88d" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDateTimeStamp</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a5ee4a08dc9d22cd45133f1306ccaa368" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDayTimeDuration</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a2ec71bdcafbf3d110458cb456e3958a0" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDecimal</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a6ecebff20f912393fecf5d3a7b89f5fc" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDecimalFromDouble</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a308cbe54321e49ffcbeac048f08e8e3f" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDecimalFromLong</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ad67a518abfd2df801f5617ec2365fe1d" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDocumentNode</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a5ed848df66dbd0532fbbddd79085f316" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDouble</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a3fee4db982547185493e768ed02d6e5e" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDouble</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a2fdba562b037509c9fac94b576baaa8d" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDuration</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a3fb2e104f2eb629bd3dc26e1537dbb9e" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createDuration</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a14062c6c65134bbe5e4aa913103f1ce8" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createElementNode</name></member>
+      <member refid="classzorba_1_1ItemFactory_1aeb93409c8ff171faad3dd6fda31341bd" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createFloat</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a53357db97e70e0dfadf1553ea22e9bb8" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createFloat</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a7dab3c4d4f49eabcf2967c895b9c57cd" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createGDay</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a1a9ad9c846f7e5ee4f51ba340ad93eaa" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createGDay</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a3b92431c2d1127ec80c47c03d71d2931" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createGMonth</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ace0f7397155f6ae0ff8fb8fc2680bdf3" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createGMonth</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a46be9e96da55a8b8ce62923ce979b120" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createGMonthDay</name></member>
+      <member refid="classzorba_1_1ItemFactory_1aeebfe37cf6591c8b7f836facf4ac4ae4" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createGMonthDay</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a37f2022b1392d628f794fe01179ed05a" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createGYear</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a7d8c283606543b6c04bd32853bd2e66b" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createGYear</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a8c9c78e34c5cf9b6c8e09dfb4423050a" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createGYearMonth</name></member>
+      <member refid="classzorba_1_1ItemFactory_1aeb9846878941e00d1eb1bccf2ea08088" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createGYearMonth</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a342c1d7008ea3b2822c86f00817e1a3d" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createHexBinary</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a3eee22947dd89c1ded61ab9803339f46" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createInt</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ace01349e1e21b5760446dc1865cb7d4f" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createInteger</name></member>
+      <member refid="classzorba_1_1ItemFactory_1aae9f10dc363448dd055960a3ec8b44f1" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createInteger</name></member>
+      <member refid="classzorba_1_1ItemFactory_1acbd1d06c0ed42fb38adbb87e961ed704" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createJSONArray</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a117d32d15231ec8e0a247dc5fbdca6d6" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createJSONNull</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a6f16548ab143da967b352ded05c125cd" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createJSONObject</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a2acae30b62b413b3b4f307c49deff986" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createLong</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a6a4c1fd7d3b666d7145f59f00baec4bb" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createNCName</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a0675b9e294c7e04aa9c5ff9b498aa47f" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createNegativeInteger</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ab95b5c6434583640bb1aff2b40761dbc" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createNonNegativeInteger</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a2c8fdeacc2d34b3826ec61963205add3" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createNonPositiveInteger</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ab3ebb9de0413dd8bf831e39c85d8632e" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createPiNode</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a0cbecd2e31c494438222f477cb514e54" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createPositiveInteger</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a78bb17c9101e0e2b08c331f7a0b28026" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createQName</name></member>
+      <member refid="classzorba_1_1ItemFactory_1aa789b231da0d7629369270838c4ccb64" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createQName</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a47620c159149ab41852ead3e6c64553f" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createQName</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ad0d225d3ca2ba6db1a749be99a889604" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createShort</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a5a533d3ce064b42350cebe1583cf9f53" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createStreamableBase64Binary</name></member>
+      <member refid="classzorba_1_1ItemFactory_1aebe6578c38ea92e9460ce570d101c247" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createStreamableBase64Binary</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ac60907dc921d98bc949ce5474e04e3fd" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createStreamableString</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a6ce543f677ef2f58b568b9a6674742b6" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createStreamableString</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a70521456bbea6dc0a8064fd319d8f51b" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createString</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a3ad14b0a6ff85b87cb82740fcf84a47c" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createTextNode</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a832fbddc026f63741cf4978237890b00" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createTime</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ae9bcce08848218252818942d79b45bd4" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createTime</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a1c2b399b2c8a310416c98706092c09e9" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createTime</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a30893848b8ae5ef3c8cb045877b2d516" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createUnsignedByte</name></member>
+      <member refid="classzorba_1_1ItemFactory_1aea1198c8699e9694781d25bdaa4caa04" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createUnsignedInt</name></member>
+      <member refid="classzorba_1_1ItemFactory_1afb1829fdaea6261c43a3d7fccc37616c" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createUnsignedLong</name></member>
+      <member refid="classzorba_1_1ItemFactory_1aeed4cb116eed8964a25396d94ff9d1f3" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createUnsignedShort</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ac9922900869e4d2bbde5072d7a36d240" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createUntypedAtomic</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a261c1b07062df982cdf8d48d25a7d918" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createUserTypedAtomicItem</name></member>
+      <member refid="classzorba_1_1ItemFactory_1ae2c0fdefd2515bed1a2ef479ac99883f" prot="public" virt="pure-virtual"><scope>zorba::ItemFactory</scope><name>createYearMonthDuration</name></member>
+      <member refid="classzorba_1_1ItemFactory_1a8d7d8c6cf7e1ced52d68372b58a44af3" prot="public" virt="virtual"><scope>zorba::ItemFactory</scope><name>~ItemFactory</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

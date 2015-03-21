@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1SAX2__LexicalHandler" kind="class" prot="public">
+    <compoundname>zorba::SAX2_LexicalHandler</compoundname>
+    <derivedcompoundref refid="classzorba_1_1DefaultContentHandler" prot="public" virt="non-virtual">zorba::DefaultContentHandler</derivedcompoundref>
+    <includes refid="sax2_8h" local="no">zorba/sax2.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SAX2__LexicalHandler_1a9a22cdf29d60a529e02c317462cb313c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_LexicalHandler::comment</definition>
+        <argsstring>(const String &amp;chars)=0</argsstring>
+        <name>comment</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1a1bb00387351b3a60bef9e1eb27ce5c7a">comment</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>chars</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="184"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__LexicalHandler_1a0658c27be4711635407739481cede126" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_LexicalHandler::endCDATA</definition>
+        <argsstring>()=0</argsstring>
+        <name>endCDATA</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1a234b83a8f8fa6e1457770a87494528dc">endCDATA</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="187"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__LexicalHandler_1afbb41326036c805763cb8fda9b33dddf" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_LexicalHandler::endDTD</definition>
+        <argsstring>()=0</argsstring>
+        <name>endDTD</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1a3957643108e6de969f1004357f2f264c">endDTD</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="190"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__LexicalHandler_1aa169ebca3483426571dd54bd41be3e92" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_LexicalHandler::endEntity</definition>
+        <argsstring>(const String &amp;name)=0</argsstring>
+        <name>endEntity</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1a7b729eb742bbb516cdaaf3294f949873">endEntity</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="193"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__LexicalHandler_1a3a3ba58ad4b75064255b4e0b62a04bd1" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_LexicalHandler::startCDATA</definition>
+        <argsstring>()=0</argsstring>
+        <name>startCDATA</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1ab60b7aa77a0993712c289ecd8c303cd8">startCDATA</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="196"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__LexicalHandler_1ab1942a0bf231ad43535132573739f31c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_LexicalHandler::startDTD</definition>
+        <argsstring>(const String &amp;name, const String &amp;publicId, const String &amp;systemId)=0</argsstring>
+        <name>startDTD</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1a7ab9fd8a7ab29cba170f280d35e0478c">startDTD</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>publicId</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>systemId</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="200"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__LexicalHandler_1ae870cd92e947c61066103c23f30b5f59" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SAX2_LexicalHandler::startEntity</definition>
+        <argsstring>(const String &amp;name)=0</argsstring>
+        <name>startEntity</name>
+        <reimplementedby refid="classzorba_1_1DefaultContentHandler_1af093434522c72dbd22ef88ec0c246db5">startEntity</reimplementedby>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="203"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__LexicalHandler_1aa9cefbab72588e9b89e40edb9b64bb72" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::SAX2_LexicalHandler::~SAX2_LexicalHandler</definition>
+        <argsstring>()</argsstring>
+        <name>~SAX2_LexicalHandler</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="181" bodyfile="/home/wcandillon/deadlinks/include/zorba/sax2.h" bodystart="181" bodyend="181"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="798">
+        <label>zorba::DefaultContentHandler</label>
+        <link refid="classzorba_1_1DefaultContentHandler"/>
+        <childnode refid="797" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="797">
+        <label>zorba::SAX2_LexicalHandler</label>
+        <link refid="classzorba_1_1SAX2__LexicalHandler"/>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="178" bodyfile="/home/wcandillon/deadlinks/include/zorba/sax2.h" bodystart="177" bodyend="204"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SAX2__LexicalHandler_1a9a22cdf29d60a529e02c317462cb313c" prot="public" virt="pure-virtual"><scope>zorba::SAX2_LexicalHandler</scope><name>comment</name></member>
+      <member refid="classzorba_1_1SAX2__LexicalHandler_1a0658c27be4711635407739481cede126" prot="public" virt="pure-virtual"><scope>zorba::SAX2_LexicalHandler</scope><name>endCDATA</name></member>
+      <member refid="classzorba_1_1SAX2__LexicalHandler_1afbb41326036c805763cb8fda9b33dddf" prot="public" virt="pure-virtual"><scope>zorba::SAX2_LexicalHandler</scope><name>endDTD</name></member>
+      <member refid="classzorba_1_1SAX2__LexicalHandler_1aa169ebca3483426571dd54bd41be3e92" prot="public" virt="pure-virtual"><scope>zorba::SAX2_LexicalHandler</scope><name>endEntity</name></member>
+      <member refid="classzorba_1_1SAX2__LexicalHandler_1a3a3ba58ad4b75064255b4e0b62a04bd1" prot="public" virt="pure-virtual"><scope>zorba::SAX2_LexicalHandler</scope><name>startCDATA</name></member>
+      <member refid="classzorba_1_1SAX2__LexicalHandler_1ab1942a0bf231ad43535132573739f31c" prot="public" virt="pure-virtual"><scope>zorba::SAX2_LexicalHandler</scope><name>startDTD</name></member>
+      <member refid="classzorba_1_1SAX2__LexicalHandler_1ae870cd92e947c61066103c23f30b5f59" prot="public" virt="pure-virtual"><scope>zorba::SAX2_LexicalHandler</scope><name>startEntity</name></member>
+      <member refid="classzorba_1_1SAX2__LexicalHandler_1aa9cefbab72588e9b89e40edb9b64bb72" prot="public" virt="virtual"><scope>zorba::SAX2_LexicalHandler</scope><name>~SAX2_LexicalHandler</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build_ubuntu" kind="page">
+    <compoundname>build_ubuntu</compoundname>
+    <title>Zorba Build Notes for Ubuntu/Debian Linux Users</title>
+    <detaileddescription>
+<sect1 id="build_ubuntu_1ubuntu_packages">
+<title>Ubuntu Packages</title>
+<para>Most of the tools and libraries you might need to build Zorba are available in the standard Ubuntu/Debian repositories. Here we list the packages that you should install to meet the requirements specified at <ref refid="build_prerequisites" kindref="compound">Prerequisites for Building Zorba</ref>.</para><sect2 id="build_ubuntu_1ubuntu_tools">
+<title>Tools</title>
+<para>To install the gcc compiler and CMake: <programlisting><codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>build-essential<sp/>cmake</highlight></codeline>
+</programlisting></para><para>To install Bazaar (for building the latest Zorba source, or for building non-core modules): <programlisting><codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>bzr</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="build_ubuntu_1ubuntu_libs">
+<title>Core Zorba Library Dependencies</title>
+<para>Required libraries for core Zorba: <programlisting><codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>libxml2-dev<sp/>uuid-dev</highlight></codeline>
+</programlisting></para><para>Recommended libraries for core Zorba: <programlisting><codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>libicu-dev<sp/>libxerces-c-dev</highlight></codeline>
+</programlisting></para><para>Optional libraries for core Zorba: <programlisting><codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>libxslt-dev<sp/>libcurl4-openssl-dev<sp/>libxerces-c-dev</highlight></codeline>
+</programlisting></para><para>SWIG and development requirements for Zorba language bindings: <programlisting><codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>swig<sp/>python-dev<sp/>php5-dev<sp/>ruby-dev<sp/>openjdk-6-jdk<sp/>libaccess-bridge-java-jni</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="build_ubuntu_1ubuntu_noncore_libs">
+<title>Non-Core Module Library Dependencies</title>
+<sect3 id="build_ubuntu_1ubuntu_html">
+<title>HTML Module (data-converters package)</title>
+<para><programlisting><codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>libtidy-dev</highlight></codeline>
+</programlisting></para></sect3>
+<sect3 id="build_ubuntu_1ubuntu_geos">
+<title>Geo Module</title>
+<para>To install libgeos for the Geo Module, first ensure that the version available for your distribution is at least 3.2.2:</para><para><programlisting><codeline><highlight class="normal">apt-cache<sp/>show<sp/>libgeos-dev<sp/>|<sp/>grep<sp/>Version:</highlight></codeline>
+</programlisting></para><para>If it is lower than 3.2.2, then you may add our PPA to your list of repositories to get a later version:</para><para><programlisting><codeline><highlight class="normal">sudo<sp/>add-apt-repository<sp/>ppa:juan457/zorba</highlight></codeline>
+<codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>update</highlight></codeline>
+</programlisting></para><para>In either case, install libgeos with: <programlisting><codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>libgeos-dev</highlight></codeline>
+</programlisting></para></sect3>
+<sect3 id="build_ubuntu_1ubuntu_imagemagick">
+<title>ImageMagick (for image modules)</title>
+<para><programlisting><codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>imagemagick<sp/>libmagick++-dev<sp/>libmagickwand-dev</highlight></codeline>
+</programlisting></para></sect3>
+<sect3 id="build_ubuntu_1ubuntu_cclient">
+<title>Email Module</title>
+<para>We recommend using our PPA to install the C-Client module, as the Ubuntu packages are not built correctly at least on 64-bit platforms.</para><para><programlisting><codeline><highlight class="normal">sudo<sp/>add-apt-repository<sp/>ppa:juan457/zorba</highlight></codeline>
+<codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>update</highlight></codeline>
+<codeline><highlight class="normal">sudo<sp/>sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>libc-client2007e<sp/>libc-client2007e-dev</highlight></codeline>
+</programlisting></para><para>Or, you may build it yourself from source, so long as you force the -fPIC option:</para><para><programlisting><codeline><highlight class="normal">wget<sp/>ftp:</highlight><highlight class="comment">//ftp.cac.washington.edu/imap/imap-2007e.tar.gz</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">tar<sp/>-xf<sp/>imap-2007e.tar.gz</highlight></codeline>
+<codeline><highlight class="normal">sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>libpam-dev</highlight></codeline>
+<codeline><highlight class="normal">cd<sp/>imap-2007e</highlight></codeline>
+<codeline><highlight class="normal">make<sp/>lnp<sp/>EXTRACFLAGS=</highlight><highlight class="stringliteral">&quot;-I/usr/include/openssl<sp/>-fPIC&quot;</highlight></codeline>
+</programlisting></para><para>Note: In case of errors, delete all, untar and make again, don&apos;t trust make clean.</para><para>If you do this, be sure to pass the path to the "<computeroutput>c-client"</computeroutput> subdirectory of your build to CMake when configuring Zorba, e.g.: <programlisting><codeline><highlight class="normal">cmake<sp/>-DCMAKE_PREFIX_PATH=</highlight><highlight class="stringliteral">&quot;~/imap-2007e/c-client&quot;</highlight><highlight class="normal"><sp/>../</highlight></codeline>
+<codeline><highlight class="normal">make</highlight></codeline>
+</programlisting> </para></sect3>
+</sect2>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,221 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1VariableQName" kind="class" prot="public">
+    <compoundname>zorba::internal::VariableQName</compoundname>
+    <basecompoundref refid="classzorba_1_1diagnostic_1_1QName" prot="public" virt="non-virtual">zorba::diagnostic::QName</basecompoundref>
+    <includes refid="qname_8h" local="no">zorba/internal/qname.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename</type>
+        <declname>StringType</declname>
+        <defname>StringType</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1VariableQName_1a5224938d706213c88165783d8ef786f8" prot="private" static="no" mutable="no">
+        <type>StringType</type>
+        <definition>StringType zorba::internal::VariableQName&lt; StringType &gt;::localname_</definition>
+        <argsstring></argsstring>
+        <name>localname_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="103" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1VariableQName_1a0bb70d08c76e23f756a2b591bedb3d3d" prot="private" static="no" mutable="no">
+        <type>StringType</type>
+        <definition>StringType zorba::internal::VariableQName&lt; StringType &gt;::ns_</definition>
+        <argsstring></argsstring>
+        <name>ns_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="101" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1VariableQName_1aac2413d19b8dccd3939d4997ed6e5d48" prot="private" static="no" mutable="no">
+        <type>StringType</type>
+        <definition>StringType zorba::internal::VariableQName&lt; StringType &gt;::prefix_</definition>
+        <argsstring></argsstring>
+        <name>prefix_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="102" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1VariableQName_1a518a57ef0cd33722c8eb70119236fb61" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::internal::VariableQName&lt; StringType &gt;::localname</definition>
+        <argsstring>() const </argsstring>
+        <name>localname</name>
+        <reimplements refid="classzorba_1_1diagnostic_1_1QName_1a0ae1baf1f7f84522fc6d0012a0b191f1">localname</reimplements>
+        <briefdescription>
+<para>Gets this QName&apos;s local name. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said local name. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="98" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" bodystart="98" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1VariableQName_1ad7c9604cfb6f1dbf17aed047c2a3e827" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::internal::VariableQName&lt; StringType &gt;::ns</definition>
+        <argsstring>() const </argsstring>
+        <name>ns</name>
+        <reimplements refid="classzorba_1_1diagnostic_1_1QName_1aa95a327a0d580e71f79abe2ff63444ff">ns</reimplements>
+        <briefdescription>
+<para>Gets this QName&apos;s namespace URI. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said URI. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="96" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" bodystart="96" bodyend="96"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1VariableQName_1a3dac355c972df627508fe2e3124e44f1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::internal::VariableQName&lt; StringType &gt;::prefix</definition>
+        <argsstring>() const </argsstring>
+        <name>prefix</name>
+        <reimplements refid="classzorba_1_1diagnostic_1_1QName_1a84e269f4ab8a31f4e6d29578fb7b5dff">prefix</reimplements>
+        <briefdescription>
+<para>Gets this QName&apos;s prefix. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said prefix. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="97" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" bodystart="97" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1VariableQName_1a7f781d46e0590f78d2a77fc6c4489239" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::VariableQName&lt; StringType &gt;::VariableQName</definition>
+        <argsstring>(char const *ns, char const *prefix, char const *localname)</argsstring>
+        <name>VariableQName</name>
+        <param>
+          <type>char const *</type>
+          <declname>ns</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>prefix</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>localname</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a VariableQName. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="92" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" bodystart="90" bodyend="93"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1VariableQName_1a8b61a50fc8a4d9b868c6466444134ba8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::VariableQName&lt; StringType &gt;::VariableQName</definition>
+        <argsstring>(serialization::Archiver &amp;)</argsstring>
+        <name>VariableQName</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="107" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" bodystart="107" bodyend="107"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classzorba_1_1internal_1_1VariableQName_1a32b2c156eeace8c134fae30d488a2d47" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend void</type>
+        <definition>void serialization::operator&amp;</definition>
+        <argsstring>(serialization::Archiver &amp;, VariableQName &amp;)</argsstring>
+        <name>serialization::operator&amp;</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1VariableQName" kindref="compound">VariableQName</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="110"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A VariableQName is-an <ref refid="classzorba_1_1diagnostic_1_1QName" kindref="compound">diagnostic::QName</ref> that has a variable namespace, prefix, and local-name. </para>    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StringType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type to use to store the namespace, prefix, and local-name. Note that this can be either a string type or <computeroutput>char const*</computeroutput>. If the latter, then it must be guaranteed that the pointed-to C strings will exist for the entire lifetime of this object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="938">
+        <label>zorba::diagnostic::QName</label>
+        <link refid="classzorba_1_1diagnostic_1_1QName"/>
+      </node>
+      <node id="937">
+        <label>zorba::internal::VariableQName&lt; StringType &gt;</label>
+        <link refid="classzorba_1_1internal_1_1VariableQName"/>
+        <childnode refid="938" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="939">
+        <label>zorba::internal::VariableQName&lt; std::string &gt;</label>
+        <link refid="classzorba_1_1internal_1_1VariableQName"/>
+        <childnode refid="937" relation="template-instance">
+          <edgelabel>&lt; std::string &gt;</edgelabel>
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="941">
+        <label>zorba::diagnostic::QName</label>
+        <link refid="classzorba_1_1diagnostic_1_1QName"/>
+      </node>
+      <node id="940">
+        <label>zorba::internal::VariableQName&lt; StringType &gt;</label>
+        <link refid="classzorba_1_1internal_1_1VariableQName"/>
+        <childnode refid="941" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="84" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" bodystart="84" bodyend="111"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1VariableQName_1a518a57ef0cd33722c8eb70119236fb61" prot="public" virt="virtual"><scope>zorba::internal::VariableQName</scope><name>localname</name></member>
+      <member refid="classzorba_1_1internal_1_1VariableQName_1a5224938d706213c88165783d8ef786f8" prot="private" virt="non-virtual"><scope>zorba::internal::VariableQName</scope><name>localname_</name></member>
+      <member refid="classzorba_1_1internal_1_1VariableQName_1ad7c9604cfb6f1dbf17aed047c2a3e827" prot="public" virt="virtual"><scope>zorba::internal::VariableQName</scope><name>ns</name></member>
+      <member refid="classzorba_1_1internal_1_1VariableQName_1a0bb70d08c76e23f756a2b591bedb3d3d" prot="private" virt="non-virtual"><scope>zorba::internal::VariableQName</scope><name>ns_</name></member>
+      <member refid="classzorba_1_1internal_1_1VariableQName_1a3dac355c972df627508fe2e3124e44f1" prot="public" virt="virtual"><scope>zorba::internal::VariableQName</scope><name>prefix</name></member>
+      <member refid="classzorba_1_1internal_1_1VariableQName_1aac2413d19b8dccd3939d4997ed6e5d48" prot="private" virt="non-virtual"><scope>zorba::internal::VariableQName</scope><name>prefix_</name></member>
+      <member refid="classzorba_1_1internal_1_1VariableQName_1a32b2c156eeace8c134fae30d488a2d47" prot="private" virt="non-virtual"><scope>zorba::internal::VariableQName</scope><name>serialization::operator&amp;</name></member>
+      <member refid="classzorba_1_1internal_1_1VariableQName_1a7f781d46e0590f78d2a77fc6c4489239" prot="public" virt="non-virtual"><scope>zorba::internal::VariableQName</scope><name>VariableQName</name></member>
+      <member refid="classzorba_1_1internal_1_1VariableQName_1a8b61a50fc8a4d9b868c6466444134ba8" prot="public" virt="non-virtual"><scope>zorba::internal::VariableQName</scope><name>VariableQName</name></member>
+      <member refid="classzorba_1_1diagnostic_1_1QName_1a8fffab5462e2b8348a3b263ee92beee5" prot="public" virt="virtual"><scope>zorba::internal::VariableQName</scope><name>~QName</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

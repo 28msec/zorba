@@ -1,0 +1,1759 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1locale_1_1iso3166__1" kind="namespace">
+    <compoundname>zorba::locale::iso3166_1</compoundname>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504" prot="public" static="no">
+        <name>type</name>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ac8f2603decea8d1cd59faec362fef595" prot="public">
+          <name>unknown</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a2340d7adcddfc868c2939245a8269e3a" prot="public">
+          <name>AD</name>
+          <briefdescription>
+<para>Andorra. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aaf18e7292356b186a25a114c338cb5ff" prot="public">
+          <name>AE</name>
+          <briefdescription>
+<para>United Arab Emirates. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad508e9b5d58189fb18cb033fec365243" prot="public">
+          <name>AF</name>
+          <briefdescription>
+<para>Afghanistan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a4cbc12926da276498b456aff5e5522d0" prot="public">
+          <name>AG</name>
+          <briefdescription>
+<para>Antigua and Barbuda. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a965c1f914c8b77eb8118bc9880e28fe8" prot="public">
+          <name>AI</name>
+          <briefdescription>
+<para>Anguilla. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad1dbfaee35662ff0e499b9c42639aa20" prot="public">
+          <name>AL</name>
+          <briefdescription>
+<para>Albania. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aab8d6c6c86d0dac5d8a871b909d6213f" prot="public">
+          <name>AM</name>
+          <briefdescription>
+<para>Armenia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a0b70c58cbd5b89bba9118fcb74c3af1f" prot="public">
+          <name>AN</name>
+          <briefdescription>
+<para>Netherlands Antilles. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a39dc91d19c988cdc029a8b08349d1d02" prot="public">
+          <name>AO</name>
+          <briefdescription>
+<para>Angola. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5a745ec977f90b5b16040b9c61914ac4" prot="public">
+          <name>AQ</name>
+          <briefdescription>
+<para>Antarctica. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a3faed6c8005221b6e248a6d20892dcc6" prot="public">
+          <name>AR</name>
+          <briefdescription>
+<para>Argentina. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a53b74c3291ebe17da9cfaf32cc858251" prot="public">
+          <name>AS</name>
+          <briefdescription>
+<para>American Samoa. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504af76e264b0a97d7db59187246031948af" prot="public">
+          <name>AT</name>
+          <briefdescription>
+<para>Austria. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a0b8cf1c6d7040bb4fe52ea414d5b3054" prot="public">
+          <name>AU</name>
+          <briefdescription>
+<para>Australia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a032f4a1c0fe061b7d4242b06493dd9d0" prot="public">
+          <name>AW</name>
+          <briefdescription>
+<para>Aruba. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad7b27adae94d852417c6ead6a0184d78" prot="public">
+          <name>AX</name>
+          <briefdescription>
+<para>Aland Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a951a313ec1d933a4cd9b83b92c8aadfc" prot="public">
+          <name>AZ</name>
+          <briefdescription>
+<para>Azerbaijan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a0a54f8ad8fbe90f1d4b9e52af447a563" prot="public">
+          <name>BA</name>
+          <briefdescription>
+<para>Bosnia and Herzegovina. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9ff2dd7435f77a81f217d8f3ffb49ae8" prot="public">
+          <name>BB</name>
+          <briefdescription>
+<para>Barbados. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9d33623969d59927f024cc9125acbb5f" prot="public">
+          <name>BD</name>
+          <briefdescription>
+<para>Bangladesh. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a2789c15e5af09dd044cac410833043c3" prot="public">
+          <name>BE</name>
+          <briefdescription>
+<para>Belgium. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a151cd25a17a8b2554be9047ddd108406" prot="public">
+          <name>BF</name>
+          <briefdescription>
+<para>Burkina Faso. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a0f304f103e7c3d7f949d42600857e101" prot="public">
+          <name>BG</name>
+          <briefdescription>
+<para>Bulgaria. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad8acc0f4aa8930b6aa0c927962fb52d9" prot="public">
+          <name>BH</name>
+          <briefdescription>
+<para>Bahrain. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ae6ad11309aa36b40a5e9e2789c0cccc7" prot="public">
+          <name>BI</name>
+          <briefdescription>
+<para>Burundi. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9242e1abc92a8c5eddc4324ff2f5edc3" prot="public">
+          <name>BJ</name>
+          <briefdescription>
+<para>Benin. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a1f3c60f114d94857b6b7d477fcbf0888" prot="public">
+          <name>BL</name>
+          <briefdescription>
+<para>Saint Barthelemy. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a3d5b607ef661ec4e9877b14517a83b0b" prot="public">
+          <name>BM</name>
+          <briefdescription>
+<para>Bermuda. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a96c64731cd0303038ce71cd51d30b751" prot="public">
+          <name>BN</name>
+          <briefdescription>
+<para>Brunei Darussalam. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aa93187b703ab216dbcbe143539b75c46" prot="public">
+          <name>BO</name>
+          <briefdescription>
+<para>Bolivia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a87dbf0f479db9d0e2e6e9bf3dfbea326" prot="public">
+          <name>BR</name>
+          <briefdescription>
+<para>Brazil. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9732ed743bb46c4d031d7430d1c39673" prot="public">
+          <name>BS</name>
+          <briefdescription>
+<para>Bahamas. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a3881c7c0874904bf68cdd5e9d68dab13" prot="public">
+          <name>BT</name>
+          <briefdescription>
+<para>Bhutan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a7a5fe50b88322d2f1c4ec6f1941ebf46" prot="public">
+          <name>BV</name>
+          <briefdescription>
+<para>Bouvet Island. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aee823c4654eb332712189ff3705b04a7" prot="public">
+          <name>BW</name>
+          <briefdescription>
+<para>Botswana. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aa1f8671fe2a6fed3a3084010105d8ad0" prot="public">
+          <name>BY</name>
+          <briefdescription>
+<para>Belarus. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad7b27206990bc1b4d3c04755ede44ad0" prot="public">
+          <name>BZ</name>
+          <briefdescription>
+<para>Belize. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a24ae4790c41c3a420c2a9fc672b22d23" prot="public">
+          <name>CA</name>
+          <briefdescription>
+<para>Canada. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a2aa5881b0f4d71051681d33b23fdc9a2" prot="public">
+          <name>CC</name>
+          <briefdescription>
+<para>Cocos Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a99b0e5c2e42a335d4a85eadda74ba7d2" prot="public">
+          <name>CD</name>
+          <briefdescription>
+<para>Congo, the Democratic Republic of the. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5d85174de126e6814ca141f229c09f38" prot="public">
+          <name>CF</name>
+          <briefdescription>
+<para>Central African Republic. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ab8cc62e4ad97a883e7538b09d5d877ec" prot="public">
+          <name>CG</name>
+          <briefdescription>
+<para>Congo. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ae8123e86982e0211c9030d299dcdfcfd" prot="public">
+          <name>CH</name>
+          <briefdescription>
+<para>Switzerland. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5c8e12bacc8bac420355f93cb423caef" prot="public">
+          <name>CI</name>
+          <briefdescription>
+<para>Cote D&apos;Ivoire. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aa8f4336b516d3a729e8de40390ffc62e" prot="public">
+          <name>CK</name>
+          <briefdescription>
+<para>Cook Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a0a45d5b3162b6bf6c36b5d4798bcf9ae" prot="public">
+          <name>CL</name>
+          <briefdescription>
+<para>Chile. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a4c5f074bace86ad658508419097f2981" prot="public">
+          <name>CM</name>
+          <briefdescription>
+<para>Cameroon. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aa1c2ee9053d29cbb8c6e2935bffc9056" prot="public">
+          <name>CN</name>
+          <briefdescription>
+<para>China. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aa5cf7bdde880a9dee437cfddbee17b76" prot="public">
+          <name>CO</name>
+          <briefdescription>
+<para>Colombia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a37ee028628259a6fadf5d95c1ce7cfea" prot="public">
+          <name>CR</name>
+          <briefdescription>
+<para>Costa Rica. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5e292a24136674093ab00f618458682e" prot="public">
+          <name>CU</name>
+          <briefdescription>
+<para>Cuba. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5217a7b051c348b4295f2d3eb7201385" prot="public">
+          <name>CV</name>
+          <briefdescription>
+<para>Cape Verde. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ae23ec1252fd042ddf0a490ae21c0d70c" prot="public">
+          <name>CX</name>
+          <briefdescription>
+<para>Christmas Island. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a6e6e7823a218d451efd9841304000557" prot="public">
+          <name>CY</name>
+          <briefdescription>
+<para>Cyprus. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a6c56e2cb01fb24a8553974abe078fe74" prot="public">
+          <name>CZ</name>
+          <briefdescription>
+<para>Czech Republic. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad62365b422f8d7c18fe7fb78109669bd" prot="public">
+          <name>DE</name>
+          <briefdescription>
+<para>Germany. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a0e629dda1b2bd9fa99cdbaac6d66634e" prot="public">
+          <name>DJ</name>
+          <briefdescription>
+<para>Djibouti. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a6ea8f5fcb7bff43bc232916a3f9d2fc2" prot="public">
+          <name>DK</name>
+          <briefdescription>
+<para>Denmark. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a41647c53c5f9664ad74a42f90d4c826e" prot="public">
+          <name>DM</name>
+          <briefdescription>
+<para>Dominica. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504af8961c9463731c5d08d97a0da2c4e6e0" prot="public">
+          <name>DO</name>
+          <briefdescription>
+<para>Dominican Republic. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5c5a46fc13a9af78dd3fcb2ea51d21f3" prot="public">
+          <name>DZ</name>
+          <briefdescription>
+<para>Algeria. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504acef430fc9e8a5148c3c711a66c16961c" prot="public">
+          <name>EC</name>
+          <briefdescription>
+<para>Ecuador. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a7801aca5573ef42df3abb38ae6df40f9" prot="public">
+          <name>EE</name>
+          <briefdescription>
+<para>Estonia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a338a52c0bc5a4f6adf3fbc354f3cd8fa" prot="public">
+          <name>EG</name>
+          <briefdescription>
+<para>Egypt. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a30c074a55ed2b8c26c96f85a9c038c60" prot="public">
+          <name>EH</name>
+          <briefdescription>
+<para>Western Sahara. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5b84c0b725dbc6fc595d006dbf59d468" prot="public">
+          <name>ER</name>
+          <briefdescription>
+<para>Eritrea. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aeb0c37d3c3f1614b5146a0e608c66221" prot="public">
+          <name>ES</name>
+          <briefdescription>
+<para>Spain. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aa27d9c10d44880976d4bb9f2550d0fcb" prot="public">
+          <name>ET</name>
+          <briefdescription>
+<para>Ethiopia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aaf1e50667792d991f6009e476062b348" prot="public">
+          <name>FI</name>
+          <briefdescription>
+<para>Finland. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504af113ee3c3623728c5ea4f0ebe9c30a1a" prot="public">
+          <name>FJ</name>
+          <briefdescription>
+<para>Fiji. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5a1f86c58da2b954afc2c19ea6d52fe8" prot="public">
+          <name>FK</name>
+          <briefdescription>
+<para>Falkland Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9c4e266350564517b0c926121b41e265" prot="public">
+          <name>FM</name>
+          <briefdescription>
+<para>Micronesia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a063a579f02707fb314ce0bb1ebf5e498" prot="public">
+          <name>FO</name>
+          <briefdescription>
+<para>Faroe Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aacc307c14ca3c751b475df08e73fddb5" prot="public">
+          <name>FR</name>
+          <briefdescription>
+<para>France. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a222bd962ddb346a112195b4b18c991db" prot="public">
+          <name>GA</name>
+          <briefdescription>
+<para>Gabon. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a12758933a580f022fd5fbe31457bba88" prot="public">
+          <name>GB</name>
+          <briefdescription>
+<para>United Kingdom. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a45ded622723920714d8ea23cfe3cbdeb" prot="public">
+          <name>GD</name>
+          <briefdescription>
+<para>Grenada. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a1b32e79857f621d457a0570dbc9ad867" prot="public">
+          <name>GE</name>
+          <briefdescription>
+<para>Georgia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a544afde4a2a7f1fc3a84c327ad4248dc" prot="public">
+          <name>GF</name>
+          <briefdescription>
+<para>French Guiana. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aade776ba0eba19d81d96891213a968a7" prot="public">
+          <name>GG</name>
+          <briefdescription>
+<para>Guernsey. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504af5dd9849c96db60cfca71767d322a553" prot="public">
+          <name>GH</name>
+          <briefdescription>
+<para>Ghana. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a86b9056d0b32bead3555d535bcf3859c" prot="public">
+          <name>GI</name>
+          <briefdescription>
+<para>Gibraltar. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504accaecfff8fae43387d98b49090d389b4" prot="public">
+          <name>GL</name>
+          <briefdescription>
+<para>Greenland. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a573cf48ccfbe77f2dc2cf60da0653dbf" prot="public">
+          <name>GM</name>
+          <briefdescription>
+<para>Gambia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a58b5415a838a6fa3cf51e565c4020e0f" prot="public">
+          <name>GN</name>
+          <briefdescription>
+<para>Guinea. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a8d2295437d9861b46f0283aff72516c9" prot="public">
+          <name>GP</name>
+          <briefdescription>
+<para>Guadeloupe. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad6f9d4cd7e16647624135ffe0efa9567" prot="public">
+          <name>GQ</name>
+          <briefdescription>
+<para>Equatorial Guinea. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a62d1dbac136cfbd9311b883d98bec558" prot="public">
+          <name>GR</name>
+          <briefdescription>
+<para>Greece. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a6c9a808107bf6ee0247269ced3f3dced" prot="public">
+          <name>GS</name>
+          <briefdescription>
+<para>South Georgia and the South Sandwich Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a8f683922fbe3ea9839544841e8053c58" prot="public">
+          <name>GT</name>
+          <briefdescription>
+<para>Guatemala. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a04ae06d2eb4e6804c34d8d0c4852fd67" prot="public">
+          <name>GU</name>
+          <briefdescription>
+<para>Guam. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504abd252d058168a77459bd53d7f3e11b65" prot="public">
+          <name>GW</name>
+          <briefdescription>
+<para>Guinea-Bissau. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9c30cbc13a49902a00879fb7a36ea74a" prot="public">
+          <name>GY</name>
+          <briefdescription>
+<para>Guyana. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a69892859e147886e803f779b53c5b193" prot="public">
+          <name>HK</name>
+          <briefdescription>
+<para>Hong Kong. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aedb2a51a32863e1dcf7be803b6a70608" prot="public">
+          <name>HM</name>
+          <briefdescription>
+<para>Heard Island and Mcdonald Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504afe610f33eeddb4826351f1cf8d85111c" prot="public">
+          <name>HN</name>
+          <briefdescription>
+<para>Honduras. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a88c06dc3e08ffbe4eba54233824e140d" prot="public">
+          <name>HR</name>
+          <briefdescription>
+<para>Croatia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a3936ebbd8e9c923c36f7f8a56f489df7" prot="public">
+          <name>HT</name>
+          <briefdescription>
+<para>Haiti. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a91ea662b2550c2b809978fa2b5328b5b" prot="public">
+          <name>HU</name>
+          <briefdescription>
+<para>Hungary. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a6a93fe59761d3bf6847737aff7151543" prot="public">
+          <name>ID</name>
+          <briefdescription>
+<para>Indonesia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a52e869c0e409db001e9f1915b8750347" prot="public">
+          <name>IE</name>
+          <briefdescription>
+<para>Ireland. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a1c40eab1b216494a429b77dd6cc535d2" prot="public">
+          <name>IL</name>
+          <briefdescription>
+<para>Israel. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a7de6b44ee684d9bf63bc3d561744a2a2" prot="public">
+          <name>IM</name>
+          <briefdescription>
+<para>Isle of Man. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a42f71541785a938c3abddae10a351daf" prot="public">
+          <name>IN_</name>
+          <briefdescription>
+<para>India [without &apos;_&apos;, it clashes with an identifier on Windows]. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a431ece8a71ac6a367512fb90c88756ad" prot="public">
+          <name>IO</name>
+          <briefdescription>
+<para>British Indian Ocean Territory. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a004adbfe31da7466f8c41d83936b37c0" prot="public">
+          <name>IQ</name>
+          <briefdescription>
+<para>Iraq. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aea98e99c6352f23d53f02a274c9e6e6e" prot="public">
+          <name>IR</name>
+          <briefdescription>
+<para>Iran. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a73fe0d2ad2341a9671a8905659bdf438" prot="public">
+          <name>IS</name>
+          <briefdescription>
+<para>Iceland. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a1e9755df51d0c52de4eff26d16d7d921" prot="public">
+          <name>IT</name>
+          <briefdescription>
+<para>Italy. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a7d062ead9043b4c088a808a09a70b55a" prot="public">
+          <name>JE</name>
+          <briefdescription>
+<para>Jersey. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504acd074a8e965f38c2875154d063c8e6d2" prot="public">
+          <name>JM</name>
+          <briefdescription>
+<para>Jamaica. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a530deb8ca9a70deb192cb34a02f20178" prot="public">
+          <name>JO</name>
+          <briefdescription>
+<para>Jordan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ac2ead978bec7938307d54f5efbaa1776" prot="public">
+          <name>JP</name>
+          <briefdescription>
+<para>Japan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a27fa8789f31940d83b52c3da224851e5" prot="public">
+          <name>KE</name>
+          <briefdescription>
+<para>Kenya. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5fe947d060426f90c639da5187dfa51c" prot="public">
+          <name>KG</name>
+          <briefdescription>
+<para>Kyrgyzstan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a84a18e487fcc9b33ace0b7ace7b3c144" prot="public">
+          <name>KH</name>
+          <briefdescription>
+<para>Cambodia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a4e746a82ba7ff45a314f4f05ac42a53e" prot="public">
+          <name>KI</name>
+          <briefdescription>
+<para>Kiribati. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a029b5f526b510b0597494e48742b521c" prot="public">
+          <name>KM</name>
+          <briefdescription>
+<para>Comoros. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a4b216c5fc4639a8b55f7512a34268ba8" prot="public">
+          <name>KN</name>
+          <briefdescription>
+<para>Saint Kitts and Nevis. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a6e07d7694438415a9d0f714a1300c469" prot="public">
+          <name>KP</name>
+          <briefdescription>
+<para>Korea (Democratic People&apos;s Republic) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504acab6342ce0db8dd57b02fccd7967730c" prot="public">
+          <name>KR</name>
+          <briefdescription>
+<para>Korea. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad675fd2ad5d5fec7e533f02d1157ad90" prot="public">
+          <name>KW</name>
+          <briefdescription>
+<para>Kuwait. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5e3060f15e51badb083246df691d89cc" prot="public">
+          <name>KY</name>
+          <briefdescription>
+<para>Cayman Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a551ebf41529996e5200006e16a0d8108" prot="public">
+          <name>KZ</name>
+          <briefdescription>
+<para>Kazakhstan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a4671394b686ef7ecec7375abe3d0ad64" prot="public">
+          <name>LA</name>
+          <briefdescription>
+<para>Lao. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504abbc3e3df0f6d6371e4d07499bab060d4" prot="public">
+          <name>LB</name>
+          <briefdescription>
+<para>Lebanon. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aed7f42dbf8c90897a2992a0adc37664d" prot="public">
+          <name>LC</name>
+          <briefdescription>
+<para>Saint Lucia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad8598d03797bc2b9df3670d9d8ec1c47" prot="public">
+          <name>LI</name>
+          <briefdescription>
+<para>Liechtenstein. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a1ca146637396146895e2d32d4d42d7df" prot="public">
+          <name>LK</name>
+          <briefdescription>
+<para>Sri Lanka. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a3d42a7fd48104191b88e4c652b37fa8e" prot="public">
+          <name>LR</name>
+          <briefdescription>
+<para>Liberia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a88afedea0415cd5cd7a6086bacb1d7f9" prot="public">
+          <name>LS</name>
+          <briefdescription>
+<para>Lesotho. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a1d8a073775f5cb1fcbe694a98e4f7cfe" prot="public">
+          <name>LT</name>
+          <briefdescription>
+<para>Lithuania. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a46e574158cc11bd4fc935c6fbf51c27d" prot="public">
+          <name>LU</name>
+          <briefdescription>
+<para>Luxembourg. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a871335659b0825124a5576898f76981b" prot="public">
+          <name>LV</name>
+          <briefdescription>
+<para>Latvia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9065555bf800ac85261410efe9aa92e9" prot="public">
+          <name>LY</name>
+          <briefdescription>
+<para>Libyan Arab Jamahiriya. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5ff5afafe2a801fdea7aed737f14900f" prot="public">
+          <name>MA</name>
+          <briefdescription>
+<para>Morocco. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a2873fb421e0b4f56e5606569aa0ed8e0" prot="public">
+          <name>MC</name>
+          <briefdescription>
+<para>Monaco. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a21ab4cbbb3e5d562689902cdbf1fb277" prot="public">
+          <name>MD</name>
+          <briefdescription>
+<para>Moldova. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a4c2f8b7ce5f42f8eae0985a1b39ee37c" prot="public">
+          <name>ME</name>
+          <briefdescription>
+<para>Montenegro. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aed2148733d017bbfa1d140224ad25ecd" prot="public">
+          <name>MF</name>
+          <briefdescription>
+<para>Saint Martin. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a4cd666db021acfe6425af9fbb13e353e" prot="public">
+          <name>MG</name>
+          <briefdescription>
+<para>Madagascar. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ab7536d5aaea369dd2c6c9e7b35d6b804" prot="public">
+          <name>MH</name>
+          <briefdescription>
+<para>Marshall Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a680a7735caeadf7aa4449d7a82d882ae" prot="public">
+          <name>MK</name>
+          <briefdescription>
+<para>Macedonia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a4e671fa05e701b2c6f5e9ef670ca3a2c" prot="public">
+          <name>ML</name>
+          <briefdescription>
+<para>Mali. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a3fafaa1357b6d9295cddfd32e5012d6f" prot="public">
+          <name>MM</name>
+          <briefdescription>
+<para>Myanmar. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a02a029b3ce422bea173e33d8dff5455a" prot="public">
+          <name>MN</name>
+          <briefdescription>
+<para>Mongolia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a0c03c56aabb6c4aefbdb25ee4b268f0f" prot="public">
+          <name>MO</name>
+          <briefdescription>
+<para>Macao. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a87d5d52e316e527f69868adc7e7a55e1" prot="public">
+          <name>MP</name>
+          <briefdescription>
+<para>Northern Mariana Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aaa87953b2d35246b98d7595784e57c52" prot="public">
+          <name>MQ</name>
+          <briefdescription>
+<para>Martinique. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a71b11daf32da2ebbfb6f8f65fb681d5c" prot="public">
+          <name>MR</name>
+          <briefdescription>
+<para>Mauritania. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad54049278c5f7dd6626514fea0712aa6" prot="public">
+          <name>MS</name>
+          <briefdescription>
+<para>Montserrat. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9909c6173e292d4e7e00922df54674ef" prot="public">
+          <name>MT</name>
+          <briefdescription>
+<para>Malta. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aa4fc9e4d2c8aad14a600da5a17f51aae" prot="public">
+          <name>MU</name>
+          <briefdescription>
+<para>Mauritius. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a18c8477e242cd4f1b24dfbbcb1639342" prot="public">
+          <name>MV</name>
+          <briefdescription>
+<para>Maldives. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a560cb8f477a4f3d3f510dbb5a0fbf8a3" prot="public">
+          <name>MW</name>
+          <briefdescription>
+<para>Malawi. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a96bee8f2d3c395420946492d974f3085" prot="public">
+          <name>MX</name>
+          <briefdescription>
+<para>Mexico. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a4aaf2760f25adb9b2ab86f5759ad238b" prot="public">
+          <name>MY</name>
+          <briefdescription>
+<para>Malaysia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504acb997b9eea6f77a86b694dcae7f3ad88" prot="public">
+          <name>MZ</name>
+          <briefdescription>
+<para>Mozambique. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a0031a713036f41075bb450e344b5cca0" prot="public">
+          <name>NA</name>
+          <briefdescription>
+<para>Namibia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aaa71510e0fee0bd98874534e0237bdff" prot="public">
+          <name>NC</name>
+          <briefdescription>
+<para>New Caledonia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504afeafad1aea015e719db25c0088066488" prot="public">
+          <name>NE</name>
+          <briefdescription>
+<para>Niger. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a2169ee05c8192368d826bd1ceafa63e8" prot="public">
+          <name>NF</name>
+          <briefdescription>
+<para>Norfolk Island. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ae74c4cd256b41486253fb3c0232d6ab5" prot="public">
+          <name>NG</name>
+          <briefdescription>
+<para>Nigeria. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a33825c52ceefebc776595a28d5182f21" prot="public">
+          <name>NI</name>
+          <briefdescription>
+<para>Nicaragua. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504abf23c4eede0ca4d5ce77ec5ba9fc2f52" prot="public">
+          <name>NL</name>
+          <briefdescription>
+<para>Netherlands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a8e179430adf1a24e3141510ad61a7f5a" prot="public">
+          <name>NO</name>
+          <briefdescription>
+<para>Norway. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a75704257f2dda5770bfed26adf14aaf0" prot="public">
+          <name>NP</name>
+          <briefdescription>
+<para>Nepal. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a1cdf872fea473c8cd56de45dabca968f" prot="public">
+          <name>NR</name>
+          <briefdescription>
+<para>Nauru. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a547a34cd204d50126ab4bf39d831182e" prot="public">
+          <name>NU</name>
+          <briefdescription>
+<para>Niue. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a48c9a6ec6cefb98fbfcab40770112842" prot="public">
+          <name>NZ</name>
+          <briefdescription>
+<para>New Zealand. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aab2da6a3a63b25bdf41ccf7e4d071559" prot="public">
+          <name>OM</name>
+          <briefdescription>
+<para>Oman. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a753d28c00576aca1c7674a4c69a54d6a" prot="public">
+          <name>PA</name>
+          <briefdescription>
+<para>Panama. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aa9ab45069103d66c1bab5baa2c78fb29" prot="public">
+          <name>PE</name>
+          <briefdescription>
+<para>Peru. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9392f4f9b6e6229a29ac71acdbfdd0a6" prot="public">
+          <name>PF</name>
+          <briefdescription>
+<para>French Polynesia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a04bfeffccbe25d0e2a1b17dab8ddbdcf" prot="public">
+          <name>PG</name>
+          <briefdescription>
+<para>Papua New Guinea. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a986b95b28c865c90d549ee57514e5611" prot="public">
+          <name>PH</name>
+          <briefdescription>
+<para>Philippines. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aacff62d5a2d33e5e935c5f37b543a92c" prot="public">
+          <name>PK</name>
+          <briefdescription>
+<para>Pakistan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a3d1c64e42284df43963b8f847d7ec58c" prot="public">
+          <name>PL</name>
+          <briefdescription>
+<para>Poland. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5133adb53f8a079d3ea194e42754df0e" prot="public">
+          <name>PM</name>
+          <briefdescription>
+<para>Saint Pierre and Miquelon. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a7542b2723864dbde4bc66b10357c6dcd" prot="public">
+          <name>PN</name>
+          <briefdescription>
+<para>Pitcairn. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a8597f1f77a9d05ea9934d93b55061e95" prot="public">
+          <name>PR</name>
+          <briefdescription>
+<para>Puerto Rico. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a1d43edfc34751302285ebc633a5a46d4" prot="public">
+          <name>PS</name>
+          <briefdescription>
+<para>Palestinian Territory. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a7883ed9c7a501ef98219c97cd0733416" prot="public">
+          <name>PT</name>
+          <briefdescription>
+<para>Portugal. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9194312c744a8b21c9e0f2aa7bd8fa8e" prot="public">
+          <name>PW</name>
+          <briefdescription>
+<para>Palau. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a39c71be55aea1a69c4ac23b2190654a8" prot="public">
+          <name>PY</name>
+          <briefdescription>
+<para>Paraguay. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aa5961e29f4cd4c43dff5809b33f47824" prot="public">
+          <name>QA</name>
+          <briefdescription>
+<para>Qatar. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a90e147c4324f6f585f60742887b5189d" prot="public">
+          <name>RE</name>
+          <briefdescription>
+<para>Reunion. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a8ffab5902e429d64cb9a04f5c4ff2cba" prot="public">
+          <name>RO</name>
+          <briefdescription>
+<para>Romania. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9c64d96ad05839cb0ddd3e9d823f4340" prot="public">
+          <name>RS</name>
+          <briefdescription>
+<para>Serbia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a71df50ffb421246e2c2e220c635f8519" prot="public">
+          <name>RU</name>
+          <briefdescription>
+<para>Russian Federation. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a250a1687b0007b1b20f5dad48cc631a4" prot="public">
+          <name>RW</name>
+          <briefdescription>
+<para>Rwanda. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aa50f5bb4e5360e0ff10bd2040a8e7a74" prot="public">
+          <name>SA</name>
+          <briefdescription>
+<para>Saudi Arabia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504af4d20f4edcaa1e0219557b7d5b468a84" prot="public">
+          <name>SB</name>
+          <briefdescription>
+<para>Solomon Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a02f02037cb9220c4d65e111413803697" prot="public">
+          <name>SC</name>
+          <briefdescription>
+<para>Seychelles. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a24e81bfd9129c511f4e9489364e30db5" prot="public">
+          <name>SD</name>
+          <briefdescription>
+<para>Sudan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ae4ab5c627e8ce4a619a66af192da9bf3" prot="public">
+          <name>SE</name>
+          <briefdescription>
+<para>Sweden. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504acdaea080f7c296526c40898882d0a147" prot="public">
+          <name>SG</name>
+          <briefdescription>
+<para>Singapore. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a1ad7116f0b92eb99c1ceae1d03fecb49" prot="public">
+          <name>SH</name>
+          <briefdescription>
+<para>Saint Helena. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a99a28cf44638ed789a3b0cec5c7055b6" prot="public">
+          <name>SI</name>
+          <briefdescription>
+<para>Slovenia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aad02b81066c20fe841e1cf99c8a69153" prot="public">
+          <name>SJ</name>
+          <briefdescription>
+<para>Svalbard and Jan Mayen. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a8ba5a6f1335f579722897d44a8ce7672" prot="public">
+          <name>SK</name>
+          <briefdescription>
+<para>Slovakia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a18bb5cd8f0b01ecfb287a001eaebc898" prot="public">
+          <name>SL</name>
+          <briefdescription>
+<para>Sierra Leone. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a8a0f53c69329f47c6dd891d0bf335ea1" prot="public">
+          <name>SM</name>
+          <briefdescription>
+<para>San Marino. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a42e242e2c924701b0fa83b7eb740449b" prot="public">
+          <name>SN</name>
+          <briefdescription>
+<para>Senegal. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a253636f970bcd601827aaf9dd4483b16" prot="public">
+          <name>SO</name>
+          <briefdescription>
+<para>Somalia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a49ddab0962020675005e12a6a2a520eb" prot="public">
+          <name>SR</name>
+          <briefdescription>
+<para>Suriname. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aae659ac87531a896bd9277a439c95450" prot="public">
+          <name>ST</name>
+          <briefdescription>
+<para>Sao Tome and Principe. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504afa2c50c0b104484eaceb71d5d9251825" prot="public">
+          <name>SV</name>
+          <briefdescription>
+<para>El Salvador. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504afb8e642af94fa91eef3b9f2660a63749" prot="public">
+          <name>SY</name>
+          <briefdescription>
+<para>Syria. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a97e5f8748d2929327fe330850a5c1260" prot="public">
+          <name>SZ</name>
+          <briefdescription>
+<para>Swaziland. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a02a9d4eef7d6490f370da3c612494d76" prot="public">
+          <name>TC</name>
+          <briefdescription>
+<para>Turks and Caicos Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad131f3ef96023157a8936a037b83d213" prot="public">
+          <name>TD</name>
+          <briefdescription>
+<para>Chad. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a0208e4731e8650fe7aceaa5f7f8e9de2" prot="public">
+          <name>TF</name>
+          <briefdescription>
+<para>French Southern Territories. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a330ec86f18df51842ddfb455bca34b7d" prot="public">
+          <name>TG</name>
+          <briefdescription>
+<para>Togo. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ad0437a81b3a3443b311ecfaa8ff5e2b2" prot="public">
+          <name>TH</name>
+          <briefdescription>
+<para>Thailand. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504afea74b3ec18665488faedc31c1dcdec3" prot="public">
+          <name>TJ</name>
+          <briefdescription>
+<para>Tajikistan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504addba30db3200ec36fcc7e21555d8bee6" prot="public">
+          <name>TK</name>
+          <briefdescription>
+<para>Tokelau. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a8f770a9ba562f89b45b17faff363b2ff" prot="public">
+          <name>TL</name>
+          <briefdescription>
+<para>Timor-Leste. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a04fac1de889fd301738d3e7ae9608507" prot="public">
+          <name>TM</name>
+          <briefdescription>
+<para>Turkmenistan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504af1a6c3bc00d928b4c59548e251533b84" prot="public">
+          <name>TN</name>
+          <briefdescription>
+<para>Tunisia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a7b5fb91ace45313b4dcb2011d410d13f" prot="public">
+          <name>TO</name>
+          <briefdescription>
+<para>Tonga. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a037c23d7cfedbcc6b4e95ded8ccd574c" prot="public">
+          <name>TR</name>
+          <briefdescription>
+<para>Turkey. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a01fa80cccd7030461d08f9657314646c" prot="public">
+          <name>TT</name>
+          <briefdescription>
+<para>Trinidad and Tobago. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504af212e7bdab9a3353042124b98a21b1da" prot="public">
+          <name>TV</name>
+          <briefdescription>
+<para>Tuvalu. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504af1f31eab67f055e4367b2b90c88989fd" prot="public">
+          <name>TW</name>
+          <briefdescription>
+<para>Taiwan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ac7af379e676c379828a7ef43aa5224d0" prot="public">
+          <name>TZ</name>
+          <briefdescription>
+<para>Tanzania. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a3f04ddfc08c0ee66ccf2a220c4177517" prot="public">
+          <name>UA</name>
+          <briefdescription>
+<para>Ukraine. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a67c5bb630abb5beef10fd6336e006d09" prot="public">
+          <name>UG</name>
+          <briefdescription>
+<para>Uganda. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ab86897465cf63e7b6fe500a8864ea151" prot="public">
+          <name>UM</name>
+          <briefdescription>
+<para>United States Minor Outlying Islands. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a736c1e610f8a2ee0dea1351178be8e74" prot="public">
+          <name>US</name>
+          <briefdescription>
+<para>United States. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a6187f82152546b5bf42acf6d57c9c467" prot="public">
+          <name>UY</name>
+          <briefdescription>
+<para>Uruguay. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ab5cd1bb79ca4f1d6ac286f9f174b1543" prot="public">
+          <name>UZ</name>
+          <briefdescription>
+<para>Uzbekistan. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a127a8fa9fef79133dbfa4db725cd4fbd" prot="public">
+          <name>VA</name>
+          <briefdescription>
+<para>Vatican. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a8a204f4bb430de6e13ebc937e6462bee" prot="public">
+          <name>VC</name>
+          <briefdescription>
+<para>Saint Vincent and the Grenadines. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a659773cba8fc335164f018d7fa5b8946" prot="public">
+          <name>VE</name>
+          <briefdescription>
+<para>Venezuela. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504aff41e7154cc4fac6ff0367ef93803c03" prot="public">
+          <name>VG</name>
+          <briefdescription>
+<para>Virgin Islands (British) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504afe6d6205feb1abee850c402386ca2d78" prot="public">
+          <name>VI</name>
+          <briefdescription>
+<para>Virgin Islands (USA) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a5493fa39cb69c43066543da2ced8cf0a" prot="public">
+          <name>VN</name>
+          <briefdescription>
+<para>Viet Nam. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a861fc302d7b4e581bde1cb040eff8a30" prot="public">
+          <name>VU</name>
+          <briefdescription>
+<para>Vanuatu. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a4a38aa0dc58dc64d56dcee69202623b5" prot="public">
+          <name>WF</name>
+          <briefdescription>
+<para>Wallis and Futuna. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a987858cb0874b160d9f23482ece0216b" prot="public">
+          <name>WS</name>
+          <briefdescription>
+<para>Samoa. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a538c2643b71b04c8111cb548309b7c34" prot="public">
+          <name>YE</name>
+          <briefdescription>
+<para>Yemen. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a810be1dd3f72ff38b9ba4102a450eda8" prot="public">
+          <name>YT</name>
+          <briefdescription>
+<para>Mayotte. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504ae721c15e4d96478a8124596337e761fa" prot="public">
+          <name>ZA</name>
+          <briefdescription>
+<para>South Africa. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a3b8f8b28dd8c5bada70727358aca86de" prot="public">
+          <name>ZM</name>
+          <briefdescription>
+<para>Zambia. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a84e00e139855ff38ac75bf3d554409f4" prot="public">
+          <name>ZW</name>
+          <briefdescription>
+<para>Zimbabwe. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a9836f0dca3af3fac6c2d93cca29457d8" prot="public">
+          <name>NUM_ENTRIES</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/locale.h" line="225" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/locale.h" bodystart="225" bodyend="474"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Defines constants for all ISO 3166-1 country codes. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/locale.h" line="224"/>
+  </compounddef>
+</doxygen>

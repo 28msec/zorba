@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator" kind="class" prot="public">
+    <compoundname>zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator</compoundname>
+    <derivedcompoundref refid="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator" prot="public" virt="non-virtual">zorba::internal::ztd::has_insertion_operator&lt; T &gt;</derivedcompoundref>
+    <includes refid="ztd_8h" local="no">zorba/internal/ztd.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator_1a0165bc37da29382addcb9a56be74e9a4" prot="private" static="yes" mutable="no">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator&lt; T &gt;::s</definition>
+        <argsstring></argsstring>
+        <name>s</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="135" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator_1a1bf86ea4923264b2477337ab8d0d8811" prot="private" static="yes" mutable="no">
+        <type>T const &amp;</type>
+        <definition>T const&amp; zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator&lt; T &gt;::t</definition>
+        <argsstring></argsstring>
+        <name>t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="136" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="136" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator_1a043cfc829783a905f8bb848fc021e5c3" prot="public" static="yes" mutable="no">
+        <type>bool const</type>
+        <definition>bool const zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator&lt; T &gt;::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> sizeof( <ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1a449972bfdc223eb1c1b73ca85fbbf0d2" kindref="member">defined</ref>( s &lt;&lt; t ) ) == sizeof( <ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1a71a7c7338cfff03861b084e62c3308b1" kindref="member">yes</ref> )</initializer>
+        <briefdescription>
+<para>This is <computeroutput>true</computeroutput> only when the type <computeroutput>T</computeroutput> has a global <computeroutput><ref refid="namespacezorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1af6f8268706824cf6c6ae5326cc90e283" kindref="member">operator&lt;&lt;()</ref></computeroutput> declared for it. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="143" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The implementation class that can be used to determine whether a given type <computeroutput>T</computeroutput> has a global <computeroutput>std::ostream&amp; operator&lt;&lt;(std::ostream&amp;,T const&amp;)</computeroutput> defined for it. </para>    </briefdescription>
+    <detaileddescription>
+<para>However, do not use this class directly.</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type to check. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="647">
+        <label>zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator&lt; T &gt;</label>
+        <link refid="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator"/>
+      </node>
+      <node id="648">
+        <label>zorba::internal::ztd::has_insertion_operator&lt; T &gt;</label>
+        <link refid="structzorba_1_1internal_1_1ztd_1_1has__insertion__operator"/>
+        <childnode refid="647" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="134" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="134" bodyend="144"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator_1a0165bc37da29382addcb9a56be74e9a4" prot="private" virt="non-virtual"><scope>zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator</scope><name>s</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator_1a1bf86ea4923264b2477337ab8d0d8811" prot="private" virt="non-virtual"><scope>zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator</scope><name>t</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1has__insertion__operator__impl_1_1has__insertion__operator_1a043cfc829783a905f8bb848fc021e5c3" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::has_insertion_operator_impl::has_insertion_operator</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

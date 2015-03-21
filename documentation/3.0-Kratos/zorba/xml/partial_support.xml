@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="partial_support" kind="page">
+    <compoundname>partial_support</compoundname>
+    <title>W3Q XQuery 3.0 Partial Support</title>
+    <detaileddescription>
+<para><orderedlist>
+<listitem>
+<para>(DONE) Applied all <ulink url="http://www.w3.org/XML/2007/qt-errata/xquery-errata.html">XQuery 2ed errata</ulink>.  </para></listitem>
+<listitem>
+<para>(DONE) Added <computeroutput>group by</computeroutput> clause to FLWOR Expressions (<ulink url="http://www.w3.org/TR/xquery-30/#id-group-by"><bold>3.9.7 Group By Clause</bold></ulink>).  </para></listitem>
+<listitem>
+<para>(DONE) Added <computeroutput>tumbling window</computeroutput> and <computeroutput>sliding window</computeroutput> in FLWOR Expressions (<ulink url="http://www.w3.org/TR/xquery-30/#id-windows"><bold>3.9.4 Window Clause</bold></ulink>). </para></listitem>
+<listitem>
+<para>(DONE) Added <computeroutput>count</computeroutput> clause in FLWOR Expressions (<ulink url="http://www.w3.org/TR/xquery-30/#id-count"><bold>3.9.6 Count Clause</bold></ulink>). </para></listitem>
+<listitem>
+<para>(DONE) Added <computeroutput>allowing empty</computeroutput> in <ulink url="http://www.w3.org/TR/xquery-30/#id-xquery-for-clause"><bold>3.9.2 For Clause</bold></ulink>, for functionality similar to outer joins in SQL. </para></listitem>
+<listitem>
+<para>(DONE)Added <ulink url="http://www.w3.org/TR/xquery-30/#id-try-catch"><bold>3.14 Try/Catch Expressions</bold></ulink> for handling dynamic errors and type errors. </para></listitem>
+<listitem>
+<para>(DONE see <ref refid="options_and_annotations" kindref="compound">Zorba Specific Options and Annotations</ref>) Added literal function items (<ulink url="http://www.w3.org/TR/xquery-30/#id-literal-func-ref"><bold>3.1.6 Literal Function Items</bold></ulink>). </para></listitem>
+<listitem>
+<para>(DONE see <ref refid="options_and_annotations" kindref="compound">Zorba Specific Options and Annotations</ref>)Added inline functions (<ulink url="http://www.w3.org/TR/xquery-30/#id-inline-func"><bold>3.1.7 Inline Functions</bold></ulink>). </para></listitem>
+<listitem>
+<para>(DONE see <ref refid="options_and_annotations" kindref="compound">Zorba Specific Options and Annotations</ref>)Added dynamic function invocation (<ulink url="http://www.w3.org/TR/xquery-30/#id-dynamic-function-invocation"><bold>3.2.2 Dynamic Function Invocation</bold></ulink>). </para></listitem>
+<listitem>
+<para>(DONE see <ref refid="options_and_annotations" kindref="compound">Zorba Specific Options and Annotations</ref>)Added <ulink url="http://www.w3.org/TR/xquery-30/#id-function-coercion"><bold>3.1.5.3 Function Item Coercion</bold></ulink>. </para></listitem>
+<listitem>
+<para>(DONE)Added private functions (<ulink url="http://www.w3.org/TR/xquery-30/#FunctionDeclns"><bold>4.18 Function Declaration</bold></ulink>). </para></listitem>
+<listitem>
+<para>(DONE) Added switch expressions (<ulink url="http://www.w3.org/TR/xquery-30/#id-switch"><bold>3.12 Switch Expression</bold></ulink>) </para></listitem>
+<listitem>
+<para>(DONE) Added computed namespace constructors (<ulink url="http://www.w3.org/TR/xquery-30/#id-computed-namespaces"><bold>3.8.3.7 Computed Namespace Constructors</bold></ulink>). </para></listitem>
+<listitem>
+<para>(DONE) Added output declarations (<ulink url="http://www.w3.org/TR/xquery-30/#id-serialization"><bold>2.2.4 Serialization</bold></ulink>). </para></listitem>
+<listitem>
+<para>(DONE) Added annotations (<ulink url="http://www.w3.org/TR/xquery-30/#id-annotations"><bold>4.15 Annotations</bold></ulink>). </para></listitem>
+<listitem>
+<para>(DONE) Modified <ulink url="http://www.w3.org/TR/xquery-30/#doc-xquery30-ValidateExpr">validate expressions</ulink> to allow validation against a type that is explicitly specified in the query using the <computeroutput>type</computeroutput> keyword. </para></listitem>
+<listitem>
+<para>(DONE) Extended <ulink url="http://www.w3.org/TR/xquery-30/#doc-xquery30-VarDecl">variable declarations</ulink> to allow default values for external variables. </para></listitem>
+<listitem>
+<para>(DONE) Added <ulink url="http://www.w3.org/TR/xquery-30/#id-context-item-declarations"><bold>4.17 Context Item Declaration</bold></ulink>. </para></listitem>
+<listitem>
+<para>(DONE) Modified <ulink url="http://www.w3.org/TR/xquery-30/#id-version-declaration"><bold>4.1 Version Declaration</bold></ulink> to add support for XQuery 3.0. </para></listitem>
+<listitem>
+<para>(DONE) Added <ulink url="http://www.w3.org/TR/xquery-30/#id-decimal-format-decl"><bold>4.10 Decimal-Format Declaration</bold></ulink> to allow a query to specify formats for <computeroutput>fn:format-number()</computeroutput>. Added corresponding properties to the static context. </para></listitem>
+<listitem>
+<para>(DONE) Modified <computeroutput>derives-from()</computeroutput> in <ulink url="http://www.w3.org/TR/xquery-30/#id-sequencetype-matching"><bold>2.5.5 SequenceType Matching</bold></ulink> to support union types. </para></listitem>
+<listitem>
+<para>(DONE) Added support for literal URLs in names, using <ulink url="http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName">EQNames</ulink>. </para></listitem>
+<listitem>
+<para>(DONE) Added support for XML Schema 1.1. </para></listitem>
+<listitem>
+<para>(DONE) Added support for union types in function arguments. </para></listitem>
+<listitem>
+<para>(NOT DONE) Allowed serialization options to be specified as an XDM instance using output declarations. See <ulink url="http://www.w3.org/TR/xquery-30/#id-serialization"><bold>2.2.4 Serialization</bold></ulink>. </para></listitem>
+<listitem>
+<para>(DONE) Added support for private variables. </para></listitem>
+<listitem>
+<para>(DONE) Added support for casting to union types. </para></listitem>
+</orderedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

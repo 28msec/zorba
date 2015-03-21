@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacestd" kind="namespace">
+    <compoundname>std</compoundname>
+    <innerclass refid="structstd_1_1default__delete" prot="public">std::default_delete</innerclass>
+    <innerclass refid="structstd_1_1default__delete_3_01T[]_4" prot="public">std::default_delete&lt; T[]&gt;</innerclass>
+    <innerclass refid="structstd_1_1enable__if" prot="public">std::enable_if</innerclass>
+    <innerclass refid="structstd_1_1enable__if_3_01true_00_01T_01_4" prot="public">std::enable_if&lt; true, T &gt;</innerclass>
+    <innerclass refid="classstd_1_1unique__ptr" prot="public">std::unique_ptr</innerclass>
+    <innerclass refid="classstd_1_1unique__ptr_3_01T[]_00_01D_01_4" prot="public">std::unique_ptr&lt; T[], D &gt;</innerclass>
+    <innerclass refid="classstd_1_1unique__ptr__storage" prot="public">std::unique_ptr_storage</innerclass>
+    <innerclass refid="classstd_1_1unique__ptr__storage_3_01T_00_01D_00_01true_01_4" prot="public">std::unique_ptr_storage&lt; T, D, true &gt;</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacestd_1ae27ad1e46de908333a2e28e540ea0b46" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">enable_if</ref>&lt;!<ref refid="structzorba_1_1internal_1_1is__movable" kindref="compound">zorba::internal::is_movable</ref>&lt; T &gt;::value, T &amp; &gt;::type</type>
+        <definition>enable_if&lt;!zorba::internal::is_movable&lt;T&gt;::value,T&amp;&gt;::type std::move</definition>
+        <argsstring>(T &amp;t)</argsstring>
+        <name>move</name>
+        <param>
+          <type>T &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="38" bodyend="40"/>
+        <referencedby refid="classstd_1_1unique__ptr_1a2fcbd0e8ec3aa619f444bc25d11675b1" compoundref="unique__ptr_8h" startline="299" endline="303">std::unique_ptr&lt; iterator &gt;::operator=</referencedby>
+        <referencedby refid="classstd_1_1unique__ptr_3_01T[]_00_01D_01_4_1aadb40ef8a13498e0efb2bcbeb404f75f" compoundref="unique__ptr_8h" startline="483" endline="487">std::unique_ptr&lt; T[], D &gt;::operator=</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1ab6626d6e4aa2e2573574d37ddb78e4a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">enable_if</ref>&lt; <ref refid="structzorba_1_1internal_1_1is__movable" kindref="compound">zorba::internal::is_movable</ref>&lt; T &gt;::value, <ref refid="classzorba_1_1internal_1_1rv" kindref="compound">zorba::internal::rv</ref>&lt; T &gt; &amp; &gt;::type</type>
+        <definition>enable_if&lt;zorba::internal::is_movable&lt;T&gt;::value, zorba::internal::rv&lt;T&gt;&amp;&gt;::type std::move</definition>
+        <argsstring>(T const &amp;t)</argsstring>
+        <name>move</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="45" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="45" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1af96b536519dd8795107ca11028ed7ad4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">enable_if</ref>&lt; <ref refid="structzorba_1_1internal_1_1is__movable" kindref="compound">zorba::internal::is_movable</ref>&lt; T &gt;::value, <ref refid="classzorba_1_1internal_1_1rv" kindref="compound">zorba::internal::rv</ref>&lt; T &gt; &amp; &gt;::type</type>
+        <definition>enable_if&lt;zorba::internal::is_movable&lt;T&gt;::value, zorba::internal::rv&lt;T&gt;&amp;&gt;::type std::move</definition>
+        <argsstring>(zorba::internal::rv&lt; T &gt; &amp;t)</argsstring>
+        <name>move</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1rv" kindref="compound">zorba::internal::rv</ref>&lt; T &gt; &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="52" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="52" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1ada12521e7f242af25ad3d79a6ad41401" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;o, const zorba::SequenceType &amp;ti)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1SequenceType" kindref="compound">zorba::SequenceType</ref> &amp;</type>
+          <declname>ti</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="323"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1acd87da1112cea0863abd9a33f6658592" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;o, const zorba::SequenceType::Kind k)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1SequenceType_1aa5b3a42cb01cd9aa4316c0daee0a6bb5" kindref="member">zorba::SequenceType::Kind</ref></type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="325"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1af405afcae022462ac9a2fcb8ab925364" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC ostream &amp;</type>
+        <definition>ZORBA_DLL_PUBLIC ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;o, const zorba::SequenceType::Quantifier q)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1SequenceType_1ae9fb0dd89c8d26fc5619d481ed76d066" kindref="member">zorba::SequenceType::Quantifier</ref></type>
+          <declname>q</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/typeident.h" line="326"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1aafbcaca1306bb08270264881f31f120f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename D</type>
+          </param>
+          <param>
+            <type>bool</type>
+            <declname>IsEmpty</declname>
+            <defname>IsEmpty</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void std::swap</definition>
+        <argsstring>(unique_ptr_storage&lt; T, D, IsEmpty &gt; &amp;a, unique_ptr_storage&lt; T, D, IsEmpty &gt; &amp;b)</argsstring>
+        <name>swap</name>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr__storage" kindref="compound">unique_ptr_storage</ref>&lt; T, D, IsEmpty &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr__storage" kindref="compound">unique_ptr_storage</ref>&lt; T, D, IsEmpty &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="141" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="140" bodyend="144"/>
+        <references refid="classstd_1_1unique__ptr__storage_1a5c05e9eb3289b4c9ec181ac1dad1d291" compoundref="unique__ptr_8h" startline="84" endline="86">std::unique_ptr_storage&lt; T, D, bool &gt;::deleter</references>
+        <references refid="classstd_1_1unique__ptr__storage_1a678bc2a961446be7cb37ba112efe096f" compoundref="unique__ptr_8h" startline="70">std::unique_ptr_storage&lt; T, D, bool &gt;::ptr_</references>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1adbe8c1e1d587385493a3076064b111b2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename D</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void std::swap</definition>
+        <argsstring>(unique_ptr&lt; T, D &gt; &amp;a, unique_ptr&lt; T, D &gt; &amp;b)</argsstring>
+        <name>swap</name>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref>&lt; T, D &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type><ref refid="classstd_1_1unique__ptr" kindref="compound">unique_ptr</ref>&lt; T, D &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="578" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="578" bodyend="580"/>
+        <references refid="classstd_1_1unique__ptr_1a9d972355cbc02ff72735e29aa771e197" compoundref="unique__ptr_8h" startline="408" endline="410">std::unique_ptr&lt; T, D &gt;::swap</references>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/type_traits.h" line="31"/>
+  </compounddef>
+</doxygen>

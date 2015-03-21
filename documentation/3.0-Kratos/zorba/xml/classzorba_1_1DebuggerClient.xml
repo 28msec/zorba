@@ -1,0 +1,1324 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1DebuggerClient" kind="class" prot="public">
+    <compoundname>zorba::DebuggerClient</compoundname>
+    <includes refid="debugger__client_8h" local="no">zorba/debugger_client.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5" prot="public" static="no">
+        <name>BreakpointType</name>
+        <enumvalue id="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5a449be603424022ccab148b400d0c3e8d" prot="public">
+          <name>Line</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5ae642808c18fa8c8b13b0927225edb68c" prot="public">
+          <name>Call</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5aa02fb98383619a82e727ff328890e075" prot="public">
+          <name>Return</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5a9d9ee655a7c2f06ab336cc6c85c5daa7" prot="public">
+          <name>Exception</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5a359786b53b81cbb25fb445c10143984c" prot="public">
+          <name>Conditional</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5a6f516ce54a191cfd1ff8a020ec417397" prot="public">
+          <name>Watch</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="75" bodyfile="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" bodystart="75" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="enum" id="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60" prot="public" static="no">
+        <name>HitCondition</name>
+        <enumvalue id="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60a0b484f3a7d69256930a3eb6e65092cec" prot="public">
+          <name>BiggerEqual</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60ac17019e41858bf8ab8c608446d47e043" prot="public">
+          <name>Equal</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60a05e3fef6186a10f30d79ca2467974af6" prot="public">
+          <name>Multiple</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="83" bodyfile="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" bodystart="83" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="enum" id="classzorba_1_1DebuggerClient_1a3bcce3aa9ac72c12b0bfeb3dd10fb6ce" prot="public" static="no">
+        <name>OutputStream</name>
+        <enumvalue id="classzorba_1_1DebuggerClient_1a3bcce3aa9ac72c12b0bfeb3dd10fb6ceaa96ec766026ce02a7cf85b038bd3f692" prot="public">
+          <name>Stdout</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1a3bcce3aa9ac72c12b0bfeb3dd10fb6cea088277f278f602281e01598638593057" prot="public">
+          <name>Stderr</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1a3bcce3aa9ac72c12b0bfeb3dd10fb6cea6f36edce00511b3d3ecc3e1d68d29970" prot="public">
+          <name>Stdin</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="88" bodyfile="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" bodystart="88" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="enum" id="classzorba_1_1DebuggerClient_1a7c2c00c068ea404dcf0d7a775d601e83" prot="public" static="no">
+        <name>StreamBehaviour</name>
+        <enumvalue id="classzorba_1_1DebuggerClient_1a7c2c00c068ea404dcf0d7a775d601e83a3ee6ff804c3370c1e4fa3b070ad8c351" prot="public">
+          <name>Disable</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1a7c2c00c068ea404dcf0d7a775d601e83afcf7d050a09d8b15a90f900e983449ab" prot="public">
+          <name>CopyData</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1DebuggerClient_1a7c2c00c068ea404dcf0d7a775d601e83a82a4b76e90a9647d283af938eb9b8f7b" prot="public">
+          <name>Redirection</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="93" bodyfile="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" bodystart="93" bodyend="97"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a67b7e5c183e25ca2f61c16ff323efcf2" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1DebuggerClient" kindref="compound">DebuggerClient</ref> *</type>
+        <definition>static DebuggerClient* zorba::DebuggerClient::createDebuggerClient</definition>
+        <argsstring>(DebuggerEventHandler *aHandler, unsigned short aPort, const std::string &amp;aHost)</argsstring>
+        <name>createDebuggerClient</name>
+        <param>
+          <type><ref refid="classzorba_1_1DebuggerEventHandler" kindref="compound">DebuggerEventHandler</ref> *</type>
+          <declname>aHandler</declname>
+        </param>
+        <param>
+          <type>unsigned short</type>
+          <declname>aPort</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aHost</declname>
+        </param>
+        <briefdescription>
+<para>creates a new instance of a <ref refid="classzorba_1_1DebuggerClient" kindref="compound">DebuggerClient</ref> implementation. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The event handler, where answered should get delivered to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aPort</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The port the client should listen to. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHost</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the host the client should listen to </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A <ref refid="classzorba_1_1DebuggerClient" kindref="compound">DebuggerClient</ref> implementation. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="71"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1aaa808ab1cdc347ec4e1d69a33c36d745" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DebuggerClient::accept</definition>
+        <argsstring>()=0</argsstring>
+        <name>accept</name>
+        <briefdescription>
+<para>Waits for a debug engine to attach. </para>        </briefdescription>
+        <detaileddescription>
+<para>This method blocks until a debug engine attaches and sends the init message. After that process, the appropriate method in the DebugHandler gets called. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a6eb6704f2a6559794125e92a4f8a3c93" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::breakpoint_get</definition>
+        <argsstring>(std::size_t aBreakpointId)=0</argsstring>
+        <name>breakpoint_get</name>
+        <param>
+          <type>std::size_t</type>
+          <declname>aBreakpointId</declname>
+        </param>
+        <briefdescription>
+<para>Get information about a breakpoint. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aBreakpointId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The id of the breakpoint. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="336"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a70cf465f62841488e9803e37a0614576" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::breakpoint_list</definition>
+        <argsstring>()=0</argsstring>
+        <name>breakpoint_list</name>
+        <briefdescription>
+<para>Query all breakpoints. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="370"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1abd9d30cd9d9019e6846c9d124a11f9ad" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::breakpoint_remove</definition>
+        <argsstring>(std::size_t aBreakpointId)=0</argsstring>
+        <name>breakpoint_remove</name>
+        <param>
+          <type>std::size_t</type>
+          <declname>aBreakpointId</declname>
+        </param>
+        <briefdescription>
+<para>Remove a breakpoint. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aBreakpointId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The id of the breakpoint. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="363"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1aec86ee88c77f10492c000a9c3c5ed0a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::breakpoint_set</definition>
+        <argsstring>(BreakpointType aType, bool aEnabled=true, const std::string &amp;aFilename=&quot;&quot;, int aLinenumber=-1, const std::string &amp;aFunctionName=&quot;&quot;, const std::string &amp;aExceptionName=&quot;&quot;, unsigned hit_value=0, HitCondition aCondition=BiggerEqual, bool aIsTemporary=false, const std::string &amp;aExpression=&quot;&quot;)=0</argsstring>
+        <name>breakpoint_set</name>
+        <param>
+          <type><ref refid="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5" kindref="member">BreakpointType</ref></type>
+          <declname>aType</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>aEnabled</declname>
+          <defval>true</defval>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aFilename</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aLinenumber</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aFunctionName</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aExceptionName</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>hit_value</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60" kindref="member">HitCondition</ref></type>
+          <declname>aCondition</declname>
+          <defval><ref refid="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60a0b484f3a7d69256930a3eb6e65092cec" kindref="member">BiggerEqual</ref></defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>aIsTemporary</declname>
+          <defval>false</defval>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aExpression</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Send a command to the debug engine to set a new breakpoint. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the breakpoint (line, call, return etc.). </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aEnabled</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Should the breakpoint be enabled? </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLinenumber</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The line number where to set the breakpoint. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aFilename</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The file where a breakpoint should be set. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aFunctionName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the function where to break (only to be used if aType == Call || aType == Return) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aExceptionName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the exception to break (only to be used if aType == Exception) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>hit_value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A numeric value used together with the hit_condition to determine if the breakpoint should pause execution or be skipped. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCondition</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The condition used together with &apos;hit_value&apos; (default is &apos;&gt;=&apos;) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aIsTemporary</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag to define if breakpoint is temporary. A temporary breakpoint is one that is deleted after its first use. This is useful for features like &quot;Run
+                     to Cursor&quot;. Once the debugger engine uses a temporary breakpoint, it should automatically remove the breakpoint from it&apos;s list of valid breakpoints. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aExpression</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>code expression, in the language of the debugger engine. The breakpoint should activate when the evaluated code evaluates to true. (required for conditional breakpoint types) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="328"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a87560d5e8db0d7a3f4174a6ad329a639" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::breakpoint_update</definition>
+        <argsstring>(std::size_t aBreakpointId, bool aEnabled=true, int aLinenumber=-1, unsigned hit_value=0, HitCondition aCondition=BiggerEqual)=0</argsstring>
+        <name>breakpoint_update</name>
+        <param>
+          <type>std::size_t</type>
+          <declname>aBreakpointId</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>aEnabled</declname>
+          <defval>true</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aLinenumber</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>hit_value</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60" kindref="member">HitCondition</ref></type>
+          <declname>aCondition</declname>
+          <defval><ref refid="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60a0b484f3a7d69256930a3eb6e65092cec" kindref="member">BiggerEqual</ref></defval>
+        </param>
+        <briefdescription>
+<para>Send a command to the debug engine to update a breakpoint. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aBreakpointId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The id of the breakpoint. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aEnabled</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Should the breakpoint be enabled? </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aLinenumber</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The line number where to set the breakpoint. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>hit_value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A numeric value used together with the hit_condition to determine if the breakpoint should pause execution or be skipped. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCondition</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The condition used together with &apos;hit_value&apos; (default is &apos;&gt;=&apos;) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="355"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1ac984f3111dda1472d76c6958c2ed7246" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::context_get</definition>
+        <argsstring>(int depth=-1, int contextId=-1)=0</argsstring>
+        <name>context_get</name>
+        <param>
+          <type>int</type>
+          <declname>depth</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>contextId</declname>
+          <defval>-1</defval>
+        </param>
+        <briefdescription>
+<para>Get the context at a given stack depth. </para>        </briefdescription>
+        <detaileddescription>
+<para>Returns an array of properties in a given context at a given stack depth. If the stack depth is omitted, the current stack depth is used. If the context name is omitted, the context with an id zero is used (generally the &apos;locals&apos; context).</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>depth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The depth on which to quey (optional) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>contextId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The contextId (optional) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="410"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1ad1bccb51c1a9387b85a0eb00a8e85dd8" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::context_names</definition>
+        <argsstring>(int depth=-1)=0</argsstring>
+        <name>context_names</name>
+        <param>
+          <type>int</type>
+          <declname>depth</declname>
+          <defval>-1</defval>
+        </param>
+        <briefdescription>
+<para>Get the context names at a given stack depth. </para>        </briefdescription>
+        <detaileddescription>
+<para>The context names are the names in which variables are (like global, local etc.).</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>depth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The depth on which to quey (optional) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="396"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1af9a1a4dbe78a65982e42d2ff8d3f0658" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::detach</definition>
+        <argsstring>()=0</argsstring>
+        <name>detach</name>
+        <briefdescription>
+<para>Send the detach command to the debug engine. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="289"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1ad3bda0bde52f2e6f8b843a5f6ee0c7b2" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::do_break</definition>
+        <argsstring>()=0</argsstring>
+        <name>do_break</name>
+        <briefdescription>
+<para>Tell the debug engine to stop execution as fast as possible. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="519"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1acba5a290cf7fd911ed029ff603e5c558" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::eval</definition>
+        <argsstring>(const std::string &amp;aExpr)=0</argsstring>
+        <name>eval</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aExpr</declname>
+        </param>
+        <briefdescription>
+<para>Evaluates an expression. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aExpr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The expression to evaluate. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="527"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1adb8f9ff7c3fcf8b0b527cf1263368628" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::feature_get</definition>
+        <argsstring>(const std::string &amp;aFeatureName)=0</argsstring>
+        <name>feature_get</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aFeatureName</declname>
+        </param>
+        <briefdescription>
+<para>Query the debug engine for supported features. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aFeatureName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the feature to query for. values that must be supported by the debug engine are: <itemizedlist>
+<listitem>
+<para>language_supports_threads  </para></listitem>
+<listitem>
+<para>language_name  </para></listitem>
+<listitem>
+<para>language_version  </para></listitem>
+<listitem>
+<para>encoding  </para></listitem>
+<listitem>
+<para>protocol_version  </para></listitem>
+<listitem>
+<para>supports_async  </para></listitem>
+<listitem>
+<para>data_encoding  </para></listitem>
+<listitem>
+<para>breakpoint_languages  </para></listitem>
+<listitem>
+<para>breakpoint_types  </para></listitem>
+</itemizedlist>
+</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="209"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1af8bd35524524f29aa6b3026ef71f49c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::feature_set</definition>
+        <argsstring>(const std::string &amp;aFeatureName, const std::string &amp;aValue)=0</argsstring>
+        <name>feature_set</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aFeatureName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aValue</declname>
+        </param>
+        <briefdescription>
+<para>Set a specific feature of the engine. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aFeatureName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the feature to query for. Values that must be supported by the debug engine are: <itemizedlist>
+<listitem>
+<para>encoding  </para></listitem>
+<listitem>
+<para>multiple_sessions  </para></listitem>
+<listitem>
+<para>max_children  </para></listitem>
+<listitem>
+<para>max_children  </para></listitem>
+<listitem>
+<para>max_depth  </para></listitem>
+</itemizedlist>
+</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The value of the feature </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="237"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a367c82dd72055485c3b8ec8f75dc0ef8" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::property_get</definition>
+        <argsstring>(const std::string &amp;aPropertyLongName, int aStackDepth=-1, int aContextId=-1, std::size_t aMaxDataSize=0, int aDatapage=-1, const std::string &amp;aPropertyKey=&quot;&quot;)=0</argsstring>
+        <name>property_get</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aPropertyLongName</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aStackDepth</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aContextId</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>std::size_t</type>
+          <declname>aMaxDataSize</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aDatapage</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aPropertyKey</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Get a property. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aPropertyLongName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>roperty long name (required) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aStackDepth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>stack depth (optional) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aContextId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The context id for which to query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMaxDataSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The maximal size of the data sent back from the debug engine. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDatapage</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aPropertyKey</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="445"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a937457eef882777966ec2dbaf10624b4" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::property_set</definition>
+        <argsstring>(const std::string &amp;aPropertyLongName, int aStackDepth=-1, int aContextId=-1, std::size_t aMaxDataSize=0, const std::string &amp;aPropertyAddress=&quot;&quot;)=0</argsstring>
+        <name>property_set</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aPropertyLongName</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aStackDepth</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aContextId</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>std::size_t</type>
+          <declname>aMaxDataSize</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aPropertyAddress</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Set a property. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aPropertyLongName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>roperty long name (required) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aStackDepth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>stack depth (optional) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aContextId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The context id for which to query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMaxDataSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The maximal size of the data sent back from the debug engine. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aPropertyAddress</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>property address as retrieved in a property element (optional). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="463"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a71d909888a7507e7dadf9cc4bb51a3ee" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::property_value</definition>
+        <argsstring>(const std::string &amp;aPropertyLongName, int aStackDepth=-1, int aContextId=-1, std::size_t aMaxDataSize=0, int aDatapage=-1, const std::string &amp;aPropertyKey=&quot;&quot;, const std::string &amp;aPropertyAddress=&quot;&quot;)=0</argsstring>
+        <name>property_value</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aPropertyLongName</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aStackDepth</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aContextId</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>std::size_t</type>
+          <declname>aMaxDataSize</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>aDatapage</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aPropertyKey</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aPropertyAddress</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Get the value of a property. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aPropertyLongName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>roperty long name (required) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aStackDepth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>stack depth (optional) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aContextId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The context id for which to query. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aMaxDataSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The maximal size of the data sent back from the debug engine. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDatapage</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aPropertyKey</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>property key as retrieved in a property element (optional) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aPropertyAddress</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>property address as retrieved in a property element (optional). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="486"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1ae4854a2d91acb38a55a0dc906193eb8f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::DebuggerClient::quit</definition>
+        <argsstring>()=0</argsstring>
+        <name>quit</name>
+        <briefdescription>
+<para>Tells the client to quit. </para>        </briefdescription>
+        <detaileddescription>
+<para>This method blocks until the client quit successfully. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="533"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a7003a0818765fef2362c83718c50445b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::run</definition>
+        <argsstring>()=0</argsstring>
+        <name>run</name>
+        <briefdescription>
+<para>Send the run command to the debug engine. </para>        </briefdescription>
+        <detaileddescription>
+<para>Sending this command to the debug engine makes the debug engine to start if possible. Otherwise it must report an error.</para><para><simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="247"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a1bef79c053513c554ba491203eb5d0ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::source</definition>
+        <argsstring>(const std::string &amp;aFile, unsigned aBeginLine=0, unsigned aEndLine=0)=0</argsstring>
+        <name>source</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aFile</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>aBeginLine</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>aEndLine</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>List the source code at a given position. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aFile</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The URI of the file the debug engine should deliver. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aBeginLine</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The starting point on which line the debug engine should start to read. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aEndLine</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The line number where the debug engine should stop reading from the file. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="498"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1ae35b0ae6d8e9dcf797527f309d8e415f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::stack_depth</definition>
+        <argsstring>()=0</argsstring>
+        <name>stack_depth</name>
+        <briefdescription>
+<para>Get the depth of the stack. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="377"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a3b065f742703f0aae14ffdf9f5bd9c7a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::stack_get</definition>
+        <argsstring>(int depth=-1)=0</argsstring>
+        <name>stack_get</name>
+        <param>
+          <type>int</type>
+          <declname>depth</declname>
+          <defval>-1</defval>
+        </param>
+        <briefdescription>
+<para>Get information about the stack at a given depth. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>depth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The depth on which to quey (optional) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="385"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a660b8906e4deced4c0914d216e7bc497" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::status</definition>
+        <argsstring>()=0</argsstring>
+        <name>status</name>
+        <briefdescription>
+<para>The status command is a simple way for the IDE to find out from the debugger engine whether execution may be continued or not. </para>        </briefdescription>
+        <detaileddescription>
+<para>no body is required on request. If async support has been negotiated using feature_get/set the status command may be sent while the debugger engine is in a &apos;run state&apos;.</para><para>The status attribute values of the response may be:</para><para><itemizedlist>
+<listitem>
+<para>starting: State prior to execution of any code  </para></listitem>
+<listitem>
+<para>stopping: State after completion of code execution. This typically happens at the end of code execution, allowing the IDE to further interact with the debugger engine (for example, to collect performance data, or use other extended commands).  </para></listitem>
+<listitem>
+<para>stopped: IDE is detached from process, no further interaction is possible.  </para></listitem>
+<listitem>
+<para>running: code is currently executing. Note that this state would only be seen with async support turned on, otherwise the typical state during IDE/debugger interaction would be &apos;break&apos;  </para></listitem>
+<listitem>
+<para>break: code execution is paused, for whatever reason (see below), and the IDE/debugger can pass information back and forth.  </para></listitem>
+</itemizedlist>
+The reason attribute value may be:</para><para><itemizedlist>
+<listitem>
+<para>ok  </para></listitem>
+<listitem>
+<para>error  </para></listitem>
+<listitem>
+<para>aborted  </para></listitem>
+<listitem>
+<para>exception  </para></listitem>
+</itemizedlist>
+</para><para><simplesect kind="return"><para>The id of the request. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="164"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a63c14b33780b24f0fc43c11bb0e3bcf5" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::step_into</definition>
+        <argsstring>()=0</argsstring>
+        <name>step_into</name>
+        <briefdescription>
+<para>Send the step into command to the debug engine. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="254"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a7adb3ced1af19da8b3be5a71a8eb6f23" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::step_out</definition>
+        <argsstring>()=0</argsstring>
+        <name>step_out</name>
+        <briefdescription>
+<para>Send the step out command to the debug engine. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="261"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1acf57a810ccf4fc07ba0f558e8b2d7a1f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::step_over</definition>
+        <argsstring>()=0</argsstring>
+        <name>step_over</name>
+        <briefdescription>
+<para>Send the step over command to the debug engine. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="268"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a95ed2a3f8d6f1d1a5d85a833565ab15f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::stop</definition>
+        <argsstring>(bool withQuit)=0</argsstring>
+        <name>stop</name>
+        <param>
+          <type>bool</type>
+          <declname>withQuit</declname>
+        </param>
+        <briefdescription>
+<para>Send the stop command to the debug engine. </para>        </briefdescription>
+        <detaileddescription>
+<para>This command tells the debug engine, that it should break the execution at the next point possible.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>withQuit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>This is a <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> extension of the DBGP protocol that controls if the client should terminate execution and quit (true) or only terminate execution but not quit (false). This is used by command line clients that implement multiple query runs. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="282"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1ae50e004335e699961187779a9258d2f8" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::stream_option</definition>
+        <argsstring>(OutputStream aStream, StreamBehaviour aBehaviour)=0</argsstring>
+        <name>stream_option</name>
+        <param>
+          <type><ref refid="classzorba_1_1DebuggerClient_1a3bcce3aa9ac72c12b0bfeb3dd10fb6ce" kindref="member">OutputStream</ref></type>
+          <declname>aStream</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1DebuggerClient_1a7c2c00c068ea404dcf0d7a775d601e83" kindref="member">StreamBehaviour</ref></type>
+          <declname>aBehaviour</declname>
+        </param>
+        <briefdescription>
+<para>Setting a stream option. </para>        </briefdescription>
+        <detaileddescription>
+<para>This method is used to tell the debug engine how to handle I/O. The debug engine either reads and writes from/to stdin/stdout or it can also copy it to the client or it can read/write everything from the client.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aStream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Specifies for which stream the option should be changed. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aBehaviour</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Specifies which behaviour the debug client should have for reading/writing. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="512"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1ac2001b3a0b4d040e2665964c7a16a7dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::typemap_get</definition>
+        <argsstring>()=0</argsstring>
+        <name>typemap_get</name>
+        <briefdescription>
+<para>Get a mapping of types. </para>        </briefdescription>
+        <detaileddescription>
+<para>The IDE calls this command to get information on how to map language specific type names (as received in the property element returned by the context_get, and property_* commands). The debugger engine returns all data types that it supports. There may be multiple map elements with the same type attribute value, but the name value must be unique. This allows a language to map multiple language specific types into one of the common data types (eg. float and double can both be mapped to float).</para><para><simplesect kind="return"><para>The id of this request </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="426"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a8686d1b62e0d3531e1ba3845f168f6a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::size_t</type>
+        <definition>virtual std::size_t zorba::DebuggerClient::variables</definition>
+        <argsstring>()=0</argsstring>
+        <name>variables</name>
+        <briefdescription>
+<para>Get the variables in all the contexts in the topmost stack frame. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The id of the request. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="171"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerClient_1a26c0c955a55f93e053e165cc399e84dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::DebuggerClient::~DebuggerClient</definition>
+        <argsstring>()</argsstring>
+        <name>~DebuggerClient</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="73"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A DBGP client implementation for commands. </para>    </briefdescription>
+    <detaileddescription>
+<para>This is the client implementation for sending commands according to the specification of DBGP. DBGP is used as the default communication format in the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> debugger. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" line="59" bodyfile="/home/wcandillon/deadlinks/include/zorba/debugger_client.h" bodystart="59" bodyend="534"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1DebuggerClient_1aaa808ab1cdc347ec4e1d69a33c36d745" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>accept</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60a0b484f3a7d69256930a3eb6e65092cec" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>BiggerEqual</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a6eb6704f2a6559794125e92a4f8a3c93" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>breakpoint_get</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a70cf465f62841488e9803e37a0614576" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>breakpoint_list</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1abd9d30cd9d9019e6846c9d124a11f9ad" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>breakpoint_remove</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1aec86ee88c77f10492c000a9c3c5ed0a8" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>breakpoint_set</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a87560d5e8db0d7a3f4174a6ad329a639" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>breakpoint_update</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>BreakpointType</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5ae642808c18fa8c8b13b0927225edb68c" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Call</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5a359786b53b81cbb25fb445c10143984c" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Conditional</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ac984f3111dda1472d76c6958c2ed7246" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>context_get</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ad1bccb51c1a9387b85a0eb00a8e85dd8" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>context_names</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a7c2c00c068ea404dcf0d7a775d601e83afcf7d050a09d8b15a90f900e983449ab" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>CopyData</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a67b7e5c183e25ca2f61c16ff323efcf2" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>createDebuggerClient</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1af9a1a4dbe78a65982e42d2ff8d3f0658" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>detach</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a7c2c00c068ea404dcf0d7a775d601e83a3ee6ff804c3370c1e4fa3b070ad8c351" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Disable</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ad3bda0bde52f2e6f8b843a5f6ee0c7b2" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>do_break</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60ac17019e41858bf8ab8c608446d47e043" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Equal</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1acba5a290cf7fd911ed029ff603e5c558" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>eval</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5a9d9ee655a7c2f06ab336cc6c85c5daa7" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Exception</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1adb8f9ff7c3fcf8b0b527cf1263368628" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>feature_get</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1af8bd35524524f29aa6b3026ef71f49c4" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>feature_set</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>HitCondition</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5a449be603424022ccab148b400d0c3e8d" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Line</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a8c82c293190a96fafcfa7bf25e7e0e60a05e3fef6186a10f30d79ca2467974af6" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Multiple</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a3bcce3aa9ac72c12b0bfeb3dd10fb6ce" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>OutputStream</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a367c82dd72055485c3b8ec8f75dc0ef8" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>property_get</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a937457eef882777966ec2dbaf10624b4" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>property_set</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a71d909888a7507e7dadf9cc4bb51a3ee" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>property_value</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ae4854a2d91acb38a55a0dc906193eb8f" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>quit</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a7c2c00c068ea404dcf0d7a775d601e83a82a4b76e90a9647d283af938eb9b8f7b" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Redirection</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5aa02fb98383619a82e727ff328890e075" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Return</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a7003a0818765fef2362c83718c50445b" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>run</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a1bef79c053513c554ba491203eb5d0ff" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>source</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ae35b0ae6d8e9dcf797527f309d8e415f" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>stack_depth</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a3b065f742703f0aae14ffdf9f5bd9c7a" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>stack_get</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a660b8906e4deced4c0914d216e7bc497" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>status</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a3bcce3aa9ac72c12b0bfeb3dd10fb6cea088277f278f602281e01598638593057" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Stderr</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a3bcce3aa9ac72c12b0bfeb3dd10fb6cea6f36edce00511b3d3ecc3e1d68d29970" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Stdin</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a3bcce3aa9ac72c12b0bfeb3dd10fb6ceaa96ec766026ce02a7cf85b038bd3f692" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Stdout</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a63c14b33780b24f0fc43c11bb0e3bcf5" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>step_into</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a7adb3ced1af19da8b3be5a71a8eb6f23" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>step_out</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1acf57a810ccf4fc07ba0f558e8b2d7a1f" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>step_over</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a95ed2a3f8d6f1d1a5d85a833565ab15f" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>stop</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ae50e004335e699961187779a9258d2f8" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>stream_option</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a7c2c00c068ea404dcf0d7a775d601e83" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>StreamBehaviour</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ac2001b3a0b4d040e2665964c7a16a7dc" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>typemap_get</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a8686d1b62e0d3531e1ba3845f168f6a8" prot="public" virt="pure-virtual"><scope>zorba::DebuggerClient</scope><name>variables</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1ab53b8fd20c000145dff39fa7061a78a5a6f516ce54a191cfd1ff8a020ec417397" prot="public" virt="non-virtual"><scope>zorba::DebuggerClient</scope><name>Watch</name></member>
+      <member refid="classzorba_1_1DebuggerClient_1a26c0c955a55f93e053e165cc399e84dc" prot="public" virt="virtual"><scope>zorba::DebuggerClient</scope><name>~DebuggerClient</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

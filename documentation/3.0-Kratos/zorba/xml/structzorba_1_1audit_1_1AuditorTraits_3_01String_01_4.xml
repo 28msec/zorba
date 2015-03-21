@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4" kind="struct" prot="public">
+    <compoundname>zorba::audit::AuditorTraits&lt; String &gt;</compoundname>
+    <includes refid="audit__scoped_8h" local="no">zorba/audit_scoped.h</includes>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1a313cd526e6c55e057a6b8b3e0d9fbc17" prot="public" static="no">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>typedef String zorba::audit::AuditorTraits&lt; String &gt;::audit_type</definition>
+        <argsstring></argsstring>
+        <name>audit_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="123" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="123" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1a0b4fc9f790038b530a13efe6144148e4" prot="public" static="no">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>typedef String zorba::audit::AuditorTraits&lt; String &gt;::value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="122" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="122" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1aaa26f519c05f11917b7bd47fb5bcebcc" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1a313cd526e6c55e057a6b8b3e0d9fbc17" kindref="member">audit_type</ref></type>
+        <definition>static audit_type zorba::audit::AuditorTraits&lt; String &gt;::end</definition>
+        <argsstring>(value_type &amp;value)</argsstring>
+        <name>end</name>
+        <param>
+          <type><ref refid="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1a0b4fc9f790038b530a13efe6144148e4" kindref="member">value_type</ref> &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="126" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="126" bodyend="128"/>
+      </memberdef>
+      <memberdef kind="function" id="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1a3eae8c8206ec0fc252ca63ee6e3ecb0d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void zorba::audit::AuditorTraits&lt; String &gt;::start</definition>
+        <argsstring>(value_type &amp;value)</argsstring>
+        <name>start</name>
+        <param>
+          <type><ref refid="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1a0b4fc9f790038b530a13efe6144148e4" kindref="member">value_type</ref> &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="124" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="124" bodyend="125"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" line="121" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit_scoped.h" bodystart="121" bodyend="129"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1a313cd526e6c55e057a6b8b3e0d9fbc17" prot="public" virt="non-virtual"><scope>zorba::audit::AuditorTraits&lt; String &gt;</scope><name>audit_type</name></member>
+      <member refid="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1aaa26f519c05f11917b7bd47fb5bcebcc" prot="public" virt="non-virtual"><scope>zorba::audit::AuditorTraits&lt; String &gt;</scope><name>end</name></member>
+      <member refid="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1a3eae8c8206ec0fc252ca63ee6e3ecb0d" prot="public" virt="non-virtual"><scope>zorba::audit::AuditorTraits&lt; String &gt;</scope><name>start</name></member>
+      <member refid="structzorba_1_1audit_1_1AuditorTraits_3_01String_01_4_1a0b4fc9f790038b530a13efe6144148e4" prot="public" virt="non-virtual"><scope>zorba::audit::AuditorTraits&lt; String &gt;</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

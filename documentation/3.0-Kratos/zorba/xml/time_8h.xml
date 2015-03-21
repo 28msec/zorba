@@ -1,0 +1,306 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="time_8h" kind="file">
+    <compoundname>time.h</compoundname>
+    <includes local="no">zorba/config.h</includes>
+    <includes refid="time_8h" local="no">time.h</includes>
+    <includes local="no">sys/time.h</includes>
+    <includedby refid="dynamic__context_8h" local="no">dynamic_context.h</includedby>
+    <includedby refid="time_8h" local="no">time.h</includedby>
+    <includedby refid="timer_8h" local="no">timer.h</includedby>
+    <incdepgraph>
+      <node id="2279">
+        <label>time.h</label>
+        <link refid="time.h"/>
+        <childnode refid="2280" relation="include">
+        </childnode>
+        <childnode refid="2279" relation="include">
+        </childnode>
+        <childnode refid="2281" relation="include">
+        </childnode>
+      </node>
+      <node id="2281">
+        <label>sys/time.h</label>
+      </node>
+      <node id="2280">
+        <label>zorba/config.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2284">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="2285" relation="include">
+        </childnode>
+      </node>
+      <node id="2282">
+        <label>time.h</label>
+        <link refid="time.h"/>
+        <childnode refid="2283" relation="include">
+        </childnode>
+        <childnode refid="2282" relation="include">
+        </childnode>
+        <childnode refid="2286" relation="include">
+        </childnode>
+      </node>
+      <node id="2283">
+        <label>dynamic_context.h</label>
+        <link refid="dynamic__context_8h"/>
+        <childnode refid="2284" relation="include">
+        </childnode>
+      </node>
+      <node id="2286">
+        <label>timer.h</label>
+        <link refid="timer_8h"/>
+        <childnode refid="2287" relation="include">
+        </childnode>
+      </node>
+      <node id="2285">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="2284" relation="include">
+        </childnode>
+      </node>
+      <node id="2287">
+        <label>audit_scoped.h</label>
+        <link refid="audit__scoped_8h"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <innernamespace refid="namespacezorba_1_1time">zorba::time</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_UTIL_TIME_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_UTIL_TIME_H</highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="22"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/>*<sp/>This<sp/>header<sp/>includes<sp/>utility<sp/>functions<sp/>for<sp/>certain<sp/>timing-related</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/>*<sp/>operations,<sp/>namely<sp/>getting<sp/>current<sp/>wall-clock<sp/>time<sp/>and<sp/>current</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/>*<sp/>CPU-used<sp/>time<sp/>values<sp/>in<sp/>a<sp/>platform-dependent<sp/>fashion,<sp/>and<sp/>computing</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/>*<sp/>deltas<sp/>for<sp/>both<sp/>types.</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/>*<sp/>Types:</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/>*<sp/><sp/><sp/>cputime<sp/>-<sp/>type<sp/>representing<sp/>CPU<sp/>time<sp/>utilized<sp/>thus<sp/>far<sp/>by<sp/>this<sp/>process</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/>*<sp/><sp/><sp/>walltime<sp/>-<sp/>type<sp/>representing<sp/>wall-clock<sp/>time<sp/>since<sp/>some</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/>platform-dependent<sp/>epoch</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/>*<sp/>Function<sp/>signatures:</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/>*<sp/><sp/><sp/>void<sp/>get_current_cputime(cputime&amp;<sp/>t)<sp/>-<sp/>returns<sp/>current<sp/>CPU<sp/>time</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/>*<sp/><sp/><sp/>double<sp/>get_cputime_elapsed(const<sp/>cputime&amp;<sp/>t0,<sp/>const<sp/>cputime&amp;<sp/>t1)<sp/>-</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/>calculates<sp/>elapsed<sp/>CPU<sp/>time<sp/>(in<sp/>ms)<sp/>between<sp/>two<sp/>cputimes</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/>*<sp/><sp/><sp/>void<sp/>get_current_walltime(walltime&amp;<sp/>t)<sp/>-<sp/>returns<sp/>current<sp/>wall-clock<sp/>time</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/>*<sp/><sp/><sp/>double<sp/>get_walltime_elapsed(const<sp/>walltime&amp;<sp/>t0,<sp/>const<sp/>walltime&amp;<sp/>t1)<sp/>-</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/>calculates<sp/>elapsed<sp/>wall-clock<sp/>time<sp/>(in<sp/>ms)<sp/>between<sp/>two<sp/>walltimes</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="45"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/>*<sp/>TODO<sp/>These<sp/>functions<sp/>should<sp/>probably<sp/>be<sp/>defined<sp/>in<sp/>a<sp/>.cpp<sp/>file</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/>*<sp/>somewhere<sp/>rather<sp/>than<sp/>here<sp/>in<sp/>time.h;<sp/>as<sp/>it<sp/>is<sp/>they<sp/>will<sp/>be</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/>*<sp/>compiled<sp/>into<sp/>every<sp/>.o<sp/>that<sp/>uses<sp/>them.<sp/>So<sp/>far,<sp/>though,<sp/>this<sp/>is<sp/>only</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/>*<sp/>zorbacmd<sp/>and<sp/>the<sp/>implementation<sp/>of<sp/>fn:doc(),<sp/>so<sp/>it&apos;s<sp/>not<sp/>too<sp/>bad.</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/></highlight></codeline>
+<codeline lineno="53"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">time</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Large<sp/>enough<sp/>to<sp/>hold<sp/>number<sp/>of<sp/>milliseconds<sp/>since<sp/>epoch.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>ZORBA_SIZEOF_LONG<sp/>&lt;=<sp/>4</highlight></codeline>
+<codeline lineno="60" refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" refkind="member"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" kindref="member">msec_type</ref>;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight></codeline>
+<codeline lineno="62"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" kindref="member">msec_type</ref>;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_SIZEOF_LONG<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Types<sp/>and<sp/>functions<sp/>for<sp/>CPU<sp/>time</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>(defined(ZORBA_HAVE_CLOCKGETTIME_FUNCTION)<sp/>&amp;<sp/>defined(_POSIX_CPUTIME))</highlight></codeline>
+<codeline lineno="72"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="time_8h" kindref="compound">time.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timespec<sp/><ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a869147130cdaf6bfdd1e000ea450c795" kindref="member">get_cputime_elapsed</ref><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>&amp;<sp/>t0,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>&amp;<sp/>t1)</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>((t1.tv_sec<sp/>-<sp/>t0.tv_sec)<sp/>*<sp/>1000.0)<sp/>+</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((t1.tv_nsec<sp/>-<sp/>t0.tv_nsec)<sp/>/<sp/>1000000.0);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1ac8827a784c789b31ac9028755def5a93" kindref="member">get_current_cputime</ref><sp/>(<ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>&amp;<sp/>t)</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>clock_gettime(CLOCK_PROCESS_CPUTIME_ID,<sp/>&amp;t);</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight><highlight class="preprocessor">#elif<sp/>defined(ZORBA_HAVE_RUSAGE_FUNCTION)</highlight></codeline>
+<codeline lineno="89"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;sys/time.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;sys/resource.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timeval<sp/><ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>;</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a869147130cdaf6bfdd1e000ea450c795" kindref="member">get_cputime_elapsed</ref><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>&amp;<sp/>t0,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>&amp;<sp/>t1)<sp/></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>((t1.tv_sec<sp/>-<sp/>t0.tv_sec)<sp/>*<sp/>1000.0)<sp/>+</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((t1.tv_usec<sp/>-<sp/>t0.tv_usec)<sp/>/<sp/>1000.0);</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1ac8827a784c789b31ac9028755def5a93" kindref="member">get_current_cputime</ref><sp/>(<ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>&amp;<sp/>t)<sp/></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">rusage<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae5aafcb2393e7de89998667725e8de8c" kindref="member" tooltip="Russian.">ru</ref>;</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>getrusage<sp/>(RUSAGE_SELF,<sp/>&amp;<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae5aafcb2393e7de89998667725e8de8c" kindref="member" tooltip="Russian.">ru</ref>);</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>t<sp/>=<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae5aafcb2393e7de89998667725e8de8c" kindref="member" tooltip="Russian.">ru</ref>.ru_utime;</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight><highlight class="preprocessor">#else<sp/></highlight><highlight class="comment">/*<sp/>no<sp/>rusage,<sp/>no<sp/>clock_gettime<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="time_8h" kindref="compound">time.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight></codeline>
+<codeline lineno="112" refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>clock_t<sp/><ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>;</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114" refid="namespacezorba_1_1time_1a869147130cdaf6bfdd1e000ea450c795" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a869147130cdaf6bfdd1e000ea450c795" kindref="member">get_cputime_elapsed</ref><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>&amp;<sp/>t0,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>&amp;<sp/>t1)<sp/></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">)<sp/>(t1<sp/>-<sp/>t0)<sp/>/<sp/>(CLOCKS_PER_SEC<sp/>/<sp/>1000);</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight></codeline>
+<codeline lineno="119" refid="namespacezorba_1_1time_1ac8827a784c789b31ac9028755def5a93" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1ac8827a784c789b31ac9028755def5a93" kindref="member">get_current_cputime</ref><sp/>(<ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref>&amp;<sp/>t)</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>t<sp/>=<sp/>clock<sp/>();</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_HAVE_CLOCKGETTIME_FUNCTION<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="125"><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Types<sp/>and<sp/>functions<sp/>for<sp/>wall-clock<sp/>time</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(ZORBA_HAVE_CLOCKGETTIME_FUNCTION)</highlight></codeline>
+<codeline lineno="134"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="time_8h" kindref="compound">time.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timespec<sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>;</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1acf8aa217268ef4e07c68109e41990e6e" kindref="member">get_walltime_elapsed</ref><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t0,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t1)</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>((t1.tv_sec<sp/>-<sp/>t0.tv_sec)<sp/>*<sp/>1000.0)<sp/>+</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((t1.tv_nsec<sp/>-<sp/>t0.tv_nsec)<sp/>/<sp/>1000000.0);</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a23cfcc09d5f09c2d2c8dbd2f4529fe33" kindref="member">get_current_walltime</ref><sp/>(<ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t)</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>_POSIX_MONOTONIC_CLOCK</highlight></codeline>
+<codeline lineno="148"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>clock_gettime(CLOCK_MONOTONIC,<sp/>&amp;t);</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight></codeline>
+<codeline lineno="150"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>clock_gettime(CLOCK_REALTIME,<sp/>&amp;t);</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>_POSIX_MONOTONIC_CLOCK<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" kindref="member">msec_type</ref><sp/><ref refid="namespacezorba_1_1time_1a566508b5bb8897b1fed69f87489fcef5" kindref="member">get_walltime_in_millis</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t)</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>t.tv_sec<sp/>*<sp/>(<ref refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" kindref="member">msec_type</ref>)1000<sp/>+<sp/>t.tv_nsec<sp/>/<sp/>1000000;</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"></highlight><highlight class="preprocessor">#elif<sp/>defined(WIN32)</highlight></codeline>
+<codeline lineno="160"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>TODO:<sp/>Should<sp/>maybe<sp/>use<sp/>QueryPerformanceCounter()<sp/>or</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>GetSystemTimeAsFileTime()<sp/>for<sp/>this,<sp/>rather<sp/>than<sp/>ftime(),<sp/>but<sp/>I</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>don&apos;t<sp/>know<sp/>enough<sp/>about<sp/>any<sp/>of<sp/>these<sp/>alternatives<sp/>to<sp/>choose</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>one.<sp/>See<sp/>http://msdn.microsoft.com/en-us/magazine/cc163996.aspx<sp/>.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="165"><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;sys/timeb.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="167"><highlight class="normal"></highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>WINCE</highlight></codeline>
+<codeline lineno="169"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timeb<sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>;</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight></codeline>
+<codeline lineno="171"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">_timeb<sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>;</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>WINCE<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="173"><highlight class="normal"></highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1acf8aa217268ef4e07c68109e41990e6e" kindref="member">get_walltime_elapsed</ref><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t0,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t1)<sp/></highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>((t1.time<sp/>-<sp/>t0.time)<sp/>*<sp/>1000.0)<sp/>+<sp/>(t1.millitm<sp/>-<sp/>t0.millitm);</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a23cfcc09d5f09c2d2c8dbd2f4529fe33" kindref="member">get_current_walltime</ref><sp/>(<ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t)<sp/></highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>WINCE</highlight></codeline>
+<codeline lineno="182"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>ftime(&amp;t);</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight></codeline>
+<codeline lineno="184"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>_ftime_s(&amp;t);</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>WINCE<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" kindref="member">msec_type</ref><sp/><ref refid="namespacezorba_1_1time_1a566508b5bb8897b1fed69f87489fcef5" kindref="member">get_walltime_in_millis</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t)</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>t.time<sp/>*<sp/>(<ref refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" kindref="member">msec_type</ref>)1000<sp/>+<sp/>t.millitm;</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"></highlight></codeline>
+<codeline lineno="193"><highlight class="normal"></highlight><highlight class="preprocessor">#else<sp/></highlight><highlight class="comment">/*<sp/>not<sp/>Windows,<sp/>and<sp/>no<sp/>clock_gettime()<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="194"><highlight class="normal"></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="time_8h" kindref="compound">time.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="196"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;sys/time.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"></highlight></codeline>
+<codeline lineno="198" refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timeval<sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>;</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"></highlight></codeline>
+<codeline lineno="200" refid="namespacezorba_1_1time_1acf8aa217268ef4e07c68109e41990e6e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1acf8aa217268ef4e07c68109e41990e6e" kindref="member">get_walltime_elapsed</ref><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t0,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t1)<sp/></highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>((t1.tv_sec<sp/>-<sp/>t0.tv_sec)<sp/>*<sp/>1000.0)<sp/>+</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((t1.tv_usec<sp/>-<sp/>t0.tv_usec)<sp/>/<sp/>1000.0);</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"></highlight></codeline>
+<codeline lineno="206" refid="namespacezorba_1_1time_1a23cfcc09d5f09c2d2c8dbd2f4529fe33" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a23cfcc09d5f09c2d2c8dbd2f4529fe33" kindref="member">get_current_walltime</ref><sp/>(<ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t)</highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>gettimeofday(&amp;t,<sp/>NULL);</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="211" refid="namespacezorba_1_1time_1a566508b5bb8897b1fed69f87489fcef5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" kindref="member">msec_type</ref><sp/><ref refid="namespacezorba_1_1time_1a566508b5bb8897b1fed69f87489fcef5" kindref="member">get_walltime_in_millis</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref>&amp;<sp/>t)</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>t.tv_sec<sp/>*<sp/>(<ref refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" kindref="member">msec_type</ref>)1000<sp/>+<sp/>t.tv_usec<sp/>/<sp/>1000;</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"></highlight></codeline>
+<codeline lineno="216"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_HAVE_CLOCKGETTIME_FUNCTION<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="217"><highlight class="normal"></highlight></codeline>
+<codeline lineno="218"><highlight class="normal"><sp/><sp/>}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>time</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="219"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namesace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight></codeline>
+<codeline lineno="221"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_UTIL_TIME_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="222"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="223"><highlight class="comment"><sp/>*<sp/>Local<sp/>variables:</highlight></codeline>
+<codeline lineno="224"><highlight class="comment"><sp/>*<sp/>mode:<sp/>c++</highlight></codeline>
+<codeline lineno="225"><highlight class="comment"><sp/>*<sp/>End:</highlight></codeline>
+<codeline lineno="226"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="227"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/time.h"/>
+  </compounddef>
+</doxygen>

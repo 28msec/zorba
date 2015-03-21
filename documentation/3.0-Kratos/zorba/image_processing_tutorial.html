@@ -1,0 +1,123 @@
+<div class="doxygen">
+  <div><h1 class="title">Image Processing with Zorba</h1>
+<div id="image_proc" class="sect1"><h2>Image Representation And Formats</h2>
+<div id="images" class="sect2"><h3>Images</h3>
+Images are passed to the functions of the imaging library as xs:base64Binary types and any function returning an image will return it as xs:base64Binary type. For example, images read by the Zorba file module are already returned as xs:base64Binary and are ready to be used. Also, images written to disk using the file module will be ordinary binary data if one passes <tt>binary</tt> as serialization option.</div>
+<div id="image_formats" class="sect2"><h3>Image Formats</h3>
+Currently, the imaging library supports the following popular image formats: GIF, JPEG, TIFF, PNG and SVG. If any other format is needed, please contact us and we will see if it is possible to support the format.</div>
+<div id="functions" class="sect2"><h3>Functions</h3>
+All functions provided by the image library are functional and will either return the right value or raise an error. The library additionally offers interfaces with schema types in the function signatures (<tt>basicschema.xq</tt>, <tt>manipulationschema.xq</tt>, <tt>paintschema.xq</tt>, <tt>animationschema.xq</tt>) which can be used to directly validate certain types (e.g. color strings).</div>
+<div id="colors" class="sect2"><h3>Colors</h3>
+Colors are represented as strings in the same way they are used in html. A leading '#' character with 6 hexadecimal numbers following for red, green and blue values.Examples are:<ul>
+<li>Black: #000000</li><li>Red: #FF00000</li><li>Green: #00FF00</li><li>Blue: #0000FF</li></ul>
+</div>
+<div id="modules" class="sect2"><h3>Modules</h3>
+Zorba provides the following four modules for image processing:<ul>
+<li><a href="/modules/latest/www.zorba-xquery.com/modules/image/basic" target="_blank">http://www.zorba-xquery.com/modules/image/basic</a> which is concerned with accessing basic image attributes, creating new images and converting their format.</li><li><a href="/modules/latest/www.zorba-xquery.com/modules/image/manipulation" target="_blank">http://www.zorba-xquery.com/modules/image/manipulation</a> which is concerned with image manipulations like zooming, special effects etc.</li><li><a href="/modules/latest/www.zorba-xquery.com/modules/image/paint" target="_blank">http://www.zorba-xquery.com/modules/image/paint</a> which is concerned with drawing different geometrical shapes and text to images.</li><li><a href="/modules/latest/www.zorba-xquery.com/modules/image/animation" target="_blank">http://www.zorba-xquery.com/modules/image/animation</a> which is concerned with creating animated GIF images.</li></ul>
+This tutorial contains a small example for each of the modules.</div>
+</div>
+<div id="basic_imaging_functions" class="sect1"><h2>Basic Imaging Functions</h2>
+<div id="creating_an_image" class="sect2"><h3>Creating An Image</h3>
+In this example, we create a new image and return the width and type (image format) of the newly created image.<pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">basic<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/basic"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal">let<span> </span>$new-image<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0">as</a><span> </span>xs:base64Binary<span> </span>:=<span> </span>basic:create(xs:unsignedInt(100),<span> </span>xs:unsignedInt(100),<span> </span></span><span class="stringliteral">"GIF"</span><span class="normal">)</span>
+<span class="normal">let<span> </span>$width<span> </span>:=<span> </span>basic:width($new-image)</span>
+<span class="normal">let<span> </span>$format<span> </span>:=<span> </span>basic:<a href="/pages/3.0/zorba/namespacezorba_1_1time_1_1calendar?anchor=a7c8c84a1ed5401ddae49da3f01861c87">type</a>($new-image)</span>
+<span class="normal">return<span> </span>($width,<span> </span>$format)</span>
+</pre></div>
+<div id="explanation" class="sect2"><h3>Explanation</h3>
+In line 3 <b>$new-image</b> is assigned the result of the basic:create command, so <b>$new-image</b> contains the xs:base64Binary representation of a plain white GIF image.In line 4 we use the basic:width command with new-image as argument to get the width of the image and in line 5 the basic:type function to get the format which are both passed back in line 6.</div>
+<div id="expected_output" class="sect2"><h3>Expected Output</h3>
+<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;?xml<span> </span>version=</span><span class="stringliteral">"1.0"</span><span class="normal"><span> </span>encoding=</span><span class="stringliteral">"UTF-8"</span><span class="normal">?&gt;</span>
+<span class="normal">100<span> </span>GIF</span>
+</pre></div>
+<div id="accessing_efix_information" class="sect2"><h3>Accessing Exif Information</h3>
+This example shows how to access the Exif information in JPEG images (also possible with TIFF images).<pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">http<span> </span>=<span> </span></span><span class="stringliteral">"http://expath.org/ns/http-client"</span><span class="normal">;</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">basic<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/basic"</span><span class="normal">;</span>
+<span class="normal">declare<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">h<span> </span>=<span> </span></span><span class="stringliteral">"http://expath.org/ns/http-client"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal">(:<span> </span>Get<span> </span>image<span> </span>from<span> </span>web<span> </span>:)</span>
+<span class="normal">let<span> </span>$req<span> </span>:=<span> </span>&lt;h:request<span> </span>method=</span><span class="stringliteral">"GET"</span><span class="normal"><span> </span></span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>href=</span><span class="stringliteral">"http://www.zorba-xquery.com/tutorials/tutorialimages/exif.jpg"</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>auth-method=</span><span class="stringliteral">"Basic"</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>send-authorization=</span><span class="stringliteral">"true"</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>username=</span><span class="stringliteral">"zorba"</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>password=</span><span class="stringliteral">"blub"</span><span class="normal">&gt;&lt;/h:request&gt;</span>
+<span class="normal">let<span> </span>$res<span> </span>:=<span> </span>http:read($req,<span> </span>())[2]</span>
+<span class="normal">(:<span> </span>Using<span> </span>Image<span> </span>Library<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba">to</a><span> </span>extract<span> </span>exif<span> </span>tag<span> </span>:)</span>
+<span class="normal"/><span class="keywordflow">return</span><span class="normal"><span> </span>basic:exif($res,<span> </span></span><span class="stringliteral">"DateTimeOriginal"</span><span class="normal">)</span>
+</pre></div>
+<div id="explanation2" class="sect2"><h3>Explanation</h3>
+Lines 6 and 7 use the Zorba http library to get an image from the web. Then, in line 9 we pass the image to the <b>basic:exif</b> function requesting the value of the <b>DateTimeOriginal</b> tag, which we return.</div>
+<div id="expected_output2" class="sect2"><h3>Expected Output</h3>
+<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;?xml<span> </span>version=</span><span class="stringliteral">"1.0"</span><span class="normal"><span> </span>encoding=</span><span class="stringliteral">"UTF-8"</span><span class="normal">?&gt;</span>
+<span class="normal">2007-03-15T20:12:46+02:00</span>
+</pre></div>
+</div>
+<div id="manipulatin_images" class="sect1"><h2>Manipulating Images</h2>
+In this example, we first download an image from the web using Zorba's http client and then apply a charcoal effect to that image returning the charcoaled image.<pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">http<span> </span>=<span> </span></span><span class="stringliteral">"http://expath.org/ns/http-client"</span><span class="normal">;</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">manipulation<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/manipulation"</span><span class="normal">;</span>
+<span class="normal">declare<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">h<span> </span>=<span> </span></span><span class="stringliteral">"http://expath.org/ns/http-client"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal">(:<span> </span>Get<span> </span>image<span> </span>from<span> </span>web<span> </span>:)</span>
+<span class="normal">let<span> </span>$req<span> </span>:=<span> </span>&lt;h:request<span> </span>method=</span><span class="stringliteral">"GET"</span><span class="normal"><span> </span>href=</span><span class="stringliteral">"http://www.zorba-xquery.com/http-client/download.png"</span><span class="normal"><span> </span>auth-method=</span><span class="stringliteral">"Basic"</span><span class="normal"><span> </span>send-authorization=</span><span class="stringliteral">"true"</span><span class="normal"><span> </span>username=</span><span class="stringliteral">"zorba"</span><span class="normal"><span> </span>password=</span><span class="stringliteral">"blub"</span><span class="normal"><span> </span>&gt;&lt;/h:request&gt;</span>
+<span class="normal">let<span> </span>$res<span> </span>:=<span> </span>http:read($req,<span> </span>())[2]</span>
+<span class="normal">(:<span> </span>Using<span> </span>Image<span> </span>Library<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba">to</a><span> </span>manipulate<span> </span>image<span> </span>:)</span>
+<span class="normal">let<span> </span>$manipulated-image<span> </span>:=<span> </span>manipulation:charcoal($res,<span> </span>2.0,<span> </span>3.0)</span>
+<span class="normal">return<span> </span>$manipulated-image</span>
+</pre><div id="explanation3" class="sect2"><h3>Explanation</h3>
+Lines 6 and 7 use the Zorba http client to retrieve an image from the web. Then, in line 9, we assign <b>$manipulated-image</b> a manipulated version of the image by passing the fetched image to the <b>manipulation:charcoal</b> function that takes the image, performs the charcoal effect on it returns a charcoaled version of the image.</div>
+<div id="expected_output3" class="sect2"><h3>Expected Output</h3>
+<p><img src="/images/doxygen/charcoaled.gif" width="100%"/></p>
+</div>
+</div>
+<div id="painting_images" class="sect1"><h2>Painting Images</h2>
+In this example, we create a new blank image and then paint a circle and a rectangle on it before returning it.<pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">basic<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/basic"</span><span class="normal">;</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">paint<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/paint"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal">let<span> </span>$blank-image<span> </span>:=<span> </span>basic:create(xs:unsignedInt(150),<span> </span>xs:unsignedInt(150),<span> </span></span><span class="stringliteral">"PNG"</span><span class="normal">)</span>
+<span class="normal">let<span> </span>$image-circle<span> </span>:=<span> </span>paint:draw-circle($blank-image,<span> </span>75,<span> </span>75,<span> </span>50,<span> </span>"</span><span class="preprocessor">#00FF00",<span> </span>"#0000FF",<span> </span>2,<span> </span>true())</span>
+<span class="preprocessor"/><span class="normal">let<span> </span>$image-circle-and-rectangle<span> </span>:=<span> </span>paint:draw-rectangle($image-circle,<span> </span>25,<span> </span>25,<span> </span>75,<span> </span>75,<span> </span></span><span class="stringliteral">"#FF00FF"</span><span class="normal">,<span> </span></span><span class="stringliteral">"#5F08AA"</span><span class="normal">,<span> </span>1,<span> </span></span><span class="keyword">true</span><span class="normal">())</span>
+<span class="normal">return<span> </span>$image-circle-and-rectangle</span>
+</pre><div id="explanation4" class="sect2"><h3>Explanation</h3>
+In line 4 a blank image with PNG format is created (like in the first example of this tutorial). Then in line 5 we pass the blank image to the <b>paint:draw-circle</b> method which returns a version of the blank image with a circle on it. In line 6 we pass the image which already has a circle on it to the <b>paint:draw-rectangle</b> function which returns an additional rectangle painted on it.</div>
+<div id="expected_output4" class="sect2"><h3>Expected Output</h3>
+<p><img src="/images/doxygen/painted.png" width="100%"/></p>
+</div>
+</div>
+<div id="creating_animated_gifs" class="sect1"><h2>Creating Animated GIFS</h2>
+In this example, we create two blank images, paint a line on each, and use them to create an animated gif.<pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">basic<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/basic"</span><span class="normal">;</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">paint<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/paint"</span><span class="normal">;</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">anim<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/animation"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal">let<span> </span>$blank-image<span> </span>:=<span> </span>basic:create(xs:unsignedInt(100),<span> </span>xs:unsignedInt(100),<span> </span></span><span class="stringliteral">"GIF"</span><span class="normal">)</span>
+<span class="normal">let<span> </span>$first-image<span> </span>:=<span> </span>paint:draw-line($blank-image,<span> </span>50,<span> </span>25,<span> </span>50,<span> </span>75,<span> </span>(),<span> </span>(),<span> </span>true())</span>
+<span class="normal">let<span> </span>$second-image<span> </span>:=<span> </span>paint:draw-line($blank-image,<span> </span>25,<span> </span>50,<span> </span>75,<span> </span>50,<span> </span>(),<span> </span>(),<span> </span>true())</span>
+<span class="normal">return<span> </span>anim:create-animated-gif(($first-image,<span> </span>$second-image),<span> </span>xs:unsignedInt(15),<span> </span>xs:unsignedInt(0))</span>
+</pre><div id="explanation5" class="sect2"><h3>Explanation</h3>
+In lines 6 and 7, we create 2 images each containing a line painted on them. Then, in line 8, we return the output of anim:create-animated-gif (which is a GIF image) for which we pass the images from lines 6 and seven as arguments. The function composes them to an animated GIF image.</div>
+<div id="expected_output5" class="sect2"><h3>Expected Output</h3>
+<p><img src="/images/doxygen/animated.gif" width="100%"/></p>
+</div>
+</div>
+<div id="putting_it_all_thogether" class="sect1"><h2>Putting it all together: A More Extensive Example</h2>
+In this example, we will create an image displaying a scrolling text using different techniques from the examples above.<pre class="ace-static" ace-mode="xquery"><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">basic<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/basic"</span><span class="normal">;</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">paint<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/paint"</span><span class="normal">;</span>
+<span class="normal"/><span class="keyword">import</span><span class="normal"><span> </span>module<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">anim<span> </span>=<span> </span></span><span class="stringliteral">"http://www.zorba-xquery.com/modules/image/animation"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal">let<span> </span>$blank-image<span> </span>:=<span> </span>basic:create(xs:unsignedInt(100),<span> </span>xs:unsignedInt(100),<span> </span></span><span class="stringliteral">"GIF"</span><span class="normal">)</span>
+<span class="normal">let<span> </span>$i1<span> </span>:=<span> </span>paint:draw-text($blank-image,<span> </span>"Zorba<span> </span>Rocks",<span> </span>-10,<span> </span>40,<span> </span>"Arial",<span> </span>(),<span> </span>"</span><span class="preprocessor">#FF0000")</span>
+<span class="preprocessor"/><span class="normal">let<span> </span>$i2<span> </span>:=<span> </span>paint:draw-text($blank-image,<span> </span></span><span class="stringliteral">"Zorba<span> </span>Rocks"</span><span class="normal">,<span> </span>20,<span> </span>40,<span> </span></span><span class="stringliteral">"Arial"</span><span class="normal">,<span> </span>(),<span> </span></span><span class="stringliteral">"#FF0000"</span><span class="normal">)</span>
+<span class="normal">let<span> </span>$i3<span> </span>:=<span> </span>paint:draw-text($blank-image,<span> </span>"Zorba<span> </span>Rocks",<span> </span>40,<span> </span>40,<span> </span>"Arial",<span> </span>(),<span> </span>"</span><span class="preprocessor">#FF0000")</span>
+<span class="preprocessor"/><span class="normal">let<span> </span>$i4<span> </span>:=<span> </span>paint:draw-text($blank-image,<span> </span></span><span class="stringliteral">"Zorba<span> </span>Rocks"</span><span class="normal">,<span> </span>60,<span> </span>40,<span> </span></span><span class="stringliteral">"Arial"</span><span class="normal">,<span> </span>(),<span> </span></span><span class="stringliteral">"#FF0000"</span><span class="normal">)<span> </span><span> </span></span>
+<span class="normal">let<span> </span>$i5<span> </span>:=<span> </span>paint:draw-text($blank-image,<span> </span>"Zorba<span> </span>Rocks",<span> </span>80,<span> </span>40,<span> </span>"Arial",<span> </span>(),<span> </span>"</span><span class="preprocessor">#FF0000")<span> </span><span> </span></span>
+<span class="preprocessor"/><span class="normal">let<span> </span>$i6<span> </span>:=<span> </span>paint:draw-text($blank-image,<span> </span></span><span class="stringliteral">"Zorba<span> </span>Rocks"</span><span class="normal">,<span> </span>100,<span> </span>40,<span> </span></span><span class="stringliteral">"Arial"</span><span class="normal">,<span> </span>(),<span> </span></span><span class="stringliteral">"#FF0000"</span><span class="normal">)<span> </span><span> </span></span>
+<span class="normal">let<span> </span>$i7<span> </span>:=<span> </span>paint:draw-text($blank-image,<span> </span>"Zorba<span> </span>Rocks",<span> </span>20,<span> </span>40,<span> </span>"Arial",<span> </span>(),<span> </span>"</span><span class="preprocessor">#FF0000")<span> </span><span> </span></span>
+<span class="preprocessor"/><span class="normal">let<span> </span>$i8<span> </span>:=<span> </span>paint:draw-text($blank-image,<span> </span></span><span class="stringliteral">"Zorba<span> </span>Rocks"</span><span class="normal">,<span> </span>120,<span> </span>40,<span> </span></span><span class="stringliteral">"Arial"</span><span class="normal">,<span> </span>(),<span> </span></span><span class="stringliteral">"#FF0000"</span><span class="normal">)</span>
+<span class="normal">return<span> </span>anim:create-morphed-gif(($i1,<span> </span>$i2,<span> </span>$i3,<span> </span>$i4,<span> </span>$i5,<span> </span>$i6,<span> </span>$i7,<span> </span>$i8),<span> </span>xs:unsignedInt(2),<span> </span>xs:unsignedInt(0),<span> </span>xs:unsignedInt(4))</span>
+</pre><div id="expected_output6" class="sect2"><h3>Expected Output</h3>
+<p><img src="/images/doxygen/extended.gif" width="100%"/></p>
+ </div>
+</div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build_8dox" kind="file">
+    <compoundname>build.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>build<sp/>Zorba<sp/>Build<sp/>Instructions</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">The<sp/>following<sp/>pages<sp/>describe<sp/>how<sp/>to<sp/>build<sp/>Zorba<sp/>from<sp/>source.</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"></highlight></codeline>
+<codeline lineno="5"><highlight class="comment">-<sp/>\ref<sp/>build_prerequisites</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">-<sp/>\ref<sp/>build_prepare</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">-<sp/>\ref<sp/>configure_zorba</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">-<sp/>\ref<sp/>build_and_install</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"></highlight></codeline>
+<codeline lineno="10"><highlight class="comment">In<sp/>addition,<sp/>some<sp/>platform-specific<sp/>notes<sp/>regarding<sp/>building<sp/>Zorba<sp/>are</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">available<sp/>on<sp/>the<sp/>following<sp/>pages.<sp/>Please<sp/>refer<sp/>to<sp/>them<sp/>for</highlight></codeline>
+<codeline lineno="12"><highlight class="comment">clarifications<sp/>and<sp/>hints<sp/>regarding<sp/>the<sp/>build<sp/>process<sp/>on<sp/>your<sp/>platform.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"></highlight></codeline>
+<codeline lineno="14"><highlight class="comment">-<sp/>\ref<sp/>build_ubuntu</highlight></codeline>
+<codeline lineno="15"><highlight class="comment">-<sp/>\ref<sp/>build_windows</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">-<sp/>\ref<sp/>build_macos</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"></highlight></codeline>
+<codeline lineno="18"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/build.dox"/>
+  </compounddef>
+</doxygen>

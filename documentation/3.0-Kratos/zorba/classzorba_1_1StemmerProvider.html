@@ -1,0 +1,17 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::StemmerProvider</h1><p class="include">
+            #include &lt;zorba/stemmer.h&gt;
+        </p>
+A StemmerProvider, given a language, provides a <a href="/pages/3.0/zorba/classzorba_1_1Stemmer">Stemmer</a> for it.     
+    <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a4a8de6ad223af81856dbbb18a00802b0">getStemmer</a>(locale::iso639_1::type lang, Stemmer::ptr *s=nullptr) const =0</p><span class="signature-description">
+Gets a <a href="/pages/3.0/zorba/classzorba_1_1Stemmer">Stemmer</a> for the given language.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ab5913f955838d2bf5420ac6c3e32bb0d">~StemmerProvider</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a4a8de6ad223af81856dbbb18a00802b0" class="sect1"><div><h3>getStemmer</h3></div><div class="signature-box">bool<span> </span>getStemmer(locale::iso639_1::type lang, Stemmer::ptr *s=nullptr) const =0</div><div><p class="signature-description">
+Gets a <a href="/pages/3.0/zorba/classzorba_1_1Stemmer">Stemmer</a> for the given language.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>lang</td><td>
+The language to get a <a href="/pages/3.0/zorba/classzorba_1_1Stemmer">Stemmer</a> for. </td></tr><tr><td>s</td><td>
+If not <tt>null</tt>, set to point to a <a href="/pages/3.0/zorba/classzorba_1_1Stemmer">Stemmer</a> for <em>lang</em>. </td></tr></table></div>
+<div><h4>Returns</h4>Returns <tt>true</tt> only if this provider can provide a stemmer for <em>lang</em>. </div>
+        </p></div></div><div id="ab5913f955838d2bf5420ac6c3e32bb0d" class="sect1"><div><h3>~StemmerProvider</h3></div><div class="signature-box"><span> </span>~StemmerProvider()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

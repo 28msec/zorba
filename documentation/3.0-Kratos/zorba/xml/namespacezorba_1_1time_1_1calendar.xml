@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1time_1_1calendar" kind="namespace">
+    <compoundname>zorba::time::calendar</compoundname>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" prot="public" static="no">
+        <name>type</name>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87aee031990e1e595beab62fb5aee7b23d8" prot="public">
+          <name>unknown</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a29dcee3dafdfdd326121ea8efb81cae1" prot="public">
+          <name>AD</name>
+          <briefdescription>
+<para>Anno Domini (Christian Era) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87aa2359107e0e82999a0ed457916af2ec4" prot="public">
+          <name>AH</name>
+          <briefdescription>
+<para>Anno Hegirae (Muhammedan Era) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87ae853d368b7538dfe707093cf53927e2a" prot="public">
+          <name>AM</name>
+          <briefdescription>
+<para>Anno Mundi (Jewish Calendar) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87aad2f6bc341e5bc43a5d9b947dfee692e" prot="public">
+          <name>AME</name>
+          <briefdescription>
+<para>Mauludi Era (solar years since Mohammed&apos;s birth) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87aa701a8e08192216ec9b8f3f574e137aa" prot="public">
+          <name>AP</name>
+          <briefdescription>
+<para>Anno Persici. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87aed55f83f9428faa0890bf879a485cbff" prot="public">
+          <name>AS</name>
+          <briefdescription>
+<para>Aji Saka Era (Java) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87ac2c448ec44509f0eda6437a4d367ced2" prot="public">
+          <name>BE</name>
+          <briefdescription>
+<para>Buddhist Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87ac0351de6dc8a790c1b4e34beaec9af82" prot="public">
+          <name>CB</name>
+          <briefdescription>
+<para>Cooch Behar Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87aac895176f490f4a7f1b719765eee2bab" prot="public">
+          <name>CE</name>
+          <briefdescription>
+<para>Common Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a3cecc84afd5d64f645949bae267a610e" prot="public">
+          <name>CL</name>
+          <briefdescription>
+<para>Chinese Lunar Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a74fa2748b2b503e14d63063d6387a745" prot="public">
+          <name>CS</name>
+          <briefdescription>
+<para>Chula Sakarat Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a209afa3567b48a785a9bcde21b1d5da4" prot="public">
+          <name>EE</name>
+          <briefdescription>
+<para>Ethiopian Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87acb58d923930fbe00de69a91a80492dff" prot="public">
+          <name>FE</name>
+          <briefdescription>
+<para>Fasli Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a0424fb8e4f3b196cbcdbc671efde06dd" prot="public">
+          <name>ISO</name>
+          <briefdescription>
+<para>ISO 8601 calendar. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87afb2890b3784b75c2254378061f035772" prot="public">
+          <name>JE</name>
+          <briefdescription>
+<para>Japanese Calendar. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87ab7cd138095bac6d78a3f4186a580715f" prot="public">
+          <name>KE</name>
+          <briefdescription>
+<para>Khalsa Era (Sikh calendar) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a2db76174a350f3944290bccb53b76655" prot="public">
+          <name>KY</name>
+          <briefdescription>
+<para>Kali Yuga. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a12854102579bcabcac98f53985777319" prot="public">
+          <name>ME</name>
+          <briefdescription>
+<para>Malabar Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a81fdb27cb17b51f075c7c8ce9264ff5d" prot="public">
+          <name>MS</name>
+          <briefdescription>
+<para>Monarchic Solar Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a26830e9eabc21029aa56defd83f61a9d" prot="public">
+          <name>OS</name>
+          <briefdescription>
+<para>Old Style (Julian Calendar) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87abacadbf98429246428bc54841961fe1a" prot="public">
+          <name>RS</name>
+          <briefdescription>
+<para>Rattanakosin (Bangkok) Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87af5342107b216f64f5a0f979007637361" prot="public">
+          <name>SE</name>
+          <briefdescription>
+<para>Saka Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87aca4f181781eae40c9bb59efad7a54b6c" prot="public">
+          <name>SH</name>
+          <briefdescription>
+<para>Mohammedan Solar Era (Iran) </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a550613cc494f2aa37379e94e69a84b85" prot="public">
+          <name>SS</name>
+          <briefdescription>
+<para>Saka Samvat. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a266abd86172f3c05c0ba0e2853eb7519" prot="public">
+          <name>TE</name>
+          <briefdescription>
+<para>Tripurabda Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a118e67f5118d82ffa3446381b9b159bc" prot="public">
+          <name>VE</name>
+          <briefdescription>
+<para>Vikrama Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87a15d1c50b20144740d9ed09921f9eb54e" prot="public">
+          <name>VS</name>
+          <briefdescription>
+<para>Vikrama Samvat Era. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/calendar.h" line="30" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/calendar.h" bodystart="30" bodyend="59"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> 3.0 F&amp;O: 9.8.4.3: The calendars listed below were known to be in use during the last hundred years. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/calendar.h" line="29"/>
+  </compounddef>
+</doxygen>

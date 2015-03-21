@@ -1,0 +1,79 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::hexbinary::streambuf</h1><p class="include">
+            #include &lt;zorba/util/hexbinary_stream.h&gt;
+        </p>
+A hexbinary::streambuf is-a std::streambuf for encoding to and decoding from HexBinary on-the-fly.     
+To use it, replace a stream's streambuf: <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span>istream<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a>;</span>
+<span class="normal"><span> </span><span> </span></span><span class="comment">//<span> </span>...</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>hexbinary::streambuf<span> </span>hb_buf(<span> </span>is.rdbuf()<span> </span>);</span>
+<span class="normal"><span> </span><span> </span>is.ios::rdbuf(<span> </span>&amp;hb_buf<span> </span>);</span>
+</pre> Note that the hexbinary::streambuf must exist for as long as it's being used by the stream. If you are replacing the streabuf for a stream you did not create, you should set it back to the original streambuf: <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>f(<span> </span>ostream<span> </span>&amp;os<span> </span>)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>hexbinary::streambuf<span> </span>hb_buf(<span> </span>os.rdbuf()<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">try</span><span class="normal"><span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>os.ios::rdbuf(<span> </span>&amp;hb_buf<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>...</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>}</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">catch</span><span class="normal"><span> </span>(<span> </span>...<span> </span>)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>os.ios::rdbuf(<span> </span>hb_buf.orig_streambuf()<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">throw</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>}</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>os.ios::rdbuf(<span> </span>hb_buf.orig_streambuf()<span> </span>);</span>
+<span class="normal"><span> </span><span> </span>}</span>
+</pre> Alternatively, you may wish to use either , , or  instead.While hexbinary::streambuf does support seeking, the positions are relative to the original byte stream.     <div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">char</p></td><td><p class="signature"><a href="#a916d1c5dc3e905a1e70201dff58b4abc">gbuf_</a>[2]</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::streambuf *</p></td><td><p class="signature"><a href="#a41df17d0a6c73cdd892e689e66698635">orig_buf_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">std::streambuf *</p></td><td><p class="signature"><a href="#a8422d0b2d84ea3ba0caad8b88ff7ed10">orig_streambuf</a>() const </p><span class="signature-description">
+Gets the original streambuf.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a3a6f3edb9fbae43e6bb52ae3c1fa982b">streambuf</a>(std::streambuf *orig)</p><span class="signature-description">
+Constructs a hexbinary::streambuf.         </span></td></tr></table></div><div class="section"><h2>Protected Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a97a0988ea07508194a8044a988c8f297">imbue</a>(std::locale const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">int_type</p></td><td><p class="signature"><a href="#a389253a840e23f7cc5438d067902a330">overflow</a>(int_type)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">int_type</p></td><td><p class="signature"><a href="#acf68e4219d4e52c5efd243d0bf4b4381">pbackfail</a>(int_type)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">pos_type</p></td><td><p class="signature"><a href="#a4860a8ccbbd93b276b4caca578cf79af">seekoff</a>(off_type, std::ios_base::seekdir, std::ios_base::openmode)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">pos_type</p></td><td><p class="signature"><a href="#af66810f9169fd302997747f84ab4a959">seekpos</a>(pos_type, std::ios_base::openmode)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::streambuf *</p></td><td><p class="signature"><a href="#ace87cb65aa84b1dcdbb4a268840c695e">setbuf</a>(char_type *, std::streamsize)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::streamsize</p></td><td><p class="signature"><a href="#a2f6bcf0878ebe231fd49cbefc18f7b98">showmanyc</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">int_type</p></td><td><p class="signature"><a href="#a47d6810c51470fa13d698ce5202c05c8">underflow</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::streamsize</p></td><td><p class="signature"><a href="#a22f9ca587e25a7af5718aba254f59e55">xsgetn</a>(char_type *, std::streamsize)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::streamsize</p></td><td><p class="signature"><a href="#a6cae8eb02c909b6ed0f0b9d2d53a8c57">xsputn</a>(char_type const *, std::streamsize)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aa589f3fe94b0d5f321cb7941e3cdc52a">clear</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">streambuf</a> &amp;</p></td><td><p class="signature"><a href="#adb0250bdf84030740ea0d72d8b3a1b11">operator=</a>(streambuf const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a6dc8215bef1f882bfd2fda8113f9de42">streambuf</a>(streambuf const &amp;)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a916d1c5dc3e905a1e70201dff58b4abc" class="sect1"><div><h3>gbuf_</h3></div><div class="signature-box">char<span> </span>gbuf_[2]</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a41df17d0a6c73cdd892e689e66698635" class="sect1"><div><h3>orig_buf_</h3></div><div class="signature-box">std::streambuf *<span> </span>orig_buf_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a8422d0b2d84ea3ba0caad8b88ff7ed10" class="sect1"><div><h3>orig_streambuf</h3></div><div class="signature-box">std::streambuf *<span> </span>orig_streambuf() const </div><div><p class="signature-description">
+Gets the original streambuf.         </p><p class="signature-description">
+<div><h4>Returns</h4>said streambuf. </div>
+        </p></div></div><div id="a3a6f3edb9fbae43e6bb52ae3c1fa982b" class="sect1"><div><h3>streambuf</h3></div><div class="signature-box"><span> </span>streambuf(std::streambuf *orig)</div><div><p class="signature-description">
+Constructs a hexbinary::streambuf.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>orig</td><td>
+The original streambuf to read/write from/to. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::invalid_argument</td><td>
+if is not supported or <em>orig</em> is null. </td></tr></table></div>
+        </p></div></div></div></div><div class="section"><h2>Protected Functions</h2><div class="detailed"><div id="a97a0988ea07508194a8044a988c8f297" class="sect1"><div><h3>imbue</h3></div><div class="signature-box">void<span> </span>imbue(std::locale const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a389253a840e23f7cc5438d067902a330" class="sect1"><div><h3>overflow</h3></div><div class="signature-box">int_type<span> </span>overflow(int_type)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="acf68e4219d4e52c5efd243d0bf4b4381" class="sect1"><div><h3>pbackfail</h3></div><div class="signature-box">int_type<span> </span>pbackfail(int_type)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4860a8ccbbd93b276b4caca578cf79af" class="sect1"><div><h3>seekoff</h3></div><div class="signature-box">pos_type<span> </span>seekoff(off_type, std::ios_base::seekdir, std::ios_base::openmode)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="af66810f9169fd302997747f84ab4a959" class="sect1"><div><h3>seekpos</h3></div><div class="signature-box">pos_type<span> </span>seekpos(pos_type, std::ios_base::openmode)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ace87cb65aa84b1dcdbb4a268840c695e" class="sect1"><div><h3>setbuf</h3></div><div class="signature-box">std::streambuf *<span> </span>setbuf(char_type *, std::streamsize)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a2f6bcf0878ebe231fd49cbefc18f7b98" class="sect1"><div><h3>showmanyc</h3></div><div class="signature-box">std::streamsize<span> </span>showmanyc()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a47d6810c51470fa13d698ce5202c05c8" class="sect1"><div><h3>underflow</h3></div><div class="signature-box">int_type<span> </span>underflow()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a22f9ca587e25a7af5718aba254f59e55" class="sect1"><div><h3>xsgetn</h3></div><div class="signature-box">std::streamsize<span> </span>xsgetn(char_type *, std::streamsize)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a6cae8eb02c909b6ed0f0b9d2d53a8c57" class="sect1"><div><h3>xsputn</h3></div><div class="signature-box">std::streamsize<span> </span>xsputn(char_type const *, std::streamsize)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Functions</h2><div class="detailed"><div id="aa589f3fe94b0d5f321cb7941e3cdc52a" class="sect1"><div><h3>clear</h3></div><div class="signature-box">void<span> </span>clear()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="adb0250bdf84030740ea0d72d8b3a1b11" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">streambuf</a> &amp;<span> </span>operator=(streambuf const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a6dc8215bef1f882bfd2fda8113f9de42" class="sect1"><div><h3>streambuf</h3></div><div class="signature-box"><span> </span>streambuf(streambuf const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="php_ubuntu_tutorial" kind="page">
+    <compoundname>php_ubuntu_tutorial</compoundname>
+    <title>Zorba with PHP 5 - Ubuntu Installation</title>
+    <detaileddescription>
+<sect1 id="php_ubuntu_tutorial_1initial_setup">
+<title>Initial setup</title>
+<para>These steps were checked on Ubuntu 10.10. Send us email with the results you had on different platforms.</para></sect1>
+<sect1 id="php_ubuntu_tutorial_1install_apache_http">
+<title>Install Apache HTTP Server</title>
+<para><programlisting><codeline><highlight class="normal">$<sp/>sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>apache2</highlight></codeline>
+</programlisting></para><para>Once the web server installation is done, PHP5 needs intalled also.</para></sect1>
+<sect1 id="php_ubuntu_tutorial_1install_php5">
+<title>Install PHP5</title>
+<para><programlisting><codeline><highlight class="normal">$<sp/>sudo<sp/>apt-</highlight><highlight class="keyword">get</highlight><highlight class="normal"><sp/>install<sp/>php5<sp/>php5-dev<sp/>libapache2-mod-php5<sp/>php5-curl<sp/>php5-gd<sp/>\</highlight></codeline>
+<codeline><highlight class="normal">php5-idn<sp/>php-pear<sp/>php5-imagick<sp/>php5-imap<sp/>php5-mcrypt<sp/>php5-memcache<sp/>php5-ps<sp/>\</highlight></codeline>
+<codeline><highlight class="normal">php5-pspell<sp/>php5-recode<sp/>php5-snmp<sp/>php5-tidy<sp/>php5-xmlrpc<sp/>php5-xsl<sp/>php5-common</highlight></codeline>
+</programlisting></para><para>Let&apos;s create a new PHP file to ensure everything is working: <programlisting><codeline><highlight class="normal">$<sp/>sudo<sp/>pico<sp/>/var/www/test.php</highlight></codeline>
+</programlisting></para><para>Add this code to the file: <programlisting><codeline><highlight class="normal">&lt;?php</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>phpinfo();</highlight></codeline>
+<codeline><highlight class="normal">?&gt;</highlight></codeline>
+</programlisting></para><para>Restart Apache so all the prior changes get applied: <programlisting><codeline><highlight class="normal">$<sp/>sudo<sp/>/etc/init.d/apache2<sp/>restart</highlight></codeline>
+</programlisting></para><para>Now using a web browser point it to: <ulink url="http://localhost/test.php">http://localhost/test.php</ulink></para><para>Check if php works corectly.</para></sect1>
+<sect1 id="python_windows_tutorial_1install_zorba">
+<title>Installing Zorba</title>
+<para>Get Zorba sources and follow <ref refid="build" kindref="compound">Zorba Build Instructions</ref>.</para><para>Check Zorba is working.</para><para><programlisting><codeline><highlight class="normal">$<sp/>zorba<sp/>-q<sp/></highlight><highlight class="stringliteral">&apos;2+1&apos;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">&lt;?xml<sp/>version=</highlight><highlight class="stringliteral">&quot;1.0&quot;</highlight><highlight class="normal"><sp/>encoding=</highlight><highlight class="stringliteral">&quot;UTF-8&quot;</highlight><highlight class="normal">?&gt;</highlight></codeline>
+<codeline><highlight class="normal">3</highlight></codeline>
+</programlisting></para><para>Check php test is working.</para><para><programlisting><codeline><highlight class="normal">$<sp/>ctest<sp/>-R<sp/>php</highlight></codeline>
+<codeline><highlight class="normal">Start<sp/>processing<sp/>tests</highlight></codeline>
+<codeline><highlight class="normal">Test<sp/>project<sp/>/tmp/zorba-1.2.0/build</highlight></codeline>
+<codeline><highlight class="normal">1188/1188<sp/>Testing<sp/>php<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Passed</highlight></codeline>
+<codeline><highlight class="normal">100%<sp/>tests<sp/>passed,<sp/>0<sp/>tests<sp/>failed<sp/>out<sp/>of<sp/>1</highlight></codeline>
+</programlisting></para><para>Passing the php test means that PHP5 is instlled corectly and there is a succesfull build that includes the PHP swig binding.</para></sect1>
+<sect1 id="php_ubuntu_tutorial_1enable_zorba_extension">
+<title>Enable Zorba extension in PHP</title>
+<para>Copy Zorba extension library files to /usr/local/lib/php/.</para><para><programlisting><codeline><highlight class="normal">zorba/build$<sp/>cp<sp/>swig/php/zorba_api.so<sp/>swig/php/zorba_api_wrapper.php<sp/>/usr/local/lib/php/</highlight></codeline>
+</programlisting></para><para>Add the following lines to /etc/php5/apache2/php.ini file.</para><para><programlisting><codeline><highlight class="normal">include_path=</highlight><highlight class="stringliteral">&quot;/usr/local/lib/php/&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">extension=/usr/local/lib/php/zorba_api.so</highlight></codeline>
+</programlisting></para><para>Restart Apache Http server</para><para><programlisting><codeline><highlight class="normal">$<sp/>sudo<sp/>/etc/init.d/apache2<sp/>restart</highlight></codeline>
+</programlisting></para><para>Refresh browser: <ulink url="http://localhost/test.php">http://localhost/test.php</ulink></para><para>Check if zorba_api is in the list of php known extensions.</para></sect1>
+<sect1 id="php_windows_tutorial_1verify_it_works">
+<title>Verify it works</title>
+<para>Add the following content to /var/www/zorba.php:</para><para><programlisting><codeline><highlight class="normal">&lt;html&gt;</highlight></codeline>
+<codeline><highlight class="normal">&lt;title&gt;Zorba<sp/>test&lt;/title&gt;</highlight></codeline>
+<codeline><highlight class="normal">&lt;body&gt;</highlight></codeline>
+<codeline><highlight class="normal">&lt;?php</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>include<sp/>Zorba<sp/>API</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>require_once<sp/></highlight><highlight class="stringliteral">&apos;zorba_api_wrapper.php&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>Zorba<sp/>instance<sp/>in<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>$ms<sp/>=<sp/>InMemoryStore::getInstance();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>$zorba<sp/>=<sp/>Zorba::getInstance($ms);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>and<sp/>compile<sp/>query<sp/>string&lt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>$queryStr<sp/>=<sp/></highlight><highlight class="stringliteral">&apos;1+2&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>$query<sp/>=<sp/>$zorba-&gt;compileQuery($queryStr);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>execute<sp/>query<sp/>and<sp/>display<sp/>result</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>$result<sp/>=<sp/>$query-&gt;execute();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>echo<sp/>$result;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>clean<sp/>up</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>$query-&gt;destroy();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>$zorba-&gt;shutdown();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>InMemoryStore::shutdown($ms);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal"><sp/>(Exception<sp/>$e)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>die(</highlight><highlight class="stringliteral">&apos;ERROR:&apos;</highlight><highlight class="normal"><sp/>.<sp/>$e-&gt;getMessage());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">?&gt;</highlight></codeline>
+<codeline><highlight class="normal">&lt;/body&gt;</highlight></codeline>
+<codeline><highlight class="normal">&lt;/html&gt;</highlight></codeline>
+</programlisting></para><para>Point your browser to <ulink url="http://localhost/zorba.php">http://localhost/zorba.php</ulink> and see the result.</para></sect1>
+<sect1 id="php_windows_tutorial_1further_reading">
+<title>Further reading</title>
+<para>For more details on how to use Zorba API in PHP go to <ulink url="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-#N1018E">Building XQuery-powered applications with PHP and Zorba</ulink> article by Vikram Vaswani.</para></sect1>
+<sect1 id="php_windows_tutorial_1useful_links">
+<title>Useful links</title>
+<para><itemizedlist>
+<listitem>
+<para><ulink url="http://www.giantflyingsaucer.com/blog/?p=1826">Install PHP 5, Apache 2 and MongoDB on Ubuntu 10.10</ulink> </para></listitem>
+<listitem>
+<para><ulink url="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-">Building XQuery-powered applications with PHP and Zorba</ulink> </para></listitem>
+<listitem>
+<para><ref refid="build" kindref="compound">Zorba Build Instructions</ref> </para></listitem>
+</itemizedlist>
+</para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,407 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="smart__ptr_8h" kind="file">
+    <compoundname>smart_ptr.h</compoundname>
+    <includes local="no">zorba/config.h</includes>
+    <includedby refid="annotation_8h" local="no">annotation.h</includedby>
+    <includedby refid="api__shared__types_8h" local="no">api_shared_types.h</includedby>
+    <includedby refid="function_8h" local="no">function.h</includedby>
+    <includedby refid="query__location_8h" local="no">query_location.h</includedby>
+    <includedby refid="static__context_8h" local="no">static_context.h</includedby>
+    <incdepgraph>
+      <node id="2049">
+        <label>smart_ptr.h</label>
+        <link refid="smart_ptr.h"/>
+        <childnode refid="2050" relation="include">
+        </childnode>
+      </node>
+      <node id="2050">
+        <label>zorba/config.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2081">
+        <label>uri.h</label>
+        <link refid="uri_8h"/>
+      </node>
+      <node id="2064">
+        <label>empty_sequence.h</label>
+        <link refid="empty__sequence_8h"/>
+      </node>
+      <node id="2051">
+        <label>smart_ptr.h</label>
+        <link refid="smart_ptr.h"/>
+        <childnode refid="2052" relation="include">
+        </childnode>
+        <childnode refid="2055" relation="include">
+        </childnode>
+        <childnode refid="2062" relation="include">
+        </childnode>
+        <childnode refid="2074" relation="include">
+        </childnode>
+        <childnode refid="2053" relation="include">
+        </childnode>
+      </node>
+      <node id="2063">
+        <label>item.h</label>
+        <link refid="item_8h"/>
+        <childnode refid="2056" relation="include">
+        </childnode>
+        <childnode refid="2064" relation="include">
+        </childnode>
+        <childnode refid="2065" relation="include">
+        </childnode>
+        <childnode refid="2066" relation="include">
+        </childnode>
+        <childnode refid="2067" relation="include">
+        </childnode>
+        <childnode refid="2068" relation="include">
+        </childnode>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2070">
+        <label>item_sequence.h</label>
+        <link refid="item__sequence_8h"/>
+        <childnode refid="2064" relation="include">
+        </childnode>
+        <childnode refid="2071" relation="include">
+        </childnode>
+        <childnode refid="2067" relation="include">
+        </childnode>
+        <childnode refid="2072" relation="include">
+        </childnode>
+      </node>
+      <node id="2082">
+        <label>xmldatamanager.h</label>
+        <link refid="xmldatamanager_8h"/>
+        <childnode refid="2061" relation="include">
+        </childnode>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2060">
+        <label>document_manager.h</label>
+        <link refid="document__manager_8h"/>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2077">
+        <label>xquery.h</label>
+        <link refid="xquery_8h"/>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2054">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="2053" relation="include">
+        </childnode>
+      </node>
+      <node id="2065">
+        <label>item_factory.h</label>
+        <link refid="item__factory_8h"/>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2057">
+        <label>collection_manager.h</label>
+        <link refid="collection__manager_8h"/>
+        <childnode refid="2058" relation="include">
+        </childnode>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2061">
+        <label>dynamic_context.h</label>
+        <link refid="dynamic__context_8h"/>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2056">
+        <label>collection.h</label>
+        <link refid="collection_8h"/>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2058">
+        <label>static_collection_manager.h</label>
+        <link refid="static__collection__manager_8h"/>
+      </node>
+      <node id="2066">
+        <label>serializer.h</label>
+        <link refid="serializer_8h"/>
+      </node>
+      <node id="2074">
+        <label>query_location.h</label>
+        <link refid="query__location_8h"/>
+        <childnode refid="2059" relation="include">
+        </childnode>
+      </node>
+      <node id="2069">
+        <label>thesaurus.h</label>
+        <link refid="thesaurus_8h"/>
+        <childnode refid="2053" relation="include">
+        </childnode>
+      </node>
+      <node id="2076">
+        <label>default_content_handler.h</label>
+        <link refid="default__content__handler_8h"/>
+      </node>
+      <node id="2080">
+        <label>user_exception.h</label>
+        <link refid="user__exception_8h"/>
+      </node>
+      <node id="2071">
+        <label>iterator.h</label>
+        <link refid="iterator_8h"/>
+        <childnode refid="2064" relation="include">
+        </childnode>
+        <childnode refid="2067" relation="include">
+        </childnode>
+        <childnode refid="2072" relation="include">
+        </childnode>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2053">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2068">
+        <label>uri_resolvers.h</label>
+        <link refid="uri__resolvers_8h"/>
+        <childnode refid="2069" relation="include">
+        </childnode>
+      </node>
+      <node id="2073">
+        <label>module_info.h</label>
+        <link refid="module__info_8h"/>
+      </node>
+      <node id="2067">
+        <label>singleton_item_sequence.h</label>
+        <link refid="singleton__item__sequence_8h"/>
+      </node>
+      <node id="2079">
+        <label>typeident.h</label>
+        <link refid="typeident_8h"/>
+        <childnode refid="2053" relation="include">
+        </childnode>
+      </node>
+      <node id="2078">
+        <label>serialization_callback.h</label>
+        <link refid="serialization__callback_8h"/>
+      </node>
+      <node id="2062">
+        <label>function.h</label>
+        <link refid="function_8h"/>
+        <childnode refid="2053" relation="include">
+        </childnode>
+      </node>
+      <node id="2055">
+        <label>api_shared_types.h</label>
+        <link refid="api__shared__types_8h"/>
+        <childnode refid="2052" relation="include">
+        </childnode>
+        <childnode refid="2056" relation="include">
+        </childnode>
+        <childnode refid="2057" relation="include">
+        </childnode>
+        <childnode refid="2059" relation="include">
+        </childnode>
+        <childnode refid="2060" relation="include">
+        </childnode>
+        <childnode refid="2061" relation="include">
+        </childnode>
+        <childnode refid="2062" relation="include">
+        </childnode>
+        <childnode refid="2063" relation="include">
+        </childnode>
+        <childnode refid="2065" relation="include">
+        </childnode>
+        <childnode refid="2070" relation="include">
+        </childnode>
+        <childnode refid="2071" relation="include">
+        </childnode>
+        <childnode refid="2073" relation="include">
+        </childnode>
+        <childnode refid="2074" relation="include">
+        </childnode>
+        <childnode refid="2075" relation="include">
+        </childnode>
+        <childnode refid="2078" relation="include">
+        </childnode>
+        <childnode refid="2066" relation="include">
+        </childnode>
+        <childnode refid="2058" relation="include">
+        </childnode>
+        <childnode refid="2053" relation="include">
+        </childnode>
+        <childnode refid="2079" relation="include">
+        </childnode>
+        <childnode refid="2068" relation="include">
+        </childnode>
+        <childnode refid="2080" relation="include">
+        </childnode>
+        <childnode refid="2081" relation="include">
+        </childnode>
+        <childnode refid="2072" relation="include">
+        </childnode>
+        <childnode refid="2082" relation="include">
+        </childnode>
+        <childnode refid="2077" relation="include">
+        </childnode>
+        <childnode refid="2054" relation="include">
+        </childnode>
+      </node>
+      <node id="2075">
+        <label>sax2.h</label>
+        <link refid="sax2_8h"/>
+        <childnode refid="2076" relation="include">
+        </childnode>
+        <childnode refid="2077" relation="include">
+        </childnode>
+      </node>
+      <node id="2052">
+        <label>annotation.h</label>
+        <link refid="annotation_8h"/>
+        <childnode refid="2053" relation="include">
+        </childnode>
+      </node>
+      <node id="2059">
+        <label>debugger_client.h</label>
+        <link refid="debugger__client_8h"/>
+      </node>
+      <node id="2072">
+        <label>vector_item_sequence.h</label>
+        <link refid="vector__item__sequence_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1SmartObject" prot="public">zorba::SmartObject</innerclass>
+    <innerclass refid="classzorba_1_1SmartPtr" prot="public">zorba::SmartPtr</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_SMARTPTR_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_SMARTPTR_API_H</highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24" refid="classzorba_1_1SmartObject" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref></highlight></codeline>
+<codeline lineno="25"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="27" refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" kindref="member">theRefCount</ref>;</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="30" refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" kindref="member">SmartObject</ref>()<sp/>:<sp/>theRefCount(0)<sp/>{<sp/>}</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" kindref="member">SmartObject</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref>&amp;)<sp/>:<sp/>theRefCount(0)<sp/>{<sp/>}</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>~<ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref>();</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>free();</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38" refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" kindref="member">getRefCount</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>theRefCount;<sp/>}</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40" refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" kindref="member">addReference</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/>++theRefCount;<sp/>}</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42" refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" kindref="member">removeReference</ref><sp/>()<sp/>{</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(--theRefCount<sp/>==<sp/>0)<sp/></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>free();</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47" refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref>&amp;<sp/><ref refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" kindref="member">operator=</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref>&amp;)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>*</highlight><highlight class="keyword">this</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="48"><highlight class="normal">};<sp/></highlight><highlight class="comment">/*<sp/>class<sp/>SmartObject<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="51" refid="classzorba_1_1SmartPtr" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref><sp/></highlight></codeline>
+<codeline lineno="52"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="54" refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" refkind="member"><highlight class="normal"><sp/><sp/>T<sp/><sp/>*<ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56" refid="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" kindref="member">init</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref><sp/>!=<sp/>0)<sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>-&gt;addReference();</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>otherT&gt;<sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&amp;<sp/></highlight></codeline>
+<codeline lineno="61" refid="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" kindref="member">assign</ref><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;otherT&gt;</ref>&amp;<sp/>rhs)<sp/>{</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref><sp/>!=<sp/>rhs.<ref refid="classzorba_1_1SmartPtr_1ab1ba6737314dd6afc60be03033fa8672" kindref="member">get</ref>())</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>)<sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>-&gt;removeReference();</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref><sp/>=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="normal">T*</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(rhs.<ref refid="classzorba_1_1SmartPtr_1ab1ba6737314dd6afc60be03033fa8672" kindref="member">get</ref>());</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" kindref="member">init</ref>();</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>*</highlight><highlight class="keyword">this</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="72" refid="classzorba_1_1SmartPtr_1ab2e53aaba00ca251f2614d6612bf269e" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1ab2e53aaba00ca251f2614d6612bf269e" kindref="member">SmartPtr</ref>(T*<sp/>realPtr<sp/>=<sp/>0)<sp/>:<sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>(realPtr)<sp/>{</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" kindref="member">init</ref>();<sp/></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76" refid="classzorba_1_1SmartPtr_1ae6039ccaee1d0429750fee7dc297e80c" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1ae6039ccaee1d0429750fee7dc297e80c" kindref="member">SmartPtr</ref>(<ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>rhs)<sp/>:<sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>(rhs.<ref refid="classzorba_1_1SmartPtr_1ab1ba6737314dd6afc60be03033fa8672" kindref="member">get</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" kindref="member">init</ref>();</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80" refid="classzorba_1_1SmartPtr_1a49c0686b69d405e498e1dacc3f4589bf" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1a49c0686b69d405e498e1dacc3f4589bf" kindref="member">~SmartPtr</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>)</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>-&gt;removeReference();</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86" refid="classzorba_1_1SmartPtr_1a20005170ee0ce945e758f04ad8bffeaa" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a20005170ee0ce945e758f04ad8bffeaa" kindref="member">isNull</ref><sp/>()</highlight><highlight class="keyword"><sp/>const<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref><sp/>==<sp/>0;<sp/>}</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88" refid="classzorba_1_1SmartPtr_1ab1ba6737314dd6afc60be03033fa8672" refkind="member"><highlight class="normal"><sp/><sp/>T*<sp/></highlight><highlight class="keyword">get</highlight><highlight class="normal">()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight></codeline>
+<codeline lineno="90" refid="classzorba_1_1SmartPtr_1a2f6aa28a4034c09d508ced6f433651c6" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1a2f6aa28a4034c09d508ced6f433651c6" kindref="member">operator T* </ref>()<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">get</highlight><highlight class="normal">();<sp/>}</highlight></codeline>
+<codeline lineno="91" refid="classzorba_1_1SmartPtr_1a044ec00ac43c992cd5f8924707b9d264" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr_1a044ec00ac43c992cd5f8924707b9d264" kindref="member">operator const T * </ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">get</highlight><highlight class="normal">();<sp/>}</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="93" refid="classzorba_1_1SmartPtr_1af692433aed319ffb9b9751a9333917ff" refkind="member"><highlight class="normal"><sp/><sp/>T*<sp/><ref refid="classzorba_1_1SmartPtr_1af692433aed319ffb9b9751a9333917ff" kindref="member">operator-&gt;</ref>()</highlight><highlight class="keyword"><sp/>const<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="94" refid="classzorba_1_1SmartPtr_1a2debcfb0b5ce436de2ee1a92f328524a" refkind="member"><highlight class="normal"><sp/><sp/>T&amp;<sp/><ref refid="classzorba_1_1SmartPtr_1a2debcfb0b5ce436de2ee1a92f328524a" kindref="member">operator*</ref>()</highlight><highlight class="keyword"><sp/>const<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>*<ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96" refid="classzorba_1_1SmartPtr_1afc74cf74c4e80bd3b79f15ccfc7d5a8e" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1afc74cf74c4e80bd3b79f15ccfc7d5a8e" kindref="member">operator==</ref>(<ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>h)</highlight><highlight class="keyword"><sp/>const<sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref><sp/>==<sp/>h.<ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="97" refid="classzorba_1_1SmartPtr_1ac43888b11288399240369eb7fe175231" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1ac43888b11288399240369eb7fe175231" kindref="member">operator!=</ref>(<ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>h)</highlight><highlight class="keyword"><sp/>const<sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref><sp/>!=<sp/>h.<ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="98" refid="classzorba_1_1SmartPtr_1a3aab49d2483f9c122076ead67d5f760a" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a3aab49d2483f9c122076ead67d5f760a" kindref="member">operator==</ref>(T<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>pp)</highlight><highlight class="keyword"><sp/>const<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref><sp/>==<sp/>pp;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="99" refid="classzorba_1_1SmartPtr_1a9ef634bc6c5912c5901bdfa2130d6760" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a9ef634bc6c5912c5901bdfa2130d6760" kindref="member">operator!=</ref>(T<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>pp)</highlight><highlight class="keyword"><sp/>const<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref><sp/>!=<sp/>pp;<sp/>}</highlight></codeline>
+<codeline lineno="100" refid="classzorba_1_1SmartPtr_1a6a4a95845ff1dc7a91970cc82a6d3df2" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a6a4a95845ff1dc7a91970cc82a6d3df2" kindref="member">operator&lt;</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&amp;<sp/>h)</highlight><highlight class="keyword"><sp/>const<sp/><sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref><sp/>&lt;<sp/>h.<ref refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" kindref="member">p</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102" refid="classzorba_1_1SmartPtr_1acf0acb3fe46517fde96795abd228ef55" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&amp;<sp/><ref refid="classzorba_1_1SmartPtr_1acf0acb3fe46517fde96795abd228ef55" kindref="member">operator=</ref>(<ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>rhs)<sp/>{</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" kindref="member">assign</ref><sp/>(rhs);</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="106" refid="classzorba_1_1SmartPtr_1acc85bc4ea706e6714c98ad76337a5b81" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>otherT&gt;<sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&amp;<sp/><ref refid="classzorba_1_1SmartPtr_1acc85bc4ea706e6714c98ad76337a5b81" kindref="member">operator=</ref>(<ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;otherT&gt;</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>rhs)<sp/>{</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" kindref="member">assign</ref><sp/>(rhs);</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal">};<sp/></highlight><highlight class="comment">//<sp/>SmartPtr</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_SMARTPTR_API_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h"/>
+  </compounddef>
+</doxygen>

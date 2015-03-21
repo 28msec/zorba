@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structstd_1_1default__delete" kind="struct" prot="public">
+    <compoundname>std::default_delete</compoundname>
+    <includes refid="unique__ptr_8h" local="no">zorba/internal/unique_ptr.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structstd_1_1default__delete_1a6e7d142ba35a441664009e37acbc1a8d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>std::default_delete&lt; T &gt;::default_delete</definition>
+        <argsstring>()</argsstring>
+        <name>default_delete</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="157" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="157" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="structstd_1_1default__delete_1ab6f9c6da950237149e1a552e1a334da5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>std::default_delete&lt; T &gt;::default_delete</definition>
+        <argsstring>(default_delete&lt; U &gt; const &amp;, typename enable_if&lt; ZORBA_TR1_NS::is_convertible&lt; U *, T * &gt;::value &gt;::type *=nullptr)</argsstring>
+        <name>default_delete</name>
+        <param>
+          <type><ref refid="structstd_1_1default__delete" kindref="compound">default_delete</ref>&lt; U &gt; const &amp;</type>
+        </param>
+        <param>
+          <type>typename <ref refid="structstd_1_1enable__if" kindref="compound">enable_if</ref>&lt; ZORBA_TR1_NS::is_convertible&lt; U *, T * &gt;::value &gt;::type *</type>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+<para>Copy constructor. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>U</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the deleter to copy-construct from such that <computeroutput>U*</computeroutput> is convertible to <computeroutput>T*</computeroutput>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="169" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="166" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="structstd_1_1default__delete_1ae489b6d7fd01ab670ef52a3c6f58ad23" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void std::default_delete&lt; T &gt;::operator()</definition>
+        <argsstring>(T *p) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>T *</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+<para>Deletes the pointed-to object using <computeroutput>delete</computeroutput>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the object to delete. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="177" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="177" bodyend="179"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="566">
+        <label>std::default_delete&lt; iterator &gt;</label>
+        <link refid="structstd_1_1default__delete"/>
+        <childnode refid="564" relation="template-instance">
+          <edgelabel>&lt; iterator &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="565">
+        <label>std::default_delete&lt; internal::proxy_streambuf &gt;</label>
+        <link refid="structstd_1_1default__delete"/>
+        <childnode refid="564" relation="template-instance">
+          <edgelabel>&lt; internal::proxy_streambuf &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="564">
+        <label>std::default_delete&lt; T &gt;</label>
+        <link refid="structstd_1_1default__delete"/>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" line="156" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/unique_ptr.h" bodystart="156" bodyend="180"/>
+    <listofallmembers>
+      <member refid="structstd_1_1default__delete_1a6e7d142ba35a441664009e37acbc1a8d" prot="public" virt="non-virtual"><scope>std::default_delete</scope><name>default_delete</name></member>
+      <member refid="structstd_1_1default__delete_1ab6f9c6da950237149e1a552e1a334da5" prot="public" virt="non-virtual"><scope>std::default_delete</scope><name>default_delete</name></member>
+      <member refid="structstd_1_1default__delete_1ae489b6d7fd01ab670ef52a3c6f58ad23" prot="public" virt="non-virtual"><scope>std::default_delete</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

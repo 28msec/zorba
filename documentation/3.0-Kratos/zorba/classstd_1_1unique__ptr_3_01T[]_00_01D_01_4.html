@@ -1,0 +1,85 @@
+<div class="doxygen">
+  <div><h1 class="title">std::unique_ptr&lt; T[], D &gt;</h1><p class="include">
+            #include &lt;zorba/internal/unique_ptr.h&gt;
+        </p>
+    
+    <div class="section"><h2>Private Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">ZORBA_TR1_NS::add_reference&lt; D const  &gt;::type</p></td><td><p class="signature"><a href="#af976cec82b942f3f7c25163c5b7c4a79">deleter_const_reference</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_TR1_NS::add_reference&lt; D &gt;::type</p></td><td><p class="signature"><a href="#adbf555a38ad17baf0a245a002a08c280">deleter_reference</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool">zorba::internal::ztd::explicit_bool</a></p></td><td><p class="signature"><a href="#a6e2f6c24f1c4a679cccab3747f104189">explicit_bool</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">D</p></td><td><p class="signature"><a href="#a24301850b9bd360628f5bc9fb32d1729">deleter_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">T</p></td><td><p class="signature"><a href="#a03c2237ccbea9ea94d85b009a556ca6a">element_type</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">T *</p></td><td><p class="signature"><a href="#a0068e6f8c9a872913dd67e5c13da3cfe">pointer</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr__storage">unique_ptr_storage</a>&lt; T, D &gt;</p></td><td><p class="signature"><a href="#a861c713be92a5b6c5e9994922a2a8622">storage_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr_3_01T[]_00_01D_01_4?anchor=a0068e6f8c9a872913dd67e5c13da3cfe">pointer</a></p></td><td><p class="signature"><a href="#a7753be342997e3b22fd4cde18f6e5ae4">get</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">deleter_reference</p></td><td><p class="signature"><a href="#ab03b80871dd022bf6209331f2e242cf9">get_deleter</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">deleter_const_reference</p></td><td><p class="signature"><a href="#a4881c24b3759d29856a3f7b81fccf759">get_deleter</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a7fd196f9bd38d2677fb290a92e767881">operator explicit_bool::type</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a05b62249cba335177ec23d8c8f0cc856">operator::zorba::internal::rv</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aabc8b999cc86187e0e39a32750f484f7">operator::zorba::internal::rv</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;</p></td><td><p class="signature"><a href="#aadb40ef8a13498e0efb2bcbeb404f75f">operator=</a>(zorba::internal::rv&lt; unique_ptr &gt; &amp;p)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">T &amp;</p></td><td><p class="signature"><a href="#a538e6417320d6a1656fd45d21ea85482">operator[]</a>(size_t i) const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr_3_01T[]_00_01D_01_4?anchor=a0068e6f8c9a872913dd67e5c13da3cfe">pointer</a></p></td><td><p class="signature"><a href="#afb34738ac8677cc494d88fb07603e55a">release</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ae1c0f6f191b63d1e51a3e8d9a9476735">reset</a>(pointer p=nullptr)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a0aeb873106912ba2a02eb4ea6c6706de">swap</a>(unique_ptr &amp;p)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a407720f560d01597477d3b333fa435a4">unique_ptr</a>(pointer p=nullptr)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ad1e8b9b78ffc354df391368fd0741bd9">unique_ptr</a>(pointer p, deleter_reference d)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a978cf9124f16fc376d93bca8dbc90308">~unique_ptr</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#af5a0237a4967df85c7416d2a8f01b8bc">call_deleter</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;</p></td><td><p class="signature"><a href="#a4e410772a65b077150acfe06bc2e3770">operator=</a>(unique_ptr &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;</p></td><td><p class="signature"><a href="#a3d323e5f63bc42e680bc110980fc7f2e">operator=</a>(unique_ptr&lt; U, E &gt; &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aca55f7a61e5ec6349373ef45b4a7d4ec">unique_ptr</a>(unique_ptr &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ae9a4b6df06ff340b06dbfa119bb282ff">unique_ptr</a>(unique_ptr&lt; U, E &gt; &amp;)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Types</h2><div class="detailed"><div id="af976cec82b942f3f7c25163c5b7c4a79" class="sect1"><div><h3>deleter_const_reference</h3></div><div class="signature-box">ZORBA_TR1_NS::add_reference&lt; D const  &gt;::type<span> </span>deleter_const_reference</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="adbf555a38ad17baf0a245a002a08c280" class="sect1"><div><h3>deleter_reference</h3></div><div class="signature-box">ZORBA_TR1_NS::add_reference&lt; D &gt;::type<span> </span>deleter_reference</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a6e2f6c24f1c4a679cccab3747f104189" class="sect1"><div><h3>explicit_bool</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool">zorba::internal::ztd::explicit_bool</a><span> </span>explicit_bool</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a24301850b9bd360628f5bc9fb32d1729" class="sect1"><div><h3>deleter_type</h3></div><div class="signature-box">D<span> </span>deleter_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a03c2237ccbea9ea94d85b009a556ca6a" class="sect1"><div><h3>element_type</h3></div><div class="signature-box">T<span> </span>element_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a0068e6f8c9a872913dd67e5c13da3cfe" class="sect1"><div><h3>pointer</h3></div><div class="signature-box">T *<span> </span>pointer</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a861c713be92a5b6c5e9994922a2a8622" class="sect1"><div><h3>storage_</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr__storage">unique_ptr_storage</a>&lt; T, D &gt;<span> </span>storage_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a7753be342997e3b22fd4cde18f6e5ae4" class="sect1"><div><h3>get</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr_3_01T[]_00_01D_01_4?anchor=a0068e6f8c9a872913dd67e5c13da3cfe">pointer</a><span> </span>get() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab03b80871dd022bf6209331f2e242cf9" class="sect1"><div><h3>get_deleter</h3></div><div class="signature-box">deleter_reference<span> </span>get_deleter()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4881c24b3759d29856a3f7b81fccf759" class="sect1"><div><h3>get_deleter</h3></div><div class="signature-box">deleter_const_reference<span> </span>get_deleter() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a7fd196f9bd38d2677fb290a92e767881" class="sect1"><div><h3>operator explicit_bool::type</h3></div><div class="signature-box"><span> </span>operator explicit_bool::type() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a05b62249cba335177ec23d8c8f0cc856" class="sect1"><div><h3>operator::zorba::internal::rv</h3></div><div class="signature-box"><span> </span>operator::zorba::internal::rv()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aabc8b999cc86187e0e39a32750f484f7" class="sect1"><div><h3>operator::zorba::internal::rv</h3></div><div class="signature-box"><span> </span>operator::zorba::internal::rv() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aadb40ef8a13498e0efb2bcbeb404f75f" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;<span> </span>operator=(zorba::internal::rv&lt; unique_ptr &gt; &amp;p)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a538e6417320d6a1656fd45d21ea85482" class="sect1"><div><h3>operator[]</h3></div><div class="signature-box">T &amp;<span> </span>operator[](size_t i) const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="afb34738ac8677cc494d88fb07603e55a" class="sect1"><div><h3>release</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr_3_01T[]_00_01D_01_4?anchor=a0068e6f8c9a872913dd67e5c13da3cfe">pointer</a><span> </span>release()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ae1c0f6f191b63d1e51a3e8d9a9476735" class="sect1"><div><h3>reset</h3></div><div class="signature-box">void<span> </span>reset(pointer p=nullptr)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a0aeb873106912ba2a02eb4ea6c6706de" class="sect1"><div><h3>swap</h3></div><div class="signature-box">void<span> </span>swap(unique_ptr &amp;p)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a407720f560d01597477d3b333fa435a4" class="sect1"><div><h3>unique_ptr</h3></div><div class="signature-box"><span> </span>unique_ptr(pointer p=nullptr)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ad1e8b9b78ffc354df391368fd0741bd9" class="sect1"><div><h3>unique_ptr</h3></div><div class="signature-box"><span> </span>unique_ptr(pointer p, deleter_reference d)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a978cf9124f16fc376d93bca8dbc90308" class="sect1"><div><h3>~unique_ptr</h3></div><div class="signature-box"><span> </span>~unique_ptr()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Functions</h2><div class="detailed"><div id="af5a0237a4967df85c7416d2a8f01b8bc" class="sect1"><div><h3>call_deleter</h3></div><div class="signature-box">void<span> </span>call_deleter()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4e410772a65b077150acfe06bc2e3770" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;<span> </span>operator=(unique_ptr &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a3d323e5f63bc42e680bc110980fc7f2e" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">unique_ptr</a> &amp;<span> </span>operator=(unique_ptr&lt; U, E &gt; &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aca55f7a61e5ec6349373ef45b4a7d4ec" class="sect1"><div><h3>unique_ptr</h3></div><div class="signature-box"><span> </span>unique_ptr(unique_ptr &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ae9a4b6df06ff340b06dbfa119bb282ff" class="sect1"><div><h3>unique_ptr</h3></div><div class="signature-box"><span> </span>unique_ptr(unique_ptr&lt; U, E &gt; &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

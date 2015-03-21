@@ -1,0 +1,193 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::hexbinary</h1>
+    
+    <div class="section"><h2>Enumerations</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a14376c07c7b2b97f2bee0d61f5e03682">decode_options</a></p><span class="signature-description">
+Options to use for decoding.         </span></td></tr></table></div><div class="section"><h2>Type Definitions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">size_t</p></td><td><p class="signature"><a href="#affb801817b9c5a956787f17b4e79edad">size_type</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a313b9172bcd9513faa146f4940070907">attach</a>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</p><span class="signature-description">
+Attaches a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> to a stream.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#abfea0704d25e5a34af7e7493d3ba484a">decode</a>(char const *from, size_type from_len, char *to, int options=dopt_none)</p><span class="signature-description">
+Decodes a hexBinary-encoded buffer.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#abfa402f9bfc5ede98b9b656fe7bc4f21">decode</a>(char const *from, size_type from_len, std::vector&lt; char &gt; *to, int options=dopt_none)</p><span class="signature-description">
+Decodes a hexBinary-encoded buffer and appends the decoded bytes onto a vector&lt;char&gt;.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#a91e3e13f55e50f71e0cb730db19ea4fc">decode</a>(char const *from, size_type from_len, std::ostream &amp;to, int options=dopt_none)</p><span class="signature-description">
+Decodes a hexBinary-encoded buffer and writes the decoded bytes to the given stream.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#ab4487e821708a3688eae58463f9db3d6">decode</a>(char const *from, size_type from_len, ToStringType *to, int options=dopt_none)</p><span class="signature-description">
+Decodes a hexBinary-encoded buffer and appends the decoded bytes onto a string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#ae70c51126bf3cfd25123d642da126db6">decode</a>(std::istream &amp;from, std::ostream &amp;to, int options=dopt_none)</p><span class="signature-description">
+Decodes a hexBinary-encoded istream.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#a8cdcc5a137d6fe2c06d1afc194ed9611">decode</a>(std::istream &amp;from, ToStringType *to, int options=dopt_none)</p><span class="signature-description">
+Decodes a hexBinary-encoded istream and appends the decoded bytes to a string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#a32e388300e03489814599c3473134afb">decode</a>(std::istream &amp;from, std::vector&lt; char &gt; *to, int options=dopt_none)</p><span class="signature-description">
+Decodes a hexBinary-encoded stream and appends the decoded bytes onto a vector&lt;char;&gt;.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#a31d80935f207be3c47f7e8fbb4e7e823">decoded_size</a>(size_type n)</p><span class="signature-description">
+Calculates the number of bytes required to decode <em>n</em> hexBinary-encoded bytes.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a533baa97c59c0f231e7821db9f6fb40f">detach</a>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</p><span class="signature-description">
+Detaches a previously attached <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> from a stream.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#a7cf470a25e09390960720d1836df8a17">encode</a>(char const *from, size_type from_len, char *to)</p><span class="signature-description">
+HexBinary-encodes a buffer.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#a54a3cb489ee4f84ad98f5c750ab3a688">encode</a>(char const *from, size_type from_len, std::vector&lt; char &gt; *to)</p><span class="signature-description">
+HexBinary-encodes a buffer and appends the encoded bytes onto a vector&lt;char&gt;.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#aac6ca373d69885884a49e2ad7113c751">encode</a>(char const *from, size_type from_len, std::ostream &amp;to)</p><span class="signature-description">
+HexBinary-encodes a buffer and writes the encoded bytes to the given stream.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#a9c790cd78a34a4b6b1d8b64554275763">encode</a>(char const *from, size_type from_len, ToStringType *to)</p><span class="signature-description">
+HexBinary-encodes a buffer and appends the encoded bytes onto a string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#a98c75930d57b98df3098979357873e3b">encode</a>(std::istream &amp;from, std::ostream &amp;to)</p><span class="signature-description">
+HexBinary-encodes one stream and write the encoded bytes to another.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#ab34412a32ce2a5c69d13aa3cb12cb95b">encode</a>(std::istream &amp;from, ToStringType *to)</p><span class="signature-description">
+Encodes a stream to hexBinary and appends the encoded bytes to a string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#aa8e09534793b59b491f7337c599b3e36">encode</a>(std::istream &amp;from, std::vector&lt; char &gt; *to)</p><span class="signature-description">
+HexBinary-encodes a stream and appends the encoded bytes onto a vector&lt;char;&gt;.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a></p></td><td><p class="signature"><a href="#a15e71cfe12aa22e8a3f364c91be6a883">encoded_size</a>(size_type n)</p><span class="signature-description">
+Calculates the number of bytes required to hexBinary-encode <em>n</em> bytes.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a356d08540af9507069819ef7a9683a42">is_attached</a>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</p><span class="signature-description">
+Checks whether the given stream has a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> attached.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aa00051262d3e533b3f461daf43850ab6">validate</a>(char const *buf, size_type buf_len, int options=dopt_none)</p><span class="signature-description">
+Validates a hexBinary-encoded buffer.         </span></td></tr></table></div><div class="section"><h2>Enumerations</h2><div class="detailed"><div id="a14376c07c7b2b97f2bee0d61f5e03682" class="sect1"><div><h3>decode_options</h3></div><div class="signature-box"><span> </span>decode_options</div><div><p class="signature-description">
+Options to use for decoding.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Type Definitions</h2><div class="detailed"><div id="affb801817b9c5a956787f17b4e79edad" class="sect1"><div><h3>size_type</h3></div><div class="signature-box">size_t<span> </span>size_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Functions</h2><div class="detailed"><div id="a313b9172bcd9513faa146f4940070907" class="sect1"><div><h3>attach</h3></div><div class="signature-box">bool<span> </span>attach(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</div><div><p class="signature-description">
+Attaches a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> to a stream.         </p><p class="signature-description">
+Unlike using a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> directly, this function will create the streambuf, attach it to the stream, and manage it for the lifetime of the stream automatically.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ios</td><td>
+The stream to attach the <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> to. If the stream already has a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> attached to it, this function does nothing. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> was attached. </div>
+        </p></div></div><div id="abfea0704d25e5a34af7e7493d3ba484a" class="sect1"><div><h3>decode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>decode(char const *from, size_type from_len, char *to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a hexBinary-encoded buffer.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the hexBinary buffer to be decoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to decode.  to A pointer to the buffer to receive the decoded bytes. The buffer must be large enough to contain them. Note that the buffer is <em>not</em> null terminated. </td></tr><tr><td>options</td><td>
+The decoding options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>from_len</em> (minus the amount of whitespace if <em>options</em> contains <tt>dopt_ignore_ws</tt>) is not a multiple of 2. </td></tr><tr><td/><td>
+if an invalid byte is encountered. </td></tr></table></div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=a31d80935f207be3c47f7e8fbb4e7e823">decoded_size()</a> </div>
+        </p></div></div><div id="abfa402f9bfc5ede98b9b656fe7bc4f21" class="sect1"><div><h3>decode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>decode(char const *from, size_type from_len, std::vector&lt; char &gt; *to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a hexBinary-encoded buffer and appends the decoded bytes onto a vector&lt;char&gt;.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the buffer to be encoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to encode. </td></tr><tr><td>to</td><td>
+A pointer to the vector to append the encoded bytes appended onto. The vector is made large enough to contain the additional bytes. </td></tr><tr><td>options</td><td>
+The decoding options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>from_len</em> (minus the amount of whitespace if <em>options</em> contains <tt>dopt_ignore_ws</tt>) is not a multiple of 2. </td></tr><tr><td/><td>
+if an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="a91e3e13f55e50f71e0cb730db19ea4fc" class="sect1"><div><h3>decode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>decode(char const *from, size_type from_len, std::ostream &amp;to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a hexBinary-encoded buffer and writes the decoded bytes to the given stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the hexBinary buffer to be decoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to decode. </td></tr><tr><td>to</td><td>
+The ostream to write the decoded bytes to. </td></tr><tr><td>options</td><td>
+The options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>from_len</em> (minus the amount of whitespace if <em>options</em> contains <tt>dopt_ignore_ws</tt>) is not a multiple of 2. </td></tr><tr><td/><td>
+if an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="ab4487e821708a3688eae58463f9db3d6" class="sect1"><div><h3>decode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a> &gt;::type<span> </span>decode(char const *from, size_type from_len, ToStringType *to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a hexBinary-encoded buffer and appends the decoded bytes onto a string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ToStringType</td><td>
+The string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the hexBinary buffer to be decoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to decode. </td></tr><tr><td>to</td><td>
+The string to append the decoded bytes to. </td></tr><tr><td>options</td><td>
+The decoding options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>from_len</em> (minus the amount of whitespace if <em>options</em> contains <tt>dopt_ignore_ws</tt>) is not a multiple of 2. </td></tr><tr><td/><td>
+if an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="ae70c51126bf3cfd25123d642da126db6" class="sect1"><div><h3>decode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>decode(std::istream &amp;from, std::ostream &amp;to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a hexBinary-encoded istream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The ostream to write the decoded bytes to. </td></tr><tr><td>options</td><td>
+The decoding options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>from_len</em> (minus the amount of whitespace if <em>options</em> contains <tt>dopt_ignore_ws</tt>) is not a multiple of 2. </td></tr><tr><td/><td>
+if an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="a8cdcc5a137d6fe2c06d1afc194ed9611" class="sect1"><div><h3>decode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a> &gt;::type<span> </span>decode(std::istream &amp;from, ToStringType *to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a hexBinary-encoded istream and appends the decoded bytes to a string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ToStringType</td><td>
+The string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The string to append the decoded bytes to. </td></tr><tr><td>options</td><td>
+The decoding options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>from_len</em> (minus the amount of whitespace if <em>options</em> contains <tt>dopt_ignore_ws</tt>) is not a multiple of 2. </td></tr><tr><td/><td>
+if an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="a32e388300e03489814599c3473134afb" class="sect1"><div><h3>decode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>decode(std::istream &amp;from, std::vector&lt; char &gt; *to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a hexBinary-encoded stream and appends the decoded bytes onto a vector&lt;char;&gt;.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The string to append the decoded bytes to. </td></tr><tr><td>options</td><td>
+The decoding options to use. </td></tr><tr><td>Returns</td><td>
+the number of decoded bytes. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>from_len</em> (minus the amount of whitespace if <em>options</em> contains <tt>dopt_ignore_ws</tt>) is not a multiple of 2. </td></tr><tr><td/><td>
+if an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="a31d80935f207be3c47f7e8fbb4e7e823" class="sect1"><div><h3>decoded_size</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>decoded_size(size_type n)</div><div><p class="signature-description">
+Calculates the number of bytes required to decode <em>n</em> hexBinary-encoded bytes.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>n</td><td>
+The number of bytes to decode. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of bytes needed for hexBinary decoding. </div>
+        </p></div></div><div id="a533baa97c59c0f231e7821db9f6fb40f" class="sect1"><div><h3>detach</h3></div><div class="signature-box">bool<span> </span>detach(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</div><div><p class="signature-description">
+Detaches a previously attached <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> from a stream.         </p><p class="signature-description">
+The streambuf is destroyed and the stream's original streambuf is restored.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ios</td><td>
+The stream to detach the <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> from. If the stream doesn't have a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> attached to it, this function does nothing. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> was detached. </div>
+        </p></div></div><div id="a7cf470a25e09390960720d1836df8a17" class="sect1"><div><h3>encode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>encode(char const *from, size_type from_len, char *to)</div><div><p class="signature-description">
+HexBinary-encodes a buffer.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the buffer to be encoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to encode. </td></tr><tr><td>to</td><td>
+A pointer to the buffer to receive the encoded bytes. The buffer must be large enough to contain them. Note that the buffer is <em>not</em> null terminated. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=a15e71cfe12aa22e8a3f364c91be6a883">encoded_size()</a> </div>
+        </p></div></div><div id="a54a3cb489ee4f84ad98f5c750ab3a688" class="sect1"><div><h3>encode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>encode(char const *from, size_type from_len, std::vector&lt; char &gt; *to)</div><div><p class="signature-description">
+HexBinary-encodes a buffer and appends the encoded bytes onto a vector&lt;char&gt;.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the buffer to be encoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to encode. </td></tr><tr><td>to</td><td>
+A pointer to the vector to append the encoded bytes appended onto. The vector is made large enough to contain the additional bytes. </td></tr></table></div>
+        </p></div></div><div id="aac6ca373d69885884a49e2ad7113c751" class="sect1"><div><h3>encode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>encode(char const *from, size_type from_len, std::ostream &amp;to)</div><div><p class="signature-description">
+HexBinary-encodes a buffer and writes the encoded bytes to the given stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the buffer to be encoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to encode. </td></tr><tr><td>to</td><td>
+The ostream to write the encoded bytes to. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+        </p></div></div><div id="a9c790cd78a34a4b6b1d8b64554275763" class="sect1"><div><h3>encode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a> &gt;::type<span> </span>encode(char const *from, size_type from_len, ToStringType *to)</div><div><p class="signature-description">
+HexBinary-encodes a buffer and appends the encoded bytes onto a string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ToStringType</td><td>
+The string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the buffer to be encoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to encode. </td></tr><tr><td>to</td><td>
+A pointer to the string to append the encoded bytes onto. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+        </p></div></div><div id="a98c75930d57b98df3098979357873e3b" class="sect1"><div><h3>encode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>encode(std::istream &amp;from, std::ostream &amp;to)</div><div><p class="signature-description">
+HexBinary-encodes one stream and write the encoded bytes to another.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The ostream to write the encoded bytes to. </td></tr></table></div>
+        </p></div></div><div id="ab34412a32ce2a5c69d13aa3cb12cb95b" class="sect1"><div><h3>encode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a> &gt;::type<span> </span>encode(std::istream &amp;from, ToStringType *to)</div><div><p class="signature-description">
+Encodes a stream to hexBinary and appends the encoded bytes to a string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ToStringType</td><td>
+The string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The string to append the encoded bytes to. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+        </p></div></div><div id="aa8e09534793b59b491f7337c599b3e36" class="sect1"><div><h3>encode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>encode(std::istream &amp;from, std::vector&lt; char &gt; *to)</div><div><p class="signature-description">
+HexBinary-encodes a stream and appends the encoded bytes onto a vector&lt;char;&gt;.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The vector to append the encoded bytes to. </td></tr><tr><td>Returns</td><td>
+the number of encoded bytes. </td></tr></table></div>
+        </p></div></div><div id="a15e71cfe12aa22e8a3f364c91be6a883" class="sect1"><div><h3>encoded_size</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=affb801817b9c5a956787f17b4e79edad">size_type</a><span> </span>encoded_size(size_type n)</div><div><p class="signature-description">
+Calculates the number of bytes required to hexBinary-encode <em>n</em> bytes.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>n</td><td>
+The number of bytes to encode. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of bytes needed for hexBinary encoding. </div>
+        </p></div></div><div id="a356d08540af9507069819ef7a9683a42" class="sect1"><div><h3>is_attached</h3></div><div class="signature-box">bool<span> </span>is_attached(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</div><div><p class="signature-description">
+Checks whether the given stream has a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> attached.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ios</td><td>
+The stream to check. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> is attached. </div>
+        </p></div></div><div id="aa00051262d3e533b3f461daf43850ab6" class="sect1"><div><h3>validate</h3></div><div class="signature-box">void<span> </span>validate(char const *buf, size_type buf_len, int options=dopt_none)</div><div><p class="signature-description">
+Validates a hexBinary-encoded buffer.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>buf</td><td>
+A pointer to the hexBinary buffer to be validated. </td></tr><tr><td>buf_len</td><td>
+The number of bytes to validate. </td></tr><tr><td>options</td><td>
+The decoding options to use. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>from_len</em> (minus the amount of whitespace if <em>options</em> contains <tt>dopt_ignore_ws</tt>) is not a multiple of 2. </td></tr><tr><td/><td>
+if an invalid byte is encountered. </td></tr></table></div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=a31d80935f207be3c47f7e8fbb4e7e823">decoded_size()</a> </div>
+        </p></div></div></div></div></div>
+</div>

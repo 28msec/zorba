@@ -1,0 +1,79 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://zorba.io/modules/system</xqdoc:uri><xqdoc:name>system</xqdoc:name><xqdoc:comment><xqdoc:description> The system module allows developers to access system properties.
+ Part of these system properties are environment variables,
+ local variable to the process running Zorba, and properties defined by Zorba.<p/>
+ To avoid conflicts between environment variables and properties defined by Zorba,
+ all environment variables are prefixed with <i>env.</i>.<p/>
+ For instance, the following query: <p/>
+ <pre class="ace-static" ace-mode="xquery">
+ import module namespace system = "http://www.zorba-xquery.com/modules/system";
+ for $prop in system:properties()
+ return concat($prop, ": ", system:property($prop), "
+ ")
+ </pre>
+ <p/>
+ Will output:
+ <pre class="ace-static" ace-mode="xquery">
+ env.TERM_PROGRAM: Apple_Terminal
+ ...
+ </pre>
+ In this example, it is important to notice that the environnement variable PATH
+ with the key env.PATH.<p/>
+</xqdoc:description><xqdoc:author>Markus Pilman</xqdoc:author><xqdoc:custom tag="project">Zorba/Input Output/System</xqdoc:custom><xqdoc:custom tag="language">jsoniq</xqdoc:custom><xqdoc:custom tag="version">1.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="an" uri="http://zorba.io/annotations" isSchema="false"/><xqdoc:namespace prefix="system" uri="http://zorba.io/modules/system" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports/><xqdoc:variables><xqdoc:variable><xqdoc:uri>system:OS-NAME</xqdoc:uri><xqdoc:comment><xqdoc:description> The name of the operating system (os.name).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:OS-NODE-NAME</xqdoc:uri><xqdoc:comment><xqdoc:description> The name of the computer the process is running on (os.node.name).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:OS-VERSION-MAJOR</xqdoc:uri><xqdoc:comment><xqdoc:description> The major version number of the Windows installation or
+ an empty string if the process does not run on a Windows installation
+ (os.version.major).
+ <b>Works on Windows only.</b>
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:OS-VERSION-MINOR</xqdoc:uri><xqdoc:comment><xqdoc:description> The minor version number of the Windows installation or
+ an empty string if the process does not run on a Windows installation
+ (os.version.minor).
+ <b>Works on Windows only.</b>
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:OS-VERSION-BUILD</xqdoc:uri><xqdoc:comment><xqdoc:description> The build number of the Windows installation or
+ an empty string if the process does not run on a Windows installation
+ (os.version.build).
+ <b>Works on Windows only.</b>
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:OS-VERSION-RELEASE</xqdoc:uri><xqdoc:comment><xqdoc:description> The release of this UNIX installation or
+ an empty string if the process does not run on a UNIX/Linux installation
+ (os.version.release).
+ <b>Works on UNIX based operating systems only.</b>
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:OS-VERSION-VERSION</xqdoc:uri><xqdoc:comment><xqdoc:description> The version of this UNIX installation or
+ an empty string if the process does not run on a UNIX/Linux installation
+ (os.version.version).
+ <b>Works on UNIX based operating systems only.</b>
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:OS-VERSION</xqdoc:uri><xqdoc:comment><xqdoc:description> The version of the Operating System.
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:OS-ARCH</xqdoc:uri><xqdoc:comment><xqdoc:description> The name of the processor architecture (os.arch).
+ For example x86 or x86_64.
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:OS-IS64</xqdoc:uri><xqdoc:comment><xqdoc:description> True if system architecture is 64bits (os.is64).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:HARDWARE-LOGICAL-CPU</xqdoc:uri><xqdoc:comment><xqdoc:description> Number of logical processors in the system (hardware.logical.cpu).
+ This information is not available under Mac OS X.
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:HARDWARE-PHYSICAL-CPU</xqdoc:uri><xqdoc:comment><xqdoc:description> Number of physical processors in the system (hardware.physical.cpu).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:HARDWARE-LOGICAL-PER-PHYSICAL-CPU</xqdoc:uri><xqdoc:comment><xqdoc:description> number of logical per physical processors in the system (hardware.logical.per.physical.cpu).
+ This information is not available under Mac OS X.
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:HARDWARE-PHSICAL-MEMORY</xqdoc:uri><xqdoc:comment><xqdoc:description> Physical memory available (hardware.physical.memory).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:HARDWARE-VIRTUAL-MEMORY</xqdoc:uri><xqdoc:comment><xqdoc:description> Virtual memory available (hardware.virtual.memory).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:HARDWARE-MANUFACTURER</xqdoc:uri><xqdoc:comment><xqdoc:description> Gets the hardware manufacturer (hardware.manufacturer).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:LINUX-DISTRIBUTOR</xqdoc:uri><xqdoc:comment><xqdoc:description> The Linux distribution, Zorba is running on (linux.distributor).
+ <b>Works on UNIX based operating systems only.</b>
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:LINUX-DISTRIBUTOR-VERSION</xqdoc:uri><xqdoc:comment><xqdoc:description> The version of the Linux distribution, Zorba is running on (linux.distributor.version).
+ <b>Works on UNIX based operating systems only.</b>
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:USER-NAME</xqdoc:uri><xqdoc:comment><xqdoc:description> The username, with which this process was started (user.name).
+ On Unix, this variable is only available if the USER environment
+ variable is set (e.g. it might not be available in a cronjob).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:ZORBA-MODULE-PATH</xqdoc:uri><xqdoc:comment><xqdoc:description> The Zorba module path, that is the paths in which Zorba looks
+ for modules (zorba.module.path).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:ZORBA-VERSION</xqdoc:uri><xqdoc:comment><xqdoc:description> Zorba version in the format Major.Minor.Patch (zorba.version).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:ZORBA-VERSION-MAJOR</xqdoc:uri><xqdoc:comment><xqdoc:description> Zorba major version (zorba.version.major).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:ZORBA-VERSION-MINOR</xqdoc:uri><xqdoc:comment><xqdoc:description> Zorba minor version (zorba.version.minor).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>system:ZORBA-VERSION-PATCH</xqdoc:uri><xqdoc:comment><xqdoc:description> Zorba patch version (zorba.version.patch).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable></xqdoc:variables><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Gets the system property indicated by the specified key.
+</xqdoc:description><xqdoc:param>$key The name of the system property.</xqdoc:param><xqdoc:return>The string value of the system property, or an empty sequence if there is no property with that key.</xqdoc:return></xqdoc:comment><xqdoc:name>system:property</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function system:property($key as xs:string) as xs:string? external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>key</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="?">xs:string?</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="0"><xqdoc:comment><xqdoc:description> This function retrieves the names of the current system properties.
+ This list includes environment variables, local variable to the process running Zorba, and properties defined by Zorba.
+ <p/>
+ To avoid conflicts between environment variables and properties defined by Zorba,
+ all environment variables are prefixed with <i>env.</i>.
+</xqdoc:description><xqdoc:return>List of all system properties.</xqdoc:return></xqdoc:comment><xqdoc:name>system:properties</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function system:properties() as xs:string* external</xqdoc:signature><xqdoc:return><xqdoc:type occurrence="*">xs:string*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="0"><xqdoc:comment><xqdoc:description> This function retrieves all names and values from the current system properties.
+ This list includes environment variables, local variable to the process running Zorba, and properties defined by Zorba.
+ <p/>
+ To avoid conflicts between environment variables and properties defined by Zorba,
+ all environment variables are prefixed with <i>env.</i>.
+</xqdoc:description><xqdoc:return>List of all system properties as a JSONiq Object sequence.</xqdoc:return></xqdoc:comment><xqdoc:name>system:all-properties</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function system:all-properties() as object()</xqdoc:signature><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="0"><xqdoc:uri>http://zorba.io/modules/system</xqdoc:uri><xqdoc:name>properties</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="1"><xqdoc:uri>http://zorba.io/modules/system</xqdoc:uri><xqdoc:name>property</xqdoc:name></xqdoc:invoked></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

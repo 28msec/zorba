@@ -1,0 +1,406 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1internal" kind="namespace">
+    <compoundname>zorba::internal</compoundname>
+    <innerclass refid="structzorba_1_1internal_1_1bool__value" prot="public">zorba::internal::bool_value</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1FixedQName" prot="public">zorba::internal::FixedQName</innerclass>
+    <innerclass refid="structzorba_1_1internal_1_1is__movable" prot="public">zorba::internal::is_movable</innerclass>
+    <innerclass refid="structzorba_1_1internal_1_1is__movable_3_01rv_3_01T_01_4_01_4" prot="public">zorba::internal::is_movable&lt; rv&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1JSONiqErrorQName" prot="public">zorba::internal::JSONiqErrorQName</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1nullptr__type" prot="public">zorba::internal::nullptr_type</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1rv" prot="public">zorba::internal::rv</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1SystemDiagnostic" prot="public">zorba::internal::SystemDiagnostic</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1SystemDiagnosticBase" prot="public">zorba::internal::SystemDiagnosticBase</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1VariableQName" prot="public">zorba::internal::VariableQName</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1XQueryErrorQName" prot="public">zorba::internal::XQueryErrorQName</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1ZorbaCSVErrorQName" prot="public">zorba::internal::ZorbaCSVErrorQName</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1ZorbaDateTimeErrorQName" prot="public">zorba::internal::ZorbaDateTimeErrorQName</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1ZorbaErrorQName" prot="public">zorba::internal::ZorbaErrorQName</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1ZorbaURIErrorQName" prot="public">zorba::internal::ZorbaURIErrorQName</innerclass>
+    <innerclass refid="classzorba_1_1internal_1_1ZorbaWarningQName" prot="public">zorba::internal::ZorbaWarningQName</innerclass>
+    <innernamespace refid="namespacezorba_1_1internal_1_1base64">zorba::internal::base64</innernamespace>
+    <innernamespace refid="namespacezorba_1_1internal_1_1diagnostic">zorba::internal::diagnostic</innernamespace>
+    <innernamespace refid="namespacezorba_1_1internal_1_1hexbinary">zorba::internal::hexbinary</innernamespace>
+    <innernamespace refid="namespacezorba_1_1internal_1_1transcode">zorba::internal::transcode</innernamespace>
+    <innernamespace refid="namespacezorba_1_1internal_1_1ztd">zorba::internal::ztd</innernamespace>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacezorba_1_1internal_1ab19a27981bfc8b4259b67ebd0ec746ac" prot="public" static="no">
+        <type>std::vector&lt; <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &gt;</type>
+        <definition>typedef std::vector&lt;Item&gt; zorba::internal::error_object_type</definition>
+        <argsstring></argsstring>
+        <name>error_object_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/user_exception.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1_1internal_1a9e89615a1743d84ddbc4f79362b3798a" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1ztd_1_1proxy" kindref="compound">ztd::proxy</ref>&lt; std::streambuf &gt;</type>
+        <definition>typedef ztd::proxy&lt;std::streambuf&gt; zorba::internal::proxy_streambuf</definition>
+        <argsstring></argsstring>
+        <name>proxy_streambuf</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/streambuf.h" line="30" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/streambuf.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacezorba_1_1internal_1a2cd0f11462e306fb7a89fa9f086ecc44" prot="public" static="no" mutable="no">
+        <type>class ZORBA_DLL_PUBLIC</type>
+        <definition>class ZORBA_DLL_PUBLIC zorba::internal::VariableQName</definition>
+        <argsstring></argsstring>
+        <name>VariableQName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" line="29" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/qname.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1internal_1afc8a1e1bbdcb0e40c72d110a464ea4e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC void</type>
+        <definition>ZORBA_DLL_PUBLIC void zorba::internal::dealloc_streambuf</definition>
+        <argsstring>(std::streambuf *)</argsstring>
+        <name>dealloc_streambuf</name>
+        <param>
+          <type>std::streambuf *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/streambuf.h" line="33"/>
+        <referencedby refid="namespacezorba_1_1hexbinary_1a533baa97c59c0f231e7821db9f6fb40f" compoundref="hexbinary__stream_8h" startline="163" endline="172">zorba::hexbinary::detach</referencedby>
+        <referencedby refid="namespacezorba_1_1transcode_1ac1a9e5e77b37b933a78581467f24ee1d" compoundref="transcode__stream_8h" startline="169" endline="178">zorba::transcode::detach</referencedby>
+        <referencedby refid="namespacezorba_1_1base64_1a31c5d6cf41a6ad8c82178853e7c0bcfc" compoundref="base64__stream_8h" startline="179" endline="188">zorba::base64::detach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1ad46c30c2b91f04860ce131d7b52ce4a6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>ZORBA_DLL_PUBLIC UserException zorba::internal::make_user_exception</definition>
+        <argsstring>(char const *raise_file, ZorbaException::line_type raise_line, char const *ns, char const *prefix, char const *localname, char const *description, diagnostic::location const &amp;loc, error_object_type *error_object=nullptr)</argsstring>
+        <name>make_user_exception</name>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">ZorbaException::line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>ns</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>prefix</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>localname</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>description</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location" kindref="compound">diagnostic::location</ref> const &amp;</type>
+          <declname>loc</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1internal_1ab19a27981bfc8b4259b67ebd0ec746ac" kindref="member">error_object_type</ref> *</type>
+          <declname>error_object</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="64"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1a302ab19bb46f3b41e916e0c672725328" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>ZORBA_DLL_PUBLIC UserException zorba::internal::make_user_exception</definition>
+        <argsstring>(char const *raise_file, ZorbaException::line_type raise_line, Error const &amp;error, char const *description, diagnostic::location const &amp;loc, error_object_type *error_object=nullptr)</argsstring>
+        <name>make_user_exception</name>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">ZorbaException::line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1a0299a82ee3cd6825cc41a5794e257c48" kindref="member">Error</ref> const &amp;</type>
+          <declname>error</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>description</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location" kindref="compound">diagnostic::location</ref> const &amp;</type>
+          <declname>loc</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1internal_1ab19a27981bfc8b4259b67ebd0ec746ac" kindref="member">error_object_type</ref> *</type>
+          <declname>error_object</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="87"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1aa0f17bc6b0ca893eaa96c6e8f9d9b5a9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>ZORBA_DLL_PUBLIC UserException zorba::internal::make_user_exception</definition>
+        <argsstring>(char const *raise_file, ZorbaException::line_type raise_line)</argsstring>
+        <name>make_user_exception</name>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">ZorbaException::line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="224"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1a04a38c01561c5978c4022c164d2e9f61" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>ZORBA_DLL_PUBLIC UserException zorba::internal::make_user_exception</definition>
+        <argsstring>(char const *raise_file, ZorbaException::line_type raise_line, Item const &amp;error)</argsstring>
+        <name>make_user_exception</name>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">ZorbaException::line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> const &amp;</type>
+          <declname>error</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="246"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1a272347b9e00fa6ff282a6253214c2393" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>ZORBA_DLL_PUBLIC UserException zorba::internal::make_user_exception</definition>
+        <argsstring>(char const *raise_file, ZorbaException::line_type raise_line, Error const &amp;error)</argsstring>
+        <name>make_user_exception</name>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">ZorbaException::line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1a0299a82ee3cd6825cc41a5794e257c48" kindref="member">Error</ref> const &amp;</type>
+          <declname>error</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="268"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1a8dc75e74da3d3c5f7241a5fe5869a5e4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>ZORBA_DLL_PUBLIC UserException zorba::internal::make_user_exception</definition>
+        <argsstring>(char const *raise_file, ZorbaException::line_type raise_line, Item const &amp;error, String const &amp;description)</argsstring>
+        <name>make_user_exception</name>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">ZorbaException::line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> const &amp;</type>
+          <declname>error</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>description</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="292"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1a6fc7686ca7e5ebfcbf8e3c02df4e1eb3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>ZORBA_DLL_PUBLIC UserException zorba::internal::make_user_exception</definition>
+        <argsstring>(char const *raise_file, ZorbaException::line_type raise_line, Item const &amp;error, String const &amp;description, ItemSequence_t const &amp;error_object)</argsstring>
+        <name>make_user_exception</name>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">ZorbaException::line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> const &amp;</type>
+          <declname>error</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>description</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref> const &amp;</type>
+          <declname>error_object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="319"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1a424555e22f6e1b1a9c22b3785d960494" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>ZORBA_DLL_PUBLIC UserException zorba::internal::make_user_exception</definition>
+        <argsstring>(char const *raise_file, ZorbaException::line_type raise_line, Error const &amp;error, String const &amp;description, ItemSequence_t const &amp;error_object)</argsstring>
+        <name>make_user_exception</name>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">ZorbaException::line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1a0299a82ee3cd6825cc41a5794e257c48" kindref="member">Error</ref> const &amp;</type>
+          <declname>error</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>description</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref> const &amp;</type>
+          <declname>error_object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="346"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1a49e19cc37b35fec8d42d78bbfa28170e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>ZORBA_DLL_PUBLIC UserException zorba::internal::make_user_exception</definition>
+        <argsstring>(char const *raise_file, ZorbaException::line_type raise_line, Error const &amp;error, String const &amp;description, error_object_type *error_object=nullptr)</argsstring>
+        <name>make_user_exception</name>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">ZorbaException::line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1a0299a82ee3cd6825cc41a5794e257c48" kindref="member">Error</ref> const &amp;</type>
+          <declname>error</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> const &amp;</type>
+          <declname>description</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1internal_1ab19a27981bfc8b4259b67ebd0ec746ac" kindref="member">error_object_type</ref> *</type>
+          <declname>error_object</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="373"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1internal_1aa27d36007cc8c4eb9b8716d24f9330ec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC void</type>
+        <definition>ZORBA_DLL_PUBLIC void zorba::internal::stream_callback</definition>
+        <argsstring>(std::ios_base::event, std::ios_base &amp;, int index)</argsstring>
+        <name>stream_callback</name>
+        <param>
+          <type>std::ios_base::event</type>
+        </param>
+        <param>
+          <type>std::ios_base &amp;</type>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/streambuf.h" line="36"/>
+        <referencedby refid="namespacezorba_1_1hexbinary_1a313b9172bcd9513faa146f4940070907" compoundref="hexbinary__stream_8h" startline="139" endline="151">zorba::hexbinary::attach</referencedby>
+        <referencedby refid="namespacezorba_1_1transcode_1a44eff53620b083f7384c20eea64a534b" compoundref="transcode__stream_8h" startline="145" endline="157">zorba::transcode::attach</referencedby>
+        <referencedby refid="namespacezorba_1_1base64_1acc02be7e81c24ef6fdffb8f0f16c189d" compoundref="base64__stream_8h" startline="155" endline="167">zorba::base64::attach</referencedby>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/cxx_util.h" line="27"/>
+  </compounddef>
+</doxygen>

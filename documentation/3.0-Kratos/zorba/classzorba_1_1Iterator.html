@@ -1,0 +1,48 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Iterator</h1><p class="include">
+            #include &lt;zorba/iterator.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1SmartObject.html">zorba::SmartObject</a></p>
+Interface for an <a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> over a sequence of items.     
+An iterator can be in one of the following two states: open or not-open. When in open state, only methods <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=a4f313bce8eb62f6934289786992fa9ea">isOpen()</a>, <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=ad2840d07f460b016f2781589060f5ee1">next()</a> and <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=a6d63bc7bc1674bc8036fb0e81390f1b2">close()</a> may be called. When in not-open state, only <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=a4f313bce8eb62f6934289786992fa9ea">isOpen()</a> and <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=aa6f000276940a2948f447ec8b7eb17f4">open()</a> may be called. The <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=aa6f000276940a2948f447ec8b7eb17f4">open()</a> method changes the state from non-open to open, and the <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=a6d63bc7bc1674bc8036fb0e81390f1b2">close()</a> method changes the state from open to not-open.     <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a968d642f8f9df309338fbdd5f680e033">addReference</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a6d63bc7bc1674bc8036fb0e81390f1b2">close</a>()=0</p><span class="signature-description">
+Stop iterating.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a87deaaa73d44b839ada0f7dcc2cc2b13">free</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">long</p></td><td><p class="signature"><a href="#aa76599b249f441747e996d3630b8f5ca">getRefCount</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a4f313bce8eb62f6934289786992fa9ea">isOpen</a>() const =0</p><span class="signature-description">
+brief Check whether the iterator is open or not         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#ad2840d07f460b016f2781589060f5ee1">next</a>(Item &amp;aItem)=0</p><span class="signature-description">
+Get the next <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> of the sequence.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aa6f000276940a2948f447ec8b7eb17f4">open</a>()=0</p><span class="signature-description">
+Start iterating.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a32ce26dcd544b131ef8b024972960ebc">removeReference</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a09c348dbacd4a9b83e951760ca4e7e13">~Iterator</a>()</p><span class="signature-description">
+Destructor.         </span></td></tr></table></div><div class="section"><h2>Protected Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">unsigned int</p></td><td><p class="signature"><a href="#a066274b33cffdd451a68a2a0754c6044">theRefCount</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a968d642f8f9df309338fbdd5f680e033" class="sect1"><div><h3>addReference</h3></div><div class="signature-box">void<span> </span>addReference() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a6d63bc7bc1674bc8036fb0e81390f1b2" class="sect1"><div><h3>close</h3></div><div class="signature-box">void<span> </span>close()=0</div><div><p class="signature-description">
+Stop iterating.         </p><p class="signature-description">
+The purpose of this method is to release resources that were allocated during open. After calling <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=a6d63bc7bc1674bc8036fb0e81390f1b2">close()</a>, neither <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=a6d63bc7bc1674bc8036fb0e81390f1b2">close()</a> nor <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=ad2840d07f460b016f2781589060f5ee1">next()</a> may be called again. However, the iterator may be re-opened (by calling <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=aa6f000276940a2948f447ec8b7eb17f4">open()</a>).<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occurs, or the <a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> has not been opened. </td></tr></table></div>
+        </p></div></div><div id="a87deaaa73d44b839ada0f7dcc2cc2b13" class="sect1"><div><h3>free</h3></div><div class="signature-box">void<span> </span>free()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa76599b249f441747e996d3630b8f5ca" class="sect1"><div><h3>getRefCount</h3></div><div class="signature-box">long<span> </span>getRefCount() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4f313bce8eb62f6934289786992fa9ea" class="sect1"><div><h3>isOpen</h3></div><div class="signature-box">bool<span> </span>isOpen() const =0</div><div><p class="signature-description">
+brief Check whether the iterator is open or not         </p><p class="signature-description">
+        </p></div></div><div id="ad2840d07f460b016f2781589060f5ee1" class="sect1"><div><h3>next</h3></div><div class="signature-box">bool<span> </span>next(Item &amp;aItem)=0</div><div><p class="signature-description">
+Get the next <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> of the sequence.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aItem</td><td>
+the next <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a> of the sequence, unless all the items of the sequence have been returned already by previous invocations of <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=ad2840d07f460b016f2781589060f5ee1">next()</a>. </td></tr></table></div>
+<div><h4>Returns</h4>false if all the items of the sequence have been returned already by previous invocations of <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=ad2840d07f460b016f2781589060f5ee1">next()</a>; true otherwise. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occurs, or the <a href="/pages/3.0/zorba/classzorba_1_1Iterator">Iterator</a> has not been opened. </td></tr></table></div>
+        </p></div></div><div id="aa6f000276940a2948f447ec8b7eb17f4" class="sect1"><div><h3>open</h3></div><div class="signature-box">void<span> </span>open()=0</div><div><p class="signature-description">
+Start iterating.         </p><p class="signature-description">
+This function needs to be called before calling <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=ad2840d07f460b016f2781589060f5ee1">next()</a> or <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=a6d63bc7bc1674bc8036fb0e81390f1b2">close()</a>. Its purpose is to create and initialize any resources that may be needed during the iteration. It should not be called again until after <a href="/pages/3.0/zorba/classzorba_1_1Iterator?anchor=a6d63bc7bc1674bc8036fb0e81390f1b2">close()</a> has been called.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td/><td>
+if an error occurs, or the iterator is open already. </td></tr></table></div>
+        </p></div></div><div id="a32ce26dcd544b131ef8b024972960ebc" class="sect1"><div><h3>removeReference</h3></div><div class="signature-box">void<span> </span>removeReference()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a09c348dbacd4a9b83e951760ca4e7e13" class="sect1"><div><h3>~Iterator</h3></div><div class="signature-box"><span> </span>~Iterator()</div><div><p class="signature-description">
+Destructor.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Protected Attributes</h2><div class="detailed"><div id="a066274b33cffdd451a68a2a0754c6044" class="sect1"><div><h3>theRefCount</h3></div><div class="signature-box">unsigned int<span> </span>theRefCount</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

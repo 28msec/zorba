@@ -1,0 +1,119 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::internal::diagnostic::location</h1><p class="include">
+            #include &lt;zorba/internal/diagnostic.h&gt;
+        </p>
+    
+    <div class="section"><h2>Private Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool">ztd::explicit_bool</a></p></td><td><p class="signature"><a href="#a06ab152b25fbb62ef47ab9db55e7854a">explicit_bool</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">unsigned short</p></td><td><p class="signature"><a href="#a6fb373e3d8b69d4eb27d32944943e1f8">column_type</a></p><span class="signature-description">
+The column-number type.         </span></td></tr><tr><td class="return-type"><p class="signature">unsigned</p></td><td><p class="signature"><a href="#a3aa53b70adc32c0c65c068b6dc7d30d4">line_type</a></p><span class="signature-description">
+The line-number type.         </span></td></tr></table></div><div class="section"><h2>Public Static Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location">location</a> const</p></td><td><p class="signature"><a href="#ade5a7d100f14b9d6121d9e5b340110b9">empty</a></p><span class="signature-description">
+A empty instance for convenience.         </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a6fb373e3d8b69d4eb27d32944943e1f8">column_type</a></p></td><td><p class="signature"><a href="#a2917b34813a066bcc07778a38ad8b75c">column_</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a6fb373e3d8b69d4eb27d32944943e1f8">column_type</a></p></td><td><p class="signature"><a href="#a60b2d71833fe962806ac23a10b47cc81">column_end_</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a98636463a00158a36396847b3faa7c14">file_</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a3aa53b70adc32c0c65c068b6dc7d30d4">line_type</a></p></td><td><p class="signature"><a href="#a429dd0f6431755e6478ddc841ea36fa3">line_</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a3aa53b70adc32c0c65c068b6dc7d30d4">line_type</a></p></td><td><p class="signature"><a href="#a4ceb695d173d3e71517e791c176681ff">line_end_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a6fb373e3d8b69d4eb27d32944943e1f8">column_type</a></p></td><td><p class="signature"><a href="#abd91d2c819212c18a3079af2b141735c">column</a>() const </p><span class="signature-description">
+Gets the column number, if any.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a6fb373e3d8b69d4eb27d32944943e1f8">column_type</a></p></td><td><p class="signature"><a href="#a96888960677865d7f6cf4a1be4d7ced1">column_end</a>() const </p><span class="signature-description">
+Gets the ending column number, if any.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#aa59ce33b8e0354664fdf7f64d810bc32">file</a>() const </p><span class="signature-description">
+Gets the file name, if any.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a3aa53b70adc32c0c65c068b6dc7d30d4">line_type</a></p></td><td><p class="signature"><a href="#a052b164f51d58f8424aa9218d56130c6">line</a>() const </p><span class="signature-description">
+Gets the line number, if any.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a3aa53b70adc32c0c65c068b6dc7d30d4">line_type</a></p></td><td><p class="signature"><a href="#a0bf774071fb418aa0fa2df6cd3fa4ca0">line_end</a>() const </p><span class="signature-description">
+Gets the ending line number, if any.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a25bc48ce462f5d53203ba6c57698d47e">location</a>()</p><span class="signature-description">
+Constructs a default (empty) location.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aba817c40565bc038ded403e5f0683207">location</a>(char const *file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</p><span class="signature-description">
+Constructs a location.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ae467d7347a045de55bb6353f82923933">location</a>(StringType const &amp;file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</p><span class="signature-description">
+Constructs a location.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#af732f7f87c9201d510153da52b612d6e">operator explicit_bool::type</a>() const </p><span class="signature-description">
+Conversion to <tt>bool</tt> for testing whether this location has been set.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#ab32fc315d0fc2b32baea90841eb4bc41">operator!</a>() const </p><span class="signature-description">
+Checks whether this location has not been set.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a9b10a6d9d422c01482850eeaf3e54397">set</a>(line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</p><span class="signature-description">
+Sets the location information.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a0fe3abd26fbd49658d95f66a2a1012eb">set</a>(char const *file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</p><span class="signature-description">
+Sets the location information.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(StringType), void &gt;::type</p></td><td><p class="signature"><a href="#a3dee6aa96f70b1768379fa5345e65e77">set</a>(StringType const &amp;file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</p><span class="signature-description">
+Sets the location information.         </span></td></tr></table></div><div class="section"><h2>Friend Classes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">friend bool</p></td><td><p class="signature"><a href="#af5829a47768fc70d8a59ba5114c90b9e">operator==</a>(location const &amp;, location const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">friend void</p></td><td><p class="signature"><a href="#ae724d809d888b302abad651aa3e109ca">serialization::operator&amp;</a>(serialization::Archiver &amp;, location &amp;)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Types</h2><div class="detailed"><div id="a06ab152b25fbb62ef47ab9db55e7854a" class="sect1"><div><h3>explicit_bool</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool">ztd::explicit_bool</a><span> </span>explicit_bool</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a6fb373e3d8b69d4eb27d32944943e1f8" class="sect1"><div><h3>column_type</h3></div><div class="signature-box">unsigned short<span> </span>column_type</div><div><p class="signature-description">
+The column-number type.         </p><p class="signature-description">
+        </p></div></div><div id="a3aa53b70adc32c0c65c068b6dc7d30d4" class="sect1"><div><h3>line_type</h3></div><div class="signature-box">unsigned<span> </span>line_type</div><div><p class="signature-description">
+The line-number type.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Static Attributes</h2><div class="detailed"><div id="ade5a7d100f14b9d6121d9e5b340110b9" class="sect1"><div><h3>empty</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location">location</a> const<span> </span>empty</div><div><p class="signature-description">
+A empty instance for convenience.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a2917b34813a066bcc07778a38ad8b75c" class="sect1"><div><h3>column_</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a6fb373e3d8b69d4eb27d32944943e1f8">column_type</a><span> </span>column_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a60b2d71833fe962806ac23a10b47cc81" class="sect1"><div><h3>column_end_</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a6fb373e3d8b69d4eb27d32944943e1f8">column_type</a><span> </span>column_end_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a98636463a00158a36396847b3faa7c14" class="sect1"><div><h3>file_</h3></div><div class="signature-box">std::string<span> </span>file_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a429dd0f6431755e6478ddc841ea36fa3" class="sect1"><div><h3>line_</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a3aa53b70adc32c0c65c068b6dc7d30d4">line_type</a><span> </span>line_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4ceb695d173d3e71517e791c176681ff" class="sect1"><div><h3>line_end_</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a3aa53b70adc32c0c65c068b6dc7d30d4">line_type</a><span> </span>line_end_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="abd91d2c819212c18a3079af2b141735c" class="sect1"><div><h3>column</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a6fb373e3d8b69d4eb27d32944943e1f8">column_type</a><span> </span>column() const </div><div><p class="signature-description">
+Gets the column number, if any.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns the column number or 0 if unset. </div>
+        </p></div></div><div id="a96888960677865d7f6cf4a1be4d7ced1" class="sect1"><div><h3>column_end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a6fb373e3d8b69d4eb27d32944943e1f8">column_type</a><span> </span>column_end() const </div><div><p class="signature-description">
+Gets the ending column number, if any.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns the column number or 0 if unset. </div>
+        </p></div></div><div id="aa59ce33b8e0354664fdf7f64d810bc32" class="sect1"><div><h3>file</h3></div><div class="signature-box">char const *<span> </span>file() const </div><div><p class="signature-description">
+Gets the file name, if any.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns the file name or the empty string if unset. </div>
+        </p></div></div><div id="a052b164f51d58f8424aa9218d56130c6" class="sect1"><div><h3>line</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a3aa53b70adc32c0c65c068b6dc7d30d4">line_type</a><span> </span>line() const </div><div><p class="signature-description">
+Gets the line number, if any.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns the line number or 0 if unset. </div>
+        </p></div></div><div id="a0bf774071fb418aa0fa2df6cd3fa4ca0" class="sect1"><div><h3>line_end</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1diagnostic_1_1location?anchor=a3aa53b70adc32c0c65c068b6dc7d30d4">line_type</a><span> </span>line_end() const </div><div><p class="signature-description">
+Gets the ending line number, if any.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns the line number or 0 if unset. </div>
+        </p></div></div><div id="a25bc48ce462f5d53203ba6c57698d47e" class="sect1"><div><h3>location</h3></div><div class="signature-box"><span> </span>location()</div><div><p class="signature-description">
+Constructs a default (empty) location.         </p><p class="signature-description">
+        </p></div></div><div id="aba817c40565bc038ded403e5f0683207" class="sect1"><div><h3>location</h3></div><div class="signature-box"><span> </span>location(char const *file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</div><div><p class="signature-description">
+Constructs a location.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>file</td><td>
+The name of the file where the expression causing the error occurred. </td></tr><tr><td>line</td><td>
+The line number of the file where the expression causing the error begins. </td></tr><tr><td>column</td><td>
+The column number, if any, of the file where the expression causing the error begins. </td></tr><tr><td>line_end</td><td>
+The end line number, if any, of the file where the expression causing the error ends. </td></tr><tr><td>column_end</td><td>
+The end column number, if any, of the file where the expression causing the error ends. </td></tr></table></div>
+        </p></div></div><div id="ae467d7347a045de55bb6353f82923933" class="sect1"><div><h3>location</h3></div><div class="signature-box"><span> </span>location(StringType const &amp;file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</div><div><p class="signature-description">
+Constructs a location.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>StringType</td><td>
+The string type for <em>file</em>. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>file</td><td>
+The name of the file where the error occurred. </td></tr><tr><td>line</td><td>
+The line number of the file where the error occurred. </td></tr><tr><td>column</td><td>
+The column number, if any, of the file where the error occurred. </td></tr><tr><td>line_end</td><td>
+The end line number, if any, of the file where the expression causing the error ends. </td></tr><tr><td>column_end</td><td>
+The end column number, if any, of the file where the xpression causing the error ends. </td></tr></table></div>
+        </p></div></div><div id="af732f7f87c9201d510153da52b612d6e" class="sect1"><div><h3>operator explicit_bool::type</h3></div><div class="signature-box"><span> </span>operator explicit_bool::type() const </div><div><p class="signature-description">
+Conversion to <tt>bool</tt> for testing whether this location has been set.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns <tt>true</tt> only if this location has been set. </div>
+        </p></div></div><div id="ab32fc315d0fc2b32baea90841eb4bc41" class="sect1"><div><h3>operator!</h3></div><div class="signature-box">bool<span> </span>operator!() const </div><div><p class="signature-description">
+Checks whether this location has not been set.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns <tt>true</tt> only if this location has not been set. </div>
+        </p></div></div><div id="a9b10a6d9d422c01482850eeaf3e54397" class="sect1"><div><h3>set</h3></div><div class="signature-box">void<span> </span>set(line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</div><div><p class="signature-description">
+Sets the location information.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>line</td><td>
+The line number of the file where the error occurred. </td></tr><tr><td>column</td><td>
+The column number, if any, of the file where the error occurred. </td></tr><tr><td>line_end</td><td>
+The end line of the file where the error occured. </td></tr><tr><td>column_end</td><td>
+The column number, if any, where the error ends. occurred. </td></tr></table></div>
+        </p></div></div><div id="a0fe3abd26fbd49658d95f66a2a1012eb" class="sect1"><div><h3>set</h3></div><div class="signature-box">void<span> </span>set(char const *file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</div><div><p class="signature-description">
+Sets the location information.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>file</td><td>
+The name of the file where the error occurred. </td></tr><tr><td>line</td><td>
+The line number of the file where the error occurred. </td></tr><tr><td>column</td><td>
+The column number, if any, of the file where the error occurred. </td></tr><tr><td>line_end</td><td>
+The end line of the file where the error occured. </td></tr><tr><td>column_end</td><td>
+The column number, if any, where the error ends. occurred. </td></tr></table></div>
+        </p></div></div><div id="a3dee6aa96f70b1768379fa5345e65e77" class="sect1"><div><h3>set</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a67def45b6f7f4daa8a69dcfb6a66008b">ZORBA_HAS_C_STR</a>(StringType), void &gt;::type<span> </span>set(StringType const &amp;file, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</div><div><p class="signature-description">
+Sets the location information.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>StringType</td><td>
+The string type for <em>file</em>. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>file</td><td>
+The name of the file where the error occurred. </td></tr><tr><td>line</td><td>
+The line number of the file where the error occurred. </td></tr><tr><td>column</td><td>
+The column number, if any, of the file where the error occurred. </td></tr><tr><td>line_end</td><td>
+The end line of the file where the error occured. </td></tr><tr><td>column_end</td><td>
+The column number, if any, where the error ends. occurred. </td></tr></table></div>
+        </p></div></div></div></div><div class="section"><h2>Friend Classes</h2><div class="detailed"><div id="af5829a47768fc70d8a59ba5114c90b9e" class="sect1"><div><h3>operator==</h3></div><div class="signature-box">friend bool<span> </span>operator==(location const &amp;, location const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ae724d809d888b302abad651aa3e109ca" class="sect1"><div><h3>serialization::operator&amp;</h3></div><div class="signature-box">friend void<span> </span>serialization::operator&amp;(serialization::Archiver &amp;, location &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

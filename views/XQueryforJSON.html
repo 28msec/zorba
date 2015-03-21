@@ -1,0 +1,829 @@
+<div class="container c16">
+    <h1>JSONiq for JSON users</h1>
+    <p class="c6 c4"><span>This tutorial introduces the JSONiq language, which declaratively manipulates JSON data.</span>
+    </p>
+    <p class="c6 c4"><span>Why don&#39;t you go ahead can try the queries of this document on our online demo interface?</span>
+    </p>
+    <p class="c4 c6"><span>&nbsp;</span><span class="c3"><a class="c13" href="http://try.zorba.io">try.zorba.io</a></span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <h1 class="c4"><a name="h.f453h84m2u1a"></a><span>JSON</span></h1>
+    <p class="c4 c9"><span>As explained on the official Web site </span><span class="c20"><a class="c13" href="http://www.json.org/">http://www.json.org/</a></span><span>, JSON is a lightweight data-interchange format designed for humans as well as for computers. It supports as values:</span>
+    </p>
+    <ol class="c15" start="1">
+        <li class="c14 c4 c9"><span>objects (string-to-value maps)</span>
+        </li>
+        <li class="c4 c9 c14"><span>arrays (ordered sequences of values)</span>
+        </li>
+        <li class="c14 c4 c9"><span>strings</span>
+        </li>
+        <li class="c14 c4 c9"><span>numbers</span>
+        </li>
+        <li class="c14 c4 c9"><span>booleans (true, false)</span>
+        </li>
+        <li class="c14 c4 c9"><span>null</span>
+        </li>
+    </ol>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span>JSONiq provides declarative querying and updating capabilities on JSON data.</span>
+    </p>
+    <h1 class="c4"><a name="h.qtfakecy3fr7"></a><span>Elevator Pitch</span></h1>
+    <p class="c4 c9"><span>JSONiq is based on XQuery, which is a W3C standard (like XML and HTML). XQuery is a very powerful declarative language that originally manipulates XML data, but it turns out that it is also a very good fit for manipulating JSON natively.</span>
+    </p>
+    <p class="c4 c9 c8"><span></span>
+    </p>
+    <p class="c4 c9"><span>JSONiq, since it extends XQuery, is a very powerful general-purpose declarative programming language. Our experience is that, for the same task, you will probably write about 80% less code compared to imperative languages like JavaScript, Python or Ruby. Additionally, you get the benefits of strong type checking without actually having to write type declarations.</span>
+    </p>
+    <p class="c4 c9 c8"><span></span>
+    </p>
+    <p class="c4 c9"><span>Here is an appetizer before we start the tutorial from scratch.</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">let $stores :=</span>
+    </p>
+    <p class="c4"><span class="c0">[</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; { &quot;store number&quot; : 1, &quot;state&quot; : &quot;MA&quot; },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; { &quot;store number&quot; : 2, &quot;state&quot; : &quot;MA&quot; },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; { &quot;store number&quot; : 3, &quot;state&quot; : &quot;CA&quot; },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; { &quot;store number&quot; : 4, &quot;state&quot; : &quot;CA&quot; }</span>
+    </p>
+    <p class="c4"><span class="c0">]</span>
+    </p>
+    <p class="c4"><span class="c0">let $sales := [</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;broiler&quot;, &quot;store number&quot; : 1, &quot;quantity&quot; : 20 &nbsp;},</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;toaster&quot;, &quot;store number&quot; : 2, &quot;quantity&quot; : 100 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;toaster&quot;, &quot;store number&quot; : 2, &quot;quantity&quot; : 50 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;toaster&quot;, &quot;store number&quot; : 3, &quot;quantity&quot; : 50 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;blender&quot;, &quot;store number&quot; : 3, &quot;quantity&quot; : 100 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;blender&quot;, &quot;store number&quot; : 3, &quot;quantity&quot; : 150 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;socks&quot;, &quot;store number&quot; : 1, &quot;quantity&quot; : 500 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;socks&quot;, &quot;store number&quot; : 2, &quot;quantity&quot; : 10 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;shirt&quot;, &quot;store number&quot; : 3, &quot;quantity&quot; : 10 }</span>
+    </p>
+    <p class="c4"><span class="c0">]</span>
+    </p>
+    <p class="c4"><span class="c0">let $join :=</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; for $store in jn:members($stores), $sale in jn:members($sales)</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; where $store(&quot;store number&quot;) = $sale(&quot;store number&quot;)</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; return {</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; &quot;nb&quot; : $store(&quot;store number&quot;),</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; &quot;state&quot; : $store(&quot;state&quot;),</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; &quot;sold&quot; : $sale(&quot;product&quot;)</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; }</span>
+    </p>
+    <p class="c4"><span class="c0">return [$join]</span>
+    </p>
+    <p class="c2"><span class="c0 c5">[ </span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; { &quot;nb&quot; : 1, &quot;state&quot; : &quot;MA&quot;, &quot;sold&quot; : &quot;broiler&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; { &quot;nb&quot; : 1, &quot;state&quot; : &quot;MA&quot;, &quot;sold&quot; : &quot;socks&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; { &quot;nb&quot; : 2, &quot;state&quot; : &quot;MA&quot;, &quot;sold&quot; : &quot;toaster&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; { &quot;nb&quot; : 2, &quot;state&quot; : &quot;MA&quot;, &quot;sold&quot; : &quot;toaster&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; { &quot;nb&quot; : 2, &quot;state&quot; : &quot;MA&quot;, &quot;sold&quot; : &quot;socks&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; { &quot;nb&quot; : 3, &quot;state&quot; : &quot;CA&quot;, &quot;sold&quot; : &quot;toaster&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; { &quot;nb&quot; : 3, &quot;state&quot; : &quot;CA&quot;, &quot;sold&quot; : &quot;blender&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; { &quot;nb&quot; : 3, &quot;state&quot; : &quot;CA&quot;, &quot;sold&quot; : &quot;blender&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; { &quot;nb&quot; : 3, &quot;state&quot; : &quot;CA&quot;, &quot;sold&quot; : &quot;shirt&quot; }</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp;]</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <h1 class="c4"><a name="h.yugk1mszt0re"></a><span>And here you go</span></h1>
+    <h2 class="c4"><a name="h.4uvhbej4btrt"></a><span>Actually</span><span>, you already knew some JSONiq</span></h2>
+    <p class="c4 c9"><span>The first thing you need to know is that, as a rule of thumb, a well-formed JSON document is a JSONiq expression as well.</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4 c9"><span>This means that, most of the time, you can copy-and-paste a JSON document into a query. The following are JSONiq queries that are &quot;idempotent&quot; (they just output themselves):</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">{ &quot;pi&quot; : 3.14, &quot;sq2&quot; : 1.4 }</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">{ &quot;pi&quot; : 3.14, &quot;sq2&quot; : 1.4 }</span>
+    </p>
+    <p class="c4 c8"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span class="c0">[ 2, 3, 5, 7, 11, 13 ]</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">[ 2, 3, 5, 7, 11, 13 ]</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">{</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;operations&quot; : [</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; { &quot;binary&quot; : [ &quot;and&quot;, &quot;or&quot;] },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; { &quot;unary&quot; : [&quot;not&quot;] }</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; ],</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;bits&quot; : [</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; 0, 1</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; ]</span>
+    </p>
+    <p class="c4"><span class="c0">}</span>
+    </p>
+    <p class="c2"><span class="c0 c5">{</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; &quot;operations&quot; : [</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; &nbsp; { &quot;binary&quot; : [ &quot;and&quot;, &quot;or&quot; ] },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; &nbsp; { &quot;unary&quot; : [ &quot;not&quot; ] }</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; ],</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; &quot;bits&quot; : [</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; &nbsp; 0, 1</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp; ]</span>
+    </p>
+    <p class="c2"><span class="c0 c5">}</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span class="c0">[ { &quot;Question&quot; : &quot;Ultimate&quot; }, [&quot;Life&quot;, &quot;the universe&quot;, &quot;and everything&quot;] ]</span>
+    </p>
+    <p class="c1"><span class="c0"></span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">[ { &quot;Question&quot; : &quot;Ultimate&quot; }, [ &quot;Life&quot;, &quot;the universe&quot;, &quot;and everything&quot; ] ]</span>
+    </p>
+    <p class="c1"><span class="c0"></span>
+    </p>
+    <p class="c4"><span>This works with objects, arrays (even nested), strings, numbers, booleans, null. </span><span class="c10">The exceptions to this rule (but we are working on it!) are that:</span>
+    </p>
+    <p class="c4 c9"><span class="c10">(i) empty objects are not recognized and must be written {| |}.</span>
+    </p>
+    <p class="c4 c9"><span class="c10">(ii) characters escaped with the \ in JSON strings are not recognized (XQuery uses another means of escaping characters).</span>
+    </p>
+    <p class="c4 c8"><span class="c0 c7"></span>
+    </p>
+    <p class="c4 c9"><span>It also works the other way round: if your query outputs an object or an array, you can use it as a JSON document.</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4 c9"><span>JSONiq is a declarative language. This means that you only need to say </span><span class="c10">what</span><span>&nbsp;you want - the compiler will take care of the </span><span class="c10">how</span><span>. In the above queries, you are basically saying: I want to output this JSON content, and here it is.</span>
+    </p>
+    <h1 class="c4"><a name="h.1gal1zhyffu4"></a><span>JSONiq basics</span></h1>
+    <h2 class="c4"><a name="h.ncbxtez2z3rn"></a><span>The real JSONiq Hello, World!</span></h2>
+    <p class="c4"><span>Wondering what a hello world program looks like in JSONiq? Here it is:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">&quot;Hello, World!&quot;</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">Hello, World!</span>
+    </p>
+    <p class="c4 c8"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span>Not surprisingly, it outputs the string &quot;Hello, World!&quot;.</span>
+    </p>
+    <h2 class="c4"><a name="h.ifcjheuaxoqc"></a><span>Numbers and arithmetic operations</span></h2>
+    <p class="c4 c9"><span>Okay, so, now, you might be thinking: &quot;What is the use of this language if it just outputs what I put in?&quot; Of course, JSONiq can more than that. And still in a declarative way. Here is how it works with numbers:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">2 + 2</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span>will output:</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">4</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span>whereas</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">(38 + 2) div 2 + 11 * 2</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span>will output</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">42</span>
+    </p>
+    <p class="c4 c8"><span class="c0 c5"></span>
+    </p>
+    <p class="c4 c9"><span>(mind the division operator which is the &quot;div&quot; keyword. The slash operator has different semantics).</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span>Like JSON, JSONiq works with decimals and doubles:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">6.022e23 * 42</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">2.52924E25</span>
+    </p>
+    <h2 class="c4"><a name="h.jmbc6c1fqqwx"></a><span>Logical operations</span></h2>
+    <p class="c4 c9"><span>JSONiq supports boolean operations.</span>
+    </p>
+    <p class="c4 c9 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">true and false</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">false</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span class="c0">(true or false) and (false or true)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">true</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span>The unary not is a function (yes, JSONiq has functions):</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">not(true)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">false</span>
+    </p>
+    <h2 class="c4"><a name="h.iq1ixg5ywx0r"></a><span>Strings</span></h2>
+    <p class="c4"><span>JSONiq is capable of manipulating strings as well, using functions:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">concat(&quot;Hello &quot;, &quot;Captain &quot;, &quot;Kirk&quot;)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">Hello Captain Kirk</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span class="c0">substring(&quot;Mister Spock&quot;, 8, 5)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">Spock</span>
+    </p>
+    <p class="c1"><span class="c5"></span>
+    </p>
+    <p class="c4 c9"><span>JSONiq comes up with a rich string function library out of the box, inherited from its base language. These functions are listed </span><span class="c20"><a class="c13" href="http://www.w3.org/TR/xpath-functions-30/#string-functions">here</a></span><span>&nbsp;(actually, you will find many more for numbers, etc.)</span>
+    </p>
+    <h2 class="c4"><a name="h.rv6w8p4wenfa"></a><span>Sequences</span></h2>
+    <p class="c4"><span>Until now, we have only been working with single values (an object, an array, a number, a string, a boolean). JSONiq supports sequences of values. You can build a sequence using commas:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)</span>
+    </p>
+    <p class="c4 c11"><span class="c5">1 2 3 4 5 6 7 8 9 10</span>
+    </p>
+    <p class="c4 c8"><span class="c5"></span>
+    </p>
+    <p class="c4"><span class="c0">1, </span><span class="c0">true</span><span class="c0">, 4.2e1, &quot;Life&quot;</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">1 true 42 Life</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span>The &quot;to&quot; operator is very convenient, too:</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">(1 to 100)</span>
+    </p>
+    <p class="c4 c11"><span class="c5">1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20</span>
+    </p>
+    <p class="c4 c11"><span class="c5">21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40</span>
+    </p>
+    <p class="c4 c11"><span class="c5">41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60</span>
+    </p>
+    <p class="c4 c11"><span class="c5">61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80</span>
+    </p>
+    <p class="c4 c11"><span class="c5">81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span>Some functions even work on sequences:</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">sum(1 to 100)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">5050</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span class="c0">string-join((&quot;These&quot;, &quot;are&quot;, &quot;some&quot;, &quot;words&quot;), &quot;-&quot;)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">These-are-some-words</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span class="c0">count(10 to 20)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">11</span>
+    </p>
+    <p class="c4 c8"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span class="c0">avg(1 to 100)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">50.5</span>
+    </p>
+    <p class="c4 c8"><span class="c5"></span>
+    </p>
+    <p class="c4"><span>Unlike arrays, sequences are flat. The sequence (3) is identical to the integer 3, and (1, (2, 3)) is identical to (1, 2, 3).</span>
+    </p>
+    <h1 class="c4"><a name="h.7x2r8sj1zjwe"></a><span>A bit more in depth</span></h1>
+    <h2 class="c4"><a name="h.b6c9zq9um8cu"></a><span>Variables</span></h2>
+    <p class="c4"><span>You can bind a sequence of values to a (dollar-prefixed) variable, like so:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">let $x := &quot;Bearing 3 1 4 Mark 5. &quot;</span>
+    </p>
+    <p class="c4"><span class="c0">return concat($x, &quot;Engage!&quot;)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">Bearing 3 1 4 Mark 5. Engage!</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c1"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">let $x := (&quot;Kirk&quot;, &quot;Picard&quot;, &quot;Sisko&quot;)</span>
+    </p>
+    <p class="c4"><span class="c0">return string-join($x, &quot; and &quot;)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">Kirk and Picard and Sisko</span>
+    </p>
+    <p class="c4 c8"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span>You can bind as many variables as you want:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">let $x := 1</span>
+    </p>
+    <p class="c4"><span class="c0">let $y := $x * 2</span>
+    </p>
+    <p class="c4"><span class="c0">let $z := $y + $x</span>
+    </p>
+    <p class="c4"><span class="c0">return ($x, $y, $z)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">1 2 3</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span>and even reuse the same name to hide formerly declared variables:</span>
+    </p>
+    <p class="c4"><span class="c0">let $x := 1</span>
+    </p>
+    <p class="c4"><span class="c0">let $x := $x + 2</span>
+    </p>
+    <p class="c4"><span class="c0">let $x := $x + 3</span>
+    </p>
+    <p class="c4"><span class="c0">return $x</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">6</span>
+    </p>
+    <h2 class="c4"><a name="h.92ak2udyfghp"></a><span>Iteration</span></h2>
+    <p class="c4 c9"><span>In a way very similar to let, you can iterate over a sequence of values with the &quot;for&quot; keyword. Instead of binding the entire sequence of the variable, it will bind each value of the sequence in turn to this variable.</span>
+    </p>
+    <p class="c4 c9 c8"><span></span>
+    </p>
+    <p class="c4 c9"><span class="c0">for $i in 1 to 10</span>
+    </p>
+    <p class="c4 c9"><span class="c0">return $i * 2</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">2 4 6 8 10 12 14 16 18 20</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span>More interestingly, you can combine fors and lets like so:</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">let $sequence := 1 to 10</span>
+    </p>
+    <p class="c4"><span class="c0">for $value in $sequence</span>
+    </p>
+    <p class="c4"><span class="c0">let $square := $value * 2</span>
+    </p>
+    <p class="c4"><span class="c0">return $square</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">2 4 6 8 10 12 14 16 18 20</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span>and even filter out some values:</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">let $sequence := 1 to 10</span>
+    </p>
+    <p class="c4"><span class="c0">for $value in $sequence</span>
+    </p>
+    <p class="c4"><span class="c0">let $square := $value * 2</span>
+    </p>
+    <p class="c4"><span class="c0">where $square &lt; 10</span>
+    </p>
+    <p class="c4"><span class="c0">return $square</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">2 4 6 8</span>
+    </p>
+    <h2 class="c4"><a name="h.5fcoouj7073u"></a><span>Note that you can only iterate over sequences, not arrays. To iterate over an array, you can obtain the sequence of its values with jn:members([1, 2, 3]).</span></h2>
+    <h2 class="c4"><a name="h.zdhx60a5duyu"></a><span>Conditions</span></h2>
+    <p class="c4"><span>You can make the output depend on a condition with an if-then-else construct:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">for $x in 1 to 10</span>
+    </p>
+    <p class="c4"><span class="c0">return if ($x &lt; 5) then $x</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else -$x</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">1 2 3 4 -5 -6 -7 -8 -9 -10</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span>Note that the else clause is required - however, it can be the empty sequence () which is often when you need if only the then clause is relevant to you.</span>
+    </p>
+    <h2 class="c4"><a name="h.ccs6lkxiixw4"></a><span>Composability of Expressions</span></h2>
+    <p class="c4"><span>Now that you know of a couple of elementary JSONiq expressions, you can combine them in more elaborate expressions. For example, you can put any sequence of values in an array:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">[ 1 to 10 ]</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">[ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span>Or you can dynamically compute the value of object pairs (or their key):</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">{</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;Greeting&quot; : (let $d := &quot;Mister Spock&quot;</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return concat(&quot;Hello, &quot;, $d)),</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;Farewell&quot; : string-join((&quot;Live&quot;, &quot;long&quot;, &quot;and&quot;, &quot;prosper&quot;),</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&quot; &quot;)</span>
+    </p>
+    <p class="c4"><span class="c0">}</span>
+    </p>
+    <p class="c4 c8"><span class="c0 c5"></span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">{ &quot;Greeting&quot; : &quot;Hello, Mister Spock&quot;, &quot;Farewell&quot; : &quot;Live long and prosper&quot; }</span>
+    </p>
+    <p class="c4 c8"><span class="c5"></span>
+    </p>
+    <p class="c4"><span>You can dynamically generate object singletons (with a single pair):</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">{ concat(&quot;Integer &quot;, 2) : 2 * 2 }</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">{ &quot;Integer 2&quot; : 4 }</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span>and then merge lots of them into a new object with the {| |} notation:</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">{|</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; for $i in 1 to 10</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; return { concat(&quot;Square of &quot;, $i) : $i * $i }</span>
+    </p>
+    <p class="c4"><span class="c0">|}</span>
+    </p>
+    <p class="c2"><span class="c0 c5">{</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&quot;Square of 1&quot; : 1,</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&quot;Square of 2&quot; : 4,</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&quot;Square of 3&quot; : 9,</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&quot;Square of 4&quot; : 16,</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&quot;Square of 5&quot; : 25,</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&quot;Square of 6&quot; : 36,</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&quot;Square of 7&quot; : 49,</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&quot;Square of 8&quot; : 64,</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&quot;Square of 9&quot; : 81,</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&quot;Square of 10&quot; : 100</span>
+    </p>
+    <p class="c2"><span class="c0 c5">}</span>
+    </p>
+    <h1 class="c4"><a name="h.mjv7kyjurri2"></a><span>JSON Navigation</span></h1>
+    <p class="c4 c9"><span>Up to now, you have learnt how to compose expressions so as to do some computations and to build objects and arrays. It also works the other way round: if you have some JSON data, you can access it and navigate.</span>
+    </p>
+    <p class="c4 c9 c8"><span></span>
+    </p>
+    <p class="c4 c9"><span>All you need to know is: JSONiq views</span>
+    </p>
+    <ol class="c15" start="1">
+        <li class="c14 c4 c9"><span>an array as an ordered list of values,</span>
+        </li>
+        <li class="c14 c4 c9"><span>an object as a set of name/value pairs</span>
+        </li>
+    </ol>
+    <h2 class="c4 c9"><a name="h.xosiyb17dh24"></a><span>Objects</span></h2>
+    <p class="c4 c9"><span>You can use an object as if it were a function and pass the call an argument of type xs:string. It will return the value associated thereto:</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">let $person := {</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;first name&quot; : &quot;Sarah&quot;,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;age&quot; : 13,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;gender&quot; : &quot;female&quot;,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;friends&quot; : [ &quot;Jim&quot;, &quot;Mary&quot;, &quot;Jennifer&quot;]</span>
+    </p>
+    <p class="c4"><span class="c0">}</span>
+    </p>
+    <p class="c4"><span class="c0">return $person(&quot;first name&quot;)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">&quot;Sarah&quot;</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span>You can also ask for all keys in an object:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">let $person := {</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;name&quot; : &quot;Sarah&quot;,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;age&quot; : 13,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;gender&quot; : &quot;female&quot;,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;friends&quot; : [ &quot;Jim&quot;, &quot;Mary&quot;, &quot;Jennifer&quot;]</span>
+    </p>
+    <p class="c4"><span class="c0">}</span>
+    </p>
+    <p class="c4"><span class="c0">return { &quot;keys&quot; : [ jn:keys($person)] }</span>
+    </p>
+    <p class="c1 c19"><span class="c0 c5"></span>
+    </p>
+    <p class="c4 c11 c19"><span class="c0 c5">{ &quot;keys&quot; : [ &quot;name&quot;, &quot;age&quot;, &quot;gender&quot;, &quot;friends&quot; ] }</span>
+    </p>
+    <h2 class="c4"><a name="h.mrf42gizl3y6"></a><span>Arrays</span></h2>
+    <p class="c4 c9"><span>You can use an array as if it were a function and pass the call an argument of type xs:integer. It will return the entry at that position:</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4"><span class="c0">let $friends := [ &quot;Jim&quot;, &quot;Mary&quot;, &quot;Jennifer&quot;]</span>
+    </p>
+    <p class="c4"><span class="c0">return $friends(2)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">Mary</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span>It is also possible to get the size of an array:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">let $person := {</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;name&quot; : &quot;Sarah&quot;,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;age&quot; : 13,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;gender&quot; : &quot;female&quot;,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;friends&quot; : [ &quot;Jim&quot;, &quot;Mary&quot;, &quot;Jennifer&quot;]</span>
+    </p>
+    <p class="c4"><span class="c0">}</span>
+    </p>
+    <p class="c4"><span class="c0">return { &quot;how many friends&quot; : jn:size($person(&quot;friends&quot;)) }</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">{ &quot;how many friends&quot; : 3 }</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span>For convenience, there is a function that returns all elements in an array, as a sequence:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">let $person := {</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;name&quot; : &quot;Sarah&quot;,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;age&quot; : 13,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;gender&quot; : &quot;female&quot;,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;friends&quot; : [ &quot;Jim&quot;, &quot;Mary&quot;, &quot;Jennifer&quot;]</span>
+    </p>
+    <p class="c4"><span class="c0">}</span>
+    </p>
+    <p class="c4"><span class="c0">return jn:members($person(&quot;friends&quot;))</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">Jim Mary Jennifer</span>
+    </p>
+    <p class="c1"><span class="c5"></span>
+    </p>
+    <h1 class="c4"><a name="h.eb0bxle2oykl"></a><span>Relational Algebra</span></h1>
+    <p class="c4 c9"><span>Do you r</span><span>emember SQL&#39;s SELECT FROM WHERE statements? JSONiq inherits selection, projection and join capability from XQuery, too.</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">let $stores :=</span>
+    </p>
+    <p class="c4"><span class="c0">[</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; { &quot;store number&quot; : 1, &quot;state&quot; : &quot;MA&quot; },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; { &quot;store number&quot; : 2, &quot;state&quot; : &quot;MA&quot; },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; { &quot;store number&quot; : 3, &quot;state&quot; : &quot;CA&quot; },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; { &quot;store number&quot; : 4, &quot;state&quot; : &quot;CA&quot; }</span>
+    </p>
+    <p class="c4"><span class="c0">]</span>
+    </p>
+    <p class="c4"><span class="c0">let $sales := [</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;broiler&quot;, &quot;store number&quot; : 1, &quot;quantity&quot; : 20 &nbsp;},</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;toaster&quot;, &quot;store number&quot; : 2, &quot;quantity&quot; : 100 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;toaster&quot;, &quot;store number&quot; : 2, &quot;quantity&quot; : 50 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;toaster&quot;, &quot;store number&quot; : 3, &quot;quantity&quot; : 50 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;blender&quot;, &quot;store number&quot; : 3, &quot;quantity&quot; : 100 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;blender&quot;, &quot;store number&quot; : 3, &quot;quantity&quot; : 150 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;socks&quot;, &quot;store number&quot; : 1, &quot;quantity&quot; : 500 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;socks&quot;, &quot;store number&quot; : 2, &quot;quantity&quot; : 10 },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp;{ &quot;product&quot; : &quot;shirt&quot;, &quot;store number&quot; : 3, &quot;quantity&quot; : 10 }</span>
+    </p>
+    <p class="c4"><span class="c0">]</span>
+    </p>
+    <p class="c4"><span class="c0">let $join :=</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; for $store in jn:members($stores), $sale in jn:members($sales)</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; where $store(&quot;store number&quot;) = $sale(&quot;store number&quot;)</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; return {</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; &quot;nb&quot; : $store(&quot;store number&quot;),</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; &quot;state&quot; : $store(&quot;state&quot;),</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; &quot;sold&quot; : $sale(&quot;product&quot;)</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; }</span>
+    </p>
+    <p class="c4"><span class="c0">return [$join]</span>
+    </p>
+    <p class="c2"><span class="c0 c5">[ </span>
+    </p>
+    <p class="c2"><span class="c0 c5">{ &quot;nb&quot; : 1, &quot;state&quot; : &quot;MA&quot;, &quot;sold&quot; : &quot;broiler&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">{ &quot;nb&quot; : 1, &quot;state&quot; : &quot;MA&quot;, &quot;sold&quot; : &quot;socks&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">{ &quot;nb&quot; : 2, &quot;state&quot; : &quot;MA&quot;, &quot;sold&quot; : &quot;toaster&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">{ &quot;nb&quot; : 2, &quot;state&quot; : &quot;MA&quot;, &quot;sold&quot; : &quot;toaster&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">{ &quot;nb&quot; : 2, &quot;state&quot; : &quot;MA&quot;, &quot;sold&quot; : &quot;socks&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">{ &quot;nb&quot; : 3, &quot;state&quot; : &quot;CA&quot;, &quot;sold&quot; : &quot;toaster&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">{ &quot;nb&quot; : 3, &quot;state&quot; : &quot;CA&quot;, &quot;sold&quot; : &quot;blender&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">{ &quot;nb&quot; : 3, &quot;state&quot; : &quot;CA&quot;, &quot;sold&quot; : &quot;blender&quot; },</span>
+    </p>
+    <p class="c2"><span class="c0 c5">{ &quot;nb&quot; : 3, &quot;state&quot; : &quot;CA&quot;, &quot;sold&quot; : &quot;shirt&quot; }</span>
+    </p>
+    <p class="c2"><span class="c0 c5">&nbsp;]</span>
+    </p>
+    <h1 class="c4"><a name="h.oii6pvliilhi"></a><span>Access external data</span></h1>
+    <p class="c4"><span>Our implementation supports collections of (and indices on) JSON objects or arrays:</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">dml:collection(&quot;my:data&quot;)</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">{ &quot;foo&quot; : &quot;Your&quot; }</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">{ &quot;foo&quot; : &quot;Collection&quot; }</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">{ &quot;foo&quot; : &quot;of&quot; }</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">{ &quot;foo&quot; : &quot;JSON&quot; }</span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">{ &quot;foo&quot; : &quot;objects&quot; }</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4"><span>It is also possible to get JSON content with an HTTP request, or by parsing it from a string. The EXPath http-client module (described in the Zorba documentation) &nbsp;allows you to make HTTP requests, and the jn:parse-json() function allows you to use the body as an object or an array.</span>
+    </p>
+    <h1 class="c4"><a name="h.bm3buqmzhtko"></a><span>I want more</span></h1>
+    <p class="c4 c9"><span>JSONiq supports JSON updates. You can declaratively update your JSON data. JSONiq provides updating expressions. The list of updates that is eventually output by your program is then applied to your JSON data.</span>
+    </p>
+    <p class="c4 c8"><span></span>
+    </p>
+    <p class="c4"><span class="c0">copy $people := {</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;John&quot; : { &quot;status&quot; : &quot;single&quot; },</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &quot;Mary&quot; : { &quot;status&quot; : &quot;single&quot; } }</span>
+    </p>
+    <p class="c4"><span class="c0">modify (replace json value of $people(&quot;John&quot;)(&quot;status&quot;) with &quot;married&quot;,</span>
+    </p>
+    <p class="c4"><span class="c0">&nbsp; &nbsp; &nbsp; &nbsp; replace json value of $people(&quot;Mary&quot;)(&quot;status&quot;) with &quot;married&quot;)</span>
+    </p>
+    <p class="c4"><span class="c0">return $people</span>
+    </p>
+    <p class="c4 c8"><span class="c0"></span>
+    </p>
+    <p class="c4 c11"><span class="c0 c5">{ &quot;John&quot; : { &quot;status&quot; : &quot;married&quot; }, &quot;Mary&quot; : { &quot;status&quot; : &quot;married&quot; } }</span>
+    </p>
+    <p class="c1"><span class="c0 c5"></span>
+    </p>
+    <p class="c4 c9"><span>Other updates are insertion into an object or an array, replacement of a value in an object or an array, deletion in an object or an array, renaming an object pair, appending to an array. This is documented on jsoniq.org.</span>
+    </p>
+    <h2 class="c4"><a name="h.5itcphr8262b"></a><span>Even more</span></h2>
+    <p class="c4"><span>JSONiq can do way more that what is presented here. Here are a couple of highlights:</span>
+    </p>
+    <p class="c4 c9"><span>- JSONiq is a strongly typed language, but is smart enough to not bother you with types when unnecessary. It potentially supports static typing as well to detect errors before you even execute your program.</span>
+    </p>
+    <p class="c4"><span>- You can define your own functions and modules.</span>
+    </p>
+    <p class="c4"><span>- JSONiq provides you with loads of available modules shipped with Zorba.</span>
+    </p>
+    <p class="c4 c9"><span>- JSONiq has tons of further features such as switch, typeswitch and try-catch expressions, universal/existential quantifiers, path expressions, filtering expressions, functors, mappings, grouping, windowing.</span>
+    </p>
+    <h2 class="c4"><a name="h.j7oh3cyhem38"></a><span>More is not enough</span></h2>
+    <p class="c4 c9"><span>- JSONiq supports XML. Yes: you can manipulate JSON and XML with the same language! JSONiq is actually a superset of XQuery, a W3C standard, and extends its data model to support JSON.</span>
+    </p>
+    <p class="c4 c9"><span>- JSONiq supports scripting. If you need to write a full-fledged, side-effecting Web application, scripting is for you.</span>
+    </p>
+    <p class="c4 c9 c8"><span></span>
+    </p>
+    <p class="c4 c9"><span>The complete JSONiq specification is available on </span><span class="c20"><a class="c13" href="http://jsoniq.org/">http://jsoniq.org/</a></span>
+    </p>
+</div>

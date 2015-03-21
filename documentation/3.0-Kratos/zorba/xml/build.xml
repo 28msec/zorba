@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build" kind="page">
+    <compoundname>build</compoundname>
+    <title>Zorba Build Instructions</title>
+    <detaileddescription>
+<para>The following pages describe how to build Zorba from source.</para><para><itemizedlist>
+<listitem><para><ref refid="build_prerequisites" kindref="compound">Prerequisites for Building Zorba</ref></para></listitem><listitem><para><ref refid="build_prepare" kindref="compound">Preparing to Build Zorba</ref></para></listitem><listitem><para><ref refid="configure_zorba" kindref="compound">Configuring a Zorba Build Using CMake</ref></para></listitem><listitem><para><ref refid="build_and_install" kindref="compound">Building and Installing Zorba</ref></para></listitem></itemizedlist>
+</para><para>In addition, some platform-specific notes regarding building Zorba are available on the following pages. Please refer to them for clarifications and hints regarding the build process on your platform.</para><para><itemizedlist>
+<listitem><para><ref refid="build_ubuntu" kindref="compound">Zorba Build Notes for Ubuntu/Debian Linux Users</ref></para></listitem><listitem><para><ref refid="build_windows" kindref="compound">Zorba Build Notes for Windows Users</ref></para></listitem><listitem><para><ref refid="build_macos" kindref="compound">Zorba Build Notes for Mac OS X Users</ref> </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

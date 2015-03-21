@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="iterator_8h" kind="file">
+    <compoundname>iterator.h</compoundname>
+    <includes local="no">zorba/config.h</includes>
+    <includes refid="api__shared__types_8h" local="no">zorba/api_shared_types.h</includes>
+    <includes refid="item__sequence_8h" local="no">zorba/item_sequence.h</includes>
+    <includedby refid="empty__sequence_8h" local="no">empty_sequence.h</includedby>
+    <includedby refid="singleton__item__sequence_8h" local="no">singleton_item_sequence.h</includedby>
+    <includedby refid="vector__item__sequence_8h" local="no">vector_item_sequence.h</includedby>
+    <includedby refid="zorba_8h" local="no">zorba.h</includedby>
+    <incdepgraph>
+      <node id="1887">
+        <label>zorba/util/smart_ptr.h</label>
+        <link refid="smart__ptr_8h"/>
+        <childnode refid="1885" relation="include">
+        </childnode>
+      </node>
+      <node id="1888">
+        <label>zorba/item_sequence.h</label>
+        <link refid="item__sequence_8h"/>
+        <childnode refid="1885" relation="include">
+        </childnode>
+        <childnode refid="1886" relation="include">
+        </childnode>
+      </node>
+      <node id="1884">
+        <label>iterator.h</label>
+        <link refid="iterator.h"/>
+        <childnode refid="1885" relation="include">
+        </childnode>
+        <childnode refid="1886" relation="include">
+        </childnode>
+        <childnode refid="1888" relation="include">
+        </childnode>
+      </node>
+      <node id="1885">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="1886">
+        <label>zorba/api_shared_types.h</label>
+        <link refid="api__shared__types_8h"/>
+        <childnode refid="1885" relation="include">
+        </childnode>
+        <childnode refid="1887" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1890">
+        <label>empty_sequence.h</label>
+        <link refid="empty__sequence_8h"/>
+      </node>
+      <node id="1893">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="1894" relation="include">
+        </childnode>
+      </node>
+      <node id="1889">
+        <label>iterator.h</label>
+        <link refid="iterator.h"/>
+        <childnode refid="1890" relation="include">
+        </childnode>
+        <childnode refid="1891" relation="include">
+        </childnode>
+        <childnode refid="1892" relation="include">
+        </childnode>
+        <childnode refid="1893" relation="include">
+        </childnode>
+      </node>
+      <node id="1894">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="1893" relation="include">
+        </childnode>
+      </node>
+      <node id="1891">
+        <label>singleton_item_sequence.h</label>
+        <link refid="singleton__item__sequence_8h"/>
+      </node>
+      <node id="1892">
+        <label>vector_item_sequence.h</label>
+        <link refid="vector__item__sequence_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1Iterator" prot="public">zorba::Iterator</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_ITERATOR_API_H</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_ITERATOR_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="api__shared__types_8h" kindref="compound">zorba/api_shared_types.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="item__sequence_8h" kindref="compound">zorba/item_sequence.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="25"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/>*<sp/>\brief<sp/>Interface<sp/>for<sp/>an<sp/>Iterator<sp/>over<sp/>a<sp/>sequence<sp/>of<sp/>items.</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/>*<sp/>An<sp/>iterator<sp/>can<sp/>be<sp/>in<sp/>one<sp/>of<sp/>the<sp/>following<sp/>two<sp/>states:<sp/>open<sp/>or<sp/>not-open.</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/>*<sp/>When<sp/>in<sp/>open<sp/>state,<sp/>only<sp/>methods<sp/>isOpen(),<sp/>next()<sp/>and<sp/>close()<sp/>may<sp/>be<sp/>called.</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/>*<sp/>When<sp/>in<sp/>not-open<sp/>state,<sp/>only<sp/>isOpen()<sp/>and<sp/>open()<sp/>may<sp/>be<sp/>called.<sp/>The<sp/>open()</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/>*<sp/>method<sp/>changes<sp/>the<sp/>state<sp/>from<sp/>non-open<sp/>to<sp/>open,<sp/>and<sp/>the<sp/>close()<sp/>method</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/>*<sp/>changes<sp/>the<sp/>state<sp/>from<sp/>open<sp/>to<sp/>not-open.</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34" refid="classzorba_1_1Iterator" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1Iterator" kindref="compound" tooltip="Interface for an Iterator over a sequence of items.">Iterator</ref><sp/>:<sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref></highlight></codeline>
+<codeline lineno="35"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/>/**<sp/>\brief<sp/>Destructor</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39" refid="classzorba_1_1Iterator_1a09c348dbacd4a9b83e951760ca4e7e13" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Iterator_1a09c348dbacd4a9b83e951760ca4e7e13" kindref="member" tooltip="Destructor.">~Iterator</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/>/**<sp/>\brief<sp/>Start<sp/>iterating.</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/><sp/>*<sp/>This<sp/>function<sp/>needs<sp/>to<sp/>be<sp/>called<sp/>before<sp/>calling<sp/>next()<sp/>or<sp/>close().</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/><sp/><sp/>*<sp/>Its<sp/>purpose<sp/>is<sp/>to<sp/>create<sp/>and<sp/>initialize<sp/>any<sp/>resources<sp/>that<sp/>may<sp/>be<sp/></highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/><sp/>*<sp/>needed<sp/>during<sp/>the<sp/>iteration.<sp/>It<sp/>should<sp/>not<sp/>be<sp/>called<sp/>again<sp/>until</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/><sp/>*<sp/>after<sp/>close()<sp/>has<sp/>been<sp/>called.</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@throw<sp/>ZorbaException<sp/>if<sp/>an<sp/>error<sp/>occurs,<sp/>or<sp/>the<sp/>iterator<sp/>is<sp/>open<sp/>already.</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/>open()<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/>/**<sp/>\brief<sp/>Get<sp/>the<sp/>next<sp/>Item<sp/>of<sp/>the<sp/>sequence.</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/><sp/>aItem<sp/>the<sp/>next<sp/>Item<sp/>of<sp/>the<sp/>sequence,<sp/>unless<sp/>all<sp/>the<sp/>items<sp/>of<sp/>the</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>sequence<sp/>have<sp/>been<sp/>returned<sp/>already<sp/>by<sp/>previous<sp/>invocations<sp/>of<sp/>next().</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>false<sp/>if<sp/>all<sp/>the<sp/>items<sp/>of<sp/>the<sp/>sequence<sp/>have<sp/>been<sp/>returned<sp/>already</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>by<sp/>previous<sp/>invocations<sp/>of<sp/>next();<sp/>true<sp/>otherwise.</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@throw<sp/><sp/>ZorbaException<sp/>if<sp/>an<sp/>error<sp/>occurs,<sp/>or<sp/>the<sp/>Iterator<sp/>has<sp/>not<sp/>been<sp/>opened.</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/>next(<ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref>&amp;<sp/>aItem)<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/>/**<sp/>\brief<sp/>Stop<sp/>iterating.</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/><sp/>*<sp/>The<sp/>purpose<sp/>of<sp/>this<sp/>method<sp/>is<sp/>to<sp/>release<sp/>resources<sp/>that<sp/>were<sp/>allocated</highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/><sp/>*<sp/>during<sp/>open.<sp/>After<sp/>calling<sp/>close(),<sp/>neither<sp/>close()<sp/>nor<sp/>next()<sp/>may<sp/>be</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/><sp/>*<sp/>called<sp/>again.<sp/>However,<sp/>the<sp/>iterator<sp/>may<sp/>be<sp/>re-opened<sp/>(by<sp/>calling<sp/>open()).</highlight></codeline>
+<codeline lineno="69"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@throw<sp/><sp/>ZorbaException<sp/>if<sp/>an<sp/>error<sp/>occurs,<sp/>or<sp/>the<sp/>Iterator<sp/>has<sp/>not<sp/>been<sp/>opened.</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/>close()<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/>*<sp/>brief<sp/>Check<sp/>whether<sp/>the<sp/>iterator<sp/>is<sp/>open<sp/>or<sp/>not</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/>isOpen()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>zorba<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="85"><highlight class="preprocessor"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/iterator.h"/>
+  </compounddef>
+</doxygen>

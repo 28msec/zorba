@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1ztd_1_1sfinae__base" kind="class" prot="public">
+    <compoundname>zorba::internal::ztd::sfinae_base</compoundname>
+    <includes refid="ztd_8h" local="no">zorba/internal/ztd.h</includes>
+      <sectiondef kind="protected-type">
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1ztd_1_1sfinae__base_1a6e4b0d3c86f136688e1b3eb4a75f1fb5" prot="protected" static="no">
+        <type>char</type>
+        <definition>typedef char zorba::internal::ztd::sfinae_base::no</definition>
+        <argsstring></argsstring>
+        <name>no</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="44" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1ztd_1_1sfinae__base_1aad431dbf3e2e073b3843daeb96e05455" prot="protected" static="no">
+        <type>char</type>
+        <definition>typedef char zorba::internal::ztd::sfinae_base::yes[2]</definition>
+        <argsstring>[2]</argsstring>
+        <name>yes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="45" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1ztd_1_1sfinae__base_1a719cc235174b437e4aa8f6453e96e00a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::internal::ztd::sfinae_base::suppress_all_member_functions_are_private_warning</definition>
+        <argsstring>()</argsstring>
+        <name>suppress_all_member_functions_are_private_warning</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="47"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="42" bodyend="48"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1sfinae__base_1a6e4b0d3c86f136688e1b3eb4a75f1fb5" prot="protected" virt="non-virtual"><scope>zorba::internal::ztd::sfinae_base</scope><name>no</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1sfinae__base_1a719cc235174b437e4aa8f6453e96e00a" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::sfinae_base</scope><name>suppress_all_member_functions_are_private_warning</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1sfinae__base_1aad431dbf3e2e073b3843daeb96e05455" prot="protected" virt="non-virtual"><scope>zorba::internal::ztd::sfinae_base</scope><name>yes</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

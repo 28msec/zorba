@@ -1,0 +1,109 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::DefaultContentHandler</h1><p class="include">
+            #include &lt;zorba/default_content_handler.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1SAX2__ContentHandler.html">zorba::SAX2_ContentHandler</a></p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1SAX2__LexicalHandler.html">zorba::SAX2_LexicalHandler</a></p>
+A default content handler class implementing the <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler">SAX2_ContentHandler</a> and <a href="/pages/3.0/zorba/classzorba_1_1SAX2__LexicalHandler">SAX2_LexicalHandler</a> interfaces with all functions being implemented and doing nothing.     
+See <a href="/pages/3.0/zorba/classzorba_1_1SAX2__ContentHandler">SAX2_ContentHandler</a> for a documentation.     <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a3dfb9b29f0a88c49c812d55190109d6f">attributeDecl</a>(const String &amp;eName, const String &amp;aName, const String &amp;type, const String &amp;mode, const String &amp;value)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a0d80ee86017c6e547d30417d3ae7effb">characters</a>(const String &amp;text)</p><span class="signature-description">
+Receive notification of character data.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a1bb00387351b3a60bef9e1eb27ce5c7a">comment</a>(const String &amp;chars)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a9e402f031e907be9d4316fc6d8c41ce2">elementDecl</a>(const String &amp;name, const String &amp;model)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a234b83a8f8fa6e1457770a87494528dc">endCDATA</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aad417871c959e4a46d0589cc298b3b90">endDocument</a>()</p><span class="signature-description">
+Receive notification of the end of a document.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a3957643108e6de969f1004357f2f264c">endDTD</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aa19d8d9cdb8e41fbbe38159cc4aa06a9">endElement</a>(const String &amp;uri, const String &amp;localname, const String &amp;qname)</p><span class="signature-description">
+Receive notification of the end of an element.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a7b729eb742bbb516cdaaf3294f949873">endEntity</a>(const String &amp;name)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#afbd5dbbfe0409b00f2f45d2825f31971">endPrefixMapping</a>(const String &amp;prefix)</p><span class="signature-description">
+Receive notification of the end of an namespace prefix mapping.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a24815a2d041faa88ae08c8602440e10c">externalEntityDecl</a>(const String &amp;name, const String &amp;publicId, const String &amp;systemId)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a32bddda4463615eff23349921067ade8">ignorableWhitespace</a>(const String &amp;whitespace)</p><span class="signature-description">
+Receive notification of ignorable whitespace in element content.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a25b70a70840adc204ddcba5838dad437">internalEntityDecl</a>(const String &amp;name, const String &amp;value)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a9789b8d42180ff3948fab6cb53136ab8">notationDecl</a>(const String &amp;name, const String &amp;publicId, const String &amp;systemId)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#afd0fba3f6329509e502acd577a54e284">processingInstruction</a>(const String &amp;target, const String &amp;data)</p><span class="signature-description">
+Receive notification of a processing instruction.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#acfd3bd81d97377da035e2899e78a5927">resetDocType</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a9039f1348e98af2f5dda5e2621dd7ec9">skippedEntity</a>(const String &amp;name)</p><span class="signature-description">
+Receive notification of a skipped entity.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ab60b7aa77a0993712c289ecd8c303cd8">startCDATA</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a8bf89a21d318fc00b9fd191c79f53c76">startDocument</a>()</p><span class="signature-description">
+Receive notification of the beginning of a document.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a7ab9fd8a7ab29cba170f280d35e0478c">startDTD</a>(const String &amp;name, const String &amp;publicId, const String &amp;systemId)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a7fe7a5072045027193f69a55f570b776">startElement</a>(const String &amp;uri, const String &amp;localname, const String &amp;qname, const SAX2_Attributes &amp;aAttrs)</p><span class="signature-description">
+Receive notification of the beginning of an element.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#af093434522c72dbd22ef88ec0c246db5">startEntity</a>(const String &amp;name)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aebe4771622ed72548e7210bff16aa94e">startPrefixMapping</a>(const String &amp;prefix, const String &amp;uri)</p><span class="signature-description">
+Receive notification of the start of an namespace prefix mapping.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a13cc8ca7825c284fb728d68f07ad4a65">unparsedEntityDecl</a>(const String &amp;name, const String &amp;publicId, const String &amp;systemId, const String &amp;notationName)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aa8b9d065e91cf9db357903ec755d4ac9">~DefaultContentHandler</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a3dfb9b29f0a88c49c812d55190109d6f" class="sect1"><div><h3>attributeDecl</h3></div><div class="signature-box">void<span> </span>attributeDecl(const String &amp;eName, const String &amp;aName, const String &amp;type, const String &amp;mode, const String &amp;value)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a0d80ee86017c6e547d30417d3ae7effb" class="sect1"><div><h3>characters</h3></div><div class="signature-box">void<span> </span>characters(const String &amp;text)</div><div><p class="signature-description">
+Receive notification of character data.         </p><p class="signature-description">
+The serializer will call this method to report each chunk of character data.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aText</td><td>
+the characters from the serialized result. </td></tr></table></div>
+        </p></div></div><div id="a1bb00387351b3a60bef9e1eb27ce5c7a" class="sect1"><div><h3>comment</h3></div><div class="signature-box">void<span> </span>comment(const String &amp;chars)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a9e402f031e907be9d4316fc6d8c41ce2" class="sect1"><div><h3>elementDecl</h3></div><div class="signature-box">void<span> </span>elementDecl(const String &amp;name, const String &amp;model)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a234b83a8f8fa6e1457770a87494528dc" class="sect1"><div><h3>endCDATA</h3></div><div class="signature-box">void<span> </span>endCDATA()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aad417871c959e4a46d0589cc298b3b90" class="sect1"><div><h3>endDocument</h3></div><div class="signature-box">void<span> </span>endDocument()</div><div><p class="signature-description">
+Receive notification of the end of a document.         </p><p class="signature-description">
+        </p></div></div><div id="a3957643108e6de969f1004357f2f264c" class="sect1"><div><h3>endDTD</h3></div><div class="signature-box">void<span> </span>endDTD()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa19d8d9cdb8e41fbbe38159cc4aa06a9" class="sect1"><div><h3>endElement</h3></div><div class="signature-box">void<span> </span>endElement(const String &amp;uri, const String &amp;localname, const String &amp;qname)</div><div><p class="signature-description">
+Receive notification of the end of an element.         </p><p class="signature-description">
+<a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a>'s serializerwill invoke this method at the end of every element in the serialized query result document; there will be a corresponding <a href="/pages/3.0/zorba/classzorba_1_1DefaultContentHandler?anchor=a7fe7a5072045027193f69a55f570b776">startElement()</a> event for every <a href="/pages/3.0/zorba/classzorba_1_1DefaultContentHandler?anchor=aa19d8d9cdb8e41fbbe38159cc4aa06a9">endElement()</a> event (even when the element is empty).<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aURI</td><td>
+the URI of the asscioated namespace for this element </td></tr><tr><td>aLocalname</td><td>
+the local part of the element name </td></tr><tr><td>aQName</td><td>
+the QName of this element </td></tr></table></div>
+        </p></div></div><div id="a7b729eb742bbb516cdaaf3294f949873" class="sect1"><div><h3>endEntity</h3></div><div class="signature-box">void<span> </span>endEntity(const String &amp;name)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="afbd5dbbfe0409b00f2f45d2825f31971" class="sect1"><div><h3>endPrefixMapping</h3></div><div class="signature-box">void<span> </span>endPrefixMapping(const String &amp;prefix)</div><div><p class="signature-description">
+Receive notification of the end of an namespace prefix mapping.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aPrefix</td><td>
+the namespace prefix used. </td></tr></table></div>
+        </p></div></div><div id="a24815a2d041faa88ae08c8602440e10c" class="sect1"><div><h3>externalEntityDecl</h3></div><div class="signature-box">void<span> </span>externalEntityDecl(const String &amp;name, const String &amp;publicId, const String &amp;systemId)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a32bddda4463615eff23349921067ade8" class="sect1"><div><h3>ignorableWhitespace</h3></div><div class="signature-box">void<span> </span>ignorableWhitespace(const String &amp;whitespace)</div><div><p class="signature-description">
+Receive notification of ignorable whitespace in element content.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aText</td><td>
+the characters from the serialized query result. </td></tr></table></div>
+        </p></div></div><div id="a25b70a70840adc204ddcba5838dad437" class="sect1"><div><h3>internalEntityDecl</h3></div><div class="signature-box">void<span> </span>internalEntityDecl(const String &amp;name, const String &amp;value)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a9789b8d42180ff3948fab6cb53136ab8" class="sect1"><div><h3>notationDecl</h3></div><div class="signature-box">void<span> </span>notationDecl(const String &amp;name, const String &amp;publicId, const String &amp;systemId)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="afd0fba3f6329509e502acd577a54e284" class="sect1"><div><h3>processingInstruction</h3></div><div class="signature-box">void<span> </span>processingInstruction(const String &amp;target, const String &amp;data)</div><div><p class="signature-description">
+Receive notification of a processing instruction.         </p><p class="signature-description">
+The serializer will invoke this method once for each processing instruction found.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aTarget</td><td>
+the processing instruction target. </td></tr><tr><td>aData</td><td>
+the processing instruction data, or null if none was supplied. </td></tr></table></div>
+        </p></div></div><div id="acfd3bd81d97377da035e2899e78a5927" class="sect1"><div><h3>resetDocType</h3></div><div class="signature-box">void<span> </span>resetDocType()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a9039f1348e98af2f5dda5e2621dd7ec9" class="sect1"><div><h3>skippedEntity</h3></div><div class="signature-box">void<span> </span>skippedEntity(const String &amp;name)</div><div><p class="signature-description">
+Receive notification of a skipped entity.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aName</td><td>
+the name of the skipped entity. </td></tr></table></div>
+        </p></div></div><div id="ab60b7aa77a0993712c289ecd8c303cd8" class="sect1"><div><h3>startCDATA</h3></div><div class="signature-box">void<span> </span>startCDATA()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a8bf89a21d318fc00b9fd191c79f53c76" class="sect1"><div><h3>startDocument</h3></div><div class="signature-box">void<span> </span>startDocument()</div><div><p class="signature-description">
+Receive notification of the beginning of a document.         </p><p class="signature-description">
+        </p></div></div><div id="a7ab9fd8a7ab29cba170f280d35e0478c" class="sect1"><div><h3>startDTD</h3></div><div class="signature-box">void<span> </span>startDTD(const String &amp;name, const String &amp;publicId, const String &amp;systemId)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a7fe7a5072045027193f69a55f570b776" class="sect1"><div><h3>startElement</h3></div><div class="signature-box">void<span> </span>startElement(const String &amp;uri, const String &amp;localname, const String &amp;qname, const SAX2_Attributes &amp;aAttrs)</div><div><p class="signature-description">
+Receive notification of the beginning of an element.         </p><p class="signature-description">
+<a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a>'s serializer will invoke this method at the beginning of every element of the serialized query result; there will be a corresponding <a href="/pages/3.0/zorba/classzorba_1_1DefaultContentHandler?anchor=aa19d8d9cdb8e41fbbe38159cc4aa06a9">endElement()</a> event for every <a href="/pages/3.0/zorba/classzorba_1_1DefaultContentHandler?anchor=a7fe7a5072045027193f69a55f570b776">startElement()</a> event (even when the element is empty). All of the element's content will be reported, in order, before the corresponding <a href="/pages/3.0/zorba/classzorba_1_1DefaultContentHandler?anchor=aa19d8d9cdb8e41fbbe38159cc4aa06a9">endElement()</a> event.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aURI</td><td>
+the URI of the associated namespace for this element. </td></tr><tr><td>aLocalname</td><td>
+thee local part of the element name. </td></tr><tr><td>aQName</td><td>
+the QName of this element. </td></tr><tr><td>aAttrs</td><td>
+the attributes attached to the element, if any. </td></tr></table></div>
+        </p></div></div><div id="af093434522c72dbd22ef88ec0c246db5" class="sect1"><div><h3>startEntity</h3></div><div class="signature-box">void<span> </span>startEntity(const String &amp;name)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aebe4771622ed72548e7210bff16aa94e" class="sect1"><div><h3>startPrefixMapping</h3></div><div class="signature-box">void<span> </span>startPrefixMapping(const String &amp;prefix, const String &amp;uri)</div><div><p class="signature-description">
+Receive notification of the start of an namespace prefix mapping.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aPrefix</td><td>
+the namespace prefix used </td></tr><tr><td>aURI</td><td>
+the namespace URI used. </td></tr></table></div>
+        </p></div></div><div id="a13cc8ca7825c284fb728d68f07ad4a65" class="sect1"><div><h3>unparsedEntityDecl</h3></div><div class="signature-box">void<span> </span>unparsedEntityDecl(const String &amp;name, const String &amp;publicId, const String &amp;systemId, const String &amp;notationName)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa8b9d065e91cf9db357903ec755d4ac9" class="sect1"><div><h3>~DefaultContentHandler</h3></div><div class="signature-box"><span> </span>~DefaultContentHandler()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

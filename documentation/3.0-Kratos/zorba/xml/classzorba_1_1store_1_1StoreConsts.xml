@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1store_1_1StoreConsts" kind="class" prot="public">
+    <compoundname>zorba::store::StoreConsts</compoundname>
+    <includes refid="store__consts_8h" local="no">zorba/store_consts.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2" prot="public" static="no">
+        <name>JSONItemKind</name>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2ad122ef7ec04d3712025ddc0c8f97f859" prot="public">
+          <name>jsonItem</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2ab8371b9275801cb08ac0011409a24241" prot="public">
+          <name>jsonObject</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2a3ede2235f3384042115354b7f4d82eb9" prot="public">
+          <name>jsonArray</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h" line="148" bodyfile="/home/wcandillon/deadlinks/include/zorba/store_consts.h" bodystart="147" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="enum" id="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033" prot="public" static="no">
+        <name>NodeKind</name>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033af4be102ef5e46a29bcd878d1104c6637" prot="public">
+          <name>anyNode</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033ad3d6b4ad4c896e6a3b5149b1d7471787" prot="public">
+          <name>documentNode</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033ab1bac9b3d08613089ea171ed3faaf452" prot="public">
+          <name>elementNode</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033ad4a9e9f09bb424c7ad43cbbfd241c459" prot="public">
+          <name>attributeNode</name>
+          <initializer> 3</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a48be07c0e2eeb9476e11aab1707c5e42" prot="public">
+          <name>textNode</name>
+          <initializer> 4</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a6e020e8e53103089ccae2d85e677b531" prot="public">
+          <name>piNode</name>
+          <initializer> 5</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a9de586b60ec8834407c8859bcd77827d" prot="public">
+          <name>commentNode</name>
+          <initializer> 6</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a23886489a25e392e8488c134176dd6d9" prot="public">
+          <name>namespaceNode</name>
+          <initializer> 7</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h" line="132" bodyfile="/home/wcandillon/deadlinks/include/zorba/store_consts.h" bodystart="131" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="enum" id="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0" prot="public" static="no">
+        <name>NsScoping</name>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0a0bbf36aace11e4ca2bb654141a32459a" prot="public">
+          <name>ALL_BINDINGS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0af5e58ca608b9dacab8574553e4175753" prot="public">
+          <name>ONLY_LOCAL_BINDINGS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0a0177932772b6516b420f09ae8192c07d" prot="public">
+          <name>ONLY_LOCALLY_DECLARED_BINDINGS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>NsScoping defines the three values that can be given as arguments to the <ref refid="classzorba_1_1Item_1ab6e6e787eb1bdc72c66025f80ea6816f" kindref="member">Item::getNamespaceBindings()</ref> method. </para>        </briefdescription>
+        <detaileddescription>
+<para>The semantics of the three values are as follows:</para><para>ALL_BINDINGS: All the namespace bindings of an element node, as defined by the W3C <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> and XPath Data Model specification.</para><para>ONLY_LOCAL_BINDINGS: The bindings that are implied by the qnames of an element node and its attributes, plus those that are specified by the namespace declaration attributes of the element node.</para><para>ONLY_LOCALLY_DECLARED_BINDINGS: The bindings that are specified by the namespace declaration attributes of an element node. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h" line="125" bodyfile="/home/wcandillon/deadlinks/include/zorba/store_consts.h" bodystart="124" bodyend="129"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1store_1_1StoreConsts_1a50cbc96b056c1476d09133e82654ef29" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string zorba::store::StoreConsts::toSchemaString</definition>
+        <argsstring>(NodeKind)</argsstring>
+        <name>toSchemaString</name>
+        <param>
+          <type><ref refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033" kindref="member">NodeKind</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h" line="144"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1store_1_1StoreConsts_1ab0b48549748f0adcbbce6f4fa08835b7" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string zorba::store::StoreConsts::toString</definition>
+        <argsstring>(NodeKind)</argsstring>
+        <name>toString</name>
+        <param>
+          <type><ref refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033" kindref="member">NodeKind</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h" line="143"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/store_consts.h" line="103" bodyfile="/home/wcandillon/deadlinks/include/zorba/store_consts.h" bodystart="102" bodyend="154"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0a0bbf36aace11e4ca2bb654141a32459a" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>ALL_BINDINGS</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033af4be102ef5e46a29bcd878d1104c6637" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>anyNode</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033ad4a9e9f09bb424c7ad43cbbfd241c459" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>attributeNode</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a9de586b60ec8834407c8859bcd77827d" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>commentNode</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033ad3d6b4ad4c896e6a3b5149b1d7471787" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>documentNode</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033ab1bac9b3d08613089ea171ed3faaf452" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>elementNode</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2a3ede2235f3384042115354b7f4d82eb9" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>jsonArray</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2ad122ef7ec04d3712025ddc0c8f97f859" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>jsonItem</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>JSONItemKind</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ae5784137226d3819c16380c0fe3046d2ab8371b9275801cb08ac0011409a24241" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>jsonObject</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a23886489a25e392e8488c134176dd6d9" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>namespaceNode</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>NodeKind</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>NsScoping</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0af5e58ca608b9dacab8574553e4175753" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>ONLY_LOCAL_BINDINGS</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1a9079b0b206e71ff0063c23c319084cc0a0177932772b6516b420f09ae8192c07d" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>ONLY_LOCALLY_DECLARED_BINDINGS</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a6e020e8e53103089ccae2d85e677b531" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>piNode</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ab582aa4f44f45ddc3a83874f7c5a1033a48be07c0e2eeb9476e11aab1707c5e42" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>textNode</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1a50cbc96b056c1476d09133e82654ef29" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>toSchemaString</name></member>
+      <member refid="classzorba_1_1store_1_1StoreConsts_1ab0b48549748f0adcbbce6f4fa08835b7" prot="public" virt="non-virtual"><scope>zorba::store::StoreConsts</scope><name>toString</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

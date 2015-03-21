@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Tokenizer_1_1Callback" kind="class" prot="public">
+    <compoundname>zorba::Tokenizer::Callback</compoundname>
+    <includes refid="tokenizer_8h" local="no">zorba/tokenizer.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1Tokenizer_1_1Callback_1a766a0079d32feae9976f4d3f1f823b29" prot="public" static="no">
+        <type><ref refid="classzorba_1_1Tokenizer_1aa5e55ee2bd87d3ec759382c6bb104656" kindref="member">Tokenizer::size_type</ref></type>
+        <definition>typedef Tokenizer::size_type zorba::Tokenizer::Callback::size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="77" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1_1Callback_1aae48d8aadc5cecb6f2429a1aee437bab" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Tokenizer::Callback::item</definition>
+        <argsstring>(Item const &amp;item, bool entering)</argsstring>
+        <name>item</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> const &amp;</type>
+          <declname>item</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>entering</declname>
+        </param>
+        <briefdescription>
+<para>This member-function is called whenever an item that is being tokenized is entered or exited. </para>        </briefdescription>
+        <detaileddescription>
+<para>The default implementation does nothing.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The item being entered or exited. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>entering</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If <computeroutput>true</computeroutput>, the item is being entered; if <computeroutput>false</computeroutput>, the item is being exited. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="89"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1_1Callback_1aaaa54025ed848c415ef725d63bbd0bb8" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Tokenizer::Callback::token</definition>
+        <argsstring>(char const *utf8_s, size_type utf8_len, locale::iso639_1::type lang, size_type token_no, size_type sent_no, size_type para_no, Item const *item=nullptr)=0</argsstring>
+        <name>token</name>
+        <param>
+          <type>char const *</type>
+          <declname>utf8_s</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Tokenizer_1_1Callback_1a766a0079d32feae9976f4d3f1f823b29" kindref="member">size_type</ref></type>
+          <declname>utf8_len</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref></type>
+          <declname>lang</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Tokenizer_1_1Callback_1a766a0079d32feae9976f4d3f1f823b29" kindref="member">size_type</ref></type>
+          <declname>token_no</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Tokenizer_1_1Callback_1a766a0079d32feae9976f4d3f1f823b29" kindref="member">size_type</ref></type>
+          <declname>sent_no</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Tokenizer_1_1Callback_1a766a0079d32feae9976f4d3f1f823b29" kindref="member">size_type</ref></type>
+          <declname>para_no</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> const *</type>
+          <declname>item</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+<para>This member-function is called once per token. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>utf8_s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The UTF-8 token string. It is not null-terminated. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>utf8_len</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes in the token string. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The language of the token. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>token_no</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The token number. Token numbers start at 0. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sent_no</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The sentence number. Sentence numbers start at 1. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>para_no</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The paragraph number. Paragraph numbers start at 1. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="classzorba_1_1Item" kindref="compound">Item</ref> this token is from, if any. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="105"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Tokenizer_1_1Callback_1a757166d55a57fe1f85606eee5d7cc2c3" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::Tokenizer::Callback::~Callback</definition>
+        <argsstring>()</argsstring>
+        <name>~Callback</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="79"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A Callback is called once per token. </para>    </briefdescription>
+    <detaileddescription>
+<para>This is only internally by <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>. You do not need to derive from this class. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" line="75" bodyfile="/home/wcandillon/deadlinks/include/zorba/tokenizer.h" bodystart="75" bodyend="106"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1Tokenizer_1_1Callback_1aae48d8aadc5cecb6f2429a1aee437bab" prot="public" virt="virtual"><scope>zorba::Tokenizer::Callback</scope><name>item</name></member>
+      <member refid="classzorba_1_1Tokenizer_1_1Callback_1a766a0079d32feae9976f4d3f1f823b29" prot="public" virt="non-virtual"><scope>zorba::Tokenizer::Callback</scope><name>size_type</name></member>
+      <member refid="classzorba_1_1Tokenizer_1_1Callback_1aaaa54025ed848c415ef725d63bbd0bb8" prot="public" virt="pure-virtual"><scope>zorba::Tokenizer::Callback</scope><name>token</name></member>
+      <member refid="classzorba_1_1Tokenizer_1_1Callback_1a757166d55a57fe1f85606eee5d7cc2c3" prot="public" virt="virtual"><scope>zorba::Tokenizer::Callback</scope><name>~Callback</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

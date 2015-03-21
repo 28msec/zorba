@@ -1,0 +1,312 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1jerr" kind="namespace">
+    <compoundname>zorba::jerr</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a70278b718b0417dde0aabd250b1b85ca" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNDY0003</definition>
+        <argsstring></argsstring>
+        <name>JNDY0003</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="888"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a5f1301d98f78212b626e595208d7c437" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNDY0021</definition>
+        <argsstring></argsstring>
+        <name>JNDY0021</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="930"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1adad8c7d586c123bcba9c42e85527d78f" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNSE0012</definition>
+        <argsstring></argsstring>
+        <name>JNSE0012</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="906"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a80babc44ca4be5423372f9de273a3a01" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNSE0013</definition>
+        <argsstring></argsstring>
+        <name>JNSE0013</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="908"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a74fe0077d547c0f8c9aa79cc8946dcc5" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNSE0014</definition>
+        <argsstring></argsstring>
+        <name>JNSE0014</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="910"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a2e95614dabaa3bd0d373b276a74fe199" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNSE0022</definition>
+        <argsstring></argsstring>
+        <name>JNSE0022</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="912"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1aef42418ac94f782affbc4c13991d02cc" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNTY0002</definition>
+        <argsstring></argsstring>
+        <name>JNTY0002</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="886"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a8423fbd6b648de9d6df28e100f63bdbe" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNTY0004</definition>
+        <argsstring></argsstring>
+        <name>JNTY0004</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="890"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a1c61efd8acdcee3915c8e20a271368f7" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNTY0011</definition>
+        <argsstring></argsstring>
+        <name>JNTY0011</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="904"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a6f6cc2556cf4f524f3c224b959b4a236" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNTY0018</definition>
+        <argsstring></argsstring>
+        <name>JNTY0018</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="918"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a7424cb1295806386bbff7af82916e6e1" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNTY0020</definition>
+        <argsstring></argsstring>
+        <name>JNTY0020</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="926"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1adb2ed48ca48cc60a8a1ed01e6389909e" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNTY0021</definition>
+        <argsstring></argsstring>
+        <name>JNTY0021</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="928"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1ad7741c1ffc2dbd5bddd11dc3ba5cdc72" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNTY0023</definition>
+        <argsstring></argsstring>
+        <name>JNTY0023</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="922"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a59346fdb7145de2b0f299bd89a942ca2" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNTY0024</definition>
+        <argsstring></argsstring>
+        <name>JNTY0024</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="924"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a004fdecba7053c1d633f29305c4d6002" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNUP0005</definition>
+        <argsstring></argsstring>
+        <name>JNUP0005</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="892"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a43374bb4d6ad2c0034011c9eaa221953" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNUP0006</definition>
+        <argsstring></argsstring>
+        <name>JNUP0006</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="894"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a1a393ad4be9d5bd0681baa0af0a0463b" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNUP0007</definition>
+        <argsstring></argsstring>
+        <name>JNUP0007</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="896"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1ad986221ed1d77d2219bd4d54e8209646" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNUP0008</definition>
+        <argsstring></argsstring>
+        <name>JNUP0008</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="898"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a1d129e04e48ab36c784b9a7944c77a2f" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNUP0009</definition>
+        <argsstring></argsstring>
+        <name>JNUP0009</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="900"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a8247c82c2b96da3cb704cba54f6eaac9" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNUP0010</definition>
+        <argsstring></argsstring>
+        <name>JNUP0010</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="902"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a08820bcf5b9fb724b8f3a62a24d96bf4" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNUP0016</definition>
+        <argsstring></argsstring>
+        <name>JNUP0016</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="914"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a9b5f06ef151b80b0bbaff36edefadf3c" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNUP0017</definition>
+        <argsstring></argsstring>
+        <name>JNUP0017</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="916"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacezorba_1_1jerr_1a0f375c64fe192dd5d7f67484308ee0d7" prot="public" static="no" mutable="no">
+        <type>ZORBA_DLL_PUBLIC <ref refid="namespacezorba_1a39557ad4cb3ad9bcb319eb5f92290ba9" kindref="member">JSONiqErrorCode</ref></type>
+        <definition>ZORBA_DLL_PUBLIC JSONiqErrorCode zorba::jerr::JNUP0019</definition>
+        <argsstring></argsstring>
+        <name>JNUP0019</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="920"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/pregenerated/diagnostic_list.h" line="884"/>
+  </compounddef>
+</doxygen>

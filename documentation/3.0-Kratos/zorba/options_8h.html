@@ -1,0 +1,81 @@
+<div class="doxygen">
+  <div><h1 class="title">options.h</h1><p class="include">
+            #include &lt;zorba/config.h&gt;
+        </p>
+    
+    <div class="section"><h2>Enumerations</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#af78a802d9ab4e8b8402e33f4aafb7411">Zorba_byte_order_mark_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a826223a24fcf367465de3f76bff45e92">Zorba_escape_uri_attributes_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aa2b651ed199a0705b40169fd56ddf2cc">Zorba_include_content_type_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a3a73475a7e11813067fb4f827238052b">Zorba_indent_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a4e056b257c7015f6c578187f82f333cc">Zorba_jsoniq_extensions_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ab5eb073de7a498417d560ffce3ce1a9a">Zorba_jsoniq_multiple_items_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a58cff5f2556a13da6563b1039fec52b3">Zorba_normalization_form_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ad76bb29843007cf4b6c42c5ed8082ec3">Zorba_omit_xml_declaration_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a17dc1a3d386720b2751bb62b00ad9652">Zorba_opt_level_t</a></p><span class="signature-description">
+The optimization level used for optimizing the query.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#afc8064c8a6892f2f049e68d3051b6950">Zorba_save_plan_options_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ab2fde94c558e2e44f24536d971db406d">Zorba_serialization_method_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a2288dea5d958476fbbcd127e736a48f8">Zorba_standalone_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ac9693c5969935f49d517234a1afde092">Zorba_undeclare_prefixes_t</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Type Definitions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">struct <a href="/pages/3.0/zorba/structZorba__CompilerHints">Zorba_CompilerHints</a></p></td><td><p class="signature"><a href="#afb707279f21bf8e9df26d5ec459b8ede">Zorba_CompilerHints_t</a></p><span class="signature-description">
+Set of hints that can be passed to the query compiler.         </span></td></tr><tr><td class="return-type"><p class="signature">struct <a href="/pages/3.0/zorba/structZorba__opaque__char__ptr">Zorba_opaque_char_ptr</a></p></td><td><p class="signature"><a href="#a61b00a37ea5cf6d05bfed5fab20de22f">Zorba_opaque_char_ptr_t</a></p><span class="signature-description">
+Wraps a <tt>char*</tt> to make it a compile-time error to assign to the pointer directly.         </span></td></tr><tr><td class="return-type"><p class="signature">char</p></td><td><p class="signature"><a href="#a5265c410d55036c463c3464b50a93e68">Zorba_opt_bool_t</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">struct ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a></p></td><td><p class="signature"><a href="#a4da3881b368a669bb110f8f198272159">Zorba_SerializerOptions_t</a></p><span class="signature-description">
+Options that configure the serialization process of a query result.         </span></td></tr></table></div><div class="section"><h2>Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC void</p></td><td><p class="signature"><a href="#a263959a83e5525dc3a4d9eb75e4ec5fa">Zorba_CompilerHints_default</a>(Zorba_CompilerHints_t *)</p><span class="signature-description">
+Helper function for C to set default values ComplilerHints struct.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC void</p></td><td><p class="signature"><a href="#a2bddf949354d93166d0300376d2136a0">Zorba_SerializerOptions_free</a>(Zorba_SerializerOptions_t *opts)</p><span class="signature-description">
+Frees all internal data used by a <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a>.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC void</p></td><td><p class="signature"><a href="#aa137b65324629ce0241b1e3d6bc48c23">Zorba_SerializerOptions_init</a>(Zorba_SerializerOptions_t *opts)</p><span class="signature-description">
+Initializes a <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a>.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/options_8h?anchor=a5265c410d55036c463c3464b50a93e68">Zorba_opt_bool_t</a></p></td><td><p class="signature"><a href="#aca263de6a33e667210d2275bd80d7c6f">Zorba_SerializerOptions_set</a>(Zorba_SerializerOptions_t *opts, char const *option, char const *value)</p><span class="signature-description">
+Sets an option in a <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a>.         </span></td></tr></table></div><div class="section"><h2>Enumerations</h2><div class="detailed"><div id="af78a802d9ab4e8b8402e33f4aafb7411" class="sect1"><div><h3>Zorba_byte_order_mark_t</h3></div><div class="signature-box"><span> </span>Zorba_byte_order_mark_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a826223a24fcf367465de3f76bff45e92" class="sect1"><div><h3>Zorba_escape_uri_attributes_t</h3></div><div class="signature-box"><span> </span>Zorba_escape_uri_attributes_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa2b651ed199a0705b40169fd56ddf2cc" class="sect1"><div><h3>Zorba_include_content_type_t</h3></div><div class="signature-box"><span> </span>Zorba_include_content_type_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a3a73475a7e11813067fb4f827238052b" class="sect1"><div><h3>Zorba_indent_t</h3></div><div class="signature-box"><span> </span>Zorba_indent_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4e056b257c7015f6c578187f82f333cc" class="sect1"><div><h3>Zorba_jsoniq_extensions_t</h3></div><div class="signature-box"><span> </span>Zorba_jsoniq_extensions_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab5eb073de7a498417d560ffce3ce1a9a" class="sect1"><div><h3>Zorba_jsoniq_multiple_items_t</h3></div><div class="signature-box"><span> </span>Zorba_jsoniq_multiple_items_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a58cff5f2556a13da6563b1039fec52b3" class="sect1"><div><h3>Zorba_normalization_form_t</h3></div><div class="signature-box"><span> </span>Zorba_normalization_form_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ad76bb29843007cf4b6c42c5ed8082ec3" class="sect1"><div><h3>Zorba_omit_xml_declaration_t</h3></div><div class="signature-box"><span> </span>Zorba_omit_xml_declaration_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a17dc1a3d386720b2751bb62b00ad9652" class="sect1"><div><h3>Zorba_opt_level_t</h3></div><div class="signature-box"><span> </span>Zorba_opt_level_t</div><div><p class="signature-description">
+The optimization level used for optimizing the query.         </p><p class="signature-description">
+        </p></div></div><div id="afc8064c8a6892f2f049e68d3051b6950" class="sect1"><div><h3>Zorba_save_plan_options_t</h3></div><div class="signature-box"><span> </span>Zorba_save_plan_options_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab2fde94c558e2e44f24536d971db406d" class="sect1"><div><h3>Zorba_serialization_method_t</h3></div><div class="signature-box"><span> </span>Zorba_serialization_method_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a2288dea5d958476fbbcd127e736a48f8" class="sect1"><div><h3>Zorba_standalone_t</h3></div><div class="signature-box"><span> </span>Zorba_standalone_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ac9693c5969935f49d517234a1afde092" class="sect1"><div><h3>Zorba_undeclare_prefixes_t</h3></div><div class="signature-box"><span> </span>Zorba_undeclare_prefixes_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Type Definitions</h2><div class="detailed"><div id="afb707279f21bf8e9df26d5ec459b8ede" class="sect1"><div><h3>Zorba_CompilerHints_t</h3></div><div class="signature-box">struct <a href="/pages/3.0/zorba/structZorba__CompilerHints">Zorba_CompilerHints</a><span> </span>Zorba_CompilerHints_t</div><div><p class="signature-description">
+Set of hints that can be passed to the query compiler.         </p><p class="signature-description">
+An instance of this class can be passed to the compileQuery function of the Zorba class or the compile function of this class. The members of this class represent hints that are passed to the query compiler. For example, whether optimization of the query should be done (O1) or not (O0).example_6 in file <a href="/pages/3.0/zorba/simple_8cpp-example">simple.cpp</a> shows an example how CompilerHints can be used.         </p></div></div><div id="a61b00a37ea5cf6d05bfed5fab20de22f" class="sect1"><div><h3>Zorba_opaque_char_ptr_t</h3></div><div class="signature-box">struct <a href="/pages/3.0/zorba/structZorba__opaque__char__ptr">Zorba_opaque_char_ptr</a><span> </span>Zorba_opaque_char_ptr_t</div><div><p class="signature-description">
+Wraps a <tt>char*</tt> to make it a compile-time error to assign to the pointer directly.         </p><p class="signature-description">
+        </p></div></div><div id="a5265c410d55036c463c3464b50a93e68" class="sect1"><div><h3>Zorba_opt_bool_t</h3></div><div class="signature-box">char<span> </span>Zorba_opt_bool_t</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4da3881b368a669bb110f8f198272159" class="sect1"><div><h3>Zorba_SerializerOptions_t</h3></div><div class="signature-box">struct ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a><span> </span>Zorba_SerializerOptions_t</div><div><p class="signature-description">
+Options that configure the serialization process of a query result.         </p><p class="signature-description">
+See <a href="http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/" target="_blank">http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/</a>.This struct defines options that can be passed to the serialization process of a query result. An instance of this class can be passed to the serialize function.File <a href="/pages/3.0/zorba/serialization_8cpp-example">serialization.cpp</a> contains examples that show how to use the SerializerOptions.         </p></div></div></div></div><div class="section"><h2>Functions</h2><div class="detailed"><div id="a263959a83e5525dc3a4d9eb75e4ec5fa" class="sect1"><div><h3>Zorba_CompilerHints_default</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC void<span> </span>Zorba_CompilerHints_default(Zorba_CompilerHints_t *)</div><div><p class="signature-description">
+Helper function for C to set default values ComplilerHints struct.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>Zorba_CompilerHints_t</td><td>
+with default member values </td></tr></table></div>
+        </p></div></div><div id="a2bddf949354d93166d0300376d2136a0" class="sect1"><div><h3>Zorba_SerializerOptions_free</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC void<span> </span>Zorba_SerializerOptions_free(Zorba_SerializerOptions_t *opts)</div><div><p class="signature-description">
+Frees all internal data used by a <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a>.         </p><p class="signature-description">
+This is needed only in C code; C++ code calls the destructor. Note that this does <em>not</em> free <em>opts</em> itself (which may be on the stack).<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>opts</td><td>
+The <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a> to be freed. </td></tr></table></div>
+        </p></div></div><div id="aa137b65324629ce0241b1e3d6bc48c23" class="sect1"><div><h3>Zorba_SerializerOptions_init</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC void<span> </span>Zorba_SerializerOptions_init(Zorba_SerializerOptions_t *opts)</div><div><p class="signature-description">
+Initializes a <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a>.         </p><p class="signature-description">
+This is needed only in C code; C++ code calls the default constructor.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>opts</td><td>
+The <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a> to be initialized. </td></tr></table></div>
+        </p></div></div><div id="aca263de6a33e667210d2275bd80d7c6f" class="sect1"><div><h3>Zorba_SerializerOptions_set</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/options_8h?anchor=a5265c410d55036c463c3464b50a93e68">Zorba_opt_bool_t</a><span> </span>Zorba_SerializerOptions_set(Zorba_SerializerOptions_t *opts, char const *option, char const *value)</div><div><p class="signature-description">
+Sets an option in a <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a>.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>opts</td><td>
+The <a href="/pages/3.0/zorba/structZorba__SerializerOptions">Zorba_SerializerOptions</a> to affect. </td></tr><tr><td>option</td><td>
+The name of the option to be set. </td></tr><tr><td>value</td><td>
+The option's new value. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if all the arguments were valid; <tt>false</tt> otherwise. </div>
+        </p></div></div></div></div></div>
+</div>

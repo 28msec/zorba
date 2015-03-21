@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build_prerequisites" kind="page">
+    <compoundname>build_prerequisites</compoundname>
+    <title>Prerequisites for Building Zorba</title>
+    <detaileddescription>
+<para>The following tools and libraries are utilized by Zorba.</para><sect1 id="build_prerequisites_1cmake">
+<title>Configuration System</title>
+<para>In order to build Zorba, you need the cross-platform build system CMake, version 2.6 or later (except CMake 2.6.3 that has a serious bug preventing Zorba from building). CMake&apos;s homepage is <ulink url="http://www.cmake.org/">http://www.cmake.org/</ulink> and this is the best source for the Windows CMake installer. It is also available packaged for most Linux distributions, as well as in Macports for MacOS builds.</para></sect1>
+<sect1 id="build_prerequisites_1compilers">
+<title>Compilers</title>
+<para>Zorba is tested with the following compilers:<itemizedlist>
+<listitem><para>GNU Compiler: GCC 3.4.x (32-bit &amp; 64-bit) and GCC 4.x.x</para></listitem><listitem><para>Microsoft Compiler: MS VC++ 2008, and MS VC++ 2010 (including Express)</para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="build_prerequisites_1third_party_libs">
+<title>Library Dependencies</title>
+<para>Zorba uses a number of libraries from third parties. A few of these are required for all Zorba installations, but we have tried to keep this number as low as possible. Several others are required to enable certain Zorba features.</para><para><simplesect kind="note"><para>The following descriptions sometimes reference &quot;CMake
+configuration parameters&quot;. These are passed to CMake during the configuration step; see <ref refid="configure_zorba" kindref="compound">Configuring a Zorba Build Using CMake</ref>.</para></simplesect>
+</para><sect2 id="build_prerequisites_1required_core_zorba">
+<title>Required for Core Zorba</title>
+<para>The following packages are mandatory to build the core part of Zorba.</para><para><itemizedlist>
+<listitem><para>Libxml2 2.2.16 or later (<ulink url="http://xmlsoft.org/">http://xmlsoft.org/</ulink>)</para></listitem><listitem><para>Iconv 1.12 (used by Libxml2; <ulink url="http://www.gnu.org/software/libiconv/">http://www.gnu.org/software/libiconv/</ulink>)</para></listitem><listitem><para>libUUID (non-Mac, non-Windows only; <ulink url="http://linux.die.net/man/3/libuuid">http://linux.die.net/man/3/libuuid</ulink>)</para></listitem></itemizedlist>
+</para></sect2>
+<sect2 id="build_prerequisites_1recommended_core_zorba">
+<title>Recommended for Core Zorba</title>
+<para>The following packages are necessary to enable certain features in Zorba. These features are normally desired, so you will need to explicitly disable them in order to build without these libraries.</para><para><itemizedlist>
+<listitem><para>Xerces-C 2.8.0, 3.0.0 or later (<ulink url="http://xerces.apache.org/xerces-c/">http://xerces.apache.org/xerces-c/</ulink>). This package is required to enable XML schema support. This feature is enabled by default. In order to disable XML schema support, you need to provide the CMake configuration parameter <bold>ZORBA_NO_XMLSCHEMA=ON</bold>. Note that the Zorba team tests with Xerces-C 3.1.1. Xerces-C 2.8.0 in particular is known to cause a few bugs with schema handling.</para></listitem></itemizedlist>
+</para><para><itemizedlist>
+<listitem><para>ICU4C 3.6 or later (<ulink url="http://www.icu-project.org/">http://www.icu-project.org/</ulink>). This package is required to enable Unicode support as well as some other internationalization features. This feature is enabled by default. To build without ICU, you need to provide the CMake configuration parameter <bold>ZORBA_NO_ICU=ON</bold>.</para></listitem></itemizedlist>
+</para></sect2>
+<sect2 id="build_prerequisites_1optional_core_zorba">
+<title>Optional for Core Zorba</title>
+<para>The following packages are also necessary to enable certain features in Zorba. These features will automatically be disabled (or are not enabled by default) if the corresponding dependencies are not detected by CMake.</para><para><itemizedlist>
+<listitem><para>CURL (libcurl) 7.12 or later (<ulink url="http://curl.haxx.se/">http://curl.haxx.se/</ulink>). This package is required if <ulink url="/modules/latest/zorba.io/modules/http-client">Zorba&apos;s built-in HTTP module</ulink> should be available. Zorba will automatically be built with this module if the curl packages are installed. <simplesect kind="note"><para>Please note that other modules depend on the http-client module (i.e., import it). Hence, those dependent modules will not work if the http module is not available. Please see our <ulink url="/images/doxygen/modules.svg">module dependency graph</ulink> for the module inter-dependencies. </para><simplesectsep/><para>Also note that Zorba internally uses this module when resolving http: URIs in queries, module/schema imports, and so on. If this module is not installed, Zorba will be unable to download such URIs from the web. </para><simplesectsep/><para>If you happen to have libcurl installed but would like to build Zorba without HTTP support, you may set the CMake configuration parameter <bold>ZORBA_SUPPRESS_CURL=ON</bold>.</para></simplesect>
+</para></listitem><listitem><para>LibXslt version 1.1.24 or later (<ulink url="http://xmlsoft.org/XSLT/">http://xmlsoft.org/XSLT/</ulink>). The LibXslt package is required for XQueryX support. This feature is not enabled by default. To enable XQueryX support, you need to provide the CMake configuration parameter <bold>ZORBA_XQUERYX=ON</bold>.</para></listitem></itemizedlist>
+</para><para><itemizedlist>
+<listitem><para>Flex 2.5.33 or later (<ulink url="http://flex.sourceforge.net/">http://flex.sourceforge.net/</ulink>) and Bison 2.4 or later (<ulink url="http://www.gnu.org/software/bison/">http://www.gnu.org/software/bison/</ulink>) are used to generate the XQuery scanner and XQuery parser. The Zorba source includes pre-generated versions of these, so Flex and Bison are only required if you are developing Zorba itself and need to modify the scanner or parser.</para></listitem></itemizedlist>
+</para></sect2>
+<sect2 id="build_prerequisites_1required_language_bindings">
+<title>Required for Language Bindings</title>
+<para>In order to build the various language bindings that come with Zorba, you need at least Swig 1.3.40 or later (<ulink url="http://www.swig.org/download.html">http://www.swig.org/download.html</ulink>). All bindings are generated using Swig.</para><para><simplesect kind="note"><para>There is a known bug in many versions of Swig that affects a small number of platforms, including at least FreeBSD. If you get compilation errors that look similar to this:</para></simplesect>
+<bold>build/swig/php/zorba_apiPHP5_wrap.cxx:953: error: invalid conversion from &apos;const char*&apos; to &apos;char*&apos;</bold></para><para>then you may have run into this bug. Our experience is that Swig version at least 2.0.7 has corrected this bug, so please try upgrading to that version.</para><para>For a particular language binding, you need the corresponding language tools and development headers. CMake will automatically enable the language bindings for any language that is detected.</para><para><itemizedlist>
+<listitem><para>Java (<ulink url="http://java.sun.com/javase/downloads/index.jsp">http://java.sun.com/javase/downloads/index.jsp</ulink>)</para></listitem><listitem><para>Ruby (<ulink url="http://www.ruby-lang.org/en/downloads/">http://www.ruby-lang.org/en/downloads/</ulink>)</para></listitem><listitem><para>PHP (<ulink url="http://www.php.net/downloads.php">http://www.php.net/downloads.php</ulink>)</para></listitem><listitem><para>Python (<ulink url="http://www.python.org/download/">http://www.python.org/download/</ulink>)</para></listitem></itemizedlist>
+</para></sect2>
+<sect2 id="build_prerequisites_1noncore_requirements">
+<title>Non-core Module Requirements</title>
+<para>For many of the non-core modules, you need additional libraries. All such modules are not built if the library (and development headers) they require are not available. Here is a list of the libraries required by the current non-core modules packages:</para><para><itemizedlist>
+<listitem><para>data-converters (HTML module)<itemizedlist>
+<listitem><para>Tidy (<ulink url="http://tidy.sourceforge.net">http://tidy.sourceforge.net</ulink>)</para></listitem></itemizedlist>
+</para></listitem><listitem><para>data-formatting (XSL-FO)<itemizedlist>
+<listitem><para>Java (<ulink url="http://java.sun.com/javase/downloads/index.jsp">http://java.sun.com/javase/downloads/index.jsp</ulink>)</para></listitem><listitem><para>Apache FOP (<ulink url="http://xmlgraphics.apache.org/fop/download.html">http://xmlgraphics.apache.org/fop/download.html</ulink>)</para></listitem></itemizedlist>
+</para></listitem><listitem><para>email (SMTP module)<itemizedlist>
+<listitem><para>IMAP CClient (<ulink url="http://www.washington.edu/imap/">http://www.washington.edu/imap/</ulink>)</para></listitem></itemizedlist>
+</para></listitem><listitem><para>geo (GEO module)<itemizedlist>
+<listitem><para>GEOS version 3.2.2 or later (<ulink url="http://trac.osgeo.org/geos/">http://trac.osgeo.org/geos/</ulink>)</para></listitem></itemizedlist>
+</para></listitem><listitem><para>EXPath http-client<itemizedlist>
+<listitem><para>CURL 7.12 or later (<ulink url="http://curl.haxx.se/">http://curl.haxx.se/</ulink>)</para></listitem></itemizedlist>
+</para></listitem><listitem><para>image<itemizedlist>
+<listitem><para>ImageMagick (<ulink url="http://www.imagemagick.org">http://www.imagemagick.org</ulink>)</para></listitem></itemizedlist>
+</para></listitem><listitem><para>languages (XSLT)<itemizedlist>
+<listitem><para>LibXslt version 1.1.24 or later (<ulink url="http://xmlsoft.org/XSLT/">http://xmlsoft.org/XSLT/</ulink>)</para></listitem></itemizedlist>
+</para></listitem></itemizedlist>
+</para><para>For a more up to date list please see section &quot;External C++ Library dependencies&quot; in the <ulink url="/images/doxygen/modules.svg">module dependency graph</ulink>.</para><para>In many cases you can find binary packages for these dependencies, which will be the quickest and easiest way to meet the requirements. We have provided links or instructions for downloading binary packages for some libraries on the &quot;Build Notes&quot; pages for various platforms; see <ref refid="build" kindref="compound">Zorba Build Instructions</ref>.</para></sect2>
+</sect1>
+<sect1 id="build_prerequisites_1prereq_next">
+<title>What&apos;s Next?</title>
+<para>Once you have obtained all the prerequisite tools and libraries for your installation, move on to <ref refid="build_prepare" kindref="compound">Preparing to Build Zorba</ref>. </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

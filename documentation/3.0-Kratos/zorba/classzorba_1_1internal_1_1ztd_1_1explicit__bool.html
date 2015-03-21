@@ -1,0 +1,32 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::internal::ztd::explicit_bool</h1><p class="include">
+            #include &lt;zorba/internal/ztd.h&gt;
+        </p>
+Helper class for implementing a solution to the "explicit bool conversion" problem.     
+The canonical use is of the form: <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span></span><span class="keyword">class<span> </span></span><span class="normal">your_class<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>...</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool?anchor=ab08b6a8cca116a821466cd89be17c658">operator explicit_bool::type</a>()</span><span class="keyword"><span> </span>const<span> </span></span><span class="normal">{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool?anchor=a936d0a29441bd9af878af913d3ff3a10">explicit_bool::value_of</a>(<span> </span>some_expression<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>}</span>
+<span class="normal"><span> </span><span> </span>};</span>
+</pre>See: <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2333.html" target="_blank">http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2333.html</a>     <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">int pointer_conversion::*</p></td><td><p class="signature"><a href="#ab08b6a8cca116a821466cd89be17c658">type</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Static Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool?anchor=ab08b6a8cca116a821466cd89be17c658">type</a></p></td><td><p class="signature"><a href="#a2a3186ef069ce19c3088acd531a28328">false_value</a>()</p><span class="signature-description">
+Gets the explicit <tt>bool</tt> value for <tt>false</tt>.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool?anchor=ab08b6a8cca116a821466cd89be17c658">type</a></p></td><td><p class="signature"><a href="#a3b848c4664d0826b2b280e5f36a15eab">true_value</a>()</p><span class="signature-description">
+Gets the explicit <tt>bool</tt> value for <tt>true</tt>.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; ZORBA_TR1_NS::is_convertible&lt; T, bool &gt;::value, <a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool?anchor=ab08b6a8cca116a821466cd89be17c658">type</a> &gt;::<a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool?anchor=ab08b6a8cca116a821466cd89be17c658">type</a></p></td><td><p class="signature"><a href="#a936d0a29441bd9af878af913d3ff3a10">value_of</a>(T const &amp;value)</p><span class="signature-description">
+Converts the given value to an explicit <tt>bool</tt> value.         </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="ab08b6a8cca116a821466cd89be17c658" class="sect1"><div><h3>type</h3></div><div class="signature-box">int pointer_conversion::*<span> </span>type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Static Functions</h2><div class="detailed"><div id="a2a3186ef069ce19c3088acd531a28328" class="sect1"><div><h3>false_value</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool?anchor=ab08b6a8cca116a821466cd89be17c658">type</a><span> </span>false_value()</div><div><p class="signature-description">
+Gets the explicit <tt>bool</tt> value for <tt>false</tt>.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said value. </div>
+        </p></div></div><div id="a3b848c4664d0826b2b280e5f36a15eab" class="sect1"><div><h3>true_value</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool?anchor=ab08b6a8cca116a821466cd89be17c658">type</a><span> </span>true_value()</div><div><p class="signature-description">
+Gets the explicit <tt>bool</tt> value for <tt>true</tt>.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said value. </div>
+        </p></div></div><div id="a936d0a29441bd9af878af913d3ff3a10" class="sect1"><div><h3>value_of</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; ZORBA_TR1_NS::is_convertible&lt; T, bool &gt;::value, <a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool?anchor=ab08b6a8cca116a821466cd89be17c658">type</a> &gt;::<a href="/pages/3.0/zorba/classzorba_1_1internal_1_1ztd_1_1explicit__bool?anchor=ab08b6a8cca116a821466cd89be17c658">type</a><span> </span>value_of(T const &amp;value)</div><div><p class="signature-description">
+Converts the given value to an explicit <tt>bool</tt> value.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>T</td><td>
+The type of the value to convert. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>value</td><td>
+The value to convert. </td></tr></table></div>
+<div><h4>Returns</h4>Return said value. </div>
+        </p></div></div></div></div></div>
+</div>

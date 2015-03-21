@@ -1,0 +1,100 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::base64::streambuf</h1><p class="include">
+            #include &lt;zorba/util/base64_stream.h&gt;
+        </p>
+A base64::streambuf is-a std::streambuf for decoding from and encoding to Base64 on-the-fly while reading or writing, respectively.     
+To use it, replace a stream's streambuf: <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span>istream<span> </span><a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7">is</a>;</span>
+<span class="normal"><span> </span><span> </span></span><span class="comment">//<span> </span>...</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>base64::streambuf<span> </span>b64buf(<span> </span>is.rdbuf()<span> </span>);</span>
+<span class="normal"><span> </span><span> </span>is.ios::rdbuf(<span> </span>&amp;b64buf<span> </span>);</span>
+</pre> Note that the base64::streambuf must exist for as long as it's being used by the stream. If you are replacing the streabuf for a stream you did not create, you should set it back to the original streambuf: <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>f(<span> </span>ostream<span> </span>&amp;os<span> </span>)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>base64::streambuf<span> </span>b64buf(<span> </span>os.rdbuf()<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">try</span><span class="normal"><span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>os.ios::rdbuf(<span> </span>&amp;b64buf<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>...</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>}</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">catch</span><span class="normal"><span> </span>(<span> </span>...<span> </span>)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span>os.ios::rdbuf(<span> </span>b64buf.orig_streambuf()<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><span> </span><span> </span></span><span class="keywordflow">throw</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>}</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>os.ios::rdbuf(<span> </span>b64buf.orig_streambuf()<span> </span>);</span>
+<span class="normal"><span> </span><span> </span>}</span>
+</pre> Alternatively, you may wish to use either , , or  instead.<b>Note:</b> due to the nature of Base64-encoding, when writing, you <em>must</em> ensure that the streambuf is flushed (by calling either <tt>pubsync()</tt> on the streambuf or <tt>flush()</tt> on the owning stream) when done.While base64::streambuf does support seeking, the positions are relative to the original byte stream.     <div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">char</p></td><td><p class="signature"><a href="#a4bb2b987203fd04923de71df22d6c409">gbuf_</a>[3]</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::streambuf *</p></td><td><p class="signature"><a href="#abb5f740700d0735769082c1abd5f61a6">orig_buf_</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">char</p></td><td><p class="signature"><a href="#aaf7ffea984b4de2fa48ac5eddd04e04e">pbuf_</a>[3]</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#a2b5b8be1345ef35a45b2e63fa07b747c">plen_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">std::streambuf *</p></td><td><p class="signature"><a href="#a5f36ef76b1158e7e93ad0a2ca2674edc">orig_streambuf</a>() const </p><span class="signature-description">
+Gets the original streambuf.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aa80d49523c963b2aabe481fc0711ee8d">streambuf</a>(std::streambuf *orig)</p><span class="signature-description">
+Constructs a base64::streambuf.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a566ff2c585c5f36dc48ef89762301cf4">~streambuf</a>()</p><span class="signature-description">
+Destructs a base64::streambuf.         </span></td></tr></table></div><div class="section"><h2>Protected Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a83becd37506c943cb3563f8f66e5a820">imbue</a>(std::locale const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">int_type</p></td><td><p class="signature"><a href="#a758cb6b7e573eada5fd8ce6edd591d1c">overflow</a>(int_type)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">int_type</p></td><td><p class="signature"><a href="#a4099a6371329796ddf1839b39a18eb29">pbackfail</a>(int_type)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">pos_type</p></td><td><p class="signature"><a href="#a2dd7d6fad94c85978586790c5ac67a45">seekoff</a>(off_type, std::ios_base::seekdir, std::ios_base::openmode)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">pos_type</p></td><td><p class="signature"><a href="#a6dab0424ea94f9a6cc404fcef755b231">seekpos</a>(pos_type, std::ios_base::openmode)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::streambuf *</p></td><td><p class="signature"><a href="#aa7bdd8dea0b296b300b941cff25381b1">setbuf</a>(char_type *, std::streamsize)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::streamsize</p></td><td><p class="signature"><a href="#a70e3f6f2960527c5d3d46f97dc6c6797">showmanyc</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">int</p></td><td><p class="signature"><a href="#a94e63c9d95e2cf339cfa798cba62dccc">sync</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">int_type</p></td><td><p class="signature"><a href="#adeec3b4fcdbdbd2cae757c85309f5a0e">underflow</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::streamsize</p></td><td><p class="signature"><a href="#a260a9dd741a01841a12db2f1aa255270">xsgetn</a>(char_type *, std::streamsize)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::streamsize</p></td><td><p class="signature"><a href="#a08d1983f2cf4d1584b70523564e614ec">xsputn</a>(char_type const *, std::streamsize)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#af3d1d6a8042b400ba65fa8b0f3e5844a">clear</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">streambuf</a> &amp;</p></td><td><p class="signature"><a href="#a50862d12369ba2f42ce0a34c9a0eb481">operator=</a>(streambuf const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a474622ccf2314e452e49e9fc4e51dff8">resetg</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a2320d48d49b3717a8bc91392484d53b5">resetp</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a9af6500bbd4de771928ce4aa6917738c">streambuf</a>(streambuf const &amp;)</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a1f1945b63aeba0638a0569a304d60a1f">writep</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a4bb2b987203fd04923de71df22d6c409" class="sect1"><div><h3>gbuf_</h3></div><div class="signature-box">char<span> </span>gbuf_[3]</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="abb5f740700d0735769082c1abd5f61a6" class="sect1"><div><h3>orig_buf_</h3></div><div class="signature-box">std::streambuf *<span> </span>orig_buf_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aaf7ffea984b4de2fa48ac5eddd04e04e" class="sect1"><div><h3>pbuf_</h3></div><div class="signature-box">char<span> </span>pbuf_[3]</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a2b5b8be1345ef35a45b2e63fa07b747c" class="sect1"><div><h3>plen_</h3></div><div class="signature-box">int<span> </span>plen_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a5f36ef76b1158e7e93ad0a2ca2674edc" class="sect1"><div><h3>orig_streambuf</h3></div><div class="signature-box">std::streambuf *<span> </span>orig_streambuf() const </div><div><p class="signature-description">
+Gets the original streambuf.         </p><p class="signature-description">
+<div><h4>Returns</h4>said streambuf. </div>
+        </p></div></div><div id="aa80d49523c963b2aabe481fc0711ee8d" class="sect1"><div><h3>streambuf</h3></div><div class="signature-box"><span> </span>streambuf(std::streambuf *orig)</div><div><p class="signature-description">
+Constructs a base64::streambuf.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>orig</td><td>
+The original streambuf to read/write from/to. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>std::invalid_argument</td><td>
+if is not supported or <em>orig</em> is null. </td></tr></table></div>
+        </p></div></div><div id="a566ff2c585c5f36dc48ef89762301cf4" class="sect1"><div><h3>~streambuf</h3></div><div class="signature-box"><span> </span>~streambuf()</div><div><p class="signature-description">
+Destructs a base64::streambuf.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Protected Functions</h2><div class="detailed"><div id="a83becd37506c943cb3563f8f66e5a820" class="sect1"><div><h3>imbue</h3></div><div class="signature-box">void<span> </span>imbue(std::locale const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a758cb6b7e573eada5fd8ce6edd591d1c" class="sect1"><div><h3>overflow</h3></div><div class="signature-box">int_type<span> </span>overflow(int_type)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4099a6371329796ddf1839b39a18eb29" class="sect1"><div><h3>pbackfail</h3></div><div class="signature-box">int_type<span> </span>pbackfail(int_type)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a2dd7d6fad94c85978586790c5ac67a45" class="sect1"><div><h3>seekoff</h3></div><div class="signature-box">pos_type<span> </span>seekoff(off_type, std::ios_base::seekdir, std::ios_base::openmode)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a6dab0424ea94f9a6cc404fcef755b231" class="sect1"><div><h3>seekpos</h3></div><div class="signature-box">pos_type<span> </span>seekpos(pos_type, std::ios_base::openmode)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aa7bdd8dea0b296b300b941cff25381b1" class="sect1"><div><h3>setbuf</h3></div><div class="signature-box">std::streambuf *<span> </span>setbuf(char_type *, std::streamsize)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a70e3f6f2960527c5d3d46f97dc6c6797" class="sect1"><div><h3>showmanyc</h3></div><div class="signature-box">std::streamsize<span> </span>showmanyc()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a94e63c9d95e2cf339cfa798cba62dccc" class="sect1"><div><h3>sync</h3></div><div class="signature-box">int<span> </span>sync()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="adeec3b4fcdbdbd2cae757c85309f5a0e" class="sect1"><div><h3>underflow</h3></div><div class="signature-box">int_type<span> </span>underflow()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a260a9dd741a01841a12db2f1aa255270" class="sect1"><div><h3>xsgetn</h3></div><div class="signature-box">std::streamsize<span> </span>xsgetn(char_type *, std::streamsize)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a08d1983f2cf4d1584b70523564e614ec" class="sect1"><div><h3>xsputn</h3></div><div class="signature-box">std::streamsize<span> </span>xsputn(char_type const *, std::streamsize)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Private Functions</h2><div class="detailed"><div id="af3d1d6a8042b400ba65fa8b0f3e5844a" class="sect1"><div><h3>clear</h3></div><div class="signature-box">void<span> </span>clear()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a50862d12369ba2f42ce0a34c9a0eb481" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">streambuf</a> &amp;<span> </span>operator=(streambuf const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a474622ccf2314e452e49e9fc4e51dff8" class="sect1"><div><h3>resetg</h3></div><div class="signature-box">void<span> </span>resetg()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a2320d48d49b3717a8bc91392484d53b5" class="sect1"><div><h3>resetp</h3></div><div class="signature-box">void<span> </span>resetp()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a9af6500bbd4de771928ce4aa6917738c" class="sect1"><div><h3>streambuf</h3></div><div class="signature-box"><span> </span>streambuf(streambuf const &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a1f1945b63aeba0638a0569a304d60a1f" class="sect1"><div><h3>writep</h3></div><div class="signature-box">void<span> </span>writep()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

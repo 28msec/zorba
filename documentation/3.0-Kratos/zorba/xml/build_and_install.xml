@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="build_and_install" kind="page">
+    <compoundname>build_and_install</compoundname>
+    <title>Building and Installing Zorba</title>
+    <detaileddescription>
+<sect1 id="build_and_install_1build_zorba">
+<title>Building Zorba</title>
+<para>Once you have successfully configured your Zorba build (as described in <ref refid="configure_zorba" kindref="compound">Configuring a Zorba Build Using CMake</ref>), you should now be able to build the project.</para><para><itemizedlist>
+<listitem><para>For Makefile-based builds, just type <computeroutput>make</computeroutput> (or <programlisting><codeline><highlight class="normal"><sp/>make<sp/>j2<sp/></highlight></codeline>
+</programlisting> to do a parallel build on a multi-core machine) from inside the <computeroutput>{ZORBABUILD}</computeroutput> directory.</para></listitem></itemizedlist>
+</para><para><itemizedlist>
+<listitem><para>For IDE-based builds, open the project created in the previous step and build the <bold>ALL</bold> target.</para></listitem></itemizedlist>
+</para><para>The build will take some time. If it finishes successfully, you&apos;re ready to install and run Zorba.</para></sect1>
+<sect1 id="python_windows_tutorial_1install_zorba">
+<title>Installing Zorba</title>
+<para><itemizedlist>
+<listitem><para>For Makefile-based builds, just type <programlisting><codeline><highlight class="normal"><sp/>make<sp/>install<sp/></highlight></codeline>
+</programlisting>. There is also a <programlisting><codeline><highlight class="normal"><sp/>make<sp/>uninstall<sp/></highlight></codeline>
+</programlisting> target.</para></listitem></itemizedlist>
+</para><para><itemizedlist>
+<listitem><para>For IDE-based builds, invoke the <bold>INSTALL</bold> project.</para></listitem></itemizedlist>
+</para><para>In either case, Zorba will be installed into the location specified by the CMake configuration parameter <computeroutput>CMAKE_INSTALL_PREFIX</computeroutput>, as described in <ref refid="configure_zorba_1configure_parameters" kindref="member">Configuration Parameters (the -D arguments)</ref>.</para></sect1>
+<sect1 id="build_and_install_1install_paths">
+<title>Setting the PATH</title>
+<para>In order for users on your system to use Zorba, the <bold>bin/</bold> subdirectory of your installation directory must be on their path.</para></sect1>
+<sect1 id="build_and_install_1testing_install">
+<title>Testing your Zorba Installation</title>
+<para>Once Zorba is installed and on your path, try it out! Type:</para><para><programlisting><codeline><highlight class="normal">zorba<sp/>-q<sp/></highlight><highlight class="stringliteral">&quot;1+1&quot;</highlight></codeline>
+</programlisting></para><para>You should get the following output:</para><para><programlisting><codeline><highlight class="normal">&lt;?xml<sp/>version=</highlight><highlight class="stringliteral">&quot;1.0&quot;</highlight><highlight class="normal"><sp/>encoding=</highlight><highlight class="stringliteral">&quot;UTF-8&quot;</highlight><highlight class="normal">?&gt;</highlight></codeline>
+<codeline><highlight class="normal">2</highlight></codeline>
+</programlisting></para><para>If so - congratulations! You&apos;re done and ready to use Zorba.</para></sect1>
+<sect1 id="build_and_install_1build_help">
+<title>Help!</title>
+<para>If you have any problems building or running Zorba, contact the <bold>zorba-users<bold> mailing list. Sign up and see other instructions at <ulink url="https://groups.google.com/forum/?hl=en&amp;fromgroups#!forum/zorba-users">https://groups.google.com/forum/?hl=en&amp;fromgroups#!forum/zorba-users</ulink> . </bold></bold></para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

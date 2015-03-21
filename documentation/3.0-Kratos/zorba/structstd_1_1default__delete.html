@@ -1,0 +1,20 @@
+<div class="doxygen">
+  <div><h1 class="title">std::default_delete</h1><p class="include">
+            #include &lt;zorba/internal/unique_ptr.h&gt;
+        </p>
+    
+    <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a6e7d142ba35a441664009e37acbc1a8d">default_delete</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ab6f9c6da950237149e1a552e1a334da5">default_delete</a>(default_delete&lt; U &gt; const &amp;, typename enable_if&lt; ZORBA_TR1_NS::is_convertible&lt; U *, T * &gt;::value &gt;::type *=nullptr)</p><span class="signature-description">
+Copy constructor.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ae489b6d7fd01ab670ef52a3c6f58ad23">operator()</a>(T *p) const </p><span class="signature-description">
+Deletes the pointed-to object using <tt>delete</tt>.         </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a6e7d142ba35a441664009e37acbc1a8d" class="sect1"><div><h3>default_delete</h3></div><div class="signature-box"><span> </span>default_delete()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="ab6f9c6da950237149e1a552e1a334da5" class="sect1"><div><h3>default_delete</h3></div><div class="signature-box"><span> </span>default_delete(default_delete&lt; U &gt; const &amp;, typename enable_if&lt; ZORBA_TR1_NS::is_convertible&lt; U *, T * &gt;::value &gt;::type *=nullptr)</div><div><p class="signature-description">
+Copy constructor.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>U</td><td>
+The type of the deleter to copy-construct from such that <tt>U*</tt> is convertible to <tt>T*</tt>. </td></tr></table></div>
+        </p></div></div><div id="ae489b6d7fd01ab670ef52a3c6f58ad23" class="sect1"><div><h3>operator()</h3></div><div class="signature-box">void<span> </span>operator()(T *p) const </div><div><p class="signature-description">
+Deletes the pointed-to object using <tt>delete</tt>.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>p</td><td>
+A pointer to the object to delete. </td></tr></table></div>
+        </p></div></div></div></div></div>
+</div>

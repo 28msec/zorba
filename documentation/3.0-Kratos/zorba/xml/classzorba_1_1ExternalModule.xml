@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1ExternalModule" kind="class" prot="public">
+    <compoundname>zorba::ExternalModule</compoundname>
+    <includes refid="external__module_8h" local="no">zorba/external_module.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1ExternalModule_1a906064655a1c8785395112ee6d2c6e16" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::ExternalModule::destroy</definition>
+        <argsstring>()</argsstring>
+        <name>destroy</name>
+        <briefdescription>
+<para><ref refid="classzorba_1_1Function" kindref="compound">Function</ref> used for destroying the <ref refid="classzorba_1_1ExternalModule" kindref="compound">ExternalModule</ref> object passed as parameter. </para>        </briefdescription>
+        <detaileddescription>
+<para>The user needs to override this function if the module passed as parameter was created using the createModule function which is used for dynamically loading modules from a shared library. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/external_module.h" line="71" bodyfile="/home/wcandillon/deadlinks/include/zorba/external_module.h" bodystart="71" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ExternalModule_1a4f0eac58074d50ff06a94a7ed898420f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1ExternalFunction" kindref="compound">ExternalFunction</ref> *</type>
+        <definition>virtual ExternalFunction* zorba::ExternalModule::getExternalFunction</definition>
+        <argsstring>(const String &amp;aLocalname)=0</argsstring>
+        <name>getExternalFunction</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aLocalname</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>the implementation of the function with the given name. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/external_module.h" line="59"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ExternalModule_1a57ba16ce64146ff1f86d118b22a75047" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::ExternalModule::getURI</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getURI</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>the target namespace URI of the module. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/external_module.h" line="53"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ExternalModule_1ad65cffd12c34a319efc9029c5ac645bf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::ExternalModule::~ExternalModule</definition>
+        <argsstring>()</argsstring>
+        <name>~ExternalModule</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/external_module.h" line="47" bodyfile="/home/wcandillon/deadlinks/include/zorba/external_module.h" bodystart="47" bodyend="47"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>An external module represents a group of external functions, all belonging to the same target namespace. </para>    </briefdescription>
+    <detaileddescription>
+<para>Class <ref refid="classzorba_1_1ExternalModule" kindref="compound">ExternalModule</ref> provides the interface for retrieving the target namespace URI and/or the implementation of each contained external function by function name.</para><para>An external module can be a library module by itself, or be a component of a library module.</para><para>Instances of this class must be implemented by the application and provide storage for the implementations of the external functions. The instances must be registered in the static context in order for the functions to be accessible by a query (see <ulink url="../../zorba/html/external_functions.html">here</ulink> for more details.). </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/external_module.h" line="45" bodyfile="/home/wcandillon/deadlinks/include/zorba/external_module.h" bodystart="44" bodyend="73"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1ExternalModule_1a906064655a1c8785395112ee6d2c6e16" prot="public" virt="virtual"><scope>zorba::ExternalModule</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1ExternalModule_1a4f0eac58074d50ff06a94a7ed898420f" prot="public" virt="pure-virtual"><scope>zorba::ExternalModule</scope><name>getExternalFunction</name></member>
+      <member refid="classzorba_1_1ExternalModule_1a57ba16ce64146ff1f86d118b22a75047" prot="public" virt="pure-virtual"><scope>zorba::ExternalModule</scope><name>getURI</name></member>
+      <member refid="classzorba_1_1ExternalModule_1ad65cffd12c34a319efc9029c5ac645bf" prot="public" virt="virtual"><scope>zorba::ExternalModule</scope><name>~ExternalModule</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,1424 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1UserException" kind="class" prot="public">
+    <compoundname>zorba::UserException</compoundname>
+    <basecompoundref refid="classzorba_1_1XQueryException" prot="public" virt="non-virtual">zorba::XQueryException</basecompoundref>
+    <includes refid="user__exception_8h" local="no">zorba/user_exception.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a6fb373e3d8b69d4eb27d32944943e1f8" kindref="member">internal::diagnostic::location::column_type</ref></type>
+        <definition>typedef internal::diagnostic::location::column_type zorba::XQueryException::column_type</definition>
+        <argsstring></argsstring>
+        <name>column_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="39" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1UserException_1ae51e3b671cb44ebf9d90180d8f67d5eb" prot="public" static="no">
+        <type><ref refid="namespacezorba_1_1internal_1ab19a27981bfc8b4259b67ebd0ec746ac" kindref="member">internal::error_object_type</ref></type>
+        <definition>typedef internal::error_object_type zorba::UserException::error_object_type</definition>
+        <argsstring></argsstring>
+        <name>error_object_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="99" bodyfile="/home/wcandillon/deadlinks/include/zorba/user_exception.h" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" prot="public" static="no">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location_1a3aa53b70adc32c0c65c068b6dc7d30d4" kindref="member">internal::diagnostic::location::line_type</ref></type>
+        <definition>typedef internal::diagnostic::location::line_type zorba::ZorbaException::line_type</definition>
+        <argsstring></argsstring>
+        <name>line_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="44" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="enum" id="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" prot="public" static="no">
+        <name>print_format</name>
+        <enumvalue id="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eaa06aae456821a23f9edac3506ce303d9" prot="public">
+          <name>format_text</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+<para>plain text </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eae8425bd8d157137536b9c28f2932361e" prot="public">
+          <name>format_xml</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+<para>XML without unnecessary whitespace. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eae16f287a3ad3a6149045673f2fbdefe4" prot="public">
+          <name>format_xml_indented</name>
+          <initializer> 3</initializer>
+          <briefdescription>
+<para>XML with newlines and indentation. </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>The format to print exceptions as to an ostream. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="49" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="49" bodyend="53"/>
+      </memberdef>
+      <memberdef kind="enum" id="classzorba_1_1XQueryException_1adf30bab42a7e9e441a42ebb9b4a9b1fe" prot="public" static="no">
+        <name>print_trace</name>
+        <enumvalue id="classzorba_1_1XQueryException_1adf30bab42a7e9e441a42ebb9b4a9b1fea19fad65098febcd8834ea152a762aad4" prot="public">
+          <name>trace</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1XQueryException_1adf30bab42a7e9e441a42ebb9b4a9b1feadf89598e529fb888ccf6b0fd49fd8b9b" prot="public">
+          <name>no_trace</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Whether to include the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> stack trace for the <ref refid="classzorba_1_1XQueryException" kindref="compound">XQueryException</ref> that&apos;s printed to an ostream. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="45" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="45" bodyend="48"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1UserException_1a343d38e69ec63c859b1fe5290820f61c" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1UserException_1ae51e3b671cb44ebf9d90180d8f67d5eb" kindref="member">error_object_type</ref></type>
+        <definition>error_object_type zorba::UserException::error_object_</definition>
+        <argsstring></argsstring>
+        <name>error_object_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="138" bodyfile="/home/wcandillon/deadlinks/include/zorba/user_exception.h" bodystart="138" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a8ee9cb00f5bfbfc73778b20ccfba4e7a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+        <definition>column_type zorba::XQueryException::applied_column</definition>
+        <argsstring>() const </argsstring>
+        <name>applied_column</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code &quot;applied at&quot; column number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said column number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="264" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="264" bodyend="266"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a81eb7e06993a711364fef6c8e6e97e60" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+        <definition>column_type zorba::XQueryException::applied_column_end</definition>
+        <argsstring>() const </argsstring>
+        <name>applied_column_end</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code &quot;applied at&quot; end column number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said column number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="284" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="284" bodyend="286"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a644dcd0e129bdcda4a794fe84c5f28e0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::XQueryException::applied_line</definition>
+        <argsstring>() const </argsstring>
+        <name>applied_line</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code &quot;applied at&quot; line number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said line number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="254" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="254" bodyend="256"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a267ae38b021b10a59595a210adbb8493" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::XQueryException::applied_line_end</definition>
+        <argsstring>() const </argsstring>
+        <name>applied_line_end</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code &quot;applied at&quot; end line number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said line number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="274" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="274" bodyend="276"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1ae43d238a740212235fd761730d9827d1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::XQueryException::applied_uri</definition>
+        <argsstring>() const </argsstring>
+        <name>applied_uri</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code &quot;applied at&quot; URI containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said URI or the empty string if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="245" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="245" bodyend="247"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a1c85b236e615f4ddcea2a47a5d32b913" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+        <definition>column_type zorba::XQueryException::data_column</definition>
+        <argsstring>() const </argsstring>
+        <name>data_column</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the data column number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said column number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="190" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="190" bodyend="192"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a368d9b65b2006e1962b06f7b4bf7b291" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+        <definition>column_type zorba::XQueryException::data_column_end</definition>
+        <argsstring>() const </argsstring>
+        <name>data_column_end</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the data end column number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said column number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="208" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="208" bodyend="210"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1ac2c9cdf6f2bb8e91a521234cffa9b66c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::XQueryException::data_line</definition>
+        <argsstring>() const </argsstring>
+        <name>data_line</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the data line number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said line number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="181" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="181" bodyend="183"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1ad6297e8382dcbdedef684d92cd723729" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::XQueryException::data_line_end</definition>
+        <argsstring>() const </argsstring>
+        <name>data_line_end</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the data end line number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said line number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="199" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="199" bodyend="201"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a79c776ccbcf01f5385c226afe0d9f79f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::XQueryException::data_uri</definition>
+        <argsstring>() const </argsstring>
+        <name>data_uri</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the data URI containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said URI or the empty string if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="172" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="172" bodyend="174"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1aa65d6b38bb602256104499c3807185b1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+        <definition>Diagnostic const&amp; zorba::ZorbaException::diagnostic</definition>
+        <argsstring>() const </argsstring>
+        <name>diagnostic</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the diagnostic carried by this exception. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said diagnostic. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="80" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="80" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserException_1a000b95d1d61aad14599d3aa1f21024f8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1UserException_1ae51e3b671cb44ebf9d90180d8f67d5eb" kindref="member">error_object_type</ref> const &amp;</type>
+        <definition>error_object_type const&amp; zorba::UserException::error_object</definition>
+        <argsstring>() const </argsstring>
+        <name>error_object</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the error object associated with this exception. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said error object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="126" bodyfile="/home/wcandillon/deadlinks/include/zorba/user_exception.h" bodystart="126" bodyend="128"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a342c41e836fbd4380ebd46361e59d355" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::XQueryException::has_applied</definition>
+        <argsstring>() const </argsstring>
+        <name>has_applied</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Checks whether the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> &quot;applied at&quot; location has been set. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the &quot;applied at&quot; location has been set. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="219" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="219" bodyend="221"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a5d721dbaeed15beda021fd094f234f25" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::XQueryException::has_data</definition>
+        <argsstring>() const </argsstring>
+        <name>has_data</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Checks whether the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> data location has been set. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if the data location has been set. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="148" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="148" bodyend="150"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a588e57955109c13d3f8b6f49369fbadd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::XQueryException::has_source</definition>
+        <argsstring>() const </argsstring>
+        <name>has_source</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Checks whether the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code location has been set. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if said has been set. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="77" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="77" bodyend="79"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserException_1a952a492db9c1bce86e00a2b39c9923c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref> &amp;</type>
+        <definition>UserException&amp; zorba::UserException::operator=</definition>
+        <argsstring>(UserException const &amp;from)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref> const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Assigns this UserException from another. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The UserException to assign from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>*this</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="119"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserException_1a4b44e05962489003a608d929ed416e00" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void zorba::UserException::polymorphic_throw</definition>
+        <argsstring>() const </argsstring>
+        <name>polymorphic_throw</name>
+        <reimplements refid="classzorba_1_1XQueryException_1aed772c15c0a6f13ac5b40316485a22b5">polymorphic_throw</reimplements>
+        <briefdescription>
+<para>Throws itself polymorphically; see <ulink url="http://www.parashift.com/c++-faq-lite/exceptions.html#faq-17.16">http://www.parashift.com/c++-faq-lite/exceptions.html#faq-17.16</ulink>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="131"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a02dc383a718136164593a1f778337acd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryStackTrace" kindref="compound">XQueryStackTrace</ref> &amp;</type>
+        <definition>XQueryStackTrace&amp; zorba::XQueryException::query_trace</definition>
+        <argsstring>()</argsstring>
+        <name>query_trace</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> stack trace, if any. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said stack trace. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="306" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="306" bodyend="308"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a4d7e8682bd950991b61dcc397ec073c3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryStackTrace" kindref="compound">XQueryStackTrace</ref> const &amp;</type>
+        <definition>XQueryStackTrace const&amp; zorba::XQueryException::query_trace</definition>
+        <argsstring>() const </argsstring>
+        <name>query_trace</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> stack trace, if any. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said stack trace. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="315" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="315" bodyend="317"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1a6b5e2e711fe5a54ed08d51d6dbbad8ef" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::ZorbaException::raise_file</definition>
+        <argsstring>() const </argsstring>
+        <name>raise_file</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the C++ source-code file name whence this exception was raised. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said file name. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="114" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="114" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1ac8566af4cbcece74394cfd528a257781" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::ZorbaException::raise_line</definition>
+        <argsstring>() const </argsstring>
+        <name>raise_line</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the C++ source-code line number whence this exception was raised. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said line number. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="123" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="123" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a7c90ce88252b05934d793d046a46e96e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::XQueryException::set_applied</definition>
+        <argsstring>(char const *uri, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</argsstring>
+        <name>set_applied</name>
+        <param>
+          <type>char const *</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+          <declname>column</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+          <declname>line_end</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+          <declname>column_end</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Sets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code &quot;applied at&quot; URI name, line, and column numbers. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>uri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code &quot;applied at&quot; URI name. If either the null pointer or the empty string, <computeroutput><ref refid="classzorba_1_1XQueryException_1a553ee378d77657617e872347f09d1adc" kindref="member">source_uri()</ref></computeroutput> is used. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code &quot;applied at&quot; URI line number. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code &quot;applied at&quot; URI column number. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code &quot;applied at&quot; URI end line number. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code &quot;applied at&quot; URI end column number. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="238"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a4c3ccd573c7aeb72e3cbd543d32be6be" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::XQueryException::set_data</definition>
+        <argsstring>(char const *uri, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</argsstring>
+        <name>set_data</name>
+        <param>
+          <type>char const *</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+          <declname>column</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+          <declname>line_end</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+          <declname>column_end</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Sets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code data URI name, line, and column numbers. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>uri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code data URI name. Must not be null. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code data URI line number. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code data URI column number. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code data URI end line number. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code data URI end column number. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="165"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1ab17a11fa7a552fd4a2c9ac1033183b01" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::ZorbaException::set_diagnostic</definition>
+        <argsstring>(Diagnostic const &amp;diagnostic)</argsstring>
+        <name>set_diagnostic</name>
+        <param>
+          <type><ref refid="classzorba_1_1Diagnostic" kindref="compound">Diagnostic</ref> const &amp;</type>
+          <declname>diagnostic</declname>
+        </param>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Sets the diagnostic. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>diagnostic</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The diagnostic. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="105" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="105" bodyend="107"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a443c6d3013eaf91cc680a0f99ab3482e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::XQueryException::set_source</definition>
+        <argsstring>(char const *uri, line_type line, column_type column=0, line_type line_end=0, column_type column_end=0)</argsstring>
+        <name>set_source</name>
+        <param>
+          <type>char const *</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+          <declname>column</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+          <declname>line_end</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+          <declname>column_end</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Sets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code URI name, line, and column numbers. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>uri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code URI name. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code URI line number. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code URI column number. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>line_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code URI end line number. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>column_end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code URI end column number. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="94"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a093a3985c87d852aa5f70187137153a4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+        <definition>column_type zorba::XQueryException::source_column</definition>
+        <argsstring>() const </argsstring>
+        <name>source_column</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code column number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said column number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="119" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="119" bodyend="121"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a673a725c2e629380cd961ca537abcf02" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" kindref="member">column_type</ref></type>
+        <definition>column_type zorba::XQueryException::source_column_end</definition>
+        <argsstring>() const </argsstring>
+        <name>source_column_end</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code end column number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said column number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="137" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="137" bodyend="139"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1aab93a239dd4047d6e4aaa7cba2c9ab47" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::XQueryException::source_line</definition>
+        <argsstring>() const </argsstring>
+        <name>source_line</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code line number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said line number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="110" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="110" bodyend="112"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1acfc67763485cee7f4dffd51e7b2abf90" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        <definition>line_type zorba::XQueryException::source_line_end</definition>
+        <argsstring>() const </argsstring>
+        <name>source_line_end</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code end line number containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said line number or 0 if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="128" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="128" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a553ee378d77657617e872347f09d1adc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::XQueryException::source_uri</definition>
+        <argsstring>() const </argsstring>
+        <name>source_uri</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Gets the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> source-code URI containing the error. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said URI or the empty string if unset. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="101" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="101" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserException_1ae5f840e6668199cc36085e75b219185b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::UserException::UserException</definition>
+        <argsstring>(UserException const &amp;from)</argsstring>
+        <name>UserException</name>
+        <param>
+          <type><ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref> const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Copy-constructs a UserException. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The UserException to copy from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1a30aa6df89d2188198da3b5cf4a2e95b0" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>char const *</type>
+        <definition>char const* zorba::ZorbaException::what</definition>
+        <argsstring>() const </argsstring>
+        <name>what</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="138"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserException_1aa47139966e65609c59ea8995f73a91b8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::UserException::~UserException</definition>
+        <argsstring>()</argsstring>
+        <name>~UserException</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Destroys this UserException. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="111"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1UserException_1a971d995caaef374a61b11dda5e1d421f" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref>&lt; <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> &gt;</type>
+        <definition>std::unique_ptr&lt;ZorbaException&gt; zorba::UserException::clone</definition>
+        <argsstring>() const </argsstring>
+        <name>clone</name>
+        <reimplements refid="classzorba_1_1XQueryException_1a5c9bc5830acb26fa0da4e5e5826b6a09">clone</reimplements>
+        <briefdescription>
+<para>Clones this exception object. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns a clone of this exception. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="135"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1adc4984f60a8efd83c117e7288c49a2cb" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; zorba::ZorbaException::print</definition>
+        <argsstring>(std::ostream &amp;) const </argsstring>
+        <name>print</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <briefdescription>
+<para>Prints the exception to the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to print to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>o</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="167"/>
+        <referencedby refid="namespacezorba_1a007d6f87e8af759b818adf8fe40e2c82" compoundref="zorba__exception_8h" startline="209" endline="211">zorba::operator&lt;&lt;</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1ae528c5f932510d0a7daf96134150f905" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; zorba::XQueryException::print_impl</definition>
+        <argsstring>(std::ostream &amp;) const </argsstring>
+        <name>print_impl</name>
+        <reimplements refid="classzorba_1_1ZorbaException_1ac0df829ea847ecf21637525490cfb4fd">print_impl</reimplements>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="341"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1aca6766a9819de68d5c8c6930ac96f948" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; zorba::XQueryException::print_stack_trace</definition>
+        <argsstring>(std::ostream &amp;) const </argsstring>
+        <name>print_stack_trace</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="336"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1UserException_1a8617d2a6e30f425330e347d1e39cfb31" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::UserException::UserException</definition>
+        <argsstring>(char const *ns, char const *prefix, char const *localname, char const *raise_file, line_type raise_line, char const *description, error_object_type *error_object)</argsstring>
+        <name>UserException</name>
+        <param>
+          <type>char const *</type>
+          <declname>ns</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>prefix</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>localname</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>description</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1UserException_1ae51e3b671cb44ebf9d90180d8f67d5eb" kindref="member">error_object_type</ref> *</type>
+          <declname>error_object</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a UserException. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ns</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The namespace of the error. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>prefix</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The prefix of the error. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>locaname</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The local-name of the error. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>raise_file</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code file name whence the exception was raised. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>raise_line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code line number whence the exception was raised. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>description</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error description. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>error_object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="155"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserException_1a8a3a3577d04eb3dc287e3cff6f41c187" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::UserException::UserException</definition>
+        <argsstring>(Error const &amp;error, char const *raise_file, line_type raise_line, char const *description, error_object_type *error_object)</argsstring>
+        <name>UserException</name>
+        <param>
+          <type><ref refid="namespacezorba_1a0299a82ee3cd6825cc41a5794e257c48" kindref="member">Error</ref> const &amp;</type>
+          <declname>error</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>raise_file</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+          <declname>raise_line</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>description</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1UserException_1ae51e3b671cb44ebf9d90180d8f67d5eb" kindref="member">error_object_type</ref> *</type>
+          <declname>error_object</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a UserException. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>error</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>raise_file</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code file name whence the exception was raised. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>raise_line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The source-code line number whence the exception was raised. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>description</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error description. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>error_object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The error object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="170"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1UserException_1aff593a998eacf3ecf6b475872a126fa9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::UserException::UserException</definition>
+        <argsstring>(serialization::Archiver &amp;)</argsstring>
+        <name>UserException</name>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="183"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classzorba_1_1UserException_1ad8550f3d6c4a9a5312bc28207bce5adf" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>UserException internal::make_user_exception</definition>
+        <argsstring>(char const *, line_type, char const *, char const *, char const *, char const *, internal::diagnostic::location const &amp;, error_object_type *)</argsstring>
+        <name>internal::make_user_exception</name>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        </param>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location" kindref="compound">internal::diagnostic::location</ref> const &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1UserException_1ae51e3b671cb44ebf9d90180d8f67d5eb" kindref="member">error_object_type</ref> *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="175"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1UserException_1ac5d7411619053368ea1e98f685a7ae3b" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend <ref refid="classzorba_1_1UserException" kindref="compound">UserException</ref></type>
+        <definition>UserException internal::make_user_exception</definition>
+        <argsstring>(char const *, line_type, Error const &amp;, char const *, internal::diagnostic::location const &amp;, error_object_type *)</argsstring>
+        <name>internal::make_user_exception</name>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" kindref="member">line_type</ref></type>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1a0299a82ee3cd6825cc41a5794e257c48" kindref="member">Error</ref> const &amp;</type>
+        </param>
+        <param>
+          <type>char const *</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1location" kindref="compound">internal::diagnostic::location</ref> const &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1UserException_1ae51e3b671cb44ebf9d90180d8f67d5eb" kindref="member">error_object_type</ref> *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="180"/>
+      </memberdef>
+      <memberdef kind="friend" id="classzorba_1_1UserException_1addd8220965a72d41d9fa0ada3ecf562d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend void</type>
+        <definition>void serialization::operator&amp;</definition>
+        <argsstring>(serialization::Archiver &amp;, ZorbaException *&amp;)</argsstring>
+        <name>serialization::operator&amp;</name>
+        <reimplements refid="classzorba_1_1XQueryException_1addd8220965a72d41d9fa0ada3ecf562d">serialization::operator&amp;</reimplements>
+        <param>
+          <type>serialization::Archiver &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> *&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="185"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1ae5e8c070b2b96a9a5c2926956f49a9a9" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" kindref="member">print_format</ref></type>
+        <definition>static print_format zorba::ZorbaException::get_print_format</definition>
+        <argsstring>(std::ostream &amp;o)</argsstring>
+        <name>get_print_format</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Gets the current print_format associated with the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to get the print_format of. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns said print_format. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="90" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="90" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a5593dd34d38534dee71f654d018a938b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool zorba::XQueryException::get_print_trace</definition>
+        <argsstring>(std::ostream &amp;o)</argsstring>
+        <name>get_print_trace</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Gets whether <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> stack traces will be included when XQueryExceptions are printed to the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <emphasis>true</emphasis> only if stack traces will be included. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="297" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="297" bodyend="299"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ZorbaException_1ab13a584d2d9398fc0285ee44d8c26e27" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void zorba::ZorbaException::set_print_format</definition>
+        <argsstring>(std::ostream &amp;o, print_format f)</argsstring>
+        <name>set_print_format</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" kindref="member">print_format</ref></type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+<para>Sets the print_format of the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to set the print_format of. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>f</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The print_format value. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" line="133" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_exception.h" bodystart="133" bodyend="135"/>
+        <referencedby refid="namespacezorba_1a113f31a4428f49866ff67b707bad1b1f" compoundref="zorba__exception_8h" startline="220" endline="224">zorba::operator&lt;&lt;</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1a911f5714ef169dd932982103972b0dab" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void zorba::XQueryException::set_print_trace</definition>
+        <argsstring>(std::ostream &amp;o, bool print)</argsstring>
+        <name>set_print_trace</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>print</declname>
+        </param>
+        <briefdescription>
+<para>Sets whether <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> stack traces will be included when XQueryExceptions are printed to the given ostream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The ostream to affect. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>print</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If <emphasis>true</emphasis>, stack traces will be included. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="326" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" bodystart="326" bodyend="328"/>
+        <referencedby refid="namespacezorba_1a824162ce75016ccf34fb1bb42cbda0bd" compoundref="xquery__exception_8h" startline="405" endline="409">zorba::operator&lt;&lt;</referencedby>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-static-func">
+      <memberdef kind="function" id="classzorba_1_1XQueryException_1aaf3519faf6f1b66def3de2a130451c26" prot="protected" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool zorba::XQueryException::print_uri</definition>
+        <argsstring>(std::ostream &amp;, char const *uri)</argsstring>
+        <name>print_uri</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>uri</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery_exception.h" line="337"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A UserException is-an <ref refid="classzorba_1_1XQueryException" kindref="compound">XQueryException</ref> for errors raised via <computeroutput>fn:error()</computeroutput>. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="930">
+        <label>zorba::XQueryException</label>
+        <link refid="classzorba_1_1XQueryException"/>
+        <childnode refid="931" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="931">
+        <label>zorba::ZorbaException</label>
+        <link refid="classzorba_1_1ZorbaException"/>
+      </node>
+      <node id="929">
+        <label>zorba::UserException</label>
+        <link refid="classzorba_1_1UserException"/>
+        <childnode refid="930" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="933">
+        <label>zorba::XQueryException</label>
+        <link refid="classzorba_1_1XQueryException"/>
+        <childnode refid="934" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="934">
+        <label>zorba::ZorbaException</label>
+        <link refid="classzorba_1_1ZorbaException"/>
+      </node>
+      <node id="932">
+        <label>zorba::UserException</label>
+        <link refid="classzorba_1_1UserException"/>
+        <childnode refid="933" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/user_exception.h" line="97" bodyfile="/home/wcandillon/deadlinks/include/zorba/user_exception.h" bodystart="97" bodyend="186"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1XQueryException_1a8ee9cb00f5bfbfc73778b20ccfba4e7a" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>applied_column</name></member>
+      <member refid="classzorba_1_1XQueryException_1a81eb7e06993a711364fef6c8e6e97e60" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>applied_column_end</name></member>
+      <member refid="classzorba_1_1XQueryException_1a644dcd0e129bdcda4a794fe84c5f28e0" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>applied_line</name></member>
+      <member refid="classzorba_1_1XQueryException_1a267ae38b021b10a59595a210adbb8493" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>applied_line_end</name></member>
+      <member refid="classzorba_1_1XQueryException_1ae43d238a740212235fd761730d9827d1" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>applied_uri</name></member>
+      <member refid="classzorba_1_1UserException_1a971d995caaef374a61b11dda5e1d421f" prot="protected" virt="virtual"><scope>zorba::UserException</scope><name>clone</name></member>
+      <member refid="classzorba_1_1XQueryException_1a5d352fc19fbd8fb5a0cd9235336edac5" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>column_type</name></member>
+      <member refid="classzorba_1_1XQueryException_1a1c85b236e615f4ddcea2a47a5d32b913" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>data_column</name></member>
+      <member refid="classzorba_1_1XQueryException_1a368d9b65b2006e1962b06f7b4bf7b291" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>data_column_end</name></member>
+      <member refid="classzorba_1_1XQueryException_1ac2c9cdf6f2bb8e91a521234cffa9b66c" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>data_line</name></member>
+      <member refid="classzorba_1_1XQueryException_1ad6297e8382dcbdedef684d92cd723729" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>data_line_end</name></member>
+      <member refid="classzorba_1_1XQueryException_1a79c776ccbcf01f5385c226afe0d9f79f" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>data_uri</name></member>
+      <member refid="classzorba_1_1ZorbaException_1aa65d6b38bb602256104499c3807185b1" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>diagnostic</name></member>
+      <member refid="classzorba_1_1UserException_1a000b95d1d61aad14599d3aa1f21024f8" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>error_object</name></member>
+      <member refid="classzorba_1_1UserException_1a343d38e69ec63c859b1fe5290820f61c" prot="private" virt="non-virtual"><scope>zorba::UserException</scope><name>error_object_</name></member>
+      <member refid="classzorba_1_1UserException_1ae51e3b671cb44ebf9d90180d8f67d5eb" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>error_object_type</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eaa06aae456821a23f9edac3506ce303d9" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>format_text</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eae8425bd8d157137536b9c28f2932361e" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>format_xml</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549eae16f287a3ad3a6149045673f2fbdefe4" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>format_xml_indented</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ae5e8c070b2b96a9a5c2926956f49a9a9" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>get_print_format</name></member>
+      <member refid="classzorba_1_1XQueryException_1a5593dd34d38534dee71f654d018a938b" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>get_print_trace</name></member>
+      <member refid="classzorba_1_1XQueryException_1a342c41e836fbd4380ebd46361e59d355" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>has_applied</name></member>
+      <member refid="classzorba_1_1XQueryException_1a5d721dbaeed15beda021fd094f234f25" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>has_data</name></member>
+      <member refid="classzorba_1_1XQueryException_1a588e57955109c13d3f8b6f49369fbadd" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>has_source</name></member>
+      <member refid="classzorba_1_1UserException_1ad8550f3d6c4a9a5312bc28207bce5adf" prot="private" virt="non-virtual"><scope>zorba::UserException</scope><name>internal::make_user_exception</name></member>
+      <member refid="classzorba_1_1UserException_1ac5d7411619053368ea1e98f685a7ae3b" prot="private" virt="non-virtual"><scope>zorba::UserException</scope><name>internal::make_user_exception</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a3d8d2c6b2f7f1a5cc892582649c85a4a" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>line_type</name></member>
+      <member refid="classzorba_1_1XQueryException_1adf30bab42a7e9e441a42ebb9b4a9b1feadf89598e529fb888ccf6b0fd49fd8b9b" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>no_trace</name></member>
+      <member refid="classzorba_1_1UserException_1a952a492db9c1bce86e00a2b39c9923c7" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1XQueryException_1accc99749a1f9ce93b749a86f83375346" prot="public" virt="non-virtual" ambiguityscope="zorba::XQueryException::"><scope>zorba::UserException</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1ZorbaException_1af7022c8b865b4dec8d862c80977b6472" prot="public" virt="non-virtual" ambiguityscope="zorba::ZorbaException::"><scope>zorba::UserException</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1UserException_1a4b44e05962489003a608d929ed416e00" prot="public" virt="virtual"><scope>zorba::UserException</scope><name>polymorphic_throw</name></member>
+      <member refid="classzorba_1_1ZorbaException_1adc4984f60a8efd83c117e7288c49a2cb" prot="protected" virt="non-virtual"><scope>zorba::UserException</scope><name>print</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a9fd130e012249f5d8ad04d89c5ff549e" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>print_format</name></member>
+      <member refid="classzorba_1_1XQueryException_1ae528c5f932510d0a7daf96134150f905" prot="protected" virt="virtual"><scope>zorba::UserException</scope><name>print_impl</name></member>
+      <member refid="classzorba_1_1XQueryException_1aca6766a9819de68d5c8c6930ac96f948" prot="protected" virt="non-virtual"><scope>zorba::UserException</scope><name>print_stack_trace</name></member>
+      <member refid="classzorba_1_1XQueryException_1adf30bab42a7e9e441a42ebb9b4a9b1fe" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>print_trace</name></member>
+      <member refid="classzorba_1_1XQueryException_1aaf3519faf6f1b66def3de2a130451c26" prot="protected" virt="non-virtual"><scope>zorba::UserException</scope><name>print_uri</name></member>
+      <member refid="classzorba_1_1XQueryException_1a02dc383a718136164593a1f778337acd" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>query_trace</name></member>
+      <member refid="classzorba_1_1XQueryException_1a4d7e8682bd950991b61dcc397ec073c3" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>query_trace</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a6b5e2e711fe5a54ed08d51d6dbbad8ef" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>raise_file</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ac8566af4cbcece74394cfd528a257781" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>raise_line</name></member>
+      <member refid="classzorba_1_1UserException_1addd8220965a72d41d9fa0ada3ecf562d" prot="private" virt="non-virtual"><scope>zorba::UserException</scope><name>serialization::operator&amp;</name></member>
+      <member refid="classzorba_1_1XQueryException_1a7c90ce88252b05934d793d046a46e96e" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>set_applied</name></member>
+      <member refid="classzorba_1_1XQueryException_1a4c3ccd573c7aeb72e3cbd543d32be6be" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>set_data</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ab17a11fa7a552fd4a2c9ac1033183b01" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>set_diagnostic</name></member>
+      <member refid="classzorba_1_1ZorbaException_1ab13a584d2d9398fc0285ee44d8c26e27" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>set_print_format</name></member>
+      <member refid="classzorba_1_1XQueryException_1a911f5714ef169dd932982103972b0dab" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>set_print_trace</name></member>
+      <member refid="classzorba_1_1XQueryException_1a443c6d3013eaf91cc680a0f99ab3482e" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>set_source</name></member>
+      <member refid="classzorba_1_1XQueryException_1a093a3985c87d852aa5f70187137153a4" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>source_column</name></member>
+      <member refid="classzorba_1_1XQueryException_1a673a725c2e629380cd961ca537abcf02" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>source_column_end</name></member>
+      <member refid="classzorba_1_1XQueryException_1aab93a239dd4047d6e4aaa7cba2c9ab47" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>source_line</name></member>
+      <member refid="classzorba_1_1XQueryException_1acfc67763485cee7f4dffd51e7b2abf90" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>source_line_end</name></member>
+      <member refid="classzorba_1_1XQueryException_1a553ee378d77657617e872347f09d1adc" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>source_uri</name></member>
+      <member refid="classzorba_1_1XQueryException_1adf30bab42a7e9e441a42ebb9b4a9b1fea19fad65098febcd8834ea152a762aad4" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>trace</name></member>
+      <member refid="classzorba_1_1UserException_1ae5f840e6668199cc36085e75b219185b" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>UserException</name></member>
+      <member refid="classzorba_1_1UserException_1a8617d2a6e30f425330e347d1e39cfb31" prot="private" virt="non-virtual"><scope>zorba::UserException</scope><name>UserException</name></member>
+      <member refid="classzorba_1_1UserException_1a8a3a3577d04eb3dc287e3cff6f41c187" prot="private" virt="non-virtual"><scope>zorba::UserException</scope><name>UserException</name></member>
+      <member refid="classzorba_1_1UserException_1aff593a998eacf3ecf6b475872a126fa9" prot="private" virt="non-virtual"><scope>zorba::UserException</scope><name>UserException</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a30aa6df89d2188198da3b5cf4a2e95b0" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>what</name></member>
+      <member refid="classzorba_1_1XQueryException_1a03b2bdfcc93fb0442d2219ccad8aa346" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>XQueryException</name></member>
+      <member refid="classzorba_1_1XQueryException_1a93cf55a7f0b5dc8f48199ce10eb2a856" prot="protected" virt="non-virtual"><scope>zorba::UserException</scope><name>XQueryException</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a28f102be92c15d29ed78845a025ab887" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>ZorbaException</name></member>
+      <member refid="classzorba_1_1ZorbaException_1a53f5ca62ecfdab6bfc9913523e6022c9" prot="protected" virt="non-virtual"><scope>zorba::UserException</scope><name>ZorbaException</name></member>
+      <member refid="classzorba_1_1ZorbaException_1af738e68ba25c551a3bb68b7f51be48ea" prot="protected" virt="non-virtual"><scope>zorba::UserException</scope><name>ZorbaException</name></member>
+      <member refid="classzorba_1_1UserException_1aa47139966e65609c59ea8995f73a91b8" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>~UserException</name></member>
+      <member refid="classzorba_1_1XQueryException_1ae163ddcfbda6fb7e7a8ec054fe90eca3" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>~XQueryException</name></member>
+      <member refid="classzorba_1_1ZorbaException_1af90f04a5f9294dec7d752812fc4a84dc" prot="public" virt="non-virtual"><scope>zorba::UserException</scope><name>~ZorbaException</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

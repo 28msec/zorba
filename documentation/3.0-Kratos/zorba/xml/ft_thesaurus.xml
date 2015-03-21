@@ -1,0 +1,297 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="ft_thesaurus" kind="page">
+    <compoundname>ft_thesaurus</compoundname>
+    <title>Full Text Thesaurus</title>
+    <detaileddescription>
+<sect1 id="ft_thesaurus_1ft_thesaurus_intro">
+<title>Introduction</title>
+<para>The Zorba XQuery engine implements the <ulink url="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</ulink> specification that, among other things, adds the ability to use a thesaurus for text-matching via the <ulink url="http://www.w3.org/TR/xpath-full-text-10/#ftthesaurusoption">thesaurus option</ulink>. For example, the query:</para><para><programlisting><codeline><highlight class="normal">let<sp/>$x<sp/>:=<sp/>&lt;msg&gt;affluent<sp/>man&lt;/msg&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>$x<sp/>contains<sp/>text<sp/></highlight><highlight class="stringliteral">&quot;wealthy&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>thesaurus<sp/></highlight><highlight class="keywordflow">default</highlight></codeline>
+</programlisting></para><para>returns <computeroutput>true</computeroutput> because <computeroutput>$x</computeroutput> contains &quot;wealthy&quot; that the thesaurus identified as a synonym of &quot;affluent&quot;.</para><para>The initial implementation of the thesaurus option uses the <ulink url="http://wordnet.princeton.edu/">WordNet lexical database</ulink>, version 3.0.</para><para>The stock WordNet database files are plain ASCII text files. In many ways this is very convenient for portability, grep-ability, vi-ability, etc. However, the sum total of the files is approximately 27MB (which is quite large) and accessing the database would be inefficient since the files would have to be parsed for every access.</para><para>Instead, the database files are compiled into a single binary file that is 6MB and can be efficiently accessed from Zorba using <ulink url="http://en.wikipedia.org/wiki/Mmap">mmap(2)</ulink> with no parsing of the data. The only caveat of the binary format is that it is endian-dependent, i.e., a binary file created on a computer having a little-endian CPU won&apos;t work on a computer having a big-endian CPU.</para></sect1>
+<sect1 id="ft_thesaurus_1ft_thesaurus_download_install_wordnet">
+<title>Downloading &amp; Installing the WordNet Database</title>
+<para>To download and install the WordNet database on a Unix-like system, follow these steps:</para><para><orderedlist>
+<listitem><para>Download the WordNet database from <ulink url="http://wordnet.princeton.edu/wordnet/download/">here</ulink>. All you really need are just the database files (<computeroutput>WNdb-3.0.tar.gz</computeroutput>).</para></listitem><listitem><para>Un-gzip and untar the files. This will result in a directory dict containing the database files.</para></listitem><listitem><para>Move the dict directory somewhere of your choosing, e.g., <computeroutput>/usr/local/wordnet-3.0/dict</computeroutput>.</para></listitem><listitem><para>Compile the <computeroutput>dict</computeroutput> directory into a Zorba-compatible binary thesaurus as described below.</para></listitem></orderedlist>
+</para><para>To compile the WordNet database files, use the <computeroutput>zt-wn-compile</computeroutput> script found in the <computeroutput>scripts</computeroutput> subdirectory of the Zorba distribution. (Note: this script is written in perl.) The usage message is:</para><para><programlisting><codeline><highlight class="normal">zt-wn-compile<sp/>[-v]<sp/>wordnet_dict_dir<sp/>[thesaurus_file]</highlight></codeline>
+</programlisting></para><para><itemizedlist>
+<listitem><para>The <computeroutput>-v</computeroutput> option specifies verbose output.</para></listitem><listitem><para>The <emphasis>wordnet_dict_dir</emphasis> specifies the full path of the WordNet <computeroutput>dict</computeroutput> directory.</para></listitem><listitem><para>The <emphasis>thesaurus_file</emphasis> specifies the name of the resulting binary file. If none is given, it defaults to <computeroutput>wordnet-en.zth</computeroutput> (&quot;en&quot; for English and &quot;zth&quot; for &quot;Zorba Thesaurus file&quot;).</para></listitem></itemizedlist>
+</para><para>For example:</para><para><programlisting><codeline><highlight class="normal">zt-wn-compile<sp/>-v<sp/>/usr/local/wordnet-3.0/dict</highlight></codeline>
+</programlisting></para><para>To install the <computeroutput>wordnet-en.zth</computeroutput> file, move it onto Zorba&apos;s <emphasis>library path</emphasis>:</para><para><programlisting><codeline><highlight class="normal">LIB_PATH/edu/princeton/wordnet/wordnet-<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11f5307e1dac2a5918c6cdf5097e6961" kindref="member" tooltip="English.">en</ref>.zth</highlight></codeline>
+</programlisting></para><sect2 id="ft_thesaurus_1ft_thesaurus_precompiled">
+<title>Downloading a Precompiled WordNet Database</title>
+<para>Alternatively, you can download a precompiled, little-endian (Intel) CPU WordNet database from <ulink url="http://www.zorba.io/downloads/WordNet-3.0/wordnet-en.zip">here</ulink>.</para></sect2>
+</sect1>
+<sect1 id="ft_thesaurus_1ft_thesaurus_mappings">
+<title>Thesauri Mappings</title>
+<para>In order to use thesauri, you need to specify what symbolic URI(s) <emphasis>map</emphasis> to what thesauri. A mapping is of the form:</para><para><emphasis>from_uri</emphasis><computeroutput>:=</computeroutput><emphasis>implementation-scheme</emphasis><computeroutput>:</computeroutput><emphasis>to_uri</emphasis></para><para>For example:</para><para><programlisting><codeline><highlight class="normal">http:</highlight><highlight class="comment">//wordnet.princeton.edu:=wordnet://wordnet.princeton.edu</highlight></codeline>
+</programlisting></para><para>says that the symbolic URI <computeroutput><ulink url="http://wordnet.princeton.edu">http://wordnet.princeton.edu</ulink></computeroutput> maps to the WordNet implementation having a database file at the given sub-path <computeroutput>edu/princeton/wordnet</computeroutput> on Zorba&apos;s library path. Once a mapping is established for a symbolic URI, it can be used in a query:</para><para><programlisting><codeline><highlight class="normal">let<sp/>$x<sp/>:=<sp/>&lt;msg&gt;affluent<sp/>man&lt;/msg&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>$x<sp/>contains<sp/>text<sp/></highlight><highlight class="stringliteral">&quot;wealthy&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>thesaurus<sp/>at<sp/></highlight><highlight class="stringliteral">&quot;http://wordnet.princeton.edu&quot;</highlight></codeline>
+</programlisting></para><para>As a special-case, the <emphasis>from_uri</emphasis> can be <computeroutput>default</computeroutput> or <computeroutput>##default</computeroutput> to allow for specifying the default thesaurus as was done for the first example on this page.</para></sect1>
+<sect1 id="ft_thesaurus_1ft_thesaurus_mappings_to_zorba">
+<title>Specifying Thesauri Mappings to Zorba</title>
+<para>To specify the location of the thesaurus to Zorba from the command-line, use one or more –thesaurus options:</para><para><programlisting><codeline><highlight class="normal">zorba<sp/>--thesaurus<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">:=wordnet:</highlight><highlight class="comment">//wordnet.princeton.edu<sp/>...</highlight></codeline>
+</programlisting></para></sect1>
+<sect1 id="ft_thesaurus_1ft_thesaurus_rels">
+<title>Thesaurus Relationships</title>
+<para>Using the WordNet database, Zorba supports all of the thesaurus relationships specified by [ISO 2788] and [ANSI/NISO Z39.19-2005] with the exceptions of &quot;HN&quot; (history note) and &quot;X SN&quot; (see scope note for).</para><sect2 id="ft_thesaurus_1ft_thesaurus_iso_rels">
+<title>ISO 2788 and ANSI/NISO Z39.19-2005 Relationships</title>
+<para>These relationships are:</para><para><center> <table rows="14" cols="3"><row>
+<entry thead="yes"><para>Rel. </para></entry><entry thead="yes"><para>Meaning </para></entry><entry thead="yes"><para>WordNet Rel.  </para></entry></row>
+<row>
+<entry thead="no"><para>BT </para></entry><entry thead="no"><para>broader term </para></entry><entry thead="no"><para>hypernym  </para></entry></row>
+<row>
+<entry thead="no"><para>BTG </para></entry><entry thead="no"><para>broader term generic </para></entry><entry thead="no"><para>hypernym  </para></entry></row>
+<row>
+<entry thead="no"><para>BTI </para></entry><entry thead="no"><para>broader term instance </para></entry><entry thead="no"><para>instance hypernym  </para></entry></row>
+<row>
+<entry thead="no"><para>BTP </para></entry><entry thead="no"><para>broader term partitive </para></entry><entry thead="no"><para>part meronym  </para></entry></row>
+<row>
+<entry thead="no"><para>NT </para></entry><entry thead="no"><para>narrower term </para></entry><entry thead="no"><para>hyponym  </para></entry></row>
+<row>
+<entry thead="no"><para>NTG </para></entry><entry thead="no"><para>narrower term generic </para></entry><entry thead="no"><para>hyponym  </para></entry></row>
+<row>
+<entry thead="no"><para>NTI </para></entry><entry thead="no"><para>narrower term instance </para></entry><entry thead="no"><para>instance hyponym  </para></entry></row>
+<row>
+<entry thead="no"><para>NTP </para></entry><entry thead="no"><para>narrower term partitive </para></entry><entry thead="no"><para>part holonym  </para></entry></row>
+<row>
+<entry thead="no"><para>RT </para></entry><entry thead="no"><para>related term </para></entry><entry thead="no"><para>also see  </para></entry></row>
+<row>
+<entry thead="no"><para>SN </para></entry><entry thead="no"><para>scope note </para></entry><entry thead="no"><para>n/a  </para></entry></row>
+<row>
+<entry thead="no"><para>TT </para></entry><entry thead="no"><para>top term </para></entry><entry thead="no"><para>hypernym  </para></entry></row>
+<row>
+<entry thead="no"><para>UF </para></entry><entry thead="no"><para>non-preferred term </para></entry><entry thead="no"><para>n/a  </para></entry></row>
+<row>
+<entry thead="no"><para>USE </para></entry><entry thead="no"><para>preferred term </para></entry><entry thead="no"><para>n/a  </para></entry></row>
+</table>
+</center></para><para>and can be used in a query like:</para><para><programlisting><codeline><highlight class="normal">let<sp/>$x<sp/>:=<sp/>&lt;msg&gt;breakfast<sp/>of<sp/>champions&lt;/msg&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>$x<sp/>contains<sp/>text<sp/></highlight><highlight class="stringliteral">&quot;meal&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>thesaurus<sp/>at<sp/></highlight><highlight class="stringliteral">&quot;http://wordnet.princeton.edu&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>relationship<sp/></highlight><highlight class="stringliteral">&quot;NT&quot;</highlight></codeline>
+</programlisting></para><para>that returns <computeroutput>true</computeroutput> because <computeroutput>$x</computeroutput> contains &quot;breakfast&quot; that the thesaurus identified as a &quot;narrower term&quot; (NT) of &quot;meal.&quot;</para><para>Note that you can specify relationships either by their abbreviation or their meaning. Relationships are case-insensitive. The above query is equivalent to:</para><para><programlisting><codeline><highlight class="normal">let<sp/>$x<sp/>:=<sp/>&lt;msg&gt;breakfast<sp/>of<sp/>champions&lt;/msg&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>$x<sp/>contains<sp/>text<sp/></highlight><highlight class="stringliteral">&quot;meal&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>thesaurus<sp/>at<sp/></highlight><highlight class="stringliteral">&quot;http://wordnet.princeton.edu&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>relationship<sp/></highlight><highlight class="stringliteral">&quot;narrower<sp/>term&quot;</highlight></codeline>
+</programlisting></para><para>Since Zorba&apos;s thesaurus is implemented using WordNet, the [ISO 2788] relationships map to WordNet relationships that are shown in the &quot;WordNet Rel.&quot; column. WordNet relationships are explained in the next section.</para></sect2>
+<sect2 id="ft_thesaurus_1ft_thesaurus_wordnet_rels">
+<title>WordNet Relationships</title>
+<para>In addition to the [ISO 2788] and [ANSI/NISO Z39.19-2005] relationships, Zorba also supports all of the relationships offered by WordNet. These relationships are:</para><para><center> <table rows="22" cols="2"><row>
+<entry thead="yes"><para>Relationship </para></entry><entry thead="yes"><para>Meaning  </para></entry></row>
+<row>
+<entry thead="no"><para>also<nonbreakablespace/>see </para></entry><entry thead="no"><para>A word that is related to another, e.g., for &quot;varnished&quot; (furniture) one should <emphasis>also see</emphasis> &quot;finished.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>antonym </para></entry><entry thead="no"><para>A word opposite in meaning to another, e.g., &quot;light&quot; is an <emphasis>antonym</emphasis> for &quot;heavy.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>attribute </para></entry><entry thead="no"><para>A noun for which adjectives express values, e.g., &quot;weight&quot; is an <emphasis>attribute</emphasis> for which the adjectives &quot;light&quot; and &quot;heavy&quot; express values.   </para></entry></row>
+<row>
+<entry thead="no"><para>cause </para></entry><entry thead="no"><para>A verb that causes another, e.g., &quot;show&quot; is a <emphasis>cause</emphasis> of &quot;see.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>derivationally<nonbreakablespace/>related<nonbreakablespace/>form </para></entry><entry thead="no"><para>A word that is derived from a root word, e.g., &quot;metric&quot; is a <emphasis>derivationally related form</emphasis> of &quot;meter.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>derived<nonbreakablespace/>from<nonbreakablespace/>adjective </para></entry><entry thead="no"><para>An adverb that is derived from an adjective, e.g., &quot;correctly&quot; is <emphasis>derived from the adjective</emphasis> &quot;correct.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>entailment </para></entry><entry thead="no"><para>A verb that presupposes another, e.g., &quot;snoring&quot; <emphasis>entails</emphasis> &quot;sleeping.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>hypernym </para></entry><entry thead="no"><para>A word with a broad meaning that more specific words fall under, e.g., &quot;meal&quot; is a <emphasis>hypernym</emphasis> of &quot;breakfast.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>hyponym </para></entry><entry thead="no"><para>A word of more specific meaning than a general term applicable to it, e.g., &quot;breakfast&quot; is a <emphasis>hyponym</emphasis> of &quot;meal.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>instance<nonbreakablespace/>hypernym </para></entry><entry thead="no"><para>A word that denotes a category of some specific instance, e.g., &quot;author&quot; is an <emphasis>instance hypernym</emphasis> of &quot;Asimov.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>instance<nonbreakablespace/>hyponym </para></entry><entry thead="no"><para>A term that donotes a specific instance of some general category, e.g., &quot;Asimov&quot; is an <emphasis>instance hyponym</emphasis> of &quot;author.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>member<nonbreakablespace/>holonym </para></entry><entry thead="no"><para>A word that denotes a collection of individuals, e.g., &quot;faculty&quot; is a <emphasis>member holonym</emphasis> of &quot;professor.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>member<nonbreakablespace/>meronym </para></entry><entry thead="no"><para>A word that denotes a member of a larger group, e.g., a &quot;person&quot; is a <emphasis>member meronym</emphasis> of a &quot;crowd.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>part<nonbreakablespace/>holonym </para></entry><entry thead="no"><para>A word that denotes a larger whole comprised of some part, e.g., &quot;car&quot; is a <emphasis>part holonym</emphasis> of &quot;engine.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>part<nonbreakablespace/>meronym </para></entry><entry thead="no"><para>A word that denotes a part of a larger whole, e.g., an &quot;engine&quot; is <emphasis>part meronym</emphasis> of a &quot;car.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>participle<nonbreakablespace/>of<nonbreakablespace/>verb </para></entry><entry thead="no"><para>An adjective that is the participle of some verb, e.g., &quot;breaking&quot; is the <emphasis>participle of the verb</emphasis> &quot;break.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>pertainym </para></entry><entry thead="no"><para>An adjective that classifies its noun, e.g., &quot;musical&quot; is a <emphasis>pertainym</emphasis> in &quot;musical instrument.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>similar<nonbreakablespace/>to </para></entry><entry thead="no"><para>Similar, though not necessarily interchangeable, adjectives. For example, &quot;shiny&quot; is <emphasis>similar to</emphasis> &quot;bright&quot;, but they have subtle differences.   </para></entry></row>
+<row>
+<entry thead="no"><para>substance<nonbreakablespace/>holonym </para></entry><entry thead="no"><para>A word that denotes a larger whole containing some constituent substance, e.g., &quot;bread&quot; is a <emphasis>substance holonym</emphasis> of &quot;flour.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>substance<nonbreakablespace/>meronym </para></entry><entry thead="no"><para>A word that denotes a constituant substance of some larger whole, e.g., &quot;flour&quot; is a <emphasis>substance meronym</emphasis> of &quot;bread.&quot;   </para></entry></row>
+<row>
+<entry thead="no"><para>verb<nonbreakablespace/>group </para></entry><entry thead="no"><para>A verb that is a member of a group of similar verbs, e.g., &quot;live&quot; is in the <emphasis>verb group</emphasis> of &quot;dwell&quot;, &quot;live&quot;, &quot;inhabit&quot;, etc.   </para></entry></row>
+</table>
+</center></para></sect2>
+<sect2 id="ft_thesaurus_1ft_thesaurus_wordnet_levels">
+<title>WordNet Levels</title>
+<para>If no levels are specified in a query, Zorba defaults the WordNet implementation to be 2 levels. (The rationale can be found <ulink url="http://www.w3.org/Bugs/Public/show_bug.cgi?id=11444">here</ulink>.)</para></sect2>
+</sect1>
+<sect1 id="ft_thesaurus_1ft_thesaurus_providing">
+<title>Providing Your Own Thesaurus</title>
+<para>Using the Zorba C++ API, you can provide your own thesaurus by deriving from four classes: <computeroutput>Thesaurus</computeroutput>, <computeroutput>Thesaurus::iterator</computeroutput>, <computeroutput>ThesaurusProvider</computeroutput>, and <computeroutput>URLResolver</computeroutput>.</para><sect2 id="ft_thesaurus_1ft_class_thesaurus">
+<title>The Thesaurus Class</title>
+<para>The <computeroutput>Thesaurus</computeroutput> class is:</para><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Thesaurus<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">/*<sp/>implementation-defined<sp/>*/</highlight><highlight class="normal"><sp/>ptr;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">/*<sp/>implementation-defined<sp/>*/</highlight><highlight class="normal"><sp/>range_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">iterator<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">/*<sp/>implementation-defined<sp/>*/</highlight><highlight class="normal"><sp/>ptr;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>next(<sp/>String<sp/>*synonym<sp/>)<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>~iterator();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>iterator::ptr<sp/>lookup(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;phrase,<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;relationship,<sp/>range_type<sp/>at_least,<sp/>range_type<sp/>at_most<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>~Thesaurus();</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para><para>For details about the <computeroutput>ptr</computeroutput> types, the <computeroutput>destroy()</computeroutput> functions, and why the destructors are <computeroutput>protected</computeroutput>, see the <ref refid="memory_management" kindref="compound">Memory Management</ref> document.</para><para>To implement the <computeroutput>Thesaurus</computeroutput> you need to implement the <computeroutput>lookup()</computeroutput> function where:</para><para><table rows="4" cols="2"><row>
+<entry thead="no"><para><computeroutput>phrase</computeroutput>  </para></entry><entry thead="no"><para>The phrase to be looked-up.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>relationship</computeroutput>  </para></entry><entry thead="no"><para>The relationship the results are to have to the phrase, if any.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>at_least</computeroutput>  </para></entry><entry thead="no"><para>The minimum number of levels within the thesaurus to be traversed.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>at_most</computeroutput>  </para></entry><entry thead="no"><para>The maximum number of levels within the thesaurus to be traversed.  </para></entry></row>
+</table>
+</para><para>The <computeroutput>lookup()</computeroutput> function returns a pointer to an <computeroutput>iterator</computeroutput> that is used to iterate over the phrase&apos;s synonyms. You also need to implement an <computeroutput>iterator</computeroutput>. A very simple <computeroutput>Thesaurus</computeroutput> and its <computeroutput>iterator</computeroutput> can be implemented as:</para><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">MyThesaurus<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>Thesaurus<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>iterator::ptr<sp/>lookup(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;phrase,<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;relationship,<sp/>range_type<sp/>at_least,<sp/>range_type<sp/>at_most<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Define<sp/>a<sp/>simple<sp/>thesaurus<sp/>data<sp/>structure<sp/>as<sp/>a<sp/>map<sp/>from<sp/>a<sp/>phrase<sp/>to<sp/>a<sp/>list<sp/>of<sp/>its<sp/>synonyms.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::list&lt;String&gt;<sp/>synonyms_type;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::map&lt;String,synonyms_type<sp/>const*&gt;<sp/>thesaurus_data_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>thesaurus_data_type<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>get_thesaurus_data();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">iterator<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>Thesaurus::iterator<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>iterator(<sp/>synonyms_type<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;s<sp/>)<sp/>:<sp/>synonyms_(<sp/>s<sp/>),<sp/>i_(<sp/>s.begin()<sp/>)<sp/>{<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>next(<sp/>String<sp/>*synonym<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>synonyms_type<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;synonyms_;<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>synonyms<sp/>to<sp/>iterate<sp/>over</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>synonyms_type::const_iterator<sp/>i_;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>current<sp/>iterator<sp/>position</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyThesaurus::destroy()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Do<sp/>nothing<sp/>since<sp/>we<sp/>statically<sp/>allocate<sp/>a<sp/>singleton<sp/>instance<sp/>of<sp/>our<sp/>Thesaurus.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MyThesaurus::thesaurus_data_type<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>MyThesaurus::get_thesaurus_data()<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>thesaurus_data_type<sp/>thesaurus_data;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<sp/>thesaurus_data.empty()<sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Construct<sp/>thesaurus<sp/>data<sp/>&quot;by<sp/>hand&quot;<sp/>for<sp/>this<sp/>example.<sp/><sp/>A<sp/>real<sp/>thesaurus<sp/>would<sp/>probably<sp/>be<sp/>read<sp/>from<sp/>disk.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Note<sp/>that<sp/>every<sp/>list<sp/>of<sp/>synonyms<sp/>must<sp/>always<sp/>include<sp/>the<sp/>original<sp/>phrase.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>synonyms_type<sp/>synonyms;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>synonyms.push_back(<sp/></highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>synonyms.push_back(<sp/></highlight><highlight class="stringliteral">&quot;foobar&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>thesaurus_data[<sp/></highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>]<sp/>=<sp/>&amp;synonyms;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>thesaurus_data[<sp/></highlight><highlight class="stringliteral">&quot;foobar&quot;</highlight><highlight class="normal"><sp/>]<sp/>=<sp/>&amp;synonyms;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>thesaurus_data;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MyThesaurus::iterator::ptr<sp/>MyThesaurus::lookup(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;phrase,<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;relationship,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>range_type<sp/>at_least,<sp/>range_type<sp/>at_most<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>thesaurus_data_type<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;thesaurus_data<sp/>=<sp/>get_thesaurus_data();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>thesaurus_data_type::const_iterator<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>entry<sp/>=<sp/>thesaurus_data.find(<sp/>phrase<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>iterator::ptr<sp/>result;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<sp/>entry<sp/>!=<sp/>thesaurus_data.end()<sp/>)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>result.reset(<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>iterator(<sp/>*entry-&gt;second<sp/>)<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacestd_1ae27ad1e46de908333a2e28e540ea0b46" kindref="member">std::move</ref>(<sp/>result<sp/>);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyThesaurus::iterator::destroy()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">this</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>MyThesaurus::iterator::next(<sp/>String<sp/>*synonym<sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<sp/>i_<sp/>!=<sp/>synonyms_.end()<sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>*synonym<sp/>=<sp/>*i_;<sp/></highlight><highlight class="comment">//<sp/>not<sp/>*i_++<sp/>since<sp/>post-increment<sp/>is<sp/>less<sp/>efficient</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>++i_;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>A real thesaurus would load a large number of synonyms, of course.</para></sect2>
+<sect2 id="ft_thesaurus_1ft_class_thesaurus_provider">
+<title>The ThesaurusProvider Class</title>
+<para>The <computeroutput>ThesaurusProvider</computeroutput> class is:</para><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ThesaurusProvider<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>Resource<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">/*<sp/>implementation-defined<sp/>*/</highlight><highlight class="normal"><sp/>ptr;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>getThesaurus(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang,<sp/>Thesaurus::ptr<sp/>*thesaurus<sp/>=<sp/>0<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>inherited<sp/>from<sp/>Resource</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para><para>To implement a <computeroutput>ThesaurusProvider</computeroutput>, you need to implement the <computeroutput>getThesaurus()</computeroutput> function where:</para><para><table rows="2" cols="2"><row>
+<entry thead="no"><para><computeroutput>lang</computeroutput>  </para></entry><entry thead="no"><para>The desired language of the thesaurus.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>thesaurus</computeroutput>  </para></entry><entry thead="no"><para>If not <computeroutput>null</computeroutput>, set to point to a thesaurus for <computeroutput>lang</computeroutput>.  </para></entry></row>
+</table>
+</para><para>The <computeroutput>getThesaurus()</computeroutput> function returns <computeroutput>true</computeroutput> only if it can provide a thesaurus for the given language. Continuing with the example, a very simple <computeroutput>ThesaurusProvider</computeroutput> can be implemented as:</para><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">MyThesaurusProvider<sp/>:<sp/>pulic<sp/>ThesaurusProvider<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>getThesaurus(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">iso639_1::type</ref><sp/>lang,<sp/>Thesaurus::ptr*<sp/>=<sp/>0<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyThesaurusProvider::destroy()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Do<sp/>nothing<sp/>since<sp/>we<sp/>statically<sp/>allocate<sp/>a<sp/>singleton<sp/>instance<sp/>of<sp/>our<sp/>ThesaurusProvider.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>MyThesaurusProvider::getThesaurus(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">iso639_1::type</ref><sp/>lang,<sp/>Thesaurus::ptr<sp/>*result<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Since<sp/>our<sp/>tiny<sp/>thesaurus<sp/>contains<sp/>only<sp/>universally<sp/>known<sp/>words,<sp/>we<sp/>don&apos;t<sp/>bother<sp/>checking<sp/>lang</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>always<sp/>return<sp/>true.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>MyThesaurus<sp/>thesaurus;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<sp/>result<sp/>)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>result-&gt;reset(<sp/>&amp;thesaurus<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="ft_thesaurus_1ft_class_thesaurus_resolver">
+<title>A Thesaurus URL Resolver Class</title>
+<para>In addition to a <computeroutput>Thesaurus</computeroutput> and <computeroutput>ThesaurusProvider</computeroutput>, you must also implement a &quot;thesaurus resolver&quot; class that, given a URI, provides a <computeroutput>ThesaurusProvider</computeroutput> for that URI. A simple <computeroutput>ThesaurusURLResolver</computeroutput> for our simple thesaurus can be implemented as:</para><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ThesaurusURLResolver<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>URLResolver<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>ThesaurusURLResolver(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;url<sp/>)<sp/>:<sp/>url_(<sp/>url<sp/>)<sp/>{<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Resource*<sp/>resolveURL(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;url,<sp/>EntityData<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>);<sp/></highlight><highlight class="comment">//<sp/>inherited</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>url_;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Resource*<sp/>ThesaurusURLResolver::resolveURL(<sp/>String<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;url,<sp/>EntityData<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*data<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<sp/>data-&gt;getKind()<sp/>==<sp/>EntityData::THESAURUS<sp/>)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>MyThesaurusProvider<sp/>provider;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<sp/>uri<sp/>==<sp/>uri_<sp/>)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>&amp;provider;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>For more on <computeroutput>URLResolver</computeroutput>, see <ref refid="uriresolvers" kindref="compound">URI Resolvers</ref>.</para></sect2>
+<sect2 id="ft_thesaurus_1ft_thesaurus_enable">
+<title>Using Your Thesaurus</title>
+<para>To enable your thesaurus to be used, you need to add it to a static context:</para><para><programlisting><codeline><highlight class="normal"><ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref><sp/>sctx<sp/>=<sp/>zorba-&gt;createStaticContext();</highlight></codeline>
+<codeline><highlight class="normal">ThesaurusURLResolver<sp/>resolver(<sp/></highlight><highlight class="stringliteral">&quot;http://www.example.com&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline><highlight class="normal">sctx-&gt;registerURLResolver(<sp/>&amp;resolver<sp/>);</highlight></codeline>
+</programlisting></para><para>You can then perform a query using your thesaurus:</para><para><programlisting><codeline><highlight class="normal">let<sp/>$x<sp/>:=<sp/>&lt;msg&gt;foobar&lt;/msg&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>$x<sp/>contains<sp/>text<sp/></highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>thesaurus<sp/>at<sp/></highlight><highlight class="stringliteral">&quot;http://www.example.com&quot;</highlight><highlight class="normal">;</highlight></codeline>
+</programlisting> </para></sect2>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

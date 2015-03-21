@@ -1,0 +1,264 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::DebuggerClient</h1><p class="include">
+            #include &lt;zorba/debugger_client.h&gt;
+        </p>
+A DBGP client implementation for commands.     
+This is the client implementation for sending commands according to the specification of DBGP. DBGP is used as the default communication format in the <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> debugger.     <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ab53b8fd20c000145dff39fa7061a78a5">BreakpointType</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a8c82c293190a96fafcfa7bf25e7e0e60">HitCondition</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a3bcce3aa9ac72c12b0bfeb3dd10fb6ce">OutputStream</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a7c2c00c068ea404dcf0d7a775d601e83">StreamBehaviour</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Static Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1DebuggerClient">DebuggerClient</a> *</p></td><td><p class="signature"><a href="#a67b7e5c183e25ca2f61c16ff323efcf2">createDebuggerClient</a>(DebuggerEventHandler *aHandler, unsigned short aPort, const std::string &amp;aHost)</p><span class="signature-description">
+creates a new instance of a <a href="/pages/3.0/zorba/classzorba_1_1DebuggerClient">DebuggerClient</a> implementation.         </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aaa808ab1cdc347ec4e1d69a33c36d745">accept</a>()=0</p><span class="signature-description">
+Waits for a debug engine to attach.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a6eb6704f2a6559794125e92a4f8a3c93">breakpoint_get</a>(std::size_t aBreakpointId)=0</p><span class="signature-description">
+Get information about a breakpoint.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a70cf465f62841488e9803e37a0614576">breakpoint_list</a>()=0</p><span class="signature-description">
+Query all breakpoints.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#abd9d30cd9d9019e6846c9d124a11f9ad">breakpoint_remove</a>(std::size_t aBreakpointId)=0</p><span class="signature-description">
+Remove a breakpoint.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#aec86ee88c77f10492c000a9c3c5ed0a8">breakpoint_set</a>(BreakpointType aType, bool aEnabled=true, const std::string &amp;aFilename="", int aLinenumber=-1, const std::string &amp;aFunctionName="", const std::string &amp;aExceptionName="", unsigned hit_value=0, HitCondition aCondition=BiggerEqual, bool aIsTemporary=false, const std::string &amp;aExpression="")=0</p><span class="signature-description">
+Send a command to the debug engine to set a new breakpoint.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a87560d5e8db0d7a3f4174a6ad329a639">breakpoint_update</a>(std::size_t aBreakpointId, bool aEnabled=true, int aLinenumber=-1, unsigned hit_value=0, HitCondition aCondition=BiggerEqual)=0</p><span class="signature-description">
+Send a command to the debug engine to update a breakpoint.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#ac984f3111dda1472d76c6958c2ed7246">context_get</a>(int depth=-1, int contextId=-1)=0</p><span class="signature-description">
+Get the context at a given stack depth.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#ad1bccb51c1a9387b85a0eb00a8e85dd8">context_names</a>(int depth=-1)=0</p><span class="signature-description">
+Get the context names at a given stack depth.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#af9a1a4dbe78a65982e42d2ff8d3f0658">detach</a>()=0</p><span class="signature-description">
+Send the detach command to the debug engine.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#ad3bda0bde52f2e6f8b843a5f6ee0c7b2">do_break</a>()=0</p><span class="signature-description">
+Tell the debug engine to stop execution as fast as possible.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#acba5a290cf7fd911ed029ff603e5c558">eval</a>(const std::string &amp;aExpr)=0</p><span class="signature-description">
+Evaluates an expression.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#adb8f9ff7c3fcf8b0b527cf1263368628">feature_get</a>(const std::string &amp;aFeatureName)=0</p><span class="signature-description">
+Query the debug engine for supported features.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#af8bd35524524f29aa6b3026ef71f49c4">feature_set</a>(const std::string &amp;aFeatureName, const std::string &amp;aValue)=0</p><span class="signature-description">
+Set a specific feature of the engine.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a367c82dd72055485c3b8ec8f75dc0ef8">property_get</a>(const std::string &amp;aPropertyLongName, int aStackDepth=-1, int aContextId=-1, std::size_t aMaxDataSize=0, int aDatapage=-1, const std::string &amp;aPropertyKey="")=0</p><span class="signature-description">
+Get a property.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a937457eef882777966ec2dbaf10624b4">property_set</a>(const std::string &amp;aPropertyLongName, int aStackDepth=-1, int aContextId=-1, std::size_t aMaxDataSize=0, const std::string &amp;aPropertyAddress="")=0</p><span class="signature-description">
+Set a property.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a71d909888a7507e7dadf9cc4bb51a3ee">property_value</a>(const std::string &amp;aPropertyLongName, int aStackDepth=-1, int aContextId=-1, std::size_t aMaxDataSize=0, int aDatapage=-1, const std::string &amp;aPropertyKey="", const std::string &amp;aPropertyAddress="")=0</p><span class="signature-description">
+Get the value of a property.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ae4854a2d91acb38a55a0dc906193eb8f">quit</a>()=0</p><span class="signature-description">
+Tells the client to quit.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a7003a0818765fef2362c83718c50445b">run</a>()=0</p><span class="signature-description">
+Send the run command to the debug engine.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a1bef79c053513c554ba491203eb5d0ff">source</a>(const std::string &amp;aFile, unsigned aBeginLine=0, unsigned aEndLine=0)=0</p><span class="signature-description">
+List the source code at a given position.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#ae35b0ae6d8e9dcf797527f309d8e415f">stack_depth</a>()=0</p><span class="signature-description">
+Get the depth of the stack.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a3b065f742703f0aae14ffdf9f5bd9c7a">stack_get</a>(int depth=-1)=0</p><span class="signature-description">
+Get information about the stack at a given depth.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a660b8906e4deced4c0914d216e7bc497">status</a>()=0</p><span class="signature-description">
+The status command is a simple way for the IDE to find out from the debugger engine whether execution may be continued or not.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a63c14b33780b24f0fc43c11bb0e3bcf5">step_into</a>()=0</p><span class="signature-description">
+Send the step into command to the debug engine.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a7adb3ced1af19da8b3be5a71a8eb6f23">step_out</a>()=0</p><span class="signature-description">
+Send the step out command to the debug engine.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#acf57a810ccf4fc07ba0f558e8b2d7a1f">step_over</a>()=0</p><span class="signature-description">
+Send the step over command to the debug engine.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a95ed2a3f8d6f1d1a5d85a833565ab15f">stop</a>(bool withQuit)=0</p><span class="signature-description">
+Send the stop command to the debug engine.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#ae50e004335e699961187779a9258d2f8">stream_option</a>(OutputStream aStream, StreamBehaviour aBehaviour)=0</p><span class="signature-description">
+Setting a stream option.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#ac2001b3a0b4d040e2665964c7a16a7dc">typemap_get</a>()=0</p><span class="signature-description">
+Get a mapping of types.         </span></td></tr><tr><td class="return-type"><p class="signature">std::size_t</p></td><td><p class="signature"><a href="#a8686d1b62e0d3531e1ba3845f168f6a8">variables</a>()=0</p><span class="signature-description">
+Get the variables in all the contexts in the topmost stack frame.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a26c0c955a55f93e053e165cc399e84dc">~DebuggerClient</a>()</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="ab53b8fd20c000145dff39fa7061a78a5" class="sect1"><div><h3>BreakpointType</h3></div><div class="signature-box"><span> </span>BreakpointType</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a8c82c293190a96fafcfa7bf25e7e0e60" class="sect1"><div><h3>HitCondition</h3></div><div class="signature-box"><span> </span>HitCondition</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a3bcce3aa9ac72c12b0bfeb3dd10fb6ce" class="sect1"><div><h3>OutputStream</h3></div><div class="signature-box"><span> </span>OutputStream</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a7c2c00c068ea404dcf0d7a775d601e83" class="sect1"><div><h3>StreamBehaviour</h3></div><div class="signature-box"><span> </span>StreamBehaviour</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Static Functions</h2><div class="detailed"><div id="a67b7e5c183e25ca2f61c16ff323efcf2" class="sect1"><div><h3>createDebuggerClient</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1DebuggerClient">DebuggerClient</a> *<span> </span>createDebuggerClient(DebuggerEventHandler *aHandler, unsigned short aPort, const std::string &amp;aHost)</div><div><p class="signature-description">
+creates a new instance of a <a href="/pages/3.0/zorba/classzorba_1_1DebuggerClient">DebuggerClient</a> implementation.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aHandler</td><td>
+The event handler, where answered should get delivered to. </td></tr><tr><td>aPort</td><td>
+The port the client should listen to. </td></tr><tr><td>aHost</td><td>
+the host the client should listen to </td></tr></table></div>
+<div><h4>Returns</h4>A <a href="/pages/3.0/zorba/classzorba_1_1DebuggerClient">DebuggerClient</a> implementation. </div>
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="aaa808ab1cdc347ec4e1d69a33c36d745" class="sect1"><div><h3>accept</h3></div><div class="signature-box">void<span> </span>accept()=0</div><div><p class="signature-description">
+Waits for a debug engine to attach.         </p><p class="signature-description">
+This method blocks until a debug engine attaches and sends the init message. After that process, the appropriate method in the DebugHandler gets called.         </p></div></div><div id="a6eb6704f2a6559794125e92a4f8a3c93" class="sect1"><div><h3>breakpoint_get</h3></div><div class="signature-box">std::size_t<span> </span>breakpoint_get(std::size_t aBreakpointId)=0</div><div><p class="signature-description">
+Get information about a breakpoint.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aBreakpointId</td><td>
+The id of the breakpoint. </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a70cf465f62841488e9803e37a0614576" class="sect1"><div><h3>breakpoint_list</h3></div><div class="signature-box">std::size_t<span> </span>breakpoint_list()=0</div><div><p class="signature-description">
+Query all breakpoints.         </p><p class="signature-description">
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="abd9d30cd9d9019e6846c9d124a11f9ad" class="sect1"><div><h3>breakpoint_remove</h3></div><div class="signature-box">std::size_t<span> </span>breakpoint_remove(std::size_t aBreakpointId)=0</div><div><p class="signature-description">
+Remove a breakpoint.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aBreakpointId</td><td>
+The id of the breakpoint. </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="aec86ee88c77f10492c000a9c3c5ed0a8" class="sect1"><div><h3>breakpoint_set</h3></div><div class="signature-box">std::size_t<span> </span>breakpoint_set(BreakpointType aType, bool aEnabled=true, const std::string &amp;aFilename="", int aLinenumber=-1, const std::string &amp;aFunctionName="", const std::string &amp;aExceptionName="", unsigned hit_value=0, HitCondition aCondition=BiggerEqual, bool aIsTemporary=false, const std::string &amp;aExpression="")=0</div><div><p class="signature-description">
+Send a command to the debug engine to set a new breakpoint.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aType</td><td>
+The type of the breakpoint (line, call, return etc.). </td></tr><tr><td>aEnabled</td><td>
+Should the breakpoint be enabled? </td></tr><tr><td>aLinenumber</td><td>
+The line number where to set the breakpoint. </td></tr><tr><td>aFilename</td><td>
+The file where a breakpoint should be set. </td></tr><tr><td>aFunctionName</td><td>
+The name of the function where to break (only to be used if aType == Call || aType == Return) </td></tr><tr><td>aExceptionName</td><td>
+The name of the exception to break (only to be used if aType == Exception) </td></tr><tr><td>hit_value</td><td>
+A numeric value used together with the hit_condition to determine if the breakpoint should pause execution or be skipped. </td></tr><tr><td>aCondition</td><td>
+The condition used together with 'hit_value' (default is '&gt;=') </td></tr><tr><td>aIsTemporary</td><td>
+Flag to define if breakpoint is temporary. A temporary breakpoint is one that is deleted after its first use. This is useful for features like "Run
+                     to Cursor". Once the debugger engine uses a temporary breakpoint, it should automatically remove the breakpoint from it's list of valid breakpoints. </td></tr><tr><td>aExpression</td><td>
+code expression, in the language of the debugger engine. The breakpoint should activate when the evaluated code evaluates to true. (required for conditional breakpoint types) </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a87560d5e8db0d7a3f4174a6ad329a639" class="sect1"><div><h3>breakpoint_update</h3></div><div class="signature-box">std::size_t<span> </span>breakpoint_update(std::size_t aBreakpointId, bool aEnabled=true, int aLinenumber=-1, unsigned hit_value=0, HitCondition aCondition=BiggerEqual)=0</div><div><p class="signature-description">
+Send a command to the debug engine to update a breakpoint.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aBreakpointId</td><td>
+The id of the breakpoint. </td></tr><tr><td>aEnabled</td><td>
+Should the breakpoint be enabled? </td></tr><tr><td>aLinenumber</td><td>
+The line number where to set the breakpoint. </td></tr><tr><td>hit_value</td><td>
+A numeric value used together with the hit_condition to determine if the breakpoint should pause execution or be skipped. </td></tr><tr><td>aCondition</td><td>
+The condition used together with 'hit_value' (default is '&gt;=') </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="ac984f3111dda1472d76c6958c2ed7246" class="sect1"><div><h3>context_get</h3></div><div class="signature-box">std::size_t<span> </span>context_get(int depth=-1, int contextId=-1)=0</div><div><p class="signature-description">
+Get the context at a given stack depth.         </p><p class="signature-description">
+Returns an array of properties in a given context at a given stack depth. If the stack depth is omitted, the current stack depth is used. If the context name is omitted, the context with an id zero is used (generally the 'locals' context).<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>depth</td><td>
+The depth on which to quey (optional) </td></tr><tr><td>contextId</td><td>
+The contextId (optional) </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="ad1bccb51c1a9387b85a0eb00a8e85dd8" class="sect1"><div><h3>context_names</h3></div><div class="signature-box">std::size_t<span> </span>context_names(int depth=-1)=0</div><div><p class="signature-description">
+Get the context names at a given stack depth.         </p><p class="signature-description">
+The context names are the names in which variables are (like global, local etc.).<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>depth</td><td>
+The depth on which to quey (optional) </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="af9a1a4dbe78a65982e42d2ff8d3f0658" class="sect1"><div><h3>detach</h3></div><div class="signature-box">std::size_t<span> </span>detach()=0</div><div><p class="signature-description">
+Send the detach command to the debug engine.         </p><p class="signature-description">
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="ad3bda0bde52f2e6f8b843a5f6ee0c7b2" class="sect1"><div><h3>do_break</h3></div><div class="signature-box">std::size_t<span> </span>do_break()=0</div><div><p class="signature-description">
+Tell the debug engine to stop execution as fast as possible.         </p><p class="signature-description">
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="acba5a290cf7fd911ed029ff603e5c558" class="sect1"><div><h3>eval</h3></div><div class="signature-box">std::size_t<span> </span>eval(const std::string &amp;aExpr)=0</div><div><p class="signature-description">
+Evaluates an expression.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aExpr</td><td>
+The expression to evaluate. </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="adb8f9ff7c3fcf8b0b527cf1263368628" class="sect1"><div><h3>feature_get</h3></div><div class="signature-box">std::size_t<span> </span>feature_get(const std::string &amp;aFeatureName)=0</div><div><p class="signature-description">
+Query the debug engine for supported features.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aFeatureName</td><td>
+The name of the feature to query for. values that must be supported by the debug engine are: <ul>
+<li>
+language_supports_threads  </li>
+<li>
+language_name  </li>
+<li>
+language_version  </li>
+<li>
+encoding  </li>
+<li>
+protocol_version  </li>
+<li>
+supports_async  </li>
+<li>
+data_encoding  </li>
+<li>
+breakpoint_languages  </li>
+<li>
+breakpoint_types  </li>
+</ul>
+</td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="af8bd35524524f29aa6b3026ef71f49c4" class="sect1"><div><h3>feature_set</h3></div><div class="signature-box">std::size_t<span> </span>feature_set(const std::string &amp;aFeatureName, const std::string &amp;aValue)=0</div><div><p class="signature-description">
+Set a specific feature of the engine.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aFeatureName</td><td>
+The name of the feature to query for. Values that must be supported by the debug engine are: <ul>
+<li>
+encoding  </li>
+<li>
+multiple_sessions  </li>
+<li>
+max_children  </li>
+<li>
+max_children  </li>
+<li>
+max_depth  </li>
+</ul>
+</td></tr><tr><td>aValue</td><td>
+The value of the feature </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a367c82dd72055485c3b8ec8f75dc0ef8" class="sect1"><div><h3>property_get</h3></div><div class="signature-box">std::size_t<span> </span>property_get(const std::string &amp;aPropertyLongName, int aStackDepth=-1, int aContextId=-1, std::size_t aMaxDataSize=0, int aDatapage=-1, const std::string &amp;aPropertyKey="")=0</div><div><p class="signature-description">
+Get a property.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aPropertyLongName</td><td>
+roperty long name (required) </td></tr><tr><td>aStackDepth</td><td>
+stack depth (optional) </td></tr><tr><td>aContextId</td><td>
+The context id for which to query. </td></tr><tr><td>aMaxDataSize</td><td>
+The maximal size of the data sent back from the debug engine. </td></tr><tr><td>aDatapage</td><td>
+</td></tr><tr><td>aPropertyKey</td><td>
+</td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a937457eef882777966ec2dbaf10624b4" class="sect1"><div><h3>property_set</h3></div><div class="signature-box">std::size_t<span> </span>property_set(const std::string &amp;aPropertyLongName, int aStackDepth=-1, int aContextId=-1, std::size_t aMaxDataSize=0, const std::string &amp;aPropertyAddress="")=0</div><div><p class="signature-description">
+Set a property.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aPropertyLongName</td><td>
+roperty long name (required) </td></tr><tr><td>aStackDepth</td><td>
+stack depth (optional) </td></tr><tr><td>aContextId</td><td>
+The context id for which to query. </td></tr><tr><td>aMaxDataSize</td><td>
+The maximal size of the data sent back from the debug engine. </td></tr><tr><td>aPropertyAddress</td><td>
+property address as retrieved in a property element (optional). </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a71d909888a7507e7dadf9cc4bb51a3ee" class="sect1"><div><h3>property_value</h3></div><div class="signature-box">std::size_t<span> </span>property_value(const std::string &amp;aPropertyLongName, int aStackDepth=-1, int aContextId=-1, std::size_t aMaxDataSize=0, int aDatapage=-1, const std::string &amp;aPropertyKey="", const std::string &amp;aPropertyAddress="")=0</div><div><p class="signature-description">
+Get the value of a property.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aPropertyLongName</td><td>
+roperty long name (required) </td></tr><tr><td>aStackDepth</td><td>
+stack depth (optional) </td></tr><tr><td>aContextId</td><td>
+The context id for which to query. </td></tr><tr><td>aMaxDataSize</td><td>
+The maximal size of the data sent back from the debug engine. </td></tr><tr><td>aDatapage</td><td>
+</td></tr><tr><td>aPropertyKey</td><td>
+property key as retrieved in a property element (optional) </td></tr><tr><td>aPropertyAddress</td><td>
+property address as retrieved in a property element (optional). </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="ae4854a2d91acb38a55a0dc906193eb8f" class="sect1"><div><h3>quit</h3></div><div class="signature-box">void<span> </span>quit()=0</div><div><p class="signature-description">
+Tells the client to quit.         </p><p class="signature-description">
+This method blocks until the client quit successfully.         </p></div></div><div id="a7003a0818765fef2362c83718c50445b" class="sect1"><div><h3>run</h3></div><div class="signature-box">std::size_t<span> </span>run()=0</div><div><p class="signature-description">
+Send the run command to the debug engine.         </p><p class="signature-description">
+Sending this command to the debug engine makes the debug engine to start if possible. Otherwise it must report an error.<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a1bef79c053513c554ba491203eb5d0ff" class="sect1"><div><h3>source</h3></div><div class="signature-box">std::size_t<span> </span>source(const std::string &amp;aFile, unsigned aBeginLine=0, unsigned aEndLine=0)=0</div><div><p class="signature-description">
+List the source code at a given position.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aFile</td><td>
+The URI of the file the debug engine should deliver. </td></tr><tr><td>aBeginLine</td><td>
+The starting point on which line the debug engine should start to read. </td></tr><tr><td>aEndLine</td><td>
+The line number where the debug engine should stop reading from the file. </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request. </div>
+        </p></div></div><div id="ae35b0ae6d8e9dcf797527f309d8e415f" class="sect1"><div><h3>stack_depth</h3></div><div class="signature-box">std::size_t<span> </span>stack_depth()=0</div><div><p class="signature-description">
+Get the depth of the stack.         </p><p class="signature-description">
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a3b065f742703f0aae14ffdf9f5bd9c7a" class="sect1"><div><h3>stack_get</h3></div><div class="signature-box">std::size_t<span> </span>stack_get(int depth=-1)=0</div><div><p class="signature-description">
+Get information about the stack at a given depth.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>depth</td><td>
+The depth on which to quey (optional) </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a660b8906e4deced4c0914d216e7bc497" class="sect1"><div><h3>status</h3></div><div class="signature-box">std::size_t<span> </span>status()=0</div><div><p class="signature-description">
+The status command is a simple way for the IDE to find out from the debugger engine whether execution may be continued or not.         </p><p class="signature-description">
+no body is required on request. If async support has been negotiated using feature_get/set the status command may be sent while the debugger engine is in a 'run state'.The status attribute values of the response may be:<ul>
+<li>
+starting: State prior to execution of any code  </li>
+<li>
+stopping: State after completion of code execution. This typically happens at the end of code execution, allowing the IDE to further interact with the debugger engine (for example, to collect performance data, or use other extended commands).  </li>
+<li>
+stopped: IDE is detached from process, no further interaction is possible.  </li>
+<li>
+running: code is currently executing. Note that this state would only be seen with async support turned on, otherwise the typical state during IDE/debugger interaction would be 'break'  </li>
+<li>
+break: code execution is paused, for whatever reason (see below), and the IDE/debugger can pass information back and forth.  </li>
+</ul>
+The reason attribute value may be:<ul>
+<li>
+ok  </li>
+<li>
+error  </li>
+<li>
+aborted  </li>
+<li>
+exception  </li>
+</ul>
+<div><h4>Returns</h4>The id of the request. </div>
+        </p></div></div><div id="a63c14b33780b24f0fc43c11bb0e3bcf5" class="sect1"><div><h3>step_into</h3></div><div class="signature-box">std::size_t<span> </span>step_into()=0</div><div><p class="signature-description">
+Send the step into command to the debug engine.         </p><p class="signature-description">
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a7adb3ced1af19da8b3be5a71a8eb6f23" class="sect1"><div><h3>step_out</h3></div><div class="signature-box">std::size_t<span> </span>step_out()=0</div><div><p class="signature-description">
+Send the step out command to the debug engine.         </p><p class="signature-description">
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="acf57a810ccf4fc07ba0f558e8b2d7a1f" class="sect1"><div><h3>step_over</h3></div><div class="signature-box">std::size_t<span> </span>step_over()=0</div><div><p class="signature-description">
+Send the step over command to the debug engine.         </p><p class="signature-description">
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a95ed2a3f8d6f1d1a5d85a833565ab15f" class="sect1"><div><h3>stop</h3></div><div class="signature-box">std::size_t<span> </span>stop(bool withQuit)=0</div><div><p class="signature-description">
+Send the stop command to the debug engine.         </p><p class="signature-description">
+This command tells the debug engine, that it should break the execution at the next point possible.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>withQuit</td><td>
+This is a <a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> extension of the DBGP protocol that controls if the client should terminate execution and quit (true) or only terminate execution but not quit (false). This is used by command line clients that implement multiple query runs. </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="ae50e004335e699961187779a9258d2f8" class="sect1"><div><h3>stream_option</h3></div><div class="signature-box">std::size_t<span> </span>stream_option(OutputStream aStream, StreamBehaviour aBehaviour)=0</div><div><p class="signature-description">
+Setting a stream option.         </p><p class="signature-description">
+This method is used to tell the debug engine how to handle I/O. The debug engine either reads and writes from/to stdin/stdout or it can also copy it to the client or it can read/write everything from the client.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aStream</td><td>
+Specifies for which stream the option should be changed. </td></tr><tr><td>aBehaviour</td><td>
+Specifies which behaviour the debug client should have for reading/writing. </td></tr></table></div>
+<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="ac2001b3a0b4d040e2665964c7a16a7dc" class="sect1"><div><h3>typemap_get</h3></div><div class="signature-box">std::size_t<span> </span>typemap_get()=0</div><div><p class="signature-description">
+Get a mapping of types.         </p><p class="signature-description">
+The IDE calls this command to get information on how to map language specific type names (as received in the property element returned by the context_get, and property_* commands). The debugger engine returns all data types that it supports. There may be multiple map elements with the same type attribute value, but the name value must be unique. This allows a language to map multiple language specific types into one of the common data types (eg. float and double can both be mapped to float).<div><h4>Returns</h4>The id of this request </div>
+        </p></div></div><div id="a8686d1b62e0d3531e1ba3845f168f6a8" class="sect1"><div><h3>variables</h3></div><div class="signature-box">std::size_t<span> </span>variables()=0</div><div><p class="signature-description">
+Get the variables in all the contexts in the topmost stack frame.         </p><p class="signature-description">
+<div><h4>Returns</h4>The id of the request. </div>
+        </p></div></div><div id="a26c0c955a55f93e053e165cc399e84dc" class="sect1"><div><h3>~DebuggerClient</h3></div><div class="signature-box"><span> </span>~DebuggerClient()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

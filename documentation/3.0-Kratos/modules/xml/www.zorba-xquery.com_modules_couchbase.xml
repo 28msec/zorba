@@ -1,0 +1,587 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0">
+  <xqdoc:control>
+    <xqdoc:date>2013-12-02T22:12:23.992859Z</xqdoc:date>
+    <xqdoc:version>1.0</xqdoc:version>
+  </xqdoc:control>
+  <xqdoc:module type="library">
+    <xqdoc:uri>http://www.zorba-xquery.com/modules/couchbase</xqdoc:uri>
+    <xqdoc:name></xqdoc:name>
+    <xqdoc:comment>
+      <xqdoc:description> : This module provides minimal functionality to interact with the : Couchbase NoSQL database. : : The module is built using the libcouchbase C client library and : exposes most of its functionality in XQuery with JSONiq extensions. : Beyond just allowing for basic key-value store operations (e.g. : put-/get-text or put-/get-binary, this module also allows to work : with Couchbase views in order to allow for complex JSON query : operations. : : @author Juan Zacarias : @project DB Drivers/Couchbase :
+</xqdoc:description>
+      <xqdoc:custom tag="language">xquery</xqdoc:custom>
+      <xqdoc:custom tag="version">3.0</xqdoc:custom>
+      <xqdoc:custom tag="encoding">utf-8</xqdoc:custom>
+    </xqdoc:comment>
+    <xqdoc:custom tag="namespaces">
+      <xqdoc:namespace prefix="an" uri="http://zorba.io/annotations" isSchema="false"/>
+      <xqdoc:namespace prefix="cb" uri="http://www.zorba-xquery.com/modules/couchbase" isSchema="false"/>
+      <xqdoc:namespace prefix="jn" uri="http://jsoniq.org/functions" isSchema="false"/>
+      <xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/>
+    </xqdoc:custom>
+  </xqdoc:module>
+  <xqdoc:imports/>
+  <xqdoc:variables/>
+  <xqdoc:collections/>
+  <xqdoc:indexes/>
+  <xqdoc:functions>
+    <xqdoc:function arity="4">
+      <xqdoc:comment>
+        <xqdoc:description> : Connect to the Couchbase server and return an opaque identifier : representing the established connection. : : @param $host address of the couchbase server (e.g. "localhost:8091") : @param $username username used for the connection : @param $password password used for the connection : @param $bucket name of the bucket to use (e.g. "default") : : @error cb:LCB0001 if the connection to the given host/bucket :   could not be established. : : @return an identifier for the established connection.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:connect</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:connect($host as xs:string, $username as xs:string?, $password as xs:string?, $bucket as xs:string) as xs:anyURI</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>host</xqdoc:name>
+          <xqdoc:type>xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>username</xqdoc:name>
+          <xqdoc:type occurrence="?">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>password</xqdoc:name>
+          <xqdoc:type occurrence="?">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>bucket</xqdoc:name>
+          <xqdoc:type>xs:string</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type>xs:anyURI</xqdoc:type>
+      </xqdoc:return>
+      <xqdoc:invoked arity="1">
+        <xqdoc:uri>http://www.zorba-xquery.com/modules/couchbase</xqdoc:uri>
+        <xqdoc:name>connect</xqdoc:name>
+      </xqdoc:invoked>
+    </xqdoc:function>
+    <xqdoc:function arity="1">
+      <xqdoc:comment>
+        <xqdoc:description> : Connect to the Couchbase server and return an opaque identifier : representing the established connection. : : @param $options a JSONiq object that contains the host, bucket, :   and user information. : : @option "host" endpoint of the Couchbase server (mandatory) : @option "username" username used for the connection (optional) : @option "password" password used for the connection (optional) : @option "bucket" name of an existing bucket (mandatory) : : @error cb:LCB0001 if the connection to the given host/bucket :   could not be established. : @error cb:CB0001 if mandatory connection information is missing. : @error cb:CB0007 if a given option is not supported. : : @return an identifier for the established connection. : : Example: : <code> : { :   "host": "localhost:8091", :   "username" : null, :   "password" : null, :   "bucket" : "default" : } : </code>
+        </xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:connect</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:connect($options as object()) as xs:anyURI external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>options</xqdoc:name>
+          <xqdoc:type>object()</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type>xs:anyURI</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="2">
+      <xqdoc:comment>
+        <xqdoc:description> : Return the values of the given keys (type xs:string) as string. :  : @param $db connection reference : @param $key the requested keys : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : : @return A sequence of string Items corresponding to the key
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:get-text</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:get-text($db as xs:anyURI, $key as xs:string*) as xs:string* external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>key</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">xs:string*</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="3">
+      <xqdoc:comment>
+        <xqdoc:description> : Return the values of the given keys (type xs:string) as string. :  : @param $db connection reference : @param $key the requested keys : @param $options JSONiq object with additional options : : @option "expiration-time" xs:integer value for refreshing the expiration :   time in seconds.  : @option "encoding" string with the name of the encoding of the returned :   string (if not UTF-8). :  : @error cb:LCB0002 if any error occurs in the communication with :   the server. : @error cb:CB0006 if the given encoding is not supported. : @error cb:CB0007 if any of the options is not supported. : @error cb:CB0009 if the given expiration time is not an xs:integer. : : @return a sequence of strings for the given keys.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:get-text</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:get-text($db as xs:anyURI, $key as xs:string*, $options as object()) as xs:string* external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>key</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>options</xqdoc:name>
+          <xqdoc:type>object()</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">xs:string*</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="2">
+      <xqdoc:comment>
+        <xqdoc:description> : Return the values of the given keys (type xs:string) as base64Binary. :  : @param $db connection reference : @param $key the requested keys : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : : @return a sequence of xs:base64Binary items for the given keys.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:get-binary</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:get-binary($db as xs:anyURI, $key as xs:string*) as xs:base64Binary* external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>key</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">xs:base64Binary*</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="3">
+      <xqdoc:comment>
+        <xqdoc:description> : Return the values of the given keys (type xs:string) as base64Binary. :  : @param $db connection reference : @param $key the requested keys : @param $options JSONiq object with additional options : : @option "expiration-time" xs:integer value for refreshing the expiration :   time in seconds.  :  : @error cb:LCB0002 if any error occurs in the communication with :   the server. : @error cb:CB0007 if any of the options is not supported. : @error cb:CB0009 if the given expiration time is not an xs:integer. : : @return a sequence of xs:base64Binary items for the given keys.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:get-binary</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:get-binary($db as xs:anyURI, $key as xs:string*, $options as object()) as xs:base64Binary* external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>key</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>options</xqdoc:name>
+          <xqdoc:type>object()</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">xs:base64Binary*</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="2">
+      <xqdoc:comment>
+        <xqdoc:description> : Remove the values matching the given keys (xs:string) from the server. : : @param $db connection reference : @param $key the keys of the values that should be removed. : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : @return a empty sequence.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:remove</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:remove($db as xs:anyURI, $key as xs:string*) as empty-sequence() external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>key</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type>empty-sequence()</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="3">
+      <xqdoc:comment>
+        <xqdoc:description> : Store the given key-value bindings. : : The values are stored with the UTF-8 encoding and a default : expiration time of 60 seconds. : : @param $db connection reference : @param $key the keys to store : @param $value the values (as xs:string) to be stored. : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : @error cb:CB0005 if the number of keys doesn't match the number :   of values. : @return a empty sequence.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:put-text</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:put-text($db as xs:anyURI, $key as xs:string*, $value as xs:string*) as empty-sequence()</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>key</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>value</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type>empty-sequence()</xqdoc:type>
+      </xqdoc:return>
+      <xqdoc:invoked arity="4">
+        <xqdoc:uri>http://www.zorba-xquery.com/modules/couchbase</xqdoc:uri>
+        <xqdoc:name>put-text</xqdoc:name>
+      </xqdoc:invoked>
+    </xqdoc:function>
+    <xqdoc:function arity="4">
+      <xqdoc:comment>
+        <xqdoc:description> : Store the given key-value bindings. : : @param $db connection reference : @param $key the keys to store : @param $value the values (as xs:string) to be stored. : @param $options JSONiq object with additional options : : @option "expiration-time" integer value that represent the  :         expiration time in seconds. : @option "operation" type of operation, possible values are  :         "add", "replace", "set", "append" and "prepend". : @option "encoding" the encoding that should be used for the :         value (default is UTF-8). : @option "wait" variable for setting if a wait for persistancy in  :         the storing key is needed, possible values are "persist"  :         and "false". :  : @error cb:LCB0002 if any error occurs in the communication with :   the server. : @error cb:CB0005 if the number of keys doesn't match the number :   of values. : @error cb:CB0006 if the given encoding is not supported. : @error cb:CB0007 if any of the options is not supported. : @error cb:CB0009 if the given expiration time is not an xs:integer.  : @error cb:CB0011 if the stored Variable was not stored : : @return a empty sequence.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:put-text</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:put-text($db as xs:anyURI, $key as xs:string*, $value as xs:string*, $options as object()) as empty-sequence() external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>key</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>value</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>options</xqdoc:name>
+          <xqdoc:type>object()</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type>empty-sequence()</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="3">
+      <xqdoc:comment>
+        <xqdoc:description> : Store the given key-value bindings. : : @param $db connection reference : @param $key the keys to store : @param $value the values (as xs:base64binary) to be stored. : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : @error cb:CB0005 if the number of keys doesn't match the number :   of values. : : @return a empty sequence.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:put-binary</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:put-binary($db as xs:anyURI, $key as xs:string*, $value as xs:base64Binary*) as empty-sequence()</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>key</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>value</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:base64Binary</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type>empty-sequence()</xqdoc:type>
+      </xqdoc:return>
+      <xqdoc:invoked arity="4">
+        <xqdoc:uri>http://www.zorba-xquery.com/modules/couchbase</xqdoc:uri>
+        <xqdoc:name>put-binary</xqdoc:name>
+      </xqdoc:invoked>
+    </xqdoc:function>
+    <xqdoc:function arity="4">
+      <xqdoc:comment>
+        <xqdoc:description> : Store the given key-value bindings. : : @param $db connection reference : @param $key the keys to store : @param $value the values (as xs:base64binary) to be stored. : @param $options JSONiq object with additional options : @option "expiration-time" integer value that represent the  :         expiration time in seconds. : @option "operation" type of operation, possible values are  :         "add", "replace", "set", "append" and "prepend". : @option "wait" variable for setting if a wait for persistancy in  :         the storing key is needed, possible values are "persist"  :         and "false". : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : @error cb:CB0005 if the number of keys doesn't match the number :   of values. : @error cb:CB0007 if any of the options is not supported. : @error cb:CB0009 if the given expiration time is not an xs:integer. : @error cb:CB0011 if the stored Variable was not stored : : @return a empty sequence.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:put-binary</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:put-binary($db as xs:anyURI, $key as xs:string*, $value as xs:base64Binary*, $options as object()) as empty-sequence() external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>key</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>value</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:base64Binary</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>options</xqdoc:name>
+          <xqdoc:type>object()</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type>empty-sequence()</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="1">
+      <xqdoc:comment>
+        <xqdoc:description> : Remove all key/value pairs from the cluster : : @param $db connection reference : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : : @return a empty sequence.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:flush</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:flush($db as xs:anyURI) as empty-sequence() external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type>empty-sequence()</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="3">
+      <xqdoc:comment>
+        <xqdoc:description> : Refresh the expiration time of the given keys. : : @param $db connection reference : @param $key the keys to touch : @param $exp-time new expieration time in seconds : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : : @return a empty sequence.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:touch</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:touch($db as xs:anyURI, $key as xs:string*, $exp-time as xs:integer) as empty-sequence() external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>key</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>exp-time</xqdoc:name>
+          <xqdoc:type>xs:integer</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type>empty-sequence()</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="2">
+      <xqdoc:comment>
+        <xqdoc:description> : Retrieve the content of existing views. : : @param $db connection reference : @param $path contains the string of a view path  :        (e.g. "_design/test/_view/vies"). : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : : @return a sequence of strings (as JSON) containing information of the views.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:view</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:view($db as xs:anyURI, $path as xs:string*) as object()*</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>path</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">object()*</xqdoc:type>
+      </xqdoc:return>
+      <xqdoc:invoked arity="1">
+        <xqdoc:uri>http://jsoniq.org/functions</xqdoc:uri>
+        <xqdoc:name>parse-json</xqdoc:name>
+      </xqdoc:invoked>
+      <xqdoc:invoked arity="2">
+        <xqdoc:uri>http://www.zorba-xquery.com/modules/couchbase</xqdoc:uri>
+        <xqdoc:name>view-text</xqdoc:name>
+      </xqdoc:invoked>
+    </xqdoc:function>
+    <xqdoc:function arity="2">
+      <xqdoc:name>cb:view-text</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %private %an:sequential function cb:view-text($db as xs:anyURI, $path as xs:string*) as xs:string* external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>path</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">xs:string*</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="3">
+      <xqdoc:comment>
+        <xqdoc:description> : Retrieve the content of existing views. : : @param $db connection reference : @param $path contains the string of a view path  :        (e.g. "_design/test/_view/vies"). : @param $options JSONiq object with additional options : : @option Json object whith options for the querying the view. available options: :         "encoding" string with the name of the encoding of the returned :         strings (if not UTF-8). :         "stale" option's value is a string with the type of stale to be used.  :         Valid values: :           "ok" : the view is not updated :           "false" : the view is updated before the function view is executed,  :            this options needs the key to be on disk before the call of the  :            view function. :           "update_after" : the view is updated after the call of view :         "limit" option's value is an integer which sets a number of how many  :         rows the view will show.   : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : @error cb:CB0007 if any of the options is not supported. : : @return a sequence of strings (as JSON) containing information of the views.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:view</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:view($db as xs:anyURI, $path as xs:string*, $options as object()) as object()*</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>path</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>options</xqdoc:name>
+          <xqdoc:type>object()</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">object()*</xqdoc:type>
+      </xqdoc:return>
+      <xqdoc:invoked arity="1">
+        <xqdoc:uri>http://jsoniq.org/functions</xqdoc:uri>
+        <xqdoc:name>parse-json</xqdoc:name>
+      </xqdoc:invoked>
+      <xqdoc:invoked arity="3">
+        <xqdoc:uri>http://www.zorba-xquery.com/modules/couchbase</xqdoc:uri>
+        <xqdoc:name>view-text</xqdoc:name>
+      </xqdoc:invoked>
+    </xqdoc:function>
+    <xqdoc:function arity="3">
+      <xqdoc:name>cb:view-text</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %private %an:sequential function cb:view-text($db as xs:anyURI, $path as xs:string*, $options as object()) as xs:string* external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>path</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>options</xqdoc:name>
+          <xqdoc:type>object()</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">xs:string*</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="3">
+      <xqdoc:comment>
+        <xqdoc:description> : Create a document/view.  : If the document already exists, it is replaced. A document can hold several : views that must be specified in the same call of cb:create-view.  : : @param $db connection reference : @param $doc-name name of the document to create. : @param $view-names names of the views to create in the document. : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : : @return the names of the paths for the views that have been :   created.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:create-view</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:create-view($db as xs:anyURI, $doc-name as xs:string, $view-names as xs:string*) as xs:string* external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>doc-name</xqdoc:name>
+          <xqdoc:type>xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>view-names</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">xs:string*</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="4">
+      <xqdoc:comment>
+        <xqdoc:description> : Create a document/view.  : If the document already exists, it is replaced. A document can hold several : views that must be specified in the same call of cb:create-view.  : : @param $db connection reference : @param $doc-name name of the document to create. : @param $view-names names of the views to create in the document. : @param $options options describing how to create the view. : : @option "key" value must be a string containing the name of the value :         in the json object stored in couchbase that is wanted to be  :         displayed as the value of "key" in the resulting json. : @option "values" value must be a string or an array of strings containing :         the name of the value in the json object stored in couchbase that  :         is wanted to be displayed as the value of "value" in the resulting :         json. : @option "function" string with a javascript function describing the  :         map function of the view. cb:create-view won't throw an error :         if the javascript function is not compilable or functional. If :         this option is set the "key" and "values" options are ignored. : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : @error cb:CB0005 if the number of options doesn't match the number of :   view-names. : @error cb:CB0007 if any of the options is not supported. : @error cb:CB0010 if any of the given options has an invalid type. : : @return the names of the paths for the views that have been :   created.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:create-view</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:create-view($db as xs:anyURI, $doc-name as xs:string, $view-names as xs:string*, $options as object()*) as xs:string* external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>doc-name</xqdoc:name>
+          <xqdoc:type>xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>view-names</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>options</xqdoc:name>
+          <xqdoc:type occurrence="*">object()</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">xs:string*</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+    <xqdoc:function arity="2">
+      <xqdoc:comment>
+        <xqdoc:description> : Delete a document/view.  : If the document doesn't exists, function does nothing. All the views hold in the : Document are deleted, this function can't delete single views.  : : @param $db connection reference : @param $doc-name name of the document to create. : : @error cb:LCB0002 if any error occurs in the communication with :   the server. : : @return empty sequence.
+</xqdoc:description>
+      </xqdoc:comment>
+      <xqdoc:name>cb:delete-view</xqdoc:name>
+      <xqdoc:annotations>
+        <xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/>
+      </xqdoc:annotations>
+      <xqdoc:signature>declare %an:sequential function cb:delete-view($db as xs:anyURI, $doc as xs:string*) as xs:string* external</xqdoc:signature>
+      <xqdoc:parameters>
+        <xqdoc:parameter>
+          <xqdoc:name>db</xqdoc:name>
+          <xqdoc:type>xs:anyURI</xqdoc:type>
+        </xqdoc:parameter>
+        <xqdoc:parameter>
+          <xqdoc:name>doc</xqdoc:name>
+          <xqdoc:type occurrence="*">xs:string</xqdoc:type>
+        </xqdoc:parameter>
+      </xqdoc:parameters>
+      <xqdoc:return>
+        <xqdoc:type occurrence="*">xs:string*</xqdoc:type>
+      </xqdoc:return>
+    </xqdoc:function>
+  </xqdoc:functions>
+</xqdoc:xqdoc>

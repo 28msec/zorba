@@ -1,0 +1,41 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::internal::VariableQName</h1><p class="include">
+            #include &lt;zorba/internal/qname.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1diagnostic_1_1QName.html">zorba::diagnostic::QName</a></p>
+A VariableQName is-an <a href="/pages/3.0/zorba/classzorba_1_1diagnostic_1_1QName">diagnostic::QName</a> that has a variable namespace, prefix, and local-name.     
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>StringType</td><td>
+The type to use to store the namespace, prefix, and local-name. Note that this can be either a string type or <tt>char const*</tt>. If the latter, then it must be guaranteed that the pointed-to C strings will exist for the entire lifetime of this object. </td></tr></table></div>
+    <div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">StringType</p></td><td><p class="signature"><a href="#a5224938d706213c88165783d8ef786f8">localname_</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">StringType</p></td><td><p class="signature"><a href="#a0bb70d08c76e23f756a2b591bedb3d3d">ns_</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">StringType</p></td><td><p class="signature"><a href="#aac2413d19b8dccd3939d4997ed6e5d48">prefix_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#a518a57ef0cd33722c8eb70119236fb61">localname</a>() const </p><span class="signature-description">
+Gets this QName's local name.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#ad7c9604cfb6f1dbf17aed047c2a3e827">ns</a>() const </p><span class="signature-description">
+Gets this QName's namespace URI.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#a3dac355c972df627508fe2e3124e44f1">prefix</a>() const </p><span class="signature-description">
+Gets this QName's prefix.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a7f781d46e0590f78d2a77fc6c4489239">VariableQName</a>(char const *ns, char const *prefix, char const *localname)</p><span class="signature-description">
+Constructs a VariableQName.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a8b61a50fc8a4d9b868c6466444134ba8">VariableQName</a>(serialization::Archiver &amp;)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Friend Classes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">friend void</p></td><td><p class="signature"><a href="#a32b2c156eeace8c134fae30d488a2d47">serialization::operator&amp;</a>(serialization::Archiver &amp;, VariableQName &amp;)</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a5224938d706213c88165783d8ef786f8" class="sect1"><div><h3>localname_</h3></div><div class="signature-box">StringType<span> </span>localname_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a0bb70d08c76e23f756a2b591bedb3d3d" class="sect1"><div><h3>ns_</h3></div><div class="signature-box">StringType<span> </span>ns_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="aac2413d19b8dccd3939d4997ed6e5d48" class="sect1"><div><h3>prefix_</h3></div><div class="signature-box">StringType<span> </span>prefix_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a518a57ef0cd33722c8eb70119236fb61" class="sect1"><div><h3>localname</h3></div><div class="signature-box">char const *<span> </span>localname() const </div><div><p class="signature-description">
+Gets this QName's local name.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said local name. </div>
+        </p></div></div><div id="ad7c9604cfb6f1dbf17aed047c2a3e827" class="sect1"><div><h3>ns</h3></div><div class="signature-box">char const *<span> </span>ns() const </div><div><p class="signature-description">
+Gets this QName's namespace URI.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said URI. </div>
+        </p></div></div><div id="a3dac355c972df627508fe2e3124e44f1" class="sect1"><div><h3>prefix</h3></div><div class="signature-box">char const *<span> </span>prefix() const </div><div><p class="signature-description">
+Gets this QName's prefix.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said prefix. </div>
+        </p></div></div><div id="a7f781d46e0590f78d2a77fc6c4489239" class="sect1"><div><h3>VariableQName</h3></div><div class="signature-box"><span> </span>VariableQName(char const *ns, char const *prefix, char const *localname)</div><div><p class="signature-description">
+Constructs a VariableQName.         </p><p class="signature-description">
+        </p></div></div><div id="a8b61a50fc8a4d9b868c6466444134ba8" class="sect1"><div><h3>VariableQName</h3></div><div class="signature-box"><span> </span>VariableQName(serialization::Archiver &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Friend Classes</h2><div class="detailed"><div id="a32b2c156eeace8c134fae30d488a2d47" class="sect1"><div><h3>serialization::operator&amp;</h3></div><div class="signature-box">friend void<span> </span>serialization::operator&amp;(serialization::Archiver &amp;, VariableQName &amp;)</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="extensions_update" kind="page">
+    <compoundname>extensions_update</compoundname>
+    <title>Extensions to the XQuery Update Facility</title>
+    <detaileddescription>
+<para>Info to be added. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

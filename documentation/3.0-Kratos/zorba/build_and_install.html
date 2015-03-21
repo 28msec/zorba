@@ -1,0 +1,28 @@
+<div class="doxygen">
+  <div><h1 class="title">Building and Installing Zorba</h1>
+<div id="build_zorba" class="sect1"><h2>Building Zorba</h2>
+Once you have successfully configured your Zorba build (as described in <a href="/pages/3.0/zorba/configure_zorba">Configuring a Zorba Build Using CMake</a>), you should now be able to build the project.<ul>
+<li>For Makefile-based builds, just type <tt>make</tt> (or <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span>make<span> </span>j2<span> </span></span>
+</pre> to do a parallel build on a multi-core machine) from inside the <tt>{ZORBABUILD}</tt> directory.</li></ul>
+<ul>
+<li>For IDE-based builds, open the project created in the previous step and build the <b>ALL</b> target.</li></ul>
+The build will take some time. If it finishes successfully, you're ready to install and run Zorba.</div>
+<div id="install_zorba" class="sect1"><h2>Installing Zorba</h2>
+<ul>
+<li>For Makefile-based builds, just type <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span>make<span> </span>install<span> </span></span>
+</pre>. There is also a <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span>make<span> </span>uninstall<span> </span></span>
+</pre> target.</li></ul>
+<ul>
+<li>For IDE-based builds, invoke the <b>INSTALL</b> project.</li></ul>
+In either case, Zorba will be installed into the location specified by the CMake configuration parameter <tt>CMAKE_INSTALL_PREFIX</tt>, as described in <a href="/pages/3.0/zorba/configure_zorba?anchor=configure_parameters">Configuration Parameters (the -D arguments)</a>.</div>
+<div id="install_paths" class="sect1"><h2>Setting the PATH</h2>
+In order for users on your system to use Zorba, the <b>bin/</b> subdirectory of your installation directory must be on their path.</div>
+<div id="testing_install" class="sect1"><h2>Testing your Zorba Installation</h2>
+Once Zorba is installed and on your path, try it out! Type:<pre class="ace-static" ace-mode="xquery"><span class="normal">zorba<span> </span>-q<span> </span></span><span class="stringliteral">"1+1"</span>
+</pre>You should get the following output:<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;?xml<span> </span>version=</span><span class="stringliteral">"1.0"</span><span class="normal"><span> </span>encoding=</span><span class="stringliteral">"UTF-8"</span><span class="normal">?&gt;</span>
+<span class="normal">2</span>
+</pre>If so - congratulations! You're done and ready to use Zorba.</div>
+<div id="build_help" class="sect1"><h2>Help!</h2>
+If you have any problems building or running Zorba, contact the <b>zorba-users<b> mailing list. Sign up and see other instructions at <a href="https://groups.google.com/forum/?hl=en&amp;fromgroups#!forum/zorba-users" target="_blank">https://groups.google.com/forum/?hl=en&amp;fromgroups#!forum/zorba-users</a> . </b></b></div>
+    </div>
+</div>

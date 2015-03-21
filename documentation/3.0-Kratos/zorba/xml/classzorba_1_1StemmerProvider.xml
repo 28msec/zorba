@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1StemmerProvider" kind="class" prot="public">
+    <compoundname>zorba::StemmerProvider</compoundname>
+    <includes refid="stemmer_8h" local="no">zorba/stemmer.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1StemmerProvider_1a4a8de6ad223af81856dbbb18a00802b0" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StemmerProvider::getStemmer</definition>
+        <argsstring>(locale::iso639_1::type lang, Stemmer::ptr *s=nullptr) const =0</argsstring>
+        <name>getStemmer</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781" kindref="member">locale::iso639_1::type</ref></type>
+          <declname>lang</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1Stemmer_1a6f8ead76cb0ca8d0426ce268f411be4d" kindref="member">Stemmer::ptr</ref> *</type>
+          <declname>s</declname>
+          <defval><ref refid="cxx__util_8h_1ab979d9d4b4923f7c54d6caa6e1a61936" kindref="member">nullptr</ref></defval>
+        </param>
+        <briefdescription>
+<para>Gets a <ref refid="classzorba_1_1Stemmer" kindref="compound">Stemmer</ref> for the given language. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>lang</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The language to get a <ref refid="classzorba_1_1Stemmer" kindref="compound">Stemmer</ref> for. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If not <computeroutput>null</computeroutput>, set to point to a <ref refid="classzorba_1_1Stemmer" kindref="compound">Stemmer</ref> for <emphasis>lang</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if this provider can provide a stemmer for <emphasis>lang</emphasis>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StemmerProvider_1ab5913f955838d2bf5420ac6c3e32bb0d" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::StemmerProvider::~StemmerProvider</definition>
+        <argsstring>()</argsstring>
+        <name>~StemmerProvider</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="91"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A StemmerProvider, given a language, provides a <ref refid="classzorba_1_1Stemmer" kindref="compound">Stemmer</ref> for it. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="89" bodyfile="/home/wcandillon/deadlinks/include/zorba/stemmer.h" bodystart="89" bodyend="103"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1StemmerProvider_1a4a8de6ad223af81856dbbb18a00802b0" prot="public" virt="pure-virtual"><scope>zorba::StemmerProvider</scope><name>getStemmer</name></member>
+      <member refid="classzorba_1_1StemmerProvider_1ab5913f955838d2bf5420ac6c3e32bb0d" prot="public" virt="virtual"><scope>zorba::StemmerProvider</scope><name>~StemmerProvider</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

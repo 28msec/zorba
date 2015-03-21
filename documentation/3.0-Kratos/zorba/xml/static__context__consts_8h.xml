@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="static__context__consts_8h" kind="file">
+    <compoundname>static_context_consts.h</compoundname>
+    <includedby refid="dynamic__context_8h" local="no">dynamic_context.h</includedby>
+    <includedby refid="static__context_8h" local="no">static_context.h</includedby>
+    <includedby refid="xmldatamanager_8h" local="no">xmldatamanager.h</includedby>
+    <invincdepgraph>
+      <node id="2160">
+        <label>xmldatamanager.h</label>
+        <link refid="xmldatamanager_8h"/>
+        <childnode refid="2157" relation="include">
+        </childnode>
+        <childnode refid="2158" relation="include">
+        </childnode>
+      </node>
+      <node id="2158">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="2159" relation="include">
+        </childnode>
+      </node>
+      <node id="2157">
+        <label>dynamic_context.h</label>
+        <link refid="dynamic__context_8h"/>
+        <childnode refid="2158" relation="include">
+        </childnode>
+      </node>
+      <node id="2159">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="2158" relation="include">
+        </childnode>
+      </node>
+      <node id="2156">
+        <label>static_context_consts.h</label>
+        <link refid="static_context_consts.h"/>
+        <childnode refid="2157" relation="include">
+        </childnode>
+        <childnode refid="2159" relation="include">
+        </childnode>
+        <childnode refid="2160" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_STATIC_CONTEXT_CONSTS_API_H</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_STATIC_CONTEXT_CONSTS_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba</highlight></codeline>
+<codeline lineno="20"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="22"><highlight class="comment">/**<sp/>\brief<sp/>XPath<sp/>1.0<sp/>compatibility<sp/>mode<sp/>as<sp/>defined<sp/>in<sp/></highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://www.w3.org/TR/xquery/#static_context<sp/></highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25" refid="namespacezorba_1a869910a131d93b8a3333d35bba8cb4c5a7d2856e7a661bb12252ed4511523149f" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1a869910a131d93b8a3333d35bba8cb4c5a7d2856e7a661bb12252ed4511523149f" kindref="member">xpath2_0</ref>,<sp/><ref refid="namespacezorba_1a869910a131d93b8a3333d35bba8cb4c5a12ccc878062b54dea7d638030415c2f1" kindref="member">xpath1_0</ref><sp/>}<sp/><ref refid="namespacezorba_1a869910a131d93b8a3333d35bba8cb4c5" kindref="member" tooltip="XPath 1.0 compatibility mode as defined in http://www.w3.org/TR/xquery/#static_context.">xpath1_0compatib_mode_t</ref>;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="27"><highlight class="comment">/**<sp/>\brief<sp/>Ordering<sp/>mode<sp/>as<sp/>defined<sp/>in<sp/>http://www.w3.org/TR/xquery/#static_context.</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29" refid="namespacezorba_1acf239253638cf017b2a8e29f47be25d3a6de5feb1f9d785543b013e72b88d97ce" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1acf239253638cf017b2a8e29f47be25d3ac9eb30d96464f101853e7daea626bd98" kindref="member">ordered</ref>,<sp/><ref refid="namespacezorba_1acf239253638cf017b2a8e29f47be25d3a6de5feb1f9d785543b013e72b88d97ce" kindref="member">unordered</ref><sp/>}<sp/><ref refid="namespacezorba_1acf239253638cf017b2a8e29f47be25d3" kindref="member" tooltip="Ordering mode as defined in http://www.w3.org/TR/xquery/#static_context.">ordering_mode_t</ref>;</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="31"><highlight class="comment">/**<sp/>\brief<sp/>Default<sp/>order<sp/>for<sp/>empty<sp/>sequences<sp/>as<sp/>defined<sp/>in<sp/></highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://www.w3.org/TR/xquery/#static_context.</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34" refid="namespacezorba_1a68a06499a5fa26a391e4ec8f8800f1eb" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1a68a06499a5fa26a391e4ec8f8800f1eba042ec539b6feee4b7042c668542b1f25" kindref="member">empty_greatest</ref>,<sp/><ref refid="namespacezorba_1a68a06499a5fa26a391e4ec8f8800f1eba8cee70d5e838e3e59d104edec064f161" kindref="member">empty_least</ref><sp/>}<sp/><ref refid="namespacezorba_1a68a06499a5fa26a391e4ec8f8800f1eb" kindref="member" tooltip="Default order for empty sequences as defined in http://www.w3.org/TR/xquery/#static_context.">order_empty_mode_t</ref>;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="36"><highlight class="comment">/**<sp/>\brief<sp/>Inherit<sp/>part<sp/>of<sp/>the<sp/>Copy-namespace<sp/>mode<sp/>as<sp/>defined<sp/>in<sp/></highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://www.w3.org/TR/xquery/#static_context.</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39" refid="namespacezorba_1a6d664ab06d77c71376b72583d9c76e94a8a85cfa38f57c6204358bf1b1dc14af6" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><sp/>{<sp/><ref refid="namespacezorba_1a6d664ab06d77c71376b72583d9c76e94ae190942325e7a70f6aea5c92732eb7d8" kindref="member">inherit_ns</ref>,<sp/><ref refid="namespacezorba_1a6d664ab06d77c71376b72583d9c76e94a8a85cfa38f57c6204358bf1b1dc14af6" kindref="member">no_inherit_ns</ref><sp/>}<sp/><ref refid="namespacezorba_1a6d664ab06d77c71376b72583d9c76e94" kindref="member" tooltip="Inherit part of the Copy-namespace mode as defined in http://www.w3.org/TR/xquery/#static_context.">inherit_mode_t</ref>;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="41"><highlight class="comment">/**<sp/>\brief<sp/>Preserve<sp/>part<sp/>of<sp/>the<sp/>Copy-namespace<sp/>mode<sp/>as<sp/>defined<sp/>in<sp/></highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://www.w3.org/TR/xquery/#static_context.</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44" refid="namespacezorba_1a4169935c02d1a13c22131558ef2f57cfa165d9f1347d07b21fa532eb6ffd7455a" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1a4169935c02d1a13c22131558ef2f57cfa165d9f1347d07b21fa532eb6ffd7455a" kindref="member">preserve_ns</ref>,<sp/><ref refid="namespacezorba_1a4169935c02d1a13c22131558ef2f57cfac2a296ef44df961ea77b783a91c0ce4b" kindref="member">no_preserve_ns</ref><sp/>}<sp/><ref refid="namespacezorba_1a4169935c02d1a13c22131558ef2f57cf" kindref="member" tooltip="Preserve part of the Copy-namespace mode as defined in http://www.w3.org/TR/xquery/#static_context.">preserve_mode_t</ref>;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="46"><highlight class="comment">/**<sp/>\brief<sp/>Boundary-space<sp/>policy<sp/>as<sp/>defined<sp/>in<sp/>http://www.w3.org/TR/xquery/#static_context.</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="namespacezorba_1a6627dc4004037f565b99ccf00f4d63cbaee9fda6f89e0141d2479648c721631bd" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1a6627dc4004037f565b99ccf00f4d63cba659a1851aa633c5f08cb41d00229c444" kindref="member">preserve_space</ref>,<sp/><ref refid="namespacezorba_1a6627dc4004037f565b99ccf00f4d63cbaee9fda6f89e0141d2479648c721631bd" kindref="member">strip_space</ref><sp/>}<sp/><ref refid="namespacezorba_1a6627dc4004037f565b99ccf00f4d63cb" kindref="member" tooltip="Boundary-space policy as defined in http://www.w3.org/TR/xquery/#static_context.">boundary_space_mode_t</ref>;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="50"><highlight class="comment">/**<sp/>\brief<sp/>Construction<sp/>mode<sp/>as<sp/>defined<sp/>in<sp/>http://www.w3.org/TR/xquery/#static_context.</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52" refid="namespacezorba_1a4e1072d3044e494cb76e59289e30310fa6feadc159fef96fa3e99dd64d6f00ea2" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1a4e1072d3044e494cb76e59289e30310fa5370952faff336f56d12883f75ced617" kindref="member">preserve_cons</ref>,<sp/><ref refid="namespacezorba_1a4e1072d3044e494cb76e59289e30310fa6feadc159fef96fa3e99dd64d6f00ea2" kindref="member">strip_cons</ref><sp/>}<sp/><ref refid="namespacezorba_1a4e1072d3044e494cb76e59289e30310f" kindref="member" tooltip="Construction mode as defined in http://www.w3.org/TR/xquery/#static_context.">construction_mode_t</ref>;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="54"><highlight class="comment">/**<sp/>\brief<sp/>The<sp/>XQuery<sp/>version,<sp/>taken<sp/>from<sp/>the<sp/>version<sp/>declaration,<sp/>an<sp/>XQuery<sp/>3.0<sp/>feature.</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56" refid="namespacezorba_1a0b004b7103901f1b44b5b2ebc3035abd" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1a0b004b7103901f1b44b5b2ebc3035abda903841f309587df69c34f4a2e666144d" kindref="member">xquery_version_1_0</ref><sp/>=<sp/>100,<sp/><ref refid="namespacezorba_1a0b004b7103901f1b44b5b2ebc3035abdaa7d1fe20e6b303bace6c7d4c635aa79f" kindref="member">xquery_version_3_0</ref><sp/>=<sp/>300<sp/>}<sp/><ref refid="namespacezorba_1a0b004b7103901f1b44b5b2ebc3035abd" kindref="member" tooltip="The XQuery version, taken from the version declaration, an XQuery 3.0 feature.">xquery_version_t</ref>;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="58"><highlight class="comment">/**<sp/>\brief<sp/>The<sp/>JSONiq<sp/>version<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59" refid="namespacezorba_1a93922af20969649ae76634c99192bfa8acabe2a3a9f877bdecf125955d8de6d87" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1a93922af20969649ae76634c99192bfa8acabe2a3a9f877bdecf125955d8de6d87" kindref="member">jsoniq_version_undefined</ref><sp/>=<sp/>0,<sp/><ref refid="namespacezorba_1a93922af20969649ae76634c99192bfa8ae1a9b28e1b279bc9b55dac0a6873697c" kindref="member">jsoniq_version_1_0</ref><sp/>=<sp/>100<sp/>}<sp/><ref refid="namespacezorba_1a93922af20969649ae76634c99192bfa8" kindref="member" tooltip="The JSONiq version.">jsoniq_version_t</ref>;</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="61"><highlight class="comment">/**<sp/>\brief<sp/>Revalidation<sp/>mode<sp/>as<sp/>defined<sp/>in</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://www.w3.org/TR/xquery-update-10/#id-revalidation-declaration</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/>*<sp/><sp/>Note:<sp/>when<sp/>DTD<sp/>validation<sp/>is<sp/>needed<sp/>the<sp/>use<sp/>of<sp/>validate_lax_dtd<sp/>is<sp/>required.</highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65" refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4ca" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4caa67564dcc0fac18ffeab5446c00a0fc94" kindref="member">validate_skip</ref>,<sp/><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4caa327a688b87c5f30d8301671851ec1e54" kindref="member">validate_lax</ref>,<sp/><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4caae3f5124a59e3dc0a0aff4755bb98abb1" kindref="member">validate_lax_dtd</ref>,<sp/><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4caa4d338fc1285b3821c050247b5e84b2fe" kindref="member">validate_strict</ref><sp/>}<sp/><ref refid="namespacezorba_1aac6ee488020881fdc19e9f325a9bf4ca" kindref="member" tooltip="Revalidation mode as defined in http://www.w3.org/TR/xquery-update-10/#id-revalidation-declaration No...">validation_mode_t</ref>;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="67"><highlight class="comment">/**<sp/>\brief<sp/>Maintenance<sp/>mode<sp/>of<sp/>an<sp/>index<sp/>as<sp/>defined</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>in<sp/>the<sp/>XQuery<sp/>Data<sp/>Definition<sp/>Facility</highlight></codeline>
+<codeline lineno="69"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70" refid="namespacezorba_1a2188517ab2f3e28f472d4edc6ff15bc6ab11ec8264ac35925c17dfb727cfe73df" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1a2188517ab2f3e28f472d4edc6ff15bc6aa3ce52f03083387d93ddb8b9a473b2dc" kindref="member">index_automatic</ref>,<sp/><ref refid="namespacezorba_1a2188517ab2f3e28f472d4edc6ff15bc6ab11ec8264ac35925c17dfb727cfe73df" kindref="member">index_manual</ref><sp/>}<sp/><ref refid="namespacezorba_1a2188517ab2f3e28f472d4edc6ff15bc6" kindref="member" tooltip="Maintenance mode of an index as defined in the XQuery Data Definition Facility.">index_maintenance_mode_t</ref>;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="72"><highlight class="comment">/**<sp/>\brief<sp/>Container<sp/>kind<sp/>of<sp/>an<sp/>index<sp/>as<sp/>defined</highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>in<sp/>the<sp/>XQuery<sp/>Data<sp/>Definition<sp/>Facility</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="75" refid="namespacezorba_1a9bc4b8de63ef9c69ee8258911b159c08a0076cdee8135609dbcadb7103c4ce6b6" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/><ref refid="namespacezorba_1a9bc4b8de63ef9c69ee8258911b159c08afc42abab936432741e97fb094b93257d" kindref="member">index_hash</ref>,<sp/><ref refid="namespacezorba_1a9bc4b8de63ef9c69ee8258911b159c08a0076cdee8135609dbcadb7103c4ce6b6" kindref="member">index_tree</ref><sp/>}<sp/><ref refid="namespacezorba_1a9bc4b8de63ef9c69ee8258911b159c08" kindref="member" tooltip="Container kind of an index as defined in the XQuery Data Definition Facility.">index_container_kind_t</ref>;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="80"><highlight class="preprocessor"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/static_context_consts.h"/>
+  </compounddef>
+</doxygen>

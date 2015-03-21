@@ -1,0 +1,257 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://www.zorba-xquery.com/modules/http-client</xqdoc:uri><xqdoc:name>http-client</xqdoc:name><xqdoc:comment><xqdoc:description> <h1>Introduction</h1>
+ <p>
+ This module provides provides simple functions for performing HTTP requests
+ (GET, POST, DELETE etc.), as well as a more flexible general
+ purpose function (<a href="#send-request-3">send-request()</a>).
+ </p>
+ <h1>Examples of how to use this module</h1>
+ <h4>Simple GET Request</h4>
+ <pre class="ace-static" ace-mode="xquery">
+ import module namespace http="http://www.zorba-xquery.com/modules/http-client";
+ declare namespace svg="http://www.w3.org/2000/svg";
+ http:get("http://www.w3.org/Graphics/SVG/svglogo.svg")[2]/svg:svg/svg:title
+ </pre>
+ <p>
+ This example downloads an XML resource from the web (in this case,
+ an SVG file, which is an XML-based image format) and returns it as
+ a document node. Since the XML is in a namespace, we declare that
+ namespace; we can then perform a path expression directly on the
+ return value of http:get().
+ </p>
+ <h4>Simple GET Request (retrieving XHTML)</h4>
+   <pre class="ace-static" ace-mode="xquery">
+   import module namespace http="http://www.zorba-xquery.com/modules/http-client";
+   declare namespace xhtml="http://www.w3.org/1999/xhtml";
+   http:get-node( "http://www.w3.org" )[2]//xhtml:body
+   </pre>
+ <p>
+ This example shows how to retrieve an XHTML resource. XHTML is
+ XML, so the http:get-node() function will return it as a document node
+ and you can operate on it with the full power of XQuery. As above, since this
+ XML is in a particular namespace, the above query defines that namespace
+ with the prefix "xhtml" so it can easily perform path expressions, etc.
+ </p>
+ <p>
+ Note: many webservers, include www.w3.org, return XHTML with the
+ HTTP Content-Type "text/html". Zorba cannot assume that "text/html"
+ is actually XHTML, and so http:get() would have returned raw text
+ rather than a document node. That is why the example above uses
+ http:get-node(), which overrides the server's Content-Type and tells
+ Zorba to attempt to parse the result as XML.
+ </p>
+ <h4>Simple GET Request (retrieving HTML as text)</h4>
+ <p>
+ Note that XQuery does <b>not</b> understand plain HTML, and so if the URL
+ you retrieve contains plain HTML data (not XHTML), it will be treated as
+ plain text as shown in the next example. If you want to operate on the HTML
+ with XQuery, you should use the HTML language module which can transform
+ HTML to XHTML. The HTML module is supported by the Zorba team, but it is
+ not a "core module", meaning that it is not shipped with every Zorba
+ installation and may not be available. See
+ <a href="http://zorba.io/download">the Zorba downloads
+ page</a> for information about obtaining this module if you do not
+ have it.</p>
+ <pre class="ace-static" ace-mode="xquery">
+ import module namespace http="http://www.zorba-xquery.com/modules/http-client";
+ http:get("http://www.example.com")[2]
+ </pre>
+ returns
+   <pre class="ace-static" ace-mode="xml">
+   &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
+   &lt;html&gt;
+     &lt;head&gt;
+       &lt;meta http-equiv="Content-Type"
+       content="text/html; charset=utf-8" /&gt;
+       &lt;title&gt;Example Web Page&lt;/title&gt;
+     &lt;/head&gt;
+     &lt;body&gt;
+       &lt;p&gt;You have reached this web page by typing "example.com",
+       "example.net", or "example.org" into your web browser.&lt;/p&gt;
+       &lt;p&gt;These domain names are reserved for use in documentation and are
+       Not available for registration. See
+       &lt;a href="http://www.rfc-editor.org/rfc/rfc2606.txt"&gt;RFC 2606&lt;/a&gt;,
+       Section 3.&lt;/p&gt;
+     &lt;/body&gt;
+   &lt;/html&gt;
+   </pre>
+ <p>Note that the response data above is a simple
+ xs:string value containing the HTML data, not actual XML data. If you
+ executed the above query using the Zorba command-line client, you would
+ have actually seen data like the following:</p>
+ <pre class="ace-static" ace-mode="xml">
+   &amp;lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&amp;gt;
+   &amp;lt;html&amp;gt;
+      ...
+ </pre>
+ <p>because Zorba would attempt to serialize it as XML data, and would
+ escape all the raw angle brackets in the original xs:string.</p>
+ <h4>Simple POST Request</h4>
+ <p>
+ Here is a simple example which sends text content by making an HTTP POST
+ request.
+ </p>
+ <pre class="ace-static" ace-mode="xquery">
+ import module namespace http="http://www.zorba-xquery.com/modules/http-client";
+ http:post( "...", "Hello World" )
+ </pre>
+ <h1 id="standard_return">Return Values</h1>
+ <p>Most functions in this module (all except
+ <a href="#options-1">options()</a>) return one or more items.
+ (<a href="#head-1">head()</a> returns exactly one.) For all of these,
+ the first item returned will be a &lt;http-schema:response&gt;
+ element, as seen in the examples above. This element has "status" and
+ "message" attributes, representing the result of the HTTP call. It
+ also has any number of &lt;http-schema:header&gt; child elements that
+ encode the HTTP headers returned by the HTTP server. Finally, it
+ will generally contain a &lt;http-schema:body&gt; child element with
+ a "media-type" attribute that identifies the content-type of the
+ result data.</p>
+ <p>The full schema of this &lt;http-schema:response&gt; element is
+ part of the <a href="http://expath.org/modules/http-client/">EXPath
+ HTTP Client module</a>. You can see the schema
+ <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/view/head:/modules/http-client/xml/http-client.xsd" target="_blank">here</a>.</p>
+ <p>Any items in function return values after the initial
+ &lt;http-schema:response&gt; element are the body/bodies of the HTTP
+ response from the server. (MIME Multi-part responses will have
+ more than one body.) The type of these items depends on the
+ Content-Type for each body. Each item will be:</p>
+ <ul>
+  <li>
+    an element node, if the returned content type is one of:
+    <ul>
+      <li>text/xml</li>
+      <li>application/xml</li>
+      <li>text/xml-external-parsed-entity</li>
+      <li>application/xml-external-parsed-entity</li>
+      <li>or if the Content-Type ends with "+xml".</li>
+    </ul>
+  </li>
+  <li>
+    an xs:string, if the returned content type starts with "text/"
+    and does not match the above XML content types strings, or if
+    it is one of:
+    <ul>
+      <li>"application/json"</li>
+      <li>"application/x-javascript"</li>
+    </ul>
+  </li>
+  <li>xs:base64Binary for all other content types.</li>
+ </ul>
+ <p>This return value - a sequence of items comprising one
+ &lt;http-schema:response&gt; element followed by zero or more
+ response items - is referred to as the "standard http-client
+ return type" in the function declarations below.</p>
+ <h1 id="url_string">$href Arguments to Functions</h1>
+ All functions in this module accept a URL argument named $href. In
+ all cases, the value passed to $href must be a valid xs:anyURI.
+ However, all functions declare $href to be of type xs:string. This
+ is for convenience, since you can pass a string literal value (that
+ is, a URL in double-quotes spelled out explicitly in your query)
+ to an xs:string parameter.
+ <h1 id="get_warning">Important Notice Regarding get() Functions</h1>
+ All of the get() functions in this module -
+ <a href="#get-1">get()</a>, <a href="#get-node-1">get-node()</a>,
+ <a href="#get-text-1">get-text()</a>, and
+ <a href="#get-binary()">get-binary()</a> - are declared to be
+ <i>nondeterministic</i>, which means that Zorba will not cache
+ their results. However, they are <b>not</b> declared to be
+ <i>sequential</i>, which means that Zorba may re-order them
+ as part of its query optimization. According to the HTTP RFC,
+ GET requests should only return data, and should not have any
+ side-effects. However, in practice it is not uncommon for GET
+ requests to have side-effects. If your application depends on
+ the ordering of side-effects from making GET requests, you should
+ either use the more complex <a href="#send-request-3">send-request()</a>
+ function (which <b>is</b> declared <i>sequential</i>), or alterately
+ wrap each call to get() in your own sequential function, to ensure
+ that Zorba does not place the GET requests out of order.
+ <h1 id="expath_relation">Relation to the EXPath http-client module</h1>
+ <a href="http://expath.org/">EXPath</a> defines its own http-client
+ module, which is available separately for Zorba as a non-core module.
+ There are two primary differences between EXPath's http-client and
+ Zorba's core http-client (this module):
+ <ol>
+   <li>EXPath defines only the send-request() function, although it
+ does include convenient 1- and 2-argument forms in addition to the
+ full 3-argument form. EXPath does not include the simpler get(),
+ post(), put(), delete(), head(), and options() functions defined by
+ this module.</li>
+   <li>EXPath specifies that all HTML content returned from the
+ HTTP server will be <i>tidied up</i> into valid XML, and then parsed
+ into an element. As this required an additional third-party library
+ dependency, Zorba's http-client module does not perform this tidying.
+ Instead, HTML content is returned as a string (with special XML
+ characters replaced with XML entity references, as shown in the
+ above examples).</li>
+ </ol>
+ See <a href="http://www.expath.org/spec/http-client">the full spec
+ of the EXPath http-client module</a> for more information.
+</xqdoc:description><xqdoc:author>Markus Pilman, Federico Cavalieri</xqdoc:author><xqdoc:see><a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a></xqdoc:see><xqdoc:custom tag="library"><a href="http://curl.haxx.se/">cURL Library</a></xqdoc:custom><xqdoc:custom tag="project">Zorba/Input Output/HTTP Client</xqdoc:custom><xqdoc:custom tag="language">xquery</xqdoc:custom><xqdoc:custom tag="version">3.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="an" uri="http://zorba.io/annotations" isSchema="false"/><xqdoc:namespace prefix="err" uri="http://www.w3.org/2005/xqt-errors" isSchema="false"/><xqdoc:namespace prefix="error" uri="http://expath.org/ns/error" isSchema="false"/><xqdoc:namespace prefix="http" uri="http://www.zorba-xquery.com/modules/http-client" isSchema="false"/><xqdoc:namespace prefix="http-schema" uri="http://expath.org/ns/http-client" isSchema="true"/><xqdoc:namespace prefix="http-wrapper" uri="http://zorba.io/modules/http-client-wrapper" isSchema="false"/><xqdoc:namespace prefix="jn" uri="http://jsoniq.org/functions" isSchema="false"/><xqdoc:namespace prefix="json-http" uri="http://zorba.io/modules/http-client" isSchema="false"/><xqdoc:namespace prefix="libjn" uri="http://jsoniq.org/function-library" isSchema="false"/><xqdoc:namespace prefix="ser" uri="http://www.w3.org/2010/xslt-xquery-serialization" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports><xqdoc:import type="schema"><xqdoc:uri>http://expath.org/ns/http-client</xqdoc:uri></xqdoc:import><xqdoc:import type="library"><xqdoc:uri>http://expath.org/ns/error</xqdoc:uri></xqdoc:import><xqdoc:import type="library"><xqdoc:uri>http://zorba.io/modules/http-client</xqdoc:uri></xqdoc:import><xqdoc:import type="library"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri></xqdoc:import><xqdoc:import type="library"><xqdoc:uri>http://jsoniq.org/function-library</xqdoc:uri></xqdoc:import></xqdoc:imports><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> This function sends an HTTP request and returns the corresponding response.
+ Its inputs, outputs, and behavior are identical to the
+ <a href="http://expath.org/spec/http-client">EXPath http-client</a>'s
+ send-request() function (except that HTML responses are not tidied
+ into XML - see <a href="#expath_relation">the note above</a>). It
+ is provided here for use in Zorba installations that do not have
+ the EXPath module available. If you have the option of using the
+ EXPath module instead of this function, please do so, as it will
+ allow your application to be more interoperable between different
+ XQuery engines.
+ Full documentation of the $request parameter can be found in
+ <a href="http://expath.org/spec/http-client#d2e183">the EXPath
+ specification</a>.
+</xqdoc:description><xqdoc:param>$request Contains the various parameters of the request (see above).</xqdoc:param><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above). If this parameter is specified, it will override the "href" attribute of $request.</xqdoc:param><xqdoc:param>$bodies is the request body content, for HTTP methods that can contain a body in the request (i.e. POST and PUT). It is an error if this param is not the empty sequence for methods</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC002 Error parsing the response content as XML.</xqdoc:error><xqdoc:error>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</xqdoc:error><xqdoc:error>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</xqdoc:error><xqdoc:error>error:HC005 The input request element is not valid.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:error>error:HCV02 Trying to follow a redirect of a POST, PUT, or DELETE request</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/send-request/send-request_href.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/send-request/http3-post.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:send-request</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:send-request($request as element(http-schema:request)?, $href as xs:string?, $bodies as item()*) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>request</xqdoc:name><xqdoc:type occurrence="?">element(http-schema:request)</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type occurrence="?">xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>bodies</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-sequential-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> This function makes a GET request to a given URL.
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC002 Error parsing the response content as XML.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:see><a href="#get_warning">Notice about get() functions</a></xqdoc:see><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/get/get_text.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:get</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:get($href as xs:string) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> This function makes a GET request to a given URL. All returned bodies
+ are forced to be interpreted as XML and parsed into elements.
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC002 Error parsing the response content as XML.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:see><a href="#get_warning">Notice about get() functions</a></xqdoc:see><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/get-node/get-node_xml_query.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:get-node</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:get-node($href as xs:string) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> This function makes a GET request to a given URL. All returned bodies
+ are forced to be interpreted as plain strings, and will be returned
+ as xs:string items.
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC002 Error parsing the response content as XML.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:see><a href="#get_warning">Notice about get() functions</a></xqdoc:see><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/get-text/get-text_xml_query.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:get-text</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:get-text($href as xs:string) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> This function makes a GET request on a given URL. All returned bodies
+ are forced to be interpreted as binary data, and will be returned
+ as xs:base64Binary items.
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC002 Error parsing the response content as XML.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:see><a href="#get_warning">Notice about get() functions</a></xqdoc:see><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/get-binary/get-binary_xml_query.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:get-binary</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:get-binary($href as xs:string) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> This function makes an HTTP HEAD request on a given URL.
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a> (since HEAD never returns any body data, only the &lt;http-schema:response&gt; element will be returned).</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/head/head_status.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:head</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:head($href as xs:string) as item()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>item()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> This function makes an HTTP OPTIONS request, which asks the server
+ which operations it supports.
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return>A sequence of xs:string values of the allowed operations.</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/options/options.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:options</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="nondeterministic" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:nondeterministic function http:options($href as xs:string) as xs:string*</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">xs:string*</xqdoc:type></xqdoc:return><xqdoc:invoked arity="1"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>data</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>tokenize</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-nondeterministic-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> This function makes an HTTP PUT request to a given URL. If the body
+ passed to this function is an element, it will be serialized to XML
+ to be sent to the server, and the Content-Type sent to the server will
+ be "text/xml". Otherwise, the body will be converted to
+ a plain string, and the Content-Type will be "text/plain".
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:param>$body The body which will be sent to the server.</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC002 Error parsing the response content as XML.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:error>error:HCV02 Trying to follow a redirect of a PUT request.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/put/put2_element.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:put</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:put($href as xs:string, $body as item()) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>body</xqdoc:name><xqdoc:type>item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://www.zorba-xquery.com/modules/http-client</xqdoc:uri><xqdoc:name>put</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> This function makes an HTTP PUT request to a given URL. If the body
+ passed to this function is an element, it will be serialized
+ according to the $content-type parameter as follows:
+ <ul>
+  <li>If $content-type is "text/xml", "application/xml",
+ "text/xml-external-parsed-entity", or
+ "application/xml-external-parsed-entity", or if it ends with "+xml",
+ $body will be serialized to XML.</li>
+  <li>If $content-type starts with "text/html", $body will be
+ serialized to HTML.</li>
+  <li>Otherwise, $body will be serialized to text.</li>
+ </ul>
+ If $body is not an element, $body will be serialized to text
+ regardless of $content-type.
+ <p>In any case, Content-Type of the request sent to the server will
+ be $content-type.</p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:param>$body The body which will be sent to the server.</xqdoc:param><xqdoc:param>$content-type The content type of $body as described above.</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC002 Error parsing the response content as XML.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:error>error:HCV02 Trying to follow a redirect of a PUT request.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/put/put3_html_br.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:put</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:put($href as xs:string, $body as item(), $content-type as xs:string) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>body</xqdoc:name><xqdoc:type>item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>content-type</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>ends-with</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>starts-with</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-sequential-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> This function makes an HTTP DELETE request to a given URL.
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC002 Error parsing the response content as XML.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:error>error:HCV02 Trying to follow a redirect of a DELETE request.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/delete/delete.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:delete</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:delete($href as xs:string) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-sequential-request</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> This function makes an HTTP POST request to a given URL. If the body
+ passed to this function is an element, it will be serialized to XML
+ to be sent to the server, and the Content-Type sent to the server will
+ be "text/xml". Otherwise, the body will be converted to
+ a plain string, and the Content-Type will be "text/plain".
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:param>$body The body which will be sent to the server.</xqdoc:param><xqdoc:return><a href="#standard_return">standard http-client return type</a>.</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC002 Error parsing the response content as XML.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:error>error:HCV02 Trying to follow a redirect of a POST request.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/post/post2_comment.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:post</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:post($href as xs:string, $body as item()) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>body</xqdoc:name><xqdoc:type>item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="3"><xqdoc:uri>http://www.zorba-xquery.com/modules/http-client</xqdoc:uri><xqdoc:name>post</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> This function makes an HTTP POST request to a given URL. If the body
+ passed to this function is an element, it will be serialized
+ according to the $content-type parameter as follows:
+ <ul>
+  <li>If $content-type is "text/xml", "application/xml",
+ "text/xml-external-parsed-entity", or
+ "application/xml-external-parsed-entity", or if it ends with "+xml",
+ $body will be serialized to XML.</li>
+  <li>If $content-type starts with "text/html", $body will be
+ serialized to HTML.</li>
+  <li>Otherwise, $body will be serialized to text.</li>
+ </ul>
+ If $body is not an element, $body will be serialized to text
+ regardless of $content-type.
+ <p>In any case, Content-Type of the request sent to the server will
+ be $content-type.</p>
+</xqdoc:description><xqdoc:param>$href The URL to which the request will be made (see <a href="#url_string">note</a> above).</xqdoc:param><xqdoc:param>$body The body which will be sent to the server</xqdoc:param><xqdoc:param>$content-type The content type of the body as described above.</xqdoc:param><xqdoc:return>The first element of the result is the metadata (like headers, status etc), the next elements are the response</xqdoc:return><xqdoc:error>error:HC001 An HTTP error occurred.</xqdoc:error><xqdoc:error>error:HC002 Error parsing the response content as XML.</xqdoc:error><xqdoc:error>error:HC006 A timeout occurred waiting for the response.</xqdoc:error><xqdoc:error>error:HCV02 Trying to follow a redirect of a POST request.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/http-client/xml/post/post3_xml.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>http:post</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function http:post($href as xs:string, $body as item(), $content-type as xs:string) as item()+</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>href</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>body</xqdoc:name><xqdoc:type>item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>content-type</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="+">item()+</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>ends-with</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="2"><xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri><xqdoc:name>starts-with</xqdoc:name></xqdoc:invoked><xqdoc:invoked arity="3"><xqdoc:uri>http://zorba.io/modules/http-client-wrapper</xqdoc:uri><xqdoc:name>http-sequential-request</xqdoc:name></xqdoc:invoked></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

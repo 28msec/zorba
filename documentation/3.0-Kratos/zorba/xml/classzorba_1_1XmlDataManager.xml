@@ -1,0 +1,398 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1XmlDataManager" kind="class" prot="public">
+    <compoundname>zorba::XmlDataManager</compoundname>
+    <basecompoundref refid="classzorba_1_1SmartObject" prot="public" virt="non-virtual">zorba::SmartObject</basecompoundref>
+    <includes refid="xmldatamanager_8h" local="no">zorba/xmldatamanager.h</includes>
+    <innerclass refid="classzorba_1_1XmlDataManager_1_1ParseOptions" prot="public">zorba::XmlDataManager::ParseOptions</innerclass>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::addReference</definition>
+        <argsstring>() const </argsstring>
+        <name>addReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SmartObject::free</definition>
+        <argsstring>()</argsstring>
+        <name>free</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1a304dd4841bba93d26340b207ff178a4b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1CollectionManager" kindref="compound">CollectionManager</ref> *</type>
+        <definition>virtual CollectionManager* zorba::XmlDataManager::getCollectionManager</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getCollectionManager</name>
+        <briefdescription>
+<para>Returns a <ref refid="classzorba_1_1CollectionManager" kindref="compound">CollectionManager</ref> responsible for all collections. </para>        </briefdescription>
+        <detaileddescription>
+<para>The collection manager provides a set of functions for managing collections identified by a QName and their contents.</para><para>Please note that the resulting manager is only responsible for dynamic collections identified by a QName, i.e. those that are not declared in the prolog of a module or identified by a URI.</para><para><simplesect kind="return"><para>The collection manager responsible for managing collections. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="115"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1a2787e66b57d97fb444f6a5e71777f069" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1DocumentManager" kindref="compound">DocumentManager</ref> *</type>
+        <definition>virtual DocumentManager* zorba::XmlDataManager::getDocumentManager</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getDocumentManager</name>
+        <briefdescription>
+<para>Returns a <ref refid="classzorba_1_1DocumentManager" kindref="compound">DocumentManager</ref> responsible for managing XML documents. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>long zorba::SmartObject::getRefCount</definition>
+        <argsstring>() const </argsstring>
+        <name>getRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1a5bed2dbdbd5452a02fb0bdb417c632e4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1CollectionManager" kindref="compound">CollectionManager</ref> *</type>
+        <definition>virtual CollectionManager* zorba::XmlDataManager::getW3CCollectionManager</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getW3CCollectionManager</name>
+        <briefdescription>
+<para>Returns a <ref refid="classzorba_1_1CollectionManager" kindref="compound">CollectionManager</ref> responsible for collections identified by a URI. </para>        </briefdescription>
+        <detaileddescription>
+<para>The collection manager provides a set of functions for managing collections identified by a URI and their contents.</para><para>Please note that the resulting manager is only responsible for dynamic collections identified by a URI, i.e. those that are not declared in the prolog of a module or identified by a QName.</para><para><simplesect kind="return"><para>The collection manager responsible for managing collections. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="131"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1ae8bfde09b12a6c404139b1cf96955282" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::XmlDataManager::parseXML</definition>
+        <argsstring>(std::istream &amp;aStream) const =0</argsstring>
+        <name>parseXML</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aStream</declname>
+        </param>
+        <briefdescription>
+<para>Parse an XML document and return an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="137"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1a2426113079182866d58894356ac3f404" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::XmlDataManager::parseXML</definition>
+        <argsstring>(std::istream &amp;aStream, const String &amp;aBaseURI) const =0</argsstring>
+        <name>parseXML</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aStream</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aBaseURI</declname>
+        </param>
+        <briefdescription>
+<para>Parse an XML document and return an <ref refid="classzorba_1_1Item" kindref="compound">Item</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aStream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the input stream whose content should be parsed </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aBaseURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the base URI which will be used as the base URI of the document. This serves both as the base URI used by the XML parser to resolve relative entity references within the document, and as the base URI of the document node that is returned. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="149"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1a1508c263296add90a4d55e09a892a83d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref></type>
+        <definition>virtual ItemSequence_t zorba::XmlDataManager::parseXML</definition>
+        <argsstring>(std::istream &amp;aStream, ParseOptions &amp;aOptions) const =0</argsstring>
+        <name>parseXML</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aStream</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XmlDataManager_1_1ParseOptions" kindref="compound">ParseOptions</ref> &amp;</type>
+          <declname>aOptions</declname>
+        </param>
+        <briefdescription>
+<para>Parse an XML document and return a sequence of nodes. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function parses the given input stream and returns the result as a sequence of nodes. If external entity processing is disabled the result will be a singleton sequence consisting of one document node. Otherwise, the result is the sequence of the external entity nodes.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aStream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the input stream whose content should be parsed </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aOptions</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="classzorba_1_1XmlDataManager_1_1ParseOptions" kindref="compound">ParseOptions</ref> </para><simplesectsep/><para><ref refid="classzorba_1_1XmlDataManager_1_1ParseOptions" kindref="compound">ParseOptions</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="164"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1ab4f19fb0f52e5551a1e89b3cb5db7f2f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref></type>
+        <definition>virtual ItemSequence_t zorba::XmlDataManager::parseXML</definition>
+        <argsstring>(std::istream &amp;aStream, const String &amp;aBaseURI, ParseOptions &amp;aOptions) const =0</argsstring>
+        <name>parseXML</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aStream</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aBaseURI</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1XmlDataManager_1_1ParseOptions" kindref="compound">ParseOptions</ref> &amp;</type>
+          <declname>aOptions</declname>
+        </param>
+        <briefdescription>
+<para>Parse an XML document and return a sequence of nodes. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function parses the given input stream and returns the result as a sequence of nodes. If external entity processing is disabled the result will be a singleton sequence consisting of one document node. Otherwise, the result is the sequence of the external entity nodes.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aStream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the input stream whose content should be parsed </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aBaseURI</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the base URI which will be used as the base URI of the document. This serves both as the base URI used by the XML parser to resolve relative entity references within the document, and as the base URI of the document node that is returned. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aOptions</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="classzorba_1_1XmlDataManager_1_1ParseOptions" kindref="compound">ParseOptions</ref> </para><simplesectsep/><para><ref refid="classzorba_1_1XmlDataManager_1_1ParseOptions" kindref="compound">ParseOptions</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="187"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1a3c6a1f6fcb040d3e6a91b9216d567807" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XmlDataManager::registerDiagnosticHandler</definition>
+        <argsstring>(DiagnosticHandler *aDiagnosticHandler)=0</argsstring>
+        <name>registerDiagnosticHandler</name>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>aDiagnosticHandler</declname>
+        </param>
+        <briefdescription>
+<para>Register a <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors occuring during the management of documents and collections are reported. </para>        </briefdescription>
+        <detaileddescription>
+<para>If no <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> has been set using this function then subclasses of the <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> class are thrown to report errors.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aDiagnosticHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors are reported. The caller retains ownership over the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> passed as parameter. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="201"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1a1e02da8eeb68ed08883cd701a0b7ae6b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XmlDataManager::registerStemmerProvider</definition>
+        <argsstring>(StemmerProvider const *provider)=0</argsstring>
+        <name>registerStemmerProvider</name>
+        <param>
+          <type><ref refid="classzorba_1_1StemmerProvider" kindref="compound">StemmerProvider</ref> const *</type>
+          <declname>provider</declname>
+        </param>
+        <briefdescription>
+<para>Registers a <ref refid="classzorba_1_1StemmerProvider" kindref="compound">StemmerProvider</ref> to use for stemming of text content in order to perform queries involving full-text. </para>        </briefdescription>
+        <detaileddescription>
+<para>If no <ref refid="classzorba_1_1StemmerProvider" kindref="compound">StemmerProvider</ref> has been set using this function, then the default <ref refid="classzorba_1_1StemmerProvider" kindref="compound">StemmerProvider</ref> will be used.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>provider</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If not NULL, sets the <ref refid="classzorba_1_1StemmerProvider" kindref="compound">StemmerProvider</ref> to use; if NULL, removes any previously registered <ref refid="classzorba_1_1StemmerProvider" kindref="compound">StemmerProvider</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="215"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1a5107e3abf511b3edbc638138babae2d1" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XmlDataManager::registerTokenizerProvider</definition>
+        <argsstring>(TokenizerProvider const *provider)=0</argsstring>
+        <name>registerTokenizerProvider</name>
+        <param>
+          <type><ref refid="classzorba_1_1TokenizerProvider" kindref="compound">TokenizerProvider</ref> const *</type>
+          <declname>provider</declname>
+        </param>
+        <briefdescription>
+<para>Registers a <ref refid="classzorba_1_1TokenizerProvider" kindref="compound">TokenizerProvider</ref> to use for toknenization of text content in order to perform queries involving full-text. </para>        </briefdescription>
+        <detaileddescription>
+<para>If no <ref refid="classzorba_1_1TokenizerProvider" kindref="compound">TokenizerProvider</ref> has been set using this function, then the default <ref refid="classzorba_1_1TokenizerProvider" kindref="compound">TokenizerProvider</ref> will be used.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>provider</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If not NULL, sets the <ref refid="classzorba_1_1TokenizerProvider" kindref="compound">TokenizerProvider</ref> to use; if NULL, removes any previously registered <ref refid="classzorba_1_1TokenizerProvider" kindref="compound">TokenizerProvider</ref>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="228"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::removeReference</definition>
+        <argsstring>()</argsstring>
+        <name>removeReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1XmlDataManager_1a1051426450fd145310c616fd663eef57" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::XmlDataManager::~XmlDataManager</definition>
+        <argsstring>()</argsstring>
+        <name>~XmlDataManager</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="234" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="234" bodyend="234"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" static="no" mutable="yes">
+        <type>unsigned int</type>
+        <definition>unsigned int zorba::SmartObject::theRefCount</definition>
+        <argsstring></argsstring>
+        <name>theRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Using the <ref refid="classzorba_1_1XmlDataManager" kindref="compound">XmlDataManager</ref> one can manage documents and collections. </para>    </briefdescription>
+    <detaileddescription>
+<para>An instance of <ref refid="classzorba_1_1XmlDataManager" kindref="compound">XmlDataManager</ref> can be obtained via the <ref refid="classzorba_1_1Zorba_1a0bb7b04fa792aed7ef9c9ad9f9863524" kindref="member">Zorba::getXmlDataManager()</ref> method. The instance must be destroyed before <ref refid="classzorba_1_1Zorba_1a8cd51689f4e6a1639709aadceda21aa6" kindref="member">Zorba::shutdown()</ref> is called. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="951">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="950">
+        <label>zorba::XmlDataManager</label>
+        <link refid="classzorba_1_1XmlDataManager"/>
+        <childnode refid="951" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="953">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="952">
+        <label>zorba::XmlDataManager</label>
+        <link refid="classzorba_1_1XmlDataManager"/>
+        <childnode refid="953" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" line="33" bodyfile="/home/wcandillon/deadlinks/include/zorba/xmldatamanager.h" bodystart="32" bodyend="236"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager</scope><name>addReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" virt="virtual"><scope>zorba::XmlDataManager</scope><name>free</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1a304dd4841bba93d26340b207ff178a4b" prot="public" virt="pure-virtual"><scope>zorba::XmlDataManager</scope><name>getCollectionManager</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1a2787e66b57d97fb444f6a5e71777f069" prot="public" virt="pure-virtual"><scope>zorba::XmlDataManager</scope><name>getDocumentManager</name></member>
+      <member refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager</scope><name>getRefCount</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1a5bed2dbdbd5452a02fb0bdb417c632e4" prot="public" virt="pure-virtual"><scope>zorba::XmlDataManager</scope><name>getW3CCollectionManager</name></member>
+      <member refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1ae8bfde09b12a6c404139b1cf96955282" prot="public" virt="pure-virtual"><scope>zorba::XmlDataManager</scope><name>parseXML</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1a2426113079182866d58894356ac3f404" prot="public" virt="pure-virtual"><scope>zorba::XmlDataManager</scope><name>parseXML</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1a1508c263296add90a4d55e09a892a83d" prot="public" virt="pure-virtual"><scope>zorba::XmlDataManager</scope><name>parseXML</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1ab4f19fb0f52e5551a1e89b3cb5db7f2f" prot="public" virt="pure-virtual"><scope>zorba::XmlDataManager</scope><name>parseXML</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1a3c6a1f6fcb040d3e6a91b9216d567807" prot="public" virt="pure-virtual"><scope>zorba::XmlDataManager</scope><name>registerDiagnosticHandler</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1a1e02da8eeb68ed08883cd701a0b7ae6b" prot="public" virt="pure-virtual"><scope>zorba::XmlDataManager</scope><name>registerStemmerProvider</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1a5107e3abf511b3edbc638138babae2d1" prot="public" virt="pure-virtual"><scope>zorba::XmlDataManager</scope><name>registerTokenizerProvider</name></member>
+      <member refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager</scope><name>removeReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" virt="non-virtual"><scope>zorba::XmlDataManager</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" virt="non-virtual"><scope>zorba::XmlDataManager</scope><name>theRefCount</name></member>
+      <member refid="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" virt="virtual"><scope>zorba::XmlDataManager</scope><name>~SmartObject</name></member>
+      <member refid="classzorba_1_1XmlDataManager_1a1051426450fd145310c616fd663eef57" prot="protected" virt="virtual"><scope>zorba::XmlDataManager</scope><name>~XmlDataManager</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

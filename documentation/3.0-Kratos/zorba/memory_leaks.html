@@ -1,0 +1,86 @@
+<div class="doxygen">
+  <div><h1 class="title">Memory Leaks</h1>
+<div id="memory_leaks_intro" class="sect1"><h2>Introduction</h2>
+The Zorba Processor manages automatically its own memory, but still, there are cases where you may receive the following message:<tt> Zorba did not close properly, objects may still in memory while shutdown the store. [n] referenced URIs remain in the string pool. For help avoiding this message please refer to  in section General Architecture -&gt; Memory Leaks. </tt>This message means that not all the resources were released before Zorba and its store were shutdown. While this might be a bug/memory leak in Zorba itself, it's also quite likely that the leak is in the application. For the application, the rule is that before shutting down the store all resources must have been released.So, strictly speaking, your program is leaking resources.This problem might occur even though the application's code (C++ or other languages) looks good. Here is an example:</div>
+<div id="memory_leaks_example_c" class="sect1"><h2>Example in C++</h2>
+In the following example, the StaticContext and XQuery objects are not destroyed before Zorba and the store are shutdown.<pre class="ace-static" ace-mode="xquery"><span class="keywordtype">int</span><span class="normal"><span> </span>main(</span><span class="keywordtype">int</span><span class="normal"><span> </span>argc,<span> </span></span><span class="keywordtype">char</span><span class="normal">*<span> </span>argv[])</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal">*<span> </span>lStore<span> </span>=<span> </span><a href="/pages/3.0/zorba/classzorba_1_1StoreManager?anchor=a9be91dfe800748ca7d955a88f9d85ed9">zorba::StoreManager::getStore</a>();</span>
+<span class="normal"><span> </span><span> </span>Zorba*<span> </span>lZorba<span> </span>=<span> </span>Zorba::getInstance(lStore);</span>
+<span class="normal"><span> </span><span> </span></span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/namespacezorba?anchor=a24d7241f6bf20badc1017264d30b2af5">StaticContext_t</a><span> </span>lContext<span> </span>=<span> </span>lZorba-&gt;createStaticContext();</span>
+<span class="normal"><span> </span><span> </span>lContext-&gt;addNamespace(</span><span class="stringliteral">"foo"</span><span class="normal">,<span> </span></span><span class="stringliteral">"http://www.foo.com"</span><span class="normal">);</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/namespacezorba?anchor=ad8b5b1677946bc552eca6d700286a18d">XQuery_t</a><span> </span>lQuery<span> </span>=<span> </span>lZorba-&gt;compileQuery(</span><span class="stringliteral">"&lt;foo:e/&gt;"</span><span class="normal">,<span> </span>lContext);</span>
+<span class="normal"><span> </span><span> </span>lQuery-&gt;execute();</span>
+<span class="normal"><span> </span><span> </span></span>
+<span class="normal"><span> </span><span> </span>lZorba-&gt;shutdown();</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1StoreManager?anchor=a8aeeb96827e683d5f498c7a8a767357e">zorba::StoreManager::shutdownStore</a>(lStore);</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span>0;</span>
+<span class="normal">}</span>
+</pre>So, for this scenario, the ideal way to solve the problem is through scopes, where you implement certain part of code in methods and release them when the objects loose their reference. Alternatively, you can explicitly set the variable to null, in which case the object will automatically be released.Solution example: <pre class="ace-static" ace-mode="xquery"><span class="keywordtype">int</span><span class="normal"><span> </span>main(</span><span class="keywordtype">int</span><span class="normal"><span> </span>argc,<span> </span></span><span class="keywordtype">char</span><span class="normal">*<span> </span>argv[])</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal">*<span> </span>lStore<span> </span>=<span> </span><a href="/pages/3.0/zorba/classzorba_1_1StoreManager?anchor=a9be91dfe800748ca7d955a88f9d85ed9">zorba::StoreManager::getStore</a>();</span>
+<span class="normal"><span> </span><span> </span>Zorba*<span> </span>lZorba<span> </span>=<span> </span>Zorba::getInstance(lStore);</span>
+<span class="normal"><span> </span><span> </span></span>
+<span class="normal"><span> </span><span> </span>{<span> </span><span> </span></span><span class="comment">//<span> </span>Use<span> </span>a<span> </span>scope</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/namespacezorba?anchor=a24d7241f6bf20badc1017264d30b2af5">StaticContext_t</a><span> </span>lContext<span> </span>=<span> </span>lZorba-&gt;createStaticContext();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>lContext-&gt;addNamespace(</span><span class="stringliteral">"foo"</span><span class="normal">,<span> </span></span><span class="stringliteral">"http://www.foo.com"</span><span class="normal">);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span><a href="/pages/3.0/zorba/namespacezorba?anchor=ad8b5b1677946bc552eca6d700286a18d">XQuery_t</a><span> </span>lQuery<span> </span>=<span> </span>lZorba-&gt;compileQuery(</span><span class="stringliteral">"&lt;foo:e/&gt;"</span><span class="normal">,<span> </span>lContext);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>lQuery-&gt;execute();</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>lContext<span> </span>=<span> </span>NULL;<span> </span><span> </span></span><span class="comment">//<span> </span>or<span> </span>explicitely<span> </span>set<span> </span>free<span> </span>the<span> </span>resources</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>lQuery<span> </span>=<span> </span>NULL;</span>
+<span class="normal"><span> </span><span> </span>}</span>
+<span class="normal"><span> </span><span> </span>lZorba-&gt;shutdown();</span>
+<span class="normal"><span> </span><span> </span><a href="/pages/3.0/zorba/classzorba_1_1StoreManager?anchor=a8aeeb96827e683d5f498c7a8a767357e">zorba::StoreManager::shutdownStore</a>(lStore);</span>
+<span class="normal"><span> </span><span> </span></span><span class="keywordflow">return</span><span class="normal"><span> </span>0;</span>
+<span class="normal">}</span>
+</pre></div>
+<div id="memory_leaks_example_java" class="sect1"><h2>Example in Java</h2>
+This particular error is specially notorious when a memory managed language shows the error because you expect the language frees all memory, here is an example:<pre class="ace-static" ace-mode="xquery"><span class="keyword">public</span><span class="normal"><span> </span></span><span class="keyword">static</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>main<span> </span>(<span> </span>String<span> </span>argv[]<span> </span>)</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span>InMemoryStore<span> </span>store<span> </span>=<span> </span>InMemoryStore.getInstance();</span>
+<span class="normal"><span> </span><span> </span>Zorba<span> </span>zorba<span> </span>=<span> </span>Zorba.getInstance<span> </span>(<span> </span>store<span> </span>);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>StaticContext<span> </span>context<span> </span>=<span> </span>zorba.createStaticContext();</span>
+<span class="normal"><span> </span><span> </span>context.addNamespace(</span><span class="stringliteral">"foo"</span><span class="normal">,<span> </span></span><span class="stringliteral">"http://www.foo.com"</span><span class="normal">);</span>
+<span class="normal"><span> </span><span> </span>XQuery<span> </span>query<span> </span>=<span> </span>zorba.compileQuery(</span><span class="stringliteral">"&lt;foo:e/&gt;"</span><span class="normal">,<span> </span>context);</span>
+<span class="normal"><span> </span><span> </span>String<span> </span>result<span> </span>=<span> </span>query.execute();</span>
+<span class="normal"><span> </span><span> </span></span>
+<span class="normal"><span> </span><span> </span>zorba.shutdown();</span>
+<span class="normal"><span> </span><span> </span>InMemoryStore.shutdown<span> </span>(<span> </span>store<span> </span>);</span>
+<span class="normal"><span> </span><span> </span></span>
+<span class="normal">}<span> </span><span> </span><span> </span><span> </span></span>
+</pre>In this example, and for the rest of the languages because Zorba is created in C++, we have created in the Zorba API the method <tt>destroy()</tt> <em>that</em> will set free the object that could be pointing to any resource from the store, this method is in every object that need to be released.Java Note: Because Java is a garbage collected language you cannot predict when (or even if) an object will be destroyed. Hence there is no direct equivalent of a destructor. There is an inherited method called finalize, but this is called entirely at the discretion of the garbage collector. So, destroy() is the best practice for any language including Java.Solution example: <pre class="ace-static" ace-mode="xquery"><span class="keyword">public</span><span class="normal"><span> </span></span><span class="keyword">static</span><span class="normal"><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>main<span> </span>(<span> </span>String<span> </span>argv[]<span> </span>)</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span>InMemoryStore<span> </span>store<span> </span>=<span> </span>InMemoryStore.getInstance();</span>
+<span class="normal"><span> </span><span> </span>Zorba<span> </span>zorba<span> </span>=<span> </span>Zorba.getInstance<span> </span>(<span> </span>store<span> </span>);</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>StaticContext<span> </span>context<span> </span>=<span> </span>zorba.createStaticContext();</span>
+<span class="normal"><span> </span><span> </span>context.addNamespace(</span><span class="stringliteral">"foo"</span><span class="normal">,<span> </span></span><span class="stringliteral">"http://www.foo.com"</span><span class="normal">);</span>
+<span class="normal"><span> </span><span> </span>XQuery<span> </span>query<span> </span>=<span> </span>zorba.compileQuery(</span><span class="stringliteral">"&lt;foo:e/&gt;"</span><span class="normal">,<span> </span>context);</span>
+<span class="normal"><span> </span><span> </span>String<span> </span>result<span> </span>=<span> </span>query.execute();</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>query.destroy();<span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>Release<span> </span>memory<span> </span>for<span> </span>this<span> </span>XQuery</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>context.destroy();<span> </span></span><span class="comment">//<span> </span>Release<span> </span>memory<span> </span>for<span> </span>this<span> </span>StaticContext</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>zorba.shutdown();</span>
+<span class="normal"><span> </span><span> </span>InMemoryStore.shutdown<span> </span>(<span> </span>store<span> </span>);</span>
+<span class="normal"><span> </span><span> </span></span>
+<span class="normal">}</span>
+</pre></div>
+<div id="memory_leaks_example_xqj" class="sect1"><h2>Example in XQJ</h2>
+The XQJ standard provides specific <tt>close()</tt> <em>methods</em> for this specific purpose: <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span>XQDataSource<span> </span>xqdatasource<span> </span>=<span> </span></span><span class="keyword">new</span><span class="normal"><span> </span>XQDataSource();</span>
+<span class="normal"><span> </span><span> </span>XQConnection<span> </span>xqconnection<span> </span>=<span> </span>xqdatasource.getConnection();</span>
+<span class="normal"><span> </span><span> </span>XQStaticContext<span> </span>staticContext<span> </span>=<span> </span>xqconnection.getStaticContext();</span>
+<span class="normal"><span> </span><span> </span>staticContext.declareNamespace(</span><span class="stringliteral">"foo"</span><span class="normal">,<span> </span></span><span class="stringliteral">"http://www.foo.com"</span><span class="normal">);</span>
+<span class="normal"><span> </span><span> </span>xqconnection.setStaticContext(staticContext);</span>
+<span class="normal"><span> </span><span> </span>XQExpression<span> </span>xqexpression<span> </span>=<span> </span>xqconnection.createExpression();</span>
+<span class="normal"><span> </span><span> </span>XQSequence<span> </span>xqsequence<span> </span>=<span> </span>xqexpression.executeQuery(</span><span class="stringliteral">"&lt;foo:e/&gt;"</span><span class="normal">);</span>
+<span class="normal"><span> </span><span> </span></span><span class="comment">//<span> </span>code<span> </span>to<span> </span>show<span> </span>the<span> </span>output</span><span class="normal"/>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>xqconnection.close();<span> </span><span> </span></span><span class="comment">//<span> </span>Closing<span> </span>connection<span> </span>frees<span> </span>all<span> </span>related<span> </span>resources</span>
+</pre> </div>
+    </div>
+</div>

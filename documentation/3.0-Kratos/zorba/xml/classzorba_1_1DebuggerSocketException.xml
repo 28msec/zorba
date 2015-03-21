@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1DebuggerSocketException" kind="class" prot="public">
+    <compoundname>zorba::DebuggerSocketException</compoundname>
+    <includes refid="debugger__exception_8h" local="no">zorba/debugger_exception.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1DebuggerSocketException_1a14f7eb9c37dfca28340631806c038b51" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string zorba::DebuggerSocketException::userMessage</definition>
+        <argsstring></argsstring>
+        <name>userMessage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_exception.h" line="51" bodyfile="/home/wcandillon/deadlinks/include/zorba/debugger_exception.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1DebuggerSocketException_1a4c2b7c91deb0ee4324e26d2e6a3018d2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::DebuggerSocketException::DebuggerSocketException</definition>
+        <argsstring>(const std::string &amp;message, bool inclSysMsg=false)</argsstring>
+        <name>DebuggerSocketException</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>message</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>inclSysMsg</declname>
+          <defval>false</defval>
+        </param>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Construct a SocketException with a explanatory message. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>message</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>explanatory message </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>inclSysMsg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>true if system message (from strerror(errno)) should be postfixed to the user provided message </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_exception.h" line="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerSocketException_1a82f1e573207d62095ac25044e5436078" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* zorba::DebuggerSocketException::what</definition>
+        <argsstring>() const </argsstring>
+        <name>what</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Get the exception message. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>exception message </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_exception.h" line="48"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1DebuggerSocketException_1ab2ea1dc2029e32c8146dfa1f05623690" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::DebuggerSocketException::~DebuggerSocketException</definition>
+        <argsstring>()</argsstring>
+        <name>~DebuggerSocketException</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>Provided just to guarantee that no exceptions are thrown. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/debugger_exception.h" line="42"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Signals a problem with the execution of a socket call. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/debugger_exception.h" line="29" bodyfile="/home/wcandillon/deadlinks/include/zorba/debugger_exception.h" bodystart="29" bodyend="52"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1DebuggerSocketException_1a4c2b7c91deb0ee4324e26d2e6a3018d2" prot="public" virt="non-virtual"><scope>zorba::DebuggerSocketException</scope><name>DebuggerSocketException</name></member>
+      <member refid="classzorba_1_1DebuggerSocketException_1a14f7eb9c37dfca28340631806c038b51" prot="private" virt="non-virtual"><scope>zorba::DebuggerSocketException</scope><name>userMessage</name></member>
+      <member refid="classzorba_1_1DebuggerSocketException_1a82f1e573207d62095ac25044e5436078" prot="public" virt="non-virtual"><scope>zorba::DebuggerSocketException</scope><name>what</name></member>
+      <member refid="classzorba_1_1DebuggerSocketException_1ab2ea1dc2029e32c8146dfa1f05623690" prot="public" virt="non-virtual"><scope>zorba::DebuggerSocketException</scope><name>~DebuggerSocketException</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

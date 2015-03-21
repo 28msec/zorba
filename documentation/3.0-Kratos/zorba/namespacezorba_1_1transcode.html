@@ -1,0 +1,42 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::transcode</h1>
+    
+    <div class="section"><h2>Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a44eff53620b083f7384c20eea64a534b">attach</a>(std::basic_ios&lt; charT, Traits &gt; &amp;ios, char const *charset)</p><span class="signature-description">
+Attaches a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> to a stream.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#ac1a9e5e77b37b933a78581467f24ee1d">detach</a>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</p><span class="signature-description">
+Detaches a previously attached <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> from a stream.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#ad5b79bb09335a231a7f6cb69a5fc01c7">is_attached</a>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</p><span class="signature-description">
+Checks whether the given stream has a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> attached.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#ad2adc994f3251b1e9343554f839caaf5">is_necessary</a>(char const *charset)</p><span class="signature-description">
+Checks whether it would be necessary to transcode from the given character encoding to UTF-8.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC bool</p></td><td><p class="signature"><a href="#a3c15efb537bb9bca681ff9a2ab3f6f75">is_supported</a>(char const *charset)</p><span class="signature-description">
+Checks whether the given character set is supported for transcoding.         </span></td></tr><tr><td class="return-type"><p class="signature">std::streambuf *</p></td><td><p class="signature"><a href="#aa62efff6e4306c33f2fbd78cdb02432e">orig_streambuf</a>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</p><span class="signature-description">
+Gets the original streambuf of the given iostream.         </span></td></tr></table></div><div class="section"><h2>Functions</h2><div class="detailed"><div id="a44eff53620b083f7384c20eea64a534b" class="sect1"><div><h3>attach</h3></div><div class="signature-box">bool<span> </span>attach(std::basic_ios&lt; charT, Traits &gt; &amp;ios, char const *charset)</div><div><p class="signature-description">
+Attaches a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> to a stream.         </p><p class="signature-description">
+Unlike using a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> directly, this function will create the streambuf, attach it to the stream, and manage it for the lifetime of the stream automatically.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ios</td><td>
+The stream to attach the <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> to. If the stream already has a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> attached to it, this function does nothing. </td></tr><tr><td>charset</td><td>
+The name of the character encoding to convert from/to. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> was attached. </div>
+        </p></div></div><div id="ac1a9e5e77b37b933a78581467f24ee1d" class="sect1"><div><h3>detach</h3></div><div class="signature-box">bool<span> </span>detach(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</div><div><p class="signature-description">
+Detaches a previously attached <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> from a stream.         </p><p class="signature-description">
+The streambuf is destroyed and the stream's original streambuf is restored.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ios</td><td>
+The stream to detach the <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> from. If the stream doesn't have a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> attached to it, this function does nothing. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> was detached. </div>
+        </p></div></div><div id="ad5b79bb09335a231a7f6cb69a5fc01c7" class="sect1"><div><h3>is_attached</h3></div><div class="signature-box">bool<span> </span>is_attached(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</div><div><p class="signature-description">
+Checks whether the given stream has a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> attached.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ios</td><td>
+The stream to check. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1transcode_1_1streambuf">transcode::streambuf</a> is attached. </div>
+        </p></div></div><div id="ad2adc994f3251b1e9343554f839caaf5" class="sect1"><div><h3>is_necessary</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC bool<span> </span>is_necessary(char const *charset)</div><div><p class="signature-description">
+Checks whether it would be necessary to transcode from the given character encoding to UTF-8.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>charset</td><td>
+The name of the character encoding to check. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if it would be necessary to transcode from the given character encoding to UTF-8. </div>
+        </p></div></div><div id="a3c15efb537bb9bca681ff9a2ab3f6f75" class="sect1"><div><h3>is_supported</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC bool<span> </span>is_supported(char const *charset)</div><div><p class="signature-description">
+Checks whether the given character set is supported for transcoding.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>charset</td><td>
+The name of the character encoding to check. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if the character encoding is supported. </div>
+        </p></div></div><div id="aa62efff6e4306c33f2fbd78cdb02432e" class="sect1"><div><h3>orig_streambuf</h3></div><div class="signature-box">std::streambuf *<span> </span>orig_streambuf(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</div><div><p class="signature-description">
+Gets the original streambuf of the given iostream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ios</td><td>
+The stream to get the original streambuf of. </td></tr></table></div>
+<div><h4>Returns</h4>the original streambuf. </div>
+        </p></div></div></div></div></div>
+</div>

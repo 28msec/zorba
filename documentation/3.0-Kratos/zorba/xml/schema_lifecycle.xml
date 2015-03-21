@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="schema_lifecycle" kind="page">
+    <compoundname>schema_lifecycle</compoundname>
+    <title>Schema Lifecycle</title>
+    <detaileddescription>
+<sect1 id="schema_lifecycle_1intro">
+<title>Introduction</title>
+<para>This page is a quick presentation on how to use Zorba with XMLSchema type information.</para></sect1>
+<sect1 id="schema_lifecycle_1slsoverview">
+<title>Overview</title>
+<para>Zorba supports <ulink url="http://www.w3.org/TR/xmlschema11-1/">W3C XML Schema (XSD) 1.1</ulink> including dateTimeStamp, +/-0, +/-INF. But due to the missing support from Xerces-C validation is still using only XSD 1.0, which is compatible with XSD 1.1 for the vast majority of the features with a few exceptions. Check out <ulink url="http://www.w3.org/TR/xmlschema11-1/#changes">the full list</ulink>.</para></sect1>
+<sect1 id="schema_lifecycle_1immport">
+<title>How to import a schema</title>
+<para>In order to use XMLSchema type information in a query a schema file needs to be imported. Note the URI must match the target namespace of schema file.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>schema<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">r<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://example&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;example.xsd&quot;</highlight><highlight class="normal">;</highlight></codeline>
+</programlisting></para><para>For a full example see the <ref refid="schema_lifecycle_1example1" kindref="member">Example 1</ref> below.</para><para>Note: for simplicity, the examples on this page make use of the &quot;at &lt;filename&gt;&quot; clause of <computeroutput>import schema</computeroutput> to explicitly load a specific schema file. However, when developing applications, it is usually better to omit this clause, and make use of Zorba&apos;s extensive URI-resolution mechanisms to load schema documents by URI. For details on this, see <ref refid="uriresolvers" kindref="compound">URI Resolvers</ref>.</para></sect1>
+<sect1 id="schema_lifecycle_1validateExpr">
+<title>Validate expression</title>
+<para>Use validate expression to validate an untyped document against an XMLSchema.</para><para><programlisting><codeline><highlight class="normal"><ref refid="namespacezorba_1_1base64_1a91fa177bec263667b9c1187018a0ff43" kindref="member" tooltip="Validates a Base64-encoded buffer.">validate</ref><sp/>{$untypeDoc}</highlight></codeline>
+</programlisting></para><para>For a full example see the <ref refid="schema_lifecycle_1example1" kindref="member">Example 1</ref> below.</para></sect1>
+<sect1 id="schema_lifecycle_1example1">
+<title>Example 1</title>
+<para>The script <computeroutput>example.xq</computeroutput>: <programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>schema<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">r<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://example&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;example.xsd&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://expath.org/ns/file&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$untypeDoc<sp/>:=<sp/>fn:parse-xml(<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref>:read-text(</highlight><highlight class="stringliteral">&quot;example.xml&quot;</highlight><highlight class="normal">))</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$validatedDoc<sp/>:=<sp/><ref refid="namespacezorba_1_1base64_1a91fa177bec263667b9c1187018a0ff43" kindref="member" tooltip="Validates a Base64-encoded buffer.">validate</ref><sp/>{$untypeDoc}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>$validatedDoc</highlight></codeline>
+</programlisting></para><para>Assuming there is an <computeroutput>example.xsd</computeroutput> file with this content:</para><para><programlisting><codeline><highlight class="normal">&lt;xs:schema<sp/>xmlns:xs=</highlight><highlight class="stringliteral">&quot;http://www.w3.org/2001/XMLSchema&quot;</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>targetNamespace=</highlight><highlight class="stringliteral">&quot;http://example&quot;</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>xmlns=</highlight><highlight class="stringliteral">&quot;http://example&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>elementFormDefault=</highlight><highlight class="stringliteral">&quot;qualified&quot;</highlight><highlight class="normal"><sp/>attributeFormDefault=</highlight><highlight class="stringliteral">&quot;unqualified&quot;</highlight><highlight class="normal">&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;xs:element<sp/>name=</highlight><highlight class="stringliteral">&quot;a&quot;</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref>=</highlight><highlight class="stringliteral">&quot;TypeA&quot;</highlight><highlight class="normal">/&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;xs:complexType<sp/>name=</highlight><highlight class="stringliteral">&quot;TypeA&quot;</highlight><highlight class="normal">&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;xs:sequence&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>&lt;xs:element<sp/>name=</highlight><highlight class="stringliteral">&quot;b&quot;</highlight><highlight class="normal"><sp/>maxOccurs=</highlight><highlight class="stringliteral">&quot;unbounded&quot;</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref>=</highlight><highlight class="stringliteral">&quot;xs:string&quot;</highlight><highlight class="normal">/&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;/xs:sequence&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;/xs:complexType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">&lt;/xs:schema&gt;</highlight></codeline>
+</programlisting></para><para>And this <computeroutput>example.xml</computeroutput> instance XML document:</para><para><programlisting><codeline><highlight class="normal">&lt;a<sp/>xmlns=</highlight><highlight class="stringliteral">&quot;http://example&quot;</highlight><highlight class="normal">&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;b&gt;Hello<sp/>world!&lt;/b&gt;</highlight></codeline>
+<codeline><highlight class="normal">&lt;/a&gt;</highlight></codeline>
+</programlisting></para><para>Zorba can execute the query to get the result: <programlisting><codeline><highlight class="normal">$<sp/>zorba<sp/>--trailing-<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a7579d790d4faed7ccbe127b2459c834d" kindref="member" tooltip="Dutch.">nl</ref><sp/>-i<sp/>-f<sp/>-q<sp/>example.xq<sp/></highlight></codeline>
+<codeline><highlight class="normal">&lt;?xml<sp/>version=</highlight><highlight class="stringliteral">&quot;1.0&quot;</highlight><highlight class="normal"><sp/>encoding=</highlight><highlight class="stringliteral">&quot;UTF-8&quot;</highlight><highlight class="normal">?&gt;</highlight></codeline>
+<codeline><highlight class="normal">&lt;a<sp/>xmlns=</highlight><highlight class="stringliteral">&quot;http://example&quot;</highlight><highlight class="normal">&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;b&gt;Hello<sp/>world!&lt;/b&gt;</highlight></codeline>
+<codeline><highlight class="normal">&lt;/a&gt;</highlight></codeline>
+</programlisting></para></sect1>
+<sect1 id="schema_lifecycle_1schema-type">
+<title>Schema type name</title>
+<para>Using the <ulink url="/modules/latest/www.zorba-xquery.com/modules/schema">schema module</ulink> it is possible to find out the QName of a certain schema type.</para><para><ref refid="schema_lifecycle_1example1" kindref="member">Example 1</ref> can be adapted to the following: <programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>schema<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">r<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://example&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;example.xsd&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://expath.org/ns/file&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">schema<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/schema&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$untypeDoc<sp/>:=<sp/>fn:parse-xml(<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref>:read-text(</highlight><highlight class="stringliteral">&quot;example.xml&quot;</highlight><highlight class="normal">))</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$validatedDoc<sp/>:=<sp/><ref refid="namespacezorba_1_1base64_1a91fa177bec263667b9c1187018a0ff43" kindref="member" tooltip="Validates a Base64-encoded buffer.">validate</ref><sp/>{$untypeDoc}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>let<sp/>$qname<sp/>:=<sp/>schema:schema-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref>($validatedDoc/r:a)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>fn:prefix-from-QName($qname),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>fn:local-name-from-QName($qname),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>fn:</highlight><highlight class="keyword">namespace</highlight><highlight class="normal">-uri-from-QName($qname)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>)</highlight></codeline>
+</programlisting></para><para>Output: <programlisting><codeline><highlight class="normal">$<sp/>zorba<sp/>--trailing-<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a7579d790d4faed7ccbe127b2459c834d" kindref="member" tooltip="Dutch.">nl</ref><sp/>-i<sp/>-f<sp/>-q<sp/>example.xq<sp/></highlight></codeline>
+<codeline><highlight class="normal">&lt;?xml<sp/>version=</highlight><highlight class="stringliteral">&quot;1.0&quot;</highlight><highlight class="normal"><sp/>encoding=</highlight><highlight class="stringliteral">&quot;UTF-8&quot;</highlight><highlight class="normal">?&gt;</highlight></codeline>
+<codeline><highlight class="normal">TypeA<sp/>http:</highlight><highlight class="comment">//example</highlight></codeline>
+</programlisting></para></sect1>
+<sect1 id="schema_lifecycle_1validateApi">
+<title>Validate using the C++ Zorba API</title>
+<para>The C++ Zorba API can be used by an application to validate a document and later passed as a valid input into another query.</para><para>In the <ref refid="schema_lifecycle_1example2" kindref="member">Example 2</ref> first loadProlog method on the static context was used to import the required schema file and than validate method was called to get the new validated item.</para><para><programlisting><codeline><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acf706a3915939cf09e5b332770a20321" kindref="member" tooltip="Sardinian.">sc</ref>-&gt;loadProlog(</highlight><highlight class="stringliteral">&quot;import<sp/>schema<sp/>namespace<sp/>s=&apos;http://test.org&apos;<sp/>at<sp/>&apos;schema.xsd&apos;;&quot;</highlight><highlight class="normal">,<sp/>hints);</highlight></codeline>
+</programlisting></para><para><programlisting><codeline><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acf706a3915939cf09e5b332770a20321" kindref="member" tooltip="Sardinian.">sc</ref>-&gt;validate(lChild,<sp/>vItem);</highlight></codeline>
+</programlisting></para></sect1>
+<sect1 id="schema_lifecycle_1example2">
+<title>Example 2</title>
+<para><programlisting><codeline><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;sstream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="zorba_8h" kindref="compound">zorba/zorba.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="store__manager_8h" kindref="compound">zorba/store_manager.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="serializer_8h" kindref="compound">zorba/serializer.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="singleton__item__sequence_8h" kindref="compound">zorba/singleton_item_sequence.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="zorba__exception_8h" kindref="compound">zorba/zorba_exception.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">zorba;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>printItem(<ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref>&amp;<sp/>lChild,<sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>pre);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>printIter(<ref refid="classzorba_1_1SmartPtr" kindref="compound">Iterator_t</ref><sp/>lIter,<sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>pre);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>printIter(<ref refid="classzorba_1_1SmartPtr" kindref="compound">Iterator_t</ref><sp/>lIter,<sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>pre)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lIter-&gt;open();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref><sp/>lChild;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(lIter-&gt;next(lChild))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>printItem(lChild,<sp/>pre);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lIter-&gt;close();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>printItem(<ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref>&amp;<sp/>lChild,<sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>pre)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref><sp/>lNodeName;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lChild.<ref refid="classzorba_1_1Item_1a73940d41ef3d48bb1ce88788194a9db3" kindref="member" tooltip="Get the name of this (node) Item.">getNodeName</ref>(lNodeName);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>pre<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;node<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>lNodeName.<ref refid="classzorba_1_1Item_1a137321bd5067bd0a29715fb31fefd208" kindref="member" tooltip="Get the string value of the Item.">getStringValue</ref>()<sp/>&lt;&lt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;<sp/><sp/><sp/>-type<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>lChild.<ref refid="classzorba_1_1Item_1a7978f58f6c14046d56e8f07277997a83" kindref="member" tooltip="Get the type of the Item.">getType</ref>().<ref refid="classzorba_1_1Item_1a137321bd5067bd0a29715fb31fefd208" kindref="member" tooltip="Get the string value of the Item.">getStringValue</ref>()<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">Iterator_t</ref><sp/>lAttrIter<sp/>=<sp/>lChild.<ref refid="classzorba_1_1Item_1ac766311b163b6887c22cccb48f251058" kindref="member" tooltip="Get an iterator for the attributes of this (node) Item.">getAttributes</ref>();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lAttrIter-&gt;open();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref><sp/>lAttr;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(lAttrIter-&gt;next(lAttr))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref><sp/>lNodeName;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>lAttr.<ref refid="classzorba_1_1Item_1a73940d41ef3d48bb1ce88788194a9db3" kindref="member" tooltip="Get the name of this (node) Item.">getNodeName</ref>(lNodeName);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>pre<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/><sp/>@&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>lNodeName.<ref refid="classzorba_1_1Item_1a137321bd5067bd0a29715fb31fefd208" kindref="member" tooltip="Get the string value of the Item.">getStringValue</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>lAttr.<ref refid="classzorba_1_1Item_1a137321bd5067bd0a29715fb31fefd208" kindref="member" tooltip="Get the string value of the Item.">getStringValue</ref>()<sp/>&lt;&lt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;<sp/><sp/><sp/>-type<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>lAttr.<ref refid="classzorba_1_1Item_1a7978f58f6c14046d56e8f07277997a83" kindref="member" tooltip="Get the type of the Item.">getType</ref>().<ref refid="classzorba_1_1Item_1a137321bd5067bd0a29715fb31fefd208" kindref="member" tooltip="Get the string value of the Item.">getStringValue</ref>()<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lAttrIter-&gt;close();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">Iterator_t</ref><sp/>lChildIter<sp/>=<sp/>lChild.<ref refid="classzorba_1_1Item_1a76e302fd4d47717df2cb90a35955f664" kindref="member" tooltip="Get an iterator for the children of this (node) Item.">getChildren</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>printIter(lChildIter,<sp/>pre<sp/>+<sp/></highlight><highlight class="stringliteral">&quot;<sp/><sp/>&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>example_12(<ref refid="classzorba_1_1Zorba" kindref="compound" tooltip="The Zorba class is the single point of access to the Zorba engine.">Zorba</ref>*<sp/>aZorba)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>without<sp/>validation</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref><sp/>query<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;&lt;a<sp/>xmlns=&apos;http://test.org&apos;&gt;&lt;b<sp/>attr=&apos;1&apos;/&gt;&lt;b<sp/>attr=&apos;2&apos;/&gt;&lt;/a&gt;&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">XQuery_t</ref><sp/>lQuery1<sp/>=<sp/>aZorba-&gt;<ref refid="classzorba_1_1Zorba_1a76a2f22394bd4b83d8d1e7f0c3c5e78b" kindref="member" tooltip="Creates and compiles an XQuery object.">compileQuery</ref>(query);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">Iterator_t</ref><sp/>lIterator1<sp/>=<sp/>lQuery1-&gt;iterator();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>printIter(lIterator1,<sp/></highlight><highlight class="stringliteral">&quot;<sp/><sp/>&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//with<sp/>validation</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">XQuery_t</ref><sp/>lQuery2<sp/>=<sp/>aZorba-&gt;<ref refid="classzorba_1_1Zorba_1a76a2f22394bd4b83d8d1e7f0c3c5e78b" kindref="member" tooltip="Creates and compiles an XQuery object.">compileQuery</ref>(query);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">Iterator_t</ref><sp/>lIterator2<sp/>=<sp/>lQuery2-&gt;iterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lIterator2-&gt;open();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref><sp/>lChild;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lIterator2-&gt;next(lChild);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">StaticContext_t</ref><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acf706a3915939cf09e5b332770a20321" kindref="member" tooltip="Sardinian.">sc</ref><sp/>=<sp/>aZorba<sp/>-&gt;<sp/>createStaticContext();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structZorba__CompilerHints" kindref="compound" tooltip="Set of hints that can be passed to the query compiler.">Zorba_CompilerHints_t</ref><sp/>hints;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>sc-&gt;loadProlog(</highlight><highlight class="stringliteral">&quot;import<sp/>schema<sp/>namespace<sp/>s=&apos;http://test.org&apos;<sp/>at<sp/>&apos;schema.xsd&apos;;&quot;</highlight><highlight class="normal">,<sp/>hints);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref><sp/>vItem;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Validate:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;std::endl;<sp/>std::cout.flush();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>vres<sp/>=<sp/>sc-&gt;validate(lChild,<sp/>vItem);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/><sp/>res<sp/><sp/>:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>(vres<sp/>?<sp/></highlight><highlight class="stringliteral">&quot;true&quot;</highlight><highlight class="normal"><sp/>:<sp/></highlight><highlight class="stringliteral">&quot;false&quot;</highlight><highlight class="normal">)<sp/>&lt;&lt;<sp/>std::endl;<sp/>std::cout.flush();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>printItem(vItem,<sp/></highlight><highlight class="stringliteral">&quot;<sp/><sp/>&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lIterator2-&gt;close();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**argv)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Start&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>std::endl;<sp/>std::cout.flush();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal">*<sp/>lStore<sp/>=<sp/><ref refid="classzorba_1_1StoreManager_1a9be91dfe800748ca7d955a88f9d85ed9" kindref="member">StoreManager::getStore</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1Zorba" kindref="compound" tooltip="The Zorba class is the single point of access to the Zorba engine.">Zorba</ref><sp/>*lZorba<sp/>=<sp/><ref refid="classzorba_1_1Zorba_1a2ce37d64e730e40875576d2e80b02b78" kindref="member" tooltip="Gets the singleton instance of the Zorba object.">Zorba::getInstance</ref>(lStore);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>res<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;executing<sp/>example<sp/>12&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>res<sp/>=<sp/>example_12(lZorba);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!res)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lZorba-&gt;<ref refid="classzorba_1_1Zorba_1a8cd51689f4e6a1639709aadceda21aa6" kindref="member" tooltip="Releases all resources aquired by the Zorba XQuery Engine.">shutdown</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1StoreManager_1a8aeeb96827e683d5f498c7a8a767357e" kindref="member">StoreManager::shutdownStore</ref>(lStore);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Done!&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>std::endl;<sp/>std::cout.flush();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Output: <programlisting><codeline><highlight class="normal">Start</highlight></codeline>
+<codeline><highlight class="normal">executing<sp/>example<sp/>12</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>node<sp/>a<sp/><sp/><sp/>-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>xs:anyType</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>node<sp/>b<sp/><sp/><sp/>-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>xs:anyType</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>@attr=1<sp/><sp/><sp/>-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>xs:untypedAtomic</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>node<sp/>b<sp/><sp/><sp/>-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>xs:anyType</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>@attr=2<sp/><sp/><sp/>-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>xs:untypedAtomic</highlight></codeline>
+<codeline><highlight class="normal">Validate:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>res<sp/><sp/>:<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>node<sp/>a<sp/><sp/><sp/>-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>__AnonC2</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>node<sp/>b<sp/><sp/><sp/>-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>__AnonC3</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>@attr=1<sp/><sp/><sp/>-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>xs:</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>node<sp/>b<sp/><sp/><sp/>-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>__AnonC3</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>@attr=2<sp/><sp/><sp/>-<ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>xs:</highlight><highlight class="keywordtype">int</highlight></codeline>
+</programlisting> </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

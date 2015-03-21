@@ -1,0 +1,114 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Collection</h1><p class="include">
+            #include &lt;zorba/collection.h&gt;
+        </p><p class="inherited">
+          Inherited from:
+          <a href="classzorba_1_1SmartObject.html">zorba::SmartObject</a></p>
+A <a href="/pages/3.0/zorba/classzorba_1_1Collection">Collection</a> is a persistent sequence of node items.     
+Instances of this class can be used to modify or retrieve the contents of a collection.The variable aNodes passed to any of the insert functions is evaluated as though it were an enclosed expression in an element constructor. The result of this step is a sequence of nodes to be inserted into the collection.Note: This class is reference counted. When writing multi-threaded clients, it is the responibility of the client code to synchronize assignments to the <a href="/pages/3.0/zorba/classzorba_1_1SmartPtr">SmartPtr</a> holding this object.     <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a968d642f8f9df309338fbdd5f680e033">addReference</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba?anchor=ab047eb444ab2bd501dca0b831aac47ac">ItemSequence_t</a></p></td><td><p class="signature"><a href="#a4f798518e9e2973461b9fff262f764de">contents</a>()=0</p><span class="signature-description">
+This function returns the sequence of nodes of the collection.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#aa599c1223963baab06f13284e2bfee7c">deleteNodeFirst</a>()=0</p><span class="signature-description">
+This function deletes the first node from a collection.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a6341e48596150d322e983efb9819dfd6">deleteNodeLast</a>()=0</p><span class="signature-description">
+This function deletes the last node from a collection.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a5e4581f04346d1bdc1b4c77763227115">deleteNodes</a>(const ItemSequence_t &amp;aNodes)=0</p><span class="signature-description">
+This function deletes zero of more nodes from a collection.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#acc323c39f6edeba7983796e232fbec15">deleteNodesFirst</a>(unsigned long aNumNodes)=0</p><span class="signature-description">
+This function deletes the n first nodes from a collection.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ad0adb256338ef59a50a8e6de3ffc2053">deleteNodesLast</a>(unsigned long aNumNodes)=0</p><span class="signature-description">
+This function deletes the n last nodes from a collection.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a87deaaa73d44b839ada0f7dcc2cc2b13">free</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#af11115575dbc055392710b0514669845">getAnnotations</a>(std::vector&lt; Annotation_t &gt; &amp;aAnnotations) const =0</p><span class="signature-description">
+Retrieves all annotations for the given collection.         </span></td></tr><tr><td class="return-type"><p class="signature">const <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a></p></td><td><p class="signature"><a href="#a844d382e3987bcfb3c4879f5524dc57f">getName</a>() const =0</p><span class="signature-description">
+Get the name of the collection.         </span></td></tr><tr><td class="return-type"><p class="signature">long</p></td><td><p class="signature"><a href="#aa76599b249f441747e996d3630b8f5ca">getRefCount</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1SequenceType">SequenceType</a></p></td><td><p class="signature"><a href="#a3800e0b444c8833cbdf63a1cdb8e0f04">getType</a>() const =0</p><span class="signature-description">
+Retrieves the sequence type for this (static declared) collection.         </span></td></tr><tr><td class="return-type"><p class="signature">long long</p></td><td><p class="signature"><a href="#a8b5259bbd9713957038f0263f1ed965e">indexOf</a>(const Item &amp;aNode)=0</p><span class="signature-description">
+This function returns the index of the given node in the collection.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a6191462f5a90c8bf80fbe82cf63a6d6f">insertNodesAfter</a>(const Item &amp;aTarget, const ItemSequence_t &amp;aNodes)=0</p><span class="signature-description">
+This function inserts copies of the given nodes into a collection at the position directly following the given target node.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#ab449412b2c8db8e9699540e5bfa0f8df">insertNodesBefore</a>(const Item &amp;aTarget, const ItemSequence_t &amp;aNodes)=0</p><span class="signature-description">
+This function inserts copies of the given nodes into a collection at the position directly preceding the given target node.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a3d362a173424366efa9f224d4e1657cf">insertNodesFirst</a>(const ItemSequence_t &amp;aNodes)=0</p><span class="signature-description">
+This function inserts copies of the given nodes at the beginning of the collection.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a10661e21e905cb5c49a6f12586cc6480">insertNodesLast</a>(const ItemSequence_t &amp;aNodes)=0</p><span class="signature-description">
+This function inserts copies of the given nodes at the end of the collection.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a600ea73f19ef5fe25c7d5c86f9518ae2">isStatic</a>() const =0</p><span class="signature-description">
+The function checks if this collection has been statically declared.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a5ed341d2ea971005bc3d96dffeacc1fd">registerDiagnosticHandler</a>(DiagnosticHandler *aDiagnosticHandler)=0</p><span class="signature-description">
+Register a <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> to which errors occuring during the management or manipulation of this collection are reported.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a32ce26dcd544b131ef8b024972960ebc">removeReference</a>()</p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a4605973da34970b57c0945bae65e7def">~Collection</a>()</p><span class="signature-description">
+Destructor.         </span></td></tr></table></div><div class="section"><h2>Protected Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">unsigned int</p></td><td><p class="signature"><a href="#a066274b33cffdd451a68a2a0754c6044">theRefCount</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a968d642f8f9df309338fbdd5f680e033" class="sect1"><div><h3>addReference</h3></div><div class="signature-box">void<span> </span>addReference() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4f798518e9e2973461b9fff262f764de" class="sect1"><div><h3>contents</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba?anchor=ab047eb444ab2bd501dca0b831aac47ac">ItemSequence_t</a><span> </span>contents()=0</div><div><p class="signature-description">
+This function returns the sequence of nodes of the collection.         </p><p class="signature-description">
+<div><h4>Returns</h4>The sequence contained in the given collection. </div>
+        </p></div></div><div id="aa599c1223963baab06f13284e2bfee7c" class="sect1"><div><h3>deleteNodeFirst</h3></div><div class="signature-box">void<span> </span>deleteNodeFirst()=0</div><div><p class="signature-description">
+This function deletes the first node from a collection.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>XDDY0011</td><td>
+if the collection doesn't contain any node. </td></tr></table></div>
+        </p></div></div><div id="a6341e48596150d322e983efb9819dfd6" class="sect1"><div><h3>deleteNodeLast</h3></div><div class="signature-box">void<span> </span>deleteNodeLast()=0</div><div><p class="signature-description">
+This function deletes the last node from a collection.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>XDDY0011</td><td>
+if the collection doesn't contain any node. </td></tr></table></div>
+        </p></div></div><div id="a5e4581f04346d1bdc1b4c77763227115" class="sect1"><div><h3>deleteNodes</h3></div><div class="signature-box">void<span> </span>deleteNodes(const ItemSequence_t &amp;aNodes)=0</div><div><p class="signature-description">
+This function deletes zero of more nodes from a collection.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aNodes</td><td>
+the nodes in the collection that should be deleted.</td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>XDDY0011</td><td>
+if any nodes in the given sequence is not a member of a collection or not all nodes of the sequence belong to the same collection. </td></tr></table></div>
+        </p></div></div><div id="acc323c39f6edeba7983796e232fbec15" class="sect1"><div><h3>deleteNodesFirst</h3></div><div class="signature-box">void<span> </span>deleteNodesFirst(unsigned long aNumNodes)=0</div><div><p class="signature-description">
+This function deletes the n first nodes from a collection.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>XDDY0011</td><td>
+if the collection doesn't contain any node. </td></tr></table></div>
+        </p></div></div><div id="ad0adb256338ef59a50a8e6de3ffc2053" class="sect1"><div><h3>deleteNodesLast</h3></div><div class="signature-box">void<span> </span>deleteNodesLast(unsigned long aNumNodes)=0</div><div><p class="signature-description">
+This function deletes the n last nodes from a collection.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>XDDY0011</td><td>
+if the collection doesn't contain any node. </td></tr></table></div>
+        </p></div></div><div id="a87deaaa73d44b839ada0f7dcc2cc2b13" class="sect1"><div><h3>free</h3></div><div class="signature-box">void<span> </span>free()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="af11115575dbc055392710b0514669845" class="sect1"><div><h3>getAnnotations</h3></div><div class="signature-box">void<span> </span>getAnnotations(std::vector&lt; Annotation_t &gt; &amp;aAnnotations) const =0</div><div><p class="signature-description">
+Retrieves all annotations for the given collection.         </p><p class="signature-description">
+If the collection is a statically declared collection, the annotations are the ones that haven been given in the declaration of the collection (or the defaults). If the collection is a dynamic collection, the annotations are the default ones for dynamic collections.<div><h4>Returns</h4>a list of all annotations for the given collection (if found) </div>
+        </p></div></div><div id="a844d382e3987bcfb3c4879f5524dc57f" class="sect1"><div><h3>getName</h3></div><div class="signature-box">const <a href="/pages/3.0/zorba/classzorba_1_1Item">Item</a><span> </span>getName() const =0</div><div><p class="signature-description">
+Get the name of the collection.         </p><p class="signature-description">
+<div><h4>Returns</h4>The name of the collection. </div>
+        </p></div></div><div id="aa76599b249f441747e996d3630b8f5ca" class="sect1"><div><h3>getRefCount</h3></div><div class="signature-box">long<span> </span>getRefCount() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a3800e0b444c8833cbdf63a1cdb8e0f04" class="sect1"><div><h3>getType</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1SequenceType">SequenceType</a><span> </span>getType() const =0</div><div><p class="signature-description">
+Retrieves the sequence type for this (static declared) collection.         </p><p class="signature-description">
+<div><h4>Returns</h4>the sequence type for the said collection, or 0 if this collection is not statically declared.</div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/classzorba_1_1Collection?anchor=a600ea73f19ef5fe25c7d5c86f9518ae2">isStatic()</a> </div>
+        </p></div></div><div id="a8b5259bbd9713957038f0263f1ed965e" class="sect1"><div><h3>indexOf</h3></div><div class="signature-box">long long<span> </span>indexOf(const Item &amp;aNode)=0</div><div><p class="signature-description">
+This function returns the index of the given node in the collection.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aNode</td><td>
+The node to retrieve the index from.</td></tr></table></div>
+<div><h4>Returns</h4>Returns the position of the given node in the collection.</div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>XDDY0011</td><td>
+if node is not contained in any collection. </td></tr></table></div>
+        </p></div></div><div id="a6191462f5a90c8bf80fbe82cf63a6d6f" class="sect1"><div><h3>insertNodesAfter</h3></div><div class="signature-box">void<span> </span>insertNodesAfter(const Item &amp;aTarget, const ItemSequence_t &amp;aNodes)=0</div><div><p class="signature-description">
+This function inserts copies of the given nodes into a collection at the position directly following the given target node.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aTarget</td><td>
+the node in the collection after which the sequence should be inserted. </td></tr><tr><td>aNodes</td><td>
+The sequences of nodes whose copies should be added to the collection.</td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>XDDY0011</td><td>
+if any nodes in the sequence is not a member of a collection or not all nodes of the sequence belong to the same collection. </td></tr></table></div>
+        </p></div></div><div id="ab449412b2c8db8e9699540e5bfa0f8df" class="sect1"><div><h3>insertNodesBefore</h3></div><div class="signature-box">void<span> </span>insertNodesBefore(const Item &amp;aTarget, const ItemSequence_t &amp;aNodes)=0</div><div><p class="signature-description">
+This function inserts copies of the given nodes into a collection at the position directly preceding the given target node.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aTarget</td><td>
+the node in the collection before which the sequence should be inserted. </td></tr><tr><td>aNodes</td><td>
+The sequences of nodes whose copies should be added to the collection.</td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>XDDY0011</td><td>
+if any nodes in the sequence is not a member of a collection or not all nodes of the sequence belong to the same collection. </td></tr></table></div>
+        </p></div></div><div id="a3d362a173424366efa9f224d4e1657cf" class="sect1"><div><h3>insertNodesFirst</h3></div><div class="signature-box">void<span> </span>insertNodesFirst(const ItemSequence_t &amp;aNodes)=0</div><div><p class="signature-description">
+This function inserts copies of the given nodes at the beginning of the collection.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aNodes</td><td>
+The sequences of nodes whose copies should be added to the collection. </td></tr></table></div>
+        </p></div></div><div id="a10661e21e905cb5c49a6f12586cc6480" class="sect1"><div><h3>insertNodesLast</h3></div><div class="signature-box">void<span> </span>insertNodesLast(const ItemSequence_t &amp;aNodes)=0</div><div><p class="signature-description">
+This function inserts copies of the given nodes at the end of the collection.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aNodes</td><td>
+The sequences of nodes whose copies should be added to the collection. </td></tr></table></div>
+        </p></div></div><div id="a600ea73f19ef5fe25c7d5c86f9518ae2" class="sect1"><div><h3>isStatic</h3></div><div class="signature-box">bool<span> </span>isStatic() const =0</div><div><p class="signature-description">
+The function checks if this collection has been statically declared.         </p><p class="signature-description">
+<div><h4>Returns</h4>true if the collection is a static collection, false otherwise. </div>
+        </p></div></div><div id="a5ed341d2ea971005bc3d96dffeacc1fd" class="sect1"><div><h3>registerDiagnosticHandler</h3></div><div class="signature-box">void<span> </span>registerDiagnosticHandler(DiagnosticHandler *aDiagnosticHandler)=0</div><div><p class="signature-description">
+Register a <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> to which errors occuring during the management or manipulation of this collection are reported.         </p><p class="signature-description">
+If no <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> has been set using (1) this function, (2) the corresponding function of the <a href="/pages/3.0/zorba/classzorba_1_1XmlDataManager">XmlDataManager</a>, or (3) the corresponding function of the <a href="/pages/3.0/zorba/classzorba_1_1CollectionManager">CollectionManager</a> then subclasses of the <a href="/pages/3.0/zorba/classzorba_1_1ZorbaException">ZorbaException</a> class are thrown to report errors.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aDiagnosticHandler</td><td>
+<a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> to which errors are reported. The caller retains ownership over the <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">DiagnosticHandler</a> passed as parameter. </td></tr></table></div>
+        </p></div></div><div id="a32ce26dcd544b131ef8b024972960ebc" class="sect1"><div><h3>removeReference</h3></div><div class="signature-box">void<span> </span>removeReference()</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a4605973da34970b57c0945bae65e7def" class="sect1"><div><h3>~Collection</h3></div><div class="signature-box"><span> </span>~Collection()</div><div><p class="signature-description">
+Destructor.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Protected Attributes</h2><div class="detailed"><div id="a066274b33cffdd451a68a2a0754c6044" class="sect1"><div><h3>theRefCount</h3></div><div class="signature-box">unsigned int<span> </span>theRefCount</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

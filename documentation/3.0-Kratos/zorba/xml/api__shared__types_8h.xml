@@ -1,0 +1,394 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="api__shared__types_8h" kind="file">
+    <compoundname>api_shared_types.h</compoundname>
+    <includes local="no">zorba/config.h</includes>
+    <includes refid="smart__ptr_8h" local="no">zorba/util/smart_ptr.h</includes>
+    <includedby refid="annotation_8h" local="no">annotation.h</includedby>
+    <includedby refid="collection_8h" local="no">collection.h</includedby>
+    <includedby refid="collection__manager_8h" local="no">collection_manager.h</includedby>
+    <includedby refid="debugger__client_8h" local="no">debugger_client.h</includedby>
+    <includedby refid="document__manager_8h" local="no">document_manager.h</includedby>
+    <includedby refid="dynamic__context_8h" local="no">dynamic_context.h</includedby>
+    <includedby refid="function_8h" local="no">function.h</includedby>
+    <includedby refid="item_8h" local="no">item.h</includedby>
+    <includedby refid="item__factory_8h" local="no">item_factory.h</includedby>
+    <includedby refid="item__sequence_8h" local="no">item_sequence.h</includedby>
+    <includedby refid="iterator_8h" local="no">iterator.h</includedby>
+    <includedby refid="module__info_8h" local="no">module_info.h</includedby>
+    <includedby refid="query__location_8h" local="no">query_location.h</includedby>
+    <includedby refid="sax2_8h" local="no">sax2.h</includedby>
+    <includedby refid="serialization__callback_8h" local="no">serialization_callback.h</includedby>
+    <includedby refid="serializer_8h" local="no">serializer.h</includedby>
+    <includedby refid="static__collection__manager_8h" local="no">static_collection_manager.h</includedby>
+    <includedby refid="static__context_8h" local="no">static_context.h</includedby>
+    <includedby refid="typeident_8h" local="no">typeident.h</includedby>
+    <includedby refid="uri__resolvers_8h" local="no">uri_resolvers.h</includedby>
+    <includedby refid="user__exception_8h" local="no">user_exception.h</includedby>
+    <includedby refid="uri_8h" local="no">uri.h</includedby>
+    <includedby refid="vector__item__sequence_8h" local="no">vector_item_sequence.h</includedby>
+    <includedby refid="xmldatamanager_8h" local="no">xmldatamanager.h</includedby>
+    <includedby refid="xquery_8h" local="no">xquery.h</includedby>
+    <includedby refid="zorba_8h" local="no">zorba.h</includedby>
+    <incdepgraph>
+      <node id="1385">
+        <label>zorba/util/smart_ptr.h</label>
+        <link refid="smart__ptr_8h"/>
+        <childnode refid="1384" relation="include">
+        </childnode>
+      </node>
+      <node id="1384">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="1383">
+        <label>api_shared_types.h</label>
+        <link refid="api_shared_types.h"/>
+        <childnode refid="1384" relation="include">
+        </childnode>
+        <childnode refid="1385" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1415">
+        <label>uri.h</label>
+        <link refid="uri_8h"/>
+      </node>
+      <node id="1398">
+        <label>empty_sequence.h</label>
+        <link refid="empty__sequence_8h"/>
+      </node>
+      <node id="1397">
+        <label>item.h</label>
+        <link refid="item_8h"/>
+        <childnode refid="1390" relation="include">
+        </childnode>
+        <childnode refid="1398" relation="include">
+        </childnode>
+        <childnode refid="1399" relation="include">
+        </childnode>
+        <childnode refid="1400" relation="include">
+        </childnode>
+        <childnode refid="1401" relation="include">
+        </childnode>
+        <childnode refid="1402" relation="include">
+        </childnode>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1404">
+        <label>item_sequence.h</label>
+        <link refid="item__sequence_8h"/>
+        <childnode refid="1398" relation="include">
+        </childnode>
+        <childnode refid="1405" relation="include">
+        </childnode>
+        <childnode refid="1401" relation="include">
+        </childnode>
+        <childnode refid="1406" relation="include">
+        </childnode>
+      </node>
+      <node id="1416">
+        <label>xmldatamanager.h</label>
+        <link refid="xmldatamanager_8h"/>
+        <childnode refid="1395" relation="include">
+        </childnode>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1394">
+        <label>document_manager.h</label>
+        <link refid="document__manager_8h"/>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1411">
+        <label>xquery.h</label>
+        <link refid="xquery_8h"/>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1389">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="1388" relation="include">
+        </childnode>
+      </node>
+      <node id="1399">
+        <label>item_factory.h</label>
+        <link refid="item__factory_8h"/>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1391">
+        <label>collection_manager.h</label>
+        <link refid="collection__manager_8h"/>
+        <childnode refid="1392" relation="include">
+        </childnode>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1395">
+        <label>dynamic_context.h</label>
+        <link refid="dynamic__context_8h"/>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1390">
+        <label>collection.h</label>
+        <link refid="collection_8h"/>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1392">
+        <label>static_collection_manager.h</label>
+        <link refid="static__collection__manager_8h"/>
+      </node>
+      <node id="1400">
+        <label>serializer.h</label>
+        <link refid="serializer_8h"/>
+      </node>
+      <node id="1408">
+        <label>query_location.h</label>
+        <link refid="query__location_8h"/>
+        <childnode refid="1393" relation="include">
+        </childnode>
+      </node>
+      <node id="1403">
+        <label>thesaurus.h</label>
+        <link refid="thesaurus_8h"/>
+        <childnode refid="1388" relation="include">
+        </childnode>
+      </node>
+      <node id="1410">
+        <label>default_content_handler.h</label>
+        <link refid="default__content__handler_8h"/>
+      </node>
+      <node id="1414">
+        <label>user_exception.h</label>
+        <link refid="user__exception_8h"/>
+      </node>
+      <node id="1405">
+        <label>iterator.h</label>
+        <link refid="iterator_8h"/>
+        <childnode refid="1398" relation="include">
+        </childnode>
+        <childnode refid="1401" relation="include">
+        </childnode>
+        <childnode refid="1406" relation="include">
+        </childnode>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1388">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1402">
+        <label>uri_resolvers.h</label>
+        <link refid="uri__resolvers_8h"/>
+        <childnode refid="1403" relation="include">
+        </childnode>
+      </node>
+      <node id="1407">
+        <label>module_info.h</label>
+        <link refid="module__info_8h"/>
+      </node>
+      <node id="1401">
+        <label>singleton_item_sequence.h</label>
+        <link refid="singleton__item__sequence_8h"/>
+      </node>
+      <node id="1413">
+        <label>typeident.h</label>
+        <link refid="typeident_8h"/>
+        <childnode refid="1388" relation="include">
+        </childnode>
+      </node>
+      <node id="1412">
+        <label>serialization_callback.h</label>
+        <link refid="serialization__callback_8h"/>
+      </node>
+      <node id="1396">
+        <label>function.h</label>
+        <link refid="function_8h"/>
+        <childnode refid="1388" relation="include">
+        </childnode>
+      </node>
+      <node id="1386">
+        <label>api_shared_types.h</label>
+        <link refid="api_shared_types.h"/>
+        <childnode refid="1387" relation="include">
+        </childnode>
+        <childnode refid="1390" relation="include">
+        </childnode>
+        <childnode refid="1391" relation="include">
+        </childnode>
+        <childnode refid="1393" relation="include">
+        </childnode>
+        <childnode refid="1394" relation="include">
+        </childnode>
+        <childnode refid="1395" relation="include">
+        </childnode>
+        <childnode refid="1396" relation="include">
+        </childnode>
+        <childnode refid="1397" relation="include">
+        </childnode>
+        <childnode refid="1399" relation="include">
+        </childnode>
+        <childnode refid="1404" relation="include">
+        </childnode>
+        <childnode refid="1405" relation="include">
+        </childnode>
+        <childnode refid="1407" relation="include">
+        </childnode>
+        <childnode refid="1408" relation="include">
+        </childnode>
+        <childnode refid="1409" relation="include">
+        </childnode>
+        <childnode refid="1412" relation="include">
+        </childnode>
+        <childnode refid="1400" relation="include">
+        </childnode>
+        <childnode refid="1392" relation="include">
+        </childnode>
+        <childnode refid="1388" relation="include">
+        </childnode>
+        <childnode refid="1413" relation="include">
+        </childnode>
+        <childnode refid="1402" relation="include">
+        </childnode>
+        <childnode refid="1414" relation="include">
+        </childnode>
+        <childnode refid="1415" relation="include">
+        </childnode>
+        <childnode refid="1406" relation="include">
+        </childnode>
+        <childnode refid="1416" relation="include">
+        </childnode>
+        <childnode refid="1411" relation="include">
+        </childnode>
+        <childnode refid="1389" relation="include">
+        </childnode>
+      </node>
+      <node id="1409">
+        <label>sax2.h</label>
+        <link refid="sax2_8h"/>
+        <childnode refid="1410" relation="include">
+        </childnode>
+        <childnode refid="1411" relation="include">
+        </childnode>
+      </node>
+      <node id="1387">
+        <label>annotation.h</label>
+        <link refid="annotation_8h"/>
+        <childnode refid="1388" relation="include">
+        </childnode>
+      </node>
+      <node id="1393">
+        <label>debugger_client.h</label>
+        <link refid="debugger__client_8h"/>
+      </node>
+      <node id="1406">
+        <label>vector_item_sequence.h</label>
+        <link refid="vector__item__sequence_8h"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <innernamespace refid="namespacezorba_1_1audit">zorba::audit</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_SHARED_TYPES_INCL_H</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_SHARED_TYPES_INCL_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="smart__ptr_8h" kindref="compound">zorba/util/smart_ptr.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="24"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Annotation;</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Collection;</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">CollectionManager;</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DiagnosticHandler;</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DocumentManager;</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DynamicContext;</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ExternalFunctionParameter;</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ExternalModule;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Function;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ItemFactory;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ItemSequence;</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Iterator;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ModuleInfo;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">QueryLocation;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SequenceType;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SerializationCallback;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Serializer;</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StatelessExternalFunction;</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StaticCollectionManager;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StaticContext;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_NO_FULL_TEXT</highlight></codeline>
+<codeline lineno="47"><highlight class="preprocessor"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StemmerProvider;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">TokenizerProvider;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_NO_FULL_TEXT<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">XmlDataManager;</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">XQuery;</highlight></codeline>
+<codeline lineno="52" refid="namespacezorba_1a2ec75c29e084faf0a908f2b5545b9ed2" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1Zorba" kindref="compound" tooltip="The Zorba class is the single point of access to the Zorba engine.">Zorba</ref>;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight><highlight class="comment">//<sp/>smart<sp/>pointers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;Annotation&gt;</ref><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1a2ec75c29e084faf0a908f2b5545b9ed2" kindref="member">Annotation_t</ref>;</highlight></codeline>
+<codeline lineno="56" refid="namespacezorba_1a291189546e49e82a0c583e69665fab70" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;Collection&gt;</ref><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1a291189546e49e82a0c583e69665fab70" kindref="member">Collection_t</ref>;</highlight></codeline>
+<codeline lineno="57" refid="namespacezorba_1a14ebd231017771b2f2ab42b14eed3ff6" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;Function&gt;</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1a14ebd231017771b2f2ab42b14eed3ff6" kindref="member">Function_t</ref>;</highlight></codeline>
+<codeline lineno="58" refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;ItemSequence&gt;</ref><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1ab047eb444ab2bd501dca0b831aac47ac" kindref="member">ItemSequence_t</ref>;</highlight></codeline>
+<codeline lineno="59" refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;Iterator&gt;</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref>;</highlight></codeline>
+<codeline lineno="60" refid="namespacezorba_1a70597055d1d80f62684a2ad64cc825f0" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;ModuleInfo&gt;</ref><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1a70597055d1d80f62684a2ad64cc825f0" kindref="member">ModuleInfo_t</ref>;</highlight></codeline>
+<codeline lineno="61" refid="namespacezorba_1a78d62a531f86641ced1f270a9b94d822" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;QueryLocation&gt;</ref><sp/><sp/><sp/><ref refid="namespacezorba_1a78d62a531f86641ced1f270a9b94d822" kindref="member">QueryLocation_t</ref>;</highlight></codeline>
+<codeline lineno="62" refid="namespacezorba_1acdfa38cd908238b68199f29d6c3392f9" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;Serializer&gt;</ref><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1acdfa38cd908238b68199f29d6c3392f9" kindref="member">Serializer_t</ref>;</highlight></codeline>
+<codeline lineno="63" refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;StaticContext&gt;</ref><sp/><sp/><sp/><ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref>;</highlight></codeline>
+<codeline lineno="64" refid="namespacezorba_1a71ab77999abc9a60012b2c63a848c2ce" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;XmlDataManager&gt;</ref><sp/><sp/><ref refid="namespacezorba_1a71ab77999abc9a60012b2c63a848c2ce" kindref="member">XmlDataManager_t</ref>;</highlight></codeline>
+<codeline lineno="65" refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr&lt;XQuery&gt;</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref>;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="comment">//<sp/>data<sp/>handlers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref>;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref>;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight><highlight class="comment">//<sp/>uri<sp/>resolvers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1URIMapper" kindref="compound" tooltip="Interface for URI mapping.">URIMapper</ref>;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1Resource" kindref="compound" tooltip="The class representing the result of URL resolution.">Resource</ref>;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1URLResolver" kindref="compound" tooltip="Interface for URL resolving.">URLResolver</ref>;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76" refid="namespacezorba_1_1audit" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">audit<sp/>{</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1audit_1_1Provider" kindref="compound">Provider</ref>;</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1audit_1_1Event" kindref="compound">Event</ref>;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classzorba_1_1audit_1_1ScopedRecord" kindref="compound">ScopedRecord</ref>;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="82"><highlight class="comment">///////////////////////////////////////////////////////////////////////////////</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_SHARED_TYPES_INCL_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/api_shared_types.h"/>
+  </compounddef>
+</doxygen>

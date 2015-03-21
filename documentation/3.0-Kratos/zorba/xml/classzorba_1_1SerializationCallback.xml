@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1SerializationCallback" kind="class" prot="public">
+    <compoundname>zorba::SerializationCallback</compoundname>
+    <includes refid="serialization__callback_8h" local="no">zorba/serialization_callback.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SerializationCallback_1a4844ffec027e86d76ff2dbbcf7e09514" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="classzorba_1_1ExternalModule" kindref="compound">ExternalModule</ref> *</type>
+        <definition>virtual ExternalModule* zorba::SerializationCallback::getExternalModule</definition>
+        <argsstring>(const String &amp;aURI) const </argsstring>
+        <name>getExternalModule</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aURI</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/serialization_callback.h" line="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SerializationCallback_1ad61e128a03dac5ff0b9bfc39d24a4e4c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::SerializationCallback::getTraceStream</definition>
+        <argsstring>(std::ostream *&amp;) const </argsstring>
+        <name>getTraceStream</name>
+        <param>
+          <type>std::ostream *&amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/serialization_callback.h" line="34"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SerializationCallback_1aca7875cac57cff26369e2a788c5e1316" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="classzorba_1_1URIMapper" kindref="compound">URIMapper</ref> *</type>
+        <definition>virtual URIMapper* zorba::SerializationCallback::getURIMapper</definition>
+        <argsstring>(size_t i) const </argsstring>
+        <name>getURIMapper</name>
+        <param>
+          <type>size_t</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>Get the i-th <ref refid="classzorba_1_1URIMapper" kindref="compound">URIMapper</ref> that was registered before serialization. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/serialization_callback.h" line="41"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SerializationCallback_1acd5bcbe23e1e95bfd9845178985594c6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="classzorba_1_1URLResolver" kindref="compound">URLResolver</ref> *</type>
+        <definition>virtual URLResolver* zorba::SerializationCallback::getURLResolver</definition>
+        <argsstring>(size_t i) const </argsstring>
+        <name>getURLResolver</name>
+        <param>
+          <type>size_t</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>Get the i-th <ref refid="classzorba_1_1URLResolver" kindref="compound">URLResolver</ref> that was registered before serialization. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/serialization_callback.h" line="48"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SerializationCallback_1ab0b4c4df149aba8a91373ba4cd37269c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::SerializationCallback::~SerializationCallback</definition>
+        <argsstring>()</argsstring>
+        <name>~SerializationCallback</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/serialization_callback.h" line="28" bodyfile="/home/wcandillon/deadlinks/include/zorba/serialization_callback.h" bodystart="28" bodyend="28"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/serialization_callback.h" line="25" bodyfile="/home/wcandillon/deadlinks/include/zorba/serialization_callback.h" bodystart="25" bodyend="49"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SerializationCallback_1a4844ffec027e86d76ff2dbbcf7e09514" prot="public" virt="virtual"><scope>zorba::SerializationCallback</scope><name>getExternalModule</name></member>
+      <member refid="classzorba_1_1SerializationCallback_1ad61e128a03dac5ff0b9bfc39d24a4e4c" prot="public" virt="virtual"><scope>zorba::SerializationCallback</scope><name>getTraceStream</name></member>
+      <member refid="classzorba_1_1SerializationCallback_1aca7875cac57cff26369e2a788c5e1316" prot="public" virt="virtual"><scope>zorba::SerializationCallback</scope><name>getURIMapper</name></member>
+      <member refid="classzorba_1_1SerializationCallback_1acd5bcbe23e1e95bfd9845178985594c6" prot="public" virt="virtual"><scope>zorba::SerializationCallback</scope><name>getURLResolver</name></member>
+      <member refid="classzorba_1_1SerializationCallback_1ab0b4c4df149aba8a91373ba4cd37269c" prot="public" virt="virtual"><scope>zorba::SerializationCallback</scope><name>~SerializationCallback</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="indexpage" kind="page">
+    <compoundname>index</compoundname>
+    <title>Zorba 3.0.0 Documentation</title>
+    <detaileddescription>
+<sect1 id="index_1xml_json">
+<title>XQuery &amp; JSONiq (XML &amp; JSON)</title>
+<para><itemizedlist>
+<listitem><para><ref refid="xml_json_1two_syntaxes" kindref="member">One VM, two syntaxes</ref></para></listitem><listitem><para><ref refid="xml_json_1share" kindref="member">What they share</ref></para></listitem><listitem><para><ref refid="xml_json_1two_faces" kindref="member">Two faces of the same language</ref></para></listitem><listitem><para><ref refid="xml_json_1contentious_points" kindref="member">Syntactic contentious points</ref></para></listitem><listitem><para><ref refid="xml_json_1xquery_syntax" kindref="member">The XQuery Syntax</ref></para></listitem><listitem><para><ref refid="xml_json_1jsoniq_syntax" kindref="member">The JSONiq syntax</ref></para></listitem><listitem><para><ref refid="xml_json_1how_to_specify" kindref="member">How to specify which syntax your query is using</ref></para></listitem><listitem><para><ref refid="xml_json_1interlanguage" kindref="member">Interlanguage Module Imports</ref></para></listitem><listitem><para><ref refid="xml_json_1legacy_jsoniq" kindref="member">Legacy JSONiq queries can still be parsed with the XQuery parser.</ref></para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="index_1build_section">
+<title>Building Zorba</title>
+<para><itemizedlist>
+<listitem><para><ref refid="build" kindref="compound">Zorba Build Instructions</ref></para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="index_1install_section">
+<title>Install</title>
+<para><itemizedlist>
+<listitem><para><ref refid="install_osx_tutorial" kindref="compound">Zorba - Mac OSX Installation</ref></para></listitem><listitem><para><ref refid="php_ubuntu_tutorial" kindref="compound">Zorba with PHP 5 - Ubuntu Installation</ref></para></listitem><listitem><para><ref refid="php_windows_tutorial" kindref="compound">Zorba with PHP 5 - Windows Installation</ref></para></listitem><listitem><para><ref refid="python_windows_tutorial" kindref="compound">Zorba with Python - Windows Installation</ref></para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="index_1tools">
+<title>Tools</title>
+<para><itemizedlist>
+<listitem><para><ref refid="commandline" kindref="compound">Command Line Utility</ref></para></listitem><listitem><para><ulink url="https://docs.c9.io/supported_languages.html">XQuery + JSONiq in Cloud9</ulink></para></listitem><listitem><para><ulink url="http://xqdt.org">XQuery Development Toolkit (XQDT)</ulink></para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="index_1apis">
+<title>APIs</title>
+<para><itemizedlist>
+<listitem><para><ulink url="../cxx/indexpage.html">C++</ulink></para></listitem><listitem><para><ulink url="../c/indexpage.html">C</ulink></para></listitem><listitem><para><ulink url="../xqj/indexpage.html">XQJ</ulink></para></listitem><listitem><para><ulink url="../java/indexpage.html">Java</ulink></para></listitem><listitem><para><ulink url="../php/indexpage.html">PHP</ulink></para></listitem><listitem><para><ulink url="../python/indexpage.html">Python</ulink></para></listitem><listitem><para><ulink url="../csharp/indexpage.html">C#</ulink></para></listitem><listitem><para><ulink url="../ruby/indexpage.html">Ruby</ulink></para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="index_1generalarchitecture">
+<title>General Architecture</title>
+<para><itemizedlist>
+<listitem><para><ref refid="data_lifecycle" kindref="compound">Data Lifecycle</ref></para></listitem><listitem><para><ref refid="data_lifecycle_1dlexamples" kindref="member">Examples</ref></para></listitem><listitem><para><ref refid="data_lifecycle_1dlzorbastore" kindref="member">Zorba Stores</ref></para></listitem><listitem><para><ref refid="schema_lifecycle" kindref="compound">Schema Lifecycle</ref></para></listitem><listitem><para><ref refid="uriresolvers" kindref="compound">URI Resolvers</ref></para></listitem><listitem><para><ref refid="data_converters" kindref="compound">Data Converters</ref></para></listitem><listitem><para><ref refid="ft_intro" kindref="compound">Full Text</ref></para></listitem><listitem><para><ref refid="errors_warnings" kindref="compound">Errors and Warnings</ref></para></listitem><listitem><para><ref refid="impl_dep_features" kindref="compound">Dependencies</ref></para></listitem><listitem><para><ref refid="memory_management" kindref="compound">Memory Management</ref></para></listitem><listitem><para><ref refid="memory_leaks" kindref="compound">Memory Leaks</ref></para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="index_1xqlib">
+<title>Modules</title>
+<para><itemizedlist>
+<listitem><para><ulink url="../modules/index.html">Module Library</ulink></para></listitem><listitem><para><ref refid="modules_top" kindref="compound">Modules in Zorba</ref></para></listitem><listitem><para><ref refid="modules_using_1mod_importing" kindref="member">Importing Modules</ref></para></listitem><listitem><para><ref refid="modules_using_1mod_versioning" kindref="member">Versioning Modules</ref></para></listitem><listitem><para><ref refid="modules_authoring" kindref="compound">Writing Your Own Modules</ref></para></listitem><listitem><para><ref refid="modules_authoring_2" kindref="compound">Module Authoring, Continued</ref></para></listitem><listitem><para><ref refid="modules_building_in" kindref="compound">Building Modules Into Zorba</ref></para></listitem><listitem><para><ref refid="external_functions" kindref="compound">Writing Your Own External Functions</ref></para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="index_1w3cspecs">
+<title>W3C Specifications</title>
+<para><itemizedlist>
+<listitem><para><ref refid="overview" kindref="compound">Overview</ref></para></listitem><listitem><para><ulink url="http://www.w3.org/TR/xquery/">W3C XQuery 1.0</ulink> (<ref refid="conformance_XQ10" kindref="compound">W3C XQuery 1.0 Conformance</ref>)</para></listitem><listitem><para><ulink url="http://www.w3.org/TR/xpath-functions-30/">W3C XPath and XQuery Functions and Operators</ulink> (<ulink url="../xqdoc/xhtml/function_index.html">List of Supported Functions</ulink>)</para></listitem><listitem><para><ulink url="http://www.w3.org/TR/xquery-update-10/">W3C XQuery Update Facility 1.0</ulink> (<ref refid="conformanceXQUTS" kindref="compound">W3C XQuery Update Facility 1.0 Conformance</ref>)</para></listitem><listitem><para><ulink url="http://www.w3.org/TR/xpath-full-text-10/">W3C XQuery and XPath Full Text 1.0</ulink> (<ref refid="conformanceXQFTTS" kindref="compound">W3C XQuery and XPath Full Text 1.0 Conformance.</ref>)</para></listitem><listitem><para><ulink url="http://www.w3.org/TR/xquery-30/">W3C XQuery 3.0</ulink> (<ref refid="conformance_XQ30" kindref="compound">W3C XQuery 3.0 Conformance</ref>)</para></listitem><listitem><para><ulink url="http://www.w3.org/XML/Schema">W3C XML Schema</ulink></para></listitem><listitem><para><ulink url="http://www.w3.org/TR/xslt">W3C XSL Transformations (XSLT) 1.0</ulink></para></listitem><listitem><para><ulink url="http://www.w3.org/TR/xqueryx/">W3C XML Syntax for XQuery 1.0 (XQueryX)</ulink></para></listitem><listitem><para><ulink url="http://www.w3.org/TR/xslt-xquery-serialization/">W3C XSLT 2.0 and XQuery 1.0 Serialization</ulink></para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="index_1jsoniqspec">
+<title>JSONiq Specifications</title>
+<para><itemizedlist>
+<listitem><para><ulink url="http://jsoniq.org/docs/JSONiq/html-single/index.html">JSONiq 1.0</ulink><itemizedlist>
+<listitem><para><ref refid="XQuery_for_JSON" kindref="compound">JSONiq for JSON users tutorial</ref></para></listitem><listitem><para><ref refid="JSON_for_XQuery" kindref="compound">JSONiq for XQuery users tutorial</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para><ulink url="http://jsoniq.org/docs/JSONiqExtensionToXQuery/html-single/index.html">JSONiq Extension to XQuery</ulink></para></listitem><listitem><para><ulink url="http://www.jsoniq.org/docs/JSOund/html-single/">JSound 0.1</ulink> (A JSON schema language)</para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="index_1zorbaspec">
+<title>Zorba Proprietary Specifications</title>
+<para><itemizedlist>
+<listitem><para><ref refid="xqddf" kindref="compound">Data Definition Facility</ref></para></listitem><listitem><para><ref refid="scripting_spec" kindref="compound">XQuery Scripting Extension Proposal</ref> (also see our <ref refid="scripting_tutorial" kindref="compound">Tutorial</ref>)</para></listitem><listitem><para><ref refid="options_and_annotations" kindref="compound">Zorba Specific Options and Annotations</ref></para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="index_1tutorials">
+<title>Examples</title>
+<para><itemizedlist>
+<listitem><para><ref refid="web_crawler_tutorial" kindref="compound">Web Crawler example in XQuery</ref></para></listitem><listitem><para><ref refid="image_processing_tutorial" kindref="compound">Image Processing with Zorba</ref> </para></listitem></itemizedlist>
+</para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

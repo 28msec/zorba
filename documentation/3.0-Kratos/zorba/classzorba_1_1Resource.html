@@ -1,0 +1,16 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::Resource</h1><p class="include">
+            #include &lt;zorba/uri_resolvers.h&gt;
+        </p>
+The class representing the result of URL resolution.     
+This class is the final output of the URI resolution process. All URL resolvers return results using subclasses of this class.     <div class="section"><h2>Public Types</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Resource">Resource</a>, <a href="/pages/3.0/zorba/structzorba_1_1internal_1_1ztd_1_1destroy__delete">internal::ztd::destroy_delete</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Resource">Resource</a> &gt; &gt;</p></td><td><p class="signature"><a href="#a2fc7456745b8828dd98971e78f85823e">ptr</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a0cc13ffe1069093bf5bdd28642847d9b">destroy</a>() const =0</p><span class="signature-description">
+Destroy/clean up this <a href="/pages/3.0/zorba/classzorba_1_1Resource">Resource</a>.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#abfa3e48b60d8e12b86bd8a0a97309d8c">~Resource</a>()=0</p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Types</h2><div class="detailed"><div id="a2fc7456745b8828dd98971e78f85823e" class="sect1"><div><h3>ptr</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classstd_1_1unique__ptr">std::unique_ptr</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Resource">Resource</a>, <a href="/pages/3.0/zorba/structzorba_1_1internal_1_1ztd_1_1destroy__delete">internal::ztd::destroy_delete</a>&lt; <a href="/pages/3.0/zorba/classzorba_1_1Resource">Resource</a> &gt; &gt;<span> </span>ptr</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a0cc13ffe1069093bf5bdd28642847d9b" class="sect1"><div><h3>destroy</h3></div><div class="signature-box">void<span> </span>destroy() const =0</div><div><p class="signature-description">
+Destroy/clean up this <a href="/pages/3.0/zorba/classzorba_1_1Resource">Resource</a>.         </p><p class="signature-description">
+<a href="/pages/3.0/zorba/classzorba_1_1Zorba">Zorba</a> will call this method when it no longer needs the <a href="/pages/3.0/zorba/classzorba_1_1Resource">Resource</a>. It is the responsibility of subclasses to clean up appropriate when this method is called, including calling "delete this" if the <a href="/pages/3.0/zorba/classzorba_1_1Resource">Resource</a> was allocated with "new".         </p></div></div><div id="abfa3e48b60d8e12b86bd8a0a97309d8c" class="sect1"><div><h3>~Resource</h3></div><div class="signature-box"><span> </span>~Resource()=0</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

@@ -1,0 +1,1167 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1XQuery" kind="class" prot="public">
+    <compoundname>zorba::XQuery</compoundname>
+    <basecompoundref refid="classzorba_1_1SmartObject" prot="public" virt="non-virtual">zorba::SmartObject</basecompoundref>
+    <includes refid="xquery_8h" local="no">zorba/xquery.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::addReference</definition>
+        <argsstring>() const </argsstring>
+        <name>addReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1ab0bb4c46f5dffe1d1065934dfa3ba3d1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref></type>
+        <definition>virtual XQuery_t zorba::XQuery::clone</definition>
+        <argsstring>() const =0</argsstring>
+        <name>clone</name>
+        <briefdescription>
+<para>Clone this query object in order to execute the query in another thread. </para>        </briefdescription>
+        <detaileddescription>
+<para>Although two or more threads may invoke one of the execute methods on the same <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object, these invocations are serialized internally. For true parallel excetution of a query by multiple threads, the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object needs to be cloned, using this method. However, note that if an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> has been provided by the user (see <ref refid="classzorba_1_1XQuery_1a269ebf498ff1964b72d0b254ef06b554" kindref="member">registerDiagnosticHandler()</ref>), this <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> will also be used in the cloned query, and as a result, the user should provide a thread-safe <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref>. Alternatively, a new <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> can be registered in the cloned query by using registerDiagnosticHandler again. Or, the cloned query can be reset to use the default <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> (which just throws exceptions) by calling resetDiagnosticHandler.</para><para>This function also clones the <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> and <ref refid="classzorba_1_1DynamicContext" kindref="compound">DynamicContext</ref> of the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. In the <ref refid="classzorba_1_1DynamicContext" kindref="compound">DynamicContext</ref> of the cloned query different variable values can be used, e.g. set different external variable values. For an example of cloning a query and setting different values in the dynamic context see example_10 in file <ref refid="simple_8cpp-example" kindref="compound">simple.cpp</ref>.</para><para><simplesect kind="return"><para>The cloned <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>SystemException</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has not been compiled or is closed. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="422"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1adbb74d7a716e0f4899fc414ca6948a23" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::close</definition>
+        <argsstring>()=0</argsstring>
+        <name>close</name>
+        <briefdescription>
+<para>Close the query and release all of its aquired ressources. </para>        </briefdescription>
+        <detaileddescription>
+<para>While a query is compiled and/or active, it holds on to a number of resources. Before <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> can be safely shutdown, all resources must be released. For queries this can be done by calling close. However, if close is not called explicitly, it will be automatically called by the <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object&apos;s destructor, when the last smart pointer pointing this <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object is destroyed.</para><para>Note: After an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object is closed, calling <ref refid="classzorba_1_1XQuery_1adbb74d7a716e0f4899fc414ca6948a23" kindref="member">close()</ref> again on the same object is a noop. However, calling any method other than <ref refid="classzorba_1_1XQuery_1adbb74d7a716e0f4899fc414ca6948a23" kindref="member">close()</ref> on a closed <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object is prohibited (an error will be raised).</para><para>Note: if an iterator has been created to retreive the result of an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object (<simplesect kind="see"><para><ref refid="classzorba_1_1XQuery_1a432f79cc3e3d26dd97d69cb4dac06904" kindref="member">iterator()</ref>), that itrator will be closed when the query is closed, and the association between <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object and <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> object will be destroyed. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="387"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a8408503a6cc5e253b14167e2bb92d1b3" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::compile</definition>
+        <argsstring>(const String &amp;aQuery)=0</argsstring>
+        <name>compile</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <briefdescription>
+<para>Compile a query given as a <ref refid="classzorba_1_1String" kindref="compound">String</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query <ref refid="classzorba_1_1String" kindref="compound">String</ref> to compile. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has been closed, is already compiled, or an error occurs while compiling the query. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="242"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1adfac463b622ac2413d27e8ccb9c217f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::compile</definition>
+        <argsstring>(const String &amp;aQuery, const Zorba_CompilerHints_t &amp;aHints)=0</argsstring>
+        <name>compile</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1afb707279f21bf8e9df26d5ec459b8ede" kindref="member">Zorba_CompilerHints_t</ref> &amp;</type>
+          <declname>aHints</declname>
+        </param>
+        <briefdescription>
+<para>Compile a query given as a <ref refid="classzorba_1_1String" kindref="compound">String</ref>, using the given compiler hints. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query <ref refid="classzorba_1_1String" kindref="compound">String</ref> to compile. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHints</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>hints passed to the query compiler. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has been closed, is already compiled, or an error occurs while compiling the query. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="253"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a57df68ee44f727945382fe1603255ce0" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::compile</definition>
+        <argsstring>(std::istream &amp;aQuery, const Zorba_CompilerHints_t &amp;aHints)=0</argsstring>
+        <name>compile</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1afb707279f21bf8e9df26d5ec459b8ede" kindref="member">Zorba_CompilerHints_t</ref> &amp;</type>
+          <declname>aHints</declname>
+        </param>
+        <briefdescription>
+<para>Compile a query given as an input stream, using the given compiler hints. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query input stream. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHints</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>hints passed to the query compiler. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has been closed, is already compiled, or an error occurs while compiling the query. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="264"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1ac2b5db2da59c2491470c090122ad2d49" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::compile</definition>
+        <argsstring>(const String &amp;aQuery, const StaticContext_t &amp;aStaticContext, const Zorba_CompilerHints_t &amp;aHints)=0</argsstring>
+        <name>compile</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>aStaticContext</declname>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1afb707279f21bf8e9df26d5ec459b8ede" kindref="member">Zorba_CompilerHints_t</ref> &amp;</type>
+          <declname>aHints</declname>
+        </param>
+        <briefdescription>
+<para>Compile a query given as a <ref refid="classzorba_1_1String" kindref="compound">String</ref>, using a given static context and compiler hints. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query <ref refid="classzorba_1_1String" kindref="compound">String</ref> to compile. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aStaticContext</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the static context. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHints</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>hints passed to the query compiler. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has been closed, is already compiled, or an error occurs while compiling the query. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="279"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1aed40c99c5ce628c9b2f57a1babc73271" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::compile</definition>
+        <argsstring>(std::istream &amp;aQuery, const StaticContext_t &amp;aStaticContext, const Zorba_CompilerHints_t &amp;aHints)=0</argsstring>
+        <name>compile</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref> &amp;</type>
+          <declname>aStaticContext</declname>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1afb707279f21bf8e9df26d5ec459b8ede" kindref="member">Zorba_CompilerHints_t</ref> &amp;</type>
+          <declname>aHints</declname>
+        </param>
+        <briefdescription>
+<para>Compile a query given as an input stream, using a given static context and compiler hints. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query input stream. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aStaticContext</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the static context. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aHints</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>hints passed to the query compiler. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has been closed, is already compiled, or an error occurs while compiling the query. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="294"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a62758ab41cf088cda72c246b25f668db" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::execute</definition>
+        <argsstring>(std::ostream &amp;aOutStream, const Zorba_SerializerOptions_t *aSerOptions=NULL)=0</argsstring>
+        <name>execute</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>aOutStream</declname>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1a4da3881b368a669bb110f8f198272159" kindref="member">Zorba_SerializerOptions_t</ref> *</type>
+          <declname>aSerOptions</declname>
+          <defval>NULL</defval>
+        </param>
+        <briefdescription>
+<para>Execute the query and write the result to the given output stream. </para>        </briefdescription>
+        <detaileddescription>
+<para>The query only has a result if it&apos;s a non-updating query.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aOutStream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the output stream on which the result is written. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aSerOptions</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>an optional set of serialization options. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occurs (e.g. the query is closed or has not been compiled) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="119"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a470074b64011b3737b3845aa8347bcfc" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::execute</definition>
+        <argsstring>(std::ostream &amp;aOutStream, itemHandler aCallbackFunction, void *aCallbackData, const Zorba_SerializerOptions_t *aSerOptions=NULL)=0</argsstring>
+        <name>execute</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>aOutStream</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1a8df43daa49453badc49fdf745e5da41c" kindref="member">itemHandler</ref></type>
+          <declname>aCallbackFunction</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>aCallbackData</declname>
+        </param>
+        <param>
+          <type>const <ref refid="options_8h_1a4da3881b368a669bb110f8f198272159" kindref="member">Zorba_SerializerOptions_t</ref> *</type>
+          <declname>aSerOptions</declname>
+          <defval>NULL</defval>
+        </param>
+        <briefdescription>
+<para>Execute the query and write the result to the given output stream. </para>        </briefdescription>
+        <detaileddescription>
+<para>A handler function gets called before the serialization of each item.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aOutStream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the output stream on which the result is written. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCallbackFunction</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a call back function which is called every time, before the serialization of an item. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCallbackData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data which is passed to the call back function. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aSerOptions</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1Serializer" kindref="compound">Serializer</ref> options. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occurs (e.g. the query is closed or has not been compiled) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="137"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a47068cebc58f146abb862a94384a4adb" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::execute</definition>
+        <argsstring>()=0</argsstring>
+        <name>execute</name>
+        <briefdescription>
+<para>Execute the (updating) query. </para>        </briefdescription>
+        <detaileddescription>
+<para>The query can be executed with this function only if it is an updating query.</para><para><simplesect kind="see"><para><ref refid="classzorba_1_1XQuery_1af5c18272f36baed40cac27495448feca" kindref="member">isUpdating</ref> </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occurs (e.g. the query is closed or has not been compiled or is not updating) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="148"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1abc92a24b52aa33894ee13be7d8cc2804" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::executeSAX</definition>
+        <argsstring>(SAX2_ContentHandler *aContentHandler)=0</argsstring>
+        <name>executeSAX</name>
+        <param>
+          <type><ref refid="classzorba_1_1SAX2__ContentHandler" kindref="compound">SAX2_ContentHandler</ref> *</type>
+          <declname>aContentHandler</declname>
+        </param>
+        <briefdescription>
+<para>Serialize the query result as SAX events and call the callbacks of the <ref refid="classzorba_1_1SAX2__ContentHandler" kindref="compound">SAX2_ContentHandler</ref> that is given as input. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aContentHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the content handler on which SAX callbacks are called. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="177"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1af65562458630636335f510f5971bf382" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::executeSAX</definition>
+        <argsstring>()=0</argsstring>
+        <name>executeSAX</name>
+        <briefdescription>
+<para>Serialize the query result as SAX events and call the callbacks of the <ref refid="classzorba_1_1SAX2__ContentHandler" kindref="compound">SAX2_ContentHandler</ref> that has been set using registerSAXHandler. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occurs (e.g. no <ref refid="classzorba_1_1SAX2__ContentHandler" kindref="compound">SAX2_ContentHandler</ref> has been registered). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="187"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SmartObject::free</definition>
+        <argsstring>()</argsstring>
+        <name>free</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1af171545243b5cd66525cfbc565f3ae2f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>double</type>
+        <definition>virtual double zorba::XQuery::getDocLoadingTime</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getDocLoadingTime</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="540"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a254c580091ea7e486ab4de086e5db6d2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>double</type>
+        <definition>virtual double zorba::XQuery::getDocLoadingUserTime</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getDocLoadingUserTime</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="534"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1ade775d63d25f849de4a22297e859354c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1DynamicContext" kindref="compound">DynamicContext</ref> *</type>
+        <definition>virtual DynamicContext* zorba::XQuery::getDynamicContext</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getDynamicContext</name>
+        <briefdescription>
+<para>Get the dynamic context of this query. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function returns the dynamic context that belongs to this query and is used during query execution. The context can be used, for example, to set values of external variables, the default collation, or the current datetime. It is only available if the query has been compiled, otherwise an error is reported. Moreover, the context must not be modified during the execution of a query (i.e. if a <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> is opened). The lifetime of the context returned by this function is restricted by the lifetime of the according query object.</para><para><parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>SystemException</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has not been compiled or is closed. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1DynamicContext" kindref="compound">DynamicContext</ref> of this query. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="205"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1ae95826866c11005bdeef7eae5b7f4ed3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::getExternalVariables</definition>
+        <argsstring>(Iterator_t &amp;aVarsIter) const =0</argsstring>
+        <name>getExternalVariables</name>
+        <param>
+          <type><ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref> &amp;</type>
+          <declname>aVarsIter</declname>
+        </param>
+        <briefdescription>
+<para>Returns the QName of all external variables. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aVarsIter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>iterator to store the results. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occured. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="528"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1af9d7a9a529a95cb5b1c2c4066db83474" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::string</type>
+        <definition>virtual std::string zorba::XQuery::getProfileName</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getProfileName</name>
+        <briefdescription>
+<para>Get the filename of the profile. </para>        </briefdescription>
+        <detaileddescription>
+<para>This file will contain the output of <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> profiler. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="454"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>long zorba::SmartObject::getRefCount</definition>
+        <argsstring>() const </argsstring>
+        <name>getRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1abca740ea35f962e5472481bc3114d9ad" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1StaticCollectionManager" kindref="compound">StaticCollectionManager</ref> *</type>
+        <definition>virtual StaticCollectionManager* zorba::XQuery::getStaticCollectionManager</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getStaticCollectionManager</name>
+        <briefdescription>
+<para>Returns a <ref refid="classzorba_1_1CollectionManager" kindref="compound">CollectionManager</ref> responsible for all collections which are statically declared in the static context of this query (main module) or any transitively imported library module. </para>        </briefdescription>
+        <detaileddescription>
+<para>The collection manager provides a set of functions for managing collections and their contents.</para><para><simplesect kind="return"><para>The collection manager responsible for managing collections of this query. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="520"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a7614f07940007398562e4e014f35e931" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> *</type>
+        <definition>virtual const StaticContext* zorba::XQuery::getStaticContext</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getStaticContext</name>
+        <briefdescription>
+<para>Get the static context of this query. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function returns the static context that belongs to this query. The static context is only available if the query has been compiled, otherwise an error is reported. The context has all the components and values that were set in the static context that was passed when creating the query and those that were set in the prolog of the query. Note that after compilation of the query the static context is a read only structure. Moreover, the lifetime of the context returned by this function is restricted by the lifetime of the corresponding query object.</para><para><parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>SystemException</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has not been compiled or is closed. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> of this query. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="223"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a9b207e13e728c1ea6eaf8e910af8a8da" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::XQuery::isClosed</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isClosed</name>
+        <briefdescription>
+<para>Check if this query object has already been closed. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>true if the query has been closed already or false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="395"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a668c4eee921f57e6eb6d6aad1cefc446" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::XQuery::isSequential</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isSequential</name>
+        <briefdescription>
+<para>Check if this query is a sequential query. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>true if the query is a sequential query, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>SystemException</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query is not compiled or has been closed. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="classzorba_1_1XQuery_1adbb74d7a716e0f4899fc414ca6948a23" kindref="member">close()</ref> </para><simplesectsep/><para><ref refid="classzorba_1_1XQuery_1a8408503a6cc5e253b14167e2bb92d1b3" kindref="member">compile</ref>(...) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="328"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1af5c18272f36baed40cac27495448feca" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::XQuery::isUpdating</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isUpdating</name>
+        <briefdescription>
+<para>Check if this query is an updating query. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>true if the query is an updating query, false otherwise. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>SystemException</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query is not compiled or has been closed. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="classzorba_1_1XQuery_1adbb74d7a716e0f4899fc414ca6948a23" kindref="member">close()</ref> </para><simplesectsep/><para><ref refid="classzorba_1_1XQuery_1a8408503a6cc5e253b14167e2bb92d1b3" kindref="member">compile</ref>(...) </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="317"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a432f79cc3e3d26dd97d69cb4dac06904" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="namespacezorba_1adf8d7acacbff44c1d19abb360739d2f9" kindref="member">Iterator_t</ref></type>
+        <definition>virtual Iterator_t zorba::XQuery::iterator</definition>
+        <argsstring>()=0</argsstring>
+        <name>iterator</name>
+        <briefdescription>
+<para>Get an iterator for the result of the query. </para>        </briefdescription>
+        <detaileddescription>
+<para>Allows an application to lazily execute the query, retrieving the result one item at a time.</para><para><simplesect kind="return"><para><ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref> iterator over the result sequence. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occurs (e.g. the query is closed or has not been compiled). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="159"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a5e95bbc7e19bc4a2bbbadf183bfc7a29" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::XQuery::loadExecutionPlan</definition>
+        <argsstring>(std::istream &amp;is, SerializationCallback *aCallback=0)=0</argsstring>
+        <name>loadExecutionPlan</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1SerializationCallback" kindref="compound">SerializationCallback</ref> *</type>
+          <declname>aCallback</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Load execution plan. </para>        </briefdescription>
+        <detaileddescription>
+<para>The serialized execution plan contains a general version for the entire archive and specific versions for each class. <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> does not quarantee that it can load execution plans saved with previous versions of <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref>. In most cases there will be no problems, but the complete backward compatibility cannot be quaranteed.</para><para>The engine automatically detects the format of the input, either XML or binary.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>is</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Reference to std::istream. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aCallback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>optional callback handler (see <ref refid="classzorba_1_1SerializationCallback" kindref="compound">SerializationCallback</ref>) that is used to retrieve information that has not been serialized (e.g. external modules). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if success. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if there are problems loading the execution plan. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="365"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1ad298b0dee0cd9c14637d946c8e91c0ee" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::parse</definition>
+        <argsstring>(std::istream &amp;aQuery)=0</argsstring>
+        <name>parse</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <briefdescription>
+<para>Parse the given query <ref refid="classzorba_1_1String" kindref="compound">String</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query file to parse. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occurs while parsing the query. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="232"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1adc916daf5f7e74426a6f75ce709a7451" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::parse</definition>
+        <argsstring>(std::istream &amp;aQuery, ModuleInfo_t &amp;aResult)=0</argsstring>
+        <name>parse</name>
+        <param>
+          <type>std::istream &amp;</type>
+          <declname>aQuery</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacezorba_1a70597055d1d80f62684a2ad64cc825f0" kindref="member">ModuleInfo_t</ref> &amp;</type>
+          <declname>aResult</declname>
+        </param>
+        <briefdescription>
+<para>Parse the given module <ref refid="classzorba_1_1String" kindref="compound">String</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function parses the module string and returns some information about the module.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aQuery</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the query file to parse. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aResult</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>some information about the module </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if an error occurs while parsing the query. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="553"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a291cbe7605b6a932f26d3bdfc208ec97" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::printPlan</definition>
+        <argsstring>(std::ostream &amp;aStream, bool aDotFormat=false) const =0</argsstring>
+        <name>printPlan</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>aStream</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>aDotFormat</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Print the execution plan of this query to the given output stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aStream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the output stream to which the execution plan is printed </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aDotFormat</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>specifies the format of the printed execution plan. If this is true, then the execution plan is printed in the DOT format. If this is false, the plan is printed as XML. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has been closed or is not compiled. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="306"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a269ebf498ff1964b72d0b254ef06b554" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::registerDiagnosticHandler</definition>
+        <argsstring>(DiagnosticHandler *handler)=0</argsstring>
+        <name>registerDiagnosticHandler</name>
+        <param>
+          <type><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> *</type>
+          <declname>handler</declname>
+        </param>
+        <briefdescription>
+<para>Register an <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors during compilation or execution/serialization are reported. </para>        </briefdescription>
+        <detaileddescription>
+<para>If no <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> has been set via this function, the default error handling mechanism is to throw instances of the <ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref> class.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> to which errors are reported. The caller retains ownership over the <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> passed as parameter. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>SystemException</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has been closed. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="classzorba_1_1XQuery_1adbb74d7a716e0f4899fc414ca6948a23" kindref="member">close()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="84"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a53344941d0656cd400738b829a60145e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::registerSAXHandler</definition>
+        <argsstring>(SAX2_ContentHandler *aContentHandler)=0</argsstring>
+        <name>registerSAXHandler</name>
+        <param>
+          <type><ref refid="classzorba_1_1SAX2__ContentHandler" kindref="compound">SAX2_ContentHandler</ref> *</type>
+          <declname>aContentHandler</declname>
+        </param>
+        <briefdescription>
+<para>Register a <ref refid="classzorba_1_1SAX2__ContentHandler" kindref="compound">SAX2_ContentHandler</ref> for retrieving the serialized query result as SAX events when <ref refid="classzorba_1_1XQuery_1af65562458630636335f510f5971bf382" kindref="member">executeSAX()</ref> is called. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aContentHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the content handler on which SAX callbacks are called. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="168"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::removeReference</definition>
+        <argsstring>()</argsstring>
+        <name>removeReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a7b2b5f5a422fa38d8ccfcf6c54391a53" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::resetDiagnosticHandler</definition>
+        <argsstring>()=0</argsstring>
+        <name>resetDiagnosticHandler</name>
+        <briefdescription>
+<para>Reset the error handling mechanism back to the default, i.e. behave as if no <ref refid="classzorba_1_1DiagnosticHandler" kindref="compound">DiagnosticHandler</ref> had been set. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>SystemException</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has been closed already. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="classzorba_1_1XQuery_1a269ebf498ff1964b72d0b254ef06b554" kindref="member">registerDiagnosticHandler(DiagnosticHandler*)</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="94"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a5e13da32db8353aae480dc97af9f57be" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::XQuery::saveExecutionPlan</definition>
+        <argsstring>(std::ostream &amp;os)=0</argsstring>
+        <name>saveExecutionPlan</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <briefdescription>
+<para>Save the compiled execution plan. </para>        </briefdescription>
+        <detaileddescription>
+<para>After compiling an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> program you can save the execution plan in some persistent storage. The execution plan is saved in a platform-independent format. You can later load this execution plan into a different <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object (potentially on a different machine) and execute it like it was compiled in place.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>os</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The output stream into which the execution plan is saved. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if success. </para></simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername><ref refid="classzorba_1_1ZorbaException" kindref="compound">ZorbaException</ref></parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if the query has not been compiled or there are problems serializing the execution plan. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="344"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1abb8bc2e8cf4566ebae66246a7693bf71" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::setFileName</definition>
+        <argsstring>(const String &amp;flename)=0</argsstring>
+        <name>setFileName</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>flename</declname>
+        </param>
+        <briefdescription>
+<para>Set the filename of a query. </para>        </briefdescription>
+        <detaileddescription>
+<para>This (after URI-encoding) becomes the encapsulating entity&apos;s retrieval URI (in RFC 3986 terms), and may be used in the computation of the program&apos;s static base URI property, as described at <ulink url="http://www.w3.org/TR/xquery-30/#dt-base-uri-decl">http://www.w3.org/TR/xquery-30/#dt-base-uri-decl</ulink> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="68"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1ae03ce9360c0b15d607dca393d51e8b14" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::setProfileName</definition>
+        <argsstring>(std::string aProfileName)=0</argsstring>
+        <name>setProfileName</name>
+        <param>
+          <type>std::string</type>
+          <declname>aProfileName</declname>
+        </param>
+        <briefdescription>
+<para>Set the filename of the profile. </para>        </briefdescription>
+        <detaileddescription>
+<para>This file will contain the output of <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> profiler. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="446"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a4c865fd528ed73ac7e8ac7f2a2c37874" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::XQuery::setTimeout</definition>
+        <argsstring>(long aTimeout=-1)=0</argsstring>
+        <name>setTimeout</name>
+        <param>
+          <type>long</type>
+          <declname>aTimeout</declname>
+          <defval>-1</defval>
+        </param>
+        <briefdescription>
+<para>Set a timeout, after which the execution of the query will be aborted. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aTimeout</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>is an optional argument, which declares, that the execution of a query will be aborted after aTimeout number of seconds. If aTimeout is set to -1 (default), the query will never abort. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1XQuery_1a43e747991f7ca268be6829f27eb457c4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::XQuery::~XQuery</definition>
+        <argsstring>()</argsstring>
+        <name>~XQuery</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+<para>The destructor is called automatically when there are no more XQuery_t smart pointers pointing to this <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> instance. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="57" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery.h" bodystart="57" bodyend="57"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" static="no" mutable="yes">
+        <type>unsigned int</type>
+        <definition>unsigned int zorba::SmartObject::theRefCount</definition>
+        <argsstring></argsstring>
+        <name>theRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>This class is the representation of an XQuery program in the Zorba engine. </para>    </briefdescription>
+    <detaileddescription>
+<para>To compile and execute an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> program, an instance of this class must be created. This is done by using either the createQuery or compileQuery methods of the <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> class. These methods return an instance of XQuery_t, which is a reference counted smart pointer to a dynamically allocated <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object. The <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> object is deleted when all XQuery_t objects that point to it are destroyed.</para><para>The file <ref refid="simple_8cpp-example" kindref="compound">simple.cpp</ref> contains some basic examples the demonstrate the use of this class.</para><para>Note: This class is reference counted. When writing multi-threaded clients, it is the responibility of the client code to synchronize assignments to the <ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> holding this object. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="955">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="954">
+        <label>zorba::XQuery</label>
+        <link refid="classzorba_1_1XQuery"/>
+        <childnode refid="955" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="957">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="956">
+        <label>zorba::XQuery</label>
+        <link refid="classzorba_1_1XQuery"/>
+        <childnode refid="957" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/xquery.h" line="49" bodyfile="/home/wcandillon/deadlinks/include/zorba/xquery.h" bodystart="48" bodyend="554"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" virt="non-virtual"><scope>zorba::XQuery</scope><name>addReference</name></member>
+      <member refid="classzorba_1_1XQuery_1ab0bb4c46f5dffe1d1065934dfa3ba3d1" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>clone</name></member>
+      <member refid="classzorba_1_1XQuery_1adbb74d7a716e0f4899fc414ca6948a23" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>close</name></member>
+      <member refid="classzorba_1_1XQuery_1a8408503a6cc5e253b14167e2bb92d1b3" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>compile</name></member>
+      <member refid="classzorba_1_1XQuery_1adfac463b622ac2413d27e8ccb9c217f0" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>compile</name></member>
+      <member refid="classzorba_1_1XQuery_1a57df68ee44f727945382fe1603255ce0" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>compile</name></member>
+      <member refid="classzorba_1_1XQuery_1ac2b5db2da59c2491470c090122ad2d49" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>compile</name></member>
+      <member refid="classzorba_1_1XQuery_1aed40c99c5ce628c9b2f57a1babc73271" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>compile</name></member>
+      <member refid="classzorba_1_1XQuery_1a62758ab41cf088cda72c246b25f668db" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>execute</name></member>
+      <member refid="classzorba_1_1XQuery_1a470074b64011b3737b3845aa8347bcfc" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>execute</name></member>
+      <member refid="classzorba_1_1XQuery_1a47068cebc58f146abb862a94384a4adb" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>execute</name></member>
+      <member refid="classzorba_1_1XQuery_1abc92a24b52aa33894ee13be7d8cc2804" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>executeSAX</name></member>
+      <member refid="classzorba_1_1XQuery_1af65562458630636335f510f5971bf382" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>executeSAX</name></member>
+      <member refid="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" virt="virtual"><scope>zorba::XQuery</scope><name>free</name></member>
+      <member refid="classzorba_1_1XQuery_1af171545243b5cd66525cfbc565f3ae2f" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>getDocLoadingTime</name></member>
+      <member refid="classzorba_1_1XQuery_1a254c580091ea7e486ab4de086e5db6d2" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>getDocLoadingUserTime</name></member>
+      <member refid="classzorba_1_1XQuery_1ade775d63d25f849de4a22297e859354c" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>getDynamicContext</name></member>
+      <member refid="classzorba_1_1XQuery_1ae95826866c11005bdeef7eae5b7f4ed3" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>getExternalVariables</name></member>
+      <member refid="classzorba_1_1XQuery_1af9d7a9a529a95cb5b1c2c4066db83474" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>getProfileName</name></member>
+      <member refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" virt="non-virtual"><scope>zorba::XQuery</scope><name>getRefCount</name></member>
+      <member refid="classzorba_1_1XQuery_1abca740ea35f962e5472481bc3114d9ad" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>getStaticCollectionManager</name></member>
+      <member refid="classzorba_1_1XQuery_1a7614f07940007398562e4e014f35e931" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>getStaticContext</name></member>
+      <member refid="classzorba_1_1XQuery_1a9b207e13e728c1ea6eaf8e910af8a8da" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>isClosed</name></member>
+      <member refid="classzorba_1_1XQuery_1a668c4eee921f57e6eb6d6aad1cefc446" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>isSequential</name></member>
+      <member refid="classzorba_1_1XQuery_1af5c18272f36baed40cac27495448feca" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>isUpdating</name></member>
+      <member refid="classzorba_1_1XQuery_1a432f79cc3e3d26dd97d69cb4dac06904" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>iterator</name></member>
+      <member refid="classzorba_1_1XQuery_1a5e95bbc7e19bc4a2bbbadf183bfc7a29" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>loadExecutionPlan</name></member>
+      <member refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" virt="non-virtual"><scope>zorba::XQuery</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1XQuery_1ad298b0dee0cd9c14637d946c8e91c0ee" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>parse</name></member>
+      <member refid="classzorba_1_1XQuery_1adc916daf5f7e74426a6f75ce709a7451" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>parse</name></member>
+      <member refid="classzorba_1_1XQuery_1a291cbe7605b6a932f26d3bdfc208ec97" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>printPlan</name></member>
+      <member refid="classzorba_1_1XQuery_1a269ebf498ff1964b72d0b254ef06b554" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>registerDiagnosticHandler</name></member>
+      <member refid="classzorba_1_1XQuery_1a53344941d0656cd400738b829a60145e" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>registerSAXHandler</name></member>
+      <member refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" virt="non-virtual"><scope>zorba::XQuery</scope><name>removeReference</name></member>
+      <member refid="classzorba_1_1XQuery_1a7b2b5f5a422fa38d8ccfcf6c54391a53" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>resetDiagnosticHandler</name></member>
+      <member refid="classzorba_1_1XQuery_1a5e13da32db8353aae480dc97af9f57be" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>saveExecutionPlan</name></member>
+      <member refid="classzorba_1_1XQuery_1abb8bc2e8cf4566ebae66246a7693bf71" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>setFileName</name></member>
+      <member refid="classzorba_1_1XQuery_1ae03ce9360c0b15d607dca393d51e8b14" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>setProfileName</name></member>
+      <member refid="classzorba_1_1XQuery_1a4c865fd528ed73ac7e8ac7f2a2c37874" prot="public" virt="pure-virtual"><scope>zorba::XQuery</scope><name>setTimeout</name></member>
+      <member refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" virt="non-virtual"><scope>zorba::XQuery</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" virt="non-virtual"><scope>zorba::XQuery</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" virt="non-virtual"><scope>zorba::XQuery</scope><name>theRefCount</name></member>
+      <member refid="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" virt="virtual"><scope>zorba::XQuery</scope><name>~SmartObject</name></member>
+      <member refid="classzorba_1_1XQuery_1a43e747991f7ca268be6829f27eb457c4" prot="public" virt="virtual"><scope>zorba::XQuery</scope><name>~XQuery</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

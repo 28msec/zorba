@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1ExternalFunctionParameter" kind="class" prot="public">
+    <compoundname>zorba::ExternalFunctionParameter</compoundname>
+    <includes refid="external__function__parameter_8h" local="no">zorba/external_function_parameter.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1ExternalFunctionParameter_1abe1f3c2fb52aaa64617b33efb1ad03dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::ExternalFunctionParameter::destroy</definition>
+        <argsstring>()=0</argsstring>
+        <name>destroy</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+<para>This function is invoked by <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> when the <ref refid="classzorba_1_1DynamicContext" kindref="compound">DynamicContext</ref> that contains the instance is destroyed. </para>        </briefdescription>
+        <detaileddescription>
+<para>This allows the user to release resources. In the simplest case, an implementation might simply call &quot;delete this&quot; to destroy the object. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/external_function_parameter.h" line="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1ExternalFunctionParameter_1a0263f3adfe5ba459a1e7cc53af1b7611" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::ExternalFunctionParameter::~ExternalFunctionParameter</definition>
+        <argsstring>()</argsstring>
+        <name>~ExternalFunctionParameter</name>
+        <briefdescription>
+<para>Virtual destructor with an empty implementation. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/external_function_parameter.h" line="48" bodyfile="/home/wcandillon/deadlinks/include/zorba/external_function_parameter.h" bodystart="48" bodyend="48"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Instances of subclasses of this abstract class may be used as parameters to the <ref refid="classzorba_1_1DynamicContext_1aecdf4c714a2a71ac6c3b2dda875dc103" kindref="member">DynamicContext::addExternalFunctionParameter</ref> function. </para>    </briefdescription>
+    <detaileddescription>
+<para>This is useful in the implementation of external modules/functions in order to store information between several invocations of the same function.</para><para>The destroy method is called by <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> at the end of the execution of an <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> program, when the corresponding <ref refid="classzorba_1_1DynamicContext" kindref="compound">DynamicContext</ref> is destroyed. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/external_function_parameter.h" line="34" bodyfile="/home/wcandillon/deadlinks/include/zorba/external_function_parameter.h" bodystart="33" bodyend="49"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1ExternalFunctionParameter_1abe1f3c2fb52aaa64617b33efb1ad03dd" prot="public" virt="pure-virtual"><scope>zorba::ExternalFunctionParameter</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1ExternalFunctionParameter_1a0263f3adfe5ba459a1e7cc53af1b7611" prot="public" virt="virtual"><scope>zorba::ExternalFunctionParameter</scope><name>~ExternalFunctionParameter</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

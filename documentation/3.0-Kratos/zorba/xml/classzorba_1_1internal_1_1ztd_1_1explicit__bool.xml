@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1ztd_1_1explicit__bool" kind="class" prot="public">
+    <compoundname>zorba::internal::ztd::explicit_bool</compoundname>
+    <includes refid="ztd_8h" local="no">zorba/internal/ztd.h</includes>
+    <innerclass refid="structzorba_1_1internal_1_1ztd_1_1explicit__bool_1_1pointer__conversion" prot="private">zorba::internal::ztd::explicit_bool::pointer_conversion</innerclass>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1ab08b6a8cca116a821466cd89be17c658" prot="public" static="no">
+        <type>int pointer_conversion::*</type>
+        <definition>typedef int pointer_conversion::* zorba::internal::ztd::explicit_bool::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="445" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="445" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a2a3186ef069ce19c3088acd531a28328" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1ab08b6a8cca116a821466cd89be17c658" kindref="member">type</ref></type>
+        <definition>static type zorba::internal::ztd::explicit_bool::false_value</definition>
+        <argsstring>()</argsstring>
+        <name>false_value</name>
+        <briefdescription>
+<para>Gets the explicit <computeroutput>bool</computeroutput> value for <computeroutput>false</computeroutput>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said value. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="452" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="452" bodyend="454"/>
+        <referencedby refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a936d0a29441bd9af878af913d3ff3a10" compoundref="ztd_8h" startline="475" endline="481">value_of</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a3b848c4664d0826b2b280e5f36a15eab" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1ab08b6a8cca116a821466cd89be17c658" kindref="member">type</ref></type>
+        <definition>static type zorba::internal::ztd::explicit_bool::true_value</definition>
+        <argsstring>()</argsstring>
+        <name>true_value</name>
+        <briefdescription>
+<para>Gets the explicit <computeroutput>bool</computeroutput> value for <computeroutput>true</computeroutput>. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Returns said value. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="461" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="461" bodyend="463"/>
+        <referencedby refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a936d0a29441bd9af878af913d3ff3a10" compoundref="ztd_8h" startline="475" endline="481">value_of</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a936d0a29441bd9af878af913d3ff3a10" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structstd_1_1enable__if" kindref="compound">std::enable_if</ref>&lt; ZORBA_TR1_NS::is_convertible&lt; T, bool &gt;::value, <ref refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1ab08b6a8cca116a821466cd89be17c658" kindref="member">type</ref> &gt;::<ref refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1ab08b6a8cca116a821466cd89be17c658" kindref="member">type</ref></type>
+        <definition>static std::enable_if&lt;ZORBA_TR1_NS::is_convertible&lt;T,bool&gt;::value, type&gt;::type zorba::internal::ztd::explicit_bool::value_of</definition>
+        <argsstring>(T const &amp;value)</argsstring>
+        <name>value_of</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Converts the given value to an explicit <computeroutput>bool</computeroutput> value. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the value to convert. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The value to convert. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Return said value. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="475" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="475" bodyend="481"/>
+        <references refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a2a3186ef069ce19c3088acd531a28328" compoundref="ztd_8h" startline="452" endline="454">false_value</references>
+        <references refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a3b848c4664d0826b2b280e5f36a15eab" compoundref="ztd_8h" startline="461" endline="463">true_value</references>
+        <referencedby refid="classstd_1_1unique__ptr_1a7650d43d8c3e0b3b07b94013b85fd833" compoundref="unique__ptr_8h" startline="418" endline="420">std::unique_ptr&lt; iterator &gt;::operator explicit_bool::type</referencedby>
+        <referencedby refid="classstd_1_1unique__ptr_3_01T[]_00_01D_01_4_1a7fd196f9bd38d2677fb290a92e767881" compoundref="unique__ptr_8h" startline="522" endline="524">std::unique_ptr&lt; T[], D &gt;::operator explicit_bool::type</referencedby>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Helper class for implementing a solution to the &quot;explicit bool conversion&quot; problem. </para>    </briefdescription>
+    <detaileddescription>
+<para>The canonical use is of the form: <programlisting><codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">your_class<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1ab08b6a8cca116a821466cd89be17c658" kindref="member">operator explicit_bool::type</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a936d0a29441bd9af878af913d3ff3a10" kindref="member" tooltip="Converts the given value to an explicit bool value.">explicit_bool::value_of</ref>(<sp/>some_expression<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+</programlisting></para><para>See: <ulink url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2333.html">http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2333.html</ulink> </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" line="442" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/ztd.h" bodystart="442" bodyend="482"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a2a3186ef069ce19c3088acd531a28328" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::explicit_bool</scope><name>false_value</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a3b848c4664d0826b2b280e5f36a15eab" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::explicit_bool</scope><name>true_value</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1ab08b6a8cca116a821466cd89be17c658" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::explicit_bool</scope><name>type</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1explicit__bool_1a936d0a29441bd9af878af913d3ff3a10" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::explicit_bool</scope><name>value_of</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

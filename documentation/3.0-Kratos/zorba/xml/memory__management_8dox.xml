@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="memory__management_8dox" kind="file">
+    <compoundname>memory_management.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>memory_management<sp/>Memory<sp/>Management</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">\section<sp/>memory_management_intro<sp/>Introduction</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"></highlight></codeline>
+<codeline lineno="5"><highlight class="comment">The<sp/>Zorba<sp/>processor</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">allows<sp/>you<sp/>to<sp/>customize<sp/>various<sp/>functionality</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">via<sp/>its<sp/>C++<sp/>API.</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">As<sp/>expected,</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">this<sp/>is<sp/>done<sp/>by<sp/>providing<sp/>C++<sp/>classes</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">that<sp/>you<sp/>derive<sp/>from</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">and<sp/>provide<sp/>your<sp/>own<sp/>implementations</highlight></codeline>
+<codeline lineno="12"><highlight class="comment">of<sp/>\c<sp/>virtual<sp/>functions.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment">You<sp/>then<sp/>provide<sp/>Zorba<sp/>with<sp/>instances<sp/>of<sp/>your<sp/>derived<sp/>classes.</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"></highlight></codeline>
+<codeline lineno="15"><highlight class="comment">However,</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">there<sp/>are<sp/>two<sp/>problems:</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">one<sp/>general</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">and<sp/>one<sp/>that&apos;s<sp/>Windows-specific.</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"></highlight></codeline>
+<codeline lineno="20"><highlight class="comment">\section<sp/>memory_management_general_problem<sp/>The<sp/>General<sp/>Problem</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"></highlight></codeline>
+<codeline lineno="22"><highlight class="comment">The<sp/>general<sp/>problem<sp/>is<sp/>instance<sp/>ownership,</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">i.e.,</highlight></codeline>
+<codeline lineno="24"><highlight class="comment">after<sp/>you<sp/>provide<sp/>Zorba<sp/>with<sp/>an<sp/>instance<sp/>of<sp/>one<sp/>of<sp/>your<sp/>derived<sp/>classes,</highlight></codeline>
+<codeline lineno="25"><highlight class="comment">should<sp/>it<sp/>be<sp/>destroyed<sp/>by<sp/>Zorba?</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"></highlight></codeline>
+<codeline lineno="27"><highlight class="comment">For<sp/>example,</highlight></codeline>
+<codeline lineno="28"><highlight class="comment">suppose<sp/>the<sp/>API<sp/>for<sp/>the<sp/>full-text<sp/>\c<sp/>Stemmer<sp/>\e<sp/>were<sp/>this:</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"></highlight></codeline>
+<codeline lineno="30"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">//<sp/>NOTE:<sp/>THIS<sp/>IS<sp/>NOT<sp/>THE<sp/>ACTUAL<sp/>API<sp/>--<sp/>IT&apos;S<sp/>A<sp/>&quot;WHAT<sp/>IF&quot;<sp/>API</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"></highlight></codeline>
+<codeline lineno="33"><highlight class="comment">class<sp/>Stemmer<sp/>{</highlight></codeline>
+<codeline lineno="34"><highlight class="comment">public:</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/>virtual<sp/>~Stemmer();</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/>//<sp/>...</highlight></codeline>
+<codeline lineno="37"><highlight class="comment">};</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"></highlight></codeline>
+<codeline lineno="39"><highlight class="comment">class<sp/>StemmerProvider<sp/>{</highlight></codeline>
+<codeline lineno="40"><highlight class="comment">public:</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/>//<sp/>...</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/>Stemmer*<sp/>getStemmer(<sp/>locale::iso639_1::type<sp/>lang<sp/>)<sp/>const<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="43"><highlight class="comment">};</highlight></codeline>
+<codeline lineno="44"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"></highlight></codeline>
+<codeline lineno="46"><highlight class="comment">and<sp/>that<sp/>you<sp/>implemented<sp/>it<sp/>like<sp/>this:</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"></highlight></codeline>
+<codeline lineno="48"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="49"><highlight class="comment">class<sp/>MyStemmerProvider<sp/>:<sp/>public<sp/>StemmerProvider<sp/>{</highlight></codeline>
+<codeline lineno="50"><highlight class="comment">public:</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/>Stemmer*<sp/>getStemmer(<sp/>locale::iso639_1::type<sp/>lang<sp/>)<sp/>const;</highlight></codeline>
+<codeline lineno="52"><highlight class="comment">};</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"></highlight></codeline>
+<codeline lineno="54"><highlight class="comment">Stemmer*<sp/>MyStemmerProvider::getStemmer(<sp/>locale::iso639_1::type<sp/>lang<sp/>)<sp/>const<sp/>{</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/>MyStemmer<sp/>stemmer;</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/>return<sp/>&amp;stemmer;</highlight></codeline>
+<codeline lineno="57"><highlight class="comment">}</highlight></codeline>
+<codeline lineno="58"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"></highlight></codeline>
+<codeline lineno="60"><highlight class="comment">Assume<sp/>that<sp/>your<sp/>stemmer<sp/>is<sp/>used<sp/>for<sp/>all<sp/>languages</highlight></codeline>
+<codeline lineno="61"><highlight class="comment">and<sp/>that<sp/>it<sp/>maintains<sp/>no<sp/>state.</highlight></codeline>
+<codeline lineno="62"><highlight class="comment">For<sp/>efficiency,</highlight></codeline>
+<codeline lineno="63"><highlight class="comment">you<sp/>could<sp/>therefore<sp/>use<sp/>a<sp/>singleton<sp/>instance<sp/>of<sp/>it.</highlight></codeline>
+<codeline lineno="64"><highlight class="comment">The<sp/>problem<sp/>is<sp/>that<sp/>Zorba<sp/>can&apos;t<sp/>tell<sp/>the<sp/>difference<sp/>between</highlight></codeline>
+<codeline lineno="65"><highlight class="comment">a<sp/>non-singleton<sp/>(dynamically<sp/>allocated)<sp/>instance</highlight></codeline>
+<codeline lineno="66"><highlight class="comment">and<sp/>a<sp/>singleton<sp/>(statically<sp/>allocated)<sp/>instance,</highlight></codeline>
+<codeline lineno="67"><highlight class="comment">i.e.,</highlight></codeline>
+<codeline lineno="68"><highlight class="comment">whether<sp/>to<sp/>call<sp/>\c<sp/>delete<sp/>on<sp/>it<sp/>or<sp/>not.</highlight></codeline>
+<codeline lineno="69"><highlight class="comment">(In<sp/>C++,<sp/>there<sp/>is<sp/>no<sp/>built-in<sp/>way</highlight></codeline>
+<codeline lineno="70"><highlight class="comment">to<sp/>determine<sp/>whether<sp/>a<sp/>pointer<sp/>points<sp/>to<sp/>an<sp/>object</highlight></codeline>
+<codeline lineno="71"><highlight class="comment">that<sp/>is<sp/>statically<sp/>allocated<sp/>or<sp/>was<sp/>dynamically<sp/>allocated.)</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"></highlight></codeline>
+<codeline lineno="73"><highlight class="comment">\section<sp/>memory_management_windows_problem<sp/>The<sp/>Windows-Specific<sp/>Problem</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"></highlight></codeline>
+<codeline lineno="75"><highlight class="comment">A<sp/>further<sp/>complication<sp/>is<sp/>that,</highlight></codeline>
+<codeline lineno="76"><highlight class="comment">on<sp/>the<sp/>Windows<sp/>platform,</highlight></codeline>
+<codeline lineno="77"><highlight class="comment">there<sp/>is<sp/>an<sp/>issue<sp/>with<sp/>dynamically<sp/>allocating<sp/>instances<sp/>in<sp/>your<sp/>executable</highlight></codeline>
+<codeline lineno="78"><highlight class="comment">and<sp/>deallocating<sp/>them<sp/>in<sp/>a<sp/>library</highlight></codeline>
+<codeline lineno="79"><highlight class="comment">(or<sp/>vice<sp/>versa).</highlight></codeline>
+<codeline lineno="80"><highlight class="comment">This<sp/>has<sp/>to<sp/>do<sp/>with<sp/>the<sp/>Windows<sp/>C<sp/>Runtime<sp/>Library</highlight></codeline>
+<codeline lineno="81"><highlight class="comment">that&apos;s<sp/>used<sp/>by<sp/>the<sp/>executable<sp/>and<sp/>library:</highlight></codeline>
+<codeline lineno="82"><highlight class="comment">if<sp/>they<sp/>don&apos;t<sp/>match</highlight></codeline>
+<codeline lineno="83"><highlight class="comment">and<sp/>you<sp/>dynamically<sp/>allocate<sp/>an<sp/>instance<sp/>in<sp/>your<sp/>executable</highlight></codeline>
+<codeline lineno="84"><highlight class="comment">and<sp/>it&apos;s<sp/>deallocated<sp/>in<sp/>the<sp/>library</highlight></codeline>
+<codeline lineno="85"><highlight class="comment">(or<sp/>vice<sp/>versa),</highlight></codeline>
+<codeline lineno="86"><highlight class="comment">your<sp/>program<sp/>will<sp/>crash.</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"></highlight></codeline>
+<codeline lineno="88"><highlight class="comment">The<sp/>only<sp/>way<sp/>to<sp/>avoid<sp/>this<sp/>problem</highlight></codeline>
+<codeline lineno="89"><highlight class="comment">is<sp/>to<sp/>ensure<sp/>that<sp/>all<sp/>instances</highlight></codeline>
+<codeline lineno="90"><highlight class="comment">that<sp/>are<sp/>dynamically<sp/>allocated<sp/>in<sp/>your<sp/>executable</highlight></codeline>
+<codeline lineno="91"><highlight class="comment">are<sp/>also<sp/>deallocated<sp/>in<sp/>your<sp/>executable;</highlight></codeline>
+<codeline lineno="92"><highlight class="comment">and<sp/>the<sp/>same<sp/>goes<sp/>for<sp/>the<sp/>library.</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"></highlight></codeline>
+<codeline lineno="94"><highlight class="comment">\section<sp/>memory_management_solution<sp/>The<sp/>Solution<sp/>to<sp/>Both<sp/>Problems</highlight></codeline>
+<codeline lineno="95"><highlight class="comment"></highlight></codeline>
+<codeline lineno="96"><highlight class="comment">A<sp/>solution<sp/>to<sp/>both<sp/>problems</highlight></codeline>
+<codeline lineno="97"><highlight class="comment">is<sp/>to<sp/>replace<sp/>what<sp/>would<sp/>have<sp/>been<sp/>a<sp/>call<sp/>to<sp/>\c<sp/>delete</highlight></codeline>
+<codeline lineno="98"><highlight class="comment">with<sp/>a<sp/>call<sp/>to<sp/>a<sp/>\c<sp/>virtual<sp/>member<sp/>function<sp/>\c<sp/>destroy().</highlight></codeline>
+<codeline lineno="99"><highlight class="comment">The<sp/>API<sp/>for<sp/>the<sp/>full-text<sp/>\c<sp/>Stemmer<sp/>would<sp/>now<sp/>be</highlight></codeline>
+<codeline lineno="100"><highlight class="comment">(and<sp/>actually<sp/>is):</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"></highlight></codeline>
+<codeline lineno="102"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="103"><highlight class="comment">class<sp/>Stemmer<sp/>{</highlight></codeline>
+<codeline lineno="104"><highlight class="comment">public:</highlight></codeline>
+<codeline lineno="105"><highlight class="comment"><sp/><sp/>typedef<sp/>/*<sp/>implementation-defined<sp/>*/</highlight><highlight class="normal"><sp/>ptr;</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>~Stemmer();</highlight></codeline>
+<codeline lineno="110"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StemmerProvider<sp/>{</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/>Stemmer::ptr<sp/>getStemmer(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="116"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="117"><highlight class="normal">\endcode</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal">The<sp/>changes<sp/>are:</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/>-<sp/>A<sp/>new<sp/>\c<sp/>ptr<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">type</ref><sp/>that<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af560bc79bfed1a18fa5f40193d92ee8d" kindref="member" tooltip="Byelorussian.">be</ref><sp/>used<sp/>in<sp/>the<sp/>place<sp/>of<sp/>a<sp/>native<sp/>C++<sp/>pointer.</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>the<sp/>relatively<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>C++<sp/>\c<sp/><ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref><sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/>and<sp/>specifies<sp/>a<sp/>custom<sp/>deleter<sp/>that<sp/>calls<sp/>\c<sp/>destroy()</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/>rather<sp/>than<sp/>\c<sp/>delete.</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/>(If<sp/>your<sp/>C++<sp/>implementation<sp/>doesn&apos;t<sp/>have<sp/>\c<sp/>unique_ptr,</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/>Zorba<sp/>provides<sp/>its<sp/>own.)</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/>-<sp/>A<sp/>new<sp/>pure<sp/>\c<sp/>virtual<sp/>\c<sp/>destroy()<sp/>member<sp/>function.</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/>-<sp/>The<sp/>destructor<sp/>has<sp/>been<sp/>made<sp/>\c<sp/>protected</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>prevent<sp/>destruction<sp/>by<sp/>calling<sp/>\c<sp/>delete</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/>from<sp/>outside<sp/>the<sp/>class.</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal">If<sp/>you<sp/>now<sp/>implemented<sp/>your<sp/>stemmer<sp/>like<sp/>this:</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal">\code</highlight></codeline>
+<codeline lineno="135"><highlight class="normal">class<sp/>MyStemmer<sp/>{</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>destroy();</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/>MyStemmer();</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MyStemmerProvider;<sp/></highlight><highlight class="comment">//<sp/>only<sp/>it<sp/>can<sp/>create<sp/>instances</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="142"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"></highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyStemmer::destroy()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Do<sp/>nothing<sp/>since<sp/>our<sp/>stemmer<sp/>is<sp/>statically<sp/>allocated.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MyStemmerProvider<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>StemmerProvider<sp/>{</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/>Stemmer::ptr<sp/>getStemmer(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="151"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal">Stemmer::ptr<sp/>MyStemmerProvider::getStemmer(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>MyStemmer<sp/>stemmer;</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>Stemmer::ptr(<sp/>&amp;stemmer<sp/>);</highlight></codeline>
+<codeline lineno="156"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="157"><highlight class="normal">\endcode</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal">then<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a5bcb20f9f7d5ec85c6415fee76c6ef5f" kindref="member" tooltip="Italian.">it</ref><sp/>would<sp/>work<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>a<sp/>statically<sp/>allocated<sp/>instance<sp/>of<sp/>your<sp/>stemmer.</highlight></codeline>
+<codeline lineno="160"><highlight class="normal">On<sp/>the<sp/><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22a695149cd22831c06e408b1101e4075f1" kindref="member">other</ref><sp/>hand,</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>your<sp/>\c<sp/>StemmerProvider<sp/>dynamically<sp/>allocates<sp/>instances,</highlight></codeline>
+<codeline lineno="162"><highlight class="normal">then<sp/>your<sp/>implementation<sp/>should<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781af560bc79bfed1a18fa5f40193d92ee8d" kindref="member" tooltip="Byelorussian.">be</ref><sp/>like<sp/></highlight><highlight class="keyword">this</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal">\code</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>MyStemmer::destroy()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">this</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="167"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"><highlight class="normal">Stemmer::ptr<sp/>MyStemmerProvider::getStemmer(<sp/><ref refid="namespacezorba_1_1time_1_1calendar_1a7c8c84a1ed5401ddae49da3f01861c87" kindref="member">locale::iso639_1::type</ref><sp/>lang<sp/>)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>Stemmer::ptr(<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>MyStemmer<sp/>);</highlight></codeline>
+<codeline lineno="171"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="172"><highlight class="normal">\endcode</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"></highlight></codeline>
+<codeline lineno="174"><highlight class="normal">*/</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/memory_management.dox"/>
+  </compounddef>
+</doxygen>

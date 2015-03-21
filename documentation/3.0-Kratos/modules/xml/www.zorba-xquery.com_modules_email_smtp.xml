@@ -1,0 +1,33 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://www.zorba-xquery.com/modules/email/smtp</xqdoc:uri><xqdoc:name>smtp</xqdoc:name><xqdoc:comment><xqdoc:description> This module can be used for sending emails.
+ The SMTP module contains only one public function that receives two parameters.
+ The SMTP server access information passed as an <code>hostInfo</code> element
+ and the email message representation as a <code>message</code> element.
+ For a quick start see the examples associates with the <code>send(...)</code>
+ function. For a complete specification read, the description and the
+ documentation associated with this function.
+</xqdoc:description><xqdoc:author>Sorin Nasoi, Daniel Thomas</xqdoc:author><xqdoc:see><a href="http://www.washington.edu/imap/">c-client Library part of UW IMAP toolkit</a></xqdoc:see><xqdoc:custom tag="library"><a href="http://www.washington.edu/imap/">c-client Library part of UW IMAP toolkit</a></xqdoc:custom><xqdoc:custom tag="project">Zorba/Input Output/SMTP</xqdoc:custom><xqdoc:custom tag="language">xquery</xqdoc:custom><xqdoc:custom tag="version">3.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="an" uri="http://zorba.io/annotations" isSchema="false"/><xqdoc:namespace prefix="email" uri="http://www.zorba-xquery.com/modules/email" isSchema="true"/><xqdoc:namespace prefix="smtp" uri="http://www.zorba-xquery.com/modules/email/smtp" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports><xqdoc:import type="schema"><xqdoc:uri>http://www.zorba-xquery.com/modules/email</xqdoc:uri></xqdoc:import></xqdoc:imports><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> This function sends an email message from the specified account.
+ The <code>hostName</code> child element of <code>$host-info</code> must have the form:
+ <code><b>remote_system_name</b> [":" <b>port</b>] [<b>flags</b>]</code>. This syntax is part of the
+ <a href="http://www.washington.edu/imap/documentation/naming.txt.html" target="_blank">Remote names</a>
+ syntax defined in the UW IMAP toolkit. The <code><b>remote_system_name</b></code> and
+ <code><b>flags</b></code> fragments are explained in the section <code>III</code> of this document.
+ For example the hostName could look like:
+ <ul>
+   <li><code>&lt;hostName&gt;smtp.gmail.com:587/tls/novalidate-cert&lt;hostName&gt;</code></li>
+   <li><code>&lt;hostName&gt;[209.85.129.111]:587/tls/novalidate-cert&lt;hostName&gt;</code></li>
+ </ul>
+ The <code>$host-info</code> parameter could then look like this:
+ <pre class="ace-static" ace-mode="xquery">
+ &lt;hostInfo&gt;
+   &lt;hostName&gt;smtp.gmail.com:587/tls/novalidate-cert&lt;/hostName&gt;
+   &lt;userName&gt;username&lt;/userName&gt;
+   &lt;password&gt;password&lt;/password&gt;
+ &lt;/hostInfo&gt;
+ </pre>
+ For a complete of the structure of an email message, see the imported email
+ schema: <code>http://www.zorba-xquery.com/modules/email</code>
+ All the data passed to this function does not need to be validated.
+ The only requirement is that they have a valid format and are in the
+ correct namespace according to the schema:
+ <code>http://www.zorba-xquery.com/modules/email</code>.
+</xqdoc:description><xqdoc:param>$host-info The SMTP host, user name, and password.</xqdoc:param><xqdoc:param>$message The message to send as defined in the email XML schema.</xqdoc:param><xqdoc:return>The function is declared as sequential and has side-effects. It returns the empty sequence.</xqdoc:return><xqdoc:error>smtp:SMTP0001 The message format is invalid.</xqdoc:error><xqdoc:error>smtp:SMTP0002 The message has no recipient.</xqdoc:error><xqdoc:error>smtp:SMTP0003 The message could not be sent.</xqdoc:error><xqdoc:error>smtp:SMTP9999 If any other error occurs.</xqdoc:error><xqdoc:error>err:XQDY0027 If the values of the arguments are not not valid according to the email schema: <code>http://www.zorba-xquery.com/modules/email</code></xqdoc:error><xqdoc:custom tag="example">examples/Queries/smtp/simple_text.xq</xqdoc:custom><xqdoc:custom tag="example">examples/Queries/smtp/text_with_image.xq</xqdoc:custom><xqdoc:custom tag="example">examples/Queries/smtp/html.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>smtp:send</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function smtp:send($host-info as element(email:hostInfo), $message as element(email:message)) as empty-sequence()</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>host-info</xqdoc:name><xqdoc:type>element(email:hostInfo)</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>message</xqdoc:name><xqdoc:type>element(email:message)</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://www.zorba-xquery.com/modules/email/smtp</xqdoc:uri><xqdoc:name>send-impl</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:name>smtp:send-impl</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %private %an:sequential function smtp:send-impl($host-info as element(email:hostInfo), $message as element(email:message)) as empty-sequence() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>host-info</xqdoc:name><xqdoc:type>element(email:hostInfo)</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>message</xqdoc:name><xqdoc:type>element(email:message)</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

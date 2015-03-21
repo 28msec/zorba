@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="memory_leaks" kind="page">
+    <compoundname>memory_leaks</compoundname>
+    <title>Memory Leaks</title>
+    <detaileddescription>
+<sect1 id="memory_leaks_1memory_leaks_intro">
+<title>Introduction</title>
+<para>The Zorba Processor manages automatically its own memory, but still, there are cases where you may receive the following message:</para><para><computeroutput> Zorba did not close properly, objects may still in memory while shutdown the store. [n] referenced URIs remain in the string pool. For help avoiding this message please refer to <ulink url="http://www.zorba-xquery.com/html/documentation">http://www.zorba-xquery.com/html/documentation</ulink> in section General Architecture -&gt; Memory Leaks. </computeroutput></para><para>This message means that not all the resources were released before Zorba and its store were shutdown. While this might be a bug/memory leak in Zorba itself, it&apos;s also quite likely that the leak is in the application. For the application, the rule is that before shutting down the store all resources must have been released.</para><para>So, strictly speaking, your program is leaking resources.</para><para>This problem might occur even though the application&apos;s code (C++ or other languages) looks good. Here is an example:</para></sect1>
+<sect1 id="memory_leaks_1memory_leaks_example_c">
+<title>Example in C++</title>
+<para>In the following example, the StaticContext and XQuery objects are not destroyed before Zorba and the store are shutdown.</para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">*<sp/>argv[])</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal">*<sp/>lStore<sp/>=<sp/><ref refid="classzorba_1_1StoreManager_1a9be91dfe800748ca7d955a88f9d85ed9" kindref="member">zorba::StoreManager::getStore</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Zorba*<sp/>lZorba<sp/>=<sp/>Zorba::getInstance(lStore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref><sp/>lContext<sp/>=<sp/>lZorba-&gt;createStaticContext();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lContext-&gt;addNamespace(</highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;http://www.foo.com&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref><sp/>lQuery<sp/>=<sp/>lZorba-&gt;compileQuery(</highlight><highlight class="stringliteral">&quot;&lt;foo:e/&gt;&quot;</highlight><highlight class="normal">,<sp/>lContext);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lQuery-&gt;execute();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lZorba-&gt;shutdown();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1StoreManager_1a8aeeb96827e683d5f498c7a8a767357e" kindref="member">zorba::StoreManager::shutdownStore</ref>(lStore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>So, for this scenario, the ideal way to solve the problem is through scopes, where you implement certain part of code in methods and release them when the objects loose their reference. Alternatively, you can explicitly set the variable to null, in which case the object will automatically be released.</para><para>Solution example: <programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">*<sp/>argv[])</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal">*<sp/>lStore<sp/>=<sp/><ref refid="classzorba_1_1StoreManager_1a9be91dfe800748ca7d955a88f9d85ed9" kindref="member">zorba::StoreManager::getStore</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Zorba*<sp/>lZorba<sp/>=<sp/>Zorba::getInstance(lStore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>{<sp/><sp/></highlight><highlight class="comment">//<sp/>Use<sp/>a<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1a24d7241f6bf20badc1017264d30b2af5" kindref="member">StaticContext_t</ref><sp/>lContext<sp/>=<sp/>lZorba-&gt;createStaticContext();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>lContext-&gt;addNamespace(</highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;http://www.foo.com&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1ad8b5b1677946bc552eca6d700286a18d" kindref="member">XQuery_t</ref><sp/>lQuery<sp/>=<sp/>lZorba-&gt;compileQuery(</highlight><highlight class="stringliteral">&quot;&lt;foo:e/&gt;&quot;</highlight><highlight class="normal">,<sp/>lContext);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>lQuery-&gt;execute();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>lContext<sp/>=<sp/>NULL;<sp/><sp/></highlight><highlight class="comment">//<sp/>or<sp/>explicitely<sp/>set<sp/>free<sp/>the<sp/>resources</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>lQuery<sp/>=<sp/>NULL;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lZorba-&gt;shutdown();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1StoreManager_1a8aeeb96827e683d5f498c7a8a767357e" kindref="member">zorba::StoreManager::shutdownStore</ref>(lStore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></sect1>
+<sect1 id="memory_leaks_1memory_leaks_example_java">
+<title>Example in Java</title>
+<para>This particular error is specially notorious when a memory managed language shows the error because you expect the language frees all memory, here is an example:</para><para><programlisting><codeline><highlight class="keyword">public</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>main<sp/>(<sp/>String<sp/>argv[]<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>InMemoryStore<sp/>store<sp/>=<sp/>InMemoryStore.getInstance();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Zorba<sp/>zorba<sp/>=<sp/>Zorba.getInstance<sp/>(<sp/>store<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>StaticContext<sp/>context<sp/>=<sp/>zorba.createStaticContext();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>context.addNamespace(</highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;http://www.foo.com&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>XQuery<sp/>query<sp/>=<sp/>zorba.compileQuery(</highlight><highlight class="stringliteral">&quot;&lt;foo:e/&gt;&quot;</highlight><highlight class="normal">,<sp/>context);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>String<sp/>result<sp/>=<sp/>query.execute();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>zorba.shutdown();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>InMemoryStore.shutdown<sp/>(<sp/>store<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">}<sp/><sp/><sp/><sp/></highlight></codeline>
+</programlisting></para><para>In this example, and for the rest of the languages because Zorba is created in C++, we have created in the Zorba API the method <computeroutput>destroy()</computeroutput> <emphasis>that</emphasis> will set free the object that could be pointing to any resource from the store, this method is in every object that need to be released.</para><para>Java Note: Because Java is a garbage collected language you cannot predict when (or even if) an object will be destroyed. Hence there is no direct equivalent of a destructor. There is an inherited method called finalize, but this is called entirely at the discretion of the garbage collector. So, destroy() is the best practice for any language including Java.</para><para>Solution example: <programlisting><codeline><highlight class="keyword">public</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>main<sp/>(<sp/>String<sp/>argv[]<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>InMemoryStore<sp/>store<sp/>=<sp/>InMemoryStore.getInstance();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Zorba<sp/>zorba<sp/>=<sp/>Zorba.getInstance<sp/>(<sp/>store<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>StaticContext<sp/>context<sp/>=<sp/>zorba.createStaticContext();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>context.addNamespace(</highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;http://www.foo.com&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>XQuery<sp/>query<sp/>=<sp/>zorba.compileQuery(</highlight><highlight class="stringliteral">&quot;&lt;foo:e/&gt;&quot;</highlight><highlight class="normal">,<sp/>context);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>String<sp/>result<sp/>=<sp/>query.execute();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>query.destroy();<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Release<sp/>memory<sp/>for<sp/>this<sp/>XQuery</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>context.destroy();<sp/></highlight><highlight class="comment">//<sp/>Release<sp/>memory<sp/>for<sp/>this<sp/>StaticContext</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>zorba.shutdown();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>InMemoryStore.shutdown<sp/>(<sp/>store<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></sect1>
+<sect1 id="memory_leaks_1memory_leaks_example_xqj">
+<title>Example in XQJ</title>
+<para>The XQJ standard provides specific <computeroutput>close()</computeroutput> <emphasis>methods</emphasis> for this specific purpose: <programlisting><codeline><highlight class="normal"><sp/><sp/>XQDataSource<sp/>xqdatasource<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>XQDataSource();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>XQConnection<sp/>xqconnection<sp/>=<sp/>xqdatasource.getConnection();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>XQStaticContext<sp/>staticContext<sp/>=<sp/>xqconnection.getStaticContext();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>staticContext.declareNamespace(</highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;http://www.foo.com&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>xqconnection.setStaticContext(staticContext);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>XQExpression<sp/>xqexpression<sp/>=<sp/>xqconnection.createExpression();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>XQSequence<sp/>xqsequence<sp/>=<sp/>xqexpression.executeQuery(</highlight><highlight class="stringliteral">&quot;&lt;foo:e/&gt;&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>code<sp/>to<sp/>show<sp/>the<sp/>output</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>xqconnection.close();<sp/><sp/></highlight><highlight class="comment">//<sp/>Closing<sp/>connection<sp/>frees<sp/>all<sp/>related<sp/>resources</highlight></codeline>
+</programlisting> </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

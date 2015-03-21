@@ -1,0 +1,46 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::hexbinary::auto_attach</h1><p class="include">
+            #include &lt;zorba/util/hexbinary_stream.h&gt;
+        </p>
+A hexbinary::auto_attach is a class that attaches a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> to a stream and automatically detaches it when the auto_attach object is destroyed.     
+<pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span></span><span class="keywordtype">void</span><span class="normal"><span> </span>f(<span> </span>ostream<span> </span>&amp;<a href="/pages/3.0/zorba/namespacezorba_1_1locale_1_1iso639__1?anchor=aafd6e55905dc8efe50a3f9fd38616781abd9d340f17925d6dcfdf23e0ff40ddf1">os</a><span> </span>)<span> </span>{</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>hexbinary::auto_attach&lt;ostream&gt;<span> </span></span><span class="keyword">const</span><span class="normal"><span> </span>raii(<span> </span>os<span> </span>);</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span></span><span class="comment">//<span> </span>...</span><span class="normal"/>
+<span class="normal"><span> </span><span> </span>}</span>
+</pre> A hexbinary::auto_attach is useful for streams not created by you.<div><h4>Returns</h4><a href="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization" target="_blank">http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization</a> </div>
+    <div class="section"><h2>Private Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">StreamType *</p></td><td><p class="signature"><a href="#a34ca111fe00ce58ceb5aecbef92ce043">stream_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a7a4def038890a7dd5be97f00ed3bc401">attach</a>(StreamType &amp;stream)</p><span class="signature-description">
+Calls <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=a313b9172bcd9513faa146f4940070907">hexbinary::attach()</a> on the given stream.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#af56210edbc9708f9f37b272ae745dc41">auto_attach</a>()</p><span class="signature-description">
+Default constructor; does nothing.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#aa5dd2c901911410550403bbc362701d8">auto_attach</a>(StreamType &amp;stream)</p><span class="signature-description">
+Constructs an auto_attach object calling <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1auto__attach?anchor=a7a4def038890a7dd5be97f00ed3bc401">attach()</a> on the given stream.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#ac4687cd75b864a530905fc8fc891d5ec">auto_attach</a>(auto_attach &amp;from)</p><span class="signature-description">
+Copy constructor that takes ownership of the stream.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a4c7062232fe9ec805db0889ab691f9bc">detach</a>()</p><span class="signature-description">
+Calls <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=a533baa97c59c0f231e7821db9f6fb40f">hexbinary::detach()</a>.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1auto__attach">auto_attach</a> &amp;</p></td><td><p class="signature"><a href="#a366dfef42ac17d31c772164150359e2c">operator=</a>(auto_attach &amp;from)</p><span class="signature-description">
+Assignment operator that takes ownership of the stream.         </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a06ff3713374f72827e3b81cfb82bfca3">~auto_attach</a>()</p><span class="signature-description">
+Destroys this auto_attach object calling <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1auto__attach?anchor=a4c7062232fe9ec805db0889ab691f9bc">detach()</a> on the previously attached stream.         </span></td></tr></table></div><div class="section"><h2>Private Attributes</h2><div class="detailed"><div id="a34ca111fe00ce58ceb5aecbef92ce043" class="sect1"><div><h3>stream_</h3></div><div class="signature-box">StreamType *<span> </span>stream_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a7a4def038890a7dd5be97f00ed3bc401" class="sect1"><div><h3>attach</h3></div><div class="signature-box">bool<span> </span>attach(StreamType &amp;stream)</div><div><p class="signature-description">
+Calls <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=a313b9172bcd9513faa146f4940070907">hexbinary::attach()</a> on the given stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>stream</td><td>
+The stream to attach the <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> to. If the stream already has a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> attached to it, this contructor does nothing. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> was attached. </div>
+        </p></div></div><div id="af56210edbc9708f9f37b272ae745dc41" class="sect1"><div><h3>auto_attach</h3></div><div class="signature-box"><span> </span>auto_attach()</div><div><p class="signature-description">
+Default constructor; does nothing.         </p><p class="signature-description">
+        </p></div></div><div id="aa5dd2c901911410550403bbc362701d8" class="sect1"><div><h3>auto_attach</h3></div><div class="signature-box"><span> </span>auto_attach(StreamType &amp;stream)</div><div><p class="signature-description">
+Constructs an auto_attach object calling <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1auto__attach?anchor=a7a4def038890a7dd5be97f00ed3bc401">attach()</a> on the given stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>stream</td><td>
+The stream to attach the <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> to. If the stream already has a <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1streambuf">hexbinary::streambuf</a> attached to it, this contructor does nothing. </td></tr></table></div>
+        </p></div></div><div id="ac4687cd75b864a530905fc8fc891d5ec" class="sect1"><div><h3>auto_attach</h3></div><div class="signature-box"><span> </span>auto_attach(auto_attach &amp;from)</div><div><p class="signature-description">
+Copy constructor that takes ownership of the stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The auto_attach to take ownership from. </td></tr></table></div>
+        </p></div></div><div id="a4c7062232fe9ec805db0889ab691f9bc" class="sect1"><div><h3>detach</h3></div><div class="signature-box">void<span> </span>detach()</div><div><p class="signature-description">
+Calls <a href="/pages/3.0/zorba/namespacezorba_1_1hexbinary?anchor=a533baa97c59c0f231e7821db9f6fb40f">hexbinary::detach()</a>.         </p><p class="signature-description">
+        </p></div></div><div id="a366dfef42ac17d31c772164150359e2c" class="sect1"><div><h3>operator=</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1auto__attach">auto_attach</a> &amp;<span> </span>operator=(auto_attach &amp;from)</div><div><p class="signature-description">
+Assignment operator that takes ownership of the stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The auto_attach to take ownership from. </td></tr></table></div>
+<div><h4>Returns</h4><tt>*this</tt>. </div>
+        </p></div></div><div id="a06ff3713374f72827e3b81cfb82bfca3" class="sect1"><div><h3>~auto_attach</h3></div><div class="signature-box"><span> </span>~auto_attach()</div><div><p class="signature-description">
+Destroys this auto_attach object calling <a href="/pages/3.0/zorba/classzorba_1_1hexbinary_1_1auto__attach?anchor=a4c7062232fe9ec805db0889ab691f9bc">detach()</a> on the previously attached stream.         </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

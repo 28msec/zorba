@@ -1,0 +1,18 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::DebuggerEventHandler</h1><p class="include">
+            #include &lt;zorba/debugger_event_handler.h&gt;
+        </p>
+    
+    <div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a9c2140f80f99be86c096561c00c1b501">error</a>(unsigned int errcode, const std::string &amp;msg)=0</p><span class="signature-description">
+Method which gets called if an error occurs.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a35229f4e00c4f3355610e455281f15aa">parseMessage</a>(const std::string &amp;aMessage)=0</p><span class="signature-description">
+This method gets called whenever the debugger client gets a message from the debug engine.         </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a9c2140f80f99be86c096561c00c1b501" class="sect1"><div><h3>error</h3></div><div class="signature-box">void<span> </span>error(unsigned int errcode, const std::string &amp;msg)=0</div><div><p class="signature-description">
+Method which gets called if an error occurs.         </p><p class="signature-description">
+This method gets called if an error occurs. This can be either an error in the client or in the parser.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>errcode</td><td>
+The error code. </td></tr><tr><td>msg</td><td>
+A UI usable message. </td></tr></table></div>
+        </p></div></div><div id="a35229f4e00c4f3355610e455281f15aa" class="sect1"><div><h3>parseMessage</h3></div><div class="signature-box">void<span> </span>parseMessage(const std::string &amp;aMessage)=0</div><div><p class="signature-description">
+This method gets called whenever the debugger client gets a message from the debug engine.         </p><p class="signature-description">
+When the client gets a message from the debug engine, it reads the message to a string and calls this method. The message is an XML document - so the implementation has to parse this node.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>aMessage</td><td>
+The message recieved from the debug engine. </td></tr></table></div>
+        </p></div></div></div></div></div>
+</div>

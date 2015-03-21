@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structZorba__SerializerOptions" kind="struct" prot="public">
+    <compoundname>Zorba_SerializerOptions</compoundname>
+    <includes refid="options_8h" local="no">zorba/options.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a0377435b2b43acaf7a3f263a0a7432ad" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1af78a802d9ab4e8b8402e33f4aafb7411" kindref="member">Zorba_byte_order_mark_t</ref></type>
+        <definition>Zorba_byte_order_mark_t Zorba_SerializerOptions::byte_order_mark</definition>
+        <argsstring></argsstring>
+        <name>byte_order_mark</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="210" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="210" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a3c4bdf4bf85267d39eae755550343f46" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a61b00a37ea5cf6d05bfed5fab20de22f" kindref="member">Zorba_opaque_char_ptr_t</ref></type>
+        <definition>Zorba_opaque_char_ptr_t Zorba_SerializerOptions::cdata_section_elements</definition>
+        <argsstring></argsstring>
+        <name>cdata_section_elements</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="224" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="224" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1af5746552ab517d93f4f4494a3c8aab7e" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a61b00a37ea5cf6d05bfed5fab20de22f" kindref="member">Zorba_opaque_char_ptr_t</ref></type>
+        <definition>Zorba_opaque_char_ptr_t Zorba_SerializerOptions::doctype_public</definition>
+        <argsstring></argsstring>
+        <name>doctype_public</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="223" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="223" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a721c983767f5fefc3e9d08c13bb6f988" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a61b00a37ea5cf6d05bfed5fab20de22f" kindref="member">Zorba_opaque_char_ptr_t</ref></type>
+        <definition>Zorba_opaque_char_ptr_t Zorba_SerializerOptions::doctype_system</definition>
+        <argsstring></argsstring>
+        <name>doctype_system</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="222" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="222" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a3e2f86ab6d13498f74e8fbf466de7b2b" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a61b00a37ea5cf6d05bfed5fab20de22f" kindref="member">Zorba_opaque_char_ptr_t</ref></type>
+        <definition>Zorba_opaque_char_ptr_t Zorba_SerializerOptions::encoding</definition>
+        <argsstring></argsstring>
+        <name>encoding</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="220" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="220" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a2e260b60eaaf377c7c2ec892b6a933d5" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a826223a24fcf367465de3f76bff45e92" kindref="member">Zorba_escape_uri_attributes_t</ref></type>
+        <definition>Zorba_escape_uri_attributes_t Zorba_SerializerOptions::escape_uri_attributes</definition>
+        <argsstring></argsstring>
+        <name>escape_uri_attributes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="211" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="211" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1ad8fa5961639d89c98b5b57df3032af06" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1aa2b651ed199a0705b40169fd56ddf2cc" kindref="member">Zorba_include_content_type_t</ref></type>
+        <definition>Zorba_include_content_type_t Zorba_SerializerOptions::include_content_type</definition>
+        <argsstring></argsstring>
+        <name>include_content_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="212" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a7b584c94c04ccb4bfae4ecb7e9afd8ca" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a3a73475a7e11813067fb4f827238052b" kindref="member">Zorba_indent_t</ref></type>
+        <definition>Zorba_indent_t Zorba_SerializerOptions::indent</definition>
+        <argsstring></argsstring>
+        <name>indent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="213" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="213" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1ac114ef616714c89f4ea873f9b91bb286" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a61b00a37ea5cf6d05bfed5fab20de22f" kindref="member">Zorba_opaque_char_ptr_t</ref></type>
+        <definition>Zorba_opaque_char_ptr_t Zorba_SerializerOptions::item_separator</definition>
+        <argsstring></argsstring>
+        <name>item_separator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="225" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="225" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a87deaca898105081522f32a1756df466" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1ab5eb073de7a498417d560ffce3ce1a9a" kindref="member">Zorba_jsoniq_multiple_items_t</ref></type>
+        <definition>Zorba_jsoniq_multiple_items_t Zorba_SerializerOptions::jsoniq_multiple_items</definition>
+        <argsstring></argsstring>
+        <name>jsoniq_multiple_items</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="228" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="228" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1aa5985f2934852c8e034b840c5bcedf2b" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1ab2fde94c558e2e44f24536d971db406d" kindref="member">Zorba_serialization_method_t</ref></type>
+        <definition>Zorba_serialization_method_t Zorba_SerializerOptions::jsoniq_xdm_method</definition>
+        <argsstring></argsstring>
+        <name>jsoniq_xdm_method</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="229" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="229" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1af9d8642cbe97ffbfa0080f662cfebf1f" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a61b00a37ea5cf6d05bfed5fab20de22f" kindref="member">Zorba_opaque_char_ptr_t</ref></type>
+        <definition>Zorba_opaque_char_ptr_t Zorba_SerializerOptions::media_type</definition>
+        <argsstring></argsstring>
+        <name>media_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="221" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="221" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a7bc36476f45f038c6bd0a77cd109d2f2" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a58cff5f2556a13da6563b1039fec52b3" kindref="member">Zorba_normalization_form_t</ref></type>
+        <definition>Zorba_normalization_form_t Zorba_SerializerOptions::normalization_form</definition>
+        <argsstring></argsstring>
+        <name>normalization_form</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="214" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="214" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a2e96b63c3fd124349c50fc2e7cec8d5e" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1ad76bb29843007cf4b6c42c5ed8082ec3" kindref="member">Zorba_omit_xml_declaration_t</ref></type>
+        <definition>Zorba_omit_xml_declaration_t Zorba_SerializerOptions::omit_xml_declaration</definition>
+        <argsstring></argsstring>
+        <name>omit_xml_declaration</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="215" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="215" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a7b2e88775bb5385b6064fda3c6e3beb1" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1ab2fde94c558e2e44f24536d971db406d" kindref="member">Zorba_serialization_method_t</ref></type>
+        <definition>Zorba_serialization_method_t Zorba_SerializerOptions::ser_method</definition>
+        <argsstring></argsstring>
+        <name>ser_method</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="209" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="209" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a9a01fed28832191cd9480e665586b14f" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a2288dea5d958476fbbcd127e736a48f8" kindref="member">Zorba_standalone_t</ref></type>
+        <definition>Zorba_standalone_t Zorba_SerializerOptions::standalone</definition>
+        <argsstring></argsstring>
+        <name>standalone</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="216" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="216" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a2d792fc0dca801b431d32e65cb466992" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1ac9693c5969935f49d517234a1afde092" kindref="member">Zorba_undeclare_prefixes_t</ref></type>
+        <definition>Zorba_undeclare_prefixes_t Zorba_SerializerOptions::undeclare_prefixes</definition>
+        <argsstring></argsstring>
+        <name>undeclare_prefixes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="217" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="217" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structZorba__SerializerOptions_1a419d9562d3c54e6655988160e93403af" prot="public" static="no" mutable="no">
+        <type><ref refid="options_8h_1a61b00a37ea5cf6d05bfed5fab20de22f" kindref="member">Zorba_opaque_char_ptr_t</ref></type>
+        <definition>Zorba_opaque_char_ptr_t Zorba_SerializerOptions::version</definition>
+        <argsstring></argsstring>
+        <name>version</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="226" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="226" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Options that configure the serialization process of a query result. </para>    </briefdescription>
+    <detaileddescription>
+<para>See <ulink url="http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/">http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/</ulink>.</para><para>This struct defines options that can be passed to the serialization process of a query result. An instance of this class can be passed to the serialize function.</para><para>File <ref refid="serialization_8cpp-example" kindref="compound">serialization.cpp</ref> contains examples that show how to use the SerializerOptions. </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="980">
+        <label>Zorba_SerializerOptions</label>
+        <link refid="structZorba__SerializerOptions"/>
+        <childnode refid="981" relation="usage">
+          <edgelabel>doctype_system</edgelabel>
+          <edgelabel>item_separator</edgelabel>
+          <edgelabel>media_type</edgelabel>
+          <edgelabel>cdata_section_elements</edgelabel>
+          <edgelabel>version</edgelabel>
+          <edgelabel>doctype_public</edgelabel>
+          <edgelabel>encoding</edgelabel>
+        </childnode>
+      </node>
+      <node id="981">
+        <label>Zorba_opaque_char_ptr</label>
+        <link refid="structZorba__opaque__char__ptr"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/options.h" line="208" bodyfile="/home/wcandillon/deadlinks/include/zorba/options.h" bodystart="207" bodyend="289"/>
+    <listofallmembers>
+      <member refid="structZorba__SerializerOptions_1a0377435b2b43acaf7a3f263a0a7432ad" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>byte_order_mark</name></member>
+      <member refid="structZorba__SerializerOptions_1a3c4bdf4bf85267d39eae755550343f46" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>cdata_section_elements</name></member>
+      <member refid="structZorba__SerializerOptions_1af5746552ab517d93f4f4494a3c8aab7e" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>doctype_public</name></member>
+      <member refid="structZorba__SerializerOptions_1a721c983767f5fefc3e9d08c13bb6f988" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>doctype_system</name></member>
+      <member refid="structZorba__SerializerOptions_1a3e2f86ab6d13498f74e8fbf466de7b2b" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>encoding</name></member>
+      <member refid="structZorba__SerializerOptions_1a2e260b60eaaf377c7c2ec892b6a933d5" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>escape_uri_attributes</name></member>
+      <member refid="structZorba__SerializerOptions_1ad8fa5961639d89c98b5b57df3032af06" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>include_content_type</name></member>
+      <member refid="structZorba__SerializerOptions_1a7b584c94c04ccb4bfae4ecb7e9afd8ca" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>indent</name></member>
+      <member refid="structZorba__SerializerOptions_1ac114ef616714c89f4ea873f9b91bb286" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>item_separator</name></member>
+      <member refid="structZorba__SerializerOptions_1a87deaca898105081522f32a1756df466" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>jsoniq_multiple_items</name></member>
+      <member refid="structZorba__SerializerOptions_1aa5985f2934852c8e034b840c5bcedf2b" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>jsoniq_xdm_method</name></member>
+      <member refid="structZorba__SerializerOptions_1af9d8642cbe97ffbfa0080f662cfebf1f" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>media_type</name></member>
+      <member refid="structZorba__SerializerOptions_1a7bc36476f45f038c6bd0a77cd109d2f2" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>normalization_form</name></member>
+      <member refid="structZorba__SerializerOptions_1a2e96b63c3fd124349c50fc2e7cec8d5e" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>omit_xml_declaration</name></member>
+      <member refid="structZorba__SerializerOptions_1a7b2e88775bb5385b6064fda3c6e3beb1" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>ser_method</name></member>
+      <member refid="structZorba__SerializerOptions_1a9a01fed28832191cd9480e665586b14f" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>standalone</name></member>
+      <member refid="structZorba__SerializerOptions_1a2d792fc0dca801b431d32e65cb466992" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>undeclare_prefixes</name></member>
+      <member refid="structZorba__SerializerOptions_1a419d9562d3c54e6655988160e93403af" prot="public" virt="non-virtual"><scope>Zorba_SerializerOptions</scope><name>version</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

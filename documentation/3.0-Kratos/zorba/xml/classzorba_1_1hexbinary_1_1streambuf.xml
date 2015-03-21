@@ -1,0 +1,345 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1hexbinary_1_1streambuf" kind="class" prot="public">
+    <compoundname>zorba::hexbinary::streambuf</compoundname>
+    <includes refid="hexbinary__stream_8h" local="no">zorba/util/hexbinary_stream.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1hexbinary_1_1streambuf_1a916d1c5dc3e905a1e70201dff58b4abc" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char zorba::hexbinary::streambuf::gbuf_[2]</definition>
+        <argsstring>[2]</argsstring>
+        <name>gbuf_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="98" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1hexbinary_1_1streambuf_1a41df17d0a6c73cdd892e689e66698635" prot="private" static="no" mutable="no">
+        <type>std::streambuf *</type>
+        <definition>std::streambuf* zorba::hexbinary::streambuf::orig_buf_</definition>
+        <argsstring></argsstring>
+        <name>orig_buf_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="97" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1a8422d0b2d84ea3ba0caad8b88ff7ed10" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::streambuf *</type>
+        <definition>std::streambuf* zorba::hexbinary::streambuf::orig_streambuf</definition>
+        <argsstring>() const </argsstring>
+        <name>orig_streambuf</name>
+        <briefdescription>
+<para>Gets the original streambuf. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>said streambuf. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="80" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="80" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1a3a6f3edb9fbae43e6bb52ae3c1fa982b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::hexbinary::streambuf::streambuf</definition>
+        <argsstring>(std::streambuf *orig)</argsstring>
+        <name>streambuf</name>
+        <param>
+          <type>std::streambuf *</type>
+          <declname>orig</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a hexbinary::streambuf. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>orig</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The original streambuf to read/write from/to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>std::invalid_argument</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if is not supported or <emphasis>orig</emphasis> is null. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="73"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1a97a0988ea07508194a8044a988c8f297" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::hexbinary::streambuf::imbue</definition>
+        <argsstring>(std::locale const &amp;)</argsstring>
+        <name>imbue</name>
+        <param>
+          <type>std::locale const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="85"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1a389253a840e23f7cc5438d067902a330" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int_type</type>
+        <definition>int_type zorba::hexbinary::streambuf::overflow</definition>
+        <argsstring>(int_type)</argsstring>
+        <name>overflow</name>
+        <param>
+          <type>int_type</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="90"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1acf68e4219d4e52c5efd243d0bf4b4381" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int_type</type>
+        <definition>int_type zorba::hexbinary::streambuf::pbackfail</definition>
+        <argsstring>(int_type)</argsstring>
+        <name>pbackfail</name>
+        <param>
+          <type>int_type</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="91"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1a4860a8ccbbd93b276b4caca578cf79af" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>pos_type</type>
+        <definition>pos_type zorba::hexbinary::streambuf::seekoff</definition>
+        <argsstring>(off_type, std::ios_base::seekdir, std::ios_base::openmode)</argsstring>
+        <name>seekoff</name>
+        <param>
+          <type>off_type</type>
+        </param>
+        <param>
+          <type>std::ios_base::seekdir</type>
+        </param>
+        <param>
+          <type>std::ios_base::openmode</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="86"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1af66810f9169fd302997747f84ab4a959" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>pos_type</type>
+        <definition>pos_type zorba::hexbinary::streambuf::seekpos</definition>
+        <argsstring>(pos_type, std::ios_base::openmode)</argsstring>
+        <name>seekpos</name>
+        <param>
+          <type>pos_type</type>
+        </param>
+        <param>
+          <type>std::ios_base::openmode</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="87"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1ace87cb65aa84b1dcdbb4a268840c695e" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::streambuf *</type>
+        <definition>std::streambuf* zorba::hexbinary::streambuf::setbuf</definition>
+        <argsstring>(char_type *, std::streamsize)</argsstring>
+        <name>setbuf</name>
+        <param>
+          <type>char_type *</type>
+        </param>
+        <param>
+          <type>std::streamsize</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="88"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1a2f6bcf0878ebe231fd49cbefc18f7b98" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::streamsize</type>
+        <definition>std::streamsize zorba::hexbinary::streambuf::showmanyc</definition>
+        <argsstring>()</argsstring>
+        <name>showmanyc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="89"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1a47d6810c51470fa13d698ce5202c05c8" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int_type</type>
+        <definition>int_type zorba::hexbinary::streambuf::underflow</definition>
+        <argsstring>()</argsstring>
+        <name>underflow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1a22f9ca587e25a7af5718aba254f59e55" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::streamsize</type>
+        <definition>std::streamsize zorba::hexbinary::streambuf::xsgetn</definition>
+        <argsstring>(char_type *, std::streamsize)</argsstring>
+        <name>xsgetn</name>
+        <param>
+          <type>char_type *</type>
+        </param>
+        <param>
+          <type>std::streamsize</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="93"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1a6cae8eb02c909b6ed0f0b9d2d53a8c57" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::streamsize</type>
+        <definition>std::streamsize zorba::hexbinary::streambuf::xsputn</definition>
+        <argsstring>(char_type const *, std::streamsize)</argsstring>
+        <name>xsputn</name>
+        <param>
+          <type>char_type const *</type>
+        </param>
+        <param>
+          <type>std::streamsize</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="94"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1aa589f3fe94b0d5f321cb7941e3cdc52a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::hexbinary::streambuf::clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1adb0250bdf84030740ea0d72d8b3a1b11" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">streambuf</ref> &amp;</type>
+        <definition>streambuf&amp; zorba::hexbinary::streambuf::operator=</definition>
+        <argsstring>(streambuf const &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">streambuf</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="104"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1streambuf_1a6dc8215bef1f882bfd2fda8113f9de42" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::hexbinary::streambuf::streambuf</definition>
+        <argsstring>(streambuf const &amp;)</argsstring>
+        <name>streambuf</name>
+        <param>
+          <type><ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">streambuf</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="103"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A hexbinary::streambuf is-a std::streambuf for encoding to and decoding from HexBinary on-the-fly. </para>    </briefdescription>
+    <detaileddescription>
+<para>To use it, replace a stream&apos;s streambuf: <programlisting><codeline><highlight class="normal"><sp/><sp/>istream<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>hexbinary::streambuf<sp/>hb_buf(<sp/>is.rdbuf()<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>is.ios::rdbuf(<sp/>&amp;hb_buf<sp/>);</highlight></codeline>
+</programlisting> Note that the hexbinary::streambuf must exist for as long as it&apos;s being used by the stream. If you are replacing the streabuf for a stream you did not create, you should set it back to the original streambuf: <programlisting><codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f(<sp/>ostream<sp/>&amp;os<sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>hexbinary::streambuf<sp/>hb_buf(<sp/>os.rdbuf()<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>os.ios::rdbuf(<sp/>&amp;hb_buf<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal"><sp/>(<sp/>...<sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>os.ios::rdbuf(<sp/>hb_buf.orig_streambuf()<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>os.ios::rdbuf(<sp/>hb_buf.orig_streambuf()<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+</programlisting> Alternatively, you may wish to use either <computeroutput><ref refid="namespacezorba_1_1hexbinary_1a313b9172bcd9513faa146f4940070907" kindref="member">attach()</ref></computeroutput>, <computeroutput><ref refid="classzorba_1_1hexbinary_1_1auto__attach" kindref="compound">auto_attach</ref></computeroutput>, or <computeroutput><ref refid="classzorba_1_1hexbinary_1_1stream" kindref="compound">hexbinary::stream</ref></computeroutput> instead.</para><para>While hexbinary::streambuf does support seeking, the positions are relative to the original byte stream. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="65" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="65" bodyend="105"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1aa589f3fe94b0d5f321cb7941e3cdc52a" prot="private" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>clear</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a916d1c5dc3e905a1e70201dff58b4abc" prot="private" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>gbuf_</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a97a0988ea07508194a8044a988c8f297" prot="protected" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>imbue</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1adb0250bdf84030740ea0d72d8b3a1b11" prot="private" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a41df17d0a6c73cdd892e689e66698635" prot="private" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>orig_buf_</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a8422d0b2d84ea3ba0caad8b88ff7ed10" prot="public" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>orig_streambuf</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a389253a840e23f7cc5438d067902a330" prot="protected" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>overflow</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1acf68e4219d4e52c5efd243d0bf4b4381" prot="protected" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>pbackfail</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a4860a8ccbbd93b276b4caca578cf79af" prot="protected" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>seekoff</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1af66810f9169fd302997747f84ab4a959" prot="protected" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>seekpos</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1ace87cb65aa84b1dcdbb4a268840c695e" prot="protected" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>setbuf</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a2f6bcf0878ebe231fd49cbefc18f7b98" prot="protected" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>showmanyc</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a3a6f3edb9fbae43e6bb52ae3c1fa982b" prot="public" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>streambuf</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a6dc8215bef1f882bfd2fda8113f9de42" prot="private" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>streambuf</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a47d6810c51470fa13d698ce5202c05c8" prot="protected" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>underflow</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a22f9ca587e25a7af5718aba254f59e55" prot="protected" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>xsgetn</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1streambuf_1a6cae8eb02c909b6ed0f0b9d2d53a8c57" prot="protected" virt="non-virtual"><scope>zorba::hexbinary::streambuf</scope><name>xsputn</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="dir_0782e36ce4e7a6272b0d8c348d7e8e7e" kind="dir">
+    <compoundname>/home/wcandillon/deadlinks/include/zorba/internal/</compoundname>
+    <innerdir refid="dir_0766d7d9a66d56cd5cc765a1ab8a0ea7">/home/wcandillon/deadlinks/include/zorba/internal/pregenerated/</innerdir>
+    <innerfile refid="cxx__util_8h">cxx_util.h</innerfile>
+    <innerfile refid="internal_2diagnostic_8h">internal/diagnostic.h</innerfile>
+    <innerfile refid="proxy_8h">proxy.h</innerfile>
+    <innerfile refid="qname_8h">qname.h</innerfile>
+    <innerfile refid="streambuf_8h">streambuf.h</innerfile>
+    <innerfile refid="system__diagnostic_8h">system_diagnostic.h</innerfile>
+    <innerfile refid="type__traits_8h">type_traits.h</innerfile>
+    <innerfile refid="unique__ptr_8h">unique_ptr.h</innerfile>
+    <innerfile refid="unit__tests_8h">unit_tests.h</innerfile>
+    <innerfile refid="ztd_8h">ztd.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/"/>
+  </compounddef>
+</doxygen>

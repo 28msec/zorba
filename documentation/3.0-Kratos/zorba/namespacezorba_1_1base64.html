@@ -1,0 +1,236 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::base64</h1>
+    
+    <div class="section"><h2>Enumerations</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a6a1cf68e5f14be4e4c9261281d3cc497">decode_options</a></p><span class="signature-description">
+Options to use for decoding.         </span></td></tr></table></div><div class="section"><h2>Type Definitions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">size_t</p></td><td><p class="signature"><a href="#ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#acc02be7e81c24ef6fdffb8f0f16c189d">attach</a>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</p><span class="signature-description">
+Attaches a <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> to a stream.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#ad18050b7525834d08a4b766e595b39f2">decode</a>(char const *from, size_type from_len, char *to, int options=dopt_none)</p><span class="signature-description">
+Decodes a Base64-encoded buffer.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#a0e26cf29432d2df40aa7364103e4b8fa">decode</a>(char const *from, size_type from_len, std::vector&lt; char &gt; *to, int options=dopt_none)</p><span class="signature-description">
+Decodes a Base64-encoded buffer and appends the decoded bytes onto a vector&lt;char&gt;.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#a7d8081de425a7ad66ff7cbcc2276a2d6">decode</a>(char const *from, size_type from_len, std::ostream &amp;to, int options=dopt_none)</p><span class="signature-description">
+Base64-decodes a buffer and writes the decoded bytes to the given stream.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#ab5f20211217a1f3e06730aeb193f4657">decode</a>(char const *from, size_type from_len, ToStringType *to, int options=dopt_none)</p><span class="signature-description">
+Decodes a Base64-encoded buffer and appends the decoded bytes onto a string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(FromStringType)&amp;&amp;<a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#a3b34bfa413a39144e50f49475a5fd9b0">decode</a>(FromStringType const &amp;from, ToStringType *to)</p><span class="signature-description">
+Decodes a Base64-encoded string and appends the decoded bytes onto another string.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#aac7a022b8c2a36ecbe4ca77ec0b9632c">decode</a>(std::istream &amp;from, std::ostream &amp;to, int options=dopt_none)</p><span class="signature-description">
+Decodes a Base64-encoded istream.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(FromStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#ab2ccd71d85aff9c0ac5a9492ed89eacd">decode</a>(FromStringType const &amp;from, std::ostream &amp;to)</p><span class="signature-description">
+Base64-decodes a string and writes the decoded bytes to a stream.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#ab7b4a9e5b8038da5c3d7c2eef3f9dca0">decode</a>(std::istream &amp;from, ToStringType *to, int options=dopt_none)</p><span class="signature-description">
+Decodes a Base64-encoded istream and appends the decoded bytes to a string.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#a341df5b4cd9110e9851f52aa63671fbe">decode</a>(std::istream &amp;from, std::vector&lt; char &gt; *to, int options=dopt_none)</p><span class="signature-description">
+Decodes a Base64-encoded stream and appends the decoded bytes onto a vector&lt;char;&gt;.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#a3c2caffd1fb57d1aa25734bdaf9f8241">decoded_size</a>(size_type n)</p><span class="signature-description">
+Calculates the number of bytes required to decode <em>n</em> Base64-encoded bytes.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a31c5d6cf41a6ad8c82178853e7c0bcfc">detach</a>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</p><span class="signature-description">
+Detaches a previously attached <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> from a stream.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#ade0d7190a51da7c11c7726aa820715fd">encode</a>(char const *from, size_type from_len, char *to)</p><span class="signature-description">
+Base64-encodes a buffer.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#a082bab01a7cba4475ccb23833d7937ce">encode</a>(char const *from, size_type from_len, std::vector&lt; char &gt; *to)</p><span class="signature-description">
+Base64-encodes a buffer and appends the encoded bytes onto a vector&lt;char&gt;.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#aa98165f1b3c19e153950dc3b66a8e1f0">encode</a>(char const *from, size_type from_len, std::ostream &amp;to)</p><span class="signature-description">
+Base64-encodes a buffer and writes the encoded bytes to the given stream.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#ad28e55154f9426fb53e66ae081728431">encode</a>(char const *from, size_type from_len, ToStringType *to)</p><span class="signature-description">
+Base64-encodes a buffer and appends the encoded bytes onto a string.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(FromStringType)&amp;&amp;<a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#afe46148082a2b570ee101b7ee9fe7e13">encode</a>(FromStringType const &amp;from, ToStringType *to)</p><span class="signature-description">
+Base64-encodes a string and appends the encoded bytes onto another string.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#aab704b34b6d853b084141dd557999f83">encode</a>(std::istream &amp;from, std::ostream &amp;to)</p><span class="signature-description">
+Base64-encodes one stream and writes the encoded bytes to another.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(FromStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#a05a8bd29eed75ae734c6a0d92d073500">encode</a>(FromStringType const &amp;from, std::ostream &amp;to)</p><span class="signature-description">
+Base64-encodes a string and writes the encoded bytes to a stream.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type</p></td><td><p class="signature"><a href="#a993f5eb83b39d6c12c967526a61ace84">encode</a>(std::istream &amp;from, ToStringType *to)</p><span class="signature-description">
+Encodes a stream to Base64 and appends the encoded bytes to a string.         </span></td></tr><tr><td class="return-type"><p class="signature">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#a15fb72a9ae3c31362b3bc6cd4d91d87d">encode</a>(std::istream &amp;from, std::vector&lt; char &gt; *to)</p><span class="signature-description">
+Base64-encodes a stream and appends the encoded bytes onto a vector&lt;char;&gt;.         </span></td></tr><tr><td class="return-type"><p class="signature"><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a></p></td><td><p class="signature"><a href="#ac3ec383d6be4fc97688a3dacd221abb1">encoded_size</a>(size_type n)</p><span class="signature-description">
+Calculates the number of bytes required to Base64-encode <em>n</em> bytes.         </span></td></tr><tr><td class="return-type"><p class="signature">bool</p></td><td><p class="signature"><a href="#a29f4772679d15d39ab8aec795a0c17f5">is_attached</a>(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</p><span class="signature-description">
+Checks whether the given stream has a <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> attached.         </span></td></tr><tr><td class="return-type"><p class="signature">void</p></td><td><p class="signature"><a href="#a91fa177bec263667b9c1187018a0ff43">validate</a>(char const *buf, size_type buf_len, int options=dopt_none)</p><span class="signature-description">
+Validates a Base64-encoded buffer.         </span></td></tr></table></div><div class="section"><h2>Enumerations</h2><div class="detailed"><div id="a6a1cf68e5f14be4e4c9261281d3cc497" class="sect1"><div><h3>decode_options</h3></div><div class="signature-box"><span> </span>decode_options</div><div><p class="signature-description">
+Options to use for decoding.         </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Type Definitions</h2><div class="detailed"><div id="ad04b7fb8662aed83c48a9a87ae49aa88" class="sect1"><div><h3>size_type</h3></div><div class="signature-box">size_t<span> </span>size_type</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Functions</h2><div class="detailed"><div id="acc02be7e81c24ef6fdffb8f0f16c189d" class="sect1"><div><h3>attach</h3></div><div class="signature-box">bool<span> </span>attach(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</div><div><p class="signature-description">
+Attaches a <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> to a stream.         </p><p class="signature-description">
+Unlike using a <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> directly, this function will create the streambuf, attach it to the stream, and manage it for the lifetime of the stream automatically.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ios</td><td>
+The stream to attach the <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> to. If the stream already has a <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> attached to it, this function does nothing. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> was attached. </div>
+        </p></div></div><div id="ad18050b7525834d08a4b766e595b39f2" class="sect1"><div><h3>decode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>decode(char const *from, size_type from_len, char *to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a Base64-encoded buffer.         </p><p class="signature-description">
+Embedded newlines and carriage-returns are skipped.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the Base64 buffer to be decoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to decode.  to A pointer to the buffer to receive the decoded bytes. The buffer must be large enough to contain them. Note that the buffer is <em>not</em> null terminated. </td></tr><tr><td>options</td><td>
+The decoding options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>options</em> does not have the <tt>dtop_any_len</tt> bit set and <em>from_len</em> is not a multiple of 4. </td></tr><tr><td/><td>
+if an <tt>=</tt> is encountered unexpectedly or an invalid byte is encountered. </td></tr></table></div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=a3c2caffd1fb57d1aa25734bdaf9f8241">decoded_size()</a> </div>
+        </p></div></div><div id="a0e26cf29432d2df40aa7364103e4b8fa" class="sect1"><div><h3>decode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>decode(char const *from, size_type from_len, std::vector&lt; char &gt; *to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a Base64-encoded buffer and appends the decoded bytes onto a vector&lt;char&gt;.         </p><p class="signature-description">
+Embedded newlines and carriage-returns are skipped.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the buffer to be encoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to encode. </td></tr><tr><td>to</td><td>
+A pointer to the vector to append the encoded bytes appended onto. The vector is made large enough to contain the additional bytes. </td></tr><tr><td>options</td><td>
+The decoding options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>options</em> does not have the <tt>dopt_any_len</tt> bit set and the number of Base64 bytes decoded is not a multiple of 4. </td></tr><tr><td/><td>
+if an <tt>=</tt> is encountered unexpectedly or an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="a7d8081de425a7ad66ff7cbcc2276a2d6" class="sect1"><div><h3>decode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>decode(char const *from, size_type from_len, std::ostream &amp;to, int options=dopt_none)</div><div><p class="signature-description">
+Base64-decodes a buffer and writes the decoded bytes to the given stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the Base64 buffer to be decoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to decode. </td></tr><tr><td>to</td><td>
+The ostream to write the decoded bytes to. </td></tr><tr><td>options</td><td>
+The options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>options</em> does not have the <tt>dopt_any_len</tt> bit set and the number of Base64 bytes decoded is not a multiple of 4. </td></tr><tr><td/><td>
+if an <tt>=</tt> is encountered unexpectedly or an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="ab5f20211217a1f3e06730aeb193f4657" class="sect1"><div><h3>decode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type<span> </span>decode(char const *from, size_type from_len, ToStringType *to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a Base64-encoded buffer and appends the decoded bytes onto a string.         </p><p class="signature-description">
+Embedded newlines and carriage-returns are skipped.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ToStringType</td><td>
+The string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the Base64 buffer to be decoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to decode. </td></tr><tr><td>to</td><td>
+The string to append the decoded bytes to. </td></tr><tr><td>options</td><td>
+The options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>options</em> does not have the <tt>dopt_any_len</tt> bit set and the number of Base64 bytes decoded is not a multiple of 4. </td></tr><tr><td/><td>
+if an <tt>=</tt> is encountered unexpectedly or an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="a3b34bfa413a39144e50f49475a5fd9b0" class="sect1"><div><h3>decode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(FromStringType)&amp;&amp;<a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type<span> </span>decode(FromStringType const &amp;from, ToStringType *to)</div><div><p class="signature-description">
+Decodes a Base64-encoded string and appends the decoded bytes onto another string.         </p><p class="signature-description">
+Embedded newlines and carriage-returns are skipped.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>FromStringType</td><td>
+The <em>from</em> string type. </td></tr><tr><td>ToStringType</td><td>
+The <em>to</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The Base64-encoded string to be decoded. </td></tr><tr><td>to</td><td>
+The string to append the decoded bytes to. </td></tr><tr><td>options</td><td>
+The options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>options</em> does not have the <tt>dopt_any_len</tt> bit set and the number of Base64 bytes decoded is not a multiple of 4. </td></tr><tr><td/><td>
+if an <tt>=</tt> is encountered unexpectedly or an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="aac7a022b8c2a36ecbe4ca77ec0b9632c" class="sect1"><div><h3>decode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>decode(std::istream &amp;from, std::ostream &amp;to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a Base64-encoded istream.         </p><p class="signature-description">
+Embedded newlines and carriage-returns are skipped.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The ostream to write the decoded bytes to. </td></tr><tr><td>options</td><td>
+The options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>options</em> does not have the <tt>dopt_any_len</tt> bit set and the number of Base64 bytes decoded is not a multiple of 4. </td></tr><tr><td/><td>
+if an <tt>=</tt> is encountered unexpectedly or an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="ab2ccd71d85aff9c0ac5a9492ed89eacd" class="sect1"><div><h3>decode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(FromStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type<span> </span>decode(FromStringType const &amp;from, std::ostream &amp;to)</div><div><p class="signature-description">
+Base64-decodes a string and writes the decoded bytes to a stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>FromStringType</td><td>
+The string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The string to be decoded. </td></tr><tr><td>to</td><td>
+The ostream to write the decoded bytes to. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+        </p></div></div><div id="ab7b4a9e5b8038da5c3d7c2eef3f9dca0" class="sect1"><div><h3>decode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type<span> </span>decode(std::istream &amp;from, ToStringType *to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a Base64-encoded istream and appends the decoded bytes to a string.         </p><p class="signature-description">
+Embedded newlines and carriage-returns are skipped.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ToStringType</td><td>
+The string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The string to append the decoded bytes to. </td></tr><tr><td>options</td><td>
+The options to use. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of decoded bytes. </div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>options</em> does not have the <tt>dopt_any_len</tt> bit set and the number of Base64 bytes decoded is not a multiple of 4. </td></tr><tr><td/><td>
+if an <tt>=</tt> is encountered unexpectedly or an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="a341df5b4cd9110e9851f52aa63671fbe" class="sect1"><div><h3>decode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>decode(std::istream &amp;from, std::vector&lt; char &gt; *to, int options=dopt_none)</div><div><p class="signature-description">
+Decodes a Base64-encoded stream and appends the decoded bytes onto a vector&lt;char;&gt;.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The string to append the decoded bytes to. </td></tr><tr><td>options</td><td>
+The options to use. </td></tr><tr><td>Returns</td><td>
+the number of decoded bytes. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>options</em> does not have the <tt>dopt_any_len</tt> bit set and the number of Base64 bytes decoded is not a multiple of 4. </td></tr><tr><td/><td>
+if an <tt>=</tt> is encountered unexpectedly or an invalid byte is encountered. </td></tr></table></div>
+        </p></div></div><div id="a3c2caffd1fb57d1aa25734bdaf9f8241" class="sect1"><div><h3>decoded_size</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>decoded_size(size_type n)</div><div><p class="signature-description">
+Calculates the number of bytes required to decode <em>n</em> Base64-encoded bytes.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>n</td><td>
+The number of bytes to decode. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of bytes needed for Base64 decoding. </div>
+        </p></div></div><div id="a31c5d6cf41a6ad8c82178853e7c0bcfc" class="sect1"><div><h3>detach</h3></div><div class="signature-box">bool<span> </span>detach(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</div><div><p class="signature-description">
+Detaches a previously attached <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> from a stream.         </p><p class="signature-description">
+The streambuf is destroyed and the stream's original streambuf is restored.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ios</td><td>
+The stream to detach the <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> from. If the stream doesn't have a <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> attached to it, this function does nothing. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> was detached. </div>
+        </p></div></div><div id="ade0d7190a51da7c11c7726aa820715fd" class="sect1"><div><h3>encode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>encode(char const *from, size_type from_len, char *to)</div><div><p class="signature-description">
+Base64-encodes a buffer.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the buffer to be encoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to encode. </td></tr><tr><td>to</td><td>
+A pointer to the buffer to receive the encoded bytes. The buffer must be large enough to contain them. Note that the buffer is <em>not</em> null terminated. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ac3ec383d6be4fc97688a3dacd221abb1">encoded_size()</a> </div>
+        </p></div></div><div id="a082bab01a7cba4475ccb23833d7937ce" class="sect1"><div><h3>encode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>encode(char const *from, size_type from_len, std::vector&lt; char &gt; *to)</div><div><p class="signature-description">
+Base64-encodes a buffer and appends the encoded bytes onto a vector&lt;char&gt;.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the buffer to be encoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to encode. </td></tr><tr><td>to</td><td>
+A pointer to the vector to append the encoded bytes appended onto. The vector is made large enough to contain the additional bytes. </td></tr></table></div>
+        </p></div></div><div id="aa98165f1b3c19e153950dc3b66a8e1f0" class="sect1"><div><h3>encode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>encode(char const *from, size_type from_len, std::ostream &amp;to)</div><div><p class="signature-description">
+Base64-encodes a buffer and writes the encoded bytes to the given stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the buffer to be encoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to encode. </td></tr><tr><td>to</td><td>
+The ostream to write the encoded bytes to. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+        </p></div></div><div id="ad28e55154f9426fb53e66ae081728431" class="sect1"><div><h3>encode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type<span> </span>encode(char const *from, size_type from_len, ToStringType *to)</div><div><p class="signature-description">
+Base64-encodes a buffer and appends the encoded bytes onto a string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ToStringType</td><td>
+The string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+A pointer to the buffer to be encoded. </td></tr><tr><td>from_len</td><td>
+The number of bytes to encode. </td></tr><tr><td>to</td><td>
+A pointer to the string to append the encoded bytes onto. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+        </p></div></div><div id="afe46148082a2b570ee101b7ee9fe7e13" class="sect1"><div><h3>encode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(FromStringType)&amp;&amp;<a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type<span> </span>encode(FromStringType const &amp;from, ToStringType *to)</div><div><p class="signature-description">
+Base64-encodes a string and appends the encoded bytes onto another string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>FromStringType</td><td>
+The <em>from</em> string type. </td></tr><tr><td>ToStringType</td><td>
+The <em>to</em> string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The string to be encoded. </td></tr><tr><td>to</td><td>
+A pointer to the string to append the encoded bytes onto. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+        </p></div></div><div id="aab704b34b6d853b084141dd557999f83" class="sect1"><div><h3>encode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>encode(std::istream &amp;from, std::ostream &amp;to)</div><div><p class="signature-description">
+Base64-encodes one stream and writes the encoded bytes to another.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The ostream to write the encoded bytes to. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+        </p></div></div><div id="a05a8bd29eed75ae734c6a0d92d073500" class="sect1"><div><h3>encode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(FromStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type<span> </span>encode(FromStringType const &amp;from, std::ostream &amp;to)</div><div><p class="signature-description">
+Base64-encodes a string and writes the encoded bytes to a stream.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>FromStringType</td><td>
+The string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The string to be encoded. </td></tr><tr><td>to</td><td>
+The ostream to write the encoded bytes to. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+        </p></div></div><div id="a993f5eb83b39d6c12c967526a61ace84" class="sect1"><div><h3>encode</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/structstd_1_1enable__if">std::enable_if</a>&lt; <a href="/pages/3.0/zorba/ztd_8h?anchor=a0958a26ba5538590ef945f07a2251f2d">ZORBA_IS_STRING</a>(ToStringType), <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a> &gt;::type<span> </span>encode(std::istream &amp;from, ToStringType *to)</div><div><p class="signature-description">
+Encodes a stream to Base64 and appends the encoded bytes to a string.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ToStringType</td><td>
+The string type. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The string to append the encoded bytes to. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of encoded bytes. </div>
+        </p></div></div><div id="a15fb72a9ae3c31362b3bc6cd4d91d87d" class="sect1"><div><h3>encode</h3></div><div class="signature-box">ZORBA_DLL_PUBLIC <a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>encode(std::istream &amp;from, std::vector&lt; char &gt; *to)</div><div><p class="signature-description">
+Base64-encodes a stream and appends the encoded bytes onto a vector&lt;char;&gt;.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>from</td><td>
+The istream to read from until EOF is reached. </td></tr><tr><td>to</td><td>
+The vector to append the encoded bytes to. </td></tr><tr><td>Returns</td><td>
+the number of encoded bytes. </td></tr></table></div>
+        </p></div></div><div id="ac3ec383d6be4fc97688a3dacd221abb1" class="sect1"><div><h3>encoded_size</h3></div><div class="signature-box"><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=ad04b7fb8662aed83c48a9a87ae49aa88">size_type</a><span> </span>encoded_size(size_type n)</div><div><p class="signature-description">
+Calculates the number of bytes required to Base64-encode <em>n</em> bytes.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>n</td><td>
+The number of bytes to encode. </td></tr></table></div>
+<div><h4>Returns</h4>Returns the number of bytes needed for Base64 encoding. </div>
+        </p></div></div><div id="a29f4772679d15d39ab8aec795a0c17f5" class="sect1"><div><h3>is_attached</h3></div><div class="signature-box">bool<span> </span>is_attached(std::basic_ios&lt; charT, Traits &gt; &amp;ios)</div><div><p class="signature-description">
+Checks whether the given stream has a <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> attached.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>ios</td><td>
+The stream to check. </td></tr></table></div>
+<div><h4>Returns</h4><tt>true</tt> only if a <a href="/pages/3.0/zorba/classzorba_1_1base64_1_1streambuf">base64::streambuf</a> is attached. </div>
+        </p></div></div><div id="a91fa177bec263667b9c1187018a0ff43" class="sect1"><div><h3>validate</h3></div><div class="signature-box">void<span> </span>validate(char const *buf, size_type buf_len, int options=dopt_none)</div><div><p class="signature-description">
+Validates a Base64-encoded buffer.         </p><p class="signature-description">
+Embedded newlines and carriage-returns are skipped.<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>buf</td><td>
+A pointer to the Base64 buffer to be validated. </td></tr><tr><td>buf_len</td><td>
+The number of bytes to validate. </td></tr><tr><td>options</td><td>
+The options to use. </td></tr></table></div>
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>invalid_argument</td><td>
+if <em>options</em> does not have the <tt>dopt_any_len</tt> bit set and the number of Base64 bytes validated is not a multiple of 4. </td></tr><tr><td/><td>
+if an <tt>=</tt> is encountered unexpectedly or an invalid byte is encountered. </td></tr></table></div>
+<div><h4>Returns</h4><a href="/pages/3.0/zorba/namespacezorba_1_1base64?anchor=a3c2caffd1fb57d1aa25734bdaf9f8241">decoded_size()</a> </div>
+        </p></div></div></div></div></div>
+</div>

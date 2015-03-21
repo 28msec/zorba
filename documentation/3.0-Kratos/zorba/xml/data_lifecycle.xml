@@ -1,0 +1,313 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="data_lifecycle" kind="page">
+    <compoundname>data_lifecycle</compoundname>
+    <title>Data Lifecycle</title>
+    <detaileddescription>
+<sect1 id="data_lifecycle_1dl_overview">
+<title>Overview</title>
+<para>This sections gives a short overview of the Zorba data lifecycle: how to load data in the Zorba store, how to query and update it, and how to remove the data from the store.</para><para><image type="html" name="data_lifecycle.png"></image>
+</para><para>The store contains several types of data containers: documents, collections, and other structures. Each such container is identified by a name, which can be a URI or a QName. The association between the name and the content of the containers is maintained by the store during the lifetime of the container.</para><para>There are two kinds of containers: static and dynamic. Collections can be either static or dynamic. Documents, maps, stacks, and queues can only be dynamic.</para><para><image type="html" name="store_concepts.png"></image>
+</para><para>While the dynamic containers require no static knowledge from the query processor (no need for explicit knowledge about their existence at compilation time), the static collections require the query processor to be aware of their existence, and take this information into consideration at compilation and optimization time. Note that static collections can have indexes and integrity constraints defined on them (declared using the <ref refid="xqddf" kindref="compound">Data Definition Facility</ref>), while the dynamic structures cannot. At compilation time the query processor needs to be aware of the indexes, integrity constraints of the static collections in order to generate correct and optimal execution plans.</para><para>Both static and dynamic collections have functions that allow queries to manipulate them. Like in most other databases, the functions are clustered into Data Definition Modules (DDL; e.g. creation, deletion) and Data Manipulation Modules (DML; e.g. query, update).</para><para>The following tables gives the complete list of all Zorba modules that allow the manipulation of static and dynamic containers.</para><para><table rows="8" cols="3"><row>
+<entry thead="no"><para><bold>Static Containers</bold>   </para></entry></row>
+<row>
+<entry thead="no"><para><bold>Container Type</bold> </para></entry><entry thead="no"><para><bold>Definition (DDL) / Manipulation (DML)</bold> </para></entry><entry thead="no"><para><bold>Module Namespace</bold>  </para></entry></row>
+<row>
+<entry thead="no"><para>Collections </para></entry><entry thead="no"><para>DDL </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/store/static/collections/ddl">http://zorba.io/modules/store/static/collections/ddl</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>Collections </para></entry><entry thead="no"><para>DML </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/store/static/collections/dml">http://zorba.io/modules/store/static/collections/dml</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>Indexes </para></entry><entry thead="no"><para>DDL </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/store/static/indexes/ddl">http://zorba.io/modules/store/static/indexes/ddl</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>Indexes </para></entry><entry thead="no"><para>DML </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/store/static/indexes/dml">http://zorba.io/modules/store/static/indexes/dml</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>Integrity Constraints </para></entry><entry thead="no"><para>DDL </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/store/static/integrity/constraints/ddl">http://zorba.io/modules/store/static/integrity_constraints/ddl</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>Integrity Constraints </para></entry><entry thead="no"><para>DML </para></entry><entry thead="no"><para><ulink url="/modules/zorba.io/modules/store/static/integrity/constraints/dml">http://zorba.io/modules/store/static/integrity_constraints/dml</ulink>  </para></entry></row>
+</table>
+</para><para><table rows="10" cols="3"><row>
+<entry thead="no"><para><bold>Dynamic Containers</bold>   </para></entry></row>
+<row>
+<entry thead="no"><para><bold>Container Type</bold> </para></entry><entry thead="no"><para><bold>Definition (DDL) / Manipulation (DML)</bold> </para></entry><entry thead="no"><para><bold>Module Namespace</bold>  </para></entry></row>
+<row>
+<entry thead="no"><para>Collections </para></entry><entry thead="no"><para>DDL </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/store/dynamic/collections/ddl">http://zorba.io/modules/store/dynamic/collections/ddl</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>Collections </para></entry><entry thead="no"><para>DML </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/store/dynamic/collections/dml">http://zorba.io/modules/store/dynamic/collections/dml</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>W3C Collections </para></entry><entry thead="no"><para>DDL </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/store/dynamic/collections/w3c/ddl">http://zorba.io/modules/store/dynamic/collections/w3c/ddl</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>W3C Collections </para></entry><entry thead="no"><para>DML </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/store/dynamic/collections/w3c/dml">http://zorba.io/modules/store/dynamic/collections/w3c/dml</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>Documents </para></entry><entry thead="no"><para>DDL / DML </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/store/dynamic/documents">http://zorba.io/modules/store/documents</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>Unordered Maps </para></entry><entry thead="no"><para>DDL / DML </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/unordered-maps">http://zorba.io/modules/unordered-maps</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>Stacks </para></entry><entry thead="no"><para>DDL / DML </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/stack">http://zorba.io/modules/stack</ulink>  </para></entry></row>
+<row>
+<entry thead="no"><para>Queues </para></entry><entry thead="no"><para>DDL / DML </para></entry><entry thead="no"><para><ulink url="/modules/latest/zorba.io/modules/queue">http://zorba.io/modules/queue</ulink>  </para></entry></row>
+</table>
+</para><para>Please note that all of the modules listed above require JSONiq or at least XQuery version 3.0.</para><para>Other the fact the static and dynamic containers are treated differently by the query processor during compilation, their lifetime is exactly the same. Data can be loaded in any container -- static or dynamic -- and after that it will be available for queries and updates, until the data is explicitly deleted from the store, or the store itself expires. (Note that not all the Zorba Stores are persistent stores). Please refer to the section below on various Zorba stores.</para><para>Also please note that a data container that is available in the store will be available to all programs that are being executed synchronously. Again, please read more about the Zorba Data Stores below about data consistency details.</para></sect1>
+<sect1 id="data_lifecycle_1dlexamples">
+<title>Examples</title>
+<para>In the following, we show a couple of examples to demonstrate how data can be retrieved and store in various kinds of containers. It is important to note that most of the examples uses the <ulink url="/pages/latest/zorba/scripting_tutorial">Scripting Extension</ulink> for apply pending updates in order to make them visible to subsequent expressions in the same program.</para><sect2 id="data_lifecycle_1dl_scenario_1">
+<title>Scenario 1</title>
+<para>In the first scenario, we show how to use the <ref refid="xqddf" kindref="compound">Data Definition Facility</ref> and the XQuery Update Facility to <itemizedlist>
+<listitem>
+<para>declare and create a collection with an, </para></listitem>
+<listitem>
+<para>add data to the collection that is retrieved from the web, </para></listitem>
+<listitem>
+<para>query the collection, </para></listitem>
+<listitem>
+<para>delete and modify data in the collection, and </para></listitem>
+<listitem>
+<para>finally delete the entire collection an the index </para></listitem>
+</itemizedlist>
+</para></sect2>
+<sect2 id="data_lifecycle_1dl_sc1_ex1">
+<title>Declare a Collection with Index</title>
+<para>Declare an unordered collection that can store KML placemarks (see <ulink url="http://code.google.com/apis/kml/documentation/">http://code.google.com/apis/kml/documentation/</ulink>). On top of this collection, we declare a unique value index that is indexing the names of the parks. Please note that this module is a library module because collections and indexes can not be declared in a main module. All of the following examples import the library module in order to be able to access the collection.</para><para><programlisting><codeline><highlight class="normal">module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml-data<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.mykml/data&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">cdml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/static/collections/dml&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>schema<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://earth.google.com/kml/2.1&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;kml21.xsd&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">declare<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">ann<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/annotations&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">declare<sp/>%ann:<ref refid="namespacezorba_1acf239253638cf017b2a8e29f47be25d3a6de5feb1f9d785543b013e72b88d97ce" kindref="member">unordered</ref><sp/>collection<sp/>kml-data:placemarks</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>schema-element(kml:Placemark)*;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">declare<sp/>%ann:automatic<sp/>%ann:value-equality<sp/>%ann:unique<sp/>index<sp/>kml-data:park-names</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>on<sp/>nodes<sp/>cdml:collection(xs:QName(</highlight><highlight class="stringliteral">&quot;kml-data:placemarks&quot;</highlight><highlight class="normal">))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>by<sp/>./kml:name<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>xs:</highlight><highlight class="keywordtype">string</highlight><highlight class="normal">;</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="data_lifecycle_1dl_sc1_ex2">
+<title>Create a Collection and Index</title>
+<para>This is an administration program that imports the module declaring the collection and invokes the <computeroutput>create</computeroutput> and <computeroutput>create</computeroutput> functions to create the empty collection and index containers, respectively.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">cddl<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/static/collections/ddl&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">iddl<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/static/indexes/ddl&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml-data<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.mykml/data&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;sc1_ex1.xqlib&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cddl:create(xs:QName(</highlight><highlight class="stringliteral">&quot;kml-data:placemarks&quot;</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal">iddl:create(xs:QName(</highlight><highlight class="stringliteral">&quot;kml-data:park-names&quot;</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>sanity<sp/>check:<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>collection<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref><sp/>available,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal"><sp/>otherwise<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">cddl:<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref>-available-collection(xs:QName(</highlight><highlight class="stringliteral">&quot;kml-data:placemarks&quot;</highlight><highlight class="normal">))</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="data_lifecycle_1dl_sc1_ex3">
+<title>Store Data in a Collection</title>
+<para>Once the collection has been created, we can now populate it with some placemarks. The according placemarks (data about Wildlife National Parks in India) is retrieved from the web. The resource retrieved is a single KML document, from which we select only the placemarks. Before inserting them into the collection, the validate expression makes sure that each placemark is valid according to the KML schema.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">cdml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/static/collections/dml&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">http<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/http-client&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>schema<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://earth.google.com/kml/2.1&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;kml21.xsd&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml-data<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.mykml/data&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;sc1_ex1.xqlib&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$doc<sp/>:=<sp/>http:</highlight><highlight class="keyword">get</highlight><highlight class="normal">-text(</highlight><highlight class="stringliteral">&quot;http://zorbatest.lambda.nu:8080/http-test-data/wildlife-national-parks-india.kml&quot;</highlight><highlight class="normal">)[2]</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>$placemark<sp/>in<sp/>fn:parse-xml($doc)</highlight><highlight class="comment">//kml:Placemark</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">return<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cdml:insert(xs:QName(&quot;kml-data:placemarks&quot;),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1_1base64_1a91fa177bec263667b9c1187018a0ff43" kindref="member" tooltip="Validates a Base64-encoded buffer.">validate</ref><sp/>{<sp/>$placemark<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="data_lifecycle_1dl_sc1_ex4">
+<title>Query a Collection&apos;s Data</title>
+<para>This very simple query shows how to invoke the collection function of the dml module to retrieve the contents of the collection. The query returns the names of all national parks in India that have elephants.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">cdml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/static/collections/dml&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>schema<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://earth.google.com/kml/2.1&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;kml21.xsd&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml-data<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.mykml/data&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;sc1_ex1.xqlib&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>$placemark<sp/>in<sp/>cdml:collection(xs:QName(</highlight><highlight class="stringliteral">&quot;kml-data:placemarks&quot;</highlight><highlight class="normal">))</highlight></codeline>
+<codeline><highlight class="normal">where<sp/>$placemark/kml:description<sp/>contains<sp/>text<sp/>&quot;Elephants&quot;</highlight></codeline>
+<codeline><highlight class="normal">return<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>$placemark/kml:name/text()</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="data_lifecycle_1dl_sc1_ex5">
+<title>Delete Nodes from a Collection</title>
+<para>To do cleanup of the data in the collection, the following snippet deletes all national parks from the database that do not have Elephants.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">cdml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/static/collections/dml&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>schema<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://earth.google.com/kml/2.1&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;kml21.xsd&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml-data<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.mykml/data&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;sc1_ex1.xqlib&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cdml:</highlight><highlight class="keyword">delete</highlight><highlight class="normal">(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>$placemark<sp/>in<sp/>cdml:collection(xs:QName(</highlight><highlight class="stringliteral">&quot;kml-data:placemarks&quot;</highlight><highlight class="normal">))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>where<sp/>not(contains($placemark/kml:description,<sp/>&quot;Elephants&quot;))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>return<sp/>$placemark</highlight></codeline>
+<codeline><highlight class="normal">)</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="data_lifecycle_1dl_sc1_ex6">
+<title>Updates Nodes in a Collection</title>
+<para>In order modify a particular node in a collection, the XQuery Update Facility can be used. In the example below, we set the visibility of all national parks that contain wild pigs to false because we don&apos;t want them to show up in a map. Please note that we need to insert the <computeroutput>visibility</computeroutput> element after the name element because otherwise the revalidation of the node in the collection would fail.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">cdml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/static/collections/dml&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>schema<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://earth.google.com/kml/2.1&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;kml21.xsd&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml-data<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.mykml/data&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;sc1_ex1.xqlib&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>$placemark<sp/>in<sp/>cdml:collection(xs:QName(</highlight><highlight class="stringliteral">&quot;kml-data:placemarks&quot;</highlight><highlight class="normal">))</highlight></codeline>
+<codeline><highlight class="normal">where<sp/>contains($placemark/kml:description,<sp/>&quot;Wild<sp/>Pigs&quot;)</highlight></codeline>
+<codeline><highlight class="normal">return<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>insert<sp/>node</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;kml:visibility&gt;false&lt;/kml:visibility&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>after</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>$placemark/kml:name;</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="data_lifecycle_1dl_sc1_ex7">
+<title>Delete a Collection</title>
+<para>Finally, the last examples shows how the collection and index containers can be deleted from the store. All the nodes stored in the collection are also deleted. Please note that the index has to be deleted before the according collection.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">cddl<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/static/collections/ddl&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">iddl<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/static/indexes/ddl&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">kml-data<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.mykml/data&quot;</highlight><highlight class="normal"><sp/>at<sp/></highlight><highlight class="stringliteral">&quot;sc1_ex1.xqlib&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">iddl:</highlight><highlight class="keyword">delete</highlight><highlight class="normal">(xs:QName(</highlight><highlight class="stringliteral">&quot;kml-data:park-names&quot;</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal">cddl:</highlight><highlight class="keyword">delete</highlight><highlight class="normal">(xs:QName(</highlight><highlight class="stringliteral">&quot;kml-data:placemarks&quot;</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal">cddl:<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref>-available-collection(xs:QName(</highlight><highlight class="stringliteral">&quot;kml-data:placemarks&quot;</highlight><highlight class="normal">))</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="data_lifecycle_1dl_scenario_2">
+<title>Scenario 2</title>
+<para>The examples in this subsection show how to <itemizedlist>
+<listitem>
+<para>create a dynamic collection, </para></listitem>
+<listitem>
+<para>retrieve data form the web and load in a collection, </para></listitem>
+<listitem>
+<para>query and update data, and </para></listitem>
+<listitem>
+<para>delete the collection. </para></listitem>
+</itemizedlist>
+</para></sect2>
+<sect2 id="data_lifecycle_1dl_sc2_ex1">
+<title>Creating a Dynamic Collection</title>
+<para>Analogous to the creation of a collection in <ref refid="data_lifecycle_1dl_sc1_ex2" kindref="member">Create a Collection and Index</ref>, the following examples demonstrates how a dynamic collection can be created. The collection is called &quot;earthquakes&quot; and will be used to contain data of the worldwide earthquakes from July, 29th 2011 to August, 5th 2011 (retrieved from <ulink url="http://explore.data.gov/Geography-and-Environment/Worldwide-M1-Earthquakes-Past-7-Days/7tag-iwnu">data.gov</ulink>).</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">cddl<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/dynamic/collections/ddl&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">declare<sp/>variable<sp/>$coll-name<sp/>:=<sp/>xs:QName(</highlight><highlight class="stringliteral">&quot;earthquakes&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cddl:create($coll-name);</highlight></codeline>
+<codeline><highlight class="normal">cddl:<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref>-available-collection($coll-name)</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="data_lifecycle_1dl_sc2_ex2">
+<title>Retrieve Data and Store in Collection</title>
+<para>This examples fetches the data as CSV from the web, converts it to XML, and inserts it into the earthquake collection. The conversion is done using <ulink url="/modules/latest/www.zorba-xquery.com/modules/converters/csv">Zorba&apos;s CSV converter module</ulink>.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">cdml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/dynamic/collections/dml&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">http<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/http-client&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">csv<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/converters/csv&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$data<sp/>:=<sp/>http:</highlight><highlight class="keyword">get</highlight><highlight class="normal">-text(</highlight><highlight class="stringliteral">&quot;http://zorbatest.lambda.nu:8080/http-test-data/eqs7day-M1.txt&quot;</highlight><highlight class="normal">)[2]</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>$entry<sp/>in<sp/>csv:parse($data,<sp/>())[position()<sp/>&gt;<sp/>1]<sp/>(:<sp/>skip<sp/>csv<sp/>header<sp/>row<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cdml:insert-last(xs:QName(</highlight><highlight class="stringliteral">&quot;earthquakes&quot;</highlight><highlight class="normal">),<sp/>$entry<sp/>);</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="data_lifecycle_1dl_sc2_ex3">
+<title>Query a Collection</title>
+<para>Given all the information of earthquakes in the collection, the following example shows how to query that data. The query selects all the earthquakes having a magnitude of three or higher whose region contains the string &quot;California&quot;.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">cdml<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/dynamic/collections/dml&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>$e<sp/>in<sp/>cdml:collection(xs:QName(</highlight><highlight class="stringliteral">&quot;earthquakes&quot;</highlight><highlight class="normal">))</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$r<sp/>:=<sp/>$e/column[last()]<sp/>(:<sp/>last<sp/>column<sp/>contains<sp/>region<sp/>name<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">where<sp/>xs:</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">($e/column[7])<sp/>&gt;<sp/>3<sp/>(:<sp/>7<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781ae9afe6cadaba030a26b44e16fcdb6c60" kindref="member" tooltip="Thai.">th</ref><sp/>column<sp/>contains<sp/>magnitude<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">group<sp/>by<sp/>$r2<sp/>:=<sp/>$r</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$r<sp/>:=<sp/>$r[1]</highlight></codeline>
+<codeline><highlight class="normal">where<sp/>$r<sp/>contains<sp/>text<sp/>(&quot;California&quot;)</highlight></codeline>
+<codeline><highlight class="normal">return</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;region<sp/>name=&quot;{$r}</highlight><highlight class="stringliteral">&quot;&gt;{<sp/>$e<sp/>}&lt;/region&gt;</highlight></codeline>
+</programlisting></para></sect2>
+</sect1>
+<sect1 id="data_lifecycle_1dl_sc3">
+<title>Scenario 3</title>
+<para>Previous examples have show how to work with static and dynamic collections. The next set of examples will focus on documents. As a data set, we use the meat, poultry, and egg inspection directory from <ulink url="http://explore.data.gov/Agriculture/Meat-Poultry-and-Egg-Inspection-Directory-by-Estab/ffj8-dww2">data.gov</ulink>. The data is available as a CSV file in our file system.</para><sect2 id="data_lifecycle_1dl_sc3_ex1">
+<title>Put a Document</title>
+<para>In this example, we read a file from the file system whose name is available in the external variable named input-context. The CSV contents of the file is parsed and converted into XML using the <ulink url="/modules/latest/www.zorba-xquery.com/modules/converters/csv">CSV module</ulink>. The resulting document is put into the store and given the name &quot;meat_poultry.xml&quot;.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">f<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://expath.org/ns/file&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">c<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://www.zorba-xquery.com/modules/converters/csv&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">doc<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/documents&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">declare<sp/>variable<sp/>$input-context<sp/>external;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$doc<sp/>:=<sp/>document<sp/>{<sp/>&lt;root&gt;<sp/>{<sp/>c:parse(f:read-text($input-context),<sp/>())<sp/>}<sp/>&lt;/root&gt;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>doc:put(</highlight><highlight class="stringliteral">&quot;meat_poultry.xml&quot;</highlight><highlight class="normal">,<sp/>$doc);</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="data_lifecycle_1dl_sc3_ex2">
+<title>Retrieving and Modifying a Document</title>
+<para>The XML format of the resulting document (from the CSV conversion in the previous example) is not really nice. For example, a sketch of the document is as follows:</para><para><programlisting><codeline><highlight class="normal">&lt;root&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;row&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;EstNumber&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;Company&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;Street&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;City&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;State&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;Zip&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;Phone&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;GrantDate&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;Activities&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;DBAs&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;/row&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;row&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;M1-P1370&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;Vienna<sp/>Beef<sp/>Ltd.&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;2501<sp/>N.<sp/>Damen<sp/>Ave.&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;Chicago&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;<ref refid="namespacezorba_1_1locale_1_1iso3166__1_1a3ab69a5f4b624ee5237517ed62409504a1c40eab1b216494a429b77dd6cc535d2" kindref="member" tooltip="Israel.">IL</ref>&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;60647&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;(773)<sp/>278-7800&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column/&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;Processing&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;column&gt;Bistro<sp/>Soups,David<sp/>Berg,International<sp/>Deli<sp/>Brokerage,Kosher<sp/>Zion<sp/>Sausage<sp/>Co,Vienna<sp/>Beef<sp/>LTD,Vienna<sp/>Sausage<sp/>Manufacturing&lt;/column&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;/row&gt;</highlight></codeline>
+<codeline><highlight class="normal">&lt;/root&gt;</highlight></codeline>
+</programlisting></para><para>The columns in the first row element define the names of the columns in the subsequent row elements. The following query uses an XQuery Update expression to rename the columns.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">doc<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/documents&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$doc<sp/>:=<sp/>doc:document(</highlight><highlight class="stringliteral">&quot;meat_poultry.xml&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline><highlight class="normal">let<sp/>$first-row<sp/>:=<sp/>$doc/root/row[1]</highlight></codeline>
+<codeline><highlight class="normal">for<sp/>$row<sp/>in<sp/>$doc/root/row[position()<sp/>&gt;<sp/>1]</highlight></codeline>
+<codeline><highlight class="normal">for<sp/>$column<sp/>at<sp/>$y<sp/>in<sp/>$row/column</highlight></codeline>
+<codeline><highlight class="normal">return<sp/>rename<sp/>node<sp/>$column<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>$first-row/column[$y]</highlight></codeline>
+</programlisting></para><para>Please note that the <computeroutput>first-row-is-header</computeroutput> option of the <computeroutput>csv:parse</computeroutput> function would have done the job also but we though it was more fun to present this query. ;-)</para></sect2>
+<sect2 id="data_lifecycle_1dl_sc3_ex3">
+<title>Serializing a Document to JSON</title>
+<para>In this last example, we show how the document resulting from the previous example can be serialized to JSON using <ulink url="/modules/latest/www.zorba-xquery.com/modules/converters/json">Zorba&apos;s JSON module</ulink>.</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">doc<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/store/documents&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">j<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/modules/json-xml&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">j:xml-<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref>-json(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>doc:document(</highlight><highlight class="stringliteral">&quot;meat_poultry.xml&quot;</highlight><highlight class="normal">)/root/row,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>{<sp/></highlight><highlight class="stringliteral">&quot;json-format&quot;</highlight><highlight class="normal"><sp/>:<sp/></highlight><highlight class="stringliteral">&quot;JsonML-array&quot;</highlight><highlight class="normal"><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">)</highlight></codeline>
+</programlisting></para><para>Note: data can be loaded in the Zorba store either via API calls (see the C++ API and the other APIs, link) or directly via function calls. Both ways are being executed internally in exactly the same way -- in fact all such C++ API functions are 100% mirrored by functions. We strongly encourage users to use the modules for data manipulation instead of the C++ API. The reason is simple: the processor can understand the data flow and data lifecycle in the first case, while it cannot in the second.</para></sect2>
+</sect1>
+<sect1 id="data_lifecycle_1dlzorbastore">
+<title>Zorba Stores</title>
+<para>Zorba defines a Store API that allows developers to seamlessly process data stored in different places. Essentially, the Store API is a C++ interface for <itemizedlist>
+<listitem>
+<para><ulink url="http://www.w3.org/TR/xpath-datamodel/">XQuery and XPath Data Model (XDM)</ulink>, </para></listitem>
+<listitem>
+<para><ulink url="http://jsoniq.org/docs/JSONiq/html-single/index.html#chapter-data-model">JSONiq Data Model (JDM)</ulink>, </para></listitem>
+<listitem>
+<para>PULs defined by the <ulink url="http://www.w3.org/TR/xquery-update-10/">XQuery Update Facility</ulink>, </para></listitem>
+<listitem>
+<para>PULs defined by the <ref refid="xqddf" kindref="compound">Data Definition Facility</ref>, and </para></listitem>
+<listitem>
+<para>an XDM extension for <ulink url="http://www.w3.org/TR/xpath-full-text-10/">XQuery Full Text</ulink>. </para></listitem>
+</itemizedlist>
+</para><para>Implementing this API allows, for example, processing of data stored in main memory, on mobile devices, in browsers, or disk- and cloud-based environments.</para><para>It is important to understand that each store implementation may define its own semantics regarding persistence and transactional semantics. For example, a mobile device store can safely assume that only a single request at a time is processed whereas a store backed by a relational database might provide full-fledged ACID behavior. Analogously, a main memory store does not provide persistence of data across process boundaries.</para><para>The Zorba source distribution as well as the packages provided by <ulink url="http://www.zorba.io/">http://www.zorba.io/</ulink> come with a main memory based store. The lifecycle of the data in this store is bounded by the lifetime of the process in which it is running. For example, a document added to the store can be accessed by programs in the same process. As soon as the process terminates (or even earlier if Zorba is shutdown before the process terminates), the default in-memory store will destroy the XML data it contains. Changes to this data are not propagated automatically to any persistence storage.</para><para>However, propagating the data from the in-memory store to a persistent storage can be achieved manually using the <ulink url="http://www.w3.org/TR/xpath-functions-30/#func-serialize">XML serializer</ulink> and the <ulink url="/modules/latest/expath.org/ns/file">file module</ulink>. For example:</para><para><programlisting><codeline><highlight class="keyword">import</highlight><highlight class="normal"><sp/>module<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://expath.org/ns/file&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">variable<sp/>$local:<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref>-name<sp/>:=<sp/>fn:resolve-uri(</highlight><highlight class="stringliteral">&quot;mydata.xml&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">variable<sp/>$local:<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acc7c1f0e7924f696fa18d2bacdd1d092" kindref="member" tooltip="Burmese.">my</ref>-doc<sp/>:=<sp/>();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>read<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abdd3c2de1222fd3167e2675969aa694c" kindref="member" tooltip="Aragonese.">an</ref><sp/>XML<sp/><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref><sp/>from<sp/>the<sp/><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref><sp/>system<sp/>and<sp/>parse<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a5bcb20f9f7d5ec85c6415fee76c6ef5f" kindref="member" tooltip="Italian.">it</ref><sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">$local:<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acc7c1f0e7924f696fa18d2bacdd1d092" kindref="member" tooltip="Burmese.">my</ref>-doc<sp/>:=<sp/>fn:parse-xml(<ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref>:read-text(fn:resolve-uri(</highlight><highlight class="stringliteral">&quot;mydata.xml&quot;</highlight><highlight class="normal">)));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(:<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>the<sp/>price<sp/>of<sp/>each<sp/>product<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>$price<sp/>in<sp/>$local:<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acc7c1f0e7924f696fa18d2bacdd1d092" kindref="member" tooltip="Burmese.">my</ref>-doc/products/product/price</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>replace<sp/>value<sp/>of<sp/>node<sp/>$price<sp/>with<sp/>xs:</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">($price)<sp/>*<sp/>2;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(:<sp/>write<sp/>the<sp/>updated<sp/>data<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>a<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref><sp/>:)</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacezorba_1_1fs_1a33bc6a07dd3ac39c5107606fc21bea22ad51f6a8152afdfbcf0e0dd0d1c86cee0" kindref="member">file</ref>:write-text(</highlight><highlight class="stringliteral">&quot;new-prices.xml&quot;</highlight><highlight class="normal">,<sp/>$local:<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acc7c1f0e7924f696fa18d2bacdd1d092" kindref="member" tooltip="Burmese.">my</ref>-doc);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(:<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>the<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>data<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>result<sp/>of<sp/>the<sp/>program<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">$local:<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781acc7c1f0e7924f696fa18d2bacdd1d092" kindref="member" tooltip="Burmese.">my</ref>-doc</highlight></codeline>
+</programlisting> </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

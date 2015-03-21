@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="function_8h" kind="file">
+    <compoundname>function.h</compoundname>
+    <includes local="no">cstddef</includes>
+    <includes local="no">vector</includes>
+    <includes local="no">zorba/config.h</includes>
+    <includes refid="api__shared__types_8h" local="no">zorba/api_shared_types.h</includes>
+    <includes refid="smart__ptr_8h" local="no">zorba/util/smart_ptr.h</includes>
+    <includedby refid="static__context_8h" local="no">static_context.h</includedby>
+    <incdepgraph>
+      <node id="1809">
+        <label>zorba/util/smart_ptr.h</label>
+        <link refid="smart__ptr_8h"/>
+        <childnode refid="1807" relation="include">
+        </childnode>
+      </node>
+      <node id="1806">
+        <label>vector</label>
+      </node>
+      <node id="1805">
+        <label>cstddef</label>
+      </node>
+      <node id="1804">
+        <label>function.h</label>
+        <link refid="function.h"/>
+        <childnode refid="1805" relation="include">
+        </childnode>
+        <childnode refid="1806" relation="include">
+        </childnode>
+        <childnode refid="1807" relation="include">
+        </childnode>
+        <childnode refid="1808" relation="include">
+        </childnode>
+        <childnode refid="1809" relation="include">
+        </childnode>
+      </node>
+      <node id="1807">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="1808">
+        <label>zorba/api_shared_types.h</label>
+        <link refid="api__shared__types_8h"/>
+        <childnode refid="1807" relation="include">
+        </childnode>
+        <childnode refid="1809" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1812">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="1811" relation="include">
+        </childnode>
+      </node>
+      <node id="1811">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="1812" relation="include">
+        </childnode>
+      </node>
+      <node id="1810">
+        <label>function.h</label>
+        <link refid="function.h"/>
+        <childnode refid="1811" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1ContextualExternalFunction" prot="public">zorba::ContextualExternalFunction</innerclass>
+    <innerclass refid="classzorba_1_1ExternalFunction" prot="public">zorba::ExternalFunction</innerclass>
+    <innerclass refid="classzorba_1_1Function" prot="public">zorba::Function</innerclass>
+    <innerclass refid="classzorba_1_1NonContextualExternalFunction" prot="public">zorba::NonContextualExternalFunction</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_FUNCTION_API_H</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_FUNCTION_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cstddef&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="api__shared__types_8h" kindref="compound">zorba/api_shared_types.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="smart__ptr_8h" kindref="compound">zorba/util/smart_ptr.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ItemSequence;</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/**************************************************************************/</highlight><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/>The<sp/>Function<sp/>class<sp/>represents<sp/>a<sp/>function<sp/>that<sp/>is<sp/>callable<sp/>from<sp/>XQuery<sp/>code,</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/>and<sp/>it<sp/>gives<sp/>access<sp/>to<sp/>the<sp/>various<sp/>properties<sp/>that<sp/>are<sp/>specified<sp/>in<sp/>the<sp/></highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/>declaration<sp/>of<sp/>the<sp/>function<sp/>within<sp/>a<sp/>Prolog.</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"></highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/>Instances<sp/>of<sp/>Function<sp/>are<sp/>returned<sp/>by<sp/>the<sp/>StaticContext::findFunctions()<sp/></highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/>method.<sp/>To<sp/>be<sp/>mopre<sp/>precise,<sp/>StaticContext::findFunctions()<sp/>returns<sp/>smart</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/>pointers<sp/>to<sp/>Function<sp/>objects.<sp/>These<sp/>smart<sp/>pointers<sp/>must<sp/>be<sp/>destroyed<sp/>before</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/>the<sp/>StaticContext<sp/>object<sp/>they<sp/>were<sp/>obtained<sp/>from<sp/>is<sp/>destroyed.</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"></highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/>Note:<sp/>Builtin<sp/>functions<sp/>are<sp/>not<sp/>declared<sp/>in<sp/>the<sp/>Prolog,<sp/>but<sp/>the<sp/>same<sp/>kind<sp/>of</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/>properties<sp/>exist<sp/>for<sp/>them<sp/>as<sp/>well.<sp/>So,<sp/>the<sp/>Function<sp/>class<sp/>works<sp/>for<sp/>builtin</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/>functions<sp/>as<sp/>well.</highlight></codeline>
+<codeline lineno="44"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45" refid="classzorba_1_1Function" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1Function" kindref="compound" tooltip="The Function class represents a function that is callable from XQuery code, and it gives access to th...">Function</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref></highlight></codeline>
+<codeline lineno="46"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/>/**<sp/>\brief<sp/>Destructor</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50" refid="classzorba_1_1Function_1aac0c19d26269ab545dd64c2c52c9ac8a" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Function_1aac0c19d26269ab545dd64c2c52c9ac8a" kindref="member" tooltip="Destructor.">~Function</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>True<sp/>if<sp/>the<sp/>function<sp/>is<sp/>sequential;<sp/>false<sp/>otherwise.</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/>isSequential()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>True<sp/>if<sp/>the<sp/>function<sp/>is<sp/>updating;<sp/>false<sp/>otherwise.</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/>isUpdating()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>True<sp/>if<sp/>the<sp/>function<sp/>is<sp/>private;<sp/>false<sp/>otherwise.</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/>isPrivate()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>True<sp/>if<sp/>the<sp/>function<sp/>is<sp/>deterministic;<sp/>false<sp/>otherwise.</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/>isDeterministic()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/>getAnnotations(std::vector&lt;Annotation_t&gt;&amp;<sp/>annotations)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>The<sp/>expanded<sp/>QName<sp/>of<sp/>the<sp/>function</highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/>getQName()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>The<sp/>namespace<sp/>URI<sp/>of<sp/>the<sp/>function<sp/>QName</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/>getURI()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="95"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>The<sp/>local<sp/>name<sp/>of<sp/>the<sp/>function<sp/>QName</highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/>getLocalName()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="100"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>The<sp/>arity<sp/>of<sp/>the<sp/>function.<sp/>If<sp/>the<sp/>function<sp/>is<sp/>variadic<sp/>(which<sp/>is</highlight></codeline>
+<codeline lineno="102"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>possible<sp/>only<sp/>for<sp/>builtin<sp/>functions),<sp/>the<sp/>result<sp/>of<sp/>this<sp/>method<sp/></highlight></codeline>
+<codeline lineno="103"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>is<sp/>non-deterministic.</highlight></codeline>
+<codeline lineno="104"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/>getArity()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>True<sp/>if<sp/>the<sp/>function<sp/>is<sp/>variadic;<sp/>false<sp/>otherwise</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/>isVariadic()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>True<sp/>if<sp/>the<sp/>function<sp/>is<sp/>an<sp/>external<sp/>one;<sp/>false<sp/>otherwise</highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/>isExternal()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="120"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>True<sp/>if<sp/>the<sp/>function<sp/>implementation<sp/>is<sp/>written<sp/>in<sp/>XQuery<sp/>(or</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>equivalently,<sp/>it<sp/>is<sp/>a<sp/>non-external<sp/>function<sp/>with<sp/>a<sp/>Prolog<sp/></highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>declaration);<sp/>false<sp/>otherwise</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/>isXQuery()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>True<sp/>if<sp/>the<sp/>function<sp/>is<sp/>a<sp/>builtin<sp/>one<sp/>(not<sp/>declared<sp/>in<sp/>any<sp/>prolog);</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>false<sp/>otherwise</highlight></codeline>
+<codeline lineno="131"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/>isBuiltin()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="134"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight><highlight class="comment">/**************************************************************************/</highlight><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="138"><highlight class="comment"><sp/><sp/>The<sp/>ExternalFunction<sp/>class<sp/>serves<sp/>as<sp/>the<sp/>base<sp/>of<sp/>subclasses<sp/>that<sp/>represent</highlight></codeline>
+<codeline lineno="139"><highlight class="comment"><sp/><sp/>the<sp/>implementation/body<sp/>of<sp/>external<sp/>functions.</highlight></codeline>
+<codeline lineno="140"><highlight class="comment"></highlight></codeline>
+<codeline lineno="141"><highlight class="comment"><sp/><sp/>Instances<sp/>of<sp/>ExternalFunction<sp/>must<sp/>provide<sp/>an<sp/>evaluate<sp/>method<sp/>that<sp/>serves<sp/></highlight></codeline>
+<codeline lineno="142"><highlight class="comment"><sp/><sp/>as<sp/>the<sp/>implementation<sp/>of<sp/>the<sp/>function.<sp/>During<sp/>its<sp/>evaluation,<sp/>an<sp/>external<sp/></highlight></codeline>
+<codeline lineno="143"><highlight class="comment"><sp/><sp/>function<sp/>may<sp/>or<sp/>may<sp/>not<sp/>need<sp/>to<sp/>access<sp/>the<sp/>static<sp/>and/or<sp/>dynamic<sp/>context<sp/>of<sp/></highlight></codeline>
+<codeline lineno="144"><highlight class="comment"><sp/><sp/>the<sp/>invoking<sp/>XQuery<sp/>module.<sp/>If<sp/>the<sp/>function<sp/>implementation<sp/>does<sp/>need<sp/>to<sp/></highlight></codeline>
+<codeline lineno="145"><highlight class="comment"><sp/><sp/>access<sp/>either<sp/>context,<sp/>the<sp/>function<sp/>is<sp/>referred<sp/>to<sp/>as<sp/>&quot;contextual&quot;;<sp/>otherwise,</highlight></codeline>
+<codeline lineno="146"><highlight class="comment"><sp/><sp/>it<sp/>is<sp/>&quot;non-contextual&quot;.</highlight></codeline>
+<codeline lineno="147"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="148" refid="classzorba_1_1ExternalFunction" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1ExternalFunction" kindref="compound" tooltip="The ExternalFunction class serves as the base of subclasses that represent the implementation/body of...">ExternalFunction</ref></highlight></codeline>
+<codeline lineno="149"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="151" refid="classzorba_1_1ExternalFunction_1a6a5ca34441eda62bafea62a67a4b1ee5" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::vector&lt;ItemSequence*&gt;<sp/><ref refid="classzorba_1_1ExternalFunction_1a6a5ca34441eda62bafea62a67a4b1ee5" kindref="member">Arguments_t</ref>;</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="154" refid="classzorba_1_1ExternalFunction_1af8e482c6b0e79609c8a52301e1f45da0" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1ExternalFunction_1af8e482c6b0e79609c8a52301e1f45da0" kindref="member">~ExternalFunction</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="156"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="157"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>The<sp/>namespace<sp/>URI<sp/>of<sp/>the<sp/>function<sp/>QName</highlight></codeline>
+<codeline lineno="158"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/>getURI()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="162"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="163"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>The<sp/>local<sp/>name<sp/>of<sp/>the<sp/>function<sp/>QName</highlight></codeline>
+<codeline lineno="164"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1String" kindref="compound" tooltip="The Zorba string class.">String</ref></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/>getLocalName()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="168"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="169"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@return<sp/>True<sp/>if<sp/>the<sp/>external<sp/>function<sp/>is<sp/>contextual;<sp/>false<sp/>otherwise.</highlight></codeline>
+<codeline lineno="170"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/>isContextual()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"></highlight></codeline>
+<codeline lineno="174"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1Item" kindref="compound" tooltip="The Zorba Item interface.">Item</ref></highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/>getItem(<sp/>Arguments_t<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;args,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>pos<sp/>)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="177"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight></codeline>
+<codeline lineno="179"><highlight class="normal"></highlight></codeline>
+<codeline lineno="180"><highlight class="normal"></highlight><highlight class="comment">/**************************************************************************/</highlight><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="181"><highlight class="comment"><sp/><sp/>The<sp/>NonContextualExternalFunction<sp/>class<sp/>serves<sp/>as<sp/>the<sp/>base<sp/>of<sp/>subclasses<sp/>that</highlight></codeline>
+<codeline lineno="182"><highlight class="comment"><sp/><sp/>represent<sp/>the<sp/>implementation<sp/>of<sp/>non<sp/>contextual<sp/>external<sp/>functions.</highlight></codeline>
+<codeline lineno="183"><highlight class="comment"></highlight></codeline>
+<codeline lineno="184"><highlight class="comment"><sp/><sp/>For<sp/>each<sp/>external<sp/>function,<sp/>an<sp/>application<sp/>must<sp/>provide<sp/>a<sp/>concrete<sp/>subclass</highlight></codeline>
+<codeline lineno="185"><highlight class="comment"><sp/><sp/>of<sp/>this<sp/>class<sp/>and<sp/>&quot;store&quot;<sp/>an<sp/>instance<sp/>of<sp/>the<sp/>subclass<sp/>inside<sp/>an<sp/>ExternalModule</highlight></codeline>
+<codeline lineno="186"><highlight class="comment"><sp/><sp/>object,<sp/>as<sp/>described<sp/>&lt;a<sp/>href=&quot;../zorba/external_functions.html&quot;&gt;</highlight></codeline>
+<codeline lineno="187"><highlight class="comment"><sp/><sp/>here&lt;/a&gt;.</highlight></codeline>
+<codeline lineno="188"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="189" refid="classzorba_1_1NonContextualExternalFunction" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1NonContextualExternalFunction" kindref="compound" tooltip="The NonContextualExternalFunction class serves as the base of subclasses that represent the implement...">NonContextualExternalFunction</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1ExternalFunction" kindref="compound" tooltip="The ExternalFunction class serves as the base of subclasses that represent the implementation/body of...">ExternalFunction</ref></highlight></codeline>
+<codeline lineno="190"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="192" refid="classzorba_1_1NonContextualExternalFunction_1a6858f93ab609f1bc4d123e30378c3298" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1NonContextualExternalFunction_1a6858f93ab609f1bc4d123e30378c3298" kindref="member">~NonContextualExternalFunction</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"></highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">ItemSequence_t</ref></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/>evaluate(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Arguments_t&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="198" refid="classzorba_1_1NonContextualExternalFunction_1a690f9d11450d43891fdfe92bb4554cff" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1NonContextualExternalFunction_1a690f9d11450d43891fdfe92bb4554cff" kindref="member">isContextual</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="199"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"></highlight></codeline>
+<codeline lineno="201"><highlight class="normal"></highlight></codeline>
+<codeline lineno="202"><highlight class="normal"></highlight><highlight class="comment">/**************************************************************************/</highlight><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="203"><highlight class="comment"><sp/><sp/>The<sp/>ContextualExternalFunction<sp/>class<sp/>serves<sp/>as<sp/>the<sp/>base<sp/>of<sp/>subclasses<sp/>that</highlight></codeline>
+<codeline lineno="204"><highlight class="comment"><sp/><sp/>represent<sp/>the<sp/>implementation<sp/>of<sp/>contextual<sp/>external<sp/>functions.<sp/></highlight></codeline>
+<codeline lineno="205"><highlight class="comment"></highlight></codeline>
+<codeline lineno="206"><highlight class="comment"><sp/><sp/>For<sp/>each<sp/>external<sp/>function,<sp/>an<sp/>application<sp/>must<sp/>provide<sp/>a<sp/>concrete<sp/>subclass</highlight></codeline>
+<codeline lineno="207"><highlight class="comment"><sp/><sp/>of<sp/>this<sp/>class<sp/>and<sp/>&quot;store&quot;<sp/>an<sp/>instance<sp/>of<sp/>the<sp/>subclass<sp/>inside<sp/>an<sp/>ExternalModule</highlight></codeline>
+<codeline lineno="208"><highlight class="comment"><sp/><sp/>object,<sp/>as<sp/>described<sp/>&lt;a<sp/>href=&quot;../zorba/external_functions.html&quot;&gt;</highlight></codeline>
+<codeline lineno="209"><highlight class="comment"><sp/><sp/>here&lt;/a&gt;.</highlight></codeline>
+<codeline lineno="210"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="211" refid="classzorba_1_1ContextualExternalFunction" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1ContextualExternalFunction" kindref="compound" tooltip="The ContextualExternalFunction class serves as the base of subclasses that represent the implementati...">ContextualExternalFunction</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1ExternalFunction" kindref="compound" tooltip="The ExternalFunction class serves as the base of subclasses that represent the implementation/body of...">ExternalFunction</ref></highlight></codeline>
+<codeline lineno="212"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="214" refid="classzorba_1_1ContextualExternalFunction_1ac71d5b7247f33c675596a29386586977" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1ContextualExternalFunction_1ac71d5b7247f33c675596a29386586977" kindref="member">~ContextualExternalFunction</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"></highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1SmartPtr" kindref="compound">ItemSequence_t</ref></highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/>evaluate(</highlight></codeline>
+<codeline lineno="218"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Arguments_t&amp;,</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1StaticContext" kindref="compound" tooltip="Instances of the class StaticContext contain the information that is available at the time the query ...">StaticContext</ref>*,</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classzorba_1_1DynamicContext" kindref="compound" tooltip="Instances of the class DynamicContext contain the information that is available at the time the query...">DynamicContext</ref>*)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="223" refid="classzorba_1_1ContextualExternalFunction_1a5ce3714a68f1688a92676c8b6114502b" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classzorba_1_1ContextualExternalFunction_1a5ce3714a68f1688a92676c8b6114502b" kindref="member">isContextual</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="224"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight></codeline>
+<codeline lineno="226"><highlight class="normal"></highlight></codeline>
+<codeline lineno="227"><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>zorba<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="229"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="231"><highlight class="comment"><sp/>*<sp/>Local<sp/>variables:</highlight></codeline>
+<codeline lineno="232"><highlight class="comment"><sp/>*<sp/>mode:<sp/>c++</highlight></codeline>
+<codeline lineno="233"><highlight class="comment"><sp/>*<sp/>End:</highlight></codeline>
+<codeline lineno="234"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="235"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/function.h"/>
+  </compounddef>
+</doxygen>

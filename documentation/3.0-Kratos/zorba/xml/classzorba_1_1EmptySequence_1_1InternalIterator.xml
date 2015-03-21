@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1EmptySequence_1_1InternalIterator" kind="class" prot="private">
+    <compoundname>zorba::EmptySequence::InternalIterator</compoundname>
+    <basecompoundref refid="classzorba_1_1Iterator" prot="public" virt="non-virtual">zorba::Iterator</basecompoundref>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1EmptySequence_1_1InternalIterator_1a4cf12aa4437fdb45a5ba5841faf1dc39" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool zorba::EmptySequence::InternalIterator::theIsOpen</definition>
+        <argsstring></argsstring>
+        <name>theIsOpen</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" line="45" bodyfile="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classzorba_1_1EmptySequence_1_1InternalIterator_1a27bde81042202789f1ee87c007dcabea" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1ItemSequence" kindref="compound">ItemSequence</ref> *</type>
+        <definition>ItemSequence* zorba::EmptySequence::InternalIterator::theItemSequence</definition>
+        <argsstring></argsstring>
+        <name>theItemSequence</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" line="44" bodyfile="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::addReference</definition>
+        <argsstring>() const </argsstring>
+        <name>addReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1EmptySequence_1_1InternalIterator_1ad7726e23ae1bf63a769ba116e00be0cb" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::EmptySequence::InternalIterator::close</definition>
+        <argsstring>()</argsstring>
+        <name>close</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" line="54"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SmartObject::free</definition>
+        <argsstring>()</argsstring>
+        <name>free</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>long zorba::SmartObject::getRefCount</definition>
+        <argsstring>() const </argsstring>
+        <name>getRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1EmptySequence_1_1InternalIterator_1ae77c0802cf1937441a6ff7c22ec75c8a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::EmptySequence::InternalIterator::InternalIterator</definition>
+        <argsstring>(ItemSequence *seq)</argsstring>
+        <name>InternalIterator</name>
+        <param>
+          <type><ref refid="classzorba_1_1ItemSequence" kindref="compound">ItemSequence</ref> *</type>
+          <declname>seq</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" line="48"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1EmptySequence_1_1InternalIterator_1aa527fdb489a56b8be06a9536dcdcd9c4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::EmptySequence::InternalIterator::isOpen</definition>
+        <argsstring>() const </argsstring>
+        <name>isOpen</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" line="56"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1EmptySequence_1_1InternalIterator_1ac9fb847c36c7bbb42ff6d1fb06903917" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::EmptySequence::InternalIterator::next</definition>
+        <argsstring>(Item &amp;aItem)</argsstring>
+        <name>next</name>
+        <param>
+          <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref> &amp;</type>
+          <declname>aItem</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" line="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1EmptySequence_1_1InternalIterator_1a9b8460cef0e84740a5d66b718c646206" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::EmptySequence::InternalIterator::open</definition>
+        <argsstring>()</argsstring>
+        <name>open</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" line="50"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::removeReference</definition>
+        <argsstring>()</argsstring>
+        <name>removeReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" static="no" mutable="yes">
+        <type>unsigned int</type>
+        <definition>unsigned int zorba::SmartObject::theRefCount</definition>
+        <argsstring></argsstring>
+        <name>theRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Implements an iterator over the empty sequence. </para>    </briefdescription>
+    <detaileddescription>
+<para>Assuming that the iterator is in the open state, its next() method will always return false.</para><para>See <ref refid="classzorba_1_1Iterator" kindref="compound">Iterator</ref>. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="655">
+        <label>zorba::Iterator</label>
+        <link refid="classzorba_1_1Iterator"/>
+        <childnode refid="656" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="656">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="654">
+        <label>zorba::EmptySequence::InternalIterator</label>
+        <childnode refid="655" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="658">
+        <label>zorba::Iterator</label>
+        <link refid="classzorba_1_1Iterator"/>
+        <childnode refid="659" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="659">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="657">
+        <label>zorba::EmptySequence::InternalIterator</label>
+        <childnode refid="658" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/empty_sequence.h" bodystart="41" bodyend="57"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" virt="non-virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>addReference</name></member>
+      <member refid="classzorba_1_1EmptySequence_1_1InternalIterator_1ad7726e23ae1bf63a769ba116e00be0cb" prot="public" virt="virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>close</name></member>
+      <member refid="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" virt="virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>free</name></member>
+      <member refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" virt="non-virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>getRefCount</name></member>
+      <member refid="classzorba_1_1EmptySequence_1_1InternalIterator_1ae77c0802cf1937441a6ff7c22ec75c8a" prot="public" virt="non-virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>InternalIterator</name></member>
+      <member refid="classzorba_1_1EmptySequence_1_1InternalIterator_1aa527fdb489a56b8be06a9536dcdcd9c4" prot="public" virt="virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>isOpen</name></member>
+      <member refid="classzorba_1_1EmptySequence_1_1InternalIterator_1ac9fb847c36c7bbb42ff6d1fb06903917" prot="public" virt="virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>next</name></member>
+      <member refid="classzorba_1_1EmptySequence_1_1InternalIterator_1a9b8460cef0e84740a5d66b718c646206" prot="public" virt="virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>open</name></member>
+      <member refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" virt="non-virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" virt="non-virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>removeReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" virt="non-virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" virt="non-virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1EmptySequence_1_1InternalIterator_1a4cf12aa4437fdb45a5ba5841faf1dc39" prot="private" virt="non-virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>theIsOpen</name></member>
+      <member refid="classzorba_1_1EmptySequence_1_1InternalIterator_1a27bde81042202789f1ee87c007dcabea" prot="private" virt="non-virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>theItemSequence</name></member>
+      <member refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" virt="non-virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>theRefCount</name></member>
+      <member refid="classzorba_1_1Iterator_1a09c348dbacd4a9b83e951760ca4e7e13" prot="public" virt="virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>~Iterator</name></member>
+      <member refid="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" virt="virtual"><scope>zorba::EmptySequence::InternalIterator</scope><name>~SmartObject</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

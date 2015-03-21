@@ -1,0 +1,251 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1SmartObject" kind="class" prot="public">
+    <compoundname>zorba::SmartObject</compoundname>
+    <derivedcompoundref refid="classzorba_1_1Annotation" prot="public" virt="non-virtual">zorba::Annotation</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1Collection" prot="public" virt="non-virtual">zorba::Collection</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1Function" prot="public" virt="non-virtual">zorba::Function</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1ItemSequence" prot="public" virt="virtual">zorba::ItemSequence</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1Iterator" prot="public" virt="virtual">zorba::Iterator</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1ModuleInfo" prot="public" virt="non-virtual">zorba::ModuleInfo</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1QueryLocation" prot="public" virt="non-virtual">zorba::QueryLocation</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1Serializer" prot="public" virt="non-virtual">zorba::Serializer</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1StaticContext" prot="public" virt="non-virtual">zorba::StaticContext</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1XmlDataManager" prot="public" virt="non-virtual">zorba::XmlDataManager</derivedcompoundref>
+    <derivedcompoundref refid="classzorba_1_1XQuery" prot="public" virt="non-virtual">zorba::XQuery</derivedcompoundref>
+    <includes refid="smart__ptr_8h" local="no">zorba/util/smart_ptr.h</includes>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" static="no" mutable="yes">
+        <type>unsigned int</type>
+        <definition>unsigned int zorba::SmartObject::theRefCount</definition>
+        <argsstring></argsstring>
+        <name>theRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::addReference</definition>
+        <argsstring>() const </argsstring>
+        <name>addReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SmartObject::free</definition>
+        <argsstring>()</argsstring>
+        <name>free</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>long zorba::SmartObject::getRefCount</definition>
+        <argsstring>() const </argsstring>
+        <name>getRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref> &amp;</type>
+        <definition>SmartObject&amp; zorba::SmartObject::operator=</definition>
+        <argsstring>(const SmartObject &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="47" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="47" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::removeReference</definition>
+        <argsstring>()</argsstring>
+        <name>removeReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SmartObject::SmartObject</definition>
+        <argsstring>()</argsstring>
+        <name>SmartObject</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="30" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="30" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SmartObject::SmartObject</definition>
+        <argsstring>(const SmartObject &amp;)</argsstring>
+        <name>SmartObject</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1SmartObject" kindref="compound">SmartObject</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="32" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="32" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::SmartObject::~SmartObject</definition>
+        <argsstring>()</argsstring>
+        <name>~SmartObject</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="34"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="827">
+        <label>zorba::ItemSequence</label>
+        <link refid="classzorba_1_1ItemSequence"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="831">
+        <label>zorba::Iterator</label>
+        <link refid="classzorba_1_1Iterator"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="825">
+        <label>zorba::Collection</label>
+        <link refid="classzorba_1_1Collection"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="828">
+        <label>zorba::EmptySequence</label>
+        <link refid="classzorba_1_1EmptySequence"/>
+        <childnode refid="827" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="829">
+        <label>zorba::SingletonItemSequence</label>
+        <link refid="classzorba_1_1SingletonItemSequence"/>
+        <childnode refid="827" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="833">
+        <label>zorba::QueryLocation</label>
+        <link refid="classzorba_1_1QueryLocation"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="823">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="836">
+        <label>zorba::XmlDataManager</label>
+        <link refid="classzorba_1_1XmlDataManager"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="834">
+        <label>zorba::Serializer</label>
+        <link refid="classzorba_1_1Serializer"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="832">
+        <label>zorba::ModuleInfo</label>
+        <link refid="classzorba_1_1ModuleInfo"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="824">
+        <label>zorba::Annotation</label>
+        <link refid="classzorba_1_1Annotation"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="830">
+        <label>zorba::VectorItemSequence</label>
+        <link refid="classzorba_1_1VectorItemSequence"/>
+        <childnode refid="827" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="826">
+        <label>zorba::Function</label>
+        <link refid="classzorba_1_1Function"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="835">
+        <label>zorba::StaticContext</label>
+        <link refid="classzorba_1_1StaticContext"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="837">
+        <label>zorba::XQuery</label>
+        <link refid="classzorba_1_1XQuery"/>
+        <childnode refid="823" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="25" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="24" bodyend="48"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" virt="non-virtual"><scope>zorba::SmartObject</scope><name>addReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" virt="virtual"><scope>zorba::SmartObject</scope><name>free</name></member>
+      <member refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" virt="non-virtual"><scope>zorba::SmartObject</scope><name>getRefCount</name></member>
+      <member refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" virt="non-virtual"><scope>zorba::SmartObject</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" virt="non-virtual"><scope>zorba::SmartObject</scope><name>removeReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" virt="non-virtual"><scope>zorba::SmartObject</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" virt="non-virtual"><scope>zorba::SmartObject</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" virt="non-virtual"><scope>zorba::SmartObject</scope><name>theRefCount</name></member>
+      <member refid="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" virt="virtual"><scope>zorba::SmartObject</scope><name>~SmartObject</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

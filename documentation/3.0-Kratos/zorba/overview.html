@@ -1,0 +1,72 @@
+<div class="doxygen">
+  <div><h1 class="title">Overview</h1>
+The World Wide Web Consortium (W3C) standardizes a set of XML processing languages, each with various variants or versions.For example:<ul>
+<li>
+<a href="http://www.w3.org/TR/xpath/" target="_blank">XPath</a> </li>
+<li>
+<a href="http://www.w3.org/TR/xquery-30/" target="_blank">XQuery</a> </li>
+<li>
+<a href="http://www.w3.org/TR/xqueryx/" target="_blank">XQueryX</a> </li>
+<li>
+<a href="http://www.w3.org/TR/xslt" target="_blank">XSLT</a> </li>
+<li>
+<a href="http://www.w3.org/TR/xproc/" target="_blank">XProc</a> </li>
+<li>
+<a href="http://www.w3.org/TR/xquery-update-10" target="_blank">XQuery Update</a> </li>
+<li>
+<a href="http://www.w3.org/TR/xpath-full-text-10" target="_blank">XQuery Full Text</a> etc. </li>
+</ul>
+XQuery is the primary target language for Zorba, but most other processing languages above are also supported.Below is a brief overview of the languages (or language variants) that are supported by Zorba:<ul>
+<li>
+<a href="http://www.w3.org/TR/xquery/" target="_blank">XQuery version 1.0</a> and <a href="http://www.w3.org/TR/xquery-30/" target="_blank">XQuery version 3.0</a> are both supported (note: <b>there is no W3C XQuery 2.0 version!</b>). The default version is XQuery 3.0. It can be changed to XQuery 1.0 by putting the following <a href="http://www.w3.org/TR/xquery-30/#id-version-declaration" target="_blank">version declaration</a> in the prolog of a main or library module: <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span><span> </span><span> </span>xquery<span> </span>version<span> </span></span><span class="stringliteral">"1.0"</span><span class="normal">;</span>
+</pre>Please note that XQuery 1.1 has been renamed to XQuery 3.0. XQuery 1.1 does not exist. </li>
+<li>
+There are several XQuery features that can be enabled or disabled: <ul>
+<li>
+<a href="/pages/latest/zorba/scripting_tutorial" target="_blank">Zorba's XQuery Scripting Extension</a> </li>
+<li>
+<a href="/pages/3.0/zorba/xqddf">Zorba's XQuery Data Definition Facility</a> </li>
+<li>
+<a href="http://www.w3.org/TR/xpath-functions-30/#func-trace" target="_blank">fn:trace</a> </li>
+<li>
+<a href="http://www.w3.org/TR/xquery-30/#id-dynamic-function-invocation" target="_blank">Higher-order functions</a> </li>
+<li>
+<a href="http://www.w3.org/TR/xpath-datamodel/#construction" target="_blank">DTD validation while parsing</a> </li>
+</ul>
+To read about how each of the features can be enabled or disabled, please refer to <a href="/pages/3.0/zorba/options_and_annotations">Zorba Specific Options and Annotations</a>. </li>
+<li>
+<a href="http://www.w3.org/TR/xquery-30/#id-validate" target="_blank">XML Schema validation</a> is supported by default via the <a href="http://xerces.apache.org/" target="_blank">Xerces</a> library. In case users do not want XML Schema validation, this feature can be disabled when Zorba is compiled. Specifically, the CMake variable <tt>ZORBA_NO_XMLSCHEMA</tt> must be set to "ON". For example:<pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span>cmake<span> </span>-D<span> </span>ZORBA_NO_XMLSCHEMA=ON<span> </span>&lt;path_to_zorba_source&gt;</span>
+</pre></li>
+<li>
+<a href="http://www.w3.org/TR/xpath-full-text-10/" target="_blank">XQuery Full Text Extension</a> is supported by default. Please see <a href="/pages/3.0/zorba/ft_intro">Full Text</a> for more details. The Full Text Extension increases memory usage during runtime. If you want to disable this feature, you can compile Zorba without Full Text support by setting the CMake variable <tt>ZORBA_NO_FULL_TEXT</tt> to "ON". For example:<pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span>cmake<span> </span>-D<span> </span>ZORBA_NO_FULL_TEXT=ON<span> </span>&lt;path_to_zorba_source&gt;</span>
+</pre></li>
+<li>
+<a href="http://www.w3.org/TR/xpath-30/" target="_blank">XPath</a> is a sublanguage of XQuery, hence it is automatically supported. Note that in Zorba, the XPath compatibility mode is always false (<a href="http://www.w3.org/TR/xquery/#static_context" target="_blank">http://www.w3.org/TR/xquery/#static_context</a>).</li>
+<li>
+<a href="http://www.w3.org/TR/xqueryx/" target="_blank">XQueryX</a> is not supported by default for all the variants of XQuery (1.0, 3.0, Update, Full Text). In case XQueryX is needed, it can be enabled when Zorba is compiled by setting the CMake variable <tt>ZORBA_XQUERYX</tt> to "ON".<pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span>cmake<span> </span>-D<span> </span>ZORBA_XQUERYX=ON<span> </span>&lt;path_to_zorba_source&gt;</span>
+</pre></li>
+<li>
+<a href="http://www.w3.org/TR/xslt" target="_blank">XSLT 1.0</a> is supported via the external library <a href="http://xmlsoft.org/XSLT/" target="_blank">LibXSLT</a>. For more information, please check the <a href="/modules/latest/www.zorba-xquery.com/modules/languages/xslt" target="_blank">XSLT module</a>. Zorba has no support yet for the upcoming standard <a href="http://www.w3.org/XML/Group/qtspecs/specifications/xslt-30/html/" target="_blank">XSLT 3.0</a>. Please let us know if this is a language that Zorba should support.</li>
+<li>
+<a href="http://www.w3.org/TR/xslt-xquery-serialization/" target="_blank">XML Serialization</a> is supported by default.</li>
+<li>
+Note that XQuery version 3.0 is not a W3C Recommendation, yet. Zorba supports the <a href="http://www.w3.org/TR/xquery-30/" target="_blank">June 2011 Working Draft</a>. However, not all the features are implemented. Please see <a href="/pages/3.0/zorba/partial_support">W3Q XQuery 3.0 Partial Support</a> for the implemented XQuery 3.0 features.</li>
+<li>
+Zorba has no support yet for the <a href="http://www.w3.org/TR/xproc/" target="_blank">XML Pipeline Language XProc</a>. Please let us know if this is a language that Zorba should support.</li>
+</ul>
+Zorba implements several extensions to XQuery that are missing from the W3C set of specifications, yet are absolutely necessary for complex data processing applications. The first one is the <a href="/pages/3.0/zorba/xqddf">Data Definition Facility</a>, that allows the declaration of collections, indexes, and integrity constraints. The other one is a <a href="/pages/latest/zorba/scripting_spec" target="_blank">XQuery Scripting Extension</a> that allows side-effecting operations, assignable variables, and other similar procedural extensions to XQuery.<div id="overview_conformance" class="sect1"><h2>Conformance</h2>
+Please check the summary and the detailed XQuery W3C Test Suite results below: <ul>
+<li>
+<a href="/pages/3.0/zorba/conformance">Summary: Conformance Results for the W3C Test Suites</a> </li>
+<li>
+<a href="/pages/3.0/zorba/conformance_XQ10">W3C XQuery 1.0 Conformance</a> </li>
+<li>
+<a href="/pages/3.0/zorba/conformance_XQ30">W3C XQuery 3.0 Conformance</a> </li>
+<li>
+<a href="/pages/3.0/zorba/conformanceXQUTS">W3C XQuery Update Facility 1.0 Conformance</a> </li>
+<li>
+<a href="/pages/3.0/zorba/conformanceXQFTTS">W3C XQuery and XPath Full Text 1.0 Conformance.</a> </li>
+</ul>
+Please also see our page about <a href="/pages/3.0/zorba/known_issues">Known Issues</a>. </div>
+    </div>
+</div>

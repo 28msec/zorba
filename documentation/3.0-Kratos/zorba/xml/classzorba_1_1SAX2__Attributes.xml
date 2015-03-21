@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1SAX2__Attributes" kind="class" prot="public">
+    <compoundname>zorba::SAX2_Attributes</compoundname>
+    <includes refid="sax2_8h" local="no">zorba/sax2.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1ac68c6f8c6ef29ad34fb1300a67803aa5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int zorba::SAX2_Attributes::getIndex</definition>
+        <argsstring>(const String &amp;uri, const String &amp;localPart) const =0</argsstring>
+        <name>getIndex</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>localPart</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="159"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1a9221ffefc616affeee3bb45d43416f76" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int zorba::SAX2_Attributes::getIndex</definition>
+        <argsstring>(const String &amp;qName) const =0</argsstring>
+        <name>getIndex</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>qName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="162"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1a859de6982750b5f8c8e563b962177efc" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned int</type>
+        <definition>virtual unsigned int zorba::SAX2_Attributes::getLength</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getLength</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="141"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1a81a30193b3cd7ad60d7999e17e105baa" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual const String zorba::SAX2_Attributes::getLocalName</definition>
+        <argsstring>(const unsigned int index) const =0</argsstring>
+        <name>getLocalName</name>
+        <param>
+          <type>const unsigned int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="147"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1a3c749d197fd43ac6f52c00c00b123f77" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual const String zorba::SAX2_Attributes::getQName</definition>
+        <argsstring>(const unsigned int index) const =0</argsstring>
+        <name>getQName</name>
+        <param>
+          <type>const unsigned int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="150"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1a1504e783a116176c5400694fa46f9f1e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual const String zorba::SAX2_Attributes::getType</definition>
+        <argsstring>(const unsigned int index) const =0</argsstring>
+        <name>getType</name>
+        <param>
+          <type>const unsigned int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="153"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1aaffa4e8d6df8fc46256a793db9620d70" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual const String zorba::SAX2_Attributes::getType</definition>
+        <argsstring>(const String &amp;uri, const String &amp;localPart) const =0</argsstring>
+        <name>getType</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>localPart</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="165"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1a00643366b18081e746ca58b7a6839f28" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual const String zorba::SAX2_Attributes::getType</definition>
+        <argsstring>(const String &amp;qName) const =0</argsstring>
+        <name>getType</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>qName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="168"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1aef3b6b18f1e02d3dc8c79936d5772362" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual const String zorba::SAX2_Attributes::getURI</definition>
+        <argsstring>(const unsigned int index) const =0</argsstring>
+        <name>getURI</name>
+        <param>
+          <type>const unsigned int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="144"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1a28f4b2cc854fc37f9b925d0951c05624" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual const String zorba::SAX2_Attributes::getValue</definition>
+        <argsstring>(const unsigned int index) const =0</argsstring>
+        <name>getValue</name>
+        <param>
+          <type>const unsigned int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="156"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1a2a12d1b52deb3442e132aa2a841db526" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual const String zorba::SAX2_Attributes::getValue</definition>
+        <argsstring>(const String &amp;uri, const String &amp;localPart) const =0</argsstring>
+        <name>getValue</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>uri</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>localPart</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="171"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1a841aaa20a86bd744843c4e0cbb22a0e6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual const String zorba::SAX2_Attributes::getValue</definition>
+        <argsstring>(const String &amp;qName) const =0</argsstring>
+        <name>getValue</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>qName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="174"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SAX2__Attributes_1a1554a8e28f8a685a59d93308d897d72d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::SAX2_Attributes::~SAX2_Attributes</definition>
+        <argsstring>()</argsstring>
+        <name>~SAX2_Attributes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="138" bodyfile="/home/wcandillon/deadlinks/include/zorba/sax2.h" bodystart="138" bodyend="138"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/sax2.h" line="135" bodyfile="/home/wcandillon/deadlinks/include/zorba/sax2.h" bodystart="134" bodyend="175"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SAX2__Attributes_1ac68c6f8c6ef29ad34fb1300a67803aa5" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getIndex</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1a9221ffefc616affeee3bb45d43416f76" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getIndex</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1a859de6982750b5f8c8e563b962177efc" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getLength</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1a81a30193b3cd7ad60d7999e17e105baa" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getLocalName</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1a3c749d197fd43ac6f52c00c00b123f77" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getQName</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1a1504e783a116176c5400694fa46f9f1e" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getType</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1aaffa4e8d6df8fc46256a793db9620d70" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getType</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1a00643366b18081e746ca58b7a6839f28" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getType</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1aef3b6b18f1e02d3dc8c79936d5772362" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getURI</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1a28f4b2cc854fc37f9b925d0951c05624" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getValue</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1a2a12d1b52deb3442e132aa2a841db526" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getValue</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1a841aaa20a86bd744843c4e0cbb22a0e6" prot="public" virt="pure-virtual"><scope>zorba::SAX2_Attributes</scope><name>getValue</name></member>
+      <member refid="classzorba_1_1SAX2__Attributes_1a1554a8e28f8a685a59d93308d897d72d" prot="public" virt="virtual"><scope>zorba::SAX2_Attributes</scope><name>~SAX2_Attributes</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

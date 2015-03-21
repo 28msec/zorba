@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1zfn" kind="namespace">
+    <compoundname>zorba::zfn</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1zfn_1ab9afeabfddf44ec23f366c920fa95ed5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC void</type>
+        <definition>ZORBA_DLL_PUBLIC void zorba::zfn::trim</definition>
+        <argsstring>(String &amp;s)</argsstring>
+        <name>trim</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+<para>Removes all leading and trailing whitespace characters. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to remove whitespace characters from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_functions.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1zfn_1a7c7b8088d085ada9abc6703a550a5920" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ZORBA_DLL_PUBLIC void</type>
+        <definition>ZORBA_DLL_PUBLIC void zorba::zfn::trim</definition>
+        <argsstring>(String &amp;s, const char *chars)</argsstring>
+        <name>trim</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>chars</declname>
+        </param>
+        <briefdescription>
+<para>Removes all leading and trailing specified characters. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to remove specified characters from. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>chars</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The characters to remove. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_functions.h" line="45"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/zorba_functions.h" line="26"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1String_1_1zstring__ptr" kind="struct" prot="private">
+    <compoundname>zorba::String::zstring_ptr</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structzorba_1_1String_1_1zstring__ptr_1a83916f6b83f7b3abbcfa1eb39fb459a1" prot="public" static="no" mutable="no">
+        <type>void const *</type>
+        <definition>void const* zorba::String::zstring_ptr::ptr</definition>
+        <argsstring></argsstring>
+        <name>ptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1288" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1288" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" line="1288" bodyfile="/home/wcandillon/deadlinks/include/zorba/zorba_string.h" bodystart="1288" bodyend="1288"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1String_1_1zstring__ptr_1a83916f6b83f7b3abbcfa1eb39fb459a1" prot="public" virt="non-virtual"><scope>zorba::String::zstring_ptr</scope><name>ptr</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,37 @@
+<div class="doxygen">
+  <div><h1 class="title">zorba::os_error::exception</h1><p class="include">
+            #include &lt;zorba/util/error_util.h&gt;
+        </p>
+An exception is-a std::runtime_error for reporting errors with operating system or library functions.     
+    <div class="section"><h2>Protected Attributes</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a76ebbb097300a7e0e7c9bf916f2b70c4">function_</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#add7d63af8491b3c77b936d756ab4bc5e">message_</a></p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature">std::string</p></td><td><p class="signature"><a href="#a11507bfbc4888cadc767835d0b030860">path_</a></p><span class="signature-description">
+        </span></td></tr></table></div><div class="section"><h2>Public Functions</h2><table class="parameters table table-bordered"><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a23717ee6083026d2c0b46ab638397453">exception</a>(char const *function, char const *path, char const *err_string=nullptr)</p><span class="signature-description">
+Constructs an exception.         </span></td></tr><tr><td class="return-type"><p class="signature">std::string const &amp;</p></td><td><p class="signature"><a href="#a6924e8fe65292fdb0229cdb5d16c32a2">function</a>() const </p><span class="signature-description">
+Gets the name of the function that failed.         </span></td></tr><tr><td class="return-type"><p class="signature">std::string const &amp;</p></td><td><p class="signature"><a href="#aa212d0ddb261f5238889137918ae62bb">path</a>() const </p><span class="signature-description">
+Gets the full path of the file or directory involved in the failure.         </span></td></tr><tr><td class="return-type"><p class="signature">char const *</p></td><td><p class="signature"><a href="#a56903413b83b672cd2d5eab992e1b657">what</a>() const </p><span class="signature-description">
+        </span></td></tr><tr><td class="return-type"><p class="signature"/></td><td><p class="signature"><a href="#a107ce579bd0dca06de81adaccbed781b">~exception</a>()</p><span class="signature-description">
+Destroys an exception.         </span></td></tr></table></div><div class="section"><h2>Protected Attributes</h2><div class="detailed"><div id="a76ebbb097300a7e0e7c9bf916f2b70c4" class="sect1"><div><h3>function_</h3></div><div class="signature-box">std::string<span> </span>function_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="add7d63af8491b3c77b936d756ab4bc5e" class="sect1"><div><h3>message_</h3></div><div class="signature-box">std::string<span> </span>message_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a11507bfbc4888cadc767835d0b030860" class="sect1"><div><h3>path_</h3></div><div class="signature-box">std::string<span> </span>path_</div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div></div></div><div class="section"><h2>Public Functions</h2><div class="detailed"><div id="a23717ee6083026d2c0b46ab638397453" class="sect1"><div><h3>exception</h3></div><div class="signature-box"><span> </span>exception(char const *function, char const *path, char const *err_string=nullptr)</div><div><p class="signature-description">
+Constructs an exception.         </p><p class="signature-description">
+<div><h4>Parameters</h4><table class="parameters table table-bordered"><tr><td>function</td><td>
+The name of the operating system function that failed, if any. </td></tr><tr><td>path</td><td>
+The full path of the file or directory involved in the failure, if any. </td></tr><tr><td>err_string</td><td>
+If not <tt>nullptr</tt>, the error string to use instead of the operating system error string; if empty, no error string is used. </td></tr></table></div>
+        </p></div></div><div id="a6924e8fe65292fdb0229cdb5d16c32a2" class="sect1"><div><h3>function</h3></div><div class="signature-box">std::string const &amp;<span> </span>function() const </div><div><p class="signature-description">
+Gets the name of the function that failed.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said function name. </div>
+        </p></div></div><div id="aa212d0ddb261f5238889137918ae62bb" class="sect1"><div><h3>path</h3></div><div class="signature-box">std::string const &amp;<span> </span>path() const </div><div><p class="signature-description">
+Gets the full path of the file or directory involved in the failure.         </p><p class="signature-description">
+<div><h4>Returns</h4>Returns said path. </div>
+        </p></div></div><div id="a56903413b83b672cd2d5eab992e1b657" class="sect1"><div><h3>what</h3></div><div class="signature-box">char const *<span> </span>what() const </div><div><p class="signature-description">
+        </p><p class="signature-description">
+        </p></div></div><div id="a107ce579bd0dca06de81adaccbed781b" class="sect1"><div><h3>~exception</h3></div><div class="signature-box"><span> </span>~exception()</div><div><p class="signature-description">
+Destroys an exception.         </p><p class="signature-description">
+        </p></div></div></div></div></div>
+</div>

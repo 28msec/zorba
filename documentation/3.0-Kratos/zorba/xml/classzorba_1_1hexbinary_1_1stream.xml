@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1hexbinary_1_1stream" kind="class" prot="public">
+    <compoundname>zorba::hexbinary::stream</compoundname>
+    <includes refid="hexbinary__stream_8h" local="no">zorba/util/hexbinary_stream.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class StreamType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1hexbinary_1_1stream_1a4f7d34daa74d328686009c3cfdd3a61d" prot="private" static="no" mutable="no">
+        <type><ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">streambuf</ref></type>
+        <definition>streambuf zorba::hexbinary::stream&lt; StreamType &gt;::hb_buf_</definition>
+        <argsstring></argsstring>
+        <name>hb_buf_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="359" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="359" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1stream_1aed882f66078f4c787dbbbbecc1ac1a5c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::hexbinary::stream&lt; StreamType &gt;::stream</definition>
+        <argsstring>()</argsstring>
+        <name>stream</name>
+        <briefdescription>
+<para>Constructs a hexbinary::stream. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="307" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="298" bodyend="309"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1stream_1a4f0047152dea2bb153cd67bf8798cd6d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename StreamArgType</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>zorba::hexbinary::stream&lt; StreamType &gt;::stream</definition>
+        <argsstring>(StreamArgType stream_arg)</argsstring>
+        <name>stream</name>
+        <param>
+          <type>StreamArgType</type>
+          <declname>stream_arg</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StreamArgType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the first argument of <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream_arg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The argument to pass as the first argument to <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="330" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="320" bodyend="332"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1stream_1ac9267c4c10316a0b532996d6d8b74f5c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename StreamArgType</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>zorba::hexbinary::stream&lt; StreamType &gt;::stream</definition>
+        <argsstring>(StreamArgType stream_arg, std::ios_base::openmode mode)</argsstring>
+        <name>stream</name>
+        <param>
+          <type>StreamArgType</type>
+          <declname>stream_arg</declname>
+        </param>
+        <param>
+          <type>std::ios_base::openmode</type>
+          <declname>mode</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a hexbinary::stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StreamArgType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the first argument of <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream_arg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The argument to pass as the first argument to <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The open-mode to pass to <emphasis>StreamType&apos;s</emphasis> constructor. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="354" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="344" bodyend="356"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1stream_1a0d7d6753696a9fcb102bd9d286efef3a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::hexbinary::stream&lt; StreamType &gt;::init</definition>
+        <argsstring>()</argsstring>
+        <name>init</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="361" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="361" bodyend="363"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A hexbinary::stream is used to wrap a C++ standard I/O stream with a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> so that encoding/decoding and the management of the streambuf happens automatically. </para>    </briefdescription>
+    <detaileddescription>
+<para>A hexbinary::stream is useful for streams created by you.</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>StreamType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The I/O stream class type to wrap. It must be a concrete stream class. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="293" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="293" bodyend="364"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1hexbinary_1_1stream_1a4f7d34daa74d328686009c3cfdd3a61d" prot="private" virt="non-virtual"><scope>zorba::hexbinary::stream</scope><name>hb_buf_</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1stream_1a0d7d6753696a9fcb102bd9d286efef3a" prot="private" virt="non-virtual"><scope>zorba::hexbinary::stream</scope><name>init</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1stream_1aed882f66078f4c787dbbbbecc1ac1a5c" prot="public" virt="non-virtual"><scope>zorba::hexbinary::stream</scope><name>stream</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1stream_1a4f0047152dea2bb153cd67bf8798cd6d" prot="public" virt="non-virtual"><scope>zorba::hexbinary::stream</scope><name>stream</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1stream_1ac9267c4c10316a0b532996d6d8b74f5c" prot="public" virt="non-virtual"><scope>zorba::hexbinary::stream</scope><name>stream</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

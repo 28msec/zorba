@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="namespacezorba_1_1time" kind="namespace">
+    <compoundname>zorba::time</compoundname>
+    <innerclass refid="classzorba_1_1time_1_1Timer" prot="public">zorba::time::Timer</innerclass>
+    <innernamespace refid="namespacezorba_1_1time_1_1calendar">zorba::time::calendar</innernamespace>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" prot="public" static="no">
+        <type>clock_t</type>
+        <definition>typedef clock_t zorba::time::cputime</definition>
+        <argsstring></argsstring>
+        <name>cputime</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/time.h" line="112" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/time.h" bodystart="112" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" prot="public" static="no">
+        <type>long long</type>
+        <definition>typedef long long zorba::time::msec_type</definition>
+        <argsstring></argsstring>
+        <name>msec_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/time.h" line="60" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/time.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" prot="public" static="no">
+        <type>struct timeval</type>
+        <definition>typedef struct timeval zorba::time::walltime</definition>
+        <argsstring></argsstring>
+        <name>walltime</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/time.h" line="198" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/time.h" bodystart="198" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacezorba_1_1time_1a869147130cdaf6bfdd1e000ea450c795" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double zorba::time::get_cputime_elapsed</definition>
+        <argsstring>(const cputime &amp;t0, const cputime &amp;t1)</argsstring>
+        <name>get_cputime_elapsed</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref> &amp;</type>
+          <declname>t0</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref> &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/time.h" line="115" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/time.h" bodystart="114" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1time_1ac8827a784c789b31ac9028755def5a93" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::time::get_current_cputime</definition>
+        <argsstring>(cputime &amp;t)</argsstring>
+        <name>get_current_cputime</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1time_1af11d90a5da3820f4659370edffba1b96" kindref="member">cputime</ref> &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/time.h" line="120" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/time.h" bodystart="119" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1time_1a23cfcc09d5f09c2d2c8dbd2f4529fe33" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::time::get_current_walltime</definition>
+        <argsstring>(walltime &amp;t)</argsstring>
+        <name>get_current_walltime</name>
+        <param>
+          <type><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref> &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/time.h" line="207" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/time.h" bodystart="206" bodyend="209"/>
+        <referencedby refid="classzorba_1_1time_1_1Timer_1ae58a4b438184a1f41c87486b2a2a69f5" compoundref="timer_8h" startline="34" endline="38">zorba::time::Timer::elapsed</referencedby>
+        <referencedby refid="classzorba_1_1time_1_1Timer_1a69a8e580f733293ce4b1cd5065975b67" compoundref="timer_8h" startline="30" endline="32">zorba::time::Timer::start</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1time_1acf8aa217268ef4e07c68109e41990e6e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double zorba::time::get_walltime_elapsed</definition>
+        <argsstring>(const walltime &amp;t0, const walltime &amp;t1)</argsstring>
+        <name>get_walltime_elapsed</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref> &amp;</type>
+          <declname>t0</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref> &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/time.h" line="201" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/time.h" bodystart="200" bodyend="204"/>
+        <referencedby refid="classzorba_1_1time_1_1Timer_1ae58a4b438184a1f41c87486b2a2a69f5" compoundref="timer_8h" startline="34" endline="38">zorba::time::Timer::elapsed</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespacezorba_1_1time_1a566508b5bb8897b1fed69f87489fcef5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" kindref="member">msec_type</ref></type>
+        <definition>msec_type zorba::time::get_walltime_in_millis</definition>
+        <argsstring>(const walltime &amp;t)</argsstring>
+        <name>get_walltime_in_millis</name>
+        <param>
+          <type>const <ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref> &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/time.h" line="212" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/time.h" bodystart="211" bodyend="214"/>
+        <referencedby refid="classzorba_1_1time_1_1Timer_1a9ef430e521f7c1aa1d6a057fbbc9792e" compoundref="timer_8h" startline="40" endline="42">zorba::time::Timer::getStart</referencedby>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/calendar.h" line="21"/>
+  </compounddef>
+</doxygen>

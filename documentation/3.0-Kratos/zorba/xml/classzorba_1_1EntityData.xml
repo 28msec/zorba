@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1EntityData" kind="class" prot="public">
+    <compoundname>zorba::EntityData</compoundname>
+    <includes refid="uri__resolvers_8h" local="no">zorba/uri_resolvers.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18a" prot="public" static="no">
+        <name>Kind</name>
+        <enumvalue id="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aa3f8b8b595515407f94dc9351634c0aae" prot="public">
+          <name>SCHEMA</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aa5b5cce2ccde7d14ae032911e86e5c4d2" prot="public">
+          <name>MODULE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aa26e68c4df7c4ec7c11a2dea455ab5abb" prot="public">
+          <name>THESAURUS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aaff6ec41e2463710eb6f7eefb248ba23d" prot="public">
+          <name>STOP_WORDS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aacfa6d73d53fcae274620a294bb5e769a" prot="public">
+          <name>COLLECTION</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aaa626e03d6717c3dca7d67753e15a6b17" prot="public">
+          <name>DOCUMENT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aa9d19c6a325828e7057e3d809e2daa5c9" prot="public">
+          <name>SOME_CONTENT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>enum listing the kinds of entities that may be represented by URIs, and hence may be looked up via the URI resolution mechanism. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="125" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="125" bodyend="133"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1EntityData_1a28e3e16623b5d77a68d1849d6a22533b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18a" kindref="member">Kind</ref></type>
+        <definition>virtual Kind zorba::EntityData::getKind</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getKind</name>
+        <briefdescription>
+<para>Return the Kind of Entity for which this URI is being resolved. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="138"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1EntityData_1ad922c841de23eb2af8ff99c985668ff2" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type></type>
+        <definition>virtual zorba::EntityData::~EntityData</definition>
+        <argsstring>()=0</argsstring>
+        <name>~EntityData</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="140"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The class containing data which may be of use to URIMappers and URLResolvers when mapping/resolving a URI. </para>    </briefdescription>
+    <detaileddescription>
+<para>This base class specifies the kind of entity for which this URI is being resolved - for instance, a schema URI or a module URI. Subclasses of this class will provide additional data for specific kinds of entities. </para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="118" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="117" bodyend="141"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aacfa6d73d53fcae274620a294bb5e769a" prot="public" virt="non-virtual"><scope>zorba::EntityData</scope><name>COLLECTION</name></member>
+      <member refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aaa626e03d6717c3dca7d67753e15a6b17" prot="public" virt="non-virtual"><scope>zorba::EntityData</scope><name>DOCUMENT</name></member>
+      <member refid="classzorba_1_1EntityData_1a28e3e16623b5d77a68d1849d6a22533b" prot="public" virt="pure-virtual"><scope>zorba::EntityData</scope><name>getKind</name></member>
+      <member refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18a" prot="public" virt="non-virtual"><scope>zorba::EntityData</scope><name>Kind</name></member>
+      <member refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aa5b5cce2ccde7d14ae032911e86e5c4d2" prot="public" virt="non-virtual"><scope>zorba::EntityData</scope><name>MODULE</name></member>
+      <member refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aa3f8b8b595515407f94dc9351634c0aae" prot="public" virt="non-virtual"><scope>zorba::EntityData</scope><name>SCHEMA</name></member>
+      <member refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aa9d19c6a325828e7057e3d809e2daa5c9" prot="public" virt="non-virtual"><scope>zorba::EntityData</scope><name>SOME_CONTENT</name></member>
+      <member refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aaff6ec41e2463710eb6f7eefb248ba23d" prot="public" virt="non-virtual"><scope>zorba::EntityData</scope><name>STOP_WORDS</name></member>
+      <member refid="classzorba_1_1EntityData_1a12bf89226b6bd93b9bf5f56343c0c18aa26e68c4df7c4ec7c11a2dea455ab5abb" prot="public" virt="non-virtual"><scope>zorba::EntityData</scope><name>THESAURUS</name></member>
+      <member refid="classzorba_1_1EntityData_1ad922c841de23eb2af8ff99c985668ff2" prot="public" virt="pure-virtual"><scope>zorba::EntityData</scope><name>~EntityData</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="modules__building__in_8dox" kind="file">
+    <compoundname>modules_building_in.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>modules_building_in<sp/>Building<sp/>Modules<sp/>Into<sp/>Zorba</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">Once<sp/>you<sp/>have<sp/>created<sp/>a<sp/>module<sp/>project<sp/>(see<sp/>\ref<sp/>modules_authoring)</highlight></codeline>
+<codeline lineno="4"><highlight class="comment">containing<sp/>modules<sp/>and<sp/>schemas,<sp/>there<sp/>are<sp/>two<sp/>different<sp/>ways<sp/>that<sp/>you</highlight></codeline>
+<codeline lineno="5"><highlight class="comment">can<sp/>build<sp/>those<sp/>modules<sp/>directly<sp/>into<sp/>Zorba,<sp/>such<sp/>that<sp/>they<sp/>are<sp/>on</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Zorba&apos;s<sp/>default<sp/>URI<sp/>and<sp/>Library<sp/>paths<sp/>and<sp/>will<sp/>be<sp/>found<sp/>automatically.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"></highlight></codeline>
+<codeline lineno="8"><highlight class="comment">These<sp/>same<sp/>techniques<sp/>can<sp/>be<sp/>used<sp/>with<sp/>non-core<sp/>modules<sp/>developed<sp/>by</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">the<sp/>Zorba<sp/>team.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"></highlight></codeline>
+<codeline lineno="11"><highlight class="comment">\section<sp/>mod_installing_in<sp/>Installing<sp/>Modules<sp/>Into<sp/>Zorba</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">If<sp/>you<sp/>are<sp/>building<sp/>your<sp/>module<sp/>by<sp/>itself<sp/>against<sp/>a<sp/>Zorba</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">installation,<sp/>&lt;tt&gt;DECLARE_ZORBA_MODULE()&lt;/tt&gt;<sp/>will<sp/>automatically</highlight></codeline>
+<codeline lineno="15"><highlight class="comment">create<sp/>an<sp/>&lt;tt&gt;INSTALL()&lt;/tt&gt;<sp/>rule<sp/>for<sp/>your<sp/>module<sp/>that<sp/>will<sp/>install</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">the<sp/>module<sp/>(including<sp/>its<sp/>external<sp/>function<sp/>shared<sp/>library,<sp/>if<sp/>any)</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">directly<sp/>into<sp/>the<sp/>Zorba<sp/>installation.<sp/>Simply<sp/>invoking<sp/>the<sp/>&quot;install&quot;</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">target<sp/>of<sp/>the<sp/>project<sp/>will<sp/>do<sp/>this.<sp/>Note<sp/>that<sp/>on<sp/>many<sp/>systems,<sp/>if</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">Zorba<sp/>is<sp/>installed<sp/>into<sp/>a<sp/>system-wide<sp/>location,<sp/>you<sp/>may<sp/>require<sp/>root</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">or<sp/>administrator<sp/>privileges<sp/>to<sp/>install<sp/>your<sp/>module<sp/>in<sp/>this<sp/>location.</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"></highlight></codeline>
+<codeline lineno="22"><highlight class="comment">\section<sp/>mod_baking_in<sp/>Building<sp/>Zorba<sp/>With<sp/>Additional<sp/>Modules</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"></highlight></codeline>
+<codeline lineno="24"><highlight class="comment">If<sp/>you<sp/>are<sp/>building<sp/>Zorba<sp/>yourself,<sp/>you<sp/>may<sp/>have<sp/>it<sp/>automatically</highlight></codeline>
+<codeline lineno="25"><highlight class="comment">build<sp/>any<sp/>number<sp/>of<sp/>module<sp/>projects<sp/>along<sp/>with<sp/>itself.<sp/><sp/>In<sp/>that<sp/>case,</highlight></codeline>
+<codeline lineno="26"><highlight class="comment">when<sp/>you<sp/>install<sp/>Zorba,<sp/>all<sp/>modules<sp/>from<sp/>all<sp/>module<sp/>projects<sp/>will<sp/>be</highlight></codeline>
+<codeline lineno="27"><highlight class="comment">included<sp/>in<sp/>the<sp/>install<sp/>image,<sp/>ready<sp/>for<sp/>immediate<sp/>use.</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"></highlight></codeline>
+<codeline lineno="29"><highlight class="comment">To<sp/>do<sp/>so,<sp/>all<sp/>you<sp/>need<sp/>to<sp/>do<sp/>is<sp/>locate<sp/>all<sp/>your<sp/>module<sp/>projects<sp/>in</highlight></codeline>
+<codeline lineno="30"><highlight class="comment">subdirectories<sp/>of<sp/>a<sp/>single<sp/>directory.<sp/>That<sp/>is,<sp/>given<sp/>a<sp/>directory</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">named,<sp/>for<sp/>instnace,<sp/>&lt;tt&gt;zorba_modules&lt;/tt&gt;,<sp/>every<sp/>subdirectory<sp/>of</highlight></codeline>
+<codeline lineno="32"><highlight class="comment">that<sp/>directory<sp/>should<sp/>contain<sp/>a<sp/>top-level<sp/>&lt;tt&gt;CMakeLists.txt&lt;/tt&gt;<sp/>file</highlight></codeline>
+<codeline lineno="33"><highlight class="comment">defining<sp/>a<sp/>module<sp/>project.</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"></highlight></codeline>
+<codeline lineno="35"><highlight class="comment">Then,<sp/>when<sp/>configuring<sp/>Zorba,<sp/>simply<sp/>define<sp/>the<sp/>variable</highlight></codeline>
+<codeline lineno="36"><highlight class="comment">&lt;tt&gt;ZORBA_MODULES_DIR&lt;/tt&gt;<sp/>to<sp/>be<sp/>the<sp/>full<sp/>path<sp/>to<sp/>this<sp/>single</highlight></codeline>
+<codeline lineno="37"><highlight class="comment">directory:</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"></highlight></codeline>
+<codeline lineno="39"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="40"><highlight class="comment">cmake<sp/>-DZORBA_MODULES_DIR=/path/to/zorba_modules<sp/>....</highlight></codeline>
+<codeline lineno="41"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"></highlight></codeline>
+<codeline lineno="43"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/modules_building_in.dox"/>
+  </compounddef>
+</doxygen>

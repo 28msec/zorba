@@ -1,0 +1,115 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://zorba.io/modules/unordered-maps</xqdoc:uri><xqdoc:name>unordered-maps</xqdoc:name><xqdoc:comment><xqdoc:description> This module defines a set of functions for working with maps. A map
+ is identified by a string and can be created using the map:create function
+ and dropped using the map:drop function.
+ <p/>
+ It is possible to create persistent and transient maps. The lifetime of a
+ transient map is limited by the execution of the current query.
+ A persistent map lives until it is explicitly dropped.
+ Accordingly, it is also available to other requests.
+ <p/>
+ For example,
+ <pre>map:create("my-map", ["string", "integer"], { "persistent" : false })</pre>
+ will create a transient map named my-map having two keys.
+ The types of the keys are string and integer.
+ <p/>
+ The key of a particular entry in the map can consist of a tuple of
+ atomic values (called key attributes). The actual type of each attribute
+ is determined when the map is created. The value of each entry is a
+ sequence of items. If an item in this sequence is a object or array,
+ this item needs to belong to a collection, otherwise, an error is raised.
+</xqdoc:description><xqdoc:author>Matthias Brantner</xqdoc:author><xqdoc:custom tag="project">Zorba/Data Store/Data Structures/Unordered Map</xqdoc:custom><xqdoc:custom tag="language">jsoniq</xqdoc:custom><xqdoc:custom tag="version">1.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="an" uri="http://zorba.io/annotations" isSchema="false"/><xqdoc:namespace prefix="map" uri="http://zorba.io/modules/unordered-maps" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/><xqdoc:namespace prefix="zerr" uri="http://zorba.io/errors" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports/><xqdoc:variables><xqdoc:variable><xqdoc:uri>map:PERSISTENT</xqdoc:uri><xqdoc:comment><xqdoc:description> Constant containing the field name of the options object
+ indiciating whether a map is persistent or transient.
+</xqdoc:description><xqdoc:custom tag="type">string</xqdoc:custom></xqdoc:comment></xqdoc:variable></xqdoc:variables><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Create a persistent map with a given name and type identifiers for the key
+ attributes.
+ <p/>
+ If the map has only one key attribute, a single type identifier is given,
+ for more than one key attribute an array of type identifiers is given.
+ Calling this function is equivalent to calling create with the options
+ <code>{ "persistent" : true }</code>
+ Note that the function is sequential and immediately creates the map.
+ <p/>
+ Each key-type should be specified as string (e.g. "integer",
+ "string", "boolean", "double", or "datetime").
+ <p/>
+ For example,
+ <pre>map:create("my-map", "string")</pre> or
+ <pre>map:create("my-map", ["string", "integer"])</pre>.
+</xqdoc:description><xqdoc:param>$name the name of the map (the restrictions on collection names apply)</xqdoc:param><xqdoc:param>$key-type one type identifier or an array of type identifiers for the key attributes</xqdoc:param><xqdoc:return>the function is sequential and immediately creates the corresponding map. It returns the empty-sequence.</xqdoc:return><xqdoc:error>err:XPTY0004 if any of the key attribute types is not a subtype of anyAtomicType.</xqdoc:error><xqdoc:error>zerr:ZSTR0001 if a map with the given name already exists.</xqdoc:error><xqdoc:error>zerr:ZDDY1000 if the given name is not a legal collection name</xqdoc:error><xqdoc:error>zerr:ZDDY0043 if any of the given options has an invalid type</xqdoc:error><xqdoc:see>map:create#3</xqdoc:see></xqdoc:comment><xqdoc:name>map:create</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function map:create($name as string, $key-types as item()) as empty-sequence() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>name</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>key-types</xqdoc:name><xqdoc:type>item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> Create a map with a given name, type identifiers for the key attributes, and
+ options.
+ <p/>
+ If the map has only one key attribute, a single type identifier is given,
+ for more than one key attribute an array of type identifiers is given.
+ Currently only one option is supported: To create a transient map the object
+ <code>{ "persistent" : false }</code>
+ has to be passed to the $options parameter.
+ Note that the function is sequential and immediately creates the map in the
+ store.
+ <p/>
+ Note that a map cannot be created if it already exists in a parent context.
+ For example, a map that was created in an outer query cannot be
+ created again in an inner query executed using the
+ <code>reflection:eval-s</code> function.
+</xqdoc:description><xqdoc:param>$name the name of the map (the restrictions on collection names apply)</xqdoc:param><xqdoc:param>$key-type one type identifier or an array of type identifiers for the key attributes</xqdoc:param><xqdoc:param>$options an object describing options for the map</xqdoc:param><xqdoc:return>the function is sequential and immediately creates the corresponding map but returns the empty-sequence.</xqdoc:return><xqdoc:error>err:XPTY0004 if any of the attribute types is not a subtype of anyAtomicType.</xqdoc:error><xqdoc:error>zerr:ZSTR0001 if a map with the given name already exists.</xqdoc:error><xqdoc:error>zerr:ZDDY1000 if the given name is not a legal collection name</xqdoc:error><xqdoc:error>zerr:ZDDY0043 if any of the given options has an invalid type</xqdoc:error><xqdoc:see>map:create#2</xqdoc:see></xqdoc:comment><xqdoc:name>map:create</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function map:create($name as string, $key-types as item(), $options as object()) as empty-sequence() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>name</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>key-types</xqdoc:name><xqdoc:type>item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>options</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Deletes the map with the given name.
+ <p/>
+ Note that a map can only be dropped in the context it was created.
+ For example, a map that was created in an outer query cannot be
+ dropped in an inner query executed using the
+ <code>reflection:eval-s</code> function.
+</xqdoc:description><xqdoc:param>$name the name of the map to drop</xqdoc:param><xqdoc:return>the function is sequential and immediately drops the map. It returns the empty-sequence.</xqdoc:return><xqdoc:error>zerr:ZDDY0023 if a map with the given name does not exist.</xqdoc:error></xqdoc:comment><xqdoc:name>map:drop</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function map:drop($name as string) as empty-sequence() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>name</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> Inserts a new entry into the map with the given name.
+ <p/>
+ If the map has only one key attribute, a single key value is given, for
+ more than one key attribute an array of key values is given.
+ If an entry with the given key already exists in the map, the value
+ sequences of the existing entry and the sequence passed using $value
+ argument are concatenated.
+ <p/>
+ If an item in the value sequence is an object or array, this
+ item needs to belong to a collection, otherwise, an an error
+ is raised.
+ <p/>
+ Note that it is possible to insert entries with empty key attributes
+ or key attributes having the value <code>null</code>. However, as
+ the comparison with an empty sequence or null always returns false,
+ it is not possible to retrieve these entries.
+ <p/>
+ For example,
+ <pre>map:insert("my-map", "key", "value")</pre> or
+ <pre>map:insert("my-map", [ "key1", "key2" ] , (42, "value"))</pre>.
+</xqdoc:description><xqdoc:param>$name the name of the map</xqdoc:param><xqdoc:param>$key either a single attribute key or an array of keys</xqdoc:param><xqdoc:param>$value the value of the entry to insert</xqdoc:param><xqdoc:return>the function is sequential and immediately inserts the entry into the map. It returns the empty-sequence.</xqdoc:return><xqdoc:error>zerr:ZDDY0023 if a map with the given name does not exist.</xqdoc:error><xqdoc:error>zerr:ZDDY0025 if the given number of key attributes does not match the number of key attributes specified when creating the map (see the map:create function).</xqdoc:error><xqdoc:error>zerr:ZXQD0005 if any of the given key attributes can not be cast (or is not a subtype) of the corresponding key attribute specified when creating the map.</xqdoc:error><xqdoc:error>zerr:ZDDY1003 if the value to insert is an object or array it must belong to a collection.</xqdoc:error></xqdoc:comment><xqdoc:name>map:insert</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function map:insert($name as string, $key as item(), $value as item()*) as empty-sequence() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>name</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>key</xqdoc:name><xqdoc:type>item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>value</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Returns the value of the entry with the given key from the map.
+ <p/>
+ If the map has only one key attribute, a single key value is given, for
+ more than one key attribute an array of key values is given.
+ <p/>
+ Note that it is possible to insert entries with empty key attributes.
+ However as the getting the entries is based on the "eq" comparison and
+ as "eq" with an empty sequence always return false, it is not possible
+ to retrieve these entries.
+ <p/>
+ For example,
+ <pre>map:get("my-map", "key")</pre> or
+ <pre>map:get("my-map", [ "key1", "key2" ])</pre>.
+</xqdoc:description><xqdoc:param>$name the name of the map</xqdoc:param><xqdoc:param>$key either a single attribute key or an array of keys</xqdoc:param><xqdoc:return>the value of the entry in the map identified by the given key. The empty-sequence will be returned if no entry with the given key is contained in the map.</xqdoc:return><xqdoc:error>zerr:ZDDY0023 if a map with the given name does not exist.</xqdoc:error><xqdoc:error>zerr:ZDDY0025 if the given number of key attributes does not match the number of key attributes specified when creating the map (see the map:create function).</xqdoc:error><xqdoc:error>zerr:ZXQD0005 if any of the given key attributes can not be cast (or is not a subtype) of the corresponding key attribute specified when creating the map.</xqdoc:error><xqdoc:see>map:create</xqdoc:see></xqdoc:comment><xqdoc:name>map:get</xqdoc:name><xqdoc:signature>declare function map:get($name as string, $key as item()) as item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>name</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>key</xqdoc:name><xqdoc:type>item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">item()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Removes an entry identified by the given key from the map.
+ <p/>
+ If the map has only one key attribute, a single key value is given, for
+ more than one key attribute an array of key values is given.
+ <p/>
+ Note that it is possible to insert entries with empty key attributes.
+ However as the removing the entries is based on the "eq" comparison and
+ as "eq" with an empty sequence always return false, it is not possible
+ to delete these entries.
+</xqdoc:description><xqdoc:param>$name the name of the map</xqdoc:param><xqdoc:param>$key either a single attribute key or an array of keys</xqdoc:param><xqdoc:return>the function is sequential and immediately deletes the entry into the map but returns the empty-sequence.</xqdoc:return><xqdoc:error>zerr:ZDDY0023 if a map with the given name does not exist.</xqdoc:error><xqdoc:error>zerr:ZDDY0025 if the given number of key attributes does not match the number of key attributes specified when creating the map (see the map:create function).</xqdoc:error><xqdoc:error>zerr:ZXQD0005 if any of the given key attributes can not be cast (or is not a subtype) of the corresponding key attribute specified when creating the map.</xqdoc:error><xqdoc:see>map:create</xqdoc:see></xqdoc:comment><xqdoc:name>map:delete</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function map:delete($name as string, $key as item()) as empty-sequence() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>name</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>key</xqdoc:name><xqdoc:type>item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>empty-sequence()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Returns the keys of all entries of a map. The keys
+ are returned as sequence of arrays.
+ <p/>
+ The following condition always holds:
+ <tt>map:size($name) eq count(map:keys($name))</tt>
+</xqdoc:description><xqdoc:param>$name the name of the map</xqdoc:param><xqdoc:return>an sequence of arrays each array containing the values of all attributes of one key.</xqdoc:return><xqdoc:error>zerr:ZDDY0023 if a map with the given name does not exist.</xqdoc:error></xqdoc:comment><xqdoc:name>map:keys</xqdoc:name><xqdoc:signature>declare function map:keys($name as string) as array()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>name</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">array()*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Returns the number of entries in a map.
+ <p/>
+ The following condition always holds:
+ <tt>map:size($name) eq count(map:keys($name))</tt>
+</xqdoc:description><xqdoc:param>$name the name of the map</xqdoc:param><xqdoc:return>the number of entries in the map.</xqdoc:return><xqdoc:error>zerr:ZDDY0023 if a map with the given name does not exist.</xqdoc:error></xqdoc:comment><xqdoc:name>map:size</xqdoc:name><xqdoc:signature>declare function map:size($name as string) as integer external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>name</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>integer</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="0"><xqdoc:comment><xqdoc:description> The function returns a sequence of names of the maps that are
+ available (persistent and non-persistent). The sequence will be
+ empty if there are no maps.
+ <p/>
+</xqdoc:description><xqdoc:return>A sequence of string, one for each available map, or an empty sequence.</xqdoc:return></xqdoc:comment><xqdoc:name>map:available-maps</xqdoc:name><xqdoc:signature>declare function map:available-maps() as string* external</xqdoc:signature><xqdoc:return><xqdoc:type occurrence="*">string*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> The function returns the options that were passed during creation or the
+ default options if no options were passed.
+</xqdoc:description><xqdoc:param>$name the name of the map</xqdoc:param><xqdoc:return>an options object</xqdoc:return><xqdoc:error>zerr:ZDDY0023 if a map with the given name does not exist.</xqdoc:error></xqdoc:comment><xqdoc:name>map:options</xqdoc:name><xqdoc:signature>declare function map:options($name as string) as object() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>name</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

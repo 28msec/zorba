@@ -1,0 +1,26 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://www.zorba-xquery.com/modules/process</xqdoc:uri><xqdoc:name>process</xqdoc:name><xqdoc:comment><xqdoc:description> This module provides functions to create a native process and return the result
+ (i.e. exit code, result on standard out and error).
+ <p>
+ Example:
+<pre class="ace-static" ace-mode="xquery">
+  import module namespace proc = "http://www.zorba-xquery.com/modules/process";
+  proc:exec("ls")
+</pre>
+ </p>
+ <p>
+ Potential result:
+ <pre class="ace-static" ace-mode="xquery">
+ &lt;result xmlns="http://www.zorba-xquery.com/modules/process"&gt;
+   &lt;stdout&gt;myfile.txt&lt;/stout&gt;
+   &lt;stderr/&gt;
+   &lt;exit-code&gt;0&lt;/exit-code&gt;
+ &lt;/result&gt;
+ </pre>
+ </p>
+</xqdoc:description><xqdoc:author>Cezar Andrei</xqdoc:author><xqdoc:custom tag="project">Zorba/Input Output/Process</xqdoc:custom><xqdoc:custom tag="language">xquery</xqdoc:custom><xqdoc:custom tag="version">3.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="an" uri="http://zorba.io/annotations" isSchema="false"/><xqdoc:namespace prefix="process" uri="http://www.zorba-xquery.com/modules/process" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports/><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Executes the specified string command in a separate process.
+ This function does not allow arguments to be passed to
+ the command.
+</xqdoc:description><xqdoc:param>$cmd command to be executed (without arguments)</xqdoc:param><xqdoc:return>the result of the execution as an element as shown in the documentation of this module. The exit-code element returns the exit code of the child process. For POSIX compliant platforms: returns the process exit code. If process is terminated or stopped: 128 + termination signal code. For Windows platforms: returns the return value of the process or the exit or terminate process specified value.</xqdoc:return><xqdoc:error>process:PROC01 if an error occurred while communicating with the executed process.</xqdoc:error></xqdoc:comment><xqdoc:name>process:exec</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function process:exec($cmd as xs:string) as element(process:result) external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>cmd</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>element(process:result)</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Executes the specified string command in a separate process.
+ Each of the strings in the sequence passed in as the second
+ argument is passed as an argument to the executed command.
+</xqdoc:description><xqdoc:param>$cmd command to be executed (without arguments)</xqdoc:param><xqdoc:param>$args the arguments passed to the executed command (e.g. "-la")</xqdoc:param><xqdoc:return>the result of the execution as an element as shown in the documentation of this module. The exit-code element returns the exit code of the child process. For POSIX compliant platforms: returns the process exit code. If process is terminated or stopped: 128 + termination signal code. For Windows platforms: returns the return value of the process or the exit or terminate process specified value.</xqdoc:return><xqdoc:error>process:PROC01 if an error occurred while communicating with the executed process.</xqdoc:error></xqdoc:comment><xqdoc:name>process:exec</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function process:exec($cmd as xs:string, $args as xs:string*) as element(process:result) external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>cmd</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>args</xqdoc:name><xqdoc:type occurrence="*">xs:string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>element(process:result)</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

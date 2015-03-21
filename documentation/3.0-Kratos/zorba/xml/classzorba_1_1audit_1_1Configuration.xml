@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1audit_1_1Configuration" kind="class" prot="public">
+    <compoundname>zorba::audit::Configuration</compoundname>
+    <includes refid="audit_8h" local="no">zorba/audit.h</includes>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1a41b3c044f8e1d684d2d7a62674ef4a7d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool zorba::audit::Configuration::enableProperty</definition>
+        <argsstring>(Configuration *, const std::vector&lt; String &gt; &amp;, const String &amp;)</argsstring>
+        <name>enableProperty</name>
+        <param>
+          <type><ref refid="classzorba_1_1audit_1_1Configuration" kindref="compound">Configuration</ref> *</type>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+        </param>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="74"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1aac77ac2d0f5bc3bcf21805580034ffd8" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="classzorba_1_1audit_1_1Property" kindref="compound">Property</ref> &amp;</type>
+        <definition>static const Property&amp; zorba::audit::Configuration::getProperty</definition>
+        <argsstring>(size_t i)</argsstring>
+        <name>getProperty</name>
+        <param>
+          <type>size_t</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="73"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1a2b35e25bac91f534b2c09494a02160be" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>size_t</type>
+        <definition>static size_t zorba::audit::Configuration::getPropertyCount</definition>
+        <argsstring>()</argsstring>
+        <name>getPropertyCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="72"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1a008caf99eda42d0d648a3ce753eb3a65" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void zorba::audit::Configuration::getPropertyNames</definition>
+        <argsstring>(std::vector&lt; String &gt; &amp;)</argsstring>
+        <name>getPropertyNames</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classzorba_1_1String" kindref="compound">String</ref> &gt; &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="71"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1a7ba449c5fddc1be93e8805d424c09edb" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::audit::Configuration::auditEnabled</definition>
+        <argsstring>(size_t i) const =0</argsstring>
+        <name>auditEnabled</name>
+        <param>
+          <type>size_t</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="79"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1a0f4cabb9b815cbfb3371307d9d2ef958" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::audit::Configuration::auditEnabled</definition>
+        <argsstring>(const String &amp;aPropertyName) const =0</argsstring>
+        <name>auditEnabled</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aPropertyName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="80"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1aea8fa2860180a9a16b54542a1b1e510b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::audit::Configuration::enableAudit</definition>
+        <argsstring>(size_t i)=0</argsstring>
+        <name>enableAudit</name>
+        <param>
+          <type>size_t</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1a300d8c9cca9dd9847e40914cc6610524" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::audit::Configuration::enableAudit</definition>
+        <argsstring>(const String &amp;aPropertyName)=0</argsstring>
+        <name>enableAudit</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+          <declname>aPropertyName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="78"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1ad5bd64c1aa20ac93b188984016438895" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>const <ref refid="classzorba_1_1audit_1_1Property" kindref="compound">Property</ref> *</type>
+        <definition>virtual const Property* zorba::audit::Configuration::getDynamicProperty</definition>
+        <argsstring>(const String &amp;) const =0</argsstring>
+        <name>getDynamicProperty</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1String" kindref="compound">String</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="82"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1af54eefa8a3cc2554515bc1b6b7549278" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>size_t</type>
+        <definition>virtual size_t zorba::audit::Configuration::size</definition>
+        <argsstring>() const =0</argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="76"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1a75910395a32242d79712848b6bed315a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>virtual std::ostream&amp; zorba::audit::Configuration::write</definition>
+        <argsstring>(std::ostream &amp;) const =0</argsstring>
+        <name>write</name>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="84"/>
+        <referencedby refid="audit_8h_1aa97fb33cb1ab03ecd2ce0c626164ac40" compoundref="audit_8h" startline="136" endline="138">operator&lt;&lt;</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1audit_1_1Configuration_1aa8e1bc46acad715c48d047982e36b952" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::audit::Configuration::~Configuration</definition>
+        <argsstring>()</argsstring>
+        <name>~Configuration</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="86"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/audit.h" line="69" bodyfile="/home/wcandillon/deadlinks/include/zorba/audit.h" bodystart="69" bodyend="87"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1audit_1_1Configuration_1a7ba449c5fddc1be93e8805d424c09edb" prot="public" virt="pure-virtual"><scope>zorba::audit::Configuration</scope><name>auditEnabled</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1a0f4cabb9b815cbfb3371307d9d2ef958" prot="public" virt="pure-virtual"><scope>zorba::audit::Configuration</scope><name>auditEnabled</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1aea8fa2860180a9a16b54542a1b1e510b" prot="public" virt="pure-virtual"><scope>zorba::audit::Configuration</scope><name>enableAudit</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1a300d8c9cca9dd9847e40914cc6610524" prot="public" virt="pure-virtual"><scope>zorba::audit::Configuration</scope><name>enableAudit</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1a41b3c044f8e1d684d2d7a62674ef4a7d" prot="public" virt="non-virtual"><scope>zorba::audit::Configuration</scope><name>enableProperty</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1ad5bd64c1aa20ac93b188984016438895" prot="public" virt="pure-virtual"><scope>zorba::audit::Configuration</scope><name>getDynamicProperty</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1aac77ac2d0f5bc3bcf21805580034ffd8" prot="public" virt="non-virtual"><scope>zorba::audit::Configuration</scope><name>getProperty</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1a2b35e25bac91f534b2c09494a02160be" prot="public" virt="non-virtual"><scope>zorba::audit::Configuration</scope><name>getPropertyCount</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1a008caf99eda42d0d648a3ce753eb3a65" prot="public" virt="non-virtual"><scope>zorba::audit::Configuration</scope><name>getPropertyNames</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1af54eefa8a3cc2554515bc1b6b7549278" prot="public" virt="pure-virtual"><scope>zorba::audit::Configuration</scope><name>size</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1a75910395a32242d79712848b6bed315a" prot="public" virt="pure-virtual"><scope>zorba::audit::Configuration</scope><name>write</name></member>
+      <member refid="classzorba_1_1audit_1_1Configuration_1aa8e1bc46acad715c48d047982e36b952" prot="public" virt="virtual"><scope>zorba::audit::Configuration</scope><name>~Configuration</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

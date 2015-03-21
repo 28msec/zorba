@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="dir_1b44ce06dd27ae100c1d5f00bb5fdfd4" kind="dir">
+    <compoundname>/home/wcandillon/deadlinks/include/</compoundname>
+    <innerdir refid="dir_e05e2f8323b7114ad61764d674383141">/home/wcandillon/deadlinks/include/zorba/</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/"/>
+  </compounddef>
+</doxygen>

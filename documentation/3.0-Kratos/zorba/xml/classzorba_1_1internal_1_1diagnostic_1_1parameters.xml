@@ -1,0 +1,295 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1diagnostic_1_1parameters" kind="class" prot="public">
+    <compoundname>zorba::internal::diagnostic::parameters</compoundname>
+    <includes refid="internal_2diagnostic_8h" local="no">zorba/internal/diagnostic.h</includes>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a6ea514effb1904e4d277010bdb5666c0" prot="private" static="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>typedef std::vector&lt;std::string&gt; zorba::internal::diagnostic::parameters::params_type</definition>
+        <argsstring></argsstring>
+        <name>params_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="274" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="274" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a56e78dd4dbb59e87e75a3df53924ad53" prot="public" static="no">
+        <type>params_type::size_type</type>
+        <definition>typedef params_type::size_type zorba::internal::diagnostic::parameters::size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="277" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="277" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1ab1d8a9f2eb39d767b0b4c39dd0729b51" prot="public" static="no">
+        <type>params_type::value_type</type>
+        <definition>typedef params_type::value_type zorba::internal::diagnostic::parameters::value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="276" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="276" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a1752c5fa35ac511c2f970961ea7363f4" prot="public" static="yes" mutable="no">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters" kindref="compound">parameters</ref> const</type>
+        <definition>parameters const zorba::internal::diagnostic::parameters::empty</definition>
+        <argsstring></argsstring>
+        <name>empty</name>
+        <briefdescription>
+<para>A empty instance for convenience. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="282" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="282" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a8e948308a445886d9e52290421601239" prot="private" static="no" mutable="no">
+        <type>params_type</type>
+        <definition>params_type zorba::internal::diagnostic::parameters::params_</definition>
+        <argsstring></argsstring>
+        <name>params_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="367" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="367" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a4edb4813fb095a50bed69b0f792f0066" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters" kindref="compound">parameters</ref> &amp;</type>
+        <definition>parameters&amp; zorba::internal::diagnostic::parameters::operator,</definition>
+        <argsstring>(T const &amp;t)</argsstring>
+        <name>operator,</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+<para>Adds the string representation of the given object as the next parameter. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>t</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>*this</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="297" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="297" bodyend="300"/>
+        <references refid="namespacezorba_1_1internal_1_1ztd_1a85da7d6ba8de0c23e2346189a73adc29" compoundref="ztd_8h" startline="358" endline="360">zorba::internal::ztd::to_string</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1acbbdae054f3cc9c683cf7eb12253ed9c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1ab1d8a9f2eb39d767b0b4c39dd0729b51" kindref="member">value_type</ref> const &amp;</type>
+        <definition>value_type const&amp; zorba::internal::diagnostic::parameters::operator[]</definition>
+        <argsstring>(size_type i) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a56e78dd4dbb59e87e75a3df53924ad53" kindref="member">size_type</ref></type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>Gets the i&apos;th parameter value. </para>        </briefdescription>
+        <detaileddescription>
+<para>Parameter numbers start at 1.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>i</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parameter to get. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns said parameter value. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="309" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="309" bodyend="311"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a385172d9093138c799cdddabd1ce97e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::diagnostic::parameters::parameters</definition>
+        <argsstring>()</argsstring>
+        <name>parameters</name>
+        <briefdescription>
+<para>Constructs a parameters object. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="287"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a78656cc4daa06335b448c37f8f0ae416" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::internal::diagnostic::parameters::substitute</definition>
+        <argsstring>(value_type *s) const </argsstring>
+        <name>substitute</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1ab1d8a9f2eb39d767b0b4c39dd0729b51" kindref="member">value_type</ref> *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+<para>Substitutes substrings of the given string. </para>        </briefdescription>
+        <detaileddescription>
+<para>Substitutions are in three forms:</para><para><itemizedlist>
+<listitem><para><computeroutput>$</computeroutput><emphasis>i</emphasis></para></listitem><listitem><para><computeroutput>${</computeroutput>[<emphasis>chars</emphasis>]<emphasis>i</emphasis>[<emphasis>chars</emphasis>]<computeroutput>}</computeroutput></para></listitem><listitem><para><computeroutput>$</computeroutput><emphasis>i</emphasis><computeroutput>?</computeroutput><emphasis>then</emphasis>[<computeroutput>:</computeroutput><emphasis>else</emphasis>]</para></listitem></itemizedlist>
+</para><para>where <emphasis>i</emphasis> is a digit in the range <computeroutput>[1,9]</computeroutput> and refers to the value of the <emphasis>ith</emphasis> parameter, <emphasis>chars</emphasis> may be any characters except <computeroutput>[1-9}]</computeroutput>, and <emphasis>then</emphasis> and <emphasis>else</emphasis> are of one of the two forms:</para><para><itemizedlist>
+<listitem><para><emphasis>j</emphasis></para></listitem><listitem><para><computeroutput>{</computeroutput>[<emphasis>chars j chars k chars ...</emphasis>]<computeroutput>}</computeroutput></para></listitem></itemizedlist>
+</para><para>where <emphasis>j</emphasis> is likewise a digit in the range <computeroutput>[1,9]</computeroutput> and refers to the value of the <emphasis>jth</emphasis> parameter.</para><para>The first substitution form replaces <computeroutput>$</computeroutput><emphasis>i</emphasis> with the value of the <emphasis>ith</emphasis> parameter.</para><para>The second form replaces everything from the <computeroutput>$</computeroutput> to the <computeroutput>}</computeroutput> with the contents of the <computeroutput>{}</computeroutput> where <emphasis>i</emphasis> is replaced with the value of the <emphasis>ith</emphasis> parameter. However, if the value is empty, then everything from the <computeroutput>$</computeroutput> to the <computeroutput>}</computeroutput> is instead erased.</para><para>For example, <computeroutput>${&quot;1&quot;: }</computeroutput> will substitute the value of the 1st parameter quoted followed by a <computeroutput></computeroutput>: and a space if non-empty; if empty, then everything from the <computeroutput>$</computeroutput> to the <computeroutput>}</computeroutput> will instead be erased.</para><para>The third form tests the value of the <computeroutput>ith</computeroutput> parameter: if non-empty, then the <emphasis>then</emphasis> portion is substituted; if empty, then the <emphasis>else</emphasis> portion is. Both the <emphasis>then</emphasis> and <emphasis>else</emphasis> portions can be either a digit in the range [1,9] or <emphasis>chars</emphasis> enclosed by <computeroutput>{}</computeroutput>. The <computeroutput>{}</computeroutput> here can contain multiple parameter indicies. If at least one is non-empty, then the substitution for the portion will be done; if all are empty, then everything for the portion will be erased.</para><para>The <computeroutput>\</computeroutput> character can be used to escape the meaning of the <computeroutput>$</computeroutput>, <computeroutput>[1-9]</computeroutput>, <computeroutput>?</computeroutput>, <computeroutput>:</computeroutput>, and <computeroutput>}</computeroutput> characters and instead treat them as ordinary characters.</para><para>Substitution is performed by making at most 9 passes over the string, one pass per parameter starting at 1. Substitutions may themselves have further substitutions, but, due to the way that substitution is performed, should only refer to parameters having higher digits. (Digits less than or equal to the current one will not be substituted.)</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The string to perform the substitutions on. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="364"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a618ca52e469b135e59369e8ee6039c34" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::internal::diagnostic::parameters::add_param</definition>
+        <argsstring>(value_type const &amp;)</argsstring>
+        <name>add_param</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1ab1d8a9f2eb39d767b0b4c39dd0729b51" kindref="member">value_type</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="369"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a4cc27f84af97b8747ec9c2fe31599d9d" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1ab1d8a9f2eb39d767b0b4c39dd0729b51" kindref="member">value_type</ref></type>
+        <definition>value_type zorba::internal::diagnostic::parameters::lookup_param</definition>
+        <argsstring>(size_type i) const </argsstring>
+        <name>lookup_param</name>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a56e78dd4dbb59e87e75a3df53924ad53" kindref="member">size_type</ref></type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="370"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a1c5f0bff39bb14fc206b2803cc8e54d0" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::internal::diagnostic::parameters::then_else</definition>
+        <argsstring>(bool, value_type const &amp;, value_type::size_type *, value_type *) const </argsstring>
+        <name>then_else</name>
+        <param>
+          <type>bool</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1ab1d8a9f2eb39d767b0b4c39dd0729b51" kindref="member">value_type</ref> const &amp;</type>
+        </param>
+        <param>
+          <type>value_type::size_type *</type>
+        </param>
+        <param>
+          <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1ab1d8a9f2eb39d767b0b4c39dd0729b51" kindref="member">value_type</ref> *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="372"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a72e60a27d9dcaffc76db53be09dd5ead" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a56e78dd4dbb59e87e75a3df53924ad53" kindref="member">size_type</ref></type>
+        <definition>size_type zorba::internal::diagnostic::parameters::to_index</definition>
+        <argsstring>(value_type::value_type) const </argsstring>
+        <name>to_index</name>
+        <param>
+          <type>value_type::value_type</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="373"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="737">
+        <label>zorba::internal::diagnostic::parameters</label>
+        <link refid="classzorba_1_1internal_1_1diagnostic_1_1parameters"/>
+        <childnode refid="737" relation="usage">
+          <edgelabel>empty</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" line="273" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/diagnostic.h" bodystart="273" bodyend="374"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a618ca52e469b135e59369e8ee6039c34" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>add_param</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a1752c5fa35ac511c2f970961ea7363f4" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>empty</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a4cc27f84af97b8747ec9c2fe31599d9d" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>lookup_param</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a4edb4813fb095a50bed69b0f792f0066" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>operator,</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1acbbdae054f3cc9c683cf7eb12253ed9c" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>operator[]</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a385172d9093138c799cdddabd1ce97e9" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>parameters</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a8e948308a445886d9e52290421601239" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>params_</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a6ea514effb1904e4d277010bdb5666c0" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>params_type</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a56e78dd4dbb59e87e75a3df53924ad53" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>size_type</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a78656cc4daa06335b448c37f8f0ae416" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>substitute</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a1c5f0bff39bb14fc206b2803cc8e54d0" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>then_else</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1a72e60a27d9dcaffc76db53be09dd5ead" prot="private" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>to_index</name></member>
+      <member refid="classzorba_1_1internal_1_1diagnostic_1_1parameters_1ab1d8a9f2eb39d767b0b4c39dd0729b51" prot="public" virt="non-virtual"><scope>zorba::internal::diagnostic::parameters</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

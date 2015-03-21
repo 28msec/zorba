@@ -1,0 +1,90 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://zorba.io/modules/process</xqdoc:uri><xqdoc:name>process</xqdoc:name><xqdoc:comment><xqdoc:description> <p>
+ This module provides functions to create a native process and return the result
+ (i.e. exit code, result on standard out and error) of executing the given
+ file or command.
+ </p>
+ <p>
+ Example:
+ <pre>
+   import module namespace p = "http://zorba.io/modules/process";
+   p:exec("ls")
+ </pre>
+ </p>
+ <p>
+ Potential result:
+ <pre>
+ {
+   "exit-code": 0,
+   "stdout": "myfile.txt",
+   "stderr": ""
+ }
+ </pre>
+ </p>
+ <p>
+ The <tt>exec-command</tt> set of functions allows execution of commands
+ through the command line interpreter of the operating system, such as "sh"
+ on Unix systems or "cmd.exe" on Windows.
+ </p>
+ <p>
+ For POSIX compliant platforms the functions return 128 + termination signal
+ code of the process as their exit-code.
+ On Windows platforms, the exit-code is the return value of the process or the exit
+ or terminate process specified value.
+ </p>
+</xqdoc:description><xqdoc:author>Cezar Andrei, Nicolae Brinza</xqdoc:author><xqdoc:custom tag="project">Zorba/Input Output/Process</xqdoc:custom><xqdoc:custom tag="language">jsoniq</xqdoc:custom><xqdoc:custom tag="version">1.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="an" uri="http://zorba.io/annotations" isSchema="false"/><xqdoc:namespace prefix="p" uri="http://zorba.io/modules/process" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports/><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>
+ Executes the specified program in a separate process.
+ </p>
+ <p>
+ This function does not allow arguments to be passed to
+ the command. The $filename parameter can contain the full path to the
+ executable. On Unix systems,  if the specified filename does not contain
+ a slash "/", the function duplicates the actions of the shell in searching
+ for an executable file. The file is sought in the colon-separated list of
+ directory pathnames specified in the PATH environment variable. If this
+ variable isn't defined, the path list defaults to the current directory
+ followed by the list of directories returned by the operating system.
+ </p>
+</xqdoc:description><xqdoc:param>$filename the name of program to be executed</xqdoc:param><xqdoc:return>the result of the execution as an object</xqdoc:return><xqdoc:error>p:COMMUNICATION if an error occurred while communicating with the process.</xqdoc:error></xqdoc:comment><xqdoc:name>p:exec</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function p:exec($filename as string) as object() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>filename</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> <p>
+ Executes the specified program in a separate process.
+ </p>
+ <p>
+ The $filename parameter can contain the full path to the
+ executable. On Unix systems,  if the specified filename does not contain
+ a slash "/", the function duplicates the actions of the shell in searching
+ for an executable file. The file is sought in the colon-separated list of
+ directory pathnames specified in the PATH environment variable. If this
+ variable isn't defined, the path list defaults to the current directory
+ followed by the list of directories returned by the operating system.
+ The $args parameters will be passed to the executable file as arguments.
+ </p>
+</xqdoc:description><xqdoc:param>$filename the name of program to be executed</xqdoc:param><xqdoc:param>$args arguments to be passed to the executable</xqdoc:param><xqdoc:return>the result of the execution as an object</xqdoc:return><xqdoc:error>p:COMMUNICATION if an error occurred while communicating with the process.</xqdoc:error></xqdoc:comment><xqdoc:name>p:exec</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function p:exec($filename as string, $args as string*) as object() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>filename</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>args</xqdoc:name><xqdoc:type occurrence="*">string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="3"><xqdoc:comment><xqdoc:description> <p>
+ Executes the specified program in a separate process.
+ </p>
+ <p>
+ The $filename parameter can contain the full path to the
+ executable. On Unix systems,  if the specified filename does not contain
+ a slash "/", the function duplicates the actions of the shell in searching
+ for an executable file. The file is sought in the colon-separated list of
+ directory pathnames specified in the PATH environment variable. If this
+ variable isn't defined, the path list defaults to the current directory
+ followed by the list of directories returned by the operating system.
+ </p>
+ <p>
+ The $env allows defining and passing environment variables to the target
+ process. They should be in the form "ENVVAR=value" where "ENVVAR" is the
+ name of the environment variable and "value' is the string value to set it to.
+ </p>
+</xqdoc:description><xqdoc:param>$filename the name of program to be executed</xqdoc:param><xqdoc:param>$args arguments to be passed to the executable</xqdoc:param><xqdoc:param>$env list of environment variables for the executable</xqdoc:param><xqdoc:return>the result of the execution as an object</xqdoc:return><xqdoc:error>p:COMMUNICATION if an error occurred while communicating with the process.</xqdoc:error></xqdoc:comment><xqdoc:name>p:exec</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function p:exec($filename as string, $args as string*, $env as string*) as object() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>filename</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>args</xqdoc:name><xqdoc:type occurrence="*">string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>env</xqdoc:name><xqdoc:type occurrence="*">string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> <p>
+ Executes the specified string command in a separate process.
+ </p>
+ <p>
+ This function does not allow arguments to be passed to the command.
+ </p>
+</xqdoc:description><xqdoc:param>$cmd command to be executed (without arguments)</xqdoc:param><xqdoc:return>the result of the execution as an object</xqdoc:return><xqdoc:error>p:COMMUNICATION if an error occurred while communicating with the process.</xqdoc:error></xqdoc:comment><xqdoc:name>p:exec-command</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function p:exec-command($cmd as string) as object() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>cmd</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> <p>
+ Executes the specified string command in a separate process.
+ </p>
+ <p>
+ Each of the strings in the sequence passed in as the second
+ argument is passed as an argument to the executed command.
+ </p>
+</xqdoc:description><xqdoc:param>$cmd command to be executed (without arguments)</xqdoc:param><xqdoc:param>$args the arguments passed to the executed command (e.g. "-la")</xqdoc:param><xqdoc:return>the result of the execution as an object</xqdoc:return><xqdoc:error>p:COMMUNICATION if an error occurred while communicating with the process.</xqdoc:error></xqdoc:comment><xqdoc:name>p:exec-command</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="an" namespace="http://zorba.io/annotations" localname="sequential" value=""/></xqdoc:annotations><xqdoc:signature>declare %an:sequential function p:exec-command($cmd as string, $args as string*) as object() external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>cmd</xqdoc:name><xqdoc:type>string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>args</xqdoc:name><xqdoc:type occurrence="*">string</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>object()</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

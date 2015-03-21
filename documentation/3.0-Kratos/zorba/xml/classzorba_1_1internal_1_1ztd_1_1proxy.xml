@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1internal_1_1ztd_1_1proxy" kind="class" prot="public">
+    <compoundname>zorba::internal::ztd::proxy</compoundname>
+    <includes refid="proxy_8h" local="no">zorba/internal/proxy.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class OriginalType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1internal_1_1ztd_1_1proxy_1ac1b29ddba54c59a33567d72f6fa45574" prot="private" static="no" mutable="no">
+        <type>OriginalType *</type>
+        <definition>OriginalType* zorba::internal::ztd::proxy&lt; OriginalType &gt;::original_</definition>
+        <argsstring></argsstring>
+        <name>original_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/proxy.h" line="41" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/proxy.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1internal_1_1ztd_1_1proxy_1ae666d5ceb878ed852e79a5f480fa51ec" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>OriginalType *</type>
+        <definition>OriginalType* zorba::internal::ztd::proxy&lt; OriginalType &gt;::original</definition>
+        <argsstring>() const </argsstring>
+        <name>original</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/proxy.h" line="37" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/proxy.h" bodystart="37" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1internal_1_1ztd_1_1proxy_1a2467c7a27a2ec8507fcb5431fb0d046e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::internal::ztd::proxy&lt; OriginalType &gt;::proxy</definition>
+        <argsstring>(OriginalType *p)</argsstring>
+        <name>proxy</name>
+        <param>
+          <type>OriginalType *</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/internal/proxy.h" line="35" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/proxy.h" bodystart="35" bodyend="35"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/internal/proxy.h" line="33" bodyfile="/home/wcandillon/deadlinks/include/zorba/internal/proxy.h" bodystart="33" bodyend="42"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1proxy_1ae666d5ceb878ed852e79a5f480fa51ec" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::proxy</scope><name>original</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1proxy_1ac1b29ddba54c59a33567d72f6fa45574" prot="private" virt="non-virtual"><scope>zorba::internal::ztd::proxy</scope><name>original_</name></member>
+      <member refid="classzorba_1_1internal_1_1ztd_1_1proxy_1a2467c7a27a2ec8507fcb5431fb0d046e" prot="public" virt="non-virtual"><scope>zorba::internal::ztd::proxy</scope><name>proxy</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

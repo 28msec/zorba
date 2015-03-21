@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="diagnostic__handler_8h" kind="file">
+    <compoundname>diagnostic_handler.h</compoundname>
+    <includes local="no">zorba/config.h</includes>
+    <includes refid="xquery__warning_8h" local="no">zorba/xquery_warning.h</includes>
+    <includedby refid="zorba_8h" local="no">zorba.h</includedby>
+    <incdepgraph>
+      <node id="1659">
+        <label>zorba/xquery_stack_trace.h</label>
+        <link refid="xquery__stack__trace_8h"/>
+        <childnode refid="1652" relation="include">
+        </childnode>
+        <childnode refid="1660" relation="include">
+        </childnode>
+        <childnode refid="1656" relation="include">
+        </childnode>
+      </node>
+      <node id="1650">
+        <label>functional</label>
+      </node>
+      <node id="1653">
+        <label>cxx_util.h</label>
+        <link refid="cxx__util_8h"/>
+        <childnode refid="1642" relation="include">
+        </childnode>
+      </node>
+      <node id="1644">
+        <label>zorba/diagnostic.h</label>
+        <link refid="diagnostic_8h"/>
+        <childnode refid="1645" relation="include">
+        </childnode>
+        <childnode refid="1646" relation="include">
+        </childnode>
+        <childnode refid="1642" relation="include">
+        </childnode>
+        <childnode refid="1647" relation="include">
+        </childnode>
+        <childnode refid="1656" relation="include">
+        </childnode>
+      </node>
+      <node id="1643">
+        <label>zorba/xquery_warning.h</label>
+        <link refid="xquery__warning_8h"/>
+        <childnode refid="1644" relation="include">
+        </childnode>
+        <childnode refid="1658" relation="include">
+        </childnode>
+      </node>
+      <node id="1656">
+        <label>zorba/internal/qname.h</label>
+        <link refid="qname_8h"/>
+        <childnode refid="1642" relation="include">
+        </childnode>
+        <childnode refid="1644" relation="include">
+        </childnode>
+        <childnode refid="1649" relation="include">
+        </childnode>
+        <childnode refid="1657" relation="include">
+        </childnode>
+      </node>
+      <node id="1652">
+        <label>string</label>
+      </node>
+      <node id="1648">
+        <label>map</label>
+      </node>
+      <node id="1661">
+        <label>zorba/zorba_exception.h</label>
+        <link refid="zorba__exception_8h"/>
+        <childnode refid="1646" relation="include">
+        </childnode>
+        <childnode refid="1662" relation="include">
+        </childnode>
+        <childnode refid="1652" relation="include">
+        </childnode>
+        <childnode refid="1642" relation="include">
+        </childnode>
+        <childnode refid="1663" relation="include">
+        </childnode>
+        <childnode refid="1665" relation="include">
+        </childnode>
+      </node>
+      <node id="1665">
+        <label>zorba/error.h</label>
+        <link refid="error_8h"/>
+        <childnode refid="1666" relation="include">
+        </childnode>
+        <childnode refid="1656" relation="include">
+        </childnode>
+      </node>
+      <node id="1662">
+        <label>exception</label>
+      </node>
+      <node id="1654">
+        <label>type_traits.h</label>
+        <link refid="type__traits_8h"/>
+        <childnode refid="1642" relation="include">
+        </childnode>
+        <childnode refid="1655" relation="include">
+        </childnode>
+      </node>
+      <node id="1666">
+        <label>zorba/internal/diagnostic.h</label>
+        <link refid="internal_2diagnostic_8h"/>
+        <childnode refid="1652" relation="include">
+        </childnode>
+        <childnode refid="1660" relation="include">
+        </childnode>
+        <childnode refid="1644" relation="include">
+        </childnode>
+        <childnode refid="1649" relation="include">
+        </childnode>
+      </node>
+      <node id="1657">
+        <label>zorba/internal/qnames.h</label>
+      </node>
+      <node id="1660">
+        <label>vector</label>
+      </node>
+      <node id="1647">
+        <label>zorba/internal/system_diagnostic.h</label>
+        <link refid="system__diagnostic_8h"/>
+        <childnode refid="1648" relation="include">
+        </childnode>
+        <childnode refid="1644" relation="include">
+        </childnode>
+        <childnode refid="1649" relation="include">
+        </childnode>
+      </node>
+      <node id="1651">
+        <label>sstream</label>
+      </node>
+      <node id="1658">
+        <label>zorba/xquery_exception.h</label>
+        <link refid="xquery__exception_8h"/>
+        <childnode refid="1659" relation="include">
+        </childnode>
+        <childnode refid="1661" relation="include">
+        </childnode>
+      </node>
+      <node id="1641">
+        <label>diagnostic_handler.h</label>
+        <link refid="diagnostic_handler.h"/>
+        <childnode refid="1642" relation="include">
+        </childnode>
+        <childnode refid="1643" relation="include">
+        </childnode>
+      </node>
+      <node id="1646">
+        <label>iostream</label>
+      </node>
+      <node id="1663">
+        <label>zorba/internal/unique_ptr.h</label>
+        <link refid="unique__ptr_8h"/>
+        <childnode refid="1642" relation="include">
+        </childnode>
+        <childnode refid="1664" relation="include">
+        </childnode>
+        <childnode refid="1653" relation="include">
+        </childnode>
+        <childnode refid="1654" relation="include">
+        </childnode>
+        <childnode refid="1649" relation="include">
+        </childnode>
+      </node>
+      <node id="1649">
+        <label>ztd.h</label>
+        <link refid="ztd_8h"/>
+        <childnode refid="1645" relation="include">
+        </childnode>
+        <childnode refid="1650" relation="include">
+        </childnode>
+        <childnode refid="1651" relation="include">
+        </childnode>
+        <childnode refid="1652" relation="include">
+        </childnode>
+        <childnode refid="1642" relation="include">
+        </childnode>
+        <childnode refid="1653" relation="include">
+        </childnode>
+        <childnode refid="1654" relation="include">
+        </childnode>
+      </node>
+      <node id="1655">
+        <label>type_traits</label>
+      </node>
+      <node id="1642">
+        <label>zorba/config.h</label>
+      </node>
+      <node id="1664">
+        <label>algorithm</label>
+      </node>
+      <node id="1645">
+        <label>cstring</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1668">
+        <label>zorba.h</label>
+        <link refid="zorba_8h"/>
+        <childnode refid="1669" relation="include">
+        </childnode>
+      </node>
+      <node id="1667">
+        <label>diagnostic_handler.h</label>
+        <link refid="diagnostic_handler.h"/>
+        <childnode refid="1668" relation="include">
+        </childnode>
+      </node>
+      <node id="1669">
+        <label>static_context.h</label>
+        <link refid="static__context_8h"/>
+        <childnode refid="1668" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classzorba_1_1DiagnosticHandler" prot="public">zorba::DiagnosticHandler</innerclass>
+    <innernamespace refid="namespacezorba">zorba</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2006-2008<sp/>The<sp/>FLWOR<sp/>Foundation.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>ZORBA_DIAGNOSTIC_HANDLER_API_H</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ZORBA_DIAGNOSTIC_HANDLER_API_H</highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;zorba/config.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="xquery__warning_8h" kindref="compound">zorba/xquery_warning.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">zorba<sp/>{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="26"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/>*<sp/>When<sp/>registered<sp/>with<sp/>an<sp/>XQuery<sp/>object,<sp/>a<sp/>%DiagnosticHandler<sp/>handles<sp/>all</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/>*<sp/>exceptions<sp/>and<sp/>warnings<sp/>that<sp/>otherwise<sp/>would<sp/>have<sp/>been<sp/>thrown<sp/>or<sp/>reported.</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30" refid="classzorba_1_1DiagnosticHandler" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ZORBA_DLL_PUBLIC<sp/><ref refid="classzorba_1_1DiagnosticHandler" kindref="compound" tooltip="When registered with an XQuery object, a DiagnosticHandler handles all exceptions and warnings that o...">DiagnosticHandler</ref><sp/>{</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>~<ref refid="classzorba_1_1DiagnosticHandler" kindref="compound" tooltip="When registered with an XQuery object, a DiagnosticHandler handles all exceptions and warnings that o...">DiagnosticHandler</ref>();</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/><sp/>*<sp/>This<sp/>function<sp/>is<sp/>called<sp/>for<sp/>all<sp/>exceptions.</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>exception<sp/>The<sp/>exception.</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>error(<sp/><ref refid="classzorba_1_1ZorbaException" kindref="compound" tooltip="A ZorbaException is the base class for all Zorba exceptions.">ZorbaException</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<ref refid="namespacezorba_1_1fs_1aa8105bb284bd6467038629d03be1f466" kindref="member">exception</ref><sp/>);</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/>*<sp/>This<sp/>function<sp/>is<sp/>called<sp/>for<sp/>all<sp/>warnings.</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/><sp/><sp/>*<sp/>@param<sp/>warning<sp/>The<sp/>warning.</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>warning(<sp/><ref refid="classzorba_1_1XQueryException" kindref="compound" tooltip="An XQueryException is-a ZorbaException for errors with the user&amp;#39;s XQuery.">XQueryWarning</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;warning<sp/>);</highlight></codeline>
+<codeline lineno="47"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>zorba</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ZORBA_DIAGNOSTIC_HANDLER_API_H<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>vim:set<sp/>et<sp/>sw=2<sp/>ts=2:<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/include/zorba/diagnostic_handler.h"/>
+  </compounddef>
+</doxygen>

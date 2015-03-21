@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1hexbinary_1_1auto__attach" kind="class" prot="public">
+    <compoundname>zorba::hexbinary::auto_attach</compoundname>
+    <includes refid="hexbinary__stream_8h" local="no">zorba/util/hexbinary_stream.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class StreamType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1hexbinary_1_1auto__attach_1a34ca111fe00ce58ceb5aecbef92ce043" prot="private" static="no" mutable="no">
+        <type>StreamType *</type>
+        <definition>StreamType* zorba::hexbinary::auto_attach&lt; StreamType &gt;::stream_</definition>
+        <argsstring></argsstring>
+        <name>stream_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="277" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="277" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1auto__attach_1a7a4def038890a7dd5be97f00ed3bc401" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::hexbinary::auto_attach&lt; StreamType &gt;::attach</definition>
+        <argsstring>(StreamType &amp;stream)</argsstring>
+        <name>attach</name>
+        <param>
+          <type>StreamType &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <briefdescription>
+<para>Calls <ref refid="namespacezorba_1_1hexbinary_1a313b9172bcd9513faa146f4940070907" kindref="member">hexbinary::attach()</ref> on the given stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to attach the <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> to. If the stream already has a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> attached to it, this contructor does nothing. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> only if a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> was attached. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="258" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="258" bodyend="264"/>
+        <references refid="namespacezorba_1_1hexbinary_1a313b9172bcd9513faa146f4940070907" compoundref="hexbinary__stream_8h" startline="139" endline="151">zorba::hexbinary::attach</references>
+        <referencedby refid="classzorba_1_1hexbinary_1_1auto__attach_1aa5dd2c901911410550403bbc362701d8" compoundref="hexbinary__stream_8h" startline="215" endline="217">zorba::hexbinary::auto_attach&lt; StreamType &gt;::auto_attach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1auto__attach_1af56210edbc9708f9f37b272ae745dc41" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::hexbinary::auto_attach&lt; StreamType &gt;::auto_attach</definition>
+        <argsstring>()</argsstring>
+        <name>auto_attach</name>
+        <briefdescription>
+<para>Default constructor; does nothing. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="205" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="205" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1auto__attach_1aa5dd2c901911410550403bbc362701d8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::hexbinary::auto_attach&lt; StreamType &gt;::auto_attach</definition>
+        <argsstring>(StreamType &amp;stream)</argsstring>
+        <name>auto_attach</name>
+        <param>
+          <type>StreamType &amp;</type>
+          <declname>stream</declname>
+        </param>
+        <briefdescription>
+<para>Constructs an auto_attach object calling <ref refid="classzorba_1_1hexbinary_1_1auto__attach_1a7a4def038890a7dd5be97f00ed3bc401" kindref="member">attach()</ref> on the given stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The stream to attach the <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> to. If the stream already has a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> attached to it, this contructor does nothing. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="215" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="215" bodyend="217"/>
+        <references refid="classzorba_1_1hexbinary_1_1auto__attach_1a7a4def038890a7dd5be97f00ed3bc401" compoundref="hexbinary__stream_8h" startline="258" endline="264">zorba::hexbinary::auto_attach&lt; StreamType &gt;::attach</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1auto__attach_1ac4687cd75b864a530905fc8fc891d5ec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::hexbinary::auto_attach&lt; StreamType &gt;::auto_attach</definition>
+        <argsstring>(auto_attach &amp;from)</argsstring>
+        <name>auto_attach</name>
+        <param>
+          <type><ref refid="classzorba_1_1hexbinary_1_1auto__attach" kindref="compound">auto_attach</ref> &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Copy constructor that takes ownership of the stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The auto_attach to take ownership from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="224" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="224" bodyend="226"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1auto__attach_1a4c7062232fe9ec805db0889ab691f9bc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::hexbinary::auto_attach&lt; StreamType &gt;::detach</definition>
+        <argsstring>()</argsstring>
+        <name>detach</name>
+        <briefdescription>
+<para>Calls <ref refid="namespacezorba_1_1hexbinary_1a533baa97c59c0f231e7821db9f6fb40f" kindref="member">hexbinary::detach()</ref>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="269" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="269" bodyend="274"/>
+        <referencedby refid="classzorba_1_1hexbinary_1_1auto__attach_1a06ff3713374f72827e3b81cfb82bfca3" compoundref="hexbinary__stream_8h" startline="232" endline="234">zorba::hexbinary::auto_attach&lt; StreamType &gt;::~auto_attach</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1auto__attach_1a366dfef42ac17d31c772164150359e2c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1hexbinary_1_1auto__attach" kindref="compound">auto_attach</ref> &amp;</type>
+        <definition>auto_attach&amp; zorba::hexbinary::auto_attach&lt; StreamType &gt;::operator=</definition>
+        <argsstring>(auto_attach &amp;from)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1hexbinary_1_1auto__attach" kindref="compound">auto_attach</ref> &amp;</type>
+          <declname>from</declname>
+        </param>
+        <briefdescription>
+<para>Assignment operator that takes ownership of the stream. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The auto_attach to take ownership from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>*this</computeroutput>. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="242" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="242" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1hexbinary_1_1auto__attach_1a06ff3713374f72827e3b81cfb82bfca3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::hexbinary::auto_attach&lt; StreamType &gt;::~auto_attach</definition>
+        <argsstring>()</argsstring>
+        <name>~auto_attach</name>
+        <briefdescription>
+<para>Destroys this auto_attach object calling <ref refid="classzorba_1_1hexbinary_1_1auto__attach_1a4c7062232fe9ec805db0889ab691f9bc" kindref="member">detach()</ref> on the previously attached stream. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="232" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="232" bodyend="234"/>
+        <references refid="classzorba_1_1hexbinary_1_1auto__attach_1a4c7062232fe9ec805db0889ab691f9bc" compoundref="hexbinary__stream_8h" startline="269" endline="274">zorba::hexbinary::auto_attach&lt; StreamType &gt;::detach</references>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A hexbinary::auto_attach is a class that attaches a <ref refid="classzorba_1_1hexbinary_1_1streambuf" kindref="compound">hexbinary::streambuf</ref> to a stream and automatically detaches it when the auto_attach object is destroyed. </para>    </briefdescription>
+    <detaileddescription>
+<para><programlisting><codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f(<sp/>ostream<sp/>&amp;<ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781abd9d340f17925d6dcfdf23e0ff40ddf1" kindref="member" tooltip="Ossetian; Ossetic.">os</ref><sp/>)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>hexbinary::auto_attach&lt;ostream&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>raii(<sp/>os<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+</programlisting> A hexbinary::auto_attach is useful for streams not created by you.</para><para><simplesect kind="see"><para><ulink url="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization">http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization</ulink> </para></simplesect>
+</para>    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" line="200" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/hexbinary_stream.h" bodystart="200" bodyend="278"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1hexbinary_1_1auto__attach_1a7a4def038890a7dd5be97f00ed3bc401" prot="public" virt="non-virtual"><scope>zorba::hexbinary::auto_attach</scope><name>attach</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1auto__attach_1af56210edbc9708f9f37b272ae745dc41" prot="public" virt="non-virtual"><scope>zorba::hexbinary::auto_attach</scope><name>auto_attach</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1auto__attach_1aa5dd2c901911410550403bbc362701d8" prot="public" virt="non-virtual"><scope>zorba::hexbinary::auto_attach</scope><name>auto_attach</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1auto__attach_1ac4687cd75b864a530905fc8fc891d5ec" prot="public" virt="non-virtual"><scope>zorba::hexbinary::auto_attach</scope><name>auto_attach</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1auto__attach_1a4c7062232fe9ec805db0889ab691f9bc" prot="public" virt="non-virtual"><scope>zorba::hexbinary::auto_attach</scope><name>detach</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1auto__attach_1a366dfef42ac17d31c772164150359e2c" prot="public" virt="non-virtual"><scope>zorba::hexbinary::auto_attach</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1auto__attach_1a34ca111fe00ce58ceb5aecbef92ce043" prot="private" virt="non-virtual"><scope>zorba::hexbinary::auto_attach</scope><name>stream_</name></member>
+      <member refid="classzorba_1_1hexbinary_1_1auto__attach_1a06ff3713374f72827e3b81cfb82bfca3" prot="public" virt="non-virtual"><scope>zorba::hexbinary::auto_attach</scope><name>~auto_attach</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

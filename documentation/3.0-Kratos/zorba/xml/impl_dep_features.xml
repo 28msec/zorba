@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="impl_dep_features" kind="page">
+    <compoundname>impl_dep_features</compoundname>
+    <title>Dependencies</title>
+    <detaileddescription>
+<para><table rows="5" cols="2"><row>
+<entry thead="no"><para>Vendor:  </para></entry><entry thead="no"><para>FLWOR Foundation   </para></entry></row>
+<row>
+<entry thead="no"><para>Product:  </para></entry><entry thead="no"><para>Zorba   </para></entry></row>
+<row>
+<entry thead="no"><para>Version: </para></entry><entry thead="no"><para>${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}  </para></entry></row>
+<row>
+<entry thead="no"><para>Released: </para></entry><entry thead="no"><para>true  </para></entry></row>
+<row>
+<entry thead="no"><para><bold>Dependencies</bold> </para></entry><entry thead="no"><para><table rows="55" cols="5"><row>
+<entry thead="no"><para>name: default-language </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: en </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: higherOrderFunctions </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: moduleImport </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: schemaAware </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: schemaImport </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: schemaValidation </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: infoset-dtd </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: format-integer-sequence </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: ١ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: format-integer-sequence </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: ① </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: format-integer-sequence </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: ⑴ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: format-integer-sequence </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: ⒈ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: language </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: en </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: limits </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: year_lt_0 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XP30+ XQ10+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XQ10+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XQ10+ XP20+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XQ10+ XP30+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XP30+ XQ30+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XQ30 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XQ30 XP30 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XQ30+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XQ30+ XP30+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: unicode-normalization-form </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: FULLY-NORMALIZED </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: unicode-normalization-form </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: NFD </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: unicode-normalization-form </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: NFKC </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: unicode-normalization-form </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: NFKD </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: xml-version </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: 1.0 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: xml-version </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: 1.0:4- </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: xsd-version </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: 1.1 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: true  </para></entry></row>
+<row>
+<entry thead="no"><para>name: calendar </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: CB </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: collection-stability </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: directory-as-collection-uri </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: namespace-axis </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: schema-location-hint </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: staticTyping </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: xpath-1.0-compatibility </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: feature </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: serialization </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: format-integer-sequence </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: Α </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: format-integer-sequence </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: α </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: format-integer-sequence </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: 一 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: format-integer-sequence </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: ﯴ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: language </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: de </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: language </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: xib </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XP10+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XP20 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XP20+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XP30+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XP10 XQ10 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XP20 XQ10 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XQ10 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XQ10 XP20 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: spec </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: XT30+ </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: xml-version </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: 1.0:5+ 1.1 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: xml-version </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: 1.1 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+<row>
+<entry thead="no"><para>name: xsd-version </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>value: 1.0 </para></entry><entry thead="no"><para><nonbreakablespace/> </para></entry><entry thead="no"><para>satisfied: false  </para></entry></row>
+</table>
+</para></entry></row>
+</table>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

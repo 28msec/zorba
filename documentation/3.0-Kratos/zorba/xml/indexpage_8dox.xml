@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="indexpage_8dox" kind="file">
+    <compoundname>indexpage.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*!<sp/>\mainpage<sp/>Zorba<sp/>3.0.0<sp/>Documentation</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">\section<sp/>xml_json<sp/>XQuery<sp/>&amp;<sp/>JSONiq<sp/>(XML<sp/>&amp;<sp/>JSON)</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>two_syntaxes</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>share</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>two_faces</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>contentious_points</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>xquery_syntax</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>jsoniq_syntax</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>how_to_specify</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>interlanguage</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>legacy_jsoniq</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"></highlight></codeline>
+<codeline lineno="14"><highlight class="comment">\section<sp/>build_section<sp/>Building<sp/>Zorba</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>build</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"></highlight></codeline>
+<codeline lineno="17"><highlight class="comment">\section<sp/>install_section<sp/>Install</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>install_osx_tutorial</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>php_ubuntu_tutorial</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>php_windows_tutorial</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>python_windows_tutorial</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"></highlight></codeline>
+<codeline lineno="23"><highlight class="comment">\section<sp/>tools<sp/>Tools</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>commandline</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;https://docs.c9.io/supported_languages.html&quot;<sp/>target=&quot;_blank&quot;&gt;XQuery<sp/>+<sp/>JSONiq<sp/>in<sp/>Cloud9&lt;/a&gt;</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://xqdt.org&quot;<sp/>target=&quot;_blank&quot;&gt;XQuery<sp/>Development<sp/>Toolkit<sp/>(XQDT)&lt;/a&gt;</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"></highlight></codeline>
+<codeline lineno="28"><highlight class="comment">\section<sp/>apis<sp/>APIs</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;../cxx/indexpage.html&quot;&gt;C++&lt;/a&gt;</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;../c/indexpage.html&quot;&gt;C&lt;/a&gt;</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;../xqj/indexpage.html&quot;&gt;XQJ&lt;/a&gt;</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;../java/indexpage.html&quot;&gt;Java&lt;/a&gt;</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;../php/indexpage.html&quot;&gt;PHP&lt;/a&gt;</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;../python/indexpage.html&quot;&gt;Python&lt;/a&gt;</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;../csharp/indexpage.html&quot;&gt;C#&lt;/a&gt;</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;../ruby/indexpage.html&quot;&gt;Ruby&lt;/a&gt;</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"></highlight></codeline>
+<codeline lineno="38"><highlight class="comment">\section<sp/>generalarchitecture<sp/>General<sp/>Architecture</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>data_lifecycle</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>dlexamples</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>dlzorbastore</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>schema_lifecycle</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>uriresolvers</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>data_converters</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>ft_intro</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>errors_warnings</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>impl_dep_features</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>memory_management</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>memory_leaks</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"></highlight></codeline>
+<codeline lineno="51"><highlight class="comment">\section<sp/>xqlib<sp/>Modules</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/>-<sp/>&lt;a<sp/>href=&quot;../modules/index.html&quot;&gt;Module<sp/>Library&lt;/a&gt;</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/>-<sp/>\ref<sp/>modules_top</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/>-<sp/>\ref<sp/>mod_importing</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/>-<sp/>\ref<sp/>mod_versioning</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/>-<sp/>\ref<sp/>modules_authoring</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/>-<sp/>\ref<sp/>modules_authoring_2</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/>-<sp/>\ref<sp/>modules_building_in</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/>-<sp/>\ref<sp/>external_functions</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"></highlight></codeline>
+<codeline lineno="61"><highlight class="comment">\section<sp/>w3cspecs<sp/>W3C<sp/>Specifications</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>overview</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery/&quot;&gt;W3C<sp/>XQuery<sp/>1.0&lt;/a&gt;<sp/><sp/>(\ref<sp/>conformance_XQ10)</highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-functions-30/&quot;&gt;W3C<sp/>XPath<sp/>and<sp/>XQuery<sp/>Functions<sp/>and<sp/>Operators&lt;/a&gt;<sp/>(&lt;a<sp/>href=&quot;../xqdoc/xhtml/function_index.html&quot;&gt;List<sp/>of<sp/>Supported<sp/>Functions&lt;/a&gt;)</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery-update-10/&quot;&gt;W3C<sp/>XQuery<sp/>Update<sp/>Facility<sp/>1.0&lt;/a&gt;<sp/><sp/>(\ref<sp/>conformanceXQUTS)</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xpath-full-text-10/&quot;&gt;W3C<sp/>XQuery<sp/>and<sp/>XPath<sp/>Full<sp/>Text<sp/>1.0&lt;/a&gt;<sp/><sp/>(\ref<sp/>conformanceXQFTTS)</highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xquery-30/&quot;&gt;W3C<sp/>XQuery<sp/>3.0&lt;/a&gt;<sp/><sp/>(\ref<sp/>conformance_XQ30)</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/XML/Schema&quot;&gt;W3C<sp/>XML<sp/>Schema&lt;/a&gt;</highlight></codeline>
+<codeline lineno="69"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xslt&quot;&gt;W3C<sp/>XSL<sp/>Transformations<sp/>(XSLT)<sp/>1.0&lt;/a&gt;</highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xqueryx/&quot;&gt;W3C<sp/>XML<sp/>Syntax<sp/>for<sp/>XQuery<sp/>1.0<sp/>(XQueryX)&lt;/a&gt;</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://www.w3.org/TR/xslt-xquery-serialization/&quot;&gt;W3C<sp/>XSLT<sp/>2.0<sp/>and<sp/>XQuery<sp/>1.0<sp/>Serialization&lt;/a&gt;</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"></highlight></codeline>
+<codeline lineno="73"><highlight class="comment">\section<sp/>jsoniqspec<sp/>JSONiq<sp/>Specifications</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://jsoniq.org/docs/JSONiq/html-single/index.html&quot;&gt;JSONiq<sp/>1.0&lt;/a&gt;</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/><sp/>-<sp/>\ref<sp/>XQuery_for_JSON</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/><sp/>-<sp/>\ref<sp/>JSON_for_XQuery</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://jsoniq.org/docs/JSONiqExtensionToXQuery/html-single/index.html&quot;&gt;JSONiq<sp/>Extension<sp/>to<sp/>XQuery&lt;/a&gt;</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/>-<sp/>&lt;a<sp/>href=&quot;http://www.jsoniq.org/docs/JSOund/html-single/&quot;&gt;JSound<sp/>0.1&lt;/a&gt;<sp/>(A<sp/>JSON<sp/>schema<sp/>language)</highlight></codeline>
+<codeline lineno="79"><highlight class="comment"></highlight></codeline>
+<codeline lineno="80"><highlight class="comment">\section<sp/>zorbaspec<sp/>Zorba<sp/>Proprietary<sp/>Specifications</highlight></codeline>
+<codeline lineno="81"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>xqddf</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>scripting_spec<sp/>(also<sp/>see<sp/>our<sp/>\ref<sp/>scripting_tutorial<sp/>&quot;Tutorial&quot;)</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>options_and_annotations</highlight></codeline>
+<codeline lineno="84"><highlight class="comment"></highlight></codeline>
+<codeline lineno="85"><highlight class="comment">\section<sp/>tutorials<sp/>Examples</highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>web_crawler_tutorial</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/>-<sp/>\ref<sp/>image_processing_tutorial</highlight></codeline>
+<codeline lineno="88"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/build/doc/zorba/indexpage.dox"/>
+  </compounddef>
+</doxygen>

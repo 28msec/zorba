@@ -1,0 +1,22 @@
+<div class="doxygen">
+  <div><h1 class="title">Known Issues</h1>
+This is a list of issues that we are aware of but are not imlemeneted or fixed:Zorba Version 2.0Floating-point precision problems. For details, see the following bugs:<ul>
+<li>2204089 &lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-2204089" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-2204089</a>&gt;</li><li>2205034 &lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-2205034" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-2205034</a>&gt;</li><li>2210851 &lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-2210851" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-2210851</a>&gt;</li></ul>
+When using the (now default) xs:integer representation of a C++ "long long", the largest xs:unsignedLong values are not handled correctly. For details, see the following bug:<ul>
+<li>3323548 &lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-3323548" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-3323548</a>&gt;</li></ul>
+Zorba uses ICU for regular expressions that does not support range subtraction. For details, see the following bug:<ul>
+<li>3150856 &lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-3150856" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-3150856</a>&gt;</li></ul>
+If you link against ICU &lt;= 3.8.1, you can get wrong results when using <pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span>\s<span> </span></span>
+</pre> to match a white space character. For details, see following bug:<ul>
+<li>3155900 &lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-3155900" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-3155900</a>&gt;</li></ul>
+A known bug in Xerces &lt; 3.0, when an .xsd contains an any wildcard with namespace <pre class="ace-static" ace-mode="xquery"><span class="preprocessor"><span> </span>#others<span> </span></span>
+</pre> and the instance contains an element without a namespace, there should still be an error. See "Definitive XMLSchema" by Priscilla Wamsley, p. 279. This was fixed in Xerses &gt; 3.0. For details, see following bug:<ul>
+<li>3137594 &lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-3137594" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-3137594</a>&gt;</li></ul>
+XQuery Full-Text is mostly, but not completely, implemented. For details, see following bugs:<ul>
+<li>3172383 &lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-3172383" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-3172383</a>&gt;</li><li>3187470 &lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-3187470" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-3187470</a>&gt;</li><li>3187462 &lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-3187462" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-3187462</a>&gt;</li></ul>
+The serializer currently doesn't implement character maps as specified (<a href="http://www.w3.org/TR/xslt-xquery-serialization/#character-maps" target="_blank">http://www.w3.org/TR/xslt-xquery-serialization/#character-maps</a>)In the 2.0 release, setting the CMake variables ZORBA_NO_ICU to ON is not supported.The PHP language binding is not supported on Mac OS X. For details, see the following bug:<ul>
+<li>&lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-3371525" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-3371525</a>&gt;</li></ul>
+Generating the XQDoc documentation on Windows using nmake is broken, see the following bug:<ul>
+<li>&lt;<a href="https://bugs.launchpad.net/zorba/+bug/sf-3393173" target="_blank">https://bugs.launchpad.net/zorba/+bug/sf-3393173</a>&gt;</li></ul>
+The Scripting Extension's features break and continue are not implemented if used within a FLWOR Statement.     </div>
+</div>

@@ -1,0 +1,80 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://zorba.io/modules/json-xml</xqdoc:uri><xqdoc:name>json-xml</xqdoc:name><xqdoc:comment><xqdoc:description> Using this module, you can parse JSON data into XML, manipulate it like any
+ other XML data using XQuery, and serialize the result back as JSON.<p/>
+ There are many ways to represent JSON data in XML, some loss-less ("round
+ tripable") and some lossy ("one way").  Loss-less representations preserve
+ the JSON data types <i>boolean</i>, <i>number</i>, and <i>null</i>; lossy
+ representations convert all data to strings.
+ <p/>
+ For a loss-less representation, this module implements that proposed by
+ <a href="http://john.snelson.org.uk/parsing-json-into-xquery">John Snelson</a>.
+ For example:
+ <pre class="ace-static" ace-mode="java">
+   {
+     "firstName" : "John",
+     "lastName" : "Smith",
+     "address" : {
+       "streetAddress" : "21 2nd Street",
+       "city" : "New York",
+       "state" : "NY",
+       "postalCode" : 10021
+     },
+     "phoneNumbers" : [ "212 732-1234", "646 123-4567" ]
+   }
+ </pre>
+ would be represented as:
+ <pre class="ace-static" ace-mode="xquery">
+   &lt;json type="object"&gt;
+     &lt;pair name="firstName" type="string"&gt;John&lt;/pair&gt;
+     &lt;pair name="lastName" type="string"&gt;Smith&lt;/pair&gt;
+     &lt;pair name="address" type="object"&gt;
+       &lt;pair name="streetAddress" type="string"&gt;21 2nd Street&lt;/pair&gt;
+       &lt;pair name="city" type="string"&gt;New York&lt;/pair&gt;
+       &lt;pair name="state" type="string"&gt;NY&lt;/pair&gt;
+       &lt;pair name="postalCode" type="number"&gt;10021&lt;/pair&gt;
+     &lt;/pair&gt;
+     &lt;pair name="phoneNumbers" type="array"&gt;
+       &lt;item type="string"&gt;212 732-1234&lt;/item&gt;
+       &lt;item type="string"&gt;646 123-4567&lt;/item&gt;
+     &lt;/pair&gt;
+   &lt;/json&gt;
+ </pre>
+ For a lossy representation, this module implements
+ <a href="http://jsonml.org/">JsonML</a> (the array form).
+ For example:
+ <pre class="ace-static" ace-mode="java">
+   [ "person",
+     { "created" : "2006-11-11T19:23",
+       "modified" : "2006-12-31T23:59" },
+     [ "firstName", "Robert" ],
+     [ "lastName", "Smith" ],
+     [ "address",
+       { "type" : "home" },
+       [ "street", "12345 Sixth Ave" ],
+       [ "city", "Anytown" ],
+       [ "state", "CA" ],
+       [ "postalCode", "98765-4321" ]
+     ]
+   ]
+ </pre>
+ would be represented as:
+ <pre class="ace-static" ace-mode="xquery">
+   &lt;person created="2006-11-11T19:23" modified="2006-12-31T23:59"&gt;
+     &lt;firstName&gt;Robert&lt;/firstName&gt;
+     &lt;lastName&gt;Smith&lt;/lastName&gt;
+     &lt;address type="home"&gt;
+       &lt;street&gt;12345 Sixth Ave&lt;/street&gt;
+       &lt;city&gt;Anytown&lt;/city&gt;
+       &lt;state&gt;CA&lt;/state&gt;
+       &lt;postalCode&gt;98765-4321&lt;/postalCode&gt;
+     &lt;/address&gt;
+   &lt;/person&gt;
+ </pre>
+</xqdoc:description><xqdoc:author>Paul J. Lucas</xqdoc:author><xqdoc:custom tag="project">Zorba/Data Converters/JSON</xqdoc:custom><xqdoc:custom tag="language">xquery</xqdoc:custom><xqdoc:custom tag="version">3.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="err" uri="http://www.w3.org/2005/xqt-errors" isSchema="false"/><xqdoc:namespace prefix="jx" uri="http://zorba.io/modules/json-xml" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/><xqdoc:namespace prefix="zerr" uri="http://zorba.io/errors" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports/><xqdoc:variables/><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Converts JSON data into an XDM instance using one of the representations
+ described above.<p/>
+</xqdoc:description><xqdoc:param>$json The JSON data.</xqdoc:param><xqdoc:param>$options The JSON conversion options, for example: <pre> { "json-format" : "JsonML-array" } </pre></xqdoc:param><xqdoc:return>said XDM instance.</xqdoc:return><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-snelson-j2x-array-01.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-snelson-j2x-object-01.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-jmla-j2x-01.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>jx:json-to-xml</xqdoc:name><xqdoc:signature>declare function jx:json-to-xml($json as json-item()?, $options as object()) as element(*,xs:untyped)?</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>json</xqdoc:name><xqdoc:type occurrence="?">json-item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>options</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="?">element(*,xs:untyped)?</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://zorba.io/modules/json-xml</xqdoc:uri><xqdoc:name>json-to-xml-internal</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Converts JSON data into an XDM instance using the Snelson representation
+ described above.<p/>
+</xqdoc:description><xqdoc:param>$json The JSON data.</xqdoc:param><xqdoc:return>said XDM instance.</xqdoc:return><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-snelson-j2x-array-01.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-snelson-j2x-object-01.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-jmla-j2x-01.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>jx:json-to-xml</xqdoc:name><xqdoc:signature>declare function jx:json-to-xml($json as json-item()?) as element(*,xs:untyped)?</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>json</xqdoc:name><xqdoc:type occurrence="?">json-item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="?">element(*,xs:untyped)?</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://zorba.io/modules/json-xml</xqdoc:uri><xqdoc:name>json-to-xml-internal</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Converts XML data into a JSON item using one of the respresentations
+ described above.<p/>
+</xqdoc:description><xqdoc:param>$xml The XML data to convert.</xqdoc:param><xqdoc:param>$options The conversion options, for example: <pre> { "json-format" : "JsonML-array" } </pre></xqdoc:param><xqdoc:return>said JSON items.</xqdoc:return><xqdoc:error>zerr:ZJSE0001 if $xml is not a document or element node.</xqdoc:error><xqdoc:error>zerr:ZJSE0002 if $xml contains an element that is missing a required attribute.</xqdoc:error><xqdoc:error>zerr:ZJSE0003 if $xml contains an attribute having an illegal value.</xqdoc:error><xqdoc:error>zerr:ZJSE0004 if $xml contains an illegal element. type.</xqdoc:error><xqdoc:error>zerr:ZJSE0007 if $xml contains an element that is missing a required value.</xqdoc:error><xqdoc:error>zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-snelson-x2j-array-01.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-snelson-x2j-object-01.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-jmla-x2j-01.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>jx:xml-to-json</xqdoc:name><xqdoc:signature>declare function jx:xml-to-json($xml as item()*, $options as object()) as json-item()*</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>xml</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>options</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">json-item()*</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://zorba.io/modules/json-xml</xqdoc:uri><xqdoc:name>xml-to-json-internal</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="1"><xqdoc:comment><xqdoc:description> Converts XML data into a JSON item using the Snelson representation
+ described above.<p/>
+</xqdoc:description><xqdoc:param>$xml The XML data to convert.</xqdoc:param><xqdoc:return>said JSON items.</xqdoc:return><xqdoc:error>zerr:ZJSE0001 if $xml is not a document or element node.</xqdoc:error><xqdoc:error>zerr:ZJSE0002 if $xml contains an element that is missing a required attribute.</xqdoc:error><xqdoc:error>zerr:ZJSE0003 if $xml contains an attribute having an illegal value.</xqdoc:error><xqdoc:error>zerr:ZJSE0004 if $xml contains an illegal element. type.</xqdoc:error><xqdoc:error>zerr:ZJSE0007 if $xml contains an element that is missing a required value.</xqdoc:error><xqdoc:error>zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.</xqdoc:error><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-snelson-x2j-array-01.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-snelson-x2j-object-01.xq</xqdoc:custom><xqdoc:custom tag="example">test/rbkt/Queries/zorba/json/json-jmla-x2j-01.xq</xqdoc:custom></xqdoc:comment><xqdoc:name>jx:xml-to-json</xqdoc:name><xqdoc:signature>declare function jx:xml-to-json($xml as item()*) as json-item()*</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>xml</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">json-item()*</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://zorba.io/modules/json-xml</xqdoc:uri><xqdoc:name>xml-to-json-internal</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:name>jx:json-to-xml-internal</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/></xqdoc:annotations><xqdoc:signature>declare %private function jx:json-to-xml-internal($json as json-item()?, $options as object()) as element(*)* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>json</xqdoc:name><xqdoc:type occurrence="?">json-item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>options</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">element(*)*</xqdoc:type></xqdoc:return></xqdoc:function><xqdoc:function arity="2"><xqdoc:name>jx:xml-to-json-internal</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/></xqdoc:annotations><xqdoc:signature>declare %private function jx:xml-to-json-internal($xml as item()*, $options as object()) as json-item()* external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>xml</xqdoc:name><xqdoc:type occurrence="*">item()</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>options</xqdoc:name><xqdoc:type>object()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type occurrence="*">json-item()*</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

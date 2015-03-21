@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="python__windows_8dox" kind="file">
+    <compoundname>python_windows.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>python_windows_tutorial<sp/>Zorba<sp/>with<sp/>Python<sp/>-<sp/>Windows<sp/>Installation</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment">These<sp/>steps<sp/>were<sp/>checked<sp/>on<sp/>Windows<sp/>7<sp/>and<sp/>Python<sp/>2.7<sp/>(32bits)<sp/>with<sp/>the<sp/>Zorba<sp/>Revision<sp/>10986<sp/>from<sp/>Jun<sp/>29th,<sp/>2011,<sp/>this<sp/>revision<sp/>has<sp/>important<sp/>bug<sp/>fixing<sp/>and<sp/>it<sp/>requires<sp/>at<sp/>least<sp/>this<sp/>version<sp/>to<sp/>work.<sp/>It<sp/>should<sp/>work<sp/>fine<sp/>with<sp/>any<sp/>Python<sp/>2.7.X<sp/>(32<sp/>bits)<sp/>version.</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"></highlight></codeline>
+<codeline lineno="5"><highlight class="comment">\section<sp/>install_python<sp/>Install<sp/>Python</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Download<sp/>and<sp/>install<sp/>Python<sp/>binaries<sp/>from<sp/>&lt;a<sp/>href=&quot;http://www.python.org/getit/&quot;<sp/>target=&quot;_blank&quot;&gt;http://www.python.org/getit/&lt;/a&gt;.<sp/>If<sp/>you<sp/>want<sp/>to<sp/>debug<sp/>the<sp/>python<sp/>binding<sp/>you<sp/>will<sp/>need<sp/>to<sp/>download<sp/>the<sp/>sources<sp/>and<sp/>compile<sp/>python<sp/>in<sp/>order<sp/>to<sp/>get<sp/>the<sp/>debug<sp/>library<sp/>of<sp/>python:<sp/>&lt;em&gt;python_d.lib&lt;/em&gt;.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"></highlight></codeline>
+<codeline lineno="8"><highlight class="comment">\section<sp/>install_swig<sp/>Install<sp/>Swig</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">Zorba<sp/>uses<sp/>Swig<sp/>to<sp/>create<sp/>the<sp/>binding<sp/>in<sp/>python<sp/>language,<sp/>you<sp/>only<sp/>need<sp/>the<sp/>binary<sp/>to<sp/>create<sp/>it,<sp/>download<sp/>from<sp/>&lt;a<sp/>href=&quot;http://www.swig.org/download.html&quot;&gt;http://www.swig.org/download.html&lt;/a&gt;<sp/>and<sp/>install.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"></highlight></codeline>
+<codeline lineno="11"><highlight class="comment">\section<sp/>install_zorba<sp/>Install<sp/>Zorba</highlight></codeline>
+<codeline lineno="12"><highlight class="comment">Get<sp/>Zorba<sp/>sources<sp/>and<sp/>follow<sp/>the<sp/>\ref<sp/>build.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"></highlight></codeline>
+<codeline lineno="14"><highlight class="comment">\section<sp/>compiling_zorba<sp/>Compiling<sp/>the<sp/>Zorba<sp/>Python<sp/>Library</highlight></codeline>
+<codeline lineno="15"><highlight class="comment">In<sp/>order<sp/>to<sp/>compile<sp/>the<sp/>Python<sp/>binding<sp/>you<sp/>need<sp/>first<sp/>to<sp/>follow<sp/>the<sp/>steps<sp/>to<sp/>compile<sp/>Zorba,<sp/>but<sp/>before<sp/>compiling,<sp/>you<sp/>must<sp/>need<sp/>to<sp/>add<sp/>one<sp/>extra<sp/>variable<sp/>to<sp/>the<sp/>CMAKE<sp/>command<sp/>line:</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"></highlight></codeline>
+<codeline lineno="17"><highlight class="comment">-D<sp/>ZORBA_USE_SWIG=ON<sp/><sp/><sp/>Turn<sp/>on<sp/>the<sp/>Swig<sp/>library,<sp/>in<sp/>case<sp/>you<sp/>have<sp/>other<sp/>bindings,<sp/>this<sp/>flag<sp/>will<sp/>help<sp/>to<sp/>activate<sp/>them.</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"></highlight></codeline>
+<codeline lineno="19"><highlight class="comment">You<sp/>should<sp/>not<sp/>need<sp/>any<sp/>other<sp/>extra<sp/>flag,<sp/>cmake<sp/>should<sp/>be<sp/>able<sp/>to<sp/>detect<sp/>python<sp/>at<sp/>this<sp/>point,<sp/>but<sp/>in<sp/>case<sp/>cmake<sp/>can&apos;t<sp/>find<sp/>python<sp/>installation<sp/>you<sp/>can<sp/>add<sp/>these<sp/>two<sp/>flags:</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"></highlight></codeline>
+<codeline lineno="21"><highlight class="comment">-D<sp/>PYTHON_LIBRARIES=...<sp/>Specify<sp/>where<sp/>the<sp/>libs<sp/>directory<sp/>is<sp/>located,<sp/>i.e.<sp/>&quot;C:\Python27\libs&quot;</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"></highlight></codeline>
+<codeline lineno="23"><highlight class="comment">-D<sp/>PYTHON_INCLUDE_PATH=...<sp/>Specify<sp/>where<sp/>the<sp/>include<sp/>directory<sp/>is<sp/>located,<sp/>i.e.<sp/>&quot;C:\Python27\include&quot;.</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"></highlight></codeline>
+<codeline lineno="25"><highlight class="comment">After<sp/>adding<sp/>those<sp/>lines<sp/>CMAKE<sp/>will<sp/>add<sp/>automatically<sp/>the<sp/>Python<sp/>binding<sp/>project<sp/>and<sp/>after<sp/>compiling<sp/>you<sp/>will<sp/>get<sp/>two<sp/>files:&lt;em&gt;<sp/>_zorba_api.pyd&lt;/em&gt;<sp/>and<sp/>&lt;em&gt;zorba_api.py&lt;/em&gt;,<sp/>these<sp/>files<sp/>are<sp/>the<sp/>binding<sp/>for<sp/>zorba.</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"></highlight></codeline>
+<codeline lineno="27"><highlight class="comment">\section<sp/>testing<sp/>Testing</highlight></codeline>
+<codeline lineno="28"><highlight class="comment">Verify<sp/>that<sp/>Zorba<sp/>is<sp/>working<sp/>by<sp/>command<sp/>line:</highlight></codeline>
+<codeline lineno="29"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="30"><highlight class="comment">C:\&gt;zorba.exe<sp/>-q<sp/>&apos;2+1&apos;</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">&lt;?xml<sp/>version=&quot;1.0&quot;<sp/>encoding=&quot;UTF-8&quot;?&gt;</highlight></codeline>
+<codeline lineno="32"><highlight class="comment">3</highlight></codeline>
+<codeline lineno="33"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"></highlight></codeline>
+<codeline lineno="35"><highlight class="comment">Test<sp/>the<sp/>following<sp/>example<sp/>in<sp/>python,<sp/>this<sp/>example<sp/>contains<sp/>a<sp/>direct<sp/>path<sp/>to<sp/>the<sp/>two<sp/>files<sp/>generated,<sp/>you<sp/>can<sp/>change<sp/>this<sp/>according<sp/>to<sp/>your<sp/>configuration<sp/>or<sp/>by<sp/>moving<sp/>those<sp/>files<sp/>to<sp/>libs<sp/>directory:</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"></highlight></codeline>
+<codeline lineno="37"><highlight class="comment">\code</highlight></codeline>
+<codeline lineno="38"><highlight class="comment">import<sp/>sys</highlight></codeline>
+<codeline lineno="39"><highlight class="comment">sys.path.insert(0,<sp/>&apos;C:\\zorba\\vs2010\\swig\\python&apos;)</highlight></codeline>
+<codeline lineno="40"><highlight class="comment">import<sp/>zorba_api</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"></highlight></codeline>
+<codeline lineno="42"><highlight class="comment">def<sp/>example1(zorba):</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/>xquery<sp/>=<sp/>zorba.compileQuery(&quot;1+2&quot;)</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/><sp/>print<sp/>xquery.printPlanAsXML()</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/>print<sp/>xquery.execute()</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/>return</highlight></codeline>
+<codeline lineno="47"><highlight class="comment">def<sp/>example2(zorba):</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/>xquery<sp/>=<sp/>zorba.compileQuery(&quot;(1,2,3,4,5)&quot;)</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/>iter<sp/>=<sp/>xquery.iterator()</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/><sp/>iter.open()</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/>item<sp/>=<sp/>zorba_api.Item_createEmptyItem()</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/>while<sp/>iter.next(item):</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/><sp/>print<sp/>item.getStringValue()</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/>iter.close()</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/>iter.destroy()</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/>return</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/></highlight></codeline>
+<codeline lineno="58"><highlight class="comment">def<sp/>example3(zorba):</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/>try:</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/>xquery<sp/>=<sp/>zorba.compileQuery(&quot;1<sp/>div<sp/>0&quot;)</highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/><sp/>print<sp/>xquery.execute()</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/><sp/>except<sp/>RuntimeError,<sp/>e:</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/><sp/><sp/><sp/>print<sp/>e</highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/>return</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"></highlight></codeline>
+<codeline lineno="66"><highlight class="comment">def<sp/>example4(zorba):</highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/>try:</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/><sp/><sp/>xquery<sp/>=<sp/>zorba.compileQuery(&quot;for<sp/>$i<sp/>in<sp/>(1,2,&quot;)</highlight></codeline>
+<codeline lineno="69"><highlight class="comment"><sp/><sp/><sp/><sp/>print<sp/>xquery.execute()</highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/>except<sp/>RuntimeError,<sp/>e:</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/><sp/>print<sp/>e</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"><sp/><sp/>return</highlight></codeline>
+<codeline lineno="73"><highlight class="comment"></highlight></codeline>
+<codeline lineno="74"><highlight class="comment">store<sp/>=<sp/>zorba_api.InMemoryStore_getInstance()</highlight></codeline>
+<codeline lineno="75"><highlight class="comment">zorba<sp/>=<sp/>zorba_api.Zorba_getInstance(store)</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"></highlight></codeline>
+<codeline lineno="77"><highlight class="comment">print<sp/>&quot;Example1:&quot;</highlight></codeline>
+<codeline lineno="78"><highlight class="comment">example1(zorba)</highlight></codeline>
+<codeline lineno="79"><highlight class="comment">print<sp/>&quot;&quot;</highlight></codeline>
+<codeline lineno="80"><highlight class="comment"></highlight></codeline>
+<codeline lineno="81"><highlight class="comment">print<sp/>&quot;Example2:&quot;</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/>example2(zorba)</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"></highlight></codeline>
+<codeline lineno="84"><highlight class="comment">print<sp/>&quot;&quot;</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"></highlight></codeline>
+<codeline lineno="86"><highlight class="comment">print<sp/>&quot;Example3:&quot;</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/>example3(zorba)</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"></highlight></codeline>
+<codeline lineno="89"><highlight class="comment">print<sp/>&quot;&quot;</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"></highlight></codeline>
+<codeline lineno="91"><highlight class="comment">print<sp/>&quot;Example4:&quot;</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/>example4(zorba)</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"></highlight></codeline>
+<codeline lineno="94"><highlight class="comment">print<sp/>&quot;&quot;</highlight></codeline>
+<codeline lineno="95"><highlight class="comment"></highlight></codeline>
+<codeline lineno="96"><highlight class="comment">zorba.shutdown()</highlight></codeline>
+<codeline lineno="97"><highlight class="comment">zorba_api.InMemoryStore_shutdown(store)</highlight></codeline>
+<codeline lineno="98"><highlight class="comment">\endcode</highlight></codeline>
+<codeline lineno="99"><highlight class="comment"></highlight></codeline>
+<codeline lineno="100"><highlight class="comment">&lt;strong&gt;<sp/>Useful<sp/>links&lt;/strong&gt;</highlight></codeline>
+<codeline lineno="101"><highlight class="comment">&lt;a<sp/>href=&quot;/documentation/2.9/python/&quot;<sp/>target=&quot;_blank&quot;&gt;Zorba<sp/>Python<sp/>API<sp/>Documentation&lt;/a&gt;</highlight></codeline>
+<codeline lineno="102"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/wcandillon/deadlinks/doc/zorba/python_windows.dox"/>
+  </compounddef>
+</doxygen>

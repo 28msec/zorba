@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Thesaurus_1_1iterator" kind="class" prot="public">
+    <compoundname>zorba::Thesaurus::iterator</compoundname>
+    <includes refid="thesaurus_8h" local="no">zorba/thesaurus.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1Thesaurus_1_1iterator_1a2d404bc5c65201236a67ededd2895104" prot="public" static="no">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref>&lt; <ref refid="classzorba_1_1Thesaurus_1_1iterator" kindref="compound">iterator</ref>, <ref refid="structzorba_1_1internal_1_1ztd_1_1destroy__delete" kindref="compound">internal::ztd::destroy_delete</ref>&lt; <ref refid="classzorba_1_1Thesaurus_1_1iterator" kindref="compound">iterator</ref> &gt; &gt;</type>
+        <definition>typedef std::unique_ptr&lt;iterator,internal::ztd::destroy_delete&lt;iterator&gt; &gt; zorba::Thesaurus::iterator::ptr</definition>
+        <argsstring></argsstring>
+        <name>ptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="56" bodyfile="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Thesaurus_1_1iterator_1ac0e0dc9493ac91975213a581370f0a36" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Thesaurus::iterator::destroy</definition>
+        <argsstring>() const =0</argsstring>
+        <name>destroy</name>
+        <briefdescription>
+<para>Destroys this iterator. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="61"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Thesaurus_1_1iterator_1a37380f3329abffb1d6bcec95471f5dfd" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Thesaurus::iterator::next</definition>
+        <argsstring>(String *synonym)=0</argsstring>
+        <name>next</name>
+        <param>
+          <type><ref refid="classzorba_1_1String" kindref="compound">String</ref> *</type>
+          <declname>synonym</declname>
+        </param>
+        <briefdescription>
+<para>Gets the next synonym. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function must always include the original phrase that was looked up in its results.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>synonym</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the string to receive the next synonym. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns <computeroutput>true</computeroutput> only if there is a next synonym. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="70"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1Thesaurus_1_1iterator_1a477cb6ee1b85a658764ee560bd1d7b21" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::Thesaurus::iterator::~iterator</definition>
+        <argsstring>()</argsstring>
+        <name>~iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="73" bodyfile="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" bodystart="73" bodyend="73"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>An iterator is used to iterate over lookup results. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" line="53" bodyfile="/home/wcandillon/deadlinks/include/zorba/thesaurus.h" bodystart="53" bodyend="74"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1Thesaurus_1_1iterator_1ac0e0dc9493ac91975213a581370f0a36" prot="public" virt="pure-virtual"><scope>zorba::Thesaurus::iterator</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1Thesaurus_1_1iterator_1a37380f3329abffb1d6bcec95471f5dfd" prot="public" virt="pure-virtual"><scope>zorba::Thesaurus::iterator</scope><name>next</name></member>
+      <member refid="classzorba_1_1Thesaurus_1_1iterator_1a2d404bc5c65201236a67ededd2895104" prot="public" virt="non-virtual"><scope>zorba::Thesaurus::iterator</scope><name>ptr</name></member>
+      <member refid="classzorba_1_1Thesaurus_1_1iterator_1a477cb6ee1b85a658764ee560bd1d7b21" prot="protected" virt="virtual"><scope>zorba::Thesaurus::iterator</scope><name>~iterator</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

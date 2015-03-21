@@ -1,0 +1,60 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0"><xqdoc:control><xqdoc:date>2013-12-04T01:28:38.942159+01:00</xqdoc:date><xqdoc:version>1.0</xqdoc:version></xqdoc:control><xqdoc:module type="library"><xqdoc:uri>http://zorba.io/modules/xsl-fo</xqdoc:uri><xqdoc:name>xsl-fo</xqdoc:name><xqdoc:comment><xqdoc:description> This module converts <a href="http://www.w3schools.com/xslfo/default.asp">XSL-FO</a> documents
+ to various formats such as PDF, EPS, PCL, AFP, Text, PNG, Postscript, RTF, and TIFF.
+ For instance, the following example converts a simple XSL-FO document to PDF:
+ <p/>
+ <pre class="ace-static" ace-mode="xquery">import module namespace fop = "http://zorba.io/modules/xsl-fo";
+ import module namespace file = "http://expath.org/ns/file";
+ declare namespace fo = "http://www.w3.org/1999/XSL/Format";
+ let $xsl-fo := &lt;fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"&gt;
+   &lt;fo:layout-master-set&gt;
+     &lt;fo:simple-page-master master-name="my-page"&gt;
+       &lt;fo:region-body margin="1in"/&gt;
+     &lt;/fo:simple-page-master&gt;
+   &lt;/fo:layout-master-set&gt;
+   &lt;fo:page-sequence master-reference="my-page"&gt;
+     &lt;fo:flow flow-name="xsl-region-body"&gt;
+       &lt;fo:block&gt;Hello, world!&lt;/fo:block&gt;
+     &lt;/fo:flow&gt;
+   &lt;/fo:page-sequence&gt;
+  &lt;/fo:root&gt;
+ let $pdf := fop:generator($fop:PDF, $xsl-fo)
+ return file:write-binary("simple.pdf", $pdf)</pre>
+ <p/>
+ This module uses Apache-FOP to generate content from an XSL-FO document.
+ See <a href="http://xmlgraphics.apache.org/fop/">the Apache FOP documentation</a> for further information.
+ <p/>
+ <b>Note for Windows users</b>: On Windows, this module won't work out of the box, since
+ this module uses Java. But the Java VM dll is not in the system path by default. To make
+ this module work, you need to add the directory where the jvm.dll is located to the
+ system path. This dll is located at JRE_DIR\bin\client. On a standard installation, this would
+ be something a path like "C:\Program Files\Java\jre6\bin\client".
+</xqdoc:description><xqdoc:author>Markus Pilman</xqdoc:author><xqdoc:see>http://xmlgraphics.apache.org/fop/</xqdoc:see><xqdoc:custom tag="library"><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK - Java Development Kit</a></xqdoc:custom><xqdoc:custom tag="project">Zorba/Data Formatting/XSL-FO</xqdoc:custom><xqdoc:custom tag="language">xquery</xqdoc:custom><xqdoc:custom tag="version">3.0</xqdoc:custom><xqdoc:custom tag="encoding">utf-8</xqdoc:custom></xqdoc:comment><xqdoc:custom tag="namespaces"><xqdoc:namespace prefix="err" uri="http://www.w3.org/2005/xqt-errors" isSchema="false"/><xqdoc:namespace prefix="util-jvm" uri="http://www.zorba-xquery.com/modules/util-jvm" isSchema="false"/><xqdoc:namespace prefix="ver" uri="http://zorba.io/options/versioning" isSchema="false"/><xqdoc:namespace prefix="xsl-fo" uri="http://zorba.io/modules/xsl-fo" isSchema="false"/></xqdoc:custom></xqdoc:module><xqdoc:imports><xqdoc:import type="library"><xqdoc:uri>http://www.zorba-xquery.com/modules/util-jvm</xqdoc:uri></xqdoc:import></xqdoc:imports><xqdoc:variables><xqdoc:variable><xqdoc:uri>xsl-fo:AFP</xqdoc:uri><xqdoc:comment><xqdoc:description> The mime type of IBMs AFP format (application/x-afp).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>xsl-fo:EPS</xqdoc:uri><xqdoc:comment><xqdoc:description> The mime type of the EPS format (application/postscript).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>xsl-fo:PCL</xqdoc:uri><xqdoc:comment><xqdoc:description> The mime type of the PCL format (application/x-pcl).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>xsl-fo:PDF</xqdoc:uri><xqdoc:comment><xqdoc:description> The mime type of the PDF format (application/pdf).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>xsl-fo:PLAIN_TEXT</xqdoc:uri><xqdoc:comment><xqdoc:description> The mime type for plain text files (text/plain).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>xsl-fo:PNG</xqdoc:uri><xqdoc:comment><xqdoc:description> The mime type of the PNG format (image/png).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>xsl-fo:POSTSCRIPT</xqdoc:uri><xqdoc:comment><xqdoc:description> The mime type of the postscript format (application/postscript).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>xsl-fo:RTF</xqdoc:uri><xqdoc:comment><xqdoc:description> The mime type of the RTF format (application/rtf).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable><xqdoc:variable><xqdoc:uri>xsl-fo:TIFF</xqdoc:uri><xqdoc:comment><xqdoc:description> The mime type of TIFF format (application/tiff).
+</xqdoc:description><xqdoc:custom tag="type">xs:string</xqdoc:custom></xqdoc:comment></xqdoc:variable></xqdoc:variables><xqdoc:collections/><xqdoc:indexes/><xqdoc:functions><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> The generator function takes an XSL-FO document as input and generates output
+ in the format given as input.
+ The output format can be given as a MIME type - for example "application/pdf"
+ - or one of the predefined variables can be used - like $xsl-fo:PDF. Please
+ refer to the Apache FOP documentation for
+ <a href="http://xmlgraphics.apache.org/fop/0.95/output.html">supported output formats</a>.
+ Apache FOP does not support 100% of the XSL-FO standard.
+ Please consult the <a href="http://xmlgraphics.apache.org/fop/">official
+ documentation for further information</a>.
+ This function tries to find the needed Java libraries itself.<p/>
+ On a Mac OS X computer, it should be sufficient to install Apache FOP via Mac
+ Ports.<p/>
+ On Ubuntu it should be sufficient to install the fop packages via apt-get.<p/>
+ On Windows, the classpath needs to be set manually using
+ <a href="#generator#3">generator#3</a>.<p/>
+ This function tries to find the jar files via environment variables. The user can set the
+ variable FOP_HOME to the root directory of an Apache FOP distribution. If you have all
+ JAR files in the same directory, you can set the environment variable FOP_LIB_DIR to this
+ directory.
+</xqdoc:description><xqdoc:param>$output-format The mime of the output format, to tell Apache FOP which kind of document it should create.</xqdoc:param><xqdoc:param>$xsl-fo-document The XSL-FO document from which the output should be generated.</xqdoc:param><xqdoc:return>The generated output document.</xqdoc:return><xqdoc:error>xsl-fo:JVM-NOT-STARTED If zorba was unable to start the JVM.</xqdoc:error><xqdoc:error>xsl-fo:JAVA-EXCEPTION If Apache FOP throws an exception - i.e. if the input format is not correct/supported.</xqdoc:error><xqdoc:error>xsl-fo:JAR-NOT-FOUND If a needed Java library could not be found.</xqdoc:error></xqdoc:comment><xqdoc:name>xsl-fo:generator</xqdoc:name><xqdoc:signature>declare function xsl-fo:generator($output-format as xs:string, $xsl-fo-document as node()) as xs:base64Binary</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>output-format</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>xsl-fo-document</xqdoc:name><xqdoc:type>node()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:base64Binary</xqdoc:type></xqdoc:return><xqdoc:invoked arity="2"><xqdoc:uri>http://zorba.io/modules/xsl-fo</xqdoc:uri><xqdoc:name>generator-impl</xqdoc:name></xqdoc:invoked></xqdoc:function><xqdoc:function arity="2"><xqdoc:comment><xqdoc:description> Internal function used to format XSL-FO documents.
+</xqdoc:description><xqdoc:param>$output-format The mime type of the output format.</xqdoc:param><xqdoc:param>$xsl-fo-document The XSL-FO representation of the document.</xqdoc:param><xqdoc:return>The base64Binary Representation of document.</xqdoc:return></xqdoc:comment><xqdoc:name>xsl-fo:generator-impl</xqdoc:name><xqdoc:annotations><xqdoc:annotation prefix="" namespace="http://www.w3.org/2005/xpath-functions" localname="private" value=""/></xqdoc:annotations><xqdoc:signature>declare %private function xsl-fo:generator-impl($output-format as xs:string, $xsl-fo-document as node()) as xs:base64Binary external</xqdoc:signature><xqdoc:parameters><xqdoc:parameter><xqdoc:name>output-format</xqdoc:name><xqdoc:type>xs:string</xqdoc:type></xqdoc:parameter><xqdoc:parameter><xqdoc:name>xsl-fo-document</xqdoc:name><xqdoc:type>node()</xqdoc:type></xqdoc:parameter></xqdoc:parameters><xqdoc:return><xqdoc:type>xs:base64Binary</xqdoc:type></xqdoc:return></xqdoc:function></xqdoc:functions></xqdoc:xqdoc>

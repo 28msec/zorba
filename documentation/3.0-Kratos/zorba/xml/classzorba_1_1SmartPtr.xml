@@ -1,0 +1,376 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1SmartPtr" kind="class" prot="public">
+    <compoundname>zorba::SmartPtr</compoundname>
+    <includes refid="smart__ptr_8h" local="no">zorba/util/smart_ptr.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" prot="protected" static="no" mutable="no">
+        <type>T *</type>
+        <definition>T* zorba::SmartPtr&lt; T &gt;::p</definition>
+        <argsstring></argsstring>
+        <name>p</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="54" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="54" bodyend="-1"/>
+        <referencedby refid="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" compoundref="smart__ptr_8h" startline="61" endline="69">zorba::SmartPtr&lt; T &gt;::assign</referencedby>
+        <referencedby refid="classzorba_1_1SmartPtr_1ab1ba6737314dd6afc60be03033fa8672" compoundref="smart__ptr_8h" startline="88" endline="88">zorba::SmartPtr&lt; T &gt;::get</referencedby>
+        <referencedby refid="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" compoundref="smart__ptr_8h" startline="56" endline="58">zorba::SmartPtr&lt; T &gt;::init</referencedby>
+        <referencedby refid="classzorba_1_1SmartPtr_1a20005170ee0ce945e758f04ad8bffeaa" compoundref="smart__ptr_8h" startline="86" endline="86">zorba::SmartPtr&lt; T &gt;::isNull</referencedby>
+        <referencedby refid="classzorba_1_1SmartPtr_1ac43888b11288399240369eb7fe175231" compoundref="smart__ptr_8h" startline="97" endline="97">zorba::SmartPtr&lt; T &gt;::operator!=</referencedby>
+        <referencedby refid="classzorba_1_1SmartPtr_1a2debcfb0b5ce436de2ee1a92f328524a" compoundref="smart__ptr_8h" startline="94" endline="94">zorba::SmartPtr&lt; T &gt;::operator*</referencedby>
+        <referencedby refid="classzorba_1_1SmartPtr_1af692433aed319ffb9b9751a9333917ff" compoundref="smart__ptr_8h" startline="93" endline="93">zorba::SmartPtr&lt; T &gt;::operator-&gt;</referencedby>
+        <referencedby refid="classzorba_1_1SmartPtr_1a6a4a95845ff1dc7a91970cc82a6d3df2" compoundref="smart__ptr_8h" startline="100" endline="100">zorba::SmartPtr&lt; T &gt;::operator&lt;</referencedby>
+        <referencedby refid="classzorba_1_1SmartPtr_1afc74cf74c4e80bd3b79f15ccfc7d5a8e" compoundref="smart__ptr_8h" startline="96" endline="96">zorba::SmartPtr&lt; T &gt;::operator==</referencedby>
+        <referencedby refid="classzorba_1_1SmartPtr_1a49c0686b69d405e498e1dacc3f4589bf" compoundref="smart__ptr_8h" startline="80" endline="84">zorba::SmartPtr&lt; T &gt;::~SmartPtr</referencedby>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class otherT</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> &amp;</type>
+        <definition>SmartPtr&amp; zorba::SmartPtr&lt; T &gt;::assign</definition>
+        <argsstring>(const SmartPtr&lt; otherT &gt; &amp;rhs)</argsstring>
+        <name>assign</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; otherT &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="61" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="61" bodyend="69"/>
+        <references refid="classzorba_1_1SmartPtr_1ab1ba6737314dd6afc60be03033fa8672" compoundref="smart__ptr_8h" startline="88" endline="88">zorba::SmartPtr&lt; T &gt;::get</references>
+        <references refid="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" compoundref="smart__ptr_8h" startline="56" endline="58">zorba::SmartPtr&lt; T &gt;::init</references>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+        <referencedby refid="classzorba_1_1SmartPtr_1acf0acb3fe46517fde96795abd228ef55" compoundref="smart__ptr_8h" startline="102" endline="104">zorba::SmartPtr&lt; T &gt;::operator=</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartPtr&lt; T &gt;::init</definition>
+        <argsstring>()</argsstring>
+        <name>init</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="56" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="56" bodyend="58"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+        <referencedby refid="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" compoundref="smart__ptr_8h" startline="61" endline="69">zorba::SmartPtr&lt; T &gt;::assign</referencedby>
+        <referencedby refid="classzorba_1_1SmartPtr_1ab2e53aaba00ca251f2614d6612bf269e" compoundref="smart__ptr_8h" startline="72" endline="74">zorba::SmartPtr&lt; T &gt;::SmartPtr</referencedby>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1ab1ba6737314dd6afc60be03033fa8672" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>T *</type>
+        <definition>T* zorba::SmartPtr&lt; T &gt;::get</definition>
+        <argsstring>() const </argsstring>
+        <name>get</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="88" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="88" bodyend="88"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+        <referencedby refid="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" compoundref="smart__ptr_8h" startline="61" endline="69">zorba::SmartPtr&lt; T &gt;::assign</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1a20005170ee0ce945e758f04ad8bffeaa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::SmartPtr&lt; T &gt;::isNull</definition>
+        <argsstring>() const </argsstring>
+        <name>isNull</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="86" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="86" bodyend="86"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1a044ec00ac43c992cd5f8924707b9d264" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SmartPtr&lt; T &gt;::operator const T *</definition>
+        <argsstring>() const </argsstring>
+        <name>operator const T *</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="91" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="91" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1a2f6aa28a4034c09d508ced6f433651c6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SmartPtr&lt; T &gt;::operator T *</definition>
+        <argsstring>()</argsstring>
+        <name>operator T *</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="90" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="90" bodyend="90"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1ac43888b11288399240369eb7fe175231" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::SmartPtr&lt; T &gt;::operator!=</definition>
+        <argsstring>(SmartPtr const &amp;h) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> const &amp;</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="97" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="97" bodyend="97"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1a9ef634bc6c5912c5901bdfa2130d6760" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::SmartPtr&lt; T &gt;::operator!=</definition>
+        <argsstring>(T const *pp) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>T const *</type>
+          <declname>pp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="99" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="99" bodyend="99"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1a2debcfb0b5ce436de2ee1a92f328524a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>T &amp;</type>
+        <definition>T&amp; zorba::SmartPtr&lt; T &gt;::operator*</definition>
+        <argsstring>() const </argsstring>
+        <name>operator*</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="94" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="94" bodyend="94"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1af692433aed319ffb9b9751a9333917ff" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>T *</type>
+        <definition>T* zorba::SmartPtr&lt; T &gt;::operator-&gt;</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-&gt;</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="93" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="93" bodyend="93"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1a6a4a95845ff1dc7a91970cc82a6d3df2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::SmartPtr&lt; T &gt;::operator&lt;</definition>
+        <argsstring>(const SmartPtr &amp;h) const </argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>const <ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> &amp;</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="100" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="100" bodyend="100"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1acf0acb3fe46517fde96795abd228ef55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> &amp;</type>
+        <definition>SmartPtr&amp; zorba::SmartPtr&lt; T &gt;::operator=</definition>
+        <argsstring>(SmartPtr const &amp;rhs)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="102" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="102" bodyend="104"/>
+        <references refid="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" compoundref="smart__ptr_8h" startline="61" endline="69">zorba::SmartPtr&lt; T &gt;::assign</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1acc85bc4ea706e6714c98ad76337a5b81" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class otherT</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> &amp;</type>
+        <definition>SmartPtr&amp; zorba::SmartPtr&lt; T &gt;::operator=</definition>
+        <argsstring>(SmartPtr&lt; otherT &gt; const &amp;rhs)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref>&lt; otherT &gt; const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="106" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="106" bodyend="108"/>
+        <references refid="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" compoundref="smart__ptr_8h" startline="61" endline="69">zorba::SmartPtr&lt; T &gt;::assign</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1afc74cf74c4e80bd3b79f15ccfc7d5a8e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::SmartPtr&lt; T &gt;::operator==</definition>
+        <argsstring>(SmartPtr const &amp;h) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> const &amp;</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="96" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="96" bodyend="96"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1a3aab49d2483f9c122076ead67d5f760a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool zorba::SmartPtr&lt; T &gt;::operator==</definition>
+        <argsstring>(T const *pp) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type>T const *</type>
+          <declname>pp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="98" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="98" bodyend="98"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1ab2e53aaba00ca251f2614d6612bf269e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SmartPtr&lt; T &gt;::SmartPtr</definition>
+        <argsstring>(T *realPtr=0)</argsstring>
+        <name>SmartPtr</name>
+        <param>
+          <type>T *</type>
+          <declname>realPtr</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="72" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="72" bodyend="74"/>
+        <references refid="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" compoundref="smart__ptr_8h" startline="56" endline="58">zorba::SmartPtr&lt; T &gt;::init</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1ae6039ccaee1d0429750fee7dc297e80c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SmartPtr&lt; T &gt;::SmartPtr</definition>
+        <argsstring>(SmartPtr const &amp;rhs)</argsstring>
+        <name>SmartPtr</name>
+        <param>
+          <type><ref refid="classzorba_1_1SmartPtr" kindref="compound">SmartPtr</ref> const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="76" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="76" bodyend="78"/>
+        <references refid="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" compoundref="smart__ptr_8h" startline="56" endline="58">zorba::SmartPtr&lt; T &gt;::init</references>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartPtr_1a49c0686b69d405e498e1dacc3f4589bf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>zorba::SmartPtr&lt; T &gt;::~SmartPtr</definition>
+        <argsstring>()</argsstring>
+        <name>~SmartPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="80" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="80" bodyend="84"/>
+        <references refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" compoundref="smart__ptr_8h" startline="54">zorba::SmartPtr&lt; T &gt;::p</references>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="52" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="51" bodyend="110"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SmartPtr_1a56f1b34d9edc0f0033f4f4cd78a1a1f7" prot="protected" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>assign</name></member>
+      <member refid="classzorba_1_1SmartPtr_1ab1ba6737314dd6afc60be03033fa8672" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>get</name></member>
+      <member refid="classzorba_1_1SmartPtr_1a1de3c88a83664ad53a761e7aa770b0d3" prot="protected" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>init</name></member>
+      <member refid="classzorba_1_1SmartPtr_1a20005170ee0ce945e758f04ad8bffeaa" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>isNull</name></member>
+      <member refid="classzorba_1_1SmartPtr_1a044ec00ac43c992cd5f8924707b9d264" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator const T *</name></member>
+      <member refid="classzorba_1_1SmartPtr_1a2f6aa28a4034c09d508ced6f433651c6" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator T *</name></member>
+      <member refid="classzorba_1_1SmartPtr_1ac43888b11288399240369eb7fe175231" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator!=</name></member>
+      <member refid="classzorba_1_1SmartPtr_1a9ef634bc6c5912c5901bdfa2130d6760" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator!=</name></member>
+      <member refid="classzorba_1_1SmartPtr_1a2debcfb0b5ce436de2ee1a92f328524a" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator*</name></member>
+      <member refid="classzorba_1_1SmartPtr_1af692433aed319ffb9b9751a9333917ff" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator-&gt;</name></member>
+      <member refid="classzorba_1_1SmartPtr_1a6a4a95845ff1dc7a91970cc82a6d3df2" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator&lt;</name></member>
+      <member refid="classzorba_1_1SmartPtr_1acf0acb3fe46517fde96795abd228ef55" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1SmartPtr_1acc85bc4ea706e6714c98ad76337a5b81" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1SmartPtr_1afc74cf74c4e80bd3b79f15ccfc7d5a8e" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator==</name></member>
+      <member refid="classzorba_1_1SmartPtr_1a3aab49d2483f9c122076ead67d5f760a" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>operator==</name></member>
+      <member refid="classzorba_1_1SmartPtr_1a77c211ead75cafb0388c9884cb99a379" prot="protected" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>p</name></member>
+      <member refid="classzorba_1_1SmartPtr_1ab2e53aaba00ca251f2614d6612bf269e" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>SmartPtr</name></member>
+      <member refid="classzorba_1_1SmartPtr_1ae6039ccaee1d0429750fee7dc297e80c" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>SmartPtr</name></member>
+      <member refid="classzorba_1_1SmartPtr_1a49c0686b69d405e498e1dacc3f4589bf" prot="public" virt="non-virtual"><scope>zorba::SmartPtr</scope><name>~SmartPtr</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

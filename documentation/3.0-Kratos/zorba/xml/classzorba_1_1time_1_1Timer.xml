@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1time_1_1Timer" kind="class" prot="public">
+    <compoundname>zorba::time::Timer</compoundname>
+    <includes refid="timer_8h" local="no">zorba/util/timer.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classzorba_1_1time_1_1Timer_1ae9916e9253528d583d6644ba85656350" prot="private" static="no" mutable="no">
+        <type><ref refid="namespacezorba_1_1time_1a54248b24d9b481bce88fc72765b29901" kindref="member">walltime</ref></type>
+        <definition>walltime zorba::time::Timer::theStart</definition>
+        <argsstring></argsstring>
+        <name>theStart</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/timer.h" line="45" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/timer.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1time_1_1Timer_1ae58a4b438184a1f41c87486b2a2a69f5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double zorba::time::Timer::elapsed</definition>
+        <argsstring>() const </argsstring>
+        <name>elapsed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/timer.h" line="34" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/timer.h" bodystart="34" bodyend="38"/>
+        <references refid="namespacezorba_1_1time_1a23cfcc09d5f09c2d2c8dbd2f4529fe33" compoundref="time_8h" startline="206" endline="209">zorba::time::get_current_walltime</references>
+        <references refid="namespacezorba_1_1time_1acf8aa217268ef4e07c68109e41990e6e" compoundref="time_8h" startline="200" endline="204">zorba::time::get_walltime_elapsed</references>
+        <referencedby refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1afc8caa5186c4ab995f795e7d5ba8870f" compoundref="audit__scoped_8h" startline="179" endline="181">zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;::end</referencedby>
+        <referencedby refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_00_010x2_01_4_1a589e09b8dc7550f7f1280f69b51021c6" compoundref="audit__scoped_8h" startline="202" endline="204">zorba::audit::AuditorTraits&lt; zorba::time::Timer, 0x2 &gt;::end</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1time_1_1Timer_1a9ef430e521f7c1aa1d6a057fbbc9792e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacezorba_1_1time_1a1e1aa75e2fe3fdcae1a2bca01af7905c" kindref="member">time::msec_type</ref></type>
+        <definition>time::msec_type zorba::time::Timer::getStart</definition>
+        <argsstring>() const </argsstring>
+        <name>getStart</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/timer.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/timer.h" bodystart="40" bodyend="42"/>
+        <references refid="namespacezorba_1_1time_1a566508b5bb8897b1fed69f87489fcef5" compoundref="time_8h" startline="211" endline="214">zorba::time::get_walltime_in_millis</references>
+        <referencedby refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_00_010x1_01_4_1aa8392920c0a0d2e83057a14c0ffea84a" compoundref="audit__scoped_8h" startline="191" endline="193">zorba::audit::AuditorTraits&lt; zorba::time::Timer, 0x1 &gt;::end</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1time_1_1Timer_1a69a8e580f733293ce4b1cd5065975b67" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::time::Timer::start</definition>
+        <argsstring>()</argsstring>
+        <name>start</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/timer.h" line="30" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/timer.h" bodystart="30" bodyend="32"/>
+        <references refid="namespacezorba_1_1time_1a23cfcc09d5f09c2d2c8dbd2f4529fe33" compoundref="time_8h" startline="206" endline="209">zorba::time::get_current_walltime</references>
+        <referencedby refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_01_4_1a600808d2d47b4b8dfe7c85c62be23ad7" compoundref="audit__scoped_8h" startline="176" endline="178">zorba::audit::AuditorTraits&lt; zorba::time::Timer &gt;::start</referencedby>
+        <referencedby refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_00_010x1_01_4_1a181763da47fea23649d1998597440202" compoundref="audit__scoped_8h" startline="188" endline="190">zorba::audit::AuditorTraits&lt; zorba::time::Timer, 0x1 &gt;::start</referencedby>
+        <referencedby refid="structzorba_1_1audit_1_1AuditorTraits_3_01zorba_1_1time_1_1Timer_00_010x2_01_4_1a800aac24e976ea2d6c31e841884aa65a" compoundref="audit__scoped_8h" startline="199" endline="201">zorba::audit::AuditorTraits&lt; zorba::time::Timer, 0x2 &gt;::start</referencedby>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/util/timer.h" line="28" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/timer.h" bodystart="28" bodyend="46"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1time_1_1Timer_1ae58a4b438184a1f41c87486b2a2a69f5" prot="public" virt="non-virtual"><scope>zorba::time::Timer</scope><name>elapsed</name></member>
+      <member refid="classzorba_1_1time_1_1Timer_1a9ef430e521f7c1aa1d6a057fbbc9792e" prot="public" virt="non-virtual"><scope>zorba::time::Timer</scope><name>getStart</name></member>
+      <member refid="classzorba_1_1time_1_1Timer_1a69a8e580f733293ce4b1cd5065975b67" prot="public" virt="non-virtual"><scope>zorba::time::Timer</scope><name>start</name></member>
+      <member refid="classzorba_1_1time_1_1Timer_1ae9916e9253528d583d6644ba85656350" prot="private" virt="non-virtual"><scope>zorba::time::Timer</scope><name>theStart</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

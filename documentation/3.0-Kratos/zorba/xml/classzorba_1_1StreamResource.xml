@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1StreamResource" kind="class" prot="public">
+    <compoundname>zorba::StreamResource</compoundname>
+    <basecompoundref refid="classzorba_1_1Resource" prot="public" virt="non-virtual">zorba::Resource</basecompoundref>
+    <includes refid="uri__resolvers_8h" local="no">zorba/uri_resolvers.h</includes>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classzorba_1_1StreamResource_1aec38e33bd9b3f68aae28bc15c01af83e" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classzorba_1_1StreamResource" kindref="compound">StreamResource</ref> *</type>
+        <definition>static StreamResource* zorba::StreamResource::create</definition>
+        <argsstring>(std::istream *aStream, StreamReleaser aStreamReleaser, bool aIsStreamSeekable=false)</argsstring>
+        <name>create</name>
+        <param>
+          <type>std::istream *</type>
+          <declname>aStream</declname>
+        </param>
+        <param>
+          <type><ref refid="streams_8h_1a3f517c3d1f2e28152eeb3f47e7fd67b4" kindref="member">StreamReleaser</ref></type>
+          <declname>aStreamReleaser</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>aIsStreamSeekable</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Public factory method from istream. </para>        </briefdescription>
+        <detaileddescription>
+<para>The <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> object will take memory ownership of the istream. <ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> will pass it to aStreamReleaser when it is no longer needed, so that the original client may delete it. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>aStream</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An istream whence to read the string&apos;s content. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aStreamReleaser</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A function pointer which is invoked once the <ref refid="classzorba_1_1StreamResource" kindref="compound">StreamResource</ref> is destroyed. Normally this function will delete the std::istream object passed to it. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>aIsStreamSeekable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Determines whether the given stream is arbitrarily seekable without throwing errors. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="92"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1Resource_1a0cc13ffe1069093bf5bdd28642847d9b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Resource::destroy</definition>
+        <argsstring>() const =0</argsstring>
+        <name>destroy</name>
+        <briefdescription>
+<para>Destroy/clean up this <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classzorba_1_1Zorba" kindref="compound">Zorba</ref> will call this method when it no longer needs the <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>. It is the responsibility of subclasses to clean up appropriate when this method is called, including calling &quot;delete this&quot; if the <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> was allocated with &quot;new&quot;. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="66"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StreamResource_1a320fa81165ef96ea3f7baa6d4da8629a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::istream *</type>
+        <definition>virtual std::istream* zorba::StreamResource::getStream</definition>
+        <argsstring>()=0</argsstring>
+        <name>getStream</name>
+        <briefdescription>
+<para>Retrieve the istream associated with this <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StreamResource_1a3efb71b848d368a063cd2bf9cfb4c835" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="streams_8h_1a3f517c3d1f2e28152eeb3f47e7fd67b4" kindref="member">StreamReleaser</ref></type>
+        <definition>virtual StreamReleaser zorba::StreamResource::getStreamReleaser</definition>
+        <argsstring>()=0</argsstring>
+        <name>getStreamReleaser</name>
+        <briefdescription>
+<para>Retrieve the stream-releaser function. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StreamResource_1aa85004e8ca116287f164e5b7c7524fdd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::StreamResource::isStreamSeekable</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isStreamSeekable</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1StreamResource_1a4fd2de6f01633106e07b605fdf8ca143" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type></type>
+        <definition>virtual zorba::StreamResource::~StreamResource</definition>
+        <argsstring>()=0</argsstring>
+        <name>~StreamResource</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="104"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classzorba_1_1Resource_1a2fc7456745b8828dd98971e78f85823e" prot="public" static="no">
+        <type><ref refid="classstd_1_1unique__ptr" kindref="compound">std::unique_ptr</ref>&lt; <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref>, <ref refid="structzorba_1_1internal_1_1ztd_1_1destroy__delete" kindref="compound">internal::ztd::destroy_delete</ref>&lt; <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> &gt; &gt;</type>
+        <definition>typedef std::unique_ptr&lt;Resource,internal::ztd::destroy_delete&lt;Resource&gt; &gt; zorba::Resource::ptr</definition>
+        <argsstring></argsstring>
+        <name>ptr</name>
+        <reimplementedby refid="classzorba_1_1ThesaurusProvider_1adba72068d63e7991926faa113d71b021">ptr</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="54" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Concrete <ref refid="classzorba_1_1Resource" kindref="compound">Resource</ref> subclass representing access to an entity via a stream. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="873">
+        <label>zorba::StreamResource</label>
+        <link refid="classzorba_1_1StreamResource"/>
+        <childnode refid="874" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="874">
+        <label>zorba::Resource</label>
+        <link refid="classzorba_1_1Resource"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="875">
+        <label>zorba::StreamResource</label>
+        <link refid="classzorba_1_1StreamResource"/>
+        <childnode refid="876" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="876">
+        <label>zorba::Resource</label>
+        <link refid="classzorba_1_1Resource"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" line="74" bodyfile="/home/wcandillon/deadlinks/include/zorba/uri_resolvers.h" bodystart="73" bodyend="107"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1StreamResource_1aec38e33bd9b3f68aae28bc15c01af83e" prot="public" virt="non-virtual"><scope>zorba::StreamResource</scope><name>create</name></member>
+      <member refid="classzorba_1_1Resource_1a0cc13ffe1069093bf5bdd28642847d9b" prot="public" virt="pure-virtual"><scope>zorba::StreamResource</scope><name>destroy</name></member>
+      <member refid="classzorba_1_1StreamResource_1a320fa81165ef96ea3f7baa6d4da8629a" prot="public" virt="pure-virtual"><scope>zorba::StreamResource</scope><name>getStream</name></member>
+      <member refid="classzorba_1_1StreamResource_1a3efb71b848d368a063cd2bf9cfb4c835" prot="public" virt="pure-virtual"><scope>zorba::StreamResource</scope><name>getStreamReleaser</name></member>
+      <member refid="classzorba_1_1StreamResource_1aa85004e8ca116287f164e5b7c7524fdd" prot="public" virt="pure-virtual"><scope>zorba::StreamResource</scope><name>isStreamSeekable</name></member>
+      <member refid="classzorba_1_1Resource_1a2fc7456745b8828dd98971e78f85823e" prot="public" virt="non-virtual"><scope>zorba::StreamResource</scope><name>ptr</name></member>
+      <member refid="classzorba_1_1Resource_1abfa3e48b60d8e12b86bd8a0a97309d8c" prot="public" virt="pure-virtual"><scope>zorba::StreamResource</scope><name>~Resource</name></member>
+      <member refid="classzorba_1_1StreamResource_1a4fd2de6f01633106e07b605fdf8ca143" prot="public" virt="pure-virtual"><scope>zorba::StreamResource</scope><name>~StreamResource</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

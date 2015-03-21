@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="structzorba_1_1Stemmer_1_1Properties" kind="struct" prot="public">
+    <compoundname>zorba::Stemmer::Properties</compoundname>
+    <includes refid="stemmer_8h" local="no">zorba/stemmer.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structzorba_1_1Stemmer_1_1Properties_1a678e6a89c9f591afca48c1b9647a0644" prot="public" static="no" mutable="no">
+        <type>char const *</type>
+        <definition>char const* zorba::Stemmer::Properties::uri</definition>
+        <argsstring></argsstring>
+        <name>uri</name>
+        <briefdescription>
+<para>The URI that uniquely identifies this Stemmer. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="62" bodyfile="/home/wcandillon/deadlinks/include/zorba/stemmer.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Various properties of this Stemmer. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/stemmer.h" line="58" bodyfile="/home/wcandillon/deadlinks/include/zorba/stemmer.h" bodystart="58" bodyend="63"/>
+    <listofallmembers>
+      <member refid="structzorba_1_1Stemmer_1_1Properties_1a678e6a89c9f591afca48c1b9647a0644" prot="public" virt="non-virtual"><scope>zorba::Stemmer::Properties</scope><name>uri</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

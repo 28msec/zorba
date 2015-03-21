@@ -1,0 +1,329 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="classzorba_1_1Function" kind="class" prot="public">
+    <compoundname>zorba::Function</compoundname>
+    <basecompoundref refid="classzorba_1_1SmartObject" prot="public" virt="non-virtual">zorba::SmartObject</basecompoundref>
+    <includes refid="function_8h" local="no">zorba/function.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::addReference</definition>
+        <argsstring>() const </argsstring>
+        <name>addReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="40" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void zorba::SmartObject::free</definition>
+        <argsstring>()</argsstring>
+        <name>free</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a052e7eea1c429def40f65b92cd6b84f5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void zorba::Function::getAnnotations</definition>
+        <argsstring>(std::vector&lt; Annotation_t &gt; &amp;annotations) const =0</argsstring>
+        <name>getAnnotations</name>
+        <param>
+          <type>std::vector&lt; <ref refid="namespacezorba_1a2ec75c29e084faf0a908f2b5545b9ed2" kindref="member">Annotation_t</ref> &gt; &amp;</type>
+          <declname>annotations</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="80"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a352e5a2c013a3cfa49001b601491ef08" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>size_t</type>
+        <definition>virtual size_t zorba::Function::getArity</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getArity</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The arity of the function. If the function is variadic (which is possible only for builtin functions), the result of this method is non-deterministic. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a28041f4f1db4af7513e56efada72a1f9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::Function::getLocalName</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getLocalName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The local name of the function QName </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a19b2b3cb9610485e0ed3f31882b0668f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1Item" kindref="compound">Item</ref></type>
+        <definition>virtual Item zorba::Function::getQName</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getQName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The expanded QName of the function </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="86"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>long zorba::SmartObject::getRefCount</definition>
+        <argsstring>() const </argsstring>
+        <name>getRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="38" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a25699af398c9122e7af28d5ce6f24232" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type><ref refid="classzorba_1_1String" kindref="compound">String</ref></type>
+        <definition>virtual String zorba::Function::getURI</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getURI</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The namespace URI of the function QName </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a95ea6519077f4ebb58fc7a38164573a5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Function::isBuiltin</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isBuiltin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True if the function is a builtin one (not declared in any prolog); false otherwise </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="133"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a89733982969b27901ed4e2b2883e0f70" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Function::isDeterministic</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isDeterministic</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True if the function is deterministic; false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="74"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a1fbcf5f8ade941f63d3be0e07981f000" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Function::isExternal</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isExternal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True if the function is an external one; false otherwise </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="118"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a507c9ef32b6c0a2ce98cf850a0598ce6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Function::isPrivate</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isPrivate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True if the function is private; false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="68"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a884a0557a7c0455ae534bc96ac707321" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Function::isSequential</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isSequential</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True if the function is sequential; false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="56"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a4259bde70987a71e4f8beac8d959c69a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Function::isUpdating</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isUpdating</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True if the function is updating; false otherwise. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="62"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a25817b2e89de005ca2ab61fe815c244e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Function::isVariadic</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isVariadic</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True if the function is variadic; false otherwise </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="112"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1a7de1f55ad3ea396ffc3864b5f92e7ac7" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool zorba::Function::isXQuery</definition>
+        <argsstring>() const =0</argsstring>
+        <name>isXQuery</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True if the function implementation is written in <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> (or equivalently, it is a non-external function with a Prolog declaration); false otherwise </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="126"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void zorba::SmartObject::removeReference</definition>
+        <argsstring>()</argsstring>
+        <name>removeReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="42" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classzorba_1_1Function_1aac0c19d26269ab545dd64c2c52c9ac8a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual zorba::Function::~Function</definition>
+        <argsstring>()</argsstring>
+        <name>~Function</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="50" bodyfile="/home/wcandillon/deadlinks/include/zorba/function.h" bodystart="50" bodyend="50"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" static="no" mutable="yes">
+        <type>unsigned int</type>
+        <definition>unsigned int zorba::SmartObject::theRefCount</definition>
+        <argsstring></argsstring>
+        <name>theRefCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" line="27" bodyfile="/home/wcandillon/deadlinks/include/zorba/util/smart_ptr.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The <ref refid="classzorba_1_1Function" kindref="compound">Function</ref> class represents a function that is callable from <ref refid="classzorba_1_1XQuery" kindref="compound">XQuery</ref> code, and it gives access to the various properties that are specified in the declaration of the function within a Prolog. </para>    </briefdescription>
+    <detaileddescription>
+<para>Instances of <ref refid="classzorba_1_1Function" kindref="compound">Function</ref> are returned by the <ref refid="classzorba_1_1StaticContext_1a6f7299958803223b9fa72ba15b554d38" kindref="member">StaticContext::findFunctions()</ref> method. To be mopre precise, <ref refid="classzorba_1_1StaticContext_1a6f7299958803223b9fa72ba15b554d38" kindref="member">StaticContext::findFunctions()</ref> returns smart pointers to <ref refid="classzorba_1_1Function" kindref="compound">Function</ref> objects. These smart pointers must be destroyed before the <ref refid="classzorba_1_1StaticContext" kindref="compound">StaticContext</ref> object they were obtained from is destroyed.</para><para>Note: Builtin functions are not declared in the Prolog, but the same kind of properties exist for them as well. So, the <ref refid="classzorba_1_1Function" kindref="compound">Function</ref> class works for builtin functions as well. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="644">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="643">
+        <label>zorba::Function</label>
+        <link refid="classzorba_1_1Function"/>
+        <childnode refid="644" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="646">
+        <label>zorba::SmartObject</label>
+        <link refid="classzorba_1_1SmartObject"/>
+      </node>
+      <node id="645">
+        <label>zorba::Function</label>
+        <link refid="classzorba_1_1Function"/>
+        <childnode refid="646" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wcandillon/deadlinks/include/zorba/function.h" line="46" bodyfile="/home/wcandillon/deadlinks/include/zorba/function.h" bodystart="45" bodyend="134"/>
+    <listofallmembers>
+      <member refid="classzorba_1_1SmartObject_1a968d642f8f9df309338fbdd5f680e033" prot="public" virt="non-virtual"><scope>zorba::Function</scope><name>addReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a87deaaa73d44b839ada0f7dcc2cc2b13" prot="public" virt="virtual"><scope>zorba::Function</scope><name>free</name></member>
+      <member refid="classzorba_1_1Function_1a052e7eea1c429def40f65b92cd6b84f5" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>getAnnotations</name></member>
+      <member refid="classzorba_1_1Function_1a352e5a2c013a3cfa49001b601491ef08" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>getArity</name></member>
+      <member refid="classzorba_1_1Function_1a28041f4f1db4af7513e56efada72a1f9" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>getLocalName</name></member>
+      <member refid="classzorba_1_1Function_1a19b2b3cb9610485e0ed3f31882b0668f" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>getQName</name></member>
+      <member refid="classzorba_1_1SmartObject_1aa76599b249f441747e996d3630b8f5ca" prot="public" virt="non-virtual"><scope>zorba::Function</scope><name>getRefCount</name></member>
+      <member refid="classzorba_1_1Function_1a25699af398c9122e7af28d5ce6f24232" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>getURI</name></member>
+      <member refid="classzorba_1_1Function_1a95ea6519077f4ebb58fc7a38164573a5" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>isBuiltin</name></member>
+      <member refid="classzorba_1_1Function_1a89733982969b27901ed4e2b2883e0f70" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>isDeterministic</name></member>
+      <member refid="classzorba_1_1Function_1a1fbcf5f8ade941f63d3be0e07981f000" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>isExternal</name></member>
+      <member refid="classzorba_1_1Function_1a507c9ef32b6c0a2ce98cf850a0598ce6" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>isPrivate</name></member>
+      <member refid="classzorba_1_1Function_1a884a0557a7c0455ae534bc96ac707321" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>isSequential</name></member>
+      <member refid="classzorba_1_1Function_1a4259bde70987a71e4f8beac8d959c69a" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>isUpdating</name></member>
+      <member refid="classzorba_1_1Function_1a25817b2e89de005ca2ab61fe815c244e" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>isVariadic</name></member>
+      <member refid="classzorba_1_1Function_1a7de1f55ad3ea396ffc3864b5f92e7ac7" prot="public" virt="pure-virtual"><scope>zorba::Function</scope><name>isXQuery</name></member>
+      <member refid="classzorba_1_1SmartObject_1abac69fcf1258887e61c4d4826256bf03" prot="public" virt="non-virtual"><scope>zorba::Function</scope><name>operator=</name></member>
+      <member refid="classzorba_1_1SmartObject_1a32ce26dcd544b131ef8b024972960ebc" prot="public" virt="non-virtual"><scope>zorba::Function</scope><name>removeReference</name></member>
+      <member refid="classzorba_1_1SmartObject_1a30e631be5e7ec3fc940556f1fc35360c" prot="public" virt="non-virtual"><scope>zorba::Function</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a81e0fc76280a6fe36f824c4bcd84b11a" prot="public" virt="non-virtual"><scope>zorba::Function</scope><name>SmartObject</name></member>
+      <member refid="classzorba_1_1SmartObject_1a066274b33cffdd451a68a2a0754c6044" prot="protected" virt="non-virtual"><scope>zorba::Function</scope><name>theRefCount</name></member>
+      <member refid="classzorba_1_1Function_1aac0c19d26269ab545dd64c2c52c9ac8a" prot="public" virt="virtual"><scope>zorba::Function</scope><name>~Function</name></member>
+      <member refid="classzorba_1_1SmartObject_1a555a6a427ea25753a32e1222856f299c" prot="public" virt="virtual"><scope>zorba::Function</scope><name>~SmartObject</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

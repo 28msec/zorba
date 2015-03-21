@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="scripting_tutorial" kind="page">
+    <compoundname>scripting_tutorial</compoundname>
+    <title>XQuery Scripting Tutorial</title>
+    <detaileddescription>
+<para>Zorba includes its own scripting capabilities.</para><para>This page gives an overview of this feature.</para><sect1 id="scripting_tutorial_1scripting_xquery_3_0">
+<title>XQuery 3.0, XQuery Update Facility 1.0 (later 3.0)</title>
+<para>All valid expressions from XQuery 3.0 as well as XQuery Update Facility 1.0 (with small adaptation changes for XQuery 3.0, anticipating XQUF 3.0) are allowed.</para><para>This means that you can write programs like:</para><para><programlisting><codeline><highlight class="stringliteral">&quot;Hello,<sp/>World!&quot;</highlight></codeline>
+</programlisting></para><para>or</para><para><programlisting><codeline><highlight class="normal">&lt;current-time&gt;{current-dateTime()}&lt;/current-time</highlight></codeline>
+</programlisting></para><para>or the updating expression</para><para><programlisting><codeline><highlight class="normal">insert<sp/>node<sp/>&lt;</highlight><highlight class="keyword">new</highlight><highlight class="normal">-node/&gt;<sp/>into<sp/>doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root</highlight></codeline>
+</programlisting></para><para>and these programs have the exact same semantics as specified in XQuery 3.0 and XQuery Update Facility 1.0.</para></sect1>
+<sect1 id="scripting_tutorial_1scripting_side_effects">
+<title>Side effects</title>
+<para>In XQuery 3.0 or XQUF 1.0, an expression never has any side effects other than constructing new nodes (not even updating expressions, which merely produce a pending update list).</para><para>Zorba Scripting programs may have side effects. Side effects can be made with statements. In a nutshell, statements can be recognized in that they use semi-colons -- just like in C++ or Java. And they can be written in a natural way -- just like in C++ or Java.</para><para>Statements are executed in the order in which they are written.</para><para>Let us take the following document file.xml as an example:</para><para><programlisting><codeline><highlight class="normal">&lt;root&gt;&lt;node/&gt;&lt;/root&gt;</highlight></codeline>
+</programlisting></para><para>In the following XQuery Update query:</para><para><programlisting><codeline><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>node<sp/>doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root/node,</highlight></codeline>
+<codeline><highlight class="normal">insert<sp/>node<sp/>doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root/node<sp/>into<sp/>doc(</highlight><highlight class="stringliteral">&quot;file2.xml&quot;</highlight><highlight class="normal">)/root</highlight></codeline>
+</programlisting></para><para>pending updates are accumulated against a given snapshot (the original document) and are only applied at the end. Both subexpressions see the same unaltered document</para><para><programlisting><codeline><highlight class="normal">&lt;root&gt;&lt;node/&gt;&lt;/root&gt;</highlight></codeline>
+</programlisting></para><para>Now, consider the following scripting program, which consists of two statements (they have semi-colons):</para><para><programlisting><codeline><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>node<sp/>doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root/node;</highlight></codeline>
+<codeline><highlight class="normal">insert<sp/>node<sp/>doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root/node<sp/>into<sp/>doc(</highlight><highlight class="stringliteral">&quot;file2.xml&quot;</highlight><highlight class="normal">)/root;</highlight></codeline>
+</programlisting></para><para>The first statement (delete) is executed against the original document:</para><para><programlisting><codeline><highlight class="normal">&lt;root&gt;&lt;node/&gt;&lt;/root&gt;</highlight></codeline>
+</programlisting></para><para>Its execution has the side effect of deleting the node named &quot;node&quot;. This means that the second statement (insert) will see the following document:</para><para><programlisting><codeline><highlight class="normal">&lt;root&gt;&lt;/root&gt;</highlight></codeline>
+</programlisting></para><para>As a result, nothing will be inserted into file2.xml, as</para><para><programlisting><codeline><highlight class="normal">doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root/node</highlight></codeline>
+</programlisting></para><para>will evaluate to the empty sequence.</para></sect1>
+<sect1 id="scripting_tutorial_1scripting_control_flow">
+<title>Control flow</title>
+<para>The control flow of statements can be controlled in a way very similar to that of imperative programming languages like C++ or Java (while retaining some XQuery spirit in the exact syntax).</para><sect2 id="scripting_tutorial_1scripting_while">
+<title>While statements</title>
+<para>For example, Zorba Scripting introduces while loops. The following query:</para><para><programlisting><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root</highlight><highlight class="comment">/*)</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>delete<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/*[1];</highlight></codeline>
+</programlisting></para><para>repeatedly deletes the first child of the root node, until it has no more children.</para></sect2>
+<sect2 id="scripting_tutorial_1scripting_conditional">
+<title>Conditional statements</title>
+<para>Zorba Scripting also allows using conditional or FLWOR statements. The following query:</para><para><programlisting><codeline><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(count(doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root</highlight><highlight class="comment">/*)<sp/>&gt;<sp/>2)</highlight></codeline>
+<codeline><highlight class="comment">then</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>delete<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/*[1];</highlight></codeline>
+<codeline><highlight class="comment">else</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>insert<sp/>node<sp/>&lt;node/&gt;<sp/>as<sp/>last<sp/>into<sp/>doc(&quot;file.xml&quot;)/root;</highlight></codeline>
+</programlisting></para><para>deletes the first child of the root if it has more than two children, otherwise it inserts a new child. Mind the semi-colons in both the then and the else statement. This is a conditional statement. It has side effects. Both its then and else operands are statements. Both operands are required.</para></sect2>
+<sect2 id="scripting_tutorial_1scripting_flwor">
+<title>FLWOR statements</title>
+<para>Now, consider the following FLWOR statement:</para><para><programlisting><codeline><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>$x<sp/>in<sp/>1<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>5</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>insert<sp/>node<sp/>&lt;node&gt;{$x}&lt;/node&gt;<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>first<sp/>into<sp/>doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root;</highlight></codeline>
+</programlisting></para><para>which works very much like a C++ for: for each value of $x between 1 and 5, a new node is inserted as the first child of the root. Each execution of the operand statement for a value of $x sees the previously inserted children. This means that the resulting document will look like:</para><para><programlisting><codeline><highlight class="normal">&lt;root&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;node&gt;5&lt;/node&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;node&gt;4&lt;/node&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;node&gt;3&lt;/node&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;node&gt;2&lt;/node&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;node&gt;1&lt;/node&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;node/&gt;</highlight></codeline>
+<codeline><highlight class="normal">&lt;/root&gt;</highlight></codeline>
+</programlisting></para></sect2>
+<sect2 id="scripting_tutorial_1scripting_other">
+<title>Other kinds of control flow statements</title>
+<para>Zorba Scripting also defines switch statements, typeswitch statements and try-catch statements. It reuses the existing XQuery 3.0 syntax... but with semi-colons.</para></sect2>
+</sect1>
+<sect1 id="scripting_tutorial_1scripting_semi_colon">
+<title>Where to put the semi-colon?</title>
+<para>Put in a nutshell: in control flow constructs, just like in C++, the semi-colons &quot;stick&quot; to the operands, not to the entire control flow construct. While conditional statements and FLWOR statements look a lot like conditional expressions and FLWOR expressions, they are different in that their operands are statements. They must use semi-colons. All of them.</para><para>This is a conditional statement:</para><para><programlisting><codeline><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(count(doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root</highlight><highlight class="comment">/*)<sp/>&gt;<sp/>2)</highlight></codeline>
+<codeline><highlight class="comment">then</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>delete<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/*[1];</highlight></codeline>
+<codeline><highlight class="comment">else</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>insert<sp/>node<sp/>&lt;node/&gt;<sp/>as<sp/>last<sp/>into<sp/>doc(&quot;file.xml&quot;)/root;</highlight></codeline>
+</programlisting></para><para>This is a conditional expression:</para><para><programlisting><codeline><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(count(doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root</highlight><highlight class="comment">/*)<sp/>&gt;<sp/>2)</highlight></codeline>
+<codeline><highlight class="comment">then</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>delete<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/*[1]</highlight></codeline>
+<codeline><highlight class="comment">else</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>insert<sp/>node<sp/>&lt;node/&gt;<sp/>as<sp/>last<sp/>into<sp/>doc(&quot;file.xml&quot;)/root</highlight></codeline>
+</programlisting></para><para>The following is incorrect, because the then operand is an expression, whereas the else operand is a statement:</para><para><programlisting><codeline><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(count(doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root</highlight><highlight class="comment">/*)<sp/>&gt;<sp/>2)</highlight></codeline>
+<codeline><highlight class="comment">then</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>delete<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/*[1]</highlight></codeline>
+<codeline><highlight class="comment">else</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>insert<sp/>node<sp/>&lt;node/&gt;<sp/>as<sp/>last<sp/>into<sp/>doc(&quot;file.xml&quot;)/root;</highlight></codeline>
+</programlisting></para><para>If you really want the semi-colon to be bound to the entire conditional construct, you need parentheses:</para><para><programlisting><codeline><highlight class="normal">(</highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(count(doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root</highlight><highlight class="comment">/*)<sp/>&gt;<sp/>2)</highlight></codeline>
+<codeline><highlight class="comment">then</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>delete<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/*[1]</highlight></codeline>
+<codeline><highlight class="comment">else</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>insert<sp/>node<sp/>&lt;node/&gt;<sp/>as<sp/>last<sp/>into<sp/>doc(&quot;file.xml&quot;)/root);</highlight></codeline>
+</programlisting></para><para>For FLWOR statements too, the semi-colon &quot;sticks&quot; to the return statement. If you want to accumulate the updates instead, i.e., bind the semi-colon to the entire FLWOR construct, you need parentheses:</para><para><programlisting><codeline><highlight class="normal">(</highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>$x<sp/>in<sp/>1<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a0f4527a84781e2e19c9796b2b7fcacba" kindref="member" tooltip="Tonga.">to</ref><sp/>5</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>insert<sp/>node<sp/>&lt;node&gt;{$x}&lt;/node&gt;<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>first<sp/>into<sp/>doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root);</highlight></codeline>
+</programlisting></para><para>Note however than the order of insertion is no longer guaranteed. Further explanations about expressions vs. statements are given further down on this page.</para></sect1>
+<sect1 id="scripting_tutorial_1scripting_blocks">
+<title>Block statements</title>
+<para>Like in C++, several statements can be concatenated and put inside a curly-braced block (just like expressions can be concatenated with commas and put inside parentheses!):</para><para><programlisting><codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>node<sp/>doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root/node;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>insert<sp/>node<sp/>doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root/node<sp/>into<sp/>doc(</highlight><highlight class="stringliteral">&quot;file2.xml&quot;</highlight><highlight class="normal">)/root;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Such blocks, which contain a series of statements, are themselves also statements and can be used wherever statements are allowed - for example in a conditional statement:</para><para><programlisting><codeline><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root</highlight><highlight class="comment">/*)</highlight></codeline>
+<codeline><highlight class="comment">then<sp/>{</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>delete<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/node;</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>insert<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/node<sp/>into<sp/>doc(&quot;file2.xml&quot;)/root;</highlight></codeline>
+<codeline><highlight class="comment">}</highlight></codeline>
+<codeline><highlight class="comment">else</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>insert<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/node<sp/>into<sp/>doc(&quot;file2.xml&quot;)/root;</highlight></codeline>
+</programlisting></para><para>Keep in mind that semi-colons and curly braces work just like in C++ when you are dealing with statements. Block statements can be empty:</para><para><programlisting><codeline><highlight class="normal">{}</highlight></codeline>
+</programlisting></para><para>Conditional statements (and while statements, FLWOR statements, block statements ...) are themselves statements and can also be concatenated with other statements:</para><para><programlisting><codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">do</highlight><highlight class="normal">-some-initialization();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root</highlight><highlight class="comment">/*)</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>then<sp/>{</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/>delete<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/node;</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>else<sp/>{}</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>insert<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/node<sp/>into<sp/>doc(&quot;file2.xml&quot;)/root;</highlight></codeline>
+<codeline><highlight class="comment">}</highlight></codeline>
+</programlisting></para><para>Again, just like in C++, you get the idea.</para></sect1>
+<sect1 id="scripting_tutorial_1scripting_variables">
+<title>Variables</title>
+<para>Zorba Scripting allows you to declare and assign variables. An example is better than a thousand words, so here is a query which computes the first 100 integers in the Fibonacci sequence:</para><para><programlisting><codeline><highlight class="normal">variable<sp/>$a<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>xs:integer<sp/>:=<sp/>0;<sp/>(:<sp/></highlight><highlight class="keyword">this</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref><sp/>a<sp/>variable<sp/>declaration<sp/>statement<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal">variable<sp/>$b<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>xs:integer<sp/>:=<sp/>1;<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">variable<sp/>$c<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>xs:integer<sp/>:=<sp/>$a<sp/>+<sp/>$b;</highlight></codeline>
+<codeline><highlight class="normal">variable<sp/>$fibseq<sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>xs:integer*<sp/>:=<sp/>($a,<sp/>$b);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>($c<sp/>&lt;<sp/>100)<sp/>{<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>$fibseq<sp/>:=<sp/>($fibseq,<sp/>$c);<sp/>(:<sp/></highlight><highlight class="keyword">this</highlight><highlight class="normal"><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a11cc1dd79aff8b41628c4f17295d25a7" kindref="member" tooltip="Icelandic.">is</ref><sp/>a<sp/>variable<sp/>assignment<sp/>statement<sp/>:)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>$a<sp/>:=<sp/>$b;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>$b<sp/>:=<sp/>$c;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>$c<sp/>:=<sp/>$a<sp/>+<sp/>$b;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Note that a main program does not need to be a block or a single statement: it can consist of several statements.</para></sect1>
+<sect1 id="scripting_tutorial_1scripting_combining">
+<title>Combining expressions and statements</title>
+<sect2 id="scripting_tutorial_1scripting_differences">
+<title>Differences between expressions and statements</title>
+<para>Put shortly, an expression returns a sequence of items (and possibly a pending update list). A statements does not return anything. It does something. Sometimes, doing something might require getting a result from an expression. Sometimes, computing a result requires doing something. Sometimes, one might even want to both do something and return a result. This part explains how to mix statements and expressions.</para></sect2>
+<sect2 id="scripting_tutorial_1scripting_nested">
+<title>Expressions nested in statements</title>
+<para>You already know that expressions can be put inside statements. We gave the example of a conditional expression inside a statement, using parentheses:</para><para><programlisting><codeline><highlight class="normal">(</highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(count(doc(</highlight><highlight class="stringliteral">&quot;file.xml&quot;</highlight><highlight class="normal">)/root</highlight><highlight class="comment">/*)<sp/>&gt;<sp/>2)</highlight></codeline>
+<codeline><highlight class="comment">then</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>delete<sp/>node<sp/>doc(&quot;file.xml&quot;)/root/*[1]</highlight></codeline>
+<codeline><highlight class="comment">else</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>insert<sp/>node<sp/>&lt;node/&gt;<sp/>as<sp/>last<sp/>into<sp/>doc(&quot;file.xml&quot;)/root);</highlight></codeline>
+</programlisting></para><para>Another example is the condition expression of a conditional statement, which is always an expression.</para></sect2>
+<sect2 id="scripting_tutorial_1scripting_statements">
+<title>Statements inside expressions: node constructors</title>
+<para>There is one most prominent location where statements can be very useful. If you remember PHP, it allows executing instructions, and declaratively outputing some HTML. With Zorba Scripting, statements can be used in element constructors, giving it some PHP taste. In the following example, the element constructor contains a series a statements followed by a single expression which constructs (and returns) the body of the page.</para><para><programlisting><codeline><highlight class="normal">&lt;html<sp/>xmlns=</highlight><highlight class="stringliteral">&quot;http://www.w3.org/1999/xhtml&quot;</highlight><highlight class="normal">&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;head&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;title&gt;Blog<sp/>entry<sp/>added&lt;/title&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&lt;/head&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>variable<sp/>$user<sp/>:=<sp/>replace($request/url,<sp/></highlight><highlight class="stringliteral">&quot;^http://.*/([^/]+)/add$&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;$1&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>variable<sp/>$blog<sp/>:=<sp/>collection()/micro-blog[@user<sp/>=<sp/>$user];</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">($blog)<sp/>then<sp/>{}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>exit<sp/>returning<sp/>local:error(</highlight><highlight class="stringliteral">&quot;Unknown<sp/>user&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>insert<sp/>node</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>&lt;entry<sp/>timestamp=</highlight><highlight class="stringliteral">&quot;{<sp/>current-dateTime()<sp/>}&quot;</highlight><highlight class="normal">&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;text&gt;{<sp/>data($request/param[@name<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;text&quot;</highlight><highlight class="normal">])<sp/>}&lt;/text&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>&lt;/entry&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacezorba_1_1locale_1_1iso639__1_1aafd6e55905dc8efe50a3f9fd38616781a1dea282b8d50cca16d5e6f8faef7d9d0" kindref="member" tooltip="Assamese.">as</ref><sp/>last<sp/>into<sp/>$blog;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;body&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>&lt;h1&gt;Blog<sp/>entry<sp/>added<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>{<sp/>$user<sp/>}&lt;/h1&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>&lt;p&gt;{<sp/>data($request/param[@name<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;text&quot;</highlight><highlight class="normal">])<sp/>}&lt;/p&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>&lt;/body&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">&lt;/html&gt;</highlight></codeline>
+</programlisting></para><para>While it contains statements, the outer construct is still an expression (it returns a value: the HTML page), but it has side effects (updating the database...). Such an expression is called a sequential expression.</para><para>In short, an expression is sequential if it contains statements that have side effects (updating some XML, assigning a variable in scope outside of the expression) or that affect the control flow (break, continue, exit returning) - or if it calls a sequential function.</para></sect2>
+<sect2 id="scripting_tutorial_1scripting_do_do">
+<title>Do-do-do-do-deliver</title>
+<para>This pattern of having, in a block, several statements followed by a single expression is the most general way of using statements together with expressions. The main program is built that way: it can be a single expression, it can be several statements followed by a single expression, or it can be just several statements (in which case it is as if the final expression were empty).</para><para>A function body works exactly the same way. Note that if the body expression of a function is sequential, the function must be annotated as sequential.</para></sect2>
+<sect2 id="scripting_tutorial_1scripting_pitfall">
+<title>Pitfall: block statements, block expressions</title>
+<para>It is also possible to have several statements followed by an expression inside curly braces (with no node constructor). This is called a block expression.</para><para>Distinguishing block statements and block expressions is done by looking whether it ends with a statement or an expression. As a rule of thumb, anything (valid) that ends neither with a semi-colon or a closing curly-brace is an expression. If there is no semi-colon or opening curly brace before the closing curly braces, it is also an expression. Which means you cannot concatenate something else after it!</para><para>As a last piece of advice, if the parser complains while you are writing a scripting program, there can be two main kind of errors: either you are trying to mix expressions and statements suboperands, which is not allowed (for example in a conditional statement or expression - <bold>remember that the semi-colon sticks to an operand, not to the entire control flow construct</bold>). Or if you got this right, it might be that you are trying to concatenate something after an expression. In both cases, <bold>it is very likely that you wrote a block expression where you meant to use a block statement</bold> (see criterion above). In this case, you probably just forgot a semi-colon.</para><para>XQuery is very powerful and expressive. As in C++, modularizing your programs in small functions will dramatically reduce development time while improving readability.</para></sect2>
+<sect2 id="scripting_tutorial_1scripting_warnings">
+<title>Scripting Warnings</title>
+<para>The compiler may report warnings to report scripting constructions which are not inherently erroneious but which are risky or suggest there may have been an error (also see <ref refid="errors_warnings" kindref="compound">Errors and Warnings</ref>).</para><sect3 id="scripting_tutorial_1ZWST0004">
+<title>ZWST0004</title>
+<para>This is a warning to draw attention to the fact that when FOR clauses or LET clauses that are nested inside FOR clauses have a sequential domain expression, then one can think of two different evaluation semantics of the corresponding FLWOR expression. Both semantics are correct, but they are not equivalent. Zorba adopts one of these semantics (see <ulink url="/scripting-spec">Scripting Specification</ulink>). The warning is there to alert users who write such FLWOR expressions that what they may have in mind as the way these FLWORs will be evaluated may not be the same as the way Zorba actually evaluates them.</para></sect3>
+</sect2>
+<sect2 id="scripting_tutorial_1scripting_option">
+<title>Disabling Scripting Support</title>
+<para>By default, Zorba comes with support for scripting. However, it might make sense to disable this feature. For example, if you want to make sure that a module does not need any scripting features because it would not be compatible with other XQuery processors.</para><para>The following prolog option can be used to disable the scripting feature.</para><para><programlisting><codeline><highlight class="normal"><sp/><sp/>declare<sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">op<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;http://zorba.io/options/features&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>declare<sp/>option<sp/>op:disable<sp/></highlight><highlight class="stringliteral">&quot;scripting&quot;</highlight><highlight class="normal">;</highlight></codeline>
+</programlisting></para><para>Please find more details regarding options to enable or disable particular features in the documentation about <ref refid="options_and_annotations" kindref="compound">Zorba Specific Options and Annotations</ref>. </para></sect2>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6.1">
+  <compounddef id="dir_e05e2f8323b7114ad61764d674383141" kind="dir">
+    <compoundname>/home/wcandillon/deadlinks/include/zorba/</compoundname>
+    <innerdir refid="dir_0782e36ce4e7a6272b0d8c348d7e8e7e">/home/wcandillon/deadlinks/include/zorba/internal/</innerdir>
+    <innerdir refid="dir_2ce40352a5870a2d7745b0a99a7d00f3">/home/wcandillon/deadlinks/include/zorba/pregenerated/</innerdir>
+    <innerdir refid="dir_7d1f0bbf4d14ba8b56a3a88e1feacef7">/home/wcandillon/deadlinks/include/zorba/util/</innerdir>
+    <innerfile refid="annotation_8h">annotation.h</innerfile>
+    <innerfile refid="api__shared__types_8h">api_shared_types.h</innerfile>
+    <innerfile refid="audit_8h">audit.h</innerfile>
+    <innerfile refid="audit__scoped_8h">audit_scoped.h</innerfile>
+    <innerfile refid="collection_8h">collection.h</innerfile>
+    <innerfile refid="collection__manager_8h">collection_manager.h</innerfile>
+    <innerfile refid="debugger__client_8h">debugger_client.h</innerfile>
+    <innerfile refid="debugger__default__event__handler_8h">debugger_default_event_handler.h</innerfile>
+    <innerfile refid="debugger__event__handler_8h">debugger_event_handler.h</innerfile>
+    <innerfile refid="debugger__exception_8h">debugger_exception.h</innerfile>
+    <innerfile refid="default__content__handler_8h">default_content_handler.h</innerfile>
+    <innerfile refid="diagnostic_8h">diagnostic.h</innerfile>
+    <innerfile refid="diagnostic__handler_8h">diagnostic_handler.h</innerfile>
+    <innerfile refid="document__manager_8h">document_manager.h</innerfile>
+    <innerfile refid="dynamic__context_8h">dynamic_context.h</innerfile>
+    <innerfile refid="empty__sequence_8h">empty_sequence.h</innerfile>
+    <innerfile refid="error_8h">error.h</innerfile>
+    <innerfile refid="external__function__parameter_8h">external_function_parameter.h</innerfile>
+    <innerfile refid="external__module_8h">external_module.h</innerfile>
+    <innerfile refid="function_8h">function.h</innerfile>
+    <innerfile refid="item_8h">item.h</innerfile>
+    <innerfile refid="item__factory_8h">item_factory.h</innerfile>
+    <innerfile refid="item__sequence_8h">item_sequence.h</innerfile>
+    <innerfile refid="iterator_8h">iterator.h</innerfile>
+    <innerfile refid="module__info_8h">module_info.h</innerfile>
+    <innerfile refid="options_8h">options.h</innerfile>
+    <innerfile refid="printer__diagnostic__handler_8h">printer_diagnostic_handler.h</innerfile>
+    <innerfile refid="properties__base_8h">properties_base.h</innerfile>
+    <innerfile refid="query__location_8h">query_location.h</innerfile>
+    <innerfile refid="sax2_8h">sax2.h</innerfile>
+    <innerfile refid="serialization__callback_8h">serialization_callback.h</innerfile>
+    <innerfile refid="serializer_8h">serializer.h</innerfile>
+    <innerfile refid="singleton__item__sequence_8h">singleton_item_sequence.h</innerfile>
+    <innerfile refid="static__collection__manager_8h">static_collection_manager.h</innerfile>
+    <innerfile refid="static__context_8h">static_context.h</innerfile>
+    <innerfile refid="static__context__consts_8h">static_context_consts.h</innerfile>
+    <innerfile refid="stemmer_8h">stemmer.h</innerfile>
+    <innerfile refid="store__consts_8h">store_consts.h</innerfile>
+    <innerfile refid="store__manager_8h">store_manager.h</innerfile>
+    <innerfile refid="store__manager__c_8h">store_manager_c.h</innerfile>
+    <innerfile refid="streams_8h">streams.h</innerfile>
+    <innerfile refid="thesaurus_8h">thesaurus.h</innerfile>
+    <innerfile refid="tokenizer_8h">tokenizer.h</innerfile>
+    <innerfile refid="typeident_8h">typeident.h</innerfile>
+    <innerfile refid="uri__resolvers_8h">uri_resolvers.h</innerfile>
+    <innerfile refid="user__exception_8h">user_exception.h</innerfile>
+    <innerfile refid="vector__item__sequence_8h">vector_item_sequence.h</innerfile>
+    <innerfile refid="version_8h">version.h</innerfile>
+    <innerfile refid="xmldatamanager_8h">xmldatamanager.h</innerfile>
+    <innerfile refid="xquery_8h">xquery.h</innerfile>
+    <innerfile refid="xquery__exception_8h">xquery_exception.h</innerfile>
+    <innerfile refid="xquery__functions_8h">xquery_functions.h</innerfile>
+    <innerfile refid="xquery__stack__trace_8h">xquery_stack_trace.h</innerfile>
+    <innerfile refid="xquery__warning_8h">xquery_warning.h</innerfile>
+    <innerfile refid="zorba_8h">zorba.h</innerfile>
+    <innerfile refid="zorba__exception_8h">zorba_exception.h</innerfile>
+    <innerfile refid="zorba__functions_8h">zorba_functions.h</innerfile>
+    <innerfile refid="zorba__string_8h">zorba_string.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wcandillon/deadlinks/include/zorba/"/>
+  </compounddef>
+</doxygen>

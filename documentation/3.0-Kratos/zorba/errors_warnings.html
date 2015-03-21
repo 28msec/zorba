@@ -1,0 +1,74 @@
+<div class="doxygen">
+  <div><h1 class="title">Errors and Warnings</h1>
+During the interaction with Zorba (e.g.through the C++ API) and the processing of programs, errors may be raised and warnings may be reported.In this document, we describe how errors and warnings can be dealt with using Zorba's C++ API, XQuery, and JSONiq.<div id="errors_warnings_errors" class="sect1"><h2>Errors</h2>
+Zorba may raise errors during the static analysis phase and the dynamic evaluation phase of a query. Moreover, errors may be raised by any of the host language APIs. Each such error is identified by a QName. Most of the errors are defined by any of the XQuery specifications (e.g. XQuery 1.0 or 3.0, XQuery Update, or XQuery Full Text) and contained in the XPath and XQuery error namespace (<a href="http://www.w3.org/2005/xqt-errors" target="_blank">http://www.w3.org/2005/xqt-errors</a>). In addition, Zorba defines a set of errors in the http://zorba.io/errors namespace.A full list of potential errors can be found in the <a href="/pages/3.0/zorba/diagnostic__list_8h">diagnostic_list.h</a> header (<tt>err</tt> and <tt>zerr</tt> namespaces) of the C++ API and in the following modules:<ul>
+<li>
+<a href="/modules/latest/zorba.io/errors" target="_blank">http://zorba.io/errors</a> </li>
+<li>
+<a href="/modules/latest/www.w3.org/2005/xqt-errors" target="_blank">http://www.w3.org/2005/xqt-errors</a> </li>
+</ul>
+These modules declare one variable per error. The name and value of the variable is the QName of the corresponding error.</div>
+<div id="errors_warnings_warnings" class="sect1"><h2>Warnings</h2>
+In addition to the errors mentioned in the previous section, Zorba may raise warnings during the static analysis phase of the query. Warnings are diagnostic messages that report constructions which are not inherently erroneous but which are risky or suggest there may have been an error. Like an error, a warning is identified by a QName whose namespace is http://zorba.io/warnings. A list of warnings can be found in the <a href="/pages/3.0/zorba/diagnostic__list_8h">diagnostic_list.h</a> header (zwarn namespace) of the C++ API and in the <a href="/modules/latest/zorba.io/warnings" target="_blank">http://zorba.io/warnings</a> module.A warning can be enabled (i.e. will be reported), disabled (i.e. will not be reported), or turned into an error (i.e. an error with the same name will be raised) by specifying options in the static context that is used to compile the query (<a href="/pages/3.0/zorba/classzorba_1_1StaticContext?anchor=a5cb66ac2b7c17a76b59978fd50c238e5">zorba::StaticContext::declareOption</a>) or in the prolog of an XQuery module.For example, given the following prolog of an XQuery module, all warnings are treated as errors:<pre class="ace-static" ace-mode="xquery"><span class="normal"><span> </span><span> </span>declare<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">op<span> </span>=<span> </span></span><span class="stringliteral">"http://zorba.io/options/warnings"</span><span class="normal">;</span>
+<span class="normal"><span> </span><span> </span>declare<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">w<span> </span>=<span> </span></span><span class="stringliteral">"http://zorba.io/warnings"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal"><span> </span><span> </span>declare<span> </span>option<span> </span>op:error<span> </span></span><span class="stringliteral">"w:all"</span><span class="normal">;</span>
+</pre>More information on how options can be used to configure warnings can be found in the <a href="/pages/3.0/zorba/options_and_annotations">Zorba Specific Options and Annotations</a> documentation.</div>
+<div id="errors_warnings_cpp" class="sect1"><h2>Errors and Warnings in the C++ API</h2>
+In the C++ API, errors are reported using the exception classes: <a href="/pages/3.0/zorba/classzorba_1_1ZorbaException">zorba::ZorbaException</a>, <a href="/pages/3.0/zorba/classzorba_1_1XQueryException">zorba::XQueryException</a>, and <a href="/pages/3.0/zorba/classzorba_1_1UserException">zorba::UserException</a>. Objects of type <a href="/pages/3.0/zorba/classzorba_1_1ZorbaException">zorba::ZorbaException</a> contain a description of the error. Instances of the class <a href="/pages/3.0/zorba/classzorba_1_1XQueryException">zorba::XQueryException</a> are raised during the static or dynamic analysis or evaluation phase, respectively. They contain additional information about the source location of the problem in the program (i.e. <a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a553ee378d77657617e872347f09d1adc">zorba::XQueryException::source_uri()</a>, <a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=aab93a239dd4047d6e4aaa7cba2c9ab47">zorba::XQueryException::source_line()</a>, <a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a093a3985c87d852aa5f70187137153a4">zorba::XQueryException::source_column()</a>, <a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=acfc67763485cee7f4dffd51e7b2abf90">zorba::XQueryException::source_line_end()</a>, and <a href="/pages/3.0/zorba/classzorba_1_1XQueryException?anchor=a673a725c2e629380cd961ca537abcf02">zorba::XQueryException::source_column_end()</a>). Moreover, if the error occurs during the dynamic evaluation phase, the object carries the stack trace containing the names and source location of the invoked functions. <a href="/pages/3.0/zorba/classzorba_1_1UserException">zorba::UserException</a> is an <a href="/pages/3.0/zorba/classzorba_1_1XQueryException">zorba::XQueryException</a> which is used to report errors that are raised by the <tt>fn:error()</tt> function. In addition to the source location and stack trace, instances of this class may also carry an error object (if passed to <tt>fn:error</tt>).In the C++ API, those objects are usually thrown and need to be caught (and handled) by the caller. However, the API also provides a way to register a user-defined diagnostic handler (i.e. subclass of <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler">zorba::DiagnosticHandler</a>) whose <a href="/pages/3.0/zorba/classzorba_1_1DiagnosticHandler?anchor=af3425c0a0811d549c45188b0eba044fe">zorba::DiagnosticHandler::error</a> (ZorbaException const &amp; exception) function is invoked if an error occurs.Please take a look at the C++ examples that show how to deal with errors and warnings in the C++ API (errors_8cpp-example).</div>
+<div id="try_catch" class="sect1"><h2>Try/Catch Expressions</h2>
+The <a href="http://www.w3.org/TR/xquery-30/#id-try-catch" target="_blank">try/catch expression</a> provides error handling for dynamic errors and type errors raised during dynamic evaluation. For example:<pre class="ace-static" ace-mode="xquery"><span class="normal">(:<span> </span>Simple<span> </span></span><span class="keywordflow">try</span><span class="normal">-</span><span class="keywordflow">catch</span><span class="normal"><span> </span>example<span> </span>:)</span>
+<span class="normal"/>
+<span class="normal">declare<span> </span></span><span class="keyword">namespace</span><span class="normal"><span> </span>err=</span><span class="stringliteral">"http://www.w3.org/2005/xqt-errors"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal"/><span class="keywordflow">try</span><span class="normal"><span> </span>{</span>
+<span class="normal"><span> </span><span> </span>3<span> </span>+<span> </span></span><span class="stringliteral">"2"</span><span class="normal"/>
+<span class="normal">}<span> </span></span><span class="keywordflow">catch</span><span class="normal"><span> </span>err:<a href="/pages/3.0/zorba/namespacezorba_1_1err?anchor=ad7d1a9dd8243aeb5d7c2671882a09839">XPTY0004</a><span> </span>{</span>
+<span class="normal"><span> </span><span> </span></span><span class="stringliteral">"Caught<span> </span>a<span> </span>type<span> </span>error"</span><span class="normal"/>
+<span class="normal">}</span>
+</pre>Within the <tt>catch</tt> expression, a few implicit variables are defined. Some of them (e.g., <tt>$err:code</tt>, <tt>$err:description</tt>, and <tt>$err:line-number</tt>) are defined by the <a href="http://www.w3.org/TR/xquery-30/#id-try-catch" target="_blank">XQuery</a> specification.Zorba defines additional implicit variables:<table class="table table-bordered"><tr>
+<th>Variable </th><th>Type </th><th>Value  </th></tr>
+<tr>
+<td><tt>$zerr:line-number-end</tt>  </td><td><tt>xs:integer</tt>? </td><td>The ending line number within the query where the error occurred.   </td></tr>
+<tr>
+<td><tt>$zerr:column-number-end</tt>  </td><td><tt>xs:integer</tt>? </td><td>The ending column number within the query where the error occurred.   </td></tr>
+<tr>
+<td><tt>$zerr:data-uri</tt>  </td><td><tt>xs:string</tt>? </td><td>The URI of the data file containing the error.   </td></tr>
+<tr>
+<td><tt>$zerr:data-line-number</tt>  </td><td><tt>xs:integer</tt>? </td><td>The line number within the data file where the error occurred. The value <em>may</em> be approximate.   </td></tr>
+<tr>
+<td><tt>$zerr:data-column-number</tt>  </td><td><tt>xs:integer</tt>? </td><td>The column number within the data file where the error occurred. The value <em>may</em> be approximate.   </td></tr>
+<tr>
+<td><tt>$zerr:stack-trace</tt>  </td><td><tt>item()</tt>? </td><td>The function call stack-trace leading up to the error.   </td></tr>
+</table>
+where the <tt>zerr</tt> prefix is bound to the namespace <tt>http</tt>://zorba.io/errors and "data file" refers to the file that data is being read from, e.g., the result of reading XML (<tt>fn:doc</tt>) or JSON data. For example, the query:<pre class="ace-static" ace-mode="xquery"><span class="normal">declare<span> </span></span><span class="keyword">namespace<span> </span></span><span class="normal">zerr<span> </span>=<span> </span></span><span class="stringliteral">"http://zorba.io/errors"</span><span class="normal">;</span>
+<span class="normal"/>
+<span class="normal">declare<span> </span></span><span class="keyword">function</span><span class="normal"><span> </span>local:bar()</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span>1<span> </span>div<span> </span>0</span>
+<span class="normal">};</span>
+<span class="normal"/>
+<span class="normal">declare<span> </span></span><span class="keyword">function</span><span class="normal"><span> </span>local:foo()</span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span>local:bar()</span>
+<span class="normal">};</span>
+<span class="normal"/>
+<span class="normal"/><span class="keywordflow">try</span><span class="normal"><span> </span></span>
+<span class="normal">{</span>
+<span class="normal"><span> </span><span> </span>local:foo()</span>
+<span class="normal">}<span> </span></span><span class="keywordflow">catch</span><span class="normal"><span> </span>*<span> </span>{</span>
+<span class="normal"><span> </span><span> </span>$zerr:stack-trace</span>
+<span class="normal">}</span>
+</pre>returns the following result:<pre class="ace-static" ace-mode="xquery"><span class="normal">&lt;stack<span> </span>xmlns=</span><span class="stringliteral">"http://zorba.io/errors"</span><span class="normal">&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;entry&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>&lt;</span><span class="keyword">function</span><span class="normal"><span> </span></span><span class="keyword">namespace</span><span class="normal">=</span><span class="stringliteral">"http://www.w3.org/2005/xquery-local-functions"</span><span class="normal"><span> </span>localname=</span><span class="stringliteral">"bar"</span><span class="normal"><span> </span>arity=</span><span class="stringliteral">"0"</span><span class="normal">/&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>&lt;location<span> </span>name=</span><span class="stringliteral">"filename.xq"</span><span class="normal"><span> </span>line-begin=</span><span class="stringliteral">"10"</span><span class="normal"><span> </span>line-end=</span><span class="stringliteral">"10"</span><span class="normal"><span> </span>column-begin=</span><span class="stringliteral">"3"</span><span class="normal"><span> </span>column-end=</span><span class="stringliteral">"14"</span><span class="normal">/&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;/entry&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;entry&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>&lt;</span><span class="keyword">function</span><span class="normal"><span> </span></span><span class="keyword">namespace</span><span class="normal">=</span><span class="stringliteral">"http://www.w3.org/2005/xquery-local-functions"</span><span class="normal"><span> </span>localname=</span><span class="stringliteral">"foo"</span><span class="normal"><span> </span>arity=</span><span class="stringliteral">"0"</span><span class="normal">/&gt;</span>
+<span class="normal"><span> </span><span> </span><span> </span><span> </span>&lt;location<span> </span>name=</span><span class="stringliteral">"filename.xq"</span><span class="normal"><span> </span>line-begin=</span><span class="stringliteral">"15"</span><span class="normal"><span> </span>line-end=</span><span class="stringliteral">"15"</span><span class="normal"><span> </span>column-begin=</span><span class="stringliteral">"3"</span><span class="normal"><span> </span>column-end=</span><span class="stringliteral">"14"</span><span class="normal">/&gt;</span>
+<span class="normal"><span> </span><span> </span>&lt;/entry&gt;</span>
+<span class="normal">&lt;/stack&gt;</span>
+</pre> </div>
+    </div>
+</div>
