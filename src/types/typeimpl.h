@@ -282,7 +282,7 @@ public:
                              // for example, the static type of the fn:error
                              // function is "none". (quantifier = 1)
 
-    EMPTY_KIND = 1,              // empty-sequence() (quanttifier = ?)
+    EMPTY_KIND = 1,              // empty-sequence() (quantifier = ?)
 
     ITEM_KIND = 2,               // item() + quantifier
 
@@ -296,13 +296,13 @@ public:
 
     FUNCTION_TYPE_KIND = 7,      // function(...) as ... + quantifier
 
-    ANY_TYPE_KIND = 8,           // xs:anyType (quanttifier = *)
+    ANY_TYPE_KIND = 8,           // xs:anyType (quantifier = *)
 
-    ANY_SIMPLE_TYPE_KIND = 9,    // xs:anySimpleType (quanttifier = *)
+    ANY_SIMPLE_TYPE_KIND = 9,    // xs:anySimpleType (quantifier = *)
 
     ANY_FUNCTION_TYPE_KIND = 10, // function(*)
 
-    UNTYPED_KIND = 11,           // xs:untyped (quanttifier = *)
+    UNTYPED_KIND = 11,           // xs:untyped (quantifier = *)
 
     USER_DEFINED_KIND = 12,      // Named, user-defined XMLSchema type (may be atomic,
                                  // list, union, or complex) + quantifier
@@ -312,7 +312,7 @@ public:
 
 
   //
-  // The kind of a UDT: atomic, union, lis, or complex
+  // The kind of a UDT: atomic, union, list, or complex
   //
   enum UDTKind
   {
