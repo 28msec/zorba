@@ -30,7 +30,6 @@ dependencies:
     - mkdir -p "${ZORBA_BUILD_DIR}"
 test:
   pre:
-    - hostname
     - case $CIRCLE_NODE_INDEX in 0) sh circle/distcc-compile.sh ;; esac:
         parallel: true
   override:
