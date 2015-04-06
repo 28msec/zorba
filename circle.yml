@@ -19,8 +19,7 @@ machine:
     ZORBA_SRC_DIR: /home/ubuntu/zorba
     ZORBA_BUILD_DIR: /home/ubuntu/zorba/build
     ZORBA_MODULE_DIR: /home/ubuntu/zorba_modules
-    DISTCC_HOSTS: "node0 node1 node2 node3"
-    HOSTSPEC: SSH_HOST
+    DISTCC_HOSTS: "ubuntu@node0 ubuntu@node1 ubuntu@node2 ubuntu@node3"
 dependencies:
   override:
     - echo "ZORBA_SRC_DIR ${ZORBA_SRC_DIR}"
