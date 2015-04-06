@@ -4,8 +4,8 @@ machine:
 #    - sudo apt-get install -f
     - sudo apt-get purge "libmagick*"
     - sudo apt-get purge "libboost*"
-    - sudo apt-get purge "libxml*"
-    - sudo apt-get purge "libicu*"
+    - sudo apt-get purge "libxml2-dev"
+    - sudo apt-get purge "libicu-dev"
     - sudo apt-get install python-pip libicu-dev libxml2-dev uuid-dev libxerces-c-dev graphviz libboost-filesystem-dev libgeos++-dev imagemagick libmagick++-dev libmagickwand-dev libfop-java libpdfbox-java libtidy-dev libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev swig python-dev php5-dev ruby-dev openjdk-6-jdk libaccess-bridge-java-jni libxslt-dev libcurl4-openssl-dev libxerces-c-dev php5-dev doxygen libedit-dev php5 python-dev libkvutils-dev
     - sudo locale-gen de_DE && sudo locale-gen de_DE.UTF-8 && sudo locale-gen fr_FR && sudo locale-gen fr_FR.UTF-8 && sudo update-locale
     - wget http://launchpadlibrarian.net/160037457/bison_3.0.2.dfsg-2_amd64.deb
@@ -26,7 +26,7 @@ dependencies:
     - mkdir -p "${ZORBA_MODULE_DIR}"
 #    - cmake -Doutdir="${ZORBA_MODULE_DIR}" -Dallmodules=1 -P "${ZORBA_SRC_DIR}/modules/DownloadModules.cmake"
     - mkdir -p "${ZORBA_BUILD_DIR}"
-    - cd "${ZORBA_BUILD_DIR}" && cmake -DZORBA_MODULES_DIR="${ZORBA_MODULE_DIR}" -DZORBA_XQUERYX:BOOL=1 -DZORBA_TEST_XQUERYX:BOOL=1 -DZORBA_WITH_BIG_INTEGER=1 -DCMAKE_BUILD_TYPE=Release -DZORBA_TEST_PLAN_SERIALIZATION:BOOL=1 -DZORBATEST_USE_MT_XQTS:BOOL=1 "${ZORBA_SRC_DIR}"
+    - cd "${ZORBA_BUILD_DIR}" && CC="distcc gcc" CXX="distcc g++" cmake -DZORBA_MODULES_DIR="${ZORBA_MODULE_DIR}" -DZORBA_XQUERYX:BOOL=1 -DZORBA_TEST_XQUERYX:BOOL=1 -DZORBA_WITH_BIG_INTEGER=1 -DCMAKE_BUILD_TYPE=Release -DZORBA_TEST_PLAN_SERIALIZATION:BOOL=1 -DZORBATEST_USE_MT_XQTS:BOOL=1 "${ZORBA_SRC_DIR}"
     - cd "${ZORBA_BUILD_DIR}" && make -j2
     - bash "${ZORBA_SRC_DIR}/import_tests.sh"
     - cd "${ZORBA_BUILD_DIR}" && make fots-activate-sets
