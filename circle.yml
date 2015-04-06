@@ -20,7 +20,6 @@ machine:
     ZORBA_BUILD_DIR: /home/ubuntu/zorba/build
     ZORBA_MODULE_DIR: /home/ubuntu/zorba_modules
     DISTCC_HOSTS: "node0 node1 node2 node3"
-    STARTDISTCC: "true"
 dependencies:
   override:
     - echo "ZORBA_SRC_DIR ${ZORBA_SRC_DIR}"
