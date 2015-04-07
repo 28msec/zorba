@@ -1,7 +1,7 @@
 machine:
   post:
-#    - sudo apt-get update -qq
-#    - sudo apt-get install -f
+    - sudo apt-get update -qq
+    - sudo apt-get install -f
     - sudo apt-get purge "libmagick*"
     - sudo apt-get purge "libboost*"
     - sudo apt-get install distcc python-pip uuid-dev libxerces-c-dev graphviz libboost-filesystem-dev libgeos++-dev imagemagick libmagick++-dev libmagickwand-dev libfop-java libpdfbox-java libtidy-dev libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev swig python-dev php5-dev ruby-dev openjdk-6-jdk libaccess-bridge-java-jni libxslt-dev libcurl4-openssl-dev libxerces-c-dev php5-dev doxygen libedit-dev php5 python-dev libkvutils-dev
