@@ -4,7 +4,7 @@ machine:
 #    - sudo apt-get install -f
     - sudo apt-get purge "libmagick*"
     - sudo apt-get purge "libboost*"
-    - sudo apt-get install distcc python-pip zlib zlib-dev libxml2 libxml2-dev uuid-dev libxerces-c-dev graphviz libboost-filesystem-dev libgeos++-dev imagemagick libmagick++-dev libmagickwand-dev libfop-java libpdfbox-java libtidy-dev libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev swig python-dev php5-dev ruby-dev openjdk-6-jdk libaccess-bridge-java-jni libxslt-dev libcurl4-openssl-dev libxerces-c-dev php5-dev doxygen libedit-dev php5 python-dev libkvutils-dev
+    - sudo apt-get install distcc python-pip lib64z1 lib64z1-dev libxml2 libxml2-dev uuid-dev libxerces-c-dev graphviz libboost-filesystem-dev libgeos++-dev imagemagick libmagick++-dev libmagickwand-dev libfop-java libpdfbox-java libtidy-dev libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev swig python-dev php5-dev ruby-dev openjdk-6-jdk libaccess-bridge-java-jni libxslt-dev libcurl4-openssl-dev libxerces-c-dev php5-dev doxygen libedit-dev php5 python-dev libkvutils-dev
     - sudo locale-gen de_DE && sudo locale-gen de_DE.UTF-8 && sudo locale-gen fr_FR && sudo locale-gen fr_FR.UTF-8 && sudo update-locale
     - wget http://launchpadlibrarian.net/160037457/bison_3.0.2.dfsg-2_amd64.deb
     - wget http://launchpadlibrarian.net/160037458/libbison-dev_3.0.2.dfsg-2_amd64.deb
