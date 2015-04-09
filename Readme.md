@@ -1,5 +1,4 @@
-#Zorba - NoSQL Query Processor [![wercker status](https://app.wercker.com/status/b3c8557814e454f56a5079d6f6869ef8/s/master "wercker status")](https://app.wercker.com/project/bykey/b3c8557814e454f56a5079d6f6869ef8)
-
+#Zorba - NoSQL Query Processor [![Circle CI](https://circleci.com/gh/28msec/zorba.svg?style=svg)](https://circleci.com/gh/28msec/zorba) 
 http://zorba.28.io/
 
 ##Docker Container
