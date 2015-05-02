@@ -39,7 +39,7 @@ Make sure you have MacPorts installed and up to date. Since .pkg contains only Z
 
 Install dependecies:
 \code
-sudo port install boost curl icu libiconv libxml2 libxslt xerces3 tidy fop geos libarchive sqlite3 swig swig-python swig-php swig-java swig-ruby
+sudo port install boost curl icu libiconv libxml2 libxslt xerces3 tidy fop geos libarchive sqlite3
 \endcode
 
 \b Note: Use MacPorts installation of the libraries, do not modify the libraries that ships with OSX. Modifying OXS libraries usualy renders your OSX installation unusable.
@@ -77,7 +77,7 @@ This is the most flexible way of installing Zorba, one has access to all it's bu
 This requires instalation of < href="http://www.macports.org/install.php">MacPorts 2.2.0</a> and installation of Zorba dependecy ports:
 
 \code
-sudo port install boost curl icu libiconv libxml2 libxslt xerces3 tidy fop geos libarchive sqlite3 swig swig-python swig-php swig-java swig-ruby
+sudo port install boost curl icu libiconv libxml2 libxslt xerces3 tidy fop geos libarchive sqlite3
 \endcode
 
 For more details on configuring and building Zorba from sources see: 
@@ -86,149 +86,4 @@ For more details on configuring and building Zorba from sources see:
 
 \b Note: Make sure you don't have any binary Zorba versions instaled, if you do you need to uninstall them in order to have Zorba build correctly from your sources.
 
-
-
-\section zosx_python Working with Python
-
-The installer puts the Zorba python library in: /opt/local/share/python/, so this path needs to be added to system path. 
-
-The contents of test.py:
-
-\code
-import sys
-sys.path.insert(0, '/opt/local/share/python/')
-import zorba_api
-
-print "Running: Get zorba instance and shutdown"
-
-store = zorba_api.InMemoryStore_getInstance()
-zorba = zorba_api.Zorba_getInstance(store)
-zorba.shutdown()
-zorba_api.InMemoryStore_shutdown(store)
-
-print "Success"
-\endcode
-
-Since the installer is done by MacPorts, the MacPorts python needs to be used. To run the test python script use:
-
-\code
-/opt/local/bin/python2.7 test.py
-\endcode
-
-A list of other python examples can be found in <a href="https://github.com/28msec/zorba/tree/master/doc/python/examples">doc/python/examples</a> and <a href="https://github.com/28msec/zorba/tree/master/swig/python/tests">swig/python/tests/</a>.
-
-\section zosx_php Working with PHP
-
-The Zorba library for PHP is installed under: /opt/local/share/php5/. PHP needs a \b php.ini configuration file that has to contain:
-
-\code
-extension_dir=/opt/local/share/php5/
-include_path=/opt/local/share/php5/
-\endcode
-
-The test.php file should look like:
-\code
-<?
-require 'zorba_api_wrapper.php';
-
-print "Running: Get zorba instance and shutdown\n";
-
-$store = InMemoryStore::getInstance();
-$zorba = Zorba::getInstance($store);
-
-$zorba->shutdown();
-InMemoryStore::shutdown($store);
-
-print "Success";
-?>
-\endcode
-
-To run the script use:
-\code
-php -c path/to/php.ini/ test.php
-\endcode
-
-A list of other PHP examples can be found in <a href="https://github.com/28msec/zorba/tree/master/doc/php/examples">doc/php/examples</a> and <a href="https://github.com/28msec/zorba/tree/master/swig/php/tests">swig/php/tests/</a>.
-
-
-
-\section zosx_ruby Working with Ruby
-
-The Zorba library for Ruby is installed under /opt/local/share/ruby/zorba_api.bundle. 
-
-The test.rb file contains:
-
-\code
-require '/opt/local/share/ruby/zorba_api'
-
-print "Running: Get zorba instance and shutdown"
-
-store = Zorba_api::InMemoryStore.getInstance()
-zorba = Zorba_api::Zorba.getInstance(store)
-zorba.shutdown()
-Zorba_api::InMemoryStore.shutdown(store)
-
-print "Success"
-\endcode
-
-To run the script execute:
-
-\code
-ruby test.rb
-\endcode
-
-A list of other Ruby examples can be found in <a href="https://github.com/28msec/zorba/tree/master/doc/ruby/examples">doc/ruby/examples</a> and <a href="https://github.com/28msec/zorba/tree/master/swig/ruby/tests">swig/ruby/tests/</a>.
-
-
-
-\section zosx_java Working with Java
-
-To make Java work with Zorba, the Zorba library needs to be on the path and the Zorba jars need to be on the class path. Zorba library and jars are installed under /opt/local/share/java.
-
-\code
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/local/share/java
-export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/local/share/java
-export CLASSPATH=$CLASSPATH:/opt/local/share/java/zorba_api.jar:/opt/local/share/java/zorba_xqj.jar:/opt/local/share/java/xqjapi.jar
-\endcode
-
-Compile and run your files as usual:
-
-\code
-javac -cp $CLASSPATH Test.java
-java -cp $CLASSPATH:. Test
-\endcode
-
-A simple source on how to use it in code:
-
-\code
-import javax.xml.xquery.*;
-import org.zorbaxquery.api.xqj.*;
-
-class Test
-{
-   static
-   {
-     System.loadLibrary ( "zorba_api" );
-   }
-   
-   public static void main(String[] args) throws XQException
-   {
-     System.out.println("Test Zorba");
-             
-     ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-     XQConnection xqc = xqds.getConnection();
-     XQExpression xqe = xqc.createExpression();
-     XQResultSequence result = xqe.executeQuery("1+2");
-
-     while (result.next()) {
-       // Print the current item in the sequence
-       System.out.println(">   " + result.getItemAsString(null));
-     }
-
-     xqc.close();
-   }        
-}
-\endcode
- 
-A list of other Java examples can be found in <a href="https://github.com/28msec/zorba/tree/master/doc/xqj/examples">doc/ruby/examples</a> and <a href="https://github.com/28msec/zorba/tree/master/swig/xqj/tests">swig/xqj/tests/</a>.
 */

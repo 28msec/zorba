@@ -16,18 +16,4 @@ Alternatively,
 you can specify different generators (e.g., Xcode)
 by starting CMake using the <b>-G</b> option (e.g., <b>-G Xcode</b>).
 
-\section macos_swig Swig Version
-
-Due to a bug in older swig version, Zorba with SWIG support requires
-SWIG version 1.3.40 or later. SWIG is included in stock MacOS, but in
-at least some versions of MacOS it is an older version. Therefore, you
-must install a newer SWIG from Macports. This will be installed in
-<tt>/opt/local</tt>, so you then must point CMake at that directory to
-ensure it finds the newer version:
-
-\code
-sudo port install swig
-cmake -DCMAKE_PREFIX_PATH=/opt/local {ZORBASRC}
-\endcode
-
 */

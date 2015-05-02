@@ -16,9 +16,6 @@
 
 \section install_section Install
   - \ref install_osx_tutorial
-  - \ref php_ubuntu_tutorial
-  - \ref php_windows_tutorial
-  - \ref python_windows_tutorial
 
 \section tools Tools
   - \ref commandline
@@ -28,12 +25,6 @@
 \section apis APIs
   - <a href="../cxx/indexpage.html">C++</a>
   - <a href="../c/indexpage.html">C</a>
-  - <a href="../xqj/indexpage.html">XQJ</a>
-  - <a href="../java/indexpage.html">Java</a>
-  - <a href="../php/indexpage.html">PHP</a>
-  - <a href="../python/indexpage.html">Python</a>
-  - <a href="../csharp/indexpage.html">C#</a>
-  - <a href="../ruby/indexpage.html">Ruby</a>
 
 \section generalarchitecture General Architecture
   - \ref data_lifecycle
