@@ -91,30 +91,6 @@ by CMake.
     are only required if you are developing Zorba itself and need to
     modify the scanner or parser.
 
-\subsection required_language_bindings Required for Language Bindings
-In order to build the various language bindings that come with Zorba, you need
-at least Swig 1.3.40 or later (http://www.swig.org/download.html).
-All bindings are generated using Swig.
-
-\note There is a known bug in many versions of Swig
-  that affects a small number of platforms, including at least
-  FreeBSD. If you get compilation errors that look similar to this:
-
-  <b>build/swig/php/zorba_apiPHP5_wrap.cxx:953: error: invalid conversion from 'const char*' to 'char*'</b>
-
-  then you may have run into this bug. Our experience is that Swig
-  version at least 2.0.7 has corrected this bug, so please try upgrading
-  to that version.
-
-For a particular language binding, you need the corresponding language
-tools and development headers. CMake will automatically enable the
-language bindings for any language that is detected.
-
-- Java (http://java.sun.com/javase/downloads/index.jsp)
-- Ruby (http://www.ruby-lang.org/en/downloads/)
-- PHP (http://www.php.net/downloads.php)
-- Python (http://www.python.org/download/)
-
 \subsection noncore_requirements Non-core Module Requirements
 For many of the non-core modules, you need additional libraries.
 All such modules are not built if the library (and development headers) they require are not available.

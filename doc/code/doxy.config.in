@@ -618,7 +618,6 @@ INPUT                  = @CMAKE_SOURCE_DIR@/bin \
                          @CMAKE_SOURCE_DIR@/include \
                          @CMAKE_SOURCE_DIR@/modules \
                          @CMAKE_SOURCE_DIR@/src \
-                         @CMAKE_SOURCE_DIR@/swig \
                          @CMAKE_CURRENT_SOURCE_DIR@/manual \
                          @CMAKE_CURRENT_BINARY_DIR@/../../include/zorba/config.h
 
