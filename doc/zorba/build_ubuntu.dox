@@ -37,11 +37,6 @@ Optional libraries for core Zorba:
 sudo apt-get install libxslt-dev libcurl4-openssl-dev libxerces-c-dev
 \endcode
 
-SWIG and development requirements for Zorba language bindings:
-\code
-sudo apt-get install swig python-dev php5-dev ruby-dev openjdk-6-jdk libaccess-bridge-java-jni
-\endcode
-
 \subsection ubuntu_noncore_libs Non-Core Module Library Dependencies
 
 \subsubsection ubuntu_html HTML Module (data-converters package)

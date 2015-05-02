@@ -21,17 +21,9 @@
  mkdir /tmp/zorba-$ZORBA_VERSION/zorba/xqdoc
  mkdir /tmp/zorba-$ZORBA_VERSION/c
  mkdir /tmp/zorba-$ZORBA_VERSION/cxx
- mkdir /tmp/zorba-$ZORBA_VERSION/python
- mkdir /tmp/zorba-$ZORBA_VERSION/ruby
- mkdir /tmp/zorba-$ZORBA_VERSION/php
- mkdir /tmp/zorba-$ZORBA_VERSION/java
  cp -r @CMAKE_BINARY_DIR@/doc/zorba/html /tmp/zorba-$ZORBA_VERSION/zorba/html
  cp -r @CMAKE_BINARY_DIR@/doc/zorba/xqdoc/xhtml /tmp/zorba-$ZORBA_VERSION/zorba/xqdoc/xhtml
  cp -r @CMAKE_BINARY_DIR@/doc/c/html /tmp/zorba-$ZORBA_VERSION/c/html
  cp -r @CMAKE_BINARY_DIR@/doc/cxx/html /tmp/zorba-$ZORBA_VERSION/cxx/html
- cp -r @CMAKE_BINARY_DIR@/doc/python/html /tmp/zorba-$ZORBA_VERSION/python/html
- cp -r @CMAKE_BINARY_DIR@/doc/ruby/html /tmp/zorba-$ZORBA_VERSION/ruby/html
- cp -r @CMAKE_BINARY_DIR@/doc/php/html /tmp/zorba-$ZORBA_VERSION/php/html
- cp -r @CMAKE_BINARY_DIR@/doc/java/html /tmp/zorba-$ZORBA_VERSION/java/html
  tar cvfz @CMAKE_BINARY_DIR@/doc/zorba-$ZORBA_VERSION.tar.gz /tmp/zorba-$ZORBA_VERSION
  rm -R /tmp/zorba-$ZORBA_VERSION

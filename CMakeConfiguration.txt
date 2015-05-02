@@ -146,14 +146,6 @@ SET(ZORBA_WITH_THESAURUS ON CACHE BOOL
     "enable installation of default English Wordnet thesaurus")
 MESSAGE(STATUS "ZORBA_WITH_THESAURUS:                 " ${ZORBA_WITH_THESAURUS})
 
-IF (ZORBA_SUPPRESS_SWIG)
-  SET (no_swig ON)
-ELSE (ZORBA_SUPPRESS_SWIG)
-  SET (no_swig OFF)
-ENDIF (ZORBA_SUPPRESS_SWIG)
-SET(ZORBA_SUPPRESS_SWIG ${no_swig} CACHE BOOL "use Swig to generate api for Python, Php and Ruby")
-MESSAGE(STATUS "ZORBA_SUPPRESS_SWIG [ON/OFF]:         " ${no_swig})
-
 SET(ZORBA_XQUERYX OFF CACHE BOOL "Activate capability to compile XQueryX code (on/off)")
 MESSAGE(STATUS "ZORBA_XQUERYX:                        " ${ZORBA_XQUERYX})
 

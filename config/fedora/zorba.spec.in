@@ -1,6 +1,3 @@
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(0)")}
-
-%{!?php_sitelib: %define php_sitelib %(/usr/bin/php-config --extension-dir)}
 Name:    zorba
 Version: @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@.@ZORBA_PATCH_NUMBER@
 Release: 2%{?dist}
@@ -11,8 +8,6 @@ License: ASL 2.0
 URL: http://www.zorba.io/
 Source0: ftp://ftp.heanet.ie/pub/download.sourceforge/z/zo/zorba/%{name}-%{version}.tar.gz
 
-%{!?ruby_sitelib: %define ruby_sitelib %( ruby -r rbconfig -e "print Config::CONFIG['sitearchdir']")}
-
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: bison
@@ -20,7 +15,6 @@ BuildRequires: cmake >= 2.4
 BuildRequires: doxygen
 BuildRequires: flex
 BuildRequires: graphviz
-BuildRequires: php >= 5
 %if 0%{?fedora} >= 9
 BuildRequires: libcurl-devel
 BuildRequires: tex(latex)
@@ -35,9 +29,6 @@ BuildRequires: tetex-dvips
 BuildRequires: libicu-devel
 BuildRequires: libtidy-devel
 BuildRequires: libxml2-devel >= 2.2.16 
-BuildRequires: php-cli php-devel
-BuildRequires: python-devel
-BuildRequires: ruby ruby-devel >= 1.8
 BuildRequires: xerces-c-devel >= 2.7 
 
 %description
@@ -62,35 +53,6 @@ Requires: %{name} = %{version}-%{release}
 %description devel
 The %{name}-devel package contains headers for building applications
 that use %{name}.
-
-
-%package python
-Summary: %{name} Python module for %{name}
-Group: Development/Languages
-Requires: %{name} = %{version}-%{release}
-BuildRequires: swig
-
-
-%description python
-Provides Python module to use %{name} API
-
-%package php
-Summary: %{name} PHP module for %{name}
-Group: Development/Languages
-Requires: %{name} = %{version}-%{release}
-
-%description php
-Provides PHP module to use %{name} API
-
-
-%package ruby
-Summary: %{name} Ruby module
-Group: Development/Languages
-BuildRequires: swig
-Requires: %{name} = %{version}-%{release}
-Requires: ruby >= 1.8
-%description ruby
-Provides ruby module to use %{name} API
 
  
 %prep
@@ -139,34 +101,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/%{name}/%{name}/util/*.h
 %dir %{_includedir}/%{name}/simplestore
 %{_includedir}/%{name}/simplestore/*.h
-%dir %{_datadir}/doc/%{name}-%{version}/python
-%dir %{_datadir}/doc/%{name}-%{version}/python/examples
-%{_datadir}/doc/%{name}-%{version}/python/examples/*.py
-%{_datadir}/doc/%{name}-%{version}/python/examples/*.pyc
-%{_datadir}/doc/%{name}-%{version}/python/examples/*.pyo
-%dir %{_datadir}/doc/%{name}-%{version}/python/html
-%{_datadir}/doc/%{name}-%{version}/python/html/*.gif
-%dir %{_datadir}/doc/%{name}-%{version}/ruby
-%dir %{_datadir}/doc/%{name}-%{version}/ruby/examples
-%{_datadir}/doc/%{name}-%{version}/ruby/examples/*.rb
-%dir %{_datadir}/doc/%{name}-%{version}/ruby/html
-%{_datadir}/doc/%{name}-%{version}/ruby/html/*.gif
-
-
-%files python
-%defattr(-,root,root,-)
-%dir %{python_sitelib}/_zorba_api.so
-%dir %{python_sitelib}/zorba_api.*
-
-%files php
-%{php_sitelib}/zorba_api.php
-%{php_sitelib}/zorba_api.so
-
-
-%files ruby
-%defattr(-,root,root,-)
-%dir %{ruby_sitelib}/zorba_api.so
-
 
 %changelog
 * Tue Mar  3 2009 Paul F. Kunz <PaulfKunz@gmail.com> - 0.9.6-2

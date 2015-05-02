@@ -341,40 +341,6 @@ IF(WIN32)
     SET(requiredlibs ${requiredlibs} "shlwapi")
 ENDIF(WIN32)
 
-#
-# SWIG
-#
-IF (NOT ZORBA_SUPPRESS_SWIG)
-  FIND_PACKAGE (SWIG)
-
-  COMPARE_VERSION_STRINGS("${SWIG_VERSION}" "1.3.40" result)
-  IF(result LESS 0)
-    MESSAGE(WARNING "You need at least SWIG version 1.3.40")
-  ENDIF(result LESS 0)
-
-
-  IF (SWIG_FOUND)
-    # this will be used both in swig and doc sub-directories
-
-    #
-    # PHP5
-    #
-    FIND_PACKAGE (PHP5)
-
-    #
-    # Python
-    #
-    FIND_PACKAGE (PythonInterp)
-    FIND_PACKAGE (PythonLibs)
-    
-  ELSE (SWIG_FOUND)
-    MESSAGE (STATUS "SWIG not found => no language bindings are generated.")  
-  ENDIF (SWIG_FOUND)
-ELSE (NOT ZORBA_SUPPRESS_SWIG)
-  MESSAGE (STATUS "SWIG is disabled => no language bindings are generated.")  
-ENDIF (NOT ZORBA_SUPPRESS_SWIG)
-
-
 LIST(APPEND requiredlibs ${requiredlibs-store})
 
 ################################################################################
@@ -603,10 +569,6 @@ ADD_SUBDIRECTORY(include)
 ADD_DEFINITIONS(-Dzorba_EXPORTS)
 ADD_SUBDIRECTORY(src)
 REMOVE_DEFINITIONS(-Dzorba_EXPORTS)
-
-IF (SWIG_FOUND)
-  ADD_SUBDIRECTORY (swig)
-ENDIF (SWIG_FOUND)
 
 # add the uninstall support
 # QQQ move to config/
