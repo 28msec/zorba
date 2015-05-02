@@ -932,7 +932,10 @@ MACRO(ZORBA_ADD_TEST NAME TARGET ...)
   #A more recent version of CMake contains a $<SEMICOLON> special token, but this version of cmake
   #is unsupported by some of our target platforms and it doesn't seem to work when used with variadic
   #functions
-  ADD_TEST ("${NAME}" "${TARGET_LOCATION}" ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5} ${ARGV6} ${ARGV7} ${ARGV8} ${ARGV9} ${ARGV10} ${ARGV11} ${ARGV12} ${ARGV13} ${ARGV14} ${ARGV15})
+  ADD_TEST ("${NAME}" "${TARGET_LOCATION}" ${ARGV2}  ${ARGV3}  ${ARGV4}  ${ARGV5}  ${ARGV6}  ${ARGV7}  ${ARGV8}  ${ARGV9} 
+                                           ${ARGV10} ${ARGV11} ${ARGV12} ${ARGV13} ${ARGV14} ${ARGV15} ${ARGV16} ${ARGV17}
+                                           ${ARGV18} ${ARGV19} ${ARGV20} ${ARGV21} ${ARGV22} ${ARGV23} ${ARGV24} ${ARGV25}
+                                           ${ARGV26} ${ARGV27} ${ARGV28} ${ARGV29} ${ARGV30} ${ARGV31} ${ARGV32} ${ARGV33})
   SET_TESTS_PROPERTIES ("${NAME}" PROPERTIES TIMEOUT "${NORMAL_TIMEOUT_VALUE}")
   GET_PROPERTY (TEST_EXTRAPROPS GLOBAL PROPERTY "EXTRAPROPS-${NAME}")
   IF (TEST_EXTRAPROPS)
