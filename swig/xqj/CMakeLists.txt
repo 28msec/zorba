@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+STRING ( COMPARE NOTEQUAL ${ZORBA_JAVA_JAR} "ZORBA_JAVA_JAR-NOTFOUND" ZORBA_JAR_GENERATED )
+
+IF ( ZORBA_JAR_GENERATED )
   INCLUDE (CMakeJavaInformation )
   MESSAGE(STATUS "SWIG: Generating XQJ API")
 
@@ -126,6 +129,10 @@ IF (Java_JAVAC_EXECUTABLE)
     INSTALL(FILES ${XQJAPI_JAR_FILE} DESTINATION share/xqj COMPONENT "XQJ_SWIG")
   ENDIF(NOT WIN32)
   
-ELSEIF (Java_JAVAC_EXECUTABLE)
+ELSE (Java_JAVAC_EXECUTABLE)
   MESSAGE ( STATUS "SWIG Java: Not generating XQJ API because JNI headers not found.")
 ENDIF (Java_JAVAC_EXECUTABLE)
+
+ELSE (ZORBA_JAR_GENERATED)
+  MESSAGE( STATUS "SWIG Java: Not generating XQJ API because Zorba Java bindings not generated." )
+ENDIF (ZORBA_JAR_GENERATED)
