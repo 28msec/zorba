@@ -136,7 +136,6 @@
   <foreign-files>
     <file>cmake_modules/FindJNI.cmake</file>
     <file>cmake_modules/FindPythonLibs.cmake</file>
-    <file>cmake_modules/FindSWIG.cmake</file>
     <copyright>2001-2009 Kitware, Inc.</copyright>
     <foreign-notice>
       Distributed under the OSI-approved BSD License (the "License");
@@ -669,43 +668,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       Neither the names of Kitware, Inc., the Insight Software Consortium, nor the names of their contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
       THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-    </foreign-notice>
-  </external-app>
-
-  <external-app mandatory="false">
-    <name>SWIG</name>
-    <version>2.0.4 or above</version>
-    <website>http://www.swig.org/</website>
-    <license>GPL</license>
-    <copyright>
-      1995-2011 The SWIG Developers
-      2005-2006 Arizona Board of Regents (University of Arizona).
-      1998-2005 University of Chicago.
-      1995-1998 The University of Utah and the Regents of the University of California
-    </copyright>
-    <foreign-notice>
-      SWIG is free software: you can redistribute it and/or modify it
-      under the terms of the GNU General Public License as published by
-      the Free Software Foundation, either version 3 of the License, or
-      (at your option) any later version. See the LICENSE-GPL file for
-      the full terms of the GNU General Public license version 3.
-
-      Portions of SWIG are also licensed under the terms of the licenses
-      in the file LICENSE-UNIVERSITIES. You must observe the terms of
-      these licenses, as well as the terms of the GNU General Public License,
-      when you distribute SWIG.
-
-      The SWIG library and examples, under the Lib and Examples top level
-      directories, are distributed under the following terms:
-
-      You may copy, modify, distribute, and make derivative works based on
-      this software, in source code or object code form, without
-      restriction. If you distribute the software to others, you may do
-      so according to the terms of your choice. This software is offered as
-      is, without warranty of any kind.
-
-      See the COPYRIGHT file for a list of contributors to SWIG and their
-      copyright notices.
     </foreign-notice>
   </external-app>
 </notice>
