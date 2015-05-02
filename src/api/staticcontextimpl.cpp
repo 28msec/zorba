@@ -1825,6 +1825,25 @@ getExternalVariableAnnotations( Item const &api_qname,
 }
 
 bool StaticContextImpl::
+getExternalVariableKind(Item const & var_name, SequenceType::Kind& result) const
+{
+  store::Item const *const qname = Unmarshaller::getInternalItem(var_name);
+  VarInfo const *const var_info = theCtx->lookup_var(qname);
+  if (var_info && var_info->isExternal())
+  {
+    if (!var_info->getType())
+      result = SequenceType::ITEM_TYPE;
+    else
+    {
+      SequenceType seq_type = Unmarshaller::createSequenceType(var_info->getType());
+      result = seq_type.getKind();
+    }
+    return true;
+  }
+  return false;
+}
+
+bool StaticContextImpl::
 getExternalVariableQuantifier(Item const& var_name, SequenceType::Quantifier& result) const
 {
   store::Item const *const qname = Unmarshaller::getInternalItem(var_name);

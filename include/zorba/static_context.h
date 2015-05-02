@@ -663,6 +663,15 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   getExternalVariableAnnotations( Item const &var_name,
                                   std::vector<Annotation_t> &result ) const = 0;
 
+  /** \brief Gets the given external variable Kind
+   *
+   * @param var_name The QName of the variable.
+   * @return Returns \c true only if the given external variable exists.
+   */
+  virtual bool
+  getExternalVariableKind(Item const & var_name,
+      SequenceType::Kind& result) const = 0;
+
   /** \brief Gets the given external variable quantifier.
    *
    * @param var_name The QName of the variable.

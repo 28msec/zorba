@@ -312,6 +312,10 @@ public:
                                   std::vector<Annotation_t>& ) const;
 
   virtual bool
+  getExternalVariableKind( Item const & var_name,
+      SequenceType::Kind& result) const;
+
+  virtual bool
   getExternalVariableQuantifier(Item const & var_name,
       SequenceType::Quantifier& result) const;
 
