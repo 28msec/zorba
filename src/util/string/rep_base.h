@@ -19,7 +19,7 @@
 
 #include <zorba/config.h>
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #pragma warning( disable : 4996 )
 #endif
 
@@ -318,7 +318,7 @@ protected:
 } // namespace rstring_classes
 } // namespace zorba
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #pragma warning( disable : 4996 )
 #endif
 

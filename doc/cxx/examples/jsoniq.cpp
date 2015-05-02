@@ -48,7 +48,7 @@ example_1(Zorba* aZorba)
   }
 
   // Ensure array has 3 integer members
-  int lSize = lItem.getArraySize();
+  uint64_t lSize = lItem.getArraySize();
   if (lSize != 3) {
     std::cerr << lSize << " array members returned, expecting 3" << std::endl;
     return false;

@@ -291,7 +291,7 @@ string configdir() {
   return "";
 #elif defined( WIN32 )
   char *buf;
-  if ( _dupenv_s( &buf, nullptr, "APPDATA" ) != 0 ) {
+  if ( _dupenv_s( &buf, nullptr, "APPDATA" ) != 0 )
     throw ZORBA_IO_EXCEPTION( "_dupenv_s()", "" );
   unique_ptr<char[]> const buf_ptr( buf );
   return buf;

@@ -46,10 +46,10 @@ NumericType const& numeric_consts<NumericType>::neg_one() {
 }
 
 // instantiate non-special cases
-template class numeric_consts<Decimal>;
-template class numeric_consts<Double>;
-template class numeric_consts<Float>;
-template class numeric_consts<Integer>;
+template struct numeric_consts<Decimal>;
+template struct numeric_consts<Double>;
+template struct numeric_consts<Float>;
+template struct numeric_consts<Integer>;
 
 NonNegativeInteger const& numeric_consts<NonNegativeInteger>::zero() {
   static NonNegativeInteger const n(0);

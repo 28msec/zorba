@@ -17,6 +17,7 @@
 #include "stdafx.h"
 
 // standard
+#include <algorithm>
 #include <stdexcept>
 //#define ZORBA_DEBUG_HEXBINARY_STREAMBUF
 #ifdef ZORBA_DEBUG_HEXBINARY_STREAMBUF

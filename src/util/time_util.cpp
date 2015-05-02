@@ -331,9 +331,9 @@ void get_epoch( sec_type *sec, usec_type *usec ) {
   unsigned __int64 temp = ((__int64)ft.dwHighDateTime << 32) | ft.dwLowDateTime;
   temp /= 10;                           // nanosec -> usec
   temp -= DELTA_EPOCH_IN_USEC;          // 1601 -> 1970
-  *sec = (sec_type)(temp / 1000000UL);  // usec -> sec
+  *sec = (sec_type)(temp / 1000000L);  // usec -> sec
   if ( usec )
-    *usec = (usec_type)(temp % 1000000UL);
+    *usec = (usec_type)(temp % 1000000L);
 #else
   timeval tv;
   ::gettimeofday( &tv, nullptr );
@@ -347,7 +347,8 @@ void get_gmtime( ztm *tm, sec_type when ) {
   if ( !when )
     get_epoch( &when );
 #ifdef WIN32
-  ::gmtime_s( tm, &when );
+  time_t time = static_cast<time_t>(when);
+  ::gmtime_s( tm, &time );  
 #else
   ::gmtime_r( &when, tm );
 #endif /* WIN32 */
@@ -358,7 +359,8 @@ void get_localtime( ztm *tm, sec_type when ) {
   if ( !when )
     get_epoch( &when );
 #ifdef WIN32
-  ::localtime_s( tm, &when );
+  time_t time = static_cast<time_t>(when);
+  ::localtime_s( tm, &time );
   tm->ZTM_GMTOFF = - _timezone;         // seconds west -> east
 #else
   ::localtime_r( &when, tm );

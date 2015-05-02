@@ -282,6 +282,7 @@ MACRO (FIND_PACKAGE_DLL_WIN32 LIBRARY_LOCATION)
   ENDIF (NOT WIN32)
   
   PARSE_ARGUMENTS(ARG "" "" "SKIP_INSTALL" ${ARGN})
+  PARSE_ARGUMENTS(ARG "" "" "OPTIONAL" ${ARGN})
   
   # get the current DLLs and their paths
   SET (dlls "${ZORBA_REQUIRED_DLLS}")
@@ -297,7 +298,7 @@ MACRO (FIND_PACKAGE_DLL_WIN32 LIBRARY_LOCATION)
       TMP_DLL_VAR
       "${NAME}.dll"
       PATHS "${LIBRARY_LOCATION}"
-      PATH_SUFFIXES "bin" "bin/Release" "lib"
+      PATH_SUFFIXES "bin" "bin/Release" "lib" "dlls"
       NO_DEFAULT_PATH
     )
 
@@ -314,6 +315,8 @@ MACRO (FIND_PACKAGE_DLL_WIN32 LIBRARY_LOCATION)
       ELSE (ARG_SKIP_INSTALL)
         INSTALL_DLL (${TMP_DLL_VAR})
       ENDIF(ARG_SKIP_INSTALL)
+	  
+	  SET (TMP_FOUND_DLL_VAR "TRUE")
       
       # we break the loop if we found one DLL
       BREAK ()
@@ -323,12 +326,17 @@ MACRO (FIND_PACKAGE_DLL_WIN32 LIBRARY_LOCATION)
   ENDFOREACH (NAME)
 
   # we report a warning if the DLL could not be found
-  IF (NOT TMP_DLL_VAR)
-    MESSAGE (WARNING "None of the names provided (${ARG_DEFAULT_ARGS}) points to a DLL in: ${LIBRARY_LOCATION}. Zorba will not run properly unless you have it in the path.")
-  ENDIF (NOT TMP_DLL_VAR)
+  IF (NOT TMP_FOUND_DLL_VAR)
+    IF (NOT ARG_OPTIONAL)
+      MESSAGE (WARNING "None of the names provided (${ARG_DEFAULT_ARGS}) points to a DLL in: ${LIBRARY_LOCATION}. Zorba will not run properly unless you have it in the path.")
+	ELSE (NOT ARG_OPTIONAL)
+	  MESSAGE (STATUS "None of the names provided (${ARG_DEFAULT_ARGS}) points to a DLL in: ${LIBRARY_LOCATION}. Skipping library.")
+	ENDIF (NOT ARG_OPTIONAL)
+  ENDIF (NOT TMP_FOUND_DLL_VAR)
 
   # make sure we don't leave garbage in the cache and don't influence other logic with this
   UNSET (TMP_DLL_VAR CACHE)
+  UNSET (TMP_FOUND_DLL_VAR CACHE)
 
   # remove duplicates from the path list
   LIST (LENGTH paths LEN)

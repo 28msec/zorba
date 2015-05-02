@@ -16,8 +16,14 @@ IF (ZORBA_HAVE_CURL)
   SET(ZorbaUtilCurlModule_DIR "../util-curl")
   FIND_PACKAGE(ZorbaUtilCurlModule REQUIRED)
   IF (ZorbaUtilCurlModule_FOUND)
-    INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}")
-
+    
+    IF (WIN32)
+      FIND_PACKAGE(Curl)
+      INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}" "${CURL_INCLUDE_DIRS}")
+    ELSE (WIN32)
+      INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}")
+    ENDIF (WIN32)
+    
     DECLARE_ZORBA_MODULE(FILE xml/http-client-error.xq
       URI "http://expath.org/ns/error")
 
@@ -35,16 +41,6 @@ IF (ZORBA_HAVE_CURL)
     DECLARE_ZORBA_MODULE(FILE conv/http-client-wrapper.xq VERSION 1.0
       URI "http://zorba.io/modules/http-client-wrapper"
       LINK_LIBRARIES ${CURL_LIBRARIES} ${ZorbaUtilCurlModule_LIBS})
-
-    IF (WIN32) # Copy certificates for windows only
-      IF (MSVC_IDE)
-        SET(CACERT_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/../../bin/${CMAKE_BUILD_TYPE}/cacert.pem")
-      ELSE (MSVC_IDE)
-        SET(CACERT_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/../../bin/cacert.pem")
-      ENDIF (MSVC_IDE)
-      CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cacert.pem" ${CACERT_DESTINATION} COPYONLY)
-      INSTALL(FILES ${CACERT_DESTINATION} DESTINATION bin)
-    ENDIF (WIN32)
 
   ENDIF (ZorbaUtilCurlModule_FOUND)
 ENDIF (ZORBA_HAVE_CURL)

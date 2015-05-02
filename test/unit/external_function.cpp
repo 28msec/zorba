@@ -219,13 +219,13 @@ external_function_test_1(Zorba* aZorba)
                                  aZorba->getItemFactory()->createString("foo")); 
         // make sure constant folding doesn't happen, i.e. the function is not evaluated
         if (lCalled) {
-          return 1;
+          return false;
         }
         
         // evaluate the function and check if it was really called
         std::cout << lQuery << std::endl;
         if (!lCalled) {
-          return 2;
+          return false;
         }
       }
 

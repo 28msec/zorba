@@ -23,33 +23,6 @@
 #include "ascii_util.h"
 #include "string_util.h"
 #include "zorbatypes/zstring.h"
-
-#ifdef WIN32
-namespace std {
-
-  // Windows doesn't have these functions -- add them ourselves.
-
-  static float strtof( char const *s, char **last ) {
-    double const result = std::strtod( s, last );
-    if ( !errno ) {
-      if ( result < std::numeric_limits<float>::min() ||
-           result > std::numeric_limits<float>::max() )
-        errno = ERANGE;
-    }
-    return static_cast<float>( result );
-  }
-
-  inline long long strtoll( char const *s, char **last, int base ) {
-    return ::_strtoi64( s, last, base );
-  }
-
-  inline unsigned long long strtoull( char const *s, char **last, int base ) {
-    return ::_strtoui64( s, last, base );
-  }
-
-} // namespace std
-#endif /* WIN32 */
-
 using namespace std;
 
 namespace zorba {

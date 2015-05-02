@@ -136,7 +136,7 @@ ZORBA_SET_TEST_PROPERTY(bin/zorba_disable_http_download
 ZORBA_SET_TEST_PROPERTY(bin/zorba_disable_http_download TIMEOUT 5)
 
 IF(WIN32)
-  SET(PATH_SEP ";")
+  SET(PATH_SEP "\;")
 ELSE(WIN32)
   SET(PATH_SEP ":")
 ENDIF(WIN32)

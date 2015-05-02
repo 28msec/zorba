@@ -156,8 +156,8 @@ private:
   friend struct atomic_type;
   friend struct min_max_type;
   friend struct object_type;
-  friend struct schema;
   friend struct union_type;
+  friend class schema;  
 
   // forbid these
   type( type const& );
@@ -179,7 +179,7 @@ protected:
 
   min_max_type( kind );
 
-  friend struct schema;
+  friend class schema;
 };
 
 /**
@@ -199,7 +199,7 @@ protected:
 private:
   void load_content( store::Item_t const&, schema& );
 
-  friend struct schema;
+  friend class schema;
 };
 
 /**
@@ -2221,7 +2221,7 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
 
 bool union_type::validate( store::Item_t const &validate_item, bool do_cast,
                            store::Item_t *result ) const {
-  if ( !type::validate( validate_item, result ) )
+  if ( !type::validate( validate_item, do_cast, result ) )
     return false;
   //
   // We can't pass "result" to nested called of validate() because:

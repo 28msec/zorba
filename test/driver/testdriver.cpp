@@ -49,7 +49,9 @@
 #define UNEXPECTED_ERROR  6
 
 std::string rbkt_src_dir = zorba::RBKT_SRC_DIR;
-std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
+std::string rbkt_src_dir_uri = zorba::RBKT_SRC_DIR_URI;
+std::string rbkt_bin_dir = zorba::RBKT_BIN_DIR;
+std::string rbkt_bin_dir_uri = zorba::RBKT_BIN_DIR_URI;
 std::string w3c_ts = "w3c_testsuite/";
 
 
@@ -107,9 +109,19 @@ main(int argc, char** argv)
       rbkt_src_dir = argv [i + 1];
       i += 2;
     }
+    else if (strcmp(argv[i], "--rbkt-src-uri") == 0)
+    {
+      rbkt_src_dir_uri = argv[i + 1];
+      i += 2;
+    }
     else if (strcmp (argv [i], "--rbkt-bin") == 0)
     {
       rbkt_bin_dir = argv [i + 1];
+      i += 2;
+    }
+    else if (strcmp(argv[i], "--rbkt-bin-uri") == 0)
+    {
+      rbkt_bin_dir_uri = argv[i + 1];
       i += 2;
     }
     else if (strcmp (argv [i], "--module-path") == 0)
@@ -222,7 +234,7 @@ main(int argc, char** argv)
 
     if ( zorba::fs::get_type( lSpecFile ) )
     {
-      bool lParsed = lSpec.parseFile(lSpecFile, rbkt_src_dir, rbkt_bin_dir);
+      bool lParsed = lSpec.parseFile(lSpecFile, rbkt_src_dir, rbkt_src_dir_uri, rbkt_bin_dir, rbkt_bin_dir_uri);
       if (!lParsed) {
         std::cout << "Spec file " << lSpecFile << " is malformed!" << std::endl;
         return 1;

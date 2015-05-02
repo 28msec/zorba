@@ -250,7 +250,7 @@ ZorbaQueryFunction::ZorbaQueryFunction(const ZorbaQueryModule* aModule)
   :
   theModule(aModule)
 {
-  srand(::time(NULL));
+  srand(static_cast<unsigned int>(::time(NULL)));
 }
     
 

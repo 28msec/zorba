@@ -88,10 +88,6 @@ DebuggerListener::stopLooping()
 
 // ****************************************************************************
 
-DebuggerClient::~DebuggerClient()
-{
-}
-
 DebuggerClientImpl::DebuggerClientImpl(
   const std::string& aHost,
   unsigned short aPort,

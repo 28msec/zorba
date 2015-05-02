@@ -27,6 +27,10 @@
 #include <cassert>
 #include <string.h>
 
+#ifdef _MSC_VER
+#pragma warning (disable : 4309 ) //0xEF, 0xBB, 0xBF are out of the value space of 
+//char and will be converted to negative values
+#endif
 
 namespace zorba {
 

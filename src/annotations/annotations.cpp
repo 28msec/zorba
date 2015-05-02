@@ -255,7 +255,7 @@ AnnotationInternal::AnnotationId AnnotationInternal::lookup(
 store::Item* AnnotationInternal::lookup(AnnotationInternal::AnnotationId id)
 {
   assert(id < zann_end);
-  assert(id < theAnnotId2NameMap.size());
+  assert(static_cast<unsigned>(id) < theAnnotId2NameMap.size());
 
   return theAnnotId2NameMap[id].getp();
 }

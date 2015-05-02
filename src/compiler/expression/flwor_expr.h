@@ -689,7 +689,7 @@ public:
 
   void set_sequential_clauses(bool v);
 
-  bool is_general() const { return theFlworFlags & IS_GENERAL; }
+  bool is_general() const { return !!(theFlworFlags & IS_GENERAL); }
 
   void set_general(bool v);
 

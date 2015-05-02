@@ -24,10 +24,17 @@ INSTALL(TARGETS util-curl
   LIBRARY DESTINATION lib${LIB_SUFFIX}
   ARCHIVE DESTINATION lib)
 
-# MAC OS X only property
-# This is required to make sure that the library has the correct install name
-# after installation such that dependent modules always find it.
-SET_TARGET_PROPERTIES(util-curl PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
+IF (WIN32)
+  SET_TARGET_PROPERTIES(util-curl PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/src)  
+ENDIF (WIN32) 
+ 
+IF (APPLE)
+  # MAC OS X only property
+  # This is required to make sure that the library has the correct install name
+  # after installation such that dependent modules always find it.
+  SET_TARGET_PROPERTIES(util-curl PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
+ENDIF (APPLE)
 
 # Set this in the parent scope so it will be put into our Config.cmake file.
 # As with many other things, this doesn't work when the module is installed.

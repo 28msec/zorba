@@ -148,9 +148,9 @@ error_example_6(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery(s.str(), lCtx); 
 
     std::cout << lQuery << std::endl;
-  } catch (XQueryException const& e) {
+  } catch (const XQueryException&) {
     return true;
-  } catch (ZorbaException const& ze) {
+  } catch (const ZorbaException& ze) {
     std::cerr << ze << std::endl;
     return false;
   }

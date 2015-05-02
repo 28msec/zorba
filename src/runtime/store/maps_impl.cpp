@@ -246,7 +246,7 @@ prepareKeyAttributes(
 {
   if (aKey->isArray())
   {
-    ulong lNumKeys = to_xs_long(aKey->getArraySize());
+    ulong lNumKeys = static_cast<ulong>(to_xs_long(aKey->getArraySize()));
     aKeyAttrs.resize(lNumKeys);
     for (size_t i = 0; i < lNumKeys; ++i)
     {
@@ -423,7 +423,7 @@ MapCreateIterator::nextImpl(
 
   if (lTypeParam->isArray())
   {
-    long lSize = to_xs_long(lTypeParam->getArraySize());
+    long lSize = static_cast<long>(to_xs_long(lTypeParam->getArraySize()));
     lTypes.resize(lSize);
     for (long i = 1; i <= lSize; ++i)
     {

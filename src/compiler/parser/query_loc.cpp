@@ -56,7 +56,7 @@ std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc)
     aOstr << aQueryLoc.theFilename;
   }
 
-  bool lPrintLines = aQueryLoc.theLineBegin;
+  bool lPrintLines = aQueryLoc.theLineBegin != 0;
   bool lPrintColumns = aQueryLoc.theLineBegin && aQueryLoc.theLineEnd &&
       aQueryLoc.theColumnBegin && aQueryLoc.theColumnEnd;
 

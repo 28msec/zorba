@@ -5,16 +5,16 @@ import module namespace file = "http://expath.org/ns/file";
 declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:nondeterministic %ann:sequential
-function fct:test-copy($rbktPath as xs:string, $file as xs:string)
+function fct:test-copy($rbktSrcPath as xs:string, $rbktBinPath as xs:string, $file as xs:string)
 {
-  variable $fileSrc := fn:concat($rbktPath, "/Queries/zorba/file/copy_files/", $file);
-  variable $fileDest := fn:concat($rbktPath, "/Queries/zorba/file/copy_files/", $file, ".out");
 
+  variable $fileSrc := $rbktSrcPath || "/Queries/zorba/file/copy_files/" || $file;
+  variable $folderDest := $rbktBinPath || "/Queries/zorba/file/copy_files";
+  file:create-directory($folderDest);
+  variable $fileDest := $folderDest || $file || ".out";
+  
   (: make sure the output file does not exist :)
-  if (file:exists($fileDest)) then
-    exit returning "The output file already exists. This is not good!";
-  else
-    ();
+  if (file:exists($fileDest)) then file:delete($fileDest); else ();
 
   (: copy the file :)
   file:copy($fileSrc, $fileDest);
@@ -22,16 +22,5 @@ function fct:test-copy($rbktPath as xs:string, $file as xs:string)
   (: read both files back and compare :)
   let $src := file:read-binary($fileSrc)
   let $dest := file:read-binary($fileDest)
-  return
-  {
-    variable $result := $src eq $dest;
-
-    (: delete the file before we terminate :)
-    file:delete($fileDest);
-    
-    if (file:exists($fileDest)) then
-      "The output file must not be here anymore. This is not good!"
-    else
-      $result
-  }
+  return $src eq $dest  
 };

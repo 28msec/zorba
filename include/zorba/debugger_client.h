@@ -70,7 +70,7 @@ namespace zorba {
                                                 unsigned short aPort,
                                                 const std::string& aHost);
   public:
-    virtual ~DebuggerClient();
+	  virtual ~DebuggerClient() {};
   public: // Types
     typedef enum {
       Line,

@@ -696,7 +696,7 @@ void end_visit(const VersionDecl& n, void* /*visit_state*/)
 {
   theVersion = n.get_version();
   theEncoding = n.get_encoding();
-  theLanguageKind = n.get_language_kind();
+  theLanguageKind = n.get_language_kind() == VersionDecl::jsoniq;
 }
 
 void *begin_visit(const ModuleDecl& n) {

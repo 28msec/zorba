@@ -82,7 +82,7 @@ bool FunctionLookupIterator::nextImpl(
 
   try
   {
-    arity = to_xs_unsignedLong(arityItem->getIntegerValue());
+    arity = static_cast<zorba::csize>(to_xs_unsignedLong(arityItem->getIntegerValue()));
   }
   catch ( std::range_error const& )
   {

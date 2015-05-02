@@ -99,10 +99,10 @@ void slurp_file (
 #endif
   }
 
-  if(sstr.find("$RBKT_BINARY_DIR",0) != std::string::npos)
+  if(sstr.find("$RBKT_BIN_DIR",0) != std::string::npos)
   {
     std::string rbkt_bin_uri = zorba::URI::encode_file_URI(rbkt_bin_dir);
-    zorba::ascii::replace_all(sstr, "$RBKT_BINARY_DIR", rbkt_bin_uri);
+    zorba::ascii::replace_all(sstr, "$RBKT_BIN_DIR", rbkt_bin_uri);
   }
 
   result.swap (sstr);

@@ -53,7 +53,9 @@ namespace fs = boost::filesystem;
 
 
 std::string rbkt_src_dir = zorba::RBKT_SRC_DIR;
-std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
+std::string rbkt_src_dir_uri = zorba::RBKT_SRC_DIR_URI;
+std::string rbkt_bin_dir = zorba::RBKT_BIN_DIR;
+std::string rbkt_bin_dir_uri = zorba::RBKT_BIN_DIR_URI;
 std::string module_path;
 
 /*******************************************************************************
@@ -62,7 +64,7 @@ std::string module_path;
   -------------
   The full pathname of the dir that contains the queries to run. It is a path
   of the form <bucket-path>/Queries/<bucket-name>, where <bucket-path> is either
-  a user-provided absolute dir path, or RBKT_BINARY_DIR and <bucket-name> is a
+  a user-provided absolute dir path, or RBKT_BIN_DIR and <bucket-name> is a
   user-provided bucket name (actually a relative dir path, which may also be
   empty).
 
@@ -70,7 +72,7 @@ std::string module_path;
   ----------
   The full pathname of the dir that contains the expected results of the queries.
   It is a path of the form <bucket-path>/ExpQueryResults/<bucket-name>, where
-  <bucket-path> is either a user-provided absolute dir path, or RBKT_BINARY_DIR
+  <bucket-path> is either a user-provided absolute dir path, or RBKT_BIN_DIR
   and <bucket-name> is a user-provided bucket name (actually a relative dir path,
   which may also be empty).
 
@@ -78,7 +80,7 @@ std::string module_path;
   -------------
   The full pathname of the directory under which the result and error files of
   the queries will be placed. It is a path of the form
-  RBKT_BINARY_DIR/QueryResults/<bucket-name>.
+  RBKT_BIN_DIR/QueryResults/<bucket-name>.
 
   theIsW3Cbucket
   --------------
@@ -491,9 +493,9 @@ DWORD WINAPI thread_main(LPVOID param)
     if (fs::exists(specPath))
     {
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
-      querySpec.parseFile(specPath.file_string(), rbkt_src_dir, rbkt_bin_dir); 
+      querySpec.parseFile(specPath.file_string(), rbkt_src_dir, rbkt_src_dir_uri, rbkt_bin_dir, rbkt_bin_dir_uri);
 #else
-      querySpec.parseFile(specPath.generic_string(), rbkt_src_dir, rbkt_bin_dir);
+      querySpec.parseFile(specPath.generic_string(), rbkt_src_dir, rbkt_src_dir_uri, rbkt_bin_dir, rbkt_bin_dir_uri);
 #endif
     }
 
@@ -993,7 +995,7 @@ _tmain(int argc, _TCHAR* argv[])
   }
 
   queriesDir = bucketPath + "/Queries/" + bucketName;
-  resultsDir = zorba::RBKT_BINARY_DIR + "/QueryResults/" + bucketName;
+  resultsDir = zorba::RBKT_BIN_DIR + "/QueryResults/" + bucketName;
   refsDir = bucketPath + "/ExpQueryResults/" + bucketName;
 
   queries.theIsW3Cbucket = (bucketName.find("w3c_testsuite") != std::string::npos);
@@ -1012,10 +1014,10 @@ _tmain(int argc, _TCHAR* argv[])
     }
   }
 
-  reportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + reportFilename;
+  reportFilepath = zorba::RBKT_BIN_DIR + "/../../Testing/" + reportFilename;
   if (generateW3CData)
   {
-    XMLreportFilepath = zorba::RBKT_BINARY_DIR + "/../../Testing/" + XMLreportFilename;
+    XMLreportFilepath = zorba::RBKT_BIN_DIR + "/../../Testing/" + XMLreportFilename;
   }
 
   //

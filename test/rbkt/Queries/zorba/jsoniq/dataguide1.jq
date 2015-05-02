@@ -39,7 +39,4 @@ declare %an:sequential function collapse-objects($x as object()*)
 };
 
 
-collapse-objects($input),
-"
-"
-
+collapse-objects($input)

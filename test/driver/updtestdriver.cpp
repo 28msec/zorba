@@ -235,15 +235,18 @@ main(int argc, char** argv)
 
   Specification lSpec;
 
-  std::string srcDir = zorba::UPDATE_SRC_DIR;
-  std::string binDir = zorba::UPDATE_BINARY_DIR;
+  /*
+   * Sanitize paths
+   */
+  std::string srcDir = zorba::fs::normalize_path(zorba::UPDATE_SRC_DIR);
+  std::string binDir = zorba::fs::normalize_path(zorba::UPDATE_BINARY_DIR);
+  std::string argString = zorba::fs::normalize_path(std::string(argv[1]));
 
-  std::string argString = std::string(argv[1]);
   std::string lSpecNoSuffix = argString.substr(0, argString.size()-5);
 
   std::string lSpecFile( srcDir );
   zorba::fs::append( lSpecFile, "Queries" );
-  zorba::fs::append( lSpecFile, argv[1] );
+  zorba::fs::append(lSpecFile, argString);
   std::string lSpecPath( zorba::fs::dir_name( lSpecFile ) );
 
   if ( zorba::fs::get_type( lSpecFile ) != zorba::fs::file )
@@ -318,7 +321,7 @@ main(int argc, char** argv)
       {
         lContext->setXQueryVersion(zorba::xquery_version_1_0);
 
-        std::string uri_map_file = srcDir + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
+        std::string uri_map_file = zorba::fs::normalize_path(srcDir + "/Queries/w3c_update_testsuite/TestSources/uri.txt");
         smapper.reset(new zorba::TestSchemaURIMapper( uri_map_file.c_str() ));
         lContext->registerURIMapper( smapper.get() );
 

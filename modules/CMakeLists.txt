@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#Utility modules that should be loaded first
 ADD_SUBDIRECTORY(util-tests)
+ADD_DEFINITIONS(-Dzorba_EXPORTS)
 ADD_SUBDIRECTORY(util-curl)
+REMOVE_DEFINITIONS(-Dzorba_EXPORTS)
+
 ADD_SUBDIRECTORY(atomic)
 ADD_SUBDIRECTORY(full-text)
 ADD_SUBDIRECTORY(functx)
