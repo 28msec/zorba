@@ -635,7 +635,15 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
         line += state->separator_;
       else
         separator = true;
-      line += (*key)->getStringValue();
+      (*key)->getStringValue2( value );
+      bool const quote =
+          value.find_first_of( state->must_quote_ ) != zstring::npos;
+      if ( quote )
+        line += state->quote_;
+      ascii::replace_all( value, state->quote_, state->quote_esc_ );
+      line += value;
+      if ( quote )
+        line += state->quote_;
     }
     if ( !line.empty() ) {
       line += "\r\n";
