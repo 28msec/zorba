@@ -29,13 +29,14 @@ class Item;
 
 namespace http_client
 {
-  void parse_content_type( std::string const &s, std::string *mime_type, std::string *charset );
+  void parse_content_type( std::string const &s, std::string *mime_type, std::string *charset,
+                           bool *is_multipart = 0, std::string *boundary = 0);
 
   class HttpResponseHandler;
 
   class HttpResponseParser : public curl::listener {
   private:
-	HttpResponseHandler& theHandler;
+    HttpResponseHandler& theHandler;
     CURL* theCurl;
     ErrorThrower& theErrorThrower;
     std::string theCurrentContentType;
@@ -52,6 +53,9 @@ namespace http_client
     std::string theOverridenContentType;
     bool theStatusOnly;
     bool theSelfContained;
+
+    bool theIsMultipart;
+    std::string theBoundary;
   public:
     HttpResponseParser(
       HttpResponseHandler& aHandler,
@@ -61,6 +65,8 @@ namespace http_client
       bool aStatusOnly = false);
     virtual ~HttpResponseParser();
     CURLcode parse();
+    void parseMultipart(std::unique_ptr<std::istream>& aStream);
+    void parseNonMultipart(std::unique_ptr<std::istream>& aStream);
     int getStatus() { return theStatus; }
 
     /**
@@ -73,6 +79,8 @@ namespace http_client
      * will return false.
      */
     bool selfContained() { return theSelfContained; }
+    bool isMultipart() { return theIsMultipart; }
+    const std::string& boundary() { return theBoundary; }
     virtual void curl_read(void*,size_t);
   private:
     void registerHandler();

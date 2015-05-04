@@ -84,6 +84,7 @@ namespace http_client {
 
     ItemFactory* theFactory;
     bool theIsInsideMultipart;
+    bool theIsMultipartBody;
     bool theDeleteResponse;
     Item theUntypedQName;
   public:
@@ -96,19 +97,6 @@ namespace http_client {
     virtual void begin();
     virtual void beginResponse(int aStatus, String aMessage);
     virtual void endResponse();
-    virtual void beginRequest(
-      String aMethod,
-      String href,
-      bool aStatusOnly,
-      String aUsername,
-      String aPassword,
-      String aAuthMethod,
-      bool aSendAuthorization,
-      String aOverrideContentType,
-      bool aFollowRedirect,
-      String aUserAgent,
-      int aTimeout = -1);
-    virtual void endRequest();
     virtual void header(String aName, String aValue);
     virtual void beginBody(
       String aContentType,
@@ -120,6 +108,7 @@ namespace http_client {
     virtual void endMultipart();
     virtual void end();
     virtual bool isHeadRequest() const { return false; }
+    virtual void parseMultipartBody(const Item& aItem);
   };
 }} //namespace zorba, namespace http_client
 

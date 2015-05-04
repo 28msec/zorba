@@ -104,6 +104,7 @@ namespace zorba { namespace http_client {
   theResult(new HttpResponseIterator(aHeaderList)),
   theFactory(aFactory),
   theIsInsideMultipart(false),
+  theIsMultipartBody(false),
   theDeleteResponse(true)
   {
     theUntypedQName = theFactory->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
@@ -117,10 +118,12 @@ namespace zorba { namespace http_client {
 
   void HttpResponseHandler::begin()
   {
+    std::cout << "H::begin()" << std::endl;
   }
 
   void HttpResponseHandler::beginResponse(int aStatus, String aMessage)
   {
+    std::cout << "H::beginResponse()" << std::endl;
     Item lStatusName = theFactory->createString("status");
     Item lStatusValue = theFactory->createInteger(aStatus);
 
@@ -133,6 +136,7 @@ namespace zorba { namespace http_client {
 
   void HttpResponseHandler::endResponse()
   {
+    std::cout << "H::endResponse()" << std::endl;
     if (theResponseHeaderMap.size()>0)
     {
       Item lHeadersName = theFactory->createString("headers");
@@ -156,28 +160,9 @@ namespace zorba { namespace http_client {
     theResult->setResponseItem(lResponse);
   }
 
-  // Since this class is only used to handle responses, beginRequest and
-  // endRequest are not implemented.
-  void HttpResponseHandler::beginRequest(String aMethod,
-                                         String href,
-                                         bool aStatusOnly,
-                                         String aUsername,
-                                         String aPassword,
-                                         String aAuthMethod,
-                                         bool aSendAuthorization,
-                                         String aOverrideContentType,
-                                         bool aFollowRedirect,
-                                         String aUserAgent,
-                                         int aTimeout /*= -1*/)
-  {
-  }
-
-  void HttpResponseHandler::endRequest()
-  {
-  }
-
   void HttpResponseHandler::header(String aName, String aValue)
   {
+    std::cout << "H::header()" << std::endl;
     std::map<String, String>& lHeaderMap =
       theIsInsideMultipart ? theMultipartHeaderMap : theResponseHeaderMap;
 
@@ -191,6 +176,7 @@ namespace zorba { namespace http_client {
                                       String aSrc,
                                       ItemSequence* aSerializerOptions)
   {
+    std::cout << "H::beginBody()" << std::endl;
     std::vector<std::pair<Item, Item> >& lBodyPairs =
       theIsInsideMultipart ? theMultipartBodyPairs : theBodyPairs;
 
@@ -202,14 +188,48 @@ namespace zorba { namespace http_client {
 
   void HttpResponseHandler::any(Item aItem, std::string& charset)
   {
-    std::vector<std::pair<Item, Item> >& lBodyPairs =
+    std::cout << "H::any()" << std::endl;
+    std::cout << "theIsInsideMultipart?: " << theIsInsideMultipart << std::endl;
+    std::cout << "theIsMultipartBody?: " << theIsMultipartBody << std::endl;
+    if (theIsMultipartBody)
+    {
+      theIsMultipartBody = false;
+      std::cout << aItem.getStringValue() << std::endl;
+      parseMultipartBody(aItem);
+    }
+    else
+    {
+      std::vector<std::pair<Item, Item> >& lBodyPairs =
           theIsInsideMultipart ? theMultipartBodyPairs : theBodyPairs;
+      Item lContentName = theFactory->createString("content");
+      lBodyPairs.push_back(std::pair<Item,Item>(lContentName,aItem));
+    }
+  }
+
+  void HttpResponseHandler::parseMultipartBody(const Item& aItem)
+  {
+/*
+    Item lTestBody = theFactory->createString("dummy");
+    header("h1", "v1");
+    header("h2", "v2");
+    std::string lCharset = "UTF-8";
+    beginBody("text/test", "", NULL);
+    any(lTestBody, lCharset);
+    endBody();
+    */
+    endMultipart();
+
+    //to avoid segfaults
+    std::vector<std::pair<Item, Item> >& lBodyPairs =
+        theIsInsideMultipart ? theMultipartBodyPairs : theBodyPairs;
     Item lContentName = theFactory->createString("content");
-    lBodyPairs.push_back(std::pair<Item,Item>(lContentName,aItem));
+    lBodyPairs.push_back(std::pair<Item,Item>(lContentName, aItem));
+
   }
 
   void HttpResponseHandler::endBody()
   {
+    std::cout << "H::endBody()" << std::endl;
     std::vector<std::pair<Item, Item> >& lBodyPairs =
       theIsInsideMultipart ? theMultipartBodyPairs : theBodyPairs;
 
@@ -252,7 +272,9 @@ namespace zorba { namespace http_client {
 
   void HttpResponseHandler::beginMultipart(String aContentType, String aBoundary)
   {
+    std::cout << "H::beginMultipart() " << aContentType << aBoundary << std::endl;
     theIsInsideMultipart = true;
+    theIsMultipartBody = true;
 
     Item lContentTypeName = theFactory->createString("content-type");
     Item lContentTypeValue = theFactory->createString(aContentType);
@@ -267,18 +289,21 @@ namespace zorba { namespace http_client {
 
   void HttpResponseHandler::endMultipart()
   {
+    std::cout << "H::endMultipart()" << std::endl;
     theIsInsideMultipart = false;
     Item lBodyName = theFactory->createString("parts");
     Item lBodyArray = theFactory->createJSONArray(theMultipartBodyVector);
 
-    theMultipartPairs.push_back(std::pair<Item,Item>(lBodyName,lBodyArray));
+    theMultipartPairs.push_back(std::pair<Item,Item>(lBodyName, lBodyArray));
+
     Item lName = theFactory->createString("multipart");
-    Item lMultipart = theFactory->createJSONObject(theMultipartBodyPairs);
-    theResponsePairs.push_back(std::pair<Item,Item>(lName,lMultipart));
+    Item lMultipart = theFactory->createJSONObject(theMultipartPairs);
+    theResponsePairs.push_back(std::pair<Item,Item>(lName, lMultipart));
   }
 
   void HttpResponseHandler::end()
   {
+    std::cout << "H::end()" << std::endl;
   }
 
   HttpResponseIterator* HttpResponseHandler::getResult()
