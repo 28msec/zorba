@@ -212,6 +212,22 @@ static void set_keys( store::Item_t const &item, vector<store::Item_t> *keys,
   }
 }
 
+static void emit_csv_value(const store::Item_t& item,
+                           const CsvSerializeIteratorState& state,
+                           zstring& line)
+{
+  zstring value;
+  item->getStringValue2( value );
+  bool const quote =
+      value.find_first_of( state.must_quote_ ) != zstring::npos;
+  if ( quote )
+    line += state.quote_;
+  ascii::replace_all( value, state.quote_, state.quote_esc_ );
+  line += value;
+  if ( quote )
+    line += state.quote_;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void CsvParseIterator::set_input( store::Item_t const &item,
@@ -635,15 +651,7 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
         line += state->separator_;
       else
         separator = true;
-      (*key)->getStringValue2( value );
-      bool const quote =
-          value.find_first_of( state->must_quote_ ) != zstring::npos;
-      if ( quote )
-        line += state->quote_;
-      ascii::replace_all( value, state->quote_, state->quote_esc_ );
-      line += value;
-      if ( quote )
-        line += state->quote_;
+      emit_csv_value(*key, *state, line);
     }
     if ( !line.empty() ) {
       line += "\r\n";
@@ -679,17 +687,9 @@ skip_consumeNext:
           line += state->boolean_string_[ value_item->getBooleanValue() ];
         else if ( IS_JSON_NULL( value_item ) )
           line += state->null_string_;
-        else if ( is_stringable( value_item ) ) {
-          value_item->getStringValue2( value );
-          bool const quote =
-            value.find_first_of( state->must_quote_ ) != zstring::npos;
-          if ( quote )
-            line += state->quote_;
-          ascii::replace_all( value, state->quote_, state->quote_esc_ );
-          line += value;
-          if ( quote )
-            line += state->quote_;
-        } else
+        else if ( is_stringable( value_item ) )
+          emit_csv_value(value_item, *state, line);
+        else
           throw XQUERY_EXCEPTION(
             csv::INVALID_VALUE,
             ERROR_PARAMS( value_item->getKind(), (*key)->getStringValue() ),
