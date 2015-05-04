@@ -162,16 +162,19 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
 
     if (theStatusOnly)
     {
-       theHandler.beginResponse(theStatus, theMessage);
+      if (!theInsideRead)
+      {
+        theHandler.beginResponse(theStatus, theMessage);
 
-       for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
-            i != theHeaders.end(); ++i)
-       {
-         theHandler.header(i->first, i->second);
-       }
+        for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
+             i != theHeaders.end(); ++i)
+        {
+           theHandler.header(i->first, i->second);
+        }
+      }
 
-       theHandler.endResponse();
-       theHandler.end();
+      theHandler.endResponse();
+      theHandler.end();
     }
     else
     {
