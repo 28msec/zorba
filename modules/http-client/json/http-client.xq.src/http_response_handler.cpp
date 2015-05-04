@@ -189,26 +189,16 @@ namespace zorba { namespace http_client {
   void HttpResponseHandler::any(Item aItem, std::string& charset)
   {
     std::cout << "H::any()" << std::endl;
-    std::cout << "theIsInsideMultipart?: " << theIsInsideMultipart << std::endl;
-    std::cout << "theIsMultipartBody?: " << theIsMultipartBody << std::endl;
-    if (theIsMultipartBody)
-    {
-      theIsMultipartBody = false;
-      std::cout << aItem.getStringValue() << std::endl;
-      parseMultipartBody(aItem);
-    }
-    else
-    {
-      std::vector<std::pair<Item, Item> >& lBodyPairs =
+    std::vector<std::pair<Item, Item> >& lBodyPairs =
           theIsInsideMultipart ? theMultipartBodyPairs : theBodyPairs;
       Item lContentName = theFactory->createString("content");
       lBodyPairs.push_back(std::pair<Item,Item>(lContentName,aItem));
-    }
   }
 
   void HttpResponseHandler::parseMultipartBody(const Item& aItem)
   {
-/*
+    std::cout << "H::parseMultipartBody()" << std::endl;
+
     Item lTestBody = theFactory->createString("dummy");
     header("h1", "v1");
     header("h2", "v2");
@@ -216,14 +206,14 @@ namespace zorba { namespace http_client {
     beginBody("text/test", "", NULL);
     any(lTestBody, lCharset);
     endBody();
-    */
-    endMultipart();
 
-    //to avoid segfaults
-    std::vector<std::pair<Item, Item> >& lBodyPairs =
-        theIsInsideMultipart ? theMultipartBodyPairs : theBodyPairs;
-    Item lContentName = theFactory->createString("content");
-    lBodyPairs.push_back(std::pair<Item,Item>(lContentName, aItem));
+    Item lTestBody2 = theFactory->createString("dummy2");
+    header("h3", "v3");
+    header("h4", "v4");
+    std::string lCharset2 = "UTF-8";
+    beginBody("text/test2", "", NULL);
+    any(lTestBody2, lCharset2);
+    endBody();
 
   }
 
@@ -262,6 +252,7 @@ namespace zorba { namespace http_client {
       lPartsPairs.push_back(std::pair<Item,Item>(lBodyName,lBody));
       Item lPart = theFactory->createJSONObject(lPartsPairs);
       theMultipartBodyVector.push_back(lPart);
+      theMultipartBodyPairs.clear();
     }
     else
     {

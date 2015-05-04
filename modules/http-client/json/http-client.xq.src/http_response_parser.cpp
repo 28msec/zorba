@@ -216,12 +216,13 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     std::cout << "Parsing as multipart" << std::endl;
     Item lBody = createTextItem(aStream.release());
 
-    if (!lBody.isNull())
+    if (lBody.isNull())
     {
       std::string empty;
-      //theHandler.any(lItem, empty);
-      //TODO: handle empty body
+      theHandler.any(lBody, empty);
     }
+    else
+      theHandler.parseMultipartBody(lBody);
 
     theHandler.endMultipart();
     theHandler.endResponse();
